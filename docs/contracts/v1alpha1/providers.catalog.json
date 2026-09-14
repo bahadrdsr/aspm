@@ -1,0 +1,146 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "ProviderCatalog",
+  "status": "contract-only",
+  "snapshotDate": "2026-09-14",
+  "modes": ["disabled", "local-only", "approved-hosted"],
+  "defaultMode": "disabled",
+  "description": "Four optional families, no implemented or live-verified adapters. Models/deployments are operator-configured, not a bundled or interchangeable universal model catalog.",
+  "policy": {
+    "disabledNoInference": true, "localOnlyForbidsHosted": true, "localRuntimeEgressEnforced": true,
+    "hostedRequiresWorkspaceApproval": true, "fallbackExplicitAndAudited": true,
+    "modelToolCallsAreUntrustedData": true, "sharedQuotaAcrossReplicas": true,
+    "noTransactionHeldDuringInference": true, "providerRetentionNotUniversal": true,
+    "nonAIProductUsable": true,
+    "unknownCapabilitiesFailClosed": true,
+    "jobSnapshotsProfileAndPolicyRevision": true,
+    "privateEndpointDoesNotProveGeography": true,
+    "syntheticConnectivityChecksNeedApproval": true,
+    "noSecretsInBrowserOrLogs": true,
+    "proofSuggestionsCannotAuthorizeExecution": true
+  },
+  "routingContract": {
+    "scope": ["workspace", "permitted-role", "task", "data-class", "approved-destination"],
+    "tasks": ["extraction", "assessment", "duplicate-suggestions", "remediation-assistance", "proof-planning"],
+    "snapshot": ["profile-revision", "policy-revision", "evidence-digest", "prompt-revision", "requested-model-or-deployment"],
+    "fallback": "Only an explicitly approved ordered list with equivalent or stricter data and capability policy. Reject cycles, missing profiles and local/offline to hosted transitions. Audit each fallback; no automatic cross-mode recovery.",
+    "quotaKey": "Actual organization/project/account/model-class/region/deployment limit scope, not merely an API key. Different profiles can consume the same shared limit.",
+    "retry": "One bounded retry owner, inclusive of SDK attempts. Honor Retry-After within the job deadline; use bounded backoff/jitter, release connections while waiting and show queued/blocked/exhausted states.",
+    "retention": "Minimal redacted context; local prompt and result expiry are separate from provider storage/logging/caching/account policies. A requested store=false or zero-day local retention is not a universal provider zero-retention guarantee.",
+    "audit": ["profile-revision", "provider", "requested-model", "resolved-model-or-unresolved-alias", "deployment", "request-id", "usage", "timing", "outcome", "fallback-decision"]
+  },
+  "families": [
+    {
+      "id": "openai", "requiredAtInstall": false, "hosted": true, "hostedServiceIsFOSS": false,
+      "profiles": [
+        {
+          "id": "openai-responses-v1", "protocol": "openai-v1",
+          "apiFlavor": "OpenAI Responses API /v1/responses",
+          "authModes": ["secret-reference"],
+          "modelSelection": "operator-configured", "modelIdentityStatus": "unresolved-alias",
+          "capabilities": { "structured-output": "unknown", "tools": "unknown", "streaming": "unknown", "usage": "unknown", "cancellation": "unknown" },
+          "setupRecipe": "Planned: choose a project endpoint/model, reference a restricted backend credential, select permitted workspaces/tasks/data classes, declare the account's retention and request/token limits, obtain explicit outbound approval and approve a synthetic capability check. No source code is sent by default.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No adapter implementation or authorized provider project/model check. Documentation and schema fixtures are not evidence of model availability, usage correctness or retention settings." },
+          "verificationPlan": {
+            "environment": "An operator-authorized OpenAI test project and explicitly selected model with a finite test budget; synthetic prompts only.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "request-mapping", "schema-validation", "usage-extraction", "privacy-policy", "shared-quota", "invalid-output", "model-unavailable", "unresolved-model-alias", "stream-interrupted", "forbidden-fallback"]
+          },
+          "documentation": ["https://developers.openai.com/api/docs/guides/your-data", "https://developers.openai.com/api/docs/guides/rate-limits"]
+        }
+      ]
+    },
+    {
+      "id": "azure-foundry", "requiredAtInstall": false, "hosted": true, "hostedServiceIsFOSS": false,
+      "profiles": [
+        {
+          "id": "foundry-openai-v1", "protocol": "openai-v1",
+          "apiFlavor": "Azure OpenAI v1 routes in Microsoft Foundry; explicitly selected compatible deployment, not every Foundry model",
+          "authModes": ["secret-reference", "workload-identity"],
+          "modelSelection": "operator-configured", "modelIdentityStatus": "unresolved-alias",
+          "deploymentRequired": true,
+          "capabilities": { "structured-output": "unknown", "tools": "unknown", "streaming": "unknown", "usage": "unknown", "cancellation": "unknown" },
+          "setupRecipe": "Planned: select the resource endpoint and deployment independently of the requested model, select protected key or authorized workload identity, review region/deployment processing policy and shared quota scope, then approve synthetic request and capability checks for the permitted workspaces/tasks. Do not insert a universal dated api-version into every Foundry endpoint.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Foundry adapter, authorized resource or selected deployment was tested. Endpoint privacy and deployment naming do not establish geography, retention or model compatibility." },
+          "verificationPlan": {
+            "environment": "Operator-authorized Azure OpenAI resource in a declared tenant/region with one explicitly compatible deployment and constrained key or workload identity.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "request-mapping", "schema-validation", "usage-extraction", "privacy-policy", "shared-quota", "invalid-output", "deployment-not-found", "workload-identity-expiry", "api-flavor-mismatch", "stream-interrupted", "forbidden-fallback"]
+          },
+          "documentation": ["https://learn.microsoft.com/en-us/azure/foundry/openai/api-version-lifecycle", "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/quota"]
+        }
+      ]
+    },
+    {
+      "id": "anthropic", "requiredAtInstall": false, "hosted": true, "hostedServiceIsFOSS": false,
+      "profiles": [
+        {
+          "id": "anthropic-messages", "protocol": "anthropic-messages",
+          "apiFlavor": "Native Messages API /v1/messages, anthropic-version 2023-06-01; no unreviewed beta headers",
+          "authModes": ["secret-reference"],
+          "modelSelection": "operator-configured", "modelIdentityStatus": "unresolved-alias",
+          "capabilities": { "structured-output": "unknown", "tools": "unknown", "streaming": "unknown", "usage": "unknown", "cancellation": "unknown" },
+          "setupRecipe": "Planned: select the Messages endpoint and operator model ID, reference the backend key, approve allowed tasks/data and provider-specific retention, configure quota/deadline bounds and authorize a synthetic Messages capability run. Preserve native content-block, stop-reason and usage semantics rather than coercing an OpenAI-shaped response.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Anthropic adapter or authorized model run exists. Exact output behavior, available capabilities and account controls remain unverified." },
+          "verificationPlan": {
+            "environment": "Operator-authorized Anthropic test workspace/key and selected model, using only synthetic prompts within a finite spend policy.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "request-mapping", "schema-validation", "usage-extraction", "privacy-policy", "shared-quota", "invalid-output", "content-block-mapping", "stop-reason-mapping", "model-unavailable", "stream-interrupted", "forbidden-fallback"]
+          },
+          "documentation": ["https://platform.claude.com/docs/en/api/messages", "https://platform.claude.com/docs/en/api/rate-limits"]
+        }
+      ]
+    },
+    {
+      "id": "local", "requiredAtInstall": false, "hosted": false,
+      "profiles": [
+        {
+          "id": "local-ollama", "protocol": "ollama",
+          "apiFlavor": "Ollama native /api/chat; runtime and model versions must be explicitly selected for the authorized pilot",
+          "authModes": ["none", "secret-reference"],
+          "modelSelection": "operator-configured", "modelIdentityStatus": "unresolved-alias",
+          "capabilities": { "structured-output": "unknown", "tools": "unknown", "streaming": "unknown", "usage": "unknown", "cancellation": "unknown" },
+          "setupRecipe": "Planned: point at a private operator-managed Ollama runtime, explicitly select a locally present reviewed model, configure finite local resource limits and deny hosted egress on both worker and inference runtime. Authorize a synthetic native-protocol check; no cloud model, implicit model download or hosted fallback is permitted.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No native adapter, runtime/model pair or enforced local-only network profile has been tested. A loopback address or downloadable weights are not verification." },
+          "verificationPlan": {
+            "environment": "Operator-authorized private CPU/GPU test host with explicitly selected runtime and locally present model, outbound hosted traffic denied independently of the aspm worker.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "request-mapping", "schema-validation", "usage-extraction", "privacy-policy", "shared-quota", "invalid-output", "runtime-unavailable", "model-missing", "resource-exhaustion", "hosted-egress-denied", "no-implicit-download", "stream-interrupted"]
+          },
+          "licenseReview": {
+            "runtime": { "status": "not-reviewed", "reason": "No exact executable/container distribution selected. Review the runtime version, dependencies and notices independently before bundling." },
+            "modelSystem": { "status": "not-reviewed", "reason": "No model system selected. Review terms, weights, code, training/data information and redistribution/openness requirements separately; runtime licensing does not approve the model." }
+          },
+          "bundlingApproved": false,
+          "documentation": ["https://docs.ollama.com/api", "https://docs.ollama.com/api/openai-compatibility"]
+        },
+        {
+          "id": "local-openai-compatible", "protocol": "openai-compatible",
+          "apiFlavor": "Operator-managed local /v1/chat/completions compatibility profile; not an OpenAI hosted fallback",
+          "authModes": ["none", "secret-reference"],
+          "modelSelection": "operator-configured", "modelIdentityStatus": "unresolved-alias",
+          "capabilities": { "structured-output": "unknown", "tools": "unknown", "streaming": "unknown", "usage": "unknown", "cancellation": "unknown" },
+          "setupRecipe": "Planned: select a private compatible runtime endpoint and reviewed local model, provide a protected auth reference if required, enforce deny-hosted egress at both boundaries and approve individual synthetic capability checks. Reject unsupported tools/structured output visibly rather than silently forwarding to a hosted API.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No compatible adapter or authorized runtime/model pair was exercised. OpenAI-compatible transport is not universal model, usage, streaming or cancellation compatibility." },
+          "verificationPlan": {
+            "environment": "Operator-authorized private inference runtime with a declared version/model and controlled network-denial fixtures; no third-party inference calls.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "request-mapping", "schema-validation", "usage-extraction", "privacy-policy", "shared-quota", "invalid-output", "unsupported-capability", "partial-usage", "model-unavailable", "hosted-egress-denied", "stream-interrupted"]
+          },
+          "licenseReview": {
+            "runtime": { "status": "not-reviewed", "reason": "Compatibility protocol does not identify an executable or license; an exact runtime distribution and dependency inventory are required." },
+            "modelSystem": { "status": "not-reviewed", "reason": "No bundled model or openness/redistribution review. Available weights are not approval of the entire model system." }
+          },
+          "bundlingApproved": false,
+          "documentation": ["https://docs.ollama.com/api/openai-compatibility", "https://opensource.org/ai/open-source-ai-definition"]
+        }
+      ]
+    }
+  ],
+  "promotionPolicy": "Each exact profile/model/deployment needs implemented status, deterministic conformance evidence and a separately authorized timestamped live evidence file before supported/readyToConnect. Stochastic quality evaluation is separate and may be inconclusive. An independent reviewer checks provenance; JSON tests cannot authenticate the record."
+}

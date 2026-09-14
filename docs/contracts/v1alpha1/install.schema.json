@@ -1,0 +1,340 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aspm.invalid/schemas/v1alpha1/install.schema.json",
+  "title": "aspm resolved installation configuration",
+  "description": "M00 contract, not an installer or deployment certification. Validate structure here, then resolve references and run the semantic preflight rules before a target-bound approval or mutation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "release", "target", "access", "bootstrap", "postgres", "objectStore", "ai", "proof", "services", "databaseConnectionBudget", "artifacts", "retentionProfile"],
+  "properties": {
+    "apiVersion": { "const": "aspm/v1alpha1" },
+    "kind": { "const": "Installation" },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "artifactSource"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^v?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$" },
+        "artifactSource": { "const": "installer-bundle" }
+      }
+    },
+    "target": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "host"],
+          "properties": {
+            "kind": { "const": "linux" },
+            "host": { "$ref": "#/$defs/name" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "context", "namespace"],
+          "properties": {
+            "kind": { "const": "kubernetes" },
+            "context": { "$ref": "#/$defs/name" },
+            "namespace": { "$ref": "#/$defs/kubernetesName" },
+            "storageClass": { "$ref": "#/$defs/kubernetesDNSSubdomain" },
+            "ingressClass": { "$ref": "#/$defs/kubernetesName" }
+          }
+        }
+      ]
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exposure", "tlsMode", "baseURL", "publicExposureApproved"],
+      "properties": {
+        "exposure": { "enum": ["loopback", "private", "public"] },
+        "tlsMode": { "enum": ["internal-ca", "provided"] },
+        "baseURL": { "$ref": "#/$defs/httpsURL" },
+        "publicExposureApproved": { "type": "boolean" },
+        "certificateRef": { "$ref": "#/$defs/secretReference" },
+        "privateKeyRef": { "$ref": "#/$defs/secretReference" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "exposure": { "const": "public" } }, "required": ["exposure"] },
+          "then": { "properties": { "publicExposureApproved": { "const": true } } },
+          "else": { "properties": { "publicExposureApproved": { "const": false } } }
+        },
+        {
+          "if": { "properties": { "tlsMode": { "const": "provided" } }, "required": ["tlsMode"] },
+          "then": { "required": ["certificateRef", "privateKeyRef"] },
+          "else": { "not": { "anyOf": [{ "required": ["certificateRef"] }, { "required": ["privateKeyRef"] }] } }
+        }
+      ]
+    },
+    "bootstrap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "secretRef"],
+      "properties": {
+        "method": { "enum": ["one-time-enrollment", "protected-credential-entry"] },
+        "secretRef": { "$ref": "#/$defs/secretReference" }
+      }
+    },
+    "postgres": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "engine", "persistent", "publicAccess", "credentialRef"],
+      "properties": {
+        "mode": { "enum": ["managed", "external"] },
+        "engine": { "const": "postgresql" },
+        "persistent": { "const": true },
+        "publicAccess": { "const": false },
+        "credentialRef": { "$ref": "#/$defs/secretReference" },
+        "volumeName": { "$ref": "#/$defs/resourceName" },
+        "image": { "const": "postgres:18.6-alpine", "description": "Selected image tag. The release bundle must additionally lock and verify the resolved platform digest." },
+        "endpoint": { "type": "string", "format": "uri", "pattern": "^postgresql://[^/?#@\\s]+/[^/?#\\s]+$" },
+        "tlsMode": { "const": "verify-full" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "managed" } }, "required": ["mode"] },
+          "then": {
+            "required": ["volumeName"],
+            "not": { "anyOf": [{ "required": ["endpoint"] }, { "required": ["tlsMode"] }] }
+          },
+          "else": {
+            "required": ["endpoint", "tlsMode"],
+            "not": { "anyOf": [{ "required": ["volumeName"] }, { "required": ["image"] }] }
+          }
+        }
+      ]
+    },
+    "objectStore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "engine", "api", "persistent", "publicAccess", "credentialRef"],
+      "properties": {
+        "mode": { "enum": ["managed", "external"] },
+        "engine": { "enum": ["seaweedfs-community", "s3-compatible"] },
+        "api": { "const": "s3" },
+        "persistent": { "const": true },
+        "publicAccess": { "const": false },
+        "credentialRef": { "$ref": "#/$defs/secretReference" },
+        "volumeName": { "$ref": "#/$defs/resourceName" },
+        "endpoint": { "$ref": "#/$defs/httpsURL" },
+        "bucket": { "type": "string", "minLength": 3, "maxLength": 63, "pattern": "^[a-z0-9][a-z0-9.-]*[a-z0-9]$" },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version", "digest"],
+          "properties": {
+            "version": { "const": "4.47" },
+            "digest": { "const": "sha256:ce9e796f1fe6f06968f4c04bdaf8f678dad9c8acdfef3d244133d71bfa6bf882" }
+          }
+        },
+        "seaweedfs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["masterTelemetry", "adminUI", "webdav", "icebergPort", "lancePort", "publishedAPIs", "managementExposure"],
+          "properties": {
+            "masterTelemetry": { "const": false },
+            "adminUI": { "const": false },
+            "webdav": { "const": false },
+            "icebergPort": { "const": 0 },
+            "lancePort": { "const": 0 },
+            "publishedAPIs": { "const": ["s3"], "description": "Only on the private application network, never a public evidence endpoint." },
+            "managementExposure": { "const": "internal-only", "description": "Admin, master, filer and volume interfaces remain unpublished, including their gRPC interfaces. Disabling the UI is not sufficient isolation." }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "managed" } }, "required": ["mode"] },
+          "then": {
+            "required": ["volumeName", "image", "seaweedfs"],
+            "properties": { "engine": { "const": "seaweedfs-community" } },
+            "not": { "required": ["endpoint"] }
+          },
+          "else": {
+            "required": ["endpoint", "bucket"],
+            "properties": { "engine": { "const": "s3-compatible" } },
+            "not": { "anyOf": [{ "required": ["volumeName"] }, { "required": ["image"] }, { "required": ["seaweedfs"] }] }
+          }
+        }
+      ]
+    },
+    "ai": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "profiles", "fallbackProfiles", "hostedProcessingApproved"],
+      "properties": {
+        "mode": { "enum": ["disabled", "local-only", "approved-hosted"] },
+        "profiles": { "$ref": "#/$defs/identifiers" },
+        "fallbackProfiles": { "$ref": "#/$defs/identifiers" },
+        "hostedProcessingApproved": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "disabled" } }, "required": ["mode"] },
+          "then": { "properties": { "profiles": { "maxItems": 0 }, "fallbackProfiles": { "maxItems": 0 }, "hostedProcessingApproved": { "const": false } } },
+          "else": { "properties": { "profiles": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "mode": { "const": "approved-hosted" } }, "required": ["mode"] },
+          "then": { "properties": { "hostedProcessingApproved": { "const": true } } },
+          "else": { "properties": { "hostedProcessingApproved": { "const": false } } }
+        }
+      ]
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "executionPolicy"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "executionPolicy": { "const": "controlled-fixtures-only" }
+      }
+    },
+    "services": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core-api", "ingestion-parser", "ingestion-reconciler", "background-worker", "ai-service", "proof-service"],
+      "properties": {
+        "core-api": { "$ref": "#/$defs/enabledService" },
+        "ingestion-parser": { "$ref": "#/$defs/enabledService" },
+        "ingestion-reconciler": { "$ref": "#/$defs/enabledService" },
+        "background-worker": { "$ref": "#/$defs/enabledService" },
+        "ai-service": { "$ref": "#/$defs/service" },
+        "proof-service": { "$ref": "#/$defs/service" }
+      }
+    },
+    "databaseConnectionBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max", "reservedMaintenance"],
+      "properties": {
+        "max": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "reservedMaintenance": { "type": "integer", "minimum": 1, "maximum": 10000 }
+      },
+      "description": "Preflight must sum replicas times per-replica connections plus maintenance, including rollout overlap and all other database consumers. JSON Schema cannot compare or sum these values."
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "signatureRequired", "outboundRetrievalRequiresApproval"],
+      "properties": {
+        "mode": { "enum": ["online", "private-mirror", "offline-bundle"] },
+        "signatureRequired": { "const": true },
+        "outboundRetrievalRequiresApproval": { "const": true },
+        "bundleRef": { "$ref": "#/$defs/name" },
+        "mirrorURL": { "$ref": "#/$defs/httpsURL" },
+        "credentialRef": { "$ref": "#/$defs/secretReference" }
+      },
+      "oneOf": [
+        {
+          "properties": { "mode": { "const": "online" } },
+          "not": { "anyOf": [{ "required": ["bundleRef"] }, { "required": ["mirrorURL"] }, { "required": ["credentialRef"] }] }
+        },
+        {
+          "properties": { "mode": { "const": "private-mirror" } },
+          "required": ["mirrorURL", "credentialRef"],
+          "not": { "required": ["bundleRef"] }
+        },
+        {
+          "properties": { "mode": { "const": "offline-bundle" } },
+          "required": ["bundleRef"],
+          "not": { "anyOf": [{ "required": ["mirrorURL"] }, { "required": ["credentialRef"] }] }
+        }
+      ]
+    },
+    "retentionProfile": { "$ref": "#/$defs/name" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "artifacts": { "properties": { "mode": { "const": "offline-bundle" } }, "required": ["mode"] } }, "required": ["artifacts"] },
+      "then": { "properties": { "ai": { "properties": { "mode": { "enum": ["disabled", "local-only"] } } } } }
+    },
+    {
+      "if": { "properties": { "ai": { "properties": { "mode": { "const": "disabled" } }, "required": ["mode"] } }, "required": ["ai"] },
+      "then": { "properties": { "services": { "properties": { "ai-service": { "$ref": "#/$defs/disabledService" } } } } },
+      "else": { "properties": { "services": { "properties": { "ai-service": { "$ref": "#/$defs/enabledService" } } } } }
+    },
+    {
+      "if": { "properties": { "proof": { "properties": { "enabled": { "const": false } }, "required": ["enabled"] } }, "required": ["proof"] },
+      "then": { "properties": { "services": { "properties": { "proof-service": { "$ref": "#/$defs/disabledService" } } } } },
+      "else": { "properties": { "services": { "properties": { "proof-service": { "$ref": "#/$defs/enabledService" } } } } }
+    }
+  ],
+  "$defs": {
+    "name": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "^\\S(?:.*\\S)?$" },
+    "resourceName": { "type": "string", "minLength": 1, "maxLength": 63, "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$" },
+    "kubernetesName": { "type": "string", "minLength": 1, "maxLength": 63, "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$" },
+    "kubernetesDNSSubdomain": {
+      "type": "string", "minLength": 1, "maxLength": 253,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+      "description": "Kubernetes resource-name DNS subdomain. Namespace labels and Secret data keys retain their separate constraints."
+    },
+    "httpsURL": { "type": "string", "format": "uri", "pattern": "^https://[^/?#@\\s]+(/[^?#\\s]*)?$" },
+    "identifiers": { "type": "array", "uniqueItems": true, "maxItems": 128, "items": { "$ref": "#/$defs/name" } },
+    "secretReference": {
+      "description": "Reference only. Never include a credential value. Kubernetes namespaces and protected-file ownership must be checked against the approved target.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name"],
+          "properties": {
+            "kind": { "enum": ["generated", "file"] },
+            "name": { "$ref": "#/$defs/name" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name"],
+          "properties": {
+            "kind": { "const": "environment" },
+            "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$", "maxLength": 256 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name"],
+          "properties": {
+            "kind": { "const": "kubernetes-secret" },
+            "name": { "$ref": "#/$defs/kubernetesDNSSubdomain" },
+            "namespace": { "$ref": "#/$defs/kubernetesName" },
+            "key": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 253 }
+          }
+        }
+      ]
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replicas", "dbConnectionsPerReplica"],
+      "properties": {
+        "replicas": { "type": "integer", "minimum": 0, "maximum": 256 },
+        "dbConnectionsPerReplica": { "type": "integer", "minimum": 0, "maximum": 1000 }
+      }
+    },
+    "enabledService": {
+      "allOf": [
+        { "$ref": "#/$defs/service" },
+        { "properties": { "replicas": { "minimum": 1 }, "dbConnectionsPerReplica": { "minimum": 1 } } }
+      ]
+    },
+    "disabledService": {
+      "allOf": [
+        { "$ref": "#/$defs/service" },
+        { "properties": { "replicas": { "const": 0 }, "dbConnectionsPerReplica": { "const": 0 } } }
+      ]
+    }
+  },
+  "x-semanticValidation": [
+    "Reject aggregate database allowances exceeding max or actual PostgreSQL capacity, including deployment surge, pool overhead, maintenance and external consumers.",
+    "Resolve profile and retention references; reject unknown, cross-workspace, cyclic or policy-incompatible fallbacks. Local-only and offline mode must deny hosted egress at both worker and runtime boundaries.",
+    "Verify endpoint destinations, certificate names/trust, namespace/key permissions, volume ownership, bucket configuration and persistence. A private hostname is not isolation evidence.",
+    "Resolve generated secrets once, preserve their target-bound identities across resume/reapply, and never export their values.",
+    "Bind approval to canonical resolved config digest, every signed release artifact digest and inspected host or cluster identity. Replan on any change.",
+    "These runtime checks are requirements for M03, not checks implemented by this M00 schema."
+  ]
+}

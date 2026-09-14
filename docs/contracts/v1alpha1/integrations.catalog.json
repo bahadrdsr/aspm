@@ -1,0 +1,276 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "IntegrationCatalog",
+  "status": "contract-only",
+  "snapshotDate": "2026-09-14",
+  "description": "Eight required R1 families, zero implemented native connectors. These are proposed pilot API/edition profiles, not available integrations. Hosted vendor features can have their own entitlement requirements; none is an installation prerequisite.",
+  "connectionStates": ["unconfigured", "authenticating", "syncing", "partially-authorized", "healthy", "stale", "paused", "failed"],
+  "healthDimensions": ["endpoint-connectivity", "permission-coverage", "collection", "parsing", "enrichment", "reconciliation", "pipeline-progress"],
+  "rules": {
+    "supportSeparateFromConnectionState": true, "tokenDoesNotImplyCoverage": true,
+    "backendCredentialsOnly": true, "noSecretsInBrowserStorage": true,
+    "explicitOutboundAction": true, "preserveNonSecretDrafts": true,
+    "plannedCardsNeverAdvertisedAsReady": true, "importersDoNotCountAsNative": true,
+    "sourceTimeNeverReplacedByPollingTime": true, "absenceRequiresComparableCompleteRun": true,
+    "preserveSourceMeaningAndUnmappedFields": true,
+    "liveEvidenceIsSeparateFromDeterministicEvidence": true
+  },
+  "sourceFieldPolicy": "fieldSupport is the intended normalization contract, not tested coverage. Keep raw source values, null sourceScanAt when unavailable, immutable source/run/scope IDs and distinct import attempts. Collection completion is not a scanner-complete assessment.",
+  "deliveryPolicy": "External mutations require preview and an authorized explicit action. Record an outbox intent before sending; deduplicate local business effects. If the remote result is uncertain, reconcile its receipt/identifier before any retry. Do not promise exactly-once delivery.",
+  "launchFamilies": [
+    {
+      "id": "github", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["repository-inventory", "ownership-inventory", "code-scanning-intake"],
+      "profiles": [
+        {
+          "id": "github-cloud-app", "edition": "GitHub.com; public code scanning or explicitly entitled private repositories",
+          "apiVersion": "REST 2026-03-10",
+          "authModes": ["github-app-installation"],
+          "requiredPermissions": [
+            "Repository Metadata: read for selected installation repositories.",
+            "Repository Contents: read only when the operator enables CODEOWNERS ownership inventory.",
+            "Organization Members: read only for team-based ownership inventory; report inaccessible teams as a coverage gap.",
+            "Repository Code scanning alerts: read; code-scanning availability/entitlement must be checked separately."
+          ],
+          "capabilities": { "repository-inventory": "planned", "ownership-inventory": "planned", "code-scanning-intake": "planned" },
+          "unsupportedCapabilities": ["github-enterprise-server", "write-source-alerts", "source-code-execution", "all-private-repositories-without-entitlement"],
+          "fieldSupport": ["sourceId", "sourceScanAt", "collectedAt", "importedAt", "sourceSeverity", "sourceLocation", "scopeId", "completeness", "sourceFindingId", "impact", "remediation", "unmapped"],
+          "lifecyclePolicy": "Scope by installation, repository immutable ID, ref, analysis key and tool. Treat CODEOWNERS as declared source ownership, not a guess from commit authors. Alert update timestamps and polling timestamps are not scan times; missing analysis provenance stays unknown.",
+          "setupRecipe": "Planned: choose inventory/code-scanning capabilities, inspect read-only permissions and private-repository entitlement, authorize a GitHub App installation on explicitly selected synthetic repositories, select refs/tools, then approve synthetic verification. Preserve the non-secret draft and show permission gaps by capability.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No adapter or authorized pilot GitHub App installation has been exercised. Maintainer source-host authentication is not connector verification." },
+          "verificationPlan": {
+            "environment": "Dedicated authorized GitHub.com organization with synthetic repositories, CODEOWNERS, multiple refs and a pre-existing synthetic code-scanning report.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "pagination", "partial-response", "stale-source", "installation-revoked", "unchanged-poll", "missing-scan-time", "read-only-target", "semantic-fields"]
+          },
+          "documentation": ["https://docs.github.com/en/rest/code-scanning/code-scanning"]
+        }
+      ]
+    },
+    {
+      "id": "gitlab", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["repository-inventory", "pipeline-inventory", "security-report-intake"],
+      "profiles": [
+        {
+          "id": "gitlab-com-artifacts-v4", "edition": "GitLab.com projects with readable job artifacts; native vulnerability-management endpoints are outside this profile",
+          "apiVersion": "REST v4 (Projects, Pipelines, Jobs and Job Artifacts)",
+          "authModes": ["project-access-token-reference"],
+          "requiredPermissions": [
+            "read_api on operator-selected projects for repository, pipeline, job and artifact metadata.",
+            "Reporter project membership or the explicit artifact access role required by the project; expose higher artifact restrictions rather than requesting broad administrator rights."
+          ],
+          "capabilities": { "repository-inventory": "planned", "pipeline-inventory": "planned", "security-report-intake": "planned" },
+          "unsupportedCapabilities": ["all-self-managed-versions", "native-vulnerability-management-api", "paid-scanner-entitlement", "run-pipelines", "write-source-findings"],
+          "fieldSupport": ["sourceId", "sourceScanAt", "collectedAt", "importedAt", "sourceSeverity", "sourceLocation", "scopeId", "completeness", "sourceFindingId", "impact", "remediation", "unmapped"],
+          "lifecyclePolicy": "Collect existing approved SARIF/Trivy/Gitleaks artifacts natively by project/pipeline/job/artifact identity. A retried download is an import attempt, not a scan. Pipeline completion alone cannot prove a full successful scanner scope. Expired artifacts mean unavailable evidence, not fixed findings.",
+          "setupRecipe": "Planned: select the report-artifact capability and project scope, explain the read_api and artifact role requirements, enter a protected token reference, choose expected report paths/formats, and approve a synthetic read-only sync. Show missing or expired artifacts as partial coverage.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No GitLab adapter, authorized project or artifact fixture run exists. GitLab.com is a pilot choice; self-managed release coverage needs a separately pinned profile." },
+          "verificationPlan": {
+            "environment": "Authorized GitLab.com test group containing only synthetic repositories, completed pipelines and archived report fixtures.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "pagination", "partial-response", "stale-source", "expired-artifact", "restricted-artifact", "failed-pipeline", "same-job-redownload", "read-only-target", "semantic-fields"]
+          },
+          "documentation": ["https://docs.gitlab.com/api/job_artifacts/"]
+        }
+      ]
+    },
+    {
+      "id": "azure-devops", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["repository-inventory", "pipeline-inventory", "security-report-intake"],
+      "profiles": [
+        {
+          "id": "ado-services-build-artifacts", "edition": "Azure DevOps Services; existing Git repositories and build report artifacts",
+          "apiVersion": "REST 7.1 (Git, Build and Build Artifacts)",
+          "authModes": ["entra-service-principal", "scoped-pat-reference"],
+          "requiredPermissions": [
+            "vso.code (Code Read) for selected repositories when using a scoped PAT.",
+            "vso.build (Build Read) and project View builds permission for existing build metadata and artifact downloads.",
+            "For Entra authentication, explicitly add the principal to the organization/project with equivalent read permissions; API scope alone does not grant project membership."
+          ],
+          "capabilities": { "repository-inventory": "planned", "pipeline-inventory": "planned", "security-report-intake": "planned" },
+          "unsupportedCapabilities": ["azure-devops-server", "advanced-security-entitlement", "arbitrary-pipeline-execution", "repository-write"],
+          "fieldSupport": ["sourceId", "sourceScanAt", "collectedAt", "importedAt", "sourceSeverity", "sourceLocation", "scopeId", "completeness", "sourceFindingId", "impact", "remediation", "unmapped"],
+          "lifecycleIdentity": {
+            "comparisonScopeFields": ["organizationId", "projectId", "repositoryId", "ref", "scannerConfigurationId", "reportRole"],
+            "runIdentityFields": ["buildId", "artifactInstanceId"]
+          },
+          "lifecyclePolicy": "Within the authorized workspace/source, compare coverage by organizationId, projectId, repositoryId, ref, scannerConfigurationId and reportRole. scannerConfigurationId identifies the immutable scanner/tool/rules/options configuration; reportRole is the stable logical report purpose, not a per-build artifact name, instance or digest. buildId and artifactInstanceId identify a source-scoped run and are excluded from comparison scope; a redownload of the same run is a separate import attempt. New build/artifact instances therefore remain comparable when coverage is unchanged. Only a strictly newer successful complete full scan of the same comparison scope, with all required batches reconciled, may infer source resolution from absence; this neither overrides human decisions nor establishes verified resolution. Preserve scanner report times separately from build finish and download times. Artifact retrieval is native intake, not execution of the build or a claim of Advanced Security API support.",
+          "setupRecipe": "Planned: choose organization/project and read-only capabilities, authorize the Entra principal or reference a narrowly scoped PAT, select known existing build report artifacts, and approve synthetic collection. Retain scope drafts but never credentials in the browser.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Azure DevOps adapter or authorized Services organization has been exercised. Server editions and live entitlement behavior are unverified." },
+          "verificationPlan": {
+            "environment": "Authorized Azure DevOps Services test project with synthetic repositories and pre-published report artifacts; no build triggering.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "pagination", "partial-response", "stale-source", "expired-token", "missing-artifact", "failed-build", "same-build-redownload", "read-only-target", "semantic-fields"]
+          },
+          "documentation": ["https://learn.microsoft.com/en-us/rest/api/azure/devops/build/artifacts/get?view=azure-devops-rest-7.1"]
+        }
+      ]
+    },
+    {
+      "id": "aws", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["cloud-inventory", "security-hub-intake"],
+      "profiles": [
+        {
+          "id": "aws-commercial-ec2-securityhub", "edition": "AWS commercial partition; selected account/regions with existing Security Hub CSPM findings",
+          "apiVersion": "EC2 2016-11-15; Security Hub CSPM GetFindings with ASFF 2018-10-08",
+          "authModes": ["sts-assume-role", "workload-identity"],
+          "requiredPermissions": [
+            "sts:AssumeRole for the one configured destination role, with constrained trust and external ID where appropriate.",
+            "ec2:DescribeInstances and ec2:DescribeRegions for scoped EC2 inventory; Describe calls that require Resource:* remain limited by account, region and role trust.",
+            "securityhub:GetFindings in each explicitly selected region; do not request write, standard-enablement or remediation permissions."
+          ],
+          "capabilities": { "cloud-inventory": "planned", "security-hub-intake": "planned" },
+          "unsupportedCapabilities": ["all-aws-resource-types", "govcloud", "china-partition", "enable-securityhub", "change-cloud-resources", "active-network-discovery"],
+          "fieldSupport": ["sourceId", "sourceScanAt", "collectedAt", "importedAt", "sourceSeverity", "sourceLocation", "scopeId", "completeness", "sourceFindingId", "impact", "remediation", "unmapped"],
+          "lifecyclePolicy": "Inventory coverage initially means EC2 instances, not all resources. Preserve ASFF ProductArn/Id/AwsAccountId/Region and provider timestamps with their semantics. UpdatedAt is not automatically a scan timestamp. Paginated GetFindings absence cannot independently close a finding.",
+          "setupRecipe": "Planned: choose accounts/regions and EC2 or Security Hub capability, review exact read permissions and existing service prerequisites, configure an assumed role reference, and approve a synthetic read-only verification. Missing regional coverage is shown explicitly.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No cloud collector or authorized synthetic AWS account/role run exists. A documented SDK/API shape is not cloud inventory verification." },
+          "verificationPlan": {
+            "environment": "Authorized dedicated commercial-partition test account with fixture inventory and pre-loaded synthetic ASFF findings in explicitly approved regions.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "pagination", "partial-response", "stale-source", "region-disabled", "assume-role-expiry", "shared-quota", "read-only-target", "semantic-fields"]
+          },
+          "documentation": ["https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html"]
+        }
+      ]
+    },
+    {
+      "id": "azure", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["cloud-inventory", "defender-for-cloud-intake"],
+      "profiles": [
+        {
+          "id": "azure-public-resourcegraph-assessments", "edition": "Azure public cloud; selected subscriptions with existing Defender for Cloud assessments",
+          "apiVersion": "Resource Graph 2022-10-01; Microsoft.Security assessments 2021-06-01",
+          "authModes": ["entra-workload-identity", "entra-service-principal-certificate-reference"],
+          "requiredPermissions": [
+            "Reader scoped to the selected subscriptions or resource groups for inventory, not tenant-wide Contributor.",
+            "Security Reader or a reviewed custom role containing Microsoft.Security/assessments/read for the same selected scopes.",
+            "Resource Graph query visibility remains bounded by the principal's underlying resource read permissions."
+          ],
+          "capabilities": { "cloud-inventory": "planned", "defender-for-cloud-intake": "planned" },
+          "unsupportedCapabilities": ["sovereign-clouds", "all-defender-paid-plans", "resource-mutation", "enable-defender", "active-network-discovery"],
+          "fieldSupport": ["sourceId", "sourceScanAt", "collectedAt", "importedAt", "sourceSeverity", "sourceLocation", "scopeId", "completeness", "sourceFindingId", "impact", "remediation", "unmapped"],
+          "lifecyclePolicy": "Key resource identity by tenant/subscription/full ARM ID, not hostname. Record assessment keys and source times only where provided. Missing subscription permissions or an unscanned asset is lost visibility, not a healthy or resolved assessment.",
+          "setupRecipe": "Planned: select tenant/subscriptions, show inventory versus security-read permissions and existing Defender prerequisites, reference workload identity or a protected certificate, choose assessment scope, and approve synthetic collection. Never enable a paid plan or replace a role assignment implicitly.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Azure collector or authorized test tenant has been exercised. Sovereign clouds, subscription policy and assessment availability remain outside any support claim." },
+          "verificationPlan": {
+            "environment": "Dedicated authorized Azure public-cloud tenant/subscription containing synthetic resources and approved synthetic assessment fixtures.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "pagination", "partial-response", "stale-source", "subscription-access-removed", "missing-assessment-time", "read-only-target", "semantic-fields"]
+          },
+          "documentation": [
+            "https://learn.microsoft.com/en-us/rest/api/azureresourcegraph/resourcegraph/resources/resources?view=rest-azureresourcegraph-resourcegraph-2022-10-01",
+            "https://learn.microsoft.com/en-us/rest/api/defenderforcloud/assessments/list?view=rest-defenderforcloud-2021-06-01"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jira", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["work-item-create", "work-item-update", "required-field-mapping", "status-linkage"],
+      "profiles": [
+        {
+          "id": "jira-cloud-v3", "edition": "Jira Cloud, selected company-managed project and issue type",
+          "apiVersion": "REST v3",
+          "authModes": ["oauth2-3lo"],
+          "requiredPermissions": [
+            "read:jira-work and write:jira-work OAuth scopes only for declared work-item operations.",
+            "Browse Projects, Create Issues and Edit Issues in the selected project; Transition Issues only for an explicitly approved status-linkage rule.",
+            "Read the selected project's required field and transition metadata; do not request site administrator access."
+          ],
+          "capabilities": { "work-item-create": "planned", "work-item-update": "planned", "required-field-mapping": "planned", "status-linkage": "planned" },
+          "unsupportedCapabilities": ["jira-data-center", "all-custom-field-plugins", "silent-ticket-creation", "automatic-verified-resolution"],
+          "setupRecipe": "Planned: choose project/issue type, authorize the limited OAuth app, load required fields, preview the template and outbound data, select an explicit status-linkage policy, then approve creation of a synthetic work item. Missing fields and lost acknowledgments stay visible.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Jira adapter or authorized synthetic project run exists. Work-item delivery and custom-field compatibility have not been demonstrated." },
+          "verificationPlan": {
+            "environment": "Authorized disposable Jira Cloud project with a synthetic issue type, required custom field and constrained workflow.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "required-field-mapping", "uncertain-delivery", "idempotent-retry", "transition-denied", "outbound-preview", "policy-changed", "no-passive-side-effects"]
+          },
+          "documentation": ["https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/"]
+        }
+      ]
+    },
+    {
+      "id": "teams", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["notifications", "deep-links"],
+      "profiles": [
+        {
+          "id": "teams-workflows-channel", "edition": "Microsoft Teams with Workflows enabled in an authorized Microsoft 365 tenant",
+          "apiVersion": "Teams Workflows webhook trigger and reviewed Adaptive Card payload v1.4; tenant-generated endpoint",
+          "deliveryProfile": "When a Teams webhook request is received -> post reviewed Adaptive Card to a configured standard channel",
+          "authModes": ["workflow-webhook-secret-reference"],
+          "requiredPermissions": [
+            "Operator permission to create/own the Workflow and post in the selected standard team channel, subject to tenant app policy.",
+            "Possession of the protected workflow endpoint for the explicitly selected trigger policy; no Graph tenant-wide message-read permission.",
+            "The operator must explicitly approve an externally callable trigger if that selected workflow route requires one; otherwise setup is blocked."
+          ],
+          "ownershipConstraints": [
+            "A Workflow is owned by users, not implicitly by the channel; configure a co-owner and monitor disabled/removed owners.",
+            "Freeze standard-channel delivery for the pilot; private/shared channels and chats need separate verified profiles.",
+            "Record the tenant policy and trigger authentication choice. A copied URL alone is not a permission or lifecycle check.",
+            "Legacy Office 365 connector webhooks are not the selected baseline; do not silently fall back to a legacy route."
+          ],
+          "capabilities": { "notifications": "planned", "deep-links": "planned" },
+          "unsupportedCapabilities": ["legacy-office365-connectors", "private-channels", "shared-channels", "chats", "interactive-remediation-actions", "arbitrary-workflow-execution"],
+          "setupRecipe": "Planned: choose the standard channel, review Workflow availability and trigger authentication, establish operator/co-owner continuity, store the endpoint as a secret reference and preview a minimal synthetic card/deep link. Send only after approval and distinguish accepted webhook delivery from confirmed channel delivery.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Teams adapter or authorized tenant/workflow/channel has been exercised. Ownership continuity, trigger policy and actual delivery must be verified before this is ready." },
+          "verificationPlan": {
+            "environment": "Authorized Microsoft 365 test tenant with Workflows allowed, a synthetic standard channel and named owner/co-owner.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "owner-removed", "workflow-disabled", "channel-access-removed", "payload-rejected", "uncertain-delivery", "deep-link-authorization", "no-passive-side-effects"]
+          },
+          "documentation": ["https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook"]
+        }
+      ]
+    },
+    {
+      "id": "slack", "kind": "native", "requiredFor": "R1", "requiredAtInstall": false,
+      "capabilities": ["notifications", "deep-links"],
+      "profiles": [
+        {
+          "id": "slack-workspace-bot", "edition": "Slack workspace app installed to selected channels",
+          "apiVersion": "Slack Web API: chat.postMessage; Block Kit payload schema",
+          "authModes": ["oauth-v2-bot"],
+          "requiredPermissions": [
+            "chat:write for the installed bot and explicit invitation to each selected channel.",
+            "Optional channels:read only if the operator enables the public-channel picker; otherwise select a known channel ID.",
+            "No history, user-token or chat:write.public scope is required by the baseline."
+          ],
+          "capabilities": { "notifications": "planned", "deep-links": "planned" },
+          "unsupportedCapabilities": ["all-workspaces-by-default", "private-channel-discovery", "read-channel-history", "interactive-remediation-actions"],
+          "setupRecipe": "Planned: authorize the workspace app, invite the bot to a selected channel, preview the scoped notification and permission-checked aspm deep link, then approve synthetic delivery. Store tokens only in backend protected references and expose revocation or channel removal.",
+          "implementationStatus": "not-implemented", "supportMaturity": "planned", "readyToConnect": false,
+          "liveVerification": { "state": "not-run", "reason": "No Slack adapter or authorized workspace app delivery run exists. OAuth, rate handling and receipt reconciliation remain unverified." },
+          "verificationPlan": {
+            "environment": "Authorized Slack test workspace with an approved bot and a dedicated synthetic notification channel.",
+            "data": "synthetic", "requiresAuthorization": true,
+            "cases": ["authentication", "permission-gap", "rate-limit", "retry", "cancellation", "token-revoked", "not-in-channel", "channel-archived", "uncertain-delivery", "idempotent-retry", "deep-link-authorization", "no-passive-side-effects"]
+          },
+          "documentation": ["https://docs.slack.dev/reference/methods/chat.postMessage/"]
+        }
+      ]
+    }
+  ],
+  "reportIntake": [
+    { "id": "sarif", "kind": "report-importer", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "SARIF 2.1.0; first M05 adapter", "readyToConnect": false },
+    { "id": "trivy", "kind": "report-importer", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "Trivy JSON SchemaVersion 2; producer version must be pinned with M07 fixtures", "readyToConnect": false },
+    { "id": "zap", "kind": "report-importer", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "ZAP traditional JSON/XML report; report add-on/producer versions require M07 fixtures", "readyToConnect": false },
+    { "id": "gitleaks", "kind": "report-importer", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "Gitleaks JSON; producer version pinned by M07, only redacted synthetic secret findings in tests", "readyToConnect": false },
+    { "id": "generic-json", "kind": "report-importer", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "Reviewed versioned declarative field mapping, no uploaded executable scripts", "readyToConnect": false },
+    { "id": "generic-csv", "kind": "report-importer", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "Reviewed column mapping, explicit encoding and delimiter, safe exports", "readyToConnect": false },
+    { "id": "manual", "kind": "manual-intake", "countsAsNativeLaunchFamily": false, "implementationStatus": "not-implemented", "supportMaturity": "planned", "formatBaseline": "Structured or free-text intake through the same observation/evidence contract", "readyToConnect": false }
+  ],
+  "promotionPolicy": {
+    "required": ["implemented-adapter", "guided-setup", "declared-field-lifecycle-support", "deterministic-conformance-evidence", "authorized-live-endpoint-evidence", "independent-provenance-review"],
+    "liveEvidenceFields": ["subject", "state", "method", "authorized", "data", "checkedAt", "evidenceRef"],
+    "description": "No promotion from mock success. Evidence is repository-relative, timestamped, redacted and specific to the exact family/profile/API/edition. R1 remains blocked until all eight families have verified profiles."
+  }
+}

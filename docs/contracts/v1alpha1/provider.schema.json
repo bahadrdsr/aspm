@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aspm.invalid/schemas/v1alpha1/provider.schema.json",
+  "title": "aspm optional provider profile",
+  "description": "M00 structural contract. Credentials, model identity, capability conformance, egress enforcement and approvals require separate runtime validation. No catalog entry implies a usable provider.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "id", "family", "endpoint", "protocol", "model", "modelIdentityStatus", "auth", "policy", "requestedCapabilities", "limits", "retention"],
+  "properties": {
+    "apiVersion": { "const": "aspm/v1alpha1" },
+    "kind": { "const": "ProviderProfile" },
+    "id": { "$ref": "#/$defs/name" },
+    "family": { "enum": ["openai", "azure-foundry", "anthropic", "local"] },
+    "endpoint": { "$ref": "#/$defs/endpoint" },
+    "protocol": { "enum": ["openai-v1", "anthropic-messages", "ollama", "openai-compatible"] },
+    "model": { "$ref": "#/$defs/name" },
+    "modelIdentityStatus": { "enum": ["unresolved-alias", "resolved"] },
+    "resolvedModelIdentity": { "$ref": "#/$defs/name" },
+    "deployment": { "$ref": "#/$defs/name" },
+    "auth": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "secretRef"],
+          "properties": { "mode": { "const": "secret-reference" }, "secretRef": { "$ref": "#/$defs/secretReference" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "identityRef"],
+          "properties": { "mode": { "const": "workload-identity" }, "identityRef": { "$ref": "#/$defs/name" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode"],
+          "properties": { "mode": { "const": "none" } }
+        }
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "workspaceIds", "tasks", "allowedDataClasses", "allowedDestinations", "fallbackProfileIds"],
+      "properties": {
+        "mode": { "enum": ["local-only", "approved-hosted"] },
+        "workspaceIds": { "$ref": "#/$defs/nonemptyNames" },
+        "tasks": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "enum": ["extraction", "assessment", "duplicate-suggestions", "remediation-assistance", "proof-planning"] }
+        },
+        "allowedDataClasses": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "enum": ["synthetic", "asset-metadata", "findings", "evidence", "source-code", "approved-document"] }
+        },
+        "allowedDestinations": { "type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": { "$ref": "#/$defs/endpoint" } },
+        "fallbackProfileIds": { "type": "array", "uniqueItems": true, "maxItems": 16, "items": { "$ref": "#/$defs/name" } },
+        "approvalRef": { "$ref": "#/$defs/name" },
+        "egressPolicy": { "const": "deny-hosted" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "approved-hosted" } }, "required": ["mode"] },
+          "then": { "required": ["approvalRef"], "not": { "required": ["egressPolicy"] } },
+          "else": { "required": ["egressPolicy"], "not": { "required": ["approvalRef"] } }
+        }
+      ]
+    },
+    "requestedCapabilities": {
+      "type": "array", "uniqueItems": true,
+      "items": { "enum": ["structured-output", "tools", "streaming", "usage", "cancellation", "vision", "documents"] }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inputTokens", "outputTokens", "concurrency", "requestsPerMinute", "tokensPerMinute", "timeoutSeconds", "maxAttempts"],
+      "properties": {
+        "inputTokens": { "type": "integer", "minimum": 1, "maximum": 2000000 },
+        "outputTokens": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "concurrency": { "type": "integer", "minimum": 1, "maximum": 256 },
+        "requestsPerMinute": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "tokensPerMinute": { "type": "integer", "minimum": 1, "maximum": 1000000000 },
+        "timeoutSeconds": { "type": "integer", "minimum": 1, "maximum": 300 },
+        "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 10 }
+      },
+      "description": "Explicit administrative bounds, not provider capability or quota claims. Count SDK retries within maxAttempts, coordinate shared quota scopes and apply an overall deadline."
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["localPromptDays", "localResultDays", "providerPolicyStatus"],
+      "properties": {
+        "localPromptDays": { "type": "integer", "minimum": 0, "maximum": 3650 },
+        "localResultDays": { "type": "integer", "minimum": 0, "maximum": 3650 },
+        "providerPolicyStatus": { "enum": ["not-reviewed", "requested-not-confirmed", "confirmed", "not-applicable"] },
+        "providerPolicyEvidenceRef": { "$ref": "#/$defs/name" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "providerPolicyStatus": { "const": "confirmed" } }, "required": ["providerPolicyStatus"] },
+          "then": { "required": ["providerPolicyEvidenceRef"] }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "family": { "const": "local" } }, "required": ["family"] },
+      "then": {
+        "properties": {
+          "protocol": { "enum": ["ollama", "openai-compatible"] },
+          "auth": { "properties": { "mode": { "enum": ["none", "secret-reference"] } } },
+          "policy": { "properties": { "mode": { "const": "local-only" } } }
+        }
+      },
+      "else": {
+        "properties": {
+          "endpoint": { "pattern": "^https://" },
+          "auth": { "properties": { "mode": { "enum": ["secret-reference", "workload-identity"] } } },
+          "policy": {
+            "properties": {
+              "mode": { "const": "approved-hosted" },
+              "allowedDestinations": { "items": { "pattern": "^https://" } }
+            }
+          },
+          "retention": { "properties": { "providerPolicyStatus": { "not": { "const": "not-applicable" } } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "family": { "enum": ["openai", "azure-foundry"] } }, "required": ["family"] },
+      "then": { "properties": { "protocol": { "const": "openai-v1" } } }
+    },
+    {
+      "if": { "properties": { "family": { "const": "anthropic" } }, "required": ["family"] },
+      "then": { "properties": { "protocol": { "const": "anthropic-messages" } } }
+    },
+    {
+      "if": { "properties": { "family": { "const": "azure-foundry" } }, "required": ["family"] },
+      "then": { "required": ["deployment"] },
+      "else": {
+        "not": { "required": ["deployment"] },
+        "properties": { "auth": { "properties": { "mode": { "not": { "const": "workload-identity" } } } } }
+      }
+    },
+    {
+      "if": { "properties": { "modelIdentityStatus": { "const": "resolved" } }, "required": ["modelIdentityStatus"] },
+      "then": { "required": ["resolvedModelIdentity"] },
+      "else": { "not": { "required": ["resolvedModelIdentity"] } }
+    }
+  ],
+  "$defs": {
+    "name": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "^\\S(?:.*\\S)?$" },
+    "kubernetesDNSSubdomain": {
+      "type": "string", "minLength": 1, "maxLength": 253,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+      "description": "Kubernetes resource-name DNS subdomain. Namespace labels and Secret data keys retain their separate constraints."
+    },
+    "endpoint": { "type": "string", "format": "uri", "pattern": "^https?://[^/?#@\\s]+(/[^?#\\s]*)?$" },
+    "nonemptyNames": { "type": "array", "minItems": 1, "maxItems": 10000, "uniqueItems": true, "items": { "$ref": "#/$defs/name" } },
+    "secretReference": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "name"],
+          "properties": { "kind": { "enum": ["generated", "file"] }, "name": { "$ref": "#/$defs/name" } }
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "name"],
+          "properties": {
+            "kind": { "const": "environment" },
+            "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$", "maxLength": 256 }
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false, "required": ["kind", "name"],
+          "properties": {
+            "kind": { "const": "kubernetes-secret" },
+            "name": { "$ref": "#/$defs/kubernetesDNSSubdomain" },
+            "namespace": { "type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", "maxLength": 63 },
+            "key": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 253 }
+          }
+        }
+      ]
+    }
+  },
+  "x-semanticValidation": [
+    "Resolve endpoint against the exact allowed destination and workspace/task/data policy; validate redirects and network egress separately. A local URL is not proof of local processing.",
+    "Resolve approval and fallback references, reject missing or cyclic references and policy/capability violations, and audit each explicit fallback.",
+    "Snapshot profile, evidence, prompt and policy revisions per job. Record returned model/deployment identity without upgrading an unresolved alias on guesswork.",
+    "Confirm provider-side retention against reviewable account/deployment policy evidence, separately from local prompt/result expiry.",
+    "Shared quotas are keyed to actual provider account/project/model-class/region/deployment scope, not only an API key.",
+    "Requested capabilities must fail visibly if unknown or unsupported; model tool suggestions never authorize execution."
+  ]
+}

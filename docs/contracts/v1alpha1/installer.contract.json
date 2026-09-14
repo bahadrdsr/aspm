@@ -1,0 +1,169 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "InstallerContract",
+  "status": "contract-only",
+  "cliName": "aspmctl",
+  "implemented": false,
+  "wizard": [
+    {
+      "id": "destination", "label": "1. Destination",
+      "questions": [
+        { "field": "target.kind", "target": "any", "condition": "always" },
+        { "field": "target.host", "target": "linux", "condition": "cannot-infer" },
+        { "field": "target.context", "target": "kubernetes", "condition": "cannot-infer" },
+        { "field": "target.namespace", "target": "kubernetes", "condition": "cannot-infer" }
+      ],
+      "behavior": "Show the inspected host or cluster identity even when inferred. Never silently select a different context."
+    },
+    {
+      "id": "access-bootstrap", "label": "2. Access and enrollment",
+      "questions": [
+        { "field": "access.baseURL", "target": "any", "condition": "cannot-infer" },
+        { "field": "access.exposure", "target": "any", "condition": "cannot-infer" },
+        { "field": "bootstrap.method", "target": "any", "condition": "prerequisite" }
+      ],
+      "behavior": "Offer private or loopback HTTPS with an internal CA and one-time protected enrollment. Collect only a missing necessary input, explain trust enrollment and never generate a shared default password."
+    },
+    {
+      "id": "review-install", "label": "3. Review and install",
+      "questions": [
+        { "field": "approval.planDigest", "target": "any", "condition": "always" }
+      ],
+      "behavior": "Show target, pinned release, resource changes, privileges, access, persistent volumes and approved outbound artifact destinations. Approval applies only to that immutable plan."
+    }
+  ],
+  "advancedBranches": [
+    {
+      "id": "external-storage",
+      "triggers": ["explicit-request", "missing-prerequisite"],
+      "fields": ["postgres.mode", "postgres.endpoint", "postgres.tlsMode", "postgres.credentialRef", "objectStore.mode", "objectStore.endpoint", "objectStore.bucket", "objectStore.credentialRef"],
+      "explanationRequired": true, "preserveAnswers": true,
+      "explanation": "Use an operator-owned compatible service only by choice. Verify trust, scoped access, persistence and shared-worker access before approval; do not discover and adopt unrelated resources."
+    },
+    {
+      "id": "kubernetes-prerequisites",
+      "triggers": ["explicit-request", "missing-prerequisite"],
+      "fields": ["target.namespace", "target.storageClass", "target.ingressClass"],
+      "explanationRequired": true, "preserveAnswers": true,
+      "explanation": "Request only the missing namespace permissions, usable storage class or explicit existing ingress. Never replace cluster networking or silently choose a different cluster."
+    },
+    {
+      "id": "custom-access",
+      "triggers": ["explicit-request", "missing-prerequisite"],
+      "fields": ["access.baseURL", "access.exposure", "access.publicExposureApproved", "access.tlsMode", "access.certificateRef", "access.privateKeyRef"],
+      "explanationRequired": true, "preserveAnswers": true,
+      "explanation": "Show DNS, certificate trust and exposure implications. Public access requires separate explicit approval and authenticated bootstrap; automatic public ACME is not a default."
+    },
+    {
+      "id": "offline-artifacts",
+      "triggers": ["explicit-request", "missing-prerequisite"],
+      "fields": ["artifacts.mode", "artifacts.bundleRef", "artifacts.mirrorURL", "artifacts.credentialRef"],
+      "explanationRequired": true, "preserveAnswers": true,
+      "explanation": "Resolve a signed local bundle or approved private mirror. Do not downgrade verification on a failed download. Offline support is not claimed before the disconnected release gate."
+    },
+    {
+      "id": "sizing-retention",
+      "triggers": ["explicit-request", "missing-prerequisite"],
+      "fields": ["services", "databaseConnectionBudget", "retentionProfile"],
+      "explanationRequired": true, "preserveAnswers": true,
+      "explanation": "Validate aggregate connections, resource reservations, storage headroom and retention before scaling. Capacity profiles are hypotheses, not guaranteed sizing."
+    },
+    {
+      "id": "advanced-automation",
+      "triggers": ["explicit-request"],
+      "fields": ["resolved-configuration", "secret-references"],
+      "explanationRequired": true, "preserveAnswers": true,
+      "explanation": "Accept the complete versioned configuration through the same resolver, schema validator, semantic preflight and approval engine as the wizard."
+    }
+  ],
+  "unattended": {
+    "configFlag": "--config",
+    "approvalFlag": "--approve-plan",
+    "approvalBindsTo": ["config-digest", "artifact-digests", "target-identity"],
+    "sameResolvedConfiguration": true,
+    "rejectMissingRequired": true,
+    "approvalBeforeMutation": true,
+    "exportResolvedConfiguration": true,
+    "approvalValue": "SHA-256 digest of the complete redacted plan with canonical resolved configuration, signed artifact digests and verified target identity. It is not a boolean --yes.",
+    "approvalInvalidation": ["config-change", "artifact-change", "target-change", "resource-ownership-change", "expired-preflight"],
+    "exportPolicy": "Export reference names and deliberate choices, never resolved secret values. Use restrictive permissions and atomic replacement. Do not overwrite an existing configuration without a reviewed change."
+  },
+  "secretInputChannels": ["protected-prompt", "secret-reference"],
+  "secretReferencePolicy": {
+    "inlineValues": false,
+    "logsAndExportsRedacted": true,
+    "generatedOncePerOwnedPurpose": true,
+    "reapplyRotatesSecrets": false,
+    "namespaceAndKeyAuthorizationRequired": true,
+    "fileOwnerAndModeChecked": true,
+    "kubernetesBase64IsEncryption": false,
+    "details": "Resolve references just in time into protected service inputs; ordinary argv, browser storage and source files never contain values. Existing references are not permission to rotate or delete the referenced secret."
+  },
+  "safetyRules": [
+    "redact-secrets", "no-default-password", "no-secrets-in-argv", "resume-verified-steps",
+    "preserve-data-on-uninstall", "target-specific-destructive-approval", "no-silent-elevation",
+    "no-unrelated-resource-adoption", "no-cluster-wide-service-replacement", "no-model-controlled-commands",
+    "reapply-preserves-intent", "validate-shared-budgets-before-scaling", "cross-service-readiness",
+    "stop-dependent-work-on-failure", "migration-lock", "backup-before-incompatible-change",
+    "binary-downgrade-is-not-database-rollback", "no-implicit-hosted-fallback"
+  ],
+  "notRequiredAtInstall": ["source-accounts", "hosted-ai", "sso", "github", "proprietary-ci", "docker-desktop", "maintainer-registry", "proof-credentials"],
+  "internalStages": [
+    "resolve-and-validate", "verify-target-identity", "prerequisites-and-budgets", "render-redacted-plan",
+    "obtain-bound-approval", "apply-owned-iac-and-record-checkpoints", "locked-migration",
+    "one-time-enrollment", "cross-service-readiness", "report-version-access-and-incomplete-work"
+  ],
+  "semanticPreflight": [
+    "Resolve every secret/profile/retention reference without leaking values; reject incompatible fallback graphs.",
+    "Sum all service replicas times their pool caps plus rollout overlap and reserved maintenance. Reject totals exceeding configured max or the actual server allowance.",
+    "Validate stable resource ownership IDs and data volumes; never use generated random replacement volumes on reapply.",
+    "Check approved target, TLS trust, ports, namespace permissions, database compatibility and private shared S3 access from every enabled worker role.",
+    "Apply least-privilege database roles and separate scoped S3 credentials derived from protected installer-owned roots. Application services never use database superuser credentials.",
+    "Verify signed release and platform image digests against an operator-trusted key; list artifact retrieval destinations before access.",
+    "Validate read/write/checksum/delete on an isolated synthetic readiness object and a fenced cross-service job round trip, not only HTTP 200.",
+    "Reject unsupported configuration or missing prerequisites with a resumable explanation. A schema-valid document is not a ready installation."
+  ],
+  "targetMatrix": [
+    {
+      "id": "linux", "platform": "Ubuntu Server LTS with Podman Quadlet",
+      "referenceProfile": "ubuntu-24.04.5-kvm-libvirt-small",
+      "versions": ["24.04.5"], "architectures": ["amd64"],
+      "prerequisites": ["systemd", "cgroup-v2", "podman", "existing-host", "persistent-storage", "approved-host-privileges", "private-network", "tls-trust"],
+      "validationState": "not-run",
+      "validationReason": "M00 defines a candidate profile only. No Quadlet/Ansible application deployment or Linux restore test has run. Exact host-package lock belongs to the M01 lab before M02 deployment verification.",
+      "readyForProduction": false,
+      "validationPlan": ["fresh-install", "reapply-no-secret-rotation", "interrupted-resume", "data-preserving-uninstall", "backup-restore", "independent-worker-restart", "storage-interface-isolation"]
+    },
+    {
+      "id": "kubernetes", "platform": "Upstream Kubernetes with an owned Helm chart",
+      "referenceProfile": "k3s-on-kvm-libvirt-with-explicit-ingress-and-csi",
+      "versions": ["1.35.8", "1.36.4"], "architectures": ["amd64"],
+      "prerequisites": ["existing-context", "persistent-storage", "explicit-ingress", "namespace-permissions", "network-policy-enforcement", "tls-trust"],
+      "validationState": "not-run",
+      "validationReason": "Candidate Kubernetes versions, not an exercised support range. Helm, K3s image/package locks, CSI/ingress compatibility, cross-node access and restore evidence remain required.",
+      "readyForProduction": false,
+      "validationPlan": ["fresh-namespace", "restricted-rbac", "no-default-storage-class", "reapply-preserves-pvcs", "cross-node-worker-read", "network-isolation", "upgrade-restore"]
+    }
+  ],
+  "storageProfile": {
+    "communityOnly": true,
+    "managedSeaweedFSInvocation": ["mini", "-master.telemetry=false", "-admin.ui=false", "-webdav=false", "-s3.port.iceberg=0", "-s3.port.lance=0"],
+    "invocationIsCompleteDeployment": false,
+    "requiredAdditionalControls": ["persistent-data-mount", "protected-s3-auth-config", "private-application-s3-only", "unpublished-admin-master-filer-volume-and-grpc", "deny-unapproved-egress", "backup-and-restore"],
+    "validationState": "not-run",
+    "description": "Flags freeze explicit upstream overrides but do not establish runtime isolation or production suitability of the mini profile. The coordinator's local image selection is not a storage conformance result."
+  },
+  "readinessStates": ["not-started", "preflighting", "awaiting-approval", "applying", "checking", "ready", "incomplete", "failed"],
+  "readinessPolicy": "No elapsed-time percentage or health-shaped substitute. Show completed stages, observed counters, pending checks and the failing dependency. Never advance stalled work to ready.",
+  "supportBoundary": {
+    "highAvailability": false, "disconnectedInstallVerified": false, "windowsProduction": false,
+    "existingHostOrClusterRequired": true,
+    "description": "The small profile has single-instance stateful services. Extra processes on a host isolate workloads but add no physical capacity; replicas on Kubernetes do not alone provide stateful HA."
+  },
+  "sourceReferences": [
+    "https://releases.ubuntu.com/24.04/",
+    "https://kubernetes.io/releases/",
+    "https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html",
+    "https://raw.githubusercontent.com/seaweedfs/seaweedfs/4.47/weed/command/mini.go"
+  ]
+}

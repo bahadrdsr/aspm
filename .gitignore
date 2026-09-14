@@ -1,0 +1,8 @@
+.cache
+node_modules
+web/dist
+web/.artifacts
+web/playwright-report
+web/test-results
+web/.env*
+!web/.env.example

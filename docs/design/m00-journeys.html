@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>aspm M00 journey storyboard</title>
+  <style>
+    :root {
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #1d4ed8;
+      --accent-text: #ffffff;
+      --border: #64748b;
+      --micro: 100ms;
+      font: 100%/1.55 system-ui, sans-serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--background); color: var(--text); }
+    a { color: var(--accent); text-underline-offset: .2em; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .skip-link { position: absolute; top: -6rem; left: 1rem; padding: 1rem; background: var(--surface); }
+    .skip-link:focus { top: 1rem; z-index: 2; }
+    main { max-width: 1240px; margin: auto; padding: 32px 24px 64px; }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; }
+    h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 12px; }
+    h2 { margin-top: 48px; font-size: 1.5rem; }
+    h3 { margin: 0 0 16px; font-size: 1.15rem; }
+    h4 { margin: 0 0 8px; font-size: 1rem; }
+    p { max-width: 78ch; margin: 0 0 16px; }
+    .muted { color: var(--muted); }
+    .eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .notice { border-left: 4px solid var(--accent); padding: 16px; background: var(--surface); }
+    .jump, .app-nav, .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .jump a, .app-nav span { padding: 10px 12px; border-radius: 8px; }
+    .jump a:hover { background: var(--surface); }
+    .frame { margin-top: 16px; padding: 24px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .split { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; }
+    .card { padding: 16px; border: 1px solid var(--border); border-radius: 8px; min-width: 0; }
+    .tag { display: inline-block; font-size: .8rem; font-weight: 650; border: 1px solid currentColor; border-radius: 6px; padding: 2px 8px; margin-bottom: 8px; }
+    .step { display: inline-grid; place-items: center; width: 32px; height: 32px; margin-right: 8px; border-radius: 50%; background: var(--accent); color: var(--accent-text); font-weight: 700; }
+    .field { display: grid; gap: 4px; margin-bottom: 12px; }
+    .field dt { font-size: .8rem; font-weight: 650; color: var(--muted); }
+    .field dd { margin: 0; overflow-wrap: anywhere; }
+    code, pre { font-family: ui-monospace, monospace; font-size: .9em; overflow-wrap: anywhere; }
+    pre { white-space: pre-wrap; margin: 12px 0; padding: 12px; background: var(--background); border-radius: 8px; }
+    button, summary { min-height: 44px; font: inherit; border-radius: 8px; }
+    button { padding: 8px 16px; border: 1px solid var(--border); background: var(--background); color: var(--text); }
+    button:disabled { cursor: not-allowed; }
+    .primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    summary { cursor: pointer; padding: 12px; transition: background-color var(--micro); }
+    summary:hover { background: var(--background); }
+    details { border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; }
+    details > div { padding: 0 16px 16px; }
+    .app-nav { border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 24px; }
+    .app-nav .selected { background: var(--accent); color: var(--accent-text); font-weight: 650; }
+    .row { display: grid; grid-template-columns: minmax(0, 2fr) 1fr 1fr; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .row:last-child { border-bottom: 0; }
+    .theme-dark {
+      --background: #0f172a; --surface: #172033; --text: #f8fafc;
+      --muted: #cbd5e1; --accent: #93c5fd; --accent-text: #0f172a; --border: #94a3b8;
+      color-scheme: dark;
+    }
+    .theme-light {
+      --background: #f8fafc; --surface: #ffffff; --text: #0f172a;
+      --muted: #475569; --accent: #1d4ed8; --accent-text: #ffffff; --border: #64748b;
+      color-scheme: light;
+    }
+    .theme-dark .muted { color: var(--muted); }
+    .state-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .state-gallery .frame { margin: 0; }
+    li { margin-bottom: 8px; }
+    footer { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 24px; }
+    @media (max-width: 850px) {
+      .grid, .split, .state-gallery { grid-template-columns: 1fr; }
+      main { padding: 24px 16px 48px; }
+      .frame { padding: 16px; }
+    }
+    @media (max-width: 460px) {
+      .row { grid-template-columns: 1fr; gap: 4px; }
+      .app-nav span { padding: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#journeys">Skip to journey references</a>
+  <main id="journeys">
+    <header>
+      <p class="eyebrow">aspm / M00 / September 14, 2026</p>
+      <h1>From first install to useful evidence.</h1>
+      <p class="muted">Original static storyboard with synthetic content. No API, network calls, credentials, installed component libraries or mutations. Disabled controls show proposed actions, not working product features.</p>
+      <p class="notice"><strong>Pending independent design review.</strong> The direction is React/Vite, shadcn/ui, Animate UI, Motion and Radix. Animate UI candidate <code>38b917762e3b6059c06a7af703071ba11a89091e</code> has a verified MIT root license; selected files and dependencies still need M01 review. Current main and its registry remain unapproved; this page copies none of its code. This is not a rendered-library, accessibility or performance pass.</p>
+      <nav class="jump" aria-label="Storyboard sections">
+        <a href="#install">Install</a><a href="#source">Connect a source</a><a href="#work">Inspect evidence</a><a href="#action">Preview an action</a><a href="#states">State references</a>
+      </nav>
+    </header>
+
+    <section id="install" aria-labelledby="install-title">
+      <h2 id="install-title">01 / Three short install stages</h2>
+      <p class="muted">Terminal journey expressed as cards for review. Inferred values are shown for confirmation; only missing necessary inputs become prompts.</p>
+      <div class="grid">
+        <article class="frame theme-light">
+          <h3><span class="step">1</span>Destination</h3>
+          <dl>
+            <div class="field"><dt>Target</dt><dd>Linux host (synthetic reference)</dd></div>
+            <div class="field"><dt>Detected host</dt><dd><code>localhost</code></dd></div>
+            <div class="field"><dt>Data ownership</dt><dd>New aspm-owned persistent volumes</dd></div>
+          </dl>
+          <p class="muted">Kubernetes asks for context/namespace only when they cannot be safely inferred. No unrelated host or cluster is adopted.</p>
+        </article>
+        <article class="frame theme-light">
+          <h3><span class="step">2</span>Access &amp; enrollment</h3>
+          <dl>
+            <div class="field"><dt>Access</dt><dd>Loopback HTTPS, internal CA</dd></div>
+            <div class="field"><dt>Administrator</dt><dd>Protected one-time enrollment</dd></div>
+            <div class="field"><dt>Storage</dt><dd>Managed PostgreSQL and shared private S3</dd></div>
+          </dl>
+          <p class="muted">No source tokens, AI, SSO or performance tuning on the common path. AI and controlled proof start disabled.</p>
+        </article>
+        <article class="frame theme-light">
+          <h3><span class="step">3</span>Review &amp; install</h3>
+          <p>Review target, resource ownership, required privileges, TLS trust, pinned artifacts and outbound retrieval before mutation.</p>
+          <p class="tag">Approval bound to the exact plan</p>
+          <p class="muted">Persistent data is retained on reapply and uninstall. An interrupted step can resume only after verifying its checkpoint.</p>
+          <button class="primary" type="button" disabled>Approve plan (not implemented)</button>
+        </article>
+      </div>
+      <details>
+        <summary>Advanced fixture: Kubernetes has no usable storage class</summary>
+        <div>
+          <p><strong>Only the missing prerequisite appears.</strong> Keep the selected context and access answers. Explain the missing persistent storage class and required namespace permissions.</p>
+          <p>Ask for <code>target.storageClass</code>, then revalidate. Do not install a cluster-wide replacement or silently use ephemeral evidence storage. Custom TLS, external storage, offline artifacts and sizing remain separate explicit branches.</p>
+        </div>
+      </details>
+    </section>
+
+    <section id="source" aria-labelledby="source-title">
+      <h2 id="source-title">02 / First source, honest coverage</h2>
+      <article class="frame theme-light split">
+        <div>
+          <p class="tag">GitHub profile: planned, not ready</p>
+          <h3>Repository inventory &amp; code-scanning intake</h3>
+          <p>Choose capabilities, review read-only permissions, authorize selected repositories and verify a synthetic scope. Preserve the non-secret draft across external consent.</p>
+          <ol>
+            <li>Inspect GitHub.com edition and private-repository entitlement.</li>
+            <li>Authorize a scoped App installation, outside this storyboard.</li>
+            <li>Select repositories, refs and tool scope.</li>
+            <li>Approve synthetic verification and inspect each health dimension.</li>
+          </ol>
+        </div>
+        <aside class="card" aria-label="Synthetic permission-gap state">
+          <p class="eyebrow">Example failure state, not a live result</p>
+          <h4>Repository read permitted; alerts unavailable</h4>
+          <p>Code-scanning read permission or feature access is missing for the selected scope. Inventory access must not make finding coverage green.</p>
+          <dl>
+            <div class="field"><dt>Source scan time</dt><dd>Unknown</dd></div>
+            <div class="field"><dt>Next action</dt><dd>Review the exact permission/entitlement gap, retain draft, then retry the approved check.</dd></div>
+          </dl>
+          <button type="button" disabled>Review permissions (not implemented)</button>
+        </aside>
+      </article>
+    </section>
+
+    <section id="work" aria-labelledby="work-title">
+      <h2 id="work-title">03 / Work queue to evidence, in context</h2>
+      <article class="frame theme-light">
+        <div class="app-nav" aria-label="Proposed primary navigation">
+          <span class="selected">Work</span><span>Assets</span><span>Integrations</span><span>Reports</span><span>Settings</span>
+        </div>
+        <div class="split">
+          <div>
+            <p class="eyebrow">Synthetic workspace / Application sample</p>
+            <h3>Assigned &amp; changed</h3>
+            <p class="muted">A saved view, compact filters and explicit ownership. This storyboard has only three rows; the proposed 10,000-row workload is not loaded or benchmarked.</p>
+            <div class="row"><strong>Synthetic configuration concern</strong><span>Owner: App team</span><span>Workflow: Open</span></div>
+            <div class="row"><strong>Synthetic dependency review</strong><span>Owner: Platform</span><span>Workflow: In progress</span></div>
+            <div class="row"><strong>Synthetic stale source</strong><span>Owner: Unassigned</span><span>Coverage: Unknown</span></div>
+            <details>
+              <summary>Inspect synthetic configuration evidence</summary>
+              <div>
+                <p><strong>Original source severity: High.</strong> Normalized severity: Medium. Accepted risk is a separate human decision; it does not prove a fix.</p>
+                <dl>
+                  <div class="field"><dt>Source scan</dt><dd><time datetime="2026-09-01T09:00:00Z">September 1, 2026 at 09:00 UTC</time></dd></div>
+                  <div class="field"><dt>Collected / imported</dt><dd>September 1, 2026 at 10:00 / 10:01 UTC</dd></div>
+                  <div class="field"><dt>Source location</dt><dd><code>synthetic-component:42</code></dd></div>
+                  <div class="field"><dt>Original evidence</dt><dd>Available synthetic fixture, SHA-256 retained in the lifecycle contract</dd></div>
+                </dl>
+                <pre>Synthetic confidentiality concern in a controlled fixture.
+Remediation: Review the synthetic configuration and record a scoped retest.
+Unmapped vendor note: Preserve this unmapped synthetic note.</pre>
+                <p class="muted">This disclosure is native HTML for a one-activation review. The proposed product panel must also restore list filters, sort, scroll, selection and focus; its direct-link and small-screen equivalent require real UI tests.</p>
+              </div>
+            </details>
+          </div>
+          <aside class="card" aria-label="Finding action contract">
+            <h4>One useful next action</h4>
+            <p>Owner, reason for priority, source freshness and evidence first. Advanced variant/run records stay available through deliberate disclosure.</p>
+            <div class="actions">
+              <button type="button" disabled>Assign to me</button><button type="button" disabled>Copy context</button>
+            </div>
+            <p class="muted">Actions are not implemented here. The real UI must report confirmed assignment/undo eligibility and actual clipboard success or failure.</p>
+            <p class="tag">Proof: Not run</p>
+            <p>Hover, prefetch and opening details never send to AI, create work items or execute verification.</p>
+          </aside>
+        </div>
+      </article>
+    </section>
+
+    <section id="action" aria-labelledby="action-title">
+      <h2 id="action-title">04 / Preview scope before an external action</h2>
+      <article class="frame theme-dark split">
+        <div>
+          <p class="tag">Dark-theme reference / synthetic data</p>
+          <h3>Create a Jira work item</h3>
+          <dl>
+            <div class="field"><dt>Selected scope</dt><dd>3 explicit findings on this page, not all matching records</dd></div>
+            <div class="field"><dt>Destination</dt><dd>Synthetic Jira project and configured issue type</dd></div>
+            <div class="field"><dt>Outbound context</dt><dd>Approved summary, owner, source references and verification status; no credentials</dd></div>
+            <div class="field"><dt>Required fields</dt><dd>Show missing mappings before requesting confirmation</dd></div>
+          </dl>
+          <button class="primary" type="button" disabled>Confirm creation (not implemented)</button>
+        </div>
+        <aside class="card" aria-label="Uncertain-delivery reference">
+          <h4>Lost acknowledgment is not confirmed success</h4>
+          <p>A real action might be queued, confirmed, failed or uncertain. An uncertain receipt must be reconciled before a retry can create another remote item.</p>
+          <p class="muted">This is an alternative error-state reference, not the result of the disabled button. Preserve selected scope, show per-item partial failures and provide an actionable persistent recovery path.</p>
+          <p>No celebratory animation or fake percentage replaces an actual outcome.</p>
+        </aside>
+      </article>
+    </section>
+
+    <section id="states" aria-labelledby="states-title">
+      <h2 id="states-title">05 / Distinct, actionable state references</h2>
+      <p class="muted">Both themes use text and structure, not color alone. These labeled fixture states are independent examples, never fallback data for an API error.</p>
+      <div class="state-gallery">
+        <article class="frame theme-light"><h3>Empty</h3><p>No findings in this authorized filter. Review the filter or choose a first source/import.</p></article>
+        <article class="frame theme-dark"><h3>Loading</h3><p>Keep layout stable and identify the pending query. No invented result count or completion percentage.</p></article>
+        <article class="frame theme-light"><h3>Stale</h3><p>Previous data remains useful, with the original scan time and a visible projection-age warning. Polling does not refresh the scan.</p></article>
+        <article class="frame theme-dark"><h3>Failed</h3><p>Explain the failed stage, affected scope and retry/diagnostic action persistently. Keep unrelated queues usable.</p></article>
+        <article class="frame theme-light"><h3>Partial data</h3><p>Show the collected portion and missing scope or permission. Parsing completion does not establish complete source coverage.</p></article>
+        <article class="frame theme-dark"><h3>Permission denied</h3><p>Do not preview restricted evidence. Offer the permitted access-request path without exposing another workspace.</p></article>
+        <article class="frame theme-light"><h3>Confirmed success</h3><p>Show the actual outcome and safe undo only where supported. A webhook acceptance is not automatically confirmed channel delivery.</p></article>
+      </div>
+    </section>
+
+    <footer>
+      <h2>Independent review still required</h2>
+      <p>Review at 1366 x 768, 200% zoom and 390 x 844, in both themes, using keyboard-only navigation and the system reduced-motion preference. The page uses system fonts, native disclosure and no continuous animation.</p>
+      <p class="muted">Inspect future Radix focus trapping/restoration, copied-component motion, contrast, target spacing, stale-response cancellation and actual concurrent-ingestion feedback separately. This static reference does not prove those application behaviors or approve a dependency license.</p>
+    </footer>
+  </main>
+</body>
+</html>

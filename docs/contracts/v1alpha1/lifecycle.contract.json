@@ -1,0 +1,314 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "LifecycleContract",
+  "status": "contract-only",
+  "fixturePolicy": { "data": "synthetic", "containsCredentials": false, "networkCalls": false },
+  "activeVerification": {
+    "defaultEnabled": false, "arbitraryShell": false, "autonomousOffense": false,
+    "allowedMethods": ["deterministic-evidence", "controlled-fixtures"],
+    "arbitraryBrowserExecution": false, "importGrantsExecutionPermission": false,
+    "policy": "Only deterministic evidence evaluation and specifically approved controlled fixtures. A model proposal or imported finding is untrusted data, not permission to act. No exploit payloads, arbitrary commands or third-party testing."
+  },
+  "rules": {
+    "sourceTimesSeparate": true, "importAttemptsSeparateFromScans": true, "immutableOriginalEvidence": true,
+    "preserveSourceVariants": true, "preserveSourceSeverity": true, "scopeAwareAbsence": true,
+    "rejectStaleLifecycleEvents": true, "humanDecisionsOwnedByCore": true, "processingCompletenessSeparate": true,
+    "pollRefreshesScanTime": false, "nonReproductionMeansFalsePositive": false, "scannerResolutionMeansVerifiedResolution": false,
+    "workspaceInEveryIdentityBoundary": true, "locationAloneIsNotCanonicalIdentity": true,
+    "renormalizationCreatesRevisionNotScan": true, "mergesAndSplitsAuditableAndReversible": true
+  },
+  "models": [
+    {
+      "id": "run",
+      "fields": ["workspaceId", "sourceId", "scanId", "scopeId", "sourceScanAt", "collectedAt", "importedAt", "importAttemptId", "parserRevision", "sourceStatus", "scanKind", "completeness", "processingStatus", "evidenceDigest", "originalEvidenceRef", "scopeRevision", "normalizationRevision"],
+      "ownership": "Ingestion owns immutable source scan identity and attempt/revision records. The run is not completed until all required batches have committed.",
+      "identity": "Source-native scan ID scoped by workspace, source instance and scope revision; if absent, an explicitly documented stable report identity. A poll or reimport adds an attempt, not an invented scan time. Conflicting payloads under the same scan identity require an explicit revision/conflict record."
+    },
+    {
+      "id": "observation",
+      "fields": ["observationId", "workspaceId", "scanId", "sourceVariantId", "affectedInstanceId", "sourceSeverity", "normalizedSeverity", "sourceLocation", "originalEvidenceRef", "parserRevision", "evidenceDigest"],
+      "ownership": "Ingestion maintains append-oriented logical per-run membership, with immutable normalization revisions.",
+      "identity": "Workspace/source/scan/variant/affected-instance membership has a stable receipt independent of importAttemptId. Identical same-revision reimport creates no extra observation. A newer scan retains a distinct observation even for unchanged content."
+    },
+    {
+      "id": "canonical-issue",
+      "fields": ["canonicalIssueId", "workspaceId", "workflowState", "disposition", "analysisConclusion", "proofOutcome", "evidenceRevision", "decisionRevision", "notes"],
+      "ownership": "Core owns canonical issue identity and human workflow/disposition/notes. Ingestion submits versioned correlation and source-state commands, never overwrites human decisions.",
+      "identity": "A stable core-issued ID with reversible audited variant membership; no global merge by hostname, path or model similarity alone."
+    },
+    {
+      "id": "source-variant",
+      "fields": ["sourceVariantId", "workspaceId", "sourceId", "sourceFindingId", "sourceSeverity", "sourceLocation", "impact", "remediation", "unmapped"],
+      "ownership": "Ingestion owns the source-specific representation, including fields not yet understood by normalization."
+    },
+    {
+      "id": "affected-instance",
+      "fields": ["affectedInstanceId", "workspaceId", "assetId", "location", "version", "environment"],
+      "ownership": "Ingestion owns affected-instance membership referencing core-owned assets. Source stable identifiers and explicit movement evidence can link a location change without losing history."
+    },
+    { "id": "asset", "fields": ["assetId", "workspaceId", "sourceIdentities", "relationships", "owner", "environment"], "ownership": "Core, including explicit unresolved ownership rather than a guess from commit authors." },
+    { "id": "assessment", "fields": ["assessmentId", "workspaceId", "evidenceRevision", "profileRevision", "policyRevision", "promptRevision", "conclusion", "uncertainty", "provenance"], "ownership": "Later AI service execution; reviewed conclusions enter core through versioned commands." },
+    { "id": "proof-run", "fields": ["proofRunId", "workspaceId", "approvalRef", "scopeRevision", "environmentSnapshot", "outcome", "artifactRefs", "invalidationReason"], "ownership": "Later independent proof coordinator with only controlled-fixture authority." },
+    { "id": "remediation-group", "fields": ["remediationGroupId", "workspaceId", "canonicalIssueIds", "sharedFixRationale"], "ownership": "Core. A shared fix group is not an identity merge." }
+  ],
+  "stateAxes": {
+    "workflowState": ["open", "in-progress", "pending-retest", "resolved"],
+    "disposition": ["none", "accepted-risk", "suppressed", "false-positive"],
+    "analysisConclusion": ["unassessed", "supported", "contradicted", "inconclusive"],
+    "proofOutcome": ["not-run", "reproduced", "not-reproduced", "inconclusive", "error", "blocked", "cancelled"],
+    "sourceState": ["observed", "inferred-resolved", "unknown", "stale"],
+    "evidenceAvailability": ["available", "archived", "expired", "missing", "corrupt"]
+  },
+  "absencePolicy": {
+    "required": ["same-workspace-source-scope-and-scope-revision", "strictly-newer-known-source-scan-time", "source-succeeded", "full-scan", "source-complete", "all-required-batches-reconciled", "finding-absent", "current-evidence-and-policy-revision"],
+    "effect": "May infer source resolution for that source/scope only. Does not prove a fix, close unrelated variants or change a human workflow/disposition.",
+    "unknownTime": "Keep sourceScanAt and sourceFreshnessAt null when unknown. Preserve collectedAt/importedAt independently; never substitute either as scan age.",
+    "freshness": "In the absence fixtures, sourceFreshnessAt is the latest known successful full same-scope reconciled scan usable for comparison. Failed, partial, stale or differently scoped absence does not replace that time.",
+    "concurrency": "Compare the command's expected evidence/decision/policy revisions before applying. Reject stale commands, preserve current core decisions and expose a reason instead of silently accepting last writer wins."
+  },
+  "representativeReport": {
+    "data": "synthetic", "format": "synthetic-json-v1",
+    "rawJSON": "{\"data\":\"synthetic\",\"severity\":\"high\",\"scannedAt\":\"2026-09-01T09:00:00Z\",\"location\":\"synthetic-component:42\",\"impact\":\"Synthetic confidentiality concern in a controlled fixture.\",\"remediation\":\"Review the synthetic configuration and record a scoped retest.\",\"vendorNote\":\"Preserve this unmapped synthetic note.\"}",
+    "rawDigest": "sha256:3ce5b6f766d00dfed7f22178a3489011ad2dc7df81ba7ae32424bf2bcd2d2b83",
+    "normalized": {
+      "sourceSeverity": "high", "normalizedSeverity": "medium", "sourceScanAt": "2026-09-01T09:00:00Z",
+      "sourceLocation": "synthetic-component:42",
+      "impact": "Synthetic confidentiality concern in a controlled fixture.",
+      "remediation": "Review the synthetic configuration and record a scoped retest.",
+      "unmapped": { "vendorNote": "Preserve this unmapped synthetic note." }
+    },
+    "normalizationExplanation": "This deliberate high-to-medium fixture tests preservation of source meaning; it is not a scoring recommendation. The original exact UTF-8 bytes and source fields remain available independently of the derived severity."
+  },
+  "cases": [
+    {
+      "id": "repeat-import", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": false, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "new-scan-same-finding", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-02T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 1
+      }
+    },
+    {
+      "id": "failed-scan", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "failed", "completeness": "unknown", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "partial-scan", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "partial", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "changed-scope", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-b", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "out-of-order-scan", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-older", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-08-31T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "delta-scan", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "delta", "processingStatus": "reconciled", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "processing-failure", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "failed", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "complete-absence", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-2", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-02T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": false
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-02T09:00:00Z", "inferSourceResolution": true, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": true, "additionalObservations": 0
+      }
+    },
+    {
+      "id": "proof-not-reproduced", "data": "synthetic", "proofOutcome": "not-reproduced",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": false, "additionalObservations": 0, "analysisConclusion": "inconclusive"
+      }
+    },
+    {
+      "id": "renormalization", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-1", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v2",
+        "sourceScanAt": "2026-09-01T09:00:00Z", "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "succeeded", "completeness": "complete", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true
+      },
+      "expected": {
+        "sourceFreshnessAt": "2026-09-01T09:00:00Z", "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": false, "additionalObservations": 0, "normalizationRevisionChanged": true
+      }
+    },
+    {
+      "id": "unknown-source-time", "data": "synthetic",
+      "prior": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-unknown", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-1", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": null, "collectedAt": "2026-09-01T10:00:00Z", "importedAt": "2026-09-01T10:01:00Z",
+        "sourceStatus": "unknown", "completeness": "unknown", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true,
+        "disposition": "accepted-risk", "workflowState": "open"
+      },
+      "incoming": {
+        "workspaceId": "synthetic-workspace", "sourceId": "synthetic-source", "scanId": "synthetic-scan-unknown", "scopeId": "synthetic-scope-a", "importAttemptId": "synthetic-attempt-2", "parserRevision": "synthetic-parser-v1",
+        "sourceScanAt": null, "collectedAt": "2026-09-02T10:00:00Z", "importedAt": "2026-09-02T10:01:00Z",
+        "sourceStatus": "unknown", "completeness": "unknown", "scanKind": "full", "processingStatus": "reconciled", "hasFinding": true
+      },
+      "expected": {
+        "sourceFreshnessAt": null, "inferSourceResolution": false, "verifiedResolution": false, "falsePositive": false,
+        "disposition": "accepted-risk", "workflowState": "open", "notesPreserved": true, "originalEvidencePreserved": true, "canonicalIdentityPreserved": true,
+        "newScan": false, "additionalObservations": 0
+      }
+    }
+  ],
+  "fixtureBoundary": "Cases are minimal scan-state snapshots asserting the proposed rules, not a lifecycle engine, full database rows, scanner output compatibility or active verification implementation.",
+  "historyPolicyRef": "docs\\contracts\\v1alpha1\\capacity.profiles.json"
+}

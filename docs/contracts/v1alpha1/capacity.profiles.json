@@ -1,0 +1,226 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "CapacityProfiles",
+  "status": "hypothesis",
+  "description": "Frozen M00 acceptance targets, not measurements, advertised limits, industry averages or evidence of enterprise readiness. This contract suite neither generates GiB reports nor runs a benchmark.",
+  "fixturePolicy": { "data": "synthetic", "networkCalls": false, "requiresDocker": false, "requiresKubernetes": false, "productionFaultInjection": false },
+  "hardware": {
+    "id": "reference-e1-16vcpu", "status": "hypothesis",
+    "cpuModel": "AMD EPYC 7313P, 16 assigned vCPUs on a dedicated reference host",
+    "vcpus": 16, "memoryMiB": 65536, "storageMedia": "Local enterprise NVMe SSD, no shared external contention",
+    "storageGiB": 2048, "os": "Ubuntu Server 24.04.5 amd64", "networkMbps": 10000,
+    "availability": "Not provisioned or measured by M00. Future run manifests must record the actual CPU, allocation, disk/fs, database settings, kernel, topology and competing workloads.",
+    "proposedResourcePartitions": {
+      "core-api": { "vcpus": 2, "memoryMiB": 4096 },
+      "postgres": { "vcpus": 4, "memoryMiB": 24576 },
+      "shared-s3": { "vcpus": 2, "memoryMiB": 4096 },
+      "parsing-two-workers": { "vcpus": 4, "memoryMiB": 1024 },
+      "reconciler": { "vcpus": 2, "memoryMiB": 4096 },
+      "background-worker": { "vcpus": 1, "memoryMiB": 2048 },
+      "host-and-measurement-reserve": { "vcpus": 1, "memoryMiB": 25600 }
+    }
+  },
+  "measurementConditions": {
+    "controlPlaneFixed": true, "databaseFixed": true, "storageFixed": true,
+    "verifyHeadroomBeforeScaling": true, "recordInputLimitsAndRejections": true,
+    "budgetChangesRequireRecordedDecision": true, "measureBrowserSeparately": true,
+    "measureIndexAndWALGrowth": true,
+    "protocol": "Record commit/toolchain, schema/parser revision, fixture digest and seed, exact per-process CPU/RSS/pool limits, network and database settings. Warm for 5 minutes, measure 30 minutes at declared concurrency, repeat 3 times. Report each run's p95/p99 and worst result, not only a cross-run average. Capture errors, rejections, queue age and observation reconciliation as well as throughput.",
+    "scalingProtocol": "Compare one then two equally budgeted parser processes with the same input distribution and fixed API/database/S3/reconciler resources. Demonstrate database, storage and CPU headroom first. Require interactive budgets concurrently; report saturation rather than increasing downstream resources mid-comparison.",
+    "acceptanceStatus": "not-run"
+  },
+  "fixtureGeneratorSpecification": {
+    "id": "aspm-synthetic-records-v1", "implementationStatus": "not-implemented",
+    "identity": "Derive stable synthetic workspace/asset/source/finding IDs from seed plus ordinal. Generate distinct scan IDs per cycle and distinct attempt IDs per redelivery. Repeat the same immutable payload for repeated imports; change only declared parser revisions during renormalization.",
+    "distribution": "Deterministically assign records by ordinal modulo 1000 to the declared size buckets and workspace shares. Emit incrementally in fixed UTF-8 key order; pad with legal container whitespace to reach the exact report byte count without exceeding any record bound. Record exact generated digests, counts and invalid/oversize fixture labels.",
+    "formats": "Synthetic JSON uses an object with data=synthetic and a records array. Synthetic XML uses a records root with synthetic record elements, no DTD, external entities or XInclude. They are streaming test grammars, not claims that every scanner adapter streams.",
+    "nonGoals": ["real-customer-data", "credential-generation", "scanner-execution", "network-targets", "arbitrary-scripts"]
+  },
+  "fixtureFormats": [
+    {
+      "id": "structured-json", "supportsStreaming": true,
+      "supportedReportSizesBytes": [10485760, 104857600, 1073741824],
+      "maxRecordBytes": 1048576,
+      "sizeDistribution": "By record count: 950/1000 records at 1 KiB, 45/1000 at 16 KiB and 5/1000 at 1 MiB. Report mix by job count: 70% 10 MiB, 25% 100 MiB, 5% 1 GiB. Bounds include complete encoded records, not only message strings.",
+      "supportMeaning": "The proposed synthetic grammar can be streamed. No production JSON parser or size support has been implemented.",
+      "rejectionPolicy": "Bound depth, individual strings, total bytes, records and decompression ratio. Report rejected records explicitly; malformed or truncated reports cannot authorize source absence."
+    },
+    {
+      "id": "structured-xml", "supportsStreaming": true,
+      "supportedReportSizesBytes": [10485760, 104857600, 1073741824],
+      "maxRecordBytes": 4194304,
+      "sizeDistribution": "By record count: 980/1000 records at 2 KiB, 19/1000 at 64 KiB and 1/1000 at 4 MiB. Report mix by job count: 80% 10 MiB, 15% 100 MiB, 5% 1 GiB. XML records have their own bound; do not inherit JSON's.",
+      "supportMeaning": "The proposed synthetic grammar can be streamed. No production XML parser or universal ZAP/report-size support is claimed.",
+      "rejectionPolicy": "Reject external entity/DTD resolution and enforce depth, text-node, record and report limits. No external resource fetches are permitted."
+    }
+  ],
+  "profiles": [
+    {
+      "id": "development", "status": "hypothesis", "hardwareRef": "reference-e1-16vcpu",
+      "fixtureGenerator": "aspm-synthetic-records-v1", "seed": 20260914,
+      "fixtureFormatIds": ["structured-json", "structured-xml"],
+      "dataset": { "assets": 1000, "issues": 10000, "observations": 100000, "workspaces": 4 },
+      "load": { "activeImportJobs": 3, "interactiveUsers": 5, "reportExports": 1 }
+    },
+    {
+      "id": "enterprise-e1", "status": "hypothesis", "hardwareRef": "reference-e1-16vcpu",
+      "fixtureGenerator": "aspm-synthetic-records-v1", "seed": 20260914,
+      "fixtureFormatIds": ["structured-json", "structured-xml"],
+      "dataset": { "assets": 25000, "issues": 1000000, "observations": 25000000, "workspaces": 20 },
+      "load": { "activeImportJobs": 50, "interactiveUsers": 200, "reportExports": 4 }
+    },
+    {
+      "id": "bursty-e1", "status": "hypothesis", "hardwareRef": "reference-e1-16vcpu",
+      "fixtureGenerator": "aspm-synthetic-records-v1", "seed": 20260915,
+      "fixtureFormatIds": ["structured-json", "structured-xml"],
+      "dataset": { "assets": 25000, "issues": 1000000, "observations": 25000000, "workspaces": 20 },
+      "load": { "activeImportJobs": 50, "interactiveUsers": 200, "reportExports": 4, "dominantWorkspaceSharePercent": 80 }
+    },
+    {
+      "id": "history-churn", "status": "hypothesis", "hardwareRef": "reference-e1-16vcpu",
+      "fixtureGenerator": "aspm-synthetic-records-v1", "seed": 20260916,
+      "fixtureFormatIds": ["structured-json", "structured-xml"],
+      "dataset": { "assets": 1000, "issues": 10000, "observations": 100000, "workspaces": 4 },
+      "load": { "activeImportJobs": 6, "interactiveUsers": 20, "reportExports": 2 }
+    },
+    {
+      "id": "failure-quota", "status": "hypothesis", "hardwareRef": "reference-e1-16vcpu",
+      "fixtureGenerator": "aspm-synthetic-records-v1", "seed": 20260917,
+      "fixtureFormatIds": ["structured-json", "structured-xml"],
+      "dataset": { "assets": 1000, "issues": 10000, "observations": 100000, "workspaces": 4 },
+      "load": { "activeImportJobs": 6, "interactiveUsers": 20, "reportExports": 1 }
+    }
+  ],
+  "budgets": [
+    {
+      "id": "interactive-p95", "status": "hypothesis", "metric": "interactive_list_detail_latency_p95",
+      "measurement": "Server-side duration of authorized list/detail requests during the declared mixed load, including database pool wait and response serialization, excluding client network time. Report each endpoint separately.",
+      "unit": "ms", "comparison": "lte", "target": 500, "appliesTo": ["development", "enterprise-e1", "bursty-e1", "history-churn", "failure-quota"]
+    },
+    {
+      "id": "interactive-p99", "status": "hypothesis", "metric": "interactive_list_detail_latency_p99",
+      "measurement": "Same request population and per-endpoint breakdown as interactive-p95; do not hide timeout/error rates or failed requests from the report.",
+      "unit": "ms", "comparison": "lte", "target": 1500, "appliesTo": ["development", "enterprise-e1", "bursty-e1", "history-churn", "failure-quota"]
+    },
+    {
+      "id": "streaming-worker-rss", "status": "hypothesis", "metric": "parser_peak_rss",
+      "measurement": "Maximum per-parser process RSS, including runtime and buffers, sampled through a supported 1 GiB synthetic JSON/XML import with its declared maximum record size. This is not a file-size or container-request measurement.",
+      "unit": "MiB", "comparison": "lte", "target": 512, "appliesTo": ["enterprise-e1", "bursty-e1"]
+    },
+    {
+      "id": "parsing-scale-ratio", "status": "hypothesis", "metric": "two_parser_throughput_divided_by_one",
+      "measurement": "Durably emitted normalized input bytes per second for two versus one parser under the scaling protocol, only with verified downstream headroom and passing concurrent interactive budgets.",
+      "unit": "ratio", "comparison": "gte", "target": 1.6, "appliesTo": ["enterprise-e1"]
+    },
+    {
+      "id": "acknowledged-observation-loss", "status": "hypothesis", "metric": "missing_acknowledged_observations",
+      "measurement": "After controlled failure recovery/replay, compare durable acknowledged manifest membership to unique persisted observations. Pending/failed work must remain addressable and visibly incomplete until resolved.",
+      "unit": "observations", "comparison": "eq", "target": 0, "appliesTo": ["failure-quota"]
+    },
+    {
+      "id": "duplicate-business-effects", "status": "hypothesis", "metric": "duplicate_idempotency_key_effects",
+      "measurement": "Count duplicate domain mutations for the same intent/receipt after duplicate delivery and lost acknowledgment. Ambiguous external delivery stays uncertain rather than blindly retried.",
+      "unit": "effects", "comparison": "eq", "target": 0, "appliesTo": ["failure-quota"]
+    },
+    {
+      "id": "incorrect-source-closures", "status": "hypothesis", "metric": "invalid_absence_resolution_events",
+      "measurement": "Count source-resolution changes caused by failed, incomplete, delta, stale, mismatched-scope or locally failed inputs, and any ingestion override of a human decision.",
+      "unit": "closures", "comparison": "eq", "target": 0, "appliesTo": ["failure-quota"]
+    },
+    {
+      "id": "storage-growth-per-cycle", "status": "hypothesis", "metric": "retained_data_growth",
+      "measurement": "Worst completed history-churn cycle's net logical data plus immutable object-store bytes after the declared retention/compaction checkpoint, excluding indexes counted separately. Also report gross written bytes and WAL; identical payload reuse must preserve scan membership.",
+      "unit": "MiB", "comparison": "lte", "target": 256, "appliesTo": ["history-churn"]
+    },
+    {
+      "id": "index-growth-per-cycle", "status": "hypothesis", "metric": "index_byte_growth",
+      "measurement": "Worst completed cycle's total PostgreSQL index growth after the same retention checkpoint. Report per-index size, dead tuples, vacuum debt and WAL bytes instead of hiding maintenance cost.",
+      "unit": "MiB", "comparison": "lte", "target": 64, "appliesTo": ["history-churn"]
+    },
+    {
+      "id": "restore-duration", "status": "hypothesis", "metric": "restore_to_verified_usable_state",
+      "measurement": "Elapsed restore of the history-churn subset's database, objects/manifests, config and required encryption material into fresh owned resources, ending only after digest/link, decisions and cross-service checks pass.",
+      "unit": "ms", "comparison": "lte", "target": 900000, "appliesTo": ["history-churn"]
+    },
+    {
+      "id": "max-provider-attempts", "status": "hypothesis", "metric": "attempts_per_logical_provider_job",
+      "measurement": "Count all transport/SDK/service attempts, including retries, against one logical request in deterministic throttling fixtures.",
+      "unit": "attempts", "comparison": "lte", "target": 3, "appliesTo": ["failure-quota"]
+    },
+    {
+      "id": "max-provider-retry-elapsed", "status": "hypothesis", "metric": "provider_retry_window",
+      "measurement": "Wall-clock or controlled-clock duration from the first permitted attempt to final result or visible blocked/exhausted state, inclusive of Retry-After waits. Never retry past the overall deadline.",
+      "unit": "ms", "comparison": "lte", "target": 30000, "appliesTo": ["failure-quota"]
+    },
+    {
+      "id": "small-workspace-progress", "status": "hypothesis", "metric": "small_workspace_eligible_job_wait",
+      "measurement": "Maximum time from an eligible small-workspace batch becoming queued to its first durable stage progress during an 80%-dominant workspace burst. Record deliberately blocked jobs separately, with reasons.",
+      "unit": "ms", "comparison": "lte", "target": 30000, "appliesTo": ["bursty-e1", "failure-quota"]
+    },
+    {
+      "id": "stalled-stage-visible", "status": "hypothesis", "metric": "stall_detection_to_visible_status",
+      "measurement": "Time from a controlled loss of stage progress to an actionable stalled-stage state observable by the authorized API/UI, while HTTP liveness remains healthy. Record heartbeat and polling intervals.",
+      "unit": "ms", "comparison": "lte", "target": 15000, "appliesTo": ["failure-quota"]
+    }
+  ],
+  "failureScenarios": [
+    {
+      "id": "worker-termination", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["acknowledged-work-retained", "expired-worker-cannot-finalize", "replay-idempotent"],
+      "budgetRefs": ["acknowledged-observation-loss", "duplicate-business-effects", "incorrect-source-closures"],
+      "procedure": "Use deterministic worker-stop checkpoints before commit, after commit and before acknowledgment. Replay the same job reference under a new fence, never terminate an unrelated host process."
+    },
+    {
+      "id": "duplicate-delivery", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["no-duplicate-business-effects", "no-extra-observations"],
+      "budgetRefs": ["duplicate-business-effects", "acknowledged-observation-loss"],
+      "procedure": "Deliver the same synthetic run/batch/intent key twice, including concurrent receipt attempts; compare unique effects and retained attempt records."
+    },
+    {
+      "id": "expired-lease", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["fencing-enforced", "stale-worker-cannot-finalize"],
+      "budgetRefs": ["duplicate-business-effects", "incorrect-source-closures"],
+      "procedure": "Advance a controlled clock past a lease, reclaim the job, then submit an old fence result. The old result must not commit or close the run."
+    },
+    {
+      "id": "storage-interruption", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["visible-incomplete-state", "no-dangling-evidence", "no-source-closure"],
+      "budgetRefs": ["acknowledged-observation-loss", "incorrect-source-closures", "stalled-stage-visible"],
+      "procedure": "Inject controlled missing/timeout/checksum-mismatch responses around staged-object publication. References cannot become available before verified content."
+    },
+    {
+      "id": "database-interruption", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["acknowledged-work-retained", "bounded-retries", "no-source-closure"],
+      "budgetRefs": ["acknowledged-observation-loss", "duplicate-business-effects", "incorrect-source-closures", "stalled-stage-visible"],
+      "procedure": "Inject precommit and acknowledgment-boundary database errors using controlled fixtures, then reconcile the durable receipt before replay."
+    },
+    {
+      "id": "provider-throttling", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["bounded-retries", "visible-queued-or-blocked", "no-unapproved-fallback", "shared-quota"],
+      "budgetRefs": ["max-provider-attempts", "max-provider-retry-elapsed", "small-workspace-progress"],
+      "procedure": "Use a deterministic in-process provider with scripted quota responses and a controlled clock; assert shared admission across simulated replicas, without any hosted calls."
+    },
+    {
+      "id": "stalled-analyzer", "method": "controlled-fixture", "profileId": "failure-quota",
+      "invariants": ["stalled-stage-visible", "unrelated-queues-progress", "no-fake-freshness"],
+      "budgetRefs": ["stalled-stage-visible", "small-workspace-progress", "interactive-p95", "interactive-p99"],
+      "procedure": "Freeze a synthetic stage's progress while allowing API and independent queues to respond. Show stage age/failure reason rather than inferring fresh findings from liveness."
+    }
+  ],
+  "churn": {
+    "cycles": 30, "importsPerScan": 3,
+    "parserRevisions": ["synthetic-parser-v1", "synthetic-parser-v2"],
+    "stableCanonicalIssueSet": true, "scanIdentitySeparateFromImportAttempt": true,
+    "invariants": ["stable-issue-count", "distinct-scan-import-identities", "immutable-evidence", "run-variant-membership", "notes-and-dispositions", "parser-revision-provenance", "explicit-evidence-availability", "restore-preserves-links"],
+    "budgetRefs": ["storage-growth-per-cycle", "index-growth-per-cycle", "restore-duration"],
+    "protocol": "Keep 10000 canonical issues and 3 source variants per applicable issue stable. Each cycle creates one full scan per source with distinct membership; import each scan three times. Renormalize a declared subset with parser-v2 at cycle 16 without inventing a scan. Advance a controlled clock through retention windows, preview expiry, exempt held evidence/active decisions and restore the final consistent snapshot."
+  },
+  "retentionPolicies": [
+    { "id": "hot-history", "retainDays": 90, "heldEvidenceExempt": true, "preserveActiveDecisions": true, "previewRequired": true, "evidenceStateAfterExpiry": "archived", "policy": "Move eligible historical payloads to indexed archive manifests; preserve run/variant membership, current projections, notes and active decisions." },
+    { "id": "archived-evidence", "retainDays": 365, "heldEvidenceExempt": true, "preserveActiveDecisions": true, "previewRequired": true, "evidenceStateAfterExpiry": "expired", "policy": "Retain age is measured from original source-report ingestion, not reset by archival. Expire only eligible unheld/unreferenced content after a reviewed preview; keep an availability tombstone and provenance links." },
+    { "id": "raw-report", "retainDays": 180, "heldEvidenceExempt": true, "preserveActiveDecisions": true, "previewRequired": true, "evidenceStateAfterExpiry": "expired", "policy": "Raw bytes may expire independently of compact normalized provenance, but not while held or required by an active decision. Show exactly which original evidence is no longer retrievable." },
+    { "id": "audit", "retainDays": 730, "heldEvidenceExempt": true, "preserveActiveDecisions": true, "previewRequired": true, "evidenceStateAfterExpiry": "archived", "policy": "Archive eligible audit detail with a manifest while preserving decision lineage and required holds. No automatic erasure of active acceptance/suppression approvals." }
+  ],
+  "evidenceAvailabilityStates": ["available", "archived", "expired", "missing", "corrupt"],
+  "availabilityPolicy": "Archived means retrievable through an authorized archive path; expired means policy-authorized removal. Missing/corrupt means an unexpected integrity or availability failure, never successful retention or remediation."
+}

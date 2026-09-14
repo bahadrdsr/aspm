@@ -1,0 +1,271 @@
+M00 TEST-AUTHOR HANDOFF
+=====================
+
+Scope: executable acceptance tests of versioned M00 design artifacts only.
+There is no installer, application, connector, proof executor, UI, or benchmark
+implementation here. Passing these tests is not completion of M00 or evidence of
+live compatibility, deployment support, rendered accessibility, or capacity.
+
+Run from the repository root on Windows:
+  .\contracts\Test-M00.ps1
+Harness/mapping checks independently of the deliberately absent artifacts:
+  .\contracts\Test-M00.ps1 -Run '^(TestHarness|TestRequirementMapping)'
+
+The runner invokes:
+  go test -count=1 -run <selector> .\contracts
+It sets GOTOOLCHAIN=auto and GOWORK=off for its process, keeps Go toolchain/module/
+build/work caches under .cache, and restores the caller's environment afterward.
+No Docker, Kubernetes context, provider credentials, Node installation, network
+calls from tests, or proprietary CI service is needed. The initial Go/module
+restore needs normal artifact access. Once restored, the tests run offline.
+Ordinary go test ./contracts and go build ./... remain portable source commands.
+
+One test-only dependency is intentional:
+  github.com/santhosh-tekuri/jsonschema/v6 v6.0.2, Apache-2.0
+Go has no standard-library JSON Schema validator. A real Draft 2020-12 validator
+lets the tests exercise conditionals, required fields, formats, and negative
+examples without inventing an incomplete schema interpreter. Production code
+does not import this dependency. go.mod/go.sum record its dependency graph.
+
+Artifact location and envelope
+------------------------------
+The coder must create these NINE files in docs\contracts\v1alpha1:
+
+  install.schema.json       Draft 2020-12 schema for Installation
+  install.defaults.json     InstallationDefaults
+  installer.contract.json   InstallerContract
+  integrations.catalog.json IntegrationCatalog
+  provider.schema.json      Draft 2020-12 schema for ProviderProfile
+  providers.catalog.json    ProviderCatalog
+  ux.contract.json          UXContract
+  capacity.profiles.json    CapacityProfiles
+  lifecycle.contract.json   LifecycleContract
+
+Except for the two JSON Schemas, each is an object with:
+  apiVersion: "aspm/v1alpha1"
+  kind: the corresponding case-sensitive kind above
+
+The schemas use:
+  $schema: "https://json-schema.org/draft/2020-12/schema"
+  $id: "https://aspm.invalid/schemas/v1alpha1/<filename>"
+Schemas are self-contained: local $defs/$ref are allowed, external schema/file
+loads are denied. These reserved .invalid identifiers are not contacted.
+JSON must contain exactly one value and no duplicate keys, including nested
+keys. ID lists are unique and case-sensitive. Ordinary descriptive metadata may
+extend the non-schema artifacts; required policies cannot be omitted or weakened.
+No artifact is loaded from another project or from the original plan file.
+
+Installation
+------------
+syntheticInstallation in installation_test.go is the canonical valid resolved
+configuration shape and includes both Linux and Kubernetes examples. It contains:
+  apiVersion, kind="Installation", release, target, access, bootstrap, postgres,
+  objectStore, ai, proof, services, databaseConnectionBudget, artifacts,
+  retentionProfile.
+release is {version:<pinned semver>, artifactSource:"installer-bundle"}. The
+synthetic dev version is a fixture, not a claim that a release was published.
+target is {kind:"linux",host} OR {kind:"kubernetes",context,namespace};
+unrelated target fields are rejected.
+access is {exposure,tlsMode,baseURL,publicExposureApproved}; common-path HTTPS
+uses internal-ca and private/loopback access. No unauthenticated public default.
+SecretReference is an object, never a credential string or a value field:
+  {kind:"generated"|"environment"|"file"|"kubernetes-secret", name, ...}
+Kubernetes references may add namespace/key; file references name a protected
+input; generated references name installer-managed secrets. Values are never
+exported. The tests require generated and environment references, and forbid
+plaintext/empty/inline forms. Positive examples also exercise file references and
+existing Kubernetes Secret references on the Kubernetes target.
+PostgreSQL and object storage include mode, engine, persistent, publicAccess,
+credentialRef. Managed profiles name their persistent volumeName so the data
+resource survives a reproducible reapply. S3 additionally declares api="s3". The external branch adds
+endpoints, PostgreSQL tlsMode="verify-full", and the S3 bucket; it must reject
+missing endpoint/reference. No node-local evidence profile is a production default.
+The managed SeaweedFS image is frozen to the coordinator's September 14, 2026
+selection: objectStore.image={version:"4.47",
+digest:"sha256:ce9e796f1fe6f06968f4c04bdaf8f678dad9c8acdfef3d244133d71bfa6bf882"}.
+Managed configurations additionally require objectStore.seaweedfs:
+  {masterTelemetry:false,adminUI:false,webdav:false,icebergPort:0,lancePort:0,
+   publishedAPIs:["s3"],managementExposure:"internal-only"}.
+These values cannot be omitted or replaced by upstream defaults. In the 4.47
+mini profile they map to -master.telemetry=false, -admin.ui=false, -webdav=false,
+-s3.port.iceberg=0, -s3.port.lance=0. Source: seaweedfs/seaweedfs tag 4.47,
+weed\command\mini.go. Disabling admin UI does not stop all internal admin
+services: admin/master/filer/volume interfaces must stay internal and unpublished.
+Publishing S3 here means the private application network, not public access.
+External compatible stores do not need these managed-image/SeaweedFS settings.
+This is a contract assertion, not proof of runtime isolation or storage readiness.
+Docker Desktop may be used by maintainers locally; it is never a product or test
+requirement. Runtime image pulls and deployment checks remain outside this suite.
+Supplied TLS uses access.certificateRef/privateKeyRef with tlsMode="provided";
+an explicitly approved public exposure is a tested advanced branch, not a default.
+Kubernetes may explicitly add target.storageClass/ingressClass. Private artifact
+mirrors use artifacts.mode="private-mirror", mirrorURL and credentialRef.
+AI is {mode,profiles,fallbackProfiles,hostedProcessingApproved}; default disabled.
+Proof is {enabled:false,executionPolicy:"controlled-fixtures-only"}.
+An explicitly enabled controlled-fixture proof profile is a valid configuration;
+arbitrary shell execution is never a valid executionPolicy.
+Services is a map keyed by core-api, ingestion-parser, ingestion-reconciler,
+background-worker, ai-service, proof-service, with replicas/dbConnectionsPerReplica.
+Defaults have one of each enabled role, zero AI/proof, and total replica connection
+allowances plus reservedMaintenance <= databaseConnectionBudget.max.
+Artifacts is {mode,signatureRequired,outboundRetrievalRequiresApproval,bundleRef?};
+offline-bundle requires its reference and cannot enable approved-hosted AI.
+install.defaults.json has status="contract-only" and profiles[]:
+  {id:"linux-small"|"kubernetes-small", configuration:<resolved Installation>}.
+
+Installer metadata
+------------------
+wizard[] is ordered destination, access-bootstrap, review-install. Each has a
+label and questions[] {field,target:"any"|"linux"|"kubernetes",
+condition:"always"|"cannot-infer"|"prerequisite"}.
+Allowed common-path question fields by stage are explicitly listed in the test.
+advancedBranches[] has id, triggers[], fields[], explanationRequired=true,
+preserveAnswers=true. IDs: external-storage, kubernetes-prerequisites,
+custom-access, offline-artifacts, sizing-retention, advanced-automation.
+Only explicit-request/missing-prerequisite can trigger those branches.
+unattended declares configFlag="--config", approvalFlag="--approve-plan",
+approvalBindsTo=[config-digest,artifact-digests,target-identity], plus the true
+sameResolvedConfiguration/rejectMissingRequired/approvalBeforeMutation/
+exportResolvedConfiguration guarantees.
+secretInputChannels, safetyRules and notRequiredAtInstall are policy ID arrays.
+targetMatrix[] has id linux/kubernetes, platform, referenceProfile, versions[],
+architectures[], prerequisites[], validationState, validationReason,
+readyForProduction, and validationEvidenceRef only when claiming a passing run.
+Proposed explicit versions with not-run/blocked status pass; a deployment is
+not claimed to work merely because its version appears in the matrix.
+
+Integration and provider catalogs
+--------------------------------
+IntegrationCatalog has launchFamilies[], reportIntake[], connectionStates[],
+healthDimensions[], rules. EXACT native family IDs:
+  github, gitlab, azure-devops, aws, azure, jira, teams, slack.
+Each family has kind="native", requiredFor="R1", requiredAtInstall=false,
+capabilities[], and profiles[]. Baseline capability IDs are in launchCapabilities.
+Each profile has id, edition, apiVersion, authModes[], requiredPermissions[],
+capabilities:{capabilityId:"planned"|"supported"|"unsupported"},
+unsupportedCapabilities[], setupRecipe, implementationStatus, supportMaturity,
+readyToConnect, liveVerification, verificationPlan.
+Source profiles also have fieldSupport[]. Teams has deliveryProfile and
+ownershipConstraints[]. The tests name the required failure/permission cases.
+reportIntake[] separates sarif/trivy/zap/gitleaks/generic-json/generic-csv and
+manual; kind is report-importer or manual-intake; countsAsNativeLaunchFamily=false.
+
+ProviderProfile's executable shape is syntheticProvider in provider_schema_test.go:
+  apiVersion, kind, id, family, endpoint, protocol, model, modelIdentityStatus,
+  deployment (Foundry), auth, policy, requestedCapabilities[], limits, retention.
+Hosted auth is a secret-reference (or Foundry workload-identity/identityRef).
+Local supports auth mode none. Policy specifies mode, workspaceIds[], tasks[],
+allowedDataClasses[], allowedDestinations[], fallbackProfileIds[], hosted
+approvalRef, or local egressPolicy="deny-hosted".
+Limits explicitly bound tokens, concurrency, requests/tokens per minute,
+timeoutSeconds and maxAttempts. Retention keeps local days separate from the
+providerPolicyStatus; requested-not-confirmed is not a zero-retention guarantee.
+
+ProviderCatalog has modes[], defaultMode="disabled", policy, and families[].
+EXACT AI family IDs: openai, azure-foundry, anthropic, local.
+Hosted families declare hosted=true, hostedServiceIsFOSS=false; all are optional.
+Profiles share the maturity/verification fields below, and have protocol,
+modelSelection="operator-configured", modelIdentityStatus, resolvedModelIdentity
+only when resolved, capabilities:{structured-output/tools/streaming/usage/
+cancellation:"unknown"|"supported"|"unsupported"}.
+OpenAI and Foundry need openai-v1, Anthropic anthropic-messages, and local BOTH
+ollama and openai-compatible planned profiles. No universal catalog/API version
+or interchangeable protocol is implied.
+Local profiles separately declare licenseReview.runtime and .modelSystem
+{status,reason,evidenceRef?}, plus bundlingApproved. Available weights are not
+approval. Compatible review evidence is necessary before bundling approval.
+
+Honest verification (shared profile shape)
+------------------------------------------
+implementationStatus: not-implemented | implemented
+supportMaturity: planned | experimental | supported | deprecated | unsupported
+readyToConnect: boolean, false for unimplemented/unverified profiles.
+liveVerification:
+  {state:"not-run"|"blocked"|"failed", reason:<nonempty limitation>}
+OR, only with an actual authorized run:
+  {state:"passed", method:"authorized-live-endpoint", authorized:true,
+   data:"synthetic"|"explicitly-approved", checkedAt:<RFC3339>,
+   evidenceRef:<repository-relative JSON evidence file>}
+Passing evidence must exist and repeat subject="<family>/<profileId>" and all
+state/method/authorized/data/checkedAt values. supported/readyToConnect additionally
+require implemented status and an existing deterministicTestEvidenceRef.
+verificationPlan is {environment,data:"synthetic",requiresAuthorization:true,
+cases:[...]} and setupRecipe explains the planned guided setup.
+M00 does NOT require any family, model or deployment to claim live verification.
+Mocks/deterministic tests are never accepted as live endpoint evidence. Tests
+can check evidence structure, not its authenticity; the independent reviewer
+must verify claimed evidence provenance. No endpoint is called by this suite.
+
+UX, capacity and lifecycle shapes
+--------------------------------
+UXContract is a hypothesis with navigation[], stack, actionBudgets[] {id,status,
+startingContext,maxActivations,requiredFeedback[],exceptions?}, measurement,
+policyGuards[], sideEffectPolicy, contextPreservation, selection, motion,
+accessibility, themes[], screenStates[], feedback, localFeedbackBudget.
+measurement declares action-count preconditions and separately measured effort,
+referenceDevice {cpu,memoryMiB,browser,browserVersion,viewportWidthPx,
+viewportHeightPx,zoomPercent}, largeList {datasetRows,maxRenderedRows,
+paginationOrAccessibleWindowing}, ingestionRunsConcurrently.
+motion contains tokens and full system/CSS/component reduced-motion guarantees.
+accessibility.target="WCAG-2.2-AA", conformanceClaim="target-not-audited".
+The two UX tests define exact action/state/guard IDs. Visual acceptance is manual.
+
+CapacityProfiles has status="hypothesis", fixturePolicy, hardware,
+measurementConditions, fixtureFormats[], profiles[], budgets[], failureScenarios[],
+churn, retentionPolicies[], evidenceAvailabilityStates[].
+Hardware names a CPU, vCPU count, memory, storage, OS and network, and is explicitly
+hypothetical. Each fixture format declares streaming support, supported byte
+sizes, its own maxRecordBytes and sizeDistribution; no universal streaming claim.
+Profiles have id, status, hardwareRef, fixtureGenerator, seed, fixtureFormatIds[],
+dataset {assets,issues,observations,workspaces}, load {activeImportJobs,
+interactiveUsers,reportExports,dominantWorkspaceSharePercent?}.
+IDs: development, enterprise-e1, bursty-e1, history-churn, failure-quota.
+Budgets are {id,status:"hypothesis",metric,measurement,unit,comparison,target,
+appliesTo:[profile IDs]}. Targets are NOT measurements. Seven frozen numerical
+gates and seven positive operator-selected growth/failure/restore bounds are
+named in capacity_test.go. Declare all even when actual hardware is unavailable.
+failureScenarios[] is {id,method:"controlled-fixture",profileId:"failure-quota",
+invariants[],budgetRefs[]}. No production fault injection is performed.
+churn has cycles/importsPerScan, parserRevisions[], two identity/stability flags,
+invariants[], budgetRefs[]. Retention policies have id, retainDays,
+heldEvidenceExempt, preserveActiveDecisions, previewRequired,
+evidenceStateAfterExpiry. Exact classes: hot-history, archived-evidence, raw-report,
+audit. This suite neither generates GiB files nor runs an enterprise benchmark.
+
+LifecycleContract has fixturePolicy, activeVerification, rules, models[]
+{id,fields[]}, stateAxes, representativeReport, cases[].
+representativeReport has data="synthetic", format="synthetic-json-v1", rawJSON,
+rawDigest="sha256:<digest of exact rawJSON bytes>", normalized.
+Raw fields: data="synthetic", severity="high", scannedAt, location, impact,
+remediation, vendorNote. Normalized retains sourceSeverity/sourceScanAt/
+sourceLocation/impact/remediation/unmapped.vendorNote but deliberately has
+normalizedSeverity="medium", demonstrating that original source meaning survives.
+Cases have id,data="synthetic",prior,incoming,expected,proofOutcome?.
+Scan inputs contain synthetic workspaceId/sourceId/scanId/scopeId/importAttemptId/
+parserRevision, sourceScanAt (RFC3339 or explicit null), collectedAt/importedAt,
+sourceStatus, completeness, scanKind, processingStatus, hasFinding.
+The prior state also includes disposition="accepted-risk", workflowState="open".
+Expected fields include sourceFreshnessAt, inferSourceResolution,
+verifiedResolution=false, falsePositive=false, disposition="accepted-risk",
+workflowState="open", notesPreserved/originalEvidencePreserved/
+canonicalIdentityPreserved, plus newScan/additionalObservations or
+normalizationRevisionChanged/analysisConclusion where tested.
+The twelve required scenarios are named in lifecycle_test.go. They include
+failed/partial/delta/stale/changed-scope/local-failure absence, new scan versus
+reimport, unknown source time, renormalization, and not-reproduced proof.
+Complete same-scope newer absence may infer SOURCE resolution, never independently
+verified resolution or an override of a human disposition/workflow decision.
+These are executable assertions on the proposed fixtures, not lifecycle engine
+tests. Active verification is deterministic evidence/controlled fixtures only.
+
+Traceability and remaining review
+--------------------------------
+testdata\m00-requirements.json maps every acceptance test to plan/UX/operator
+requirements. TestRequirementMapping checks references against actual Go test
+declarations. Its seven manual acceptance records are intentionally pending-review
+and blocking for the milestone. They cover licenses/contributions, source/CI/
+registry decisions, architecture, rendered prototypes, dependency reviews,
+operator evidence and final independent support review.
+The mapping/checklist is a TEST artifact. None of the nine coder-owned JSON
+artifacts is supplied by the test author. Do not weaken/skip tests to obtain green;
+record genuine contract corrections with test-author and reviewer approval.

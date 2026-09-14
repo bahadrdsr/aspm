@@ -1,0 +1,138 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "RequirementTestMap",
+  "milestone": "M00",
+  "scope": "machine-readable-contracts-not-application-behavior",
+  "requirements": [
+    {
+      "id": "M00-INSTALL-SCHEMA",
+      "sources": ["Plan 2", "Plan 9", "M00", "Coordinator update 2026-09-14: SeaweedFS 4.47"],
+      "acceptance": "One versioned installation schema accepts both targets and explicit advanced branches while rejecting incomplete, unsafe, unpinned, inline-secret, and unapproved-hosted configurations. Managed SeaweedFS explicitly disables telemetry, admin UI, WebDAV, Iceberg and Lance listeners; omission or re-enabling is rejected, and management interfaces remain internal.",
+      "tests": ["TestInstallationSchema", "TestM00ReviewKubernetesResourceNames"]
+    },
+    {
+      "id": "M00-INSTALL-DEFAULTS",
+      "sources": ["Plan 3", "Plan 5", "Plan 9", "Coordinator update 2026-09-14: SeaweedFS 4.47"],
+      "acceptance": "Both small profiles use persistent managed PostgreSQL and community S3, protected enrollment, no public storage, disabled AI/proof, and a consistent aggregate connection budget. SeaweedFS is pinned to the coordinator-supplied 4.47 image digest, telemetry and unnecessary interfaces are explicitly disabled, and only S3 is published to the application network.",
+      "tests": ["TestInstallationDefaults"]
+    },
+    {
+      "id": "M00-WIZARD-APPROVAL",
+      "sources": ["Plan 9", "UX-01", "UX-02"],
+      "acceptance": "Exactly three short wizard stages have target-conditional prompts. Six explicit advanced branches preserve answers. Unattended mutation needs approval bound to configuration, artifacts, and target; source accounts and hosted development infrastructure are not installation requirements.",
+      "tests": ["TestInstallerWizardAndApproval"]
+    },
+    {
+      "id": "M00-TARGET-MATRIX",
+      "sources": ["Plan 2", "Plan 9", "Plan 16"],
+      "acceptance": "Freeze explicit Linux and Kubernetes candidate versions and prerequisites without claiming that an untested target is production-ready.",
+      "tests": ["TestSupportedTargetMatrix"]
+    },
+    {
+      "id": "M00-LAUNCH-FAMILIES",
+      "sources": ["Plan 1", "Plan 4", "UX-05", "UX-06", "OF-01"],
+      "acceptance": "Exactly github/gitlab/azure-devops/aws/azure/jira/teams/slack are required native launch families. Profiles declare edition, API, permissions, fields, capabilities, setup, and authorized verification plans. Import formats do not inflate the native count. Support, connection health, deterministic checks, and live evidence remain distinct.",
+      "tests": ["TestLaunchIntegrationCatalog", "TestHarnessVerificationClaims", "TestM00ReviewAzureDevOpsComparisonScope"]
+    },
+    {
+      "id": "M00-AI-SCHEMA",
+      "sources": ["Plan 7", "M00"],
+      "acceptance": "Provider configuration covers openai/azure-foundry/anthropic/local, deployment versus model identity, native protocols, secret/workload identities, explicit data approval, per-task scope, finite quotas and retries, and honest retention state.",
+      "tests": ["TestAIProviderSchema", "TestM00ReviewKubernetesResourceNames"]
+    },
+    {
+      "id": "M00-AI-POLICY-SUPPORT",
+      "sources": ["Plan 2", "Plan 7", "Plan 16"],
+      "acceptance": "The four AI families are optional. Disabled/local-only/approved-hosted modes cannot silently change or bypass approval. Capability and live-verification status is honest; local runtime and complete model-system openness are reviewed separately.",
+      "tests": ["TestAIProviderCatalog", "TestHarnessVerificationClaims"]
+    },
+    {
+      "id": "M00-UX-ACTIONS",
+      "sources": ["Plan 4", "UX-03", "UX-04", "OF-07", "OF-08", "OF-09"],
+      "acceptance": "Freeze seven action budgets with starting contexts and separate effort measurements. Preserve policy confirmations, finding context, explicit bulk scope, and side-effect-free hover/prefetch/detail opening.",
+      "tests": ["TestUXActionsAndContext"]
+    },
+    {
+      "id": "M00-UX-MOTION-A11Y",
+      "sources": ["Plan 4", "UX-07", "UX-08", "UX-09", "UX-10"],
+      "acceptance": "Declare accessible focus and keyboard behavior, WCAG 2.2 AA as an untested target, both themes, truthful distinct states, full reduced-motion behavior, bounded large-list rendering, and a hypothesis of local feedback within 100 ms.",
+      "tests": ["TestUXMotionAccessibilityAndStates"]
+    },
+    {
+      "id": "M00-CAPACITY",
+      "sources": ["Plan 6", "M00"],
+      "acceptance": "Freeze development/E1/bursty-E1/history-churn/failure-quota dataset shapes, seeds, format-specific byte distributions, reference resources, and quantitative hypotheses. No declaration is an achieved benchmark.",
+      "tests": ["TestCapacityProfilesAndBudgets"]
+    },
+    {
+      "id": "M00-FAILURE-CHURN-RETENTION",
+      "sources": ["Plan 5", "Plan 6", "OF-04", "OF-05", "OF-10"],
+      "acceptance": "Specify controlled failure/replay/throttling cases, fairness and stall budgets, recurring scan/import identities, parser revisions, separate hot/archive/raw/audit retention, measurable growth and restore budgets, and preserved decisions/evidence membership.",
+      "tests": ["TestFailureChurnAndRetention"]
+    },
+    {
+      "id": "M00-SOURCE-FIDELITY",
+      "sources": ["Plan 5", "M00", "M06", "OF-02", "OF-03", "OF-04"],
+      "acceptance": "Version domain fields and synthetic fixtures; preserve original report bytes/digest and semantic fields, distinguish source/collection/import times including unknown source time, forbid inference of resolution from failed/partial/delta/stale/different-scope/local-failure scans, and never equate non-reproduction with false positive.",
+      "tests": ["TestSourceFidelityAndLifecycle", "TestM00ReviewAzureDevOpsComparisonScope"]
+    }
+  ],
+  "manualAcceptance": [
+    {
+      "id": "M00-DOC-IDENTITY-LICENSE",
+      "owner": "coordinator-and-independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Record working name aspm, owner bahadrdsr, module github.com/bahadrdsr/aspm, the confirmed Apache-2.0 project license, explicit SDK licensing, contribution policy, and maintainer access decisions.",
+      "evidenceRefs": []
+    },
+    {
+      "id": "M00-DOC-SOURCE-CI-REGISTRY",
+      "owner": "coordinator-and-independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Select FOSS CI and OCI registry independently from GitHub source hosting; document a source build without proprietary CI and separate maintainer infrastructure from customer installation.",
+      "evidenceRefs": []
+    },
+    {
+      "id": "M00-DOC-ARCHITECTURE",
+      "owner": "independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Approve service and table ownership, independently scalable ingestion roles, shared S3, at-least-once/outbox/inbox contracts, least-privilege DB roles, bounded global budgets, core-owned human decisions, and Linux/Kubernetes parity without HA or offline-readiness claims.",
+      "evidenceRefs": []
+    },
+    {
+      "id": "M00-DOC-DESIGN-PROTOTYPES",
+      "owner": "independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Review first install/source/finding/action journeys, tokens, pinned compatible primitives, light/dark references, keyboard/focus/zoom/small-screen and reduced-motion prototypes. JSON contract tests are not rendered UX or WCAG conformance evidence.",
+      "evidenceRefs": []
+    },
+    {
+      "id": "M00-DOC-DEPENDENCY-REVIEW",
+      "owner": "independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Review exact direct/transitive dependency and distribution licenses, including copied UI source, tools, fonts, icons, containers, inference runtime and model system. Record pgx/sqlc decisions and community storage constraints without proprietary runtime dependencies.",
+      "evidenceRefs": []
+    },
+    {
+      "id": "M00-DOC-OPERATOR-RESEARCH",
+      "owner": "coordinator-and-independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Map priority decisions to CE01-CE18 and OF-01-OF-10, retain edition/version/date and reported-versus-fixed distinctions, compare a bounded workflow set with current OSS baselines, select pilot source versions, and record assumptions needing operator validation.",
+      "evidenceRefs": []
+    },
+    {
+      "id": "M00-DOC-SUPPORT-REVIEW",
+      "owner": "coordinator-and-independent-reviewer",
+      "status": "pending-review",
+      "blockingForMilestone": true,
+      "acceptance": "Approve support boundaries and candidate version/verification environments, record unavailable credentials/targets as blocked or unverified, obtain independent review fixes, and rerun final tests on the reviewed revision. M00 contracts are not R1 connector readiness, measured capacity, or a completed deployment.",
+      "evidenceRefs": []
+    }
+  ]
+}

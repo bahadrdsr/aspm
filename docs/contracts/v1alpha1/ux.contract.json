@@ -1,0 +1,119 @@
+{
+  "apiVersion": "aspm/v1alpha1",
+  "kind": "UXContract",
+  "status": "hypothesis",
+  "navigation": ["work", "assets", "integrations", "reports", "settings"],
+  "stack": {
+    "framework": "react", "language": "typescript", "build": "vite", "styles": "tailwindcss",
+    "foundations": "shadcn/ui", "animatedPrimitives": "animate-ui", "motion": "motion",
+    "primitiveFamily": "radix",
+    "staticAssetsServedBy": "go-core-api", "nodeProductionServer": false,
+    "sourceAdoption": "Only a reviewed application-owned subset, pinned by source revision and content digest before M01 copying. Select the Radix variant for both shadcn/ui and Animate UI. No Base UI mixture, paid templates, runtime registry fetches or design-service account.",
+    "animateUIAdoption": {
+      "status": "candidate-root-license-verified",
+      "sourceCommit": "38b917762e3b6059c06a7af703071ba11a89091e",
+      "inspectedLicense": "MIT",
+      "licenseGitBlob": "0ca4a48bd712fd8db31fff20c8b241c5cf41e4db",
+      "licenseSHA256": "d2349753738223c0237d8b5908c4e4da825bbfc951e4fa7081ebc5563c8ceea0",
+      "licenseURL": "https://raw.githubusercontent.com/imskyleen/animate-ui/38b917762e3b6059c06a7af703071ba11a89091e/LICENSE.md",
+      "codeCopied": false,
+      "adoptionReview": "pending-M01-file-and-dependency-review",
+      "currentMainApproved": false,
+      "currentRegistryAllowed": false,
+      "decisionRef": "docs\\dependencies.md",
+      "reason": "The exact historical candidate's MIT root license resolves the M00 root-license blocker, not component adoption. M01 must review selected Radix files, notices and all transitive dependencies. Do not fetch current main's registry or follow unreviewed nested registry references; use reviewed pinned local sources and locked dependencies."
+    }
+  },
+  "designTokens": {
+    "fontFamily": "system-ui, sans-serif", "codeFontFamily": "ui-monospace, monospace",
+    "downloadedFonts": false,
+    "spacingPx": [4, 8, 12, 16, 24, 32, 48],
+    "radiiPx": { "control": 8, "panel": 12 },
+    "density": { "default": "comfortable", "rowHeightPx": 48, "compactRowHeightPx": 36, "primaryControlHeightPx": 44 },
+    "focus": { "widthPx": 3, "offsetPx": 3, "unobscured": true },
+    "light": { "background": "#f8fafc", "surface": "#ffffff", "text": "#0f172a", "mutedText": "#475569", "accent": "#1d4ed8", "accentText": "#ffffff", "focus": "#1d4ed8" },
+    "dark": { "background": "#0f172a", "surface": "#172033", "text": "#f8fafc", "mutedText": "#cbd5e1", "accent": "#93c5fd", "accentText": "#0f172a", "focus": "#93c5fd" },
+    "semanticStatus": "Use distinct text for severity, verification, source health and workflow. Color is supplementary; no implied risk reduction from an accepted or unseen finding."
+  },
+  "actionBudgets": [
+    { "id": "inspect-evidence", "status": "hypothesis", "startingContext": "finding-visible-in-work-queue", "maxActivations": 1, "requiredFeedback": ["source-evidence", "freshness"] },
+    { "id": "assign-to-me", "status": "hypothesis", "startingContext": "authorized-finding-or-selection-visible", "maxActivations": 1, "requiredFeedback": ["confirmed-result", "safe-undo-when-supported"] },
+    { "id": "assign-to-owner", "status": "hypothesis", "startingContext": "finding-or-selection-visible", "maxActivations": 2, "requiredFeedback": ["owner-picker", "confirmed-result"] },
+    { "id": "apply-saved-view", "status": "hypothesis", "startingContext": "work-screen", "maxActivations": 1, "requiredFeedback": ["view-applied"] },
+    { "id": "create-jira-work-item", "status": "hypothesis", "startingContext": "finding-visible-integration-template-configured", "maxActivations": 2, "requiredFeedback": ["preview", "required-fields", "outbound-approval", "uncertain-delivery"], "exceptions": ["required-fields", "policy"] },
+    { "id": "copy-remediation-context", "status": "hypothesis", "startingContext": "finding-visible", "maxActivations": 1, "requiredFeedback": ["permission-check", "clipboard-success-or-failure"] },
+    { "id": "bulk-workflow-change", "status": "hypothesis", "startingContext": "selection-already-made", "maxActivations": 2, "requiredFeedback": ["affected-scope", "confirmation", "partial-failures"] }
+  ],
+  "measurement": {
+    "countPolicy": "in-app-activations",
+    "preconditions": ["permitted-role", "valid-preconfiguration"],
+    "separateMeasures": ["typing", "decision-effort", "external-login-consent", "elapsed-task-time", "browser-work", "api-latency"],
+    "referenceDevice": {
+      "cpu": "Intel Core i5-1235U laptop, proposed reference, not measured",
+      "memoryMiB": 16384, "browser": "Chromium", "browserVersion": "140.0.7339.80",
+      "viewportWidthPx": 1366, "viewportHeightPx": 768, "zoomPercent": 100
+    },
+    "additionalViewports": [
+      { "widthPx": 1366, "heightPx": 768, "zoomPercent": 200 },
+      { "widthPx": 390, "heightPx": 844, "zoomPercent": 100 }
+    ],
+    "largeList": { "datasetRows": 10000, "maxRenderedRows": 100, "paginationOrAccessibleWindowing": true, "strategy": "Accessible server-side pagination first, not an unbounded animated DOM." },
+    "ingestionRunsConcurrently": true,
+    "protocol": "Record the exact browser build and host before each measurement. Use a seeded 10000-row authorized list, representative long evidence text and simultaneous development-profile ingestion. Measure at least 30 repetitions after warm-up per action, both themes and motion modes; record p95, longest task, dropped frames and API latency separately. Reference browser changes require a recorded baseline decision.",
+    "evidenceStatus": "not-run"
+  },
+  "policyGuards": ["authorization", "required-reason", "expiry", "outbound-data-approval", "destructive-confirmation", "proof-scope-approval"],
+  "sideEffectPolicy": {
+    "passiveEvents": ["hover", "prefetch", "open-detail"],
+    "forbiddenEffects": ["create-external-work-item", "run-active-verification", "send-to-ai"],
+    "explicitActionAndPolicyRequired": true
+  },
+  "contextPreservation": {
+    "fields": ["filters", "sort", "scroll", "selection", "focus"],
+    "directLinksWithoutPriorTable": true, "smallScreenFullPage": true,
+    "ignoreStaleResponses": true, "stableTargetsDuringRefresh": true, "stableLayout": true,
+    "responseRule": "Bind requests to workspace, authorized filter/snapshot and selected finding; cancel or ignore obsolete generations. A permission/workspace change clears ineligible data, not an invitation to restore stale secrets.",
+    "returnFocus": "Restore the opening control when still present; otherwise focus the corresponding row or the list heading and announce why."
+  },
+  "selection": {
+    "distinguishPageFromAllMatches": true,
+    "scopeLabel": "Show current-page count or all-matching count plus the exact authorized filter/snapshot.",
+    "refresh": "Keep membership stable while acting. New rows do not silently join an existing all-matches selection; changed permissions are rechecked at execution.",
+    "partialFailure": "Report per-item success/failure and retained selection for eligible retries. Never present a partially applied bulk command as complete."
+  },
+  "motion": {
+    "tokens": { "microMs": 100, "transitionMs": 180, "panelMs": 240 },
+    "respectSystemPreference": true, "includesCSSAndCopiedComponents": true,
+    "focusIndependentOfAnimation": true, "operationsIndependentOfAnimation": true,
+    "truthfulProgress": true, "criticalValuesNotTweened": true, "boundedAnimationInstances": true,
+    "reducedMotionDisables": ["nonessential-movement", "stagger", "autoplay"],
+    "reducedMotionPreserves": ["operations", "focus", "status"],
+    "properties": ["opacity", "transform"],
+    "maxConcurrentDecorativeAnimations": 4,
+    "rules": "No continuous ornamental animation or per-row stagger across the dataset. Do not tween risk/count values or advance a stalled stage. Default system preference must cover Motion, owned CSS and copied components, not only a preference hook."
+  },
+  "accessibility": {
+    "target": "WCAG-2.2-AA", "conformanceClaim": "target-not-audited",
+    "requiredScenarios": ["keyboard-only", "meaningful-labels", "visible-focus", "unobscured-focus", "focus-restoration", "contrast", "target-size-spacing", "zoom", "small-screen-details", "status-not-color-only"],
+    "focusRules": "Use native semantics and reviewed Radix focus behavior. Dialog focus trapping/return, escape behavior, error association and live announcements are required acceptance checks. Sticky headers/toolbars may not obscure focus."
+  },
+  "themes": ["light", "dark"],
+  "screenStates": ["empty", "loading", "stale", "failed", "partial-data", "permission-denied", "success"],
+  "feedback": {
+    "actionablePersistentFailures": true, "explicitRemotePending": true,
+    "noDemoDataOnFailure": true, "noFakeSuccess": true, "untrustedContentRenderedSafely": true,
+    "stateGuidance": {
+      "empty": "No results in the authorized scope; offer a relevant import/source/filter action.",
+      "loading": "Reserve layout and identify the pending operation, without invented counts.",
+      "stale": "Retain useful prior results with source scan and projection age, not a refreshed timestamp.",
+      "failed": "Persistent concise cause, impact and retry/diagnostic action; do not replace with demo content.",
+      "partial-data": "Show collected scope and missing permissions/stages separately.",
+      "permission-denied": "No restricted evidence preview; explain the permitted access-request path.",
+      "success": "Show only the confirmed operation outcome and the supported undo path."
+    }
+  },
+  "localFeedbackBudget": { "status": "hypothesis", "maxMs": 100, "excludesNetwork": true },
+  "journeyPrototypeRef": "docs\\design\\m00-journeys.html",
+  "prototypeApproval": "pending-independent-review",
+  "acceptanceBoundary": "The storyboard and JSON are design inputs, not rendered React/shadcn/Animate UI conformance or measured performance. Review light/dark, zoom, small-screen, keyboard and reduced-motion behavior before approving implementation."
+}
