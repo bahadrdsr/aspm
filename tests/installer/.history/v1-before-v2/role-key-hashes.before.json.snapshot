@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "date": "2026-09-15",
+  "stage": "before-independent-author-role-key-amendment",
+  "reason": "Explicit user requirement: distinct parameterized core/ingestion S3 credentials and scopes; reports DB-only; preserve original eight operational security gates",
+  "signature": "unsigned author integrity record; parent oracle signing remains separate",
+  "previousSnapshotSHA256": "ee8e0031fbbfc5762a07daae988544ecfa5d90a61f1160e0d21d53a6bff6977e",
+  "files": [
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "bytes": 2083,
+      "sha256": "4a78e8f90350aa337da05951a5e609acda84b83c682ec36b897f51007bff079e"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "bytes": 16066,
+      "sha256": "cf3412cd263d4cd72482f77805f60cecf192f077a0f1896040b726fd4a62123a"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "bytes": 18518,
+      "sha256": "fa47767a0dd4532c97cd965bfd128f75ab87adb458afe0a9ae54d1a63dd65b11"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "bytes": 9698,
+      "sha256": "db94c5b3e1aee7d5584dd127e3caa8873e24fdfad1e9f658b04ec52670766ec5"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "bytes": 2071,
+      "sha256": "525dcaa19abb19794c393a0b2aafde59c111df373478caeb57f025cbfb68057c"
+    }
+  ]
+}

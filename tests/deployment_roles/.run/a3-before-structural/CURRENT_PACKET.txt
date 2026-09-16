@@ -1,0 +1,10 @@
+CURRENT INDEPENDENT-AUTHOR PACKET: A3 (AUTHORIZED GO WIRING, PRE-CODE BLOCKED)
+Authoritative manifest: FROZEN.A3.sha256
+Canonical alias: FROZEN.sha256 (must be byte-identical to FROZEN.A3.sha256)
+Compiler/file-set closure: COMPILATION.A3.json
+Verifier: Verify-CompilationPacket.ps1
+Reason, exact forwarding exception and changed paths: PACKET-A3.txt
+Pre-code evidence: PRECODE-A3.txt and .run/a3-precode.jsonl
+Earlier A0/A1/A2 manifests/evidence remain historical, not current targets.
+Parent implements internal/install/quadlet; no missing-package test exclusion.
+HOLD this exact full four-source test packet unchanged pending review.

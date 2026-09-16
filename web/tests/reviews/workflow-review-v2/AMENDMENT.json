@@ -1,0 +1,73 @@
+{
+  "version": 2,
+  "authority": "independent UI regression author, explicit reviewer-correction task",
+  "requestedAt": "2026-09-16T06:42:48.567+02:00",
+  "reason": "Latch denied receipt presentation; apply newest same-ID acknowledgement; preserve visible keyboard focus during/after held asset refresh",
+  "signature": "unsigned author integrity handoff for parent verification/signing, not old-manifest replacement",
+  "reportedHeldUITree": "8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3",
+  "reportedHeldWebSrc": "1fc9fd729992622d8195408ccbfb5a800b3b35ff3eb56371feae7f4652add6f0",
+  "existingFixtureChange": {
+    "path": "tests\\application-fixture.ts",
+    "oldSHA256": "adbe9118d6bd0c86bf23efa052c372cd0a2c7478007c07b269c6a400d41eb50f",
+    "newSHA256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+    "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\application-fixture.ts.snapshot"
+  },
+  "additiveCapabilities": [
+    "validated queued import-status responses with request-time snapshots and explicit holds",
+    "validated same-ID replay acknowledgement matching original report identity",
+    "known-workspace next-assets-response hold",
+    "teardown release of pending responses"
+  ],
+  "guardProof": "Original request/auth/JSON/workspace/credential/60-request block and teardown assertions remain text-identical; 34 prior browser cases pass",
+  "newTest": "tests\\application-review-regressions.spec.ts",
+  "results": {
+    "priorPass": 34,
+    "newRed": 7,
+    "skips": 0,
+    "typecheck": "PASS",
+    "details": [
+      {
+        "test": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+        "status": "failed",
+        "failedAssertions": 6
+      },
+      {
+        "test": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+        "status": "failed",
+        "failedAssertions": 6
+      },
+      {
+        "test": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+        "status": "failed",
+        "failedAssertions": 4
+      },
+      {
+        "test": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "status": "failed",
+        "failedAssertions": 2
+      },
+      {
+        "test": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "status": "failed",
+        "failedAssertions": 1
+      },
+      {
+        "test": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "status": "failed",
+        "failedAssertions": 2
+      },
+      {
+        "test": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "status": "failed",
+        "failedAssertions": 1
+      }
+    ]
+  },
+  "compilerInputCount": 292,
+  "oldHistory": "Original test/fixture/compiler files plus parent before/handoff/receipt/source-input records copied byte-exactly; old signed manifests untouched",
+  "evidence": {
+    "path": "tests\\reviews\\workflow-review-v2\\evidence\\compat-red-02.json.snapshot",
+    "sha256": "fe1c1278756ee828ae5e79a08ca005a5f50bb897350a30aeff75052aa43553b1"
+  },
+  "productionChanged": false
+}

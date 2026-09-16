@@ -1,0 +1,138 @@
+M08-M09 FIRST ADAPTER GATES
+==========================
+Run from aspm: go test -mod=readonly -count=1 -timeout=45s .\tests\connectors
+Nine top-level gates; synthetic TLS httptest only, no accounts or provisioning.
+Missing Production factories FAIL, never skip. Passing fixtures establish
+adapter mapping, NOT live support, OAuth installation, permissions or delivery.
+
+Binding / public DTO contract
+----------------------------
+contract_test.go is the exact Go type/signature authority. Add only a forwarding
+production_bindings_test.go that constructs real production adapters, converts
+DTOs and translates errors with errors.Is. No protocol/state logic in bindings.
+
+Production.OpenDelivery(ctx, DeliveryConfig) -> (DeliveryAdapter, error)
+  Preview(ctx, Action) -> (Preview, error)
+  Send(ctx, Action) -> (Delivery, error)
+  Status(ctx, nativeIssueKey) -> (StatusLink, error)
+DeliveryConfig: Profile, Endpoint, Token, WorkspaceID, Project, IssueType,
+Channel, StatusMap, Client, Limits. Action: WorkspaceID, IntentID, ApprovalRef,
+FindingID, Title, Body, DeepLink, Fields (string custom fields), Prior *Delivery.
+Delivery: WorkspaceID, IntentID, State, RemoteID, RemoteURL, MissingFields,
+RetryAfter. Preview exposes MissingFields. StatusLink retains RemoteID,
+NativeStatus (status ID), LinkedState and CloseFinding=false.
+
+Production.OpenCollector(ctx, CollectorConfig) -> (Collector, error)
+  Collect(ctx, CollectRequest) -> (Collection, error)
+CollectorConfig: Profile, Endpoint, FindingsEndpoint, Token, supplied Client,
+AWS Credentials provider, Limits. CollectRequest embeds Identity
+(WorkspaceID, SourceID, RunID, ScopeID), plus the selected Repository,
+Organization, Project, PipelineID, JobID, BuildID, ArtifactName, ArtifactPath,
+SubscriptionID, AccountID and Region. Only the selected profile's scope applies.
+Collection: Identity, CollectedAt, Complete, Records, Gaps, Continuation,
+RetryAfter. Record: Kind, ExternalID, ParentID, NativeRunID, Severity, State,
+Location, RawURL, exact Raw bytes, nullable SourceScanAt/SourceUpdatedAt.
+
+Native routes / frozen mappings
+------------------------------
+Endpoint is an explicitly configured API base, except Teams' complete URL.
+Paths below are relative to that base; braces denote encoded scope values.
+Jira Cloud v3, jira-cloud-v3, already-authorized OAuth bearer:
+  GET /rest/api/3/issue/createmeta/{Project}/issuetypes/{IssueType}
+      ?startAt=0&maxResults={PageSize}; bounded field metadata pages.
+  POST /rest/api/3/issue
+  GET /rest/api/3/issue/{key}?fields=status
+  fields.project.key, issuetype.id, summary and mapped custom string fields.
+  description is ADF v1: body paragraph then a link-marked deep-link paragraph.
+  201 key is RemoteID. StatusMap[fields.status.id] links to pending-retest,
+  never verified closure. Required-field preview/400 preserve field IDs.
+Teams teams-workflows-channel:
+  POST exactly the configured tenant-generated Workflow URL, including query.
+  No additional bearer token. type=message, Adaptive Card attachment v1.4,
+  title/body TextBlocks, Action.OpenUrl deep link. HTTP 202 is accepted, NOT
+  channel-confirmed.
+  Only the reviewed standard-channel Workflow trigger, not legacy connectors.
+Slack slack-workspace-bot:
+  POST /api/chat.postMessage, bot bearer, channel plus accessible text,
+  Block Kit section then actions/button URL; unfurl_links/unfurl_media=false.
+  ok=true maps channel:ts receipt; HTTP 200 with ok=false remains an error.
+GitHub github-cloud-app, REST 2026-03-10, installation bearer:
+  GET /repos/{owner}/{repo}
+  GET /repos/{owner}/{repo}/code-scanning/alerts?per_page={PageSize}&page={n}
+  Repository ID string; findings keyed by number with ParentID=repository ID,
+  native security severity and path:start_line. UpdatedAt is NOT scan time.
+GitLab gitlab-com-artifacts-v4, PRIVATE-TOKEN/read_api:
+  GET /api/v4/projects/{Project}
+  GET /api/v4/projects/{Project}/pipelines/{PipelineID}
+  GET /api/v4/projects/{Project}/jobs/{JobID}
+  GET /api/v4/projects/{Project}/jobs/{JobID}/artifacts/{ArtifactPath}
+  Verify job/pipeline/project linkage. Report ID=JobID:ArtifactPath,
+  ParentID=Project, NativeRunID=PipelineID; expired artifact is unavailable.
+Azure DevOps Services ado-services-build-artifacts, Basic base64(:PAT):
+  GET /{Organization}/{Project}/_apis/git/repositories/{Repository}?api-version=7.1
+  GET /{Organization}/{Project}/_apis/build/builds/{BuildID}?api-version=7.1
+  GET /{Organization}/{Project}/_apis/build/builds/{BuildID}/artifacts
+      ?artifactName={ArtifactName}&api-version=7.1
+  Follow resource.downloadUrl ONLY within this same origin/org/project/build/
+  artifact endpoint, with $format=zip and api-version=7.1. Read only the exact
+  relative ArtifactPath from the bounded ZIP, without filesystem extraction.
+  Report ID=artifact.id:ArtifactPath, ParentID=repository ID, NativeRunID=build ID.
+AWS aws-commercial-ec2-securityhub, one account/region, supplied role credentials:
+  EC2 Endpoint: POST /, signed service=ec2, Query Action=DescribeInstances,
+  Version=2016-11-15, MaxResults, owner-id filter, NextToken.
+  FindingsEndpoint: POST /findings, signed service=securityhub, ASFF,
+  Filters.AwsAccountId/Region EQUALS, MaxResults, NextToken.
+  SigV4 is independently recomputed with the existing AWS SDK signer.
+  EC2 resource ID=instanceId; ASFF finding ID=Id, ParentID=ProductArn.
+Azure azure-public-resourcegraph-assessments, one subscription, ARM bearer:
+  POST /providers/Microsoft.ResourceGraph/resources?api-version=2022-10-01
+  query="Resources | project id, name, type, location, subscriptionId",
+  subscriptions=[selected ID], options.resultFormat=objectArray, $top/$skipToken.
+  GET /subscriptions/{SubscriptionID}/providers/Microsoft.Security/assessments
+      ?api-version=2020-01-01; bounded same-scope nextLink.
+  Full ARM IDs remain identities; assessment ParentID=resourceDetails.id and
+  State=status.code, not a fabricated severity or healthy assessment.
+  M00 discrepancy: its 2021-06-01 Assessments List link resolves to Microsoft's
+  documented 2020-01-01 List profile. These gates pin 2020-01-01; M00 is unedited.
+
+Bounds / outcomes
+-----------------
+Use the injected client/credentials, never ambient credentials or discovery.
+Factories do no network I/O. Respect context. Limits.Requests counts all HTTP
+attempts, Pages bounds each feed, PageSize bounds requests, Bytes bounds each
+response and extracted report. No automatic write/provider retry or redirects.
+Validate continuation origin AND selected resource path before sending tokens.
+At a page cap preserve Continuation["alerts"] as an unfinished-feed diagnostic;
+cross-call resumable checkpoint execution is not certified by this first gate.
+Partial/error collection keeps identity and valid collected records, Complete
+false and a nonempty Gaps; ErrLimit/ErrScope/ErrAuth/ErrRateLimited/
+ErrUnavailable remain explicit. Retry-After becomes a duration, not a sleep.
+Complete means this collection scope, NEVER scanner completion or safe absence.
+Preserve raw report bytes/URLs. Single-run SARIF 2.1.0 invocation.startTime is a
+scan timestamp when present; build/pipeline finish and polling time never are.
+
+The caller must persist an authorized outbox intent before Send and supply its
+trusted Prior snapshot. Confirmed/accepted replay returns the same receipt with
+no write; uncertain replay returns ErrUncertain with no write until independently
+reconciled. 429 is rate-limited, auth/required-field errors failed, lost response
+uncertain, denied approval/redirect blocked. No exactly-once delivery claim.
+
+Not covered: durable outbox recovery, Jira edits/transitions, tenant setup,
+channel ownership, CODEOWNERS/team inventory, pipeline triggering, GitLab CDN
+redirect downloads, all cloud resources/regions, STS/Entra/OAuth bootstrap,
+M10 reports/exports, deployed workers or live vendor certification.
+Live status for every profile remains UNVERIFIED until separately authorized,
+timestamped real-account evidence exists. No catalog promotion from mocks.
+
+Primary protocol sources consulted (2026-09-15)
+---------------------------------------------
+https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/
+https://learn.microsoft.com/en-us/connectors/teams/
+https://docs.slack.dev/reference/methods/chat.postMessage/
+https://docs.github.com/en/rest/code-scanning/code-scanning
+https://docs.gitlab.com/api/job_artifacts/
+https://learn.microsoft.com/en-us/rest/api/azure/devops/build/artifacts/get-artifact?view=azure-devops-rest-7.1
+https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html
+https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_GetFindings.html
+https://learn.microsoft.com/en-us/rest/api/azureresourcegraph/resourcegraph/resources/resources?view=rest-azureresourcegraph-resourcegraph-2022-10-01
+https://learn.microsoft.com/en-us/rest/api/defenderforcloud/assessments/list?view=rest-defenderforcloud-2020-01-01

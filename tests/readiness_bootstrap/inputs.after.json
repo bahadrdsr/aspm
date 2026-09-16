@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "stage": "read-only post-run comparison",
+  "beforeSnapshotSHA256": "b5b31ede3376edac9e81f99ac5a72621b3ab7d49f4ec712ffa9f98822e62afcb",
+  "signature": "unsigned input record, not review authorization",
+  "note": "Only the deployment canonical pointer changed concurrently; it now matches FROZEN.A3-STRUCTURAL.sha256. Named A3, installer controls and all recorded production readiness inputs are unchanged. This test-author task did not edit any external path.",
+  "changes": [
+    {
+      "path": "tests\\deployment_roles\\FROZEN.sha256",
+      "before": "bc2105686e7652ebc5fc8d0fb38bb26dec7120ed7d8c1448f2c766aaff8b614f",
+      "after": "a44d5b9e66e29bf515688aad9729835cdba3d2ba23452cd2ace75392b67ffaa4"
+    }
+  ],
+  "files": [
+    {
+      "path": "internal\\app\\storage.go",
+      "sha256": "0c67eb3a99a42cd7440344d9853fa4e435a888cc02d359702ff757b79a3bb3fd"
+    },
+    {
+      "path": "internal\\service\\config.go",
+      "sha256": "7e3b5487771228117b4a93e287d6a220f5b4a8d5e88e0ebe1f8bee564f814f07"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "sha256": "d5284a13f4e5f9ef6ced127d7355061f6aa1e5fcc352728499efd6537adef8bd"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A3.sha256",
+      "sha256": "bc2105686e7652ebc5fc8d0fb38bb26dec7120ed7d8c1448f2c766aaff8b614f"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.sha256",
+      "sha256": "a44d5b9e66e29bf515688aad9729835cdba3d2ba23452cd2ace75392b67ffaa4"
+    },
+    {
+      "path": "tests\\installer\\.role-run\\red-run.jsonl",
+      "sha256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+    },
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "sha256": "937f577c52df87f71629a4d4e99764b181f717a89d79c5d1d29640d87887b5d5"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "sha256": "48480df8d2e7e748778d88a978c2af5ab4786b6796abba87db66f44916f10b8a"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "sha256": "b3006c93d77cc58293a4d06eeaceb60118196a377d22c8147bb71360bee92b87"
+    },
+    {
+      "path": "tests\\installer\\production_bindings_test.go",
+      "sha256": "3b27de361affe87b78efce97d2cd540e0396838d8b72c62b1c3c3b30b3c197ee"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    },
+    {
+      "path": "tests\\installer\\role-key-amendment.json",
+      "sha256": "d27fd79b740daf167d9c3cae0537e7a7a1bff0f183652135c1a45c80536e8264"
+    },
+    {
+      "path": "tests\\installer\\role-key-hashes.before.json",
+      "sha256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8"
+    }
+  ]
+}

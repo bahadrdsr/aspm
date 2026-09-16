@@ -1,0 +1,85 @@
+{"event":"oracle-before","treeDigest":"sha256:8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3","oracleDigest":"sha256:4444f0dc14f53768db281ac5ddf11fe1ae1e941269c8f6994910e86001d697ae","fileCount":97,"authorityFingerprint":"sha256:79e363637bf277a7d4c11ca9b2b88dd491c94478fdeb3d51fb5500f1211cedb5","configDigest":"sha256:a08dd84c78a471f39473e54e676c90f688a0093e20fca2aba9dd8a42b535b7b1","oracles":[{"scope":"ui-and-validation-controls","phase":"reviewed-baseline","author":"coordinator-reviewed-independent-handoffs","capturedAt":"2026-09-15T16:51:58.485Z","redEvidence":null,"manifestDigest":"sha256:5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9","oracleDigest":"sha256:18e47c2034a32cadb9ab52577387215c52ddd2f82b7e9bc42b41db7a40ccc0d8"}]}
+UI_GUARDED_COMMAND npm.cmd run typecheck
+
+> @aspm/web@0.0.0 typecheck
+> tsc --noEmit
+
+UI_GUARDED_COMMAND npm.cmd test -- application-workflows.spec.ts --output=.artifacts\application-ui-guarded-targeted
+
+> @aspm/web@0.0.0 test
+> node scripts/playwright.mjs test application-workflows.spec.ts --output=.artifacts\application-ui-guarded-targeted
+
+
+Running 7 tests using 1 worker
+
+  ✓  1 tests\application-workflows.spec.ts:39:1 › M04 authenticated startup uses the session endpoint and logout removes protected context (4.4s)
+  ✓  2 tests\application-workflows.spec.ts:58:1 › M04 invalid login is safe and an expired session cannot leave cached findings visible (2.8s)
+  ✓  3 tests\application-workflows.spec.ts:87:1 › M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in (1.5s)
+  ✓  4 tests\application-workflows.spec.ts:116:1 › M04 changing workspace clears filters, selection, details and old rows before the new response (1.9s)
+  ✓  5 tests\application-workflows.spec.ts:139:1 › M04 assets can be created and edited without leaving their selected workspace (1.9s)
+  ✓  6 tests\application-workflows.spec.ts:175:1 › M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure (2.6s)
+  ✓  7 tests\application-workflows.spec.ts:236:1 › M06 work/detail preserve both observations and distinct freshness without verified-resolution claims (1.7s)
+
+  7 passed (23.5s)
+UI_GUARDED_COMMAND npm.cmd test -- --output=.artifacts\application-ui-guarded-full
+
+> @aspm/web@0.0.0 test
+> node scripts/playwright.mjs test --output=.artifacts\application-ui-guarded-full
+
+
+Running 34 tests using 1 worker
+
+  ✓   1 tests\application-workflows.spec.ts:39:1 › M04 authenticated startup uses the session endpoint and logout removes protected context (3.2s)
+  ✓   2 tests\application-workflows.spec.ts:58:1 › M04 invalid login is safe and an expired session cannot leave cached findings visible (2.7s)
+  ✓   3 tests\application-workflows.spec.ts:87:1 › M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in (1.5s)
+  ✓   4 tests\application-workflows.spec.ts:116:1 › M04 changing workspace clears filters, selection, details and old rows before the new response (1.7s)
+  ✓   5 tests\application-workflows.spec.ts:139:1 › M04 assets can be created and edited without leaving their selected workspace (2.0s)
+  ✓   6 tests\application-workflows.spec.ts:175:1 › M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure (2.9s)
+  ✓   7 tests\application-workflows.spec.ts:236:1 › M06 work/detail preserve both observations and distinct freshness without verified-resolution claims (1.7s)
+  ✓   8 tests\foundations.spec.ts:51:1 › production assets use independently approved source and shared Motion without test fixtures or credential canaries (2.3s)
+  ✓   9 tests\harness.spec.ts:9:1 › harness compiles React and exercises real browser keyboard events (668ms)
+  ✓  10 tests\harness.spec.ts:20:1 › harness produces static assets without needing the production UI (304ms)
+  ✓  11 tests\harness.spec.ts:33:1 › approval guard distinguishes reviewed license candidates from approved components (70ms)
+  ✓  12 tests\m01-review-regressions.spec.ts:66:7 › M01 desktop dialog › scroll lock and all dismissal paths preserve queue context (no-preference) (6.5s)
+  ✓  13 tests\m01-review-regressions.spec.ts:66:7 › M01 desktop dialog › scroll lock and all dismissal paths preserve queue context (reduce) (7.5s)
+  ✓  14 tests\m01-review-regressions.spec.ts:66:7 › M01 mobile-viewport dialog › scroll lock and all dismissal paths preserve queue context (no-preference) (6.4s)
+  ✓  15 tests\m01-review-regressions.spec.ts:66:7 › M01 mobile-viewport dialog › scroll lock and all dismissal paths preserve queue context (reduce) (6.4s)
+  ✓  16 tests\m01-review-regressions.spec.ts:145:1 › M01 skip link focuses main without changing any destination or hash (2.7s)
+  ✓  17 tests\m01-review-regressions.spec.ts:165:1 › M01 catalog verification is independent of readiness and never trusts synthetic or planned claims (8.2s)
+  ✓  18 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 390px by pointer (2.0s)
+  ✓  19 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 390px by keyboard (3.7s)
+  ✓  20 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 683px by pointer (2.0s)
+  ✓  21 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 683px by keyboard (3.5s)
+  ✓  22 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 850px by pointer (2.0s)
+  ✓  23 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 850px by keyboard (3.6s)
+  ✓  24 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 851px by pointer (1.9s)
+  ✓  25 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 851px by keyboard (3.5s)
+  ✓  26 tests\shell.spec.ts:57:1 › primary navigation exposes the five focused destinations (2.1s)
+  ✓  27 tests\shell.spec.ts:70:1 › theme follows the system and preserves an explicit light/dark choice (3.4s)
+  ✓  28 tests\shell.spec.ts:87:3 › finding details retain filter, selection and keyboard focus (no-preference) (2.4s)
+  ✓  29 tests\shell.spec.ts:87:3 › finding details retain filter, selection and keyboard focus (reduce) (2.5s)
+  ✓  30 tests\shell.spec.ts:123:1 › loading, failure, retry, empty and permission denial are distinct with no sample fallback (3.1s)
+  ✓  31 tests\shell.spec.ts:145:1 › the eight native families remain explicitly unverified with synthetic catalog data (2.2s)
+  ✓  32 tests\shell.spec.ts:158:1 › the gallery labels synthetic states instead of presenting them as operational evidence (1.9s)
+  ✓  33 tests\workspace-reselection.spec.ts:21:1 › reselecting the active workspace preserves a pending authenticated Findings read (1.7s)
+  ✓  34 tests\workspace-reselection.spec.ts:42:1 › reselecting the loaded active workspace preserves its filter and selected finding (2.2s)
+
+  34 passed (1.8m)
+UI_GUARDED_COMMAND npm.cmd run build
+
+> @aspm/web@0.0.0 build
+> node scripts/audit-dependencies.mjs && tsc --noEmit && vite build
+
+Dependency inventory: 121 locked packages, 15 installed runtime-graph notice sets. SBOM and notices generated; distribution review remains separate.
+[36mvite v8.2.2 [32mbuilding client environment for production...[36m[39m
+transforming...
+✓ 452 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.79 kB │ gzip:   0.45 kB
+dist/assets/index-CY-W2mYg.css   51.04 kB │ gzip:  10.70 kB
+dist/assets/index-BeqGOptt.js   431.21 kB │ gzip: 132.18 kB
+
+[32m✓ built in 617ms[39m
+{"event":"oracle-after","treeDigest":"sha256:8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3","oracleDigest":"sha256:4444f0dc14f53768db281ac5ddf11fe1ae1e941269c8f6994910e86001d697ae","fileCount":97,"authorityFingerprint":"sha256:79e363637bf277a7d4c11ca9b2b88dd491c94478fdeb3d51fb5500f1211cedb5","configDigest":"sha256:a08dd84c78a471f39473e54e676c90f688a0093e20fca2aba9dd8a42b535b7b1","oracles":[{"scope":"ui-and-validation-controls","phase":"reviewed-baseline","author":"coordinator-reviewed-independent-handoffs","capturedAt":"2026-09-15T16:51:58.485Z","redEvidence":null,"manifestDigest":"sha256:5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9","oracleDigest":"sha256:18e47c2034a32cadb9ab52577387215c52ddd2f82b7e9bc42b41db7a40ccc0d8"}]}
+{"event":"tested-tree-verified","treeDigest":"sha256:8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3","oracleDigest":"sha256:4444f0dc14f53768db281ac5ddf11fe1ae1e941269c8f6994910e86001d697ae","fileCount":97,"authorityFingerprint":"sha256:79e363637bf277a7d4c11ca9b2b88dd491c94478fdeb3d51fb5500f1211cedb5","configDigest":"sha256:a08dd84c78a471f39473e54e676c90f688a0093e20fca2aba9dd8a42b535b7b1","oracles":[{"scope":"ui-and-validation-controls","phase":"reviewed-baseline","author":"coordinator-reviewed-independent-handoffs","capturedAt":"2026-09-15T16:51:58.485Z","redEvidence":null,"manifestDigest":"sha256:5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9","oracleDigest":"sha256:18e47c2034a32cadb9ab52577387215c52ddd2f82b7e9bc42b41db7a40ccc0d8"}],"independentAcceptance":"required-separately"}

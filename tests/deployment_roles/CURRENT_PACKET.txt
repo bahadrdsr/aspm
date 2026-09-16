@@ -1,0 +1,11 @@
+CURRENT INDEPENDENT-AUTHOR PACKET: A6 (NEW ARTIFACT READINESS OPT-IN FEATURE)
+Authoritative manifest: FROZEN.A6.sha256
+Canonical alias: FROZEN.sha256 (byte-identical current manifest)
+Compiler/file-set closure: COMPILATION.A6.json
+Verifier: Verify-CompilationPacket-A6.ps1
+Exact feature/observed counts/boundary: PACKET-A6.txt
+Current evidence: .run/a6-feature-red.jsonl and .run/a6-renders/
+Six new feature cases RED; three shipping controls and three original Helm gates PASS.
+A0-A5 history and all original assertions/helpers/module/forwarding are intact.
+No source wiring, private credentials, installerV2/readiness or native deployment changes.
+HOLD this exact full seven-source packet for parent fix/review; stop scope here.

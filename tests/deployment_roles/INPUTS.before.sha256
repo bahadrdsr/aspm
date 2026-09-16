@@ -1,0 +1,15 @@
+# Render/source input snapshot: 2026-09-15; paths relative to aspm root.
+# Deployment inputs may change during implementation. This is not permission
+# to amend parent manifests or the separately owned installer contract.
+69615360986d3b3978ee81d4798a922c11234171ab207fcba2b8166647889ed4  deploy\helm\aspm\Chart.yaml
+4ade141f33e4254de84e26bd11f8b3f86cdf7b21f1eb91cb84aeb9762390f5a4  deploy\helm\aspm\values.yaml
+14a046d6b3151d4d064fcb1a65cc46a1f87494d284062ffef165c3ab4553db1c  deploy\helm\aspm\templates\_helpers.tpl
+4590d7bee01a1f79195e3951b01a35f73cb1a1c0f083e7e5f68da05f2d77b115  deploy\helm\aspm\templates\application.yaml
+e7d79a43c131d5986df068e0dd6c511b531c0d3185a777bce5ff1d2a9e9f612a  deploy\helm\aspm\templates\storage.yaml
+0899ee65509b0c011ad1a1c115f2e1659a19007372c2d5ef6ab218be198ef0b0  deploy\helm\aspm\templates\ingress.yaml
+431bd9835292b485417e47d279d57dd46d7290bb25d46556a2b80baede75776e  deploy\quadlet\aspm-core.container
+ec09266c867d0a239d4e5f80baec181efebe827290783a5ebca9cdfdec7b05df  deploy\quadlet\aspm-ingestion@.container
+7876c6cf57b284433dede1b269ed197fe83fec5c068a4c6ba9af46df621ebedc  deploy\quadlet\aspm-reports.container
+8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038  go.mod
+3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6  go.sum
+db94c5b3e1aee7d5584dd127e3caa8873e24fdfad1e9f658b04ec52670766ec5  tests\installer\CONTRACT.txt

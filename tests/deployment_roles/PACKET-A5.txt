@@ -1,0 +1,60 @@
+INDEPENDENT BYTE / LINE-BOUNDARY REGRESSION PACKET A5
+===================================================
+Parent authorization: 2026-09-16T01:07:15.183+02:00.
+Only quadlet_line_endings_test.go is added as Go compiler source.
+All previous A4 assertions/helpers/module/forwarding bytes remain unchanged.
+No production, signed installer control, dependency, agent or commit change.
+
+REQUIRED BYTE CONTRACT
+----------------------
+Reject EVERY CR byte that is not immediately followed by LF: ErrUnit and zero
+output. Ordinary LF and ordinary CRLF inputs remain valid and retain their line
+ending style, selected role file/raw/readiness/normalized scope, safe Container
+environment and unrelated service/isolation directives.
+
+For each core/ingestion/reports role, the new file reuses the existing valid
+source/config baseline and checks:
+  Positive LF and CRLF preservation/scoping controls.
+  Entire source using bare CR as its line separator.
+  Embedded CR between benign Service.RestartSec text and one inert forbidden
+    Service.Environment configuration selector.
+  A trailing bare CR after otherwise valid source.
+  Doubled CR before LF.
+The inert synthetic configuration pathname is never opened, loaded or executed.
+No Podman/systemd, credentials, target contact, generated configuration execution
+or runtime bypass is exercised. This is byte/source validation only.
+
+ACTUAL OBSERVATIONS BEFORE THE PRODUCTION FIX
+--------------------------------------------
+Held renderer SHA256, verified before and after execution:
+b388ff0c1a873dae3d2685cb33e1f551961fb8294c77bd8291364cce96187dea
+Six positive LF/CRLF controls PASS.
+Of twelve malformed-input cases:
+  bare-CR-lines:          3 already rejected correctly; 0 new RED.
+  embedded-service-CR:   0 rejected correctly;         3 RED.
+  trailing-bare-CR:      0 rejected correctly;         3 RED.
+  doubled-CR-before-LF:  0 rejected correctly;         3 RED.
+Therefore nine newly failing cases, not twelve. They return nil error and usable
+output instead of ErrUnit/zero output. Zero skips; package time 3.047 seconds.
+Evidence: .run/a5-line-boundary-red.jsonl
+SHA256: bf7c5de694c26577f903b76a1bf5ac729bdcdc09b4d0a06dd36ceccbc282b1ac
+New test SHA256:
+4189c700d0d19f503a4f0bd0e76fcba078050ffb7037ab26a521f8c141ced707
+
+RUN / FULL-PACKET PROTECTION
+----------------------------
+From tests/deployment_roles with the existing module/toolchain:
+  go test -mod=readonly -count=1 -timeout=30s -run '^TestDeploymentQuadlet(PreservesLFAndCRLF|RejectsMalformedCRBoundaries)$' .
+No Helm or other native rendering executable is invoked by this selector.
+All SIX same-package Go/init/compiler sources still compile and are protected,
+regardless of -run. COMPILATION.A5.json records the closed source/metadata set.
+FROZEN.A5.sha256 is current; canonical FROZEN.sha256 is its identical alias.
+Use Verify-CompilationPacket-A5.ps1. Earlier verifier files remain unchanged.
+All 83 A4 recorded input/evidence hashes were checked before metadata versioning.
+A0-A4 history is retained; previous CURRENT_PACKET.txt is preserved under
+.run/a4-before-a5/. No old assertion was edited to manufacture a result.
+
+Added: the single new test, this handoff, COMPILATION.A5.json, FROZEN.A5.sha256,
+Verify-CompilationPacket-A5.ps1 and the named evidence/history files.
+Only CURRENT_PACKET.txt and canonical FROZEN.sha256 change current packet
+pointers. HOLD the exact A5 packet for parent fix/review and stop scope here.

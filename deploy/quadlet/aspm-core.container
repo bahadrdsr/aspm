@@ -1,0 +1,23 @@
+[Unit]
+Description=ASPM core API
+After=network-online.target aspm-postgres.service aspm-storage.service
+Wants=network-online.target
+
+[Container]
+Image=localhost/aspm:0.1.0-dev
+ContainerName=aspm-core
+Network=aspm.network
+EnvironmentFile=/etc/aspm/core.env
+Exec=/app/bin/core-api
+PublishPort=127.0.0.1:8080:8080
+ReadOnly=true
+Tmpfs=/tmp:rw,size=2g
+NoNewPrivileges=true
+DropCapability=all
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

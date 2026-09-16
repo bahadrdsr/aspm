@@ -1,0 +1,51 @@
+=== RUN   TestReadinessBootstrap_CoreCreatesAbsentProbeAndOwnKeyIngestionStarts
+    bootstrap_test.go:63: actual core exited before readiness (*errors.joinError; details withheld)
+    fixtures_test.go:279: core signing identity: HEAD Not Found x1 (selected owned object only)
+--- FAIL: TestReadinessBootstrap_CoreCreatesAbsentProbeAndOwnKeyIngestionStarts (0.73s)
+=== RUN   TestReadinessBootstrap_ExistingSentinelRemainsByteExact
+2026/09/16 00:18:38 INFO service listening role=core address=127.0.0.1:59670
+2026/09/16 00:18:38 INFO service listening role=ingestion address=127.0.0.1:60299
+    fixtures_test.go:279: ingestion signing identity: HEAD OK x2 (selected owned object only)
+    fixtures_test.go:279: core signing identity: HEAD OK x2 (selected owned object only)
+--- PASS: TestReadinessBootstrap_ExistingSentinelRemainsByteExact (4.89s)
+=== RUN   TestReadinessBootstrap_ConcurrentCoreStartsConvergeAtomically
+    bootstrap_test.go:123: first actual core exited before conditional preparation reached the shared probe
+    fixtures_test.go:279: core signing identity: HEAD Not Found x1 (selected owned object only)
+--- FAIL: TestReadinessBootstrap_ConcurrentCoreStartsConvergeAtomically (0.15s)
+=== RUN   TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP
+=== RUN   TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/missing-access-key
+--- PASS: TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/missing-access-key (0.00s)
+=== RUN   TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/missing-secret-key
+--- PASS: TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/missing-secret-key (0.01s)
+=== RUN   TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/missing-readiness-key
+    bootstrap_test.go:180: invalid preparation inputs reached native I/O: DB=1 HTTP=0
+--- FAIL: TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/missing-readiness-key (0.02s)
+=== RUN   TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/out-of-scope-key
+--- PASS: TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/out-of-scope-key (0.00s)
+=== RUN   TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/invalid-raw-prefix
+--- PASS: TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP/invalid-raw-prefix (0.00s)
+--- FAIL: TestReadinessBootstrap_InvalidExplicitInputsFailBeforeDatabaseOrHTTP (0.26s)
+=== RUN   TestReadinessBootstrap_StorageDenialAndConditionalTransportFailureStayVisible
+=== RUN   TestReadinessBootstrap_StorageDenialAndConditionalTransportFailureStayVisible/real-write-denial
+    bootstrap_test.go:216: opt-in preparation never exercised the failing conditional write; absent behavior is not failure-handling proof
+    fixtures_test.go:279: ingestion signing identity: HEAD Not Found x1 (selected owned object only)
+--- FAIL: TestReadinessBootstrap_StorageDenialAndConditionalTransportFailureStayVisible/real-write-denial (0.18s)
+=== RUN   TestReadinessBootstrap_StorageDenialAndConditionalTransportFailureStayVisible/conditional-write-transport-failure
+    bootstrap_test.go:216: opt-in preparation never exercised the failing conditional write; absent behavior is not failure-handling proof
+    fixtures_test.go:279: core signing identity: HEAD Not Found x1 (selected owned object only)
+--- FAIL: TestReadinessBootstrap_StorageDenialAndConditionalTransportFailureStayVisible/conditional-write-transport-failure (0.21s)
+--- FAIL: TestReadinessBootstrap_StorageDenialAndConditionalTransportFailureStayVisible (0.40s)
+=== RUN   TestReadinessBootstrap_DefaultOffAndNonCoreRolesCannotPrepare
+    bootstrap_test.go:235: chosen production API is missing Config.PrepareReadiness bool
+    bootstrap_test.go:247: invalid explicit preparation flag was silently accepted
+=== RUN   TestReadinessBootstrap_DefaultOffAndNonCoreRolesCannotPrepare/ingestion
+2026/09/16 00:18:41 INFO service listening role=ingestion address=127.0.0.1:64216
+    fixtures_test.go:279: ingestion signing identity: HEAD OK x2 (selected owned object only)
+--- PASS: TestReadinessBootstrap_DefaultOffAndNonCoreRolesCannotPrepare/ingestion (1.40s)
+=== RUN   TestReadinessBootstrap_DefaultOffAndNonCoreRolesCannotPrepare/reports
+2026/09/16 00:18:42 INFO service listening role=reports address=127.0.0.1:57548
+--- PASS: TestReadinessBootstrap_DefaultOffAndNonCoreRolesCannotPrepare/reports (0.60s)
+    fixtures_test.go:279: core signing identity: HEAD Not Found x1 (selected owned object only)
+--- FAIL: TestReadinessBootstrap_DefaultOffAndNonCoreRolesCannotPrepare (3.02s)
+FAIL
+FAIL	github.com/bahadrdsr/aspm/tests/readiness_bootstrap	12.195s

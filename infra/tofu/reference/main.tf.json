@@ -1,0 +1,64 @@
+{
+  "terraform": {
+    "required_version": "= 1.10.6",
+    "required_providers": {
+      "libvirt": { "source": "dmacvicar/libvirt", "version": "= 0.8.3" }
+    },
+    "backend": { "local": {} }
+  },
+  "provider": { "libvirt": { "uri": "${var.libvirt_uri}" } },
+  "variable": {
+    "libvirt_uri": { "type": "string", "default": "qemu:///system", "description": "Existing authorized local libvirt host. Remote credentials belong in protected provider inputs, not this file." },
+    "allow_provisioning": { "type": "bool", "default": false, "description": "Explicit opt-in after inspecting the target and plan. False creates no lab resources." },
+    "base_image_path": { "type": "string", "description": "Operator-supplied local Ubuntu cloud image, already downloaded and provenance-reviewed." },
+    "base_image_sha256": {
+      "type": "string",
+      "description": "Expected lowercase SHA-256 of the reviewed base image.",
+      "validation": { "condition": "${can(regex(\"^[a-f0-9]{64}$\", var.base_image_sha256))}", "error_message": "Supply the reviewed image's exact SHA-256, not a URL or moving channel." }
+    },
+    "pool_path": { "type": "string", "default": "/var/lib/libvirt/aspm-lab", "description": "Dedicated new lab storage path; never an unrelated existing pool." },
+    "memory_mib": { "type": "number", "default": 4096 },
+    "vcpus": { "type": "number", "default": 2 }
+  },
+  "locals": { "nodes": ["linux", "k3s-server", "k3s-agent"] },
+  "resource": {
+    "libvirt_pool": {
+      "aspm_lab": {
+        "count": "${var.allow_provisioning ? 1 : 0}", "name": "aspm-reference-lab", "type": "dir", "path": "${var.pool_path}",
+        "lifecycle": { "prevent_destroy": true }
+      }
+    },
+    "libvirt_network": {
+      "aspm_lab": {
+        "count": "${var.allow_provisioning ? 1 : 0}", "name": "aspm-reference-lab", "mode": "nat", "domain": "aspm.lab",
+        "addresses": ["192.168.152.0/24"], "dns": [{ "enabled": true }]
+      }
+    },
+    "libvirt_volume": {
+      "node": {
+        "count": "${var.allow_provisioning ? length(local.nodes) : 0}",
+        "name": "${format(\"aspm-%s.qcow2\", local.nodes[count.index])}",
+        "pool": "${libvirt_pool.aspm_lab[0].name}", "source": "${var.base_image_path}", "format": "qcow2",
+        "lifecycle": {
+          "prevent_destroy": true,
+          "precondition": [{ "condition": "${filesha256(var.base_image_path) == var.base_image_sha256}", "error_message": "The local base image does not match its approved digest." }]
+        }
+      }
+    },
+    "libvirt_domain": {
+      "node": {
+        "count": "${var.allow_provisioning ? length(local.nodes) : 0}",
+        "name": "${format(\"aspm-%s\", local.nodes[count.index])}",
+        "memory": "${var.memory_mib}", "vcpu": "${var.vcpus}",
+        "disk": [{ "volume_id": "${libvirt_volume.node[count.index].id}" }],
+        "network_interface": [{ "network_id": "${libvirt_network.aspm_lab[0].id}", "wait_for_lease": false }],
+        "console": [{ "type": "pty", "target_type": "serial", "target_port": "0" }],
+        "graphics": [{ "type": "spice", "listen_type": "none", "autoport": true }]
+      }
+    }
+  },
+  "output": {
+    "lab_node_names": { "value": "${libvirt_domain.node[*].name}" },
+    "status": { "value": "Reference VM foundation only. Guest enrollment, K3s, application services and deployment verification remain prerequisites." }
+  }
+}

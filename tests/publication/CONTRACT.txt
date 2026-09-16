@@ -1,0 +1,87 @@
+PUBLICATION HYGIENE - INDEPENDENT TEST-AUTHOR CONTRACT
+====================================================
+Scope: a bounded engineering-preview Git publication check, not product feature
+work, signed-oracle verification, repository-wide byte coverage or secret scanning.
+
+Run from the repository root with the existing Node and Git:
+  node tests\publication\run.mjs
+There are four top-level Node built-in tests. No package manager, dependency,
+module manifest, server, real-repository staging, commit, push or network command
+is required. The runner has no update mode and writes no packet files. The new
+packet-local .gitattributes protects ONLY tests\publication bytes; it changes no
+root policy or pre-existing protected input policy.
+
+FROZEN INPUT BOUNDARY
+inputs.before.json records SHA-256, length and LF/CRLF counts for nine explicitly
+selected, nonsecret current files: one UI oracle manifest and its detached public
+signature, go.mod/go.sum, a script, a synthetic TypeScript fixture, a PowerShell
+runner, a plain installer contract and a Go contract. Test code reads these as
+opaque bytes only; it does not import or execute them. Every execution first
+requires their recorded exact hashes, then copies those same Buffers. It never
+reads the other manifest members, dependencies, original runtime logs, private.env,
+credential files, keys or historical log contents. Synthetic fixture canaries in
+the TypeScript source are not live credentials.
+
+The initial .gitattributes, .gitignore and web\.gitattributes hashes are separately
+recorded in inputs.before.json as historical observations, NOT future policy
+expectations. Each execution reads current root and applicable nested policies
+from bounded source/probe ancestors. It stops policy discovery before generated
+.cache, .artifacts, .run, .security-run and node_modules directories. Only policy
+filenames in those bounded non-generated ancestors are inspected. A before/after
+hook verifies selected sources, current policies and frozen controls did not
+change during execution, including when a semantic gate fails.
+
+GATES
+1. Native-Git calibration, with core.autocrlf=false AND true:
+   fresh LF/CRLF text, raw and automatic fixture controls prove actual clean and
+   checkout conversion. Only these separate calibration repositories contain
+   authored calibration attributes. No calibration rule enters the policy test.
+   Frozen source and test-control hashes are also mandatory setup controls.
+2. Exact-byte clean roundtrip, with core.autocrlf=false AND true:
+   copy current applicable .gitattributes files unchanged into a NEW empty index,
+   plus the nine pinned source Buffers at their real relative paths. Native git
+   add, cat-file and checkout-index to a different owned directory provide blob
+   bytes and freshly checked-out bytes. SHA-256 and byte equality are compared to
+   the originals. Do not infer success from attribute strings or normalized text.
+   No commits, identity configuration, conversion filters, info/attributes,
+   renormalize operation or original-index reuse is used. Host/global Git policy,
+   templates, attributes and excludes are isolated inside the owned fixture;
+   core.safecrlf=false allows native conversion to be observed rather than merely
+   turning warnings into an add failure. Repository policy itself is not bypassed.
+3. Generated-path ignore gate:
+   copied current .gitignore files and native git check-ignore must exclude the
+   explicitly listed mutable .run build/work/modules/gopath/current.jsonl paths,
+   nested .run/.security-run examples, .cache/node_modules, conventional generated
+   .artifacts, node_modules and private.env. All probe files are task-created
+   synthetic markers in fresh fixture repositories, never actual frozen roots.
+4. Visibility/history controls:
+   production/test Go and TS, source fixtures, versioned license/notice examples,
+   oracle JSON/signature, the publication packet, and evidence/findings outside
+   generated caches must remain eligible for versioning. Blanket evidence or
+   vulnerability-findings exclusions are not acceptable. Historical .run/red.log
+   and .run/red.jsonl may be ignored by default: their default result is only
+   informational. Synthetic stand-ins are indexed BEFORE policy installation,
+   then remain listed and accept an explicit ordinary git add update afterward.
+   Do not untrack, delete or edit real controlled historical evidence.
+
+OWNERSHIP AND RECEIPTS
+All Git repositories, checkouts, empty host-config replacements and Git process
+temp paths live below a fresh task-owned .cache\publication-tests\run-* directory.
+Inputs and policy files reject symlinks and hard links. Cleanup checks the exact
+created directory and owner marker and removes only that run directory, never
+.cache, a protected source root, another run or a broad set of matching paths.
+This is scoped shared-host hygiene, not an OS sandbox or a concurrency proof.
+
+controls.before.sha256 freezes the packet-local attributes, authored contract,
+source snapshot, test and runner BEFORE the captured RED execution. RED.tap is the unedited author-run
+output; RED.json records its real exit code and bounded observations. Subsequent
+current-run logs belong outside this packet, for example in an explicitly owned
+directory below .cache\publication-tests, not over RED.tap or the input snapshot.
+PACKET.sha256 freezes every other final packet file after RED capture. These
+unkeyed hashes are handoff evidence, not new signed oracles or an external trust
+authority. The independent reviewer must retain the supplied packet-list digest.
+
+The parent owns any bounded root policy fix, a separate independent review and
+clean-checkout publication validation. This packet does not authorize changing
+historical signatures/hashes or ignoring whole evidence directories. Ignore
+policy success alone cannot certify absence of secrets or publication readiness.

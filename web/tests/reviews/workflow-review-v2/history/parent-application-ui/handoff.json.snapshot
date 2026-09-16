@@ -1,0 +1,584 @@
+{
+  "scope": "M04-M07 bounded application UI workflows",
+  "state": "implementation-handoff-held-for-independent-review",
+  "receipt": {
+    "event": "tested-tree-verified",
+    "treeDigest": "sha256:8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3",
+    "oracleDigest": "sha256:4444f0dc14f53768db281ac5ddf11fe1ae1e941269c8f6994910e86001d697ae",
+    "fileCount": 97,
+    "authorityFingerprint": "sha256:79e363637bf277a7d4c11ca9b2b88dd491c94478fdeb3d51fb5500f1211cedb5",
+    "configDigest": "sha256:a08dd84c78a471f39473e54e676c90f688a0093e20fca2aba9dd8a42b535b7b1",
+    "oracles": [
+      {
+        "scope": "ui-and-validation-controls",
+        "phase": "reviewed-baseline",
+        "author": "coordinator-reviewed-independent-handoffs",
+        "capturedAt": "2026-09-15T16:51:58.485Z",
+        "redEvidence": null,
+        "manifestDigest": "sha256:5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9",
+        "oracleDigest": "sha256:18e47c2034a32cadb9ab52577387215c52ddd2f82b7e9bc42b41db7a40ccc0d8"
+      }
+    ],
+    "independentAcceptance": "required-separately"
+  },
+  "sourceSHA256": "1fc9fd729992622d8195408ccbfb5a800b3b35ff3eb56371feae7f4652add6f0",
+  "sourceDigestFormat": "sha256(sorted portable path + NUL + exact-byte SHA256 hex + LF)",
+  "changed": [
+    {
+      "path": "web/src/App.tsx",
+      "sha256": "e1293b642b8a6ff6b9373dba4086e30e8277437232e31ae994322bf99a21188b"
+    },
+    {
+      "path": "web/src/api/client.ts",
+      "sha256": "f5f66e8dc36337b58a2f6dcc48cc190d44f453f82552cbe2e3e21d56b6ee7219"
+    },
+    {
+      "path": "web/src/api/types.ts",
+      "sha256": "0ef6fe0c9442be7e212c2650a597cbedc27d63ab22a96102d04c684ed84c7af2"
+    },
+    {
+      "path": "web/src/components/asset-editor.tsx",
+      "sha256": "9d61c595870ef0b2432b860fc786a3bc44fd0a040333c1f80e3451620308cb9a"
+    },
+    {
+      "path": "web/src/components/finding-dialog.tsx",
+      "sha256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc"
+    },
+    {
+      "path": "web/src/components/form-dialog.tsx",
+      "sha256": "e3a669844e0f3dd2876473da33e7163740ba372dcae10390310120423a63e90b"
+    },
+    {
+      "path": "web/src/components/import-status.tsx",
+      "sha256": "1565df53ef50dccc9494253978856aaff6f067fec58b81f4f5c3f1177f109b4d"
+    },
+    {
+      "path": "web/src/components/report-import.tsx",
+      "sha256": "b6ae2a5d475135106b33cc23e9192f54dbbfcc9505e8b290492a03c38337500b"
+    },
+    {
+      "path": "web/src/lib/application-input.ts",
+      "sha256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd"
+    },
+    {
+      "path": "web/src/lib/use-modal.ts",
+      "sha256": "63bb0008373e5cc0c77f1cfaa2e1f3edd4b7384d0c33f8357435d021a348e3ee"
+    },
+    {
+      "path": "web/src/lib/use-scoped-action.ts",
+      "sha256": "4b95ee7fd18d580325687b3ca632c71c8b47af91697d9b808fd905db56f3c467"
+    },
+    {
+      "path": "web/src/pages/assets.tsx",
+      "sha256": "3c4b80587a8198fc9414bebde2ecfa4901542c9e35123b4b2f3ed92eb026eafd"
+    },
+    {
+      "path": "web/src/styles.css",
+      "sha256": "03221c53496707613906649fc41da840e1a8e0dfebce5f7b302dd1651392e0ad"
+    },
+    {
+      "path": "README.md",
+      "sha256": "f9efce1f28be606c6932219e7525144174d3024dd49490d1c469825134d69dfa"
+    }
+  ],
+  "controls": {
+    "signedCount": 55,
+    "phase": "reviewed-baseline",
+    "protectedSourceAndControlsUnchanged": 163,
+    "unexpectedDeltas": []
+  },
+  "validation": {
+    "typecheck": "passed",
+    "targetedApplicationCases": 7,
+    "fullCases": 34,
+    "skipped": 0,
+    "flaky": 0,
+    "build": "passed",
+    "fullDurationMilliseconds": 110535.903,
+    "requestBudgetPerCase": 60,
+    "cases": [
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3168,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2735,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1489,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1722,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 assets can be created and edited without leaving their selected workspace",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1964,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2890,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1737,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "foundations.spec.ts",
+        "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2328,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "harness.spec.ts",
+        "title": "harness compiles React and exercises real browser keyboard events",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 668,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "harness.spec.ts",
+        "title": "harness produces static assets without needing the production UI",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 304,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "harness.spec.ts",
+        "title": "approval guard distinguishes reviewed license candidates from approved components",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 70,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 6460,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 7548,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 6442,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 6446,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "M01 skip link focuses main without changing any destination or hash",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2707,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 8217,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 390px by pointer",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2012,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 390px by keyboard",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3688,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 683px by pointer",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1970,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 683px by keyboard",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3452,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 850px by pointer",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1959,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 850px by keyboard",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3562,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 851px by pointer",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1944,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 851px by keyboard",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3544,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "primary navigation exposes the five focused destinations",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2105,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "theme follows the system and preserves an explicit light/dark choice",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3432,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2424,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "finding details retain filter, selection and keyboard focus (reduce)",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2451,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 3070,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2229,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1928,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "workspace-reselection.spec.ts",
+        "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 1710,
+            "retry": 0
+          }
+        ]
+      },
+      {
+        "file": "workspace-reselection.spec.ts",
+        "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "duration": 2234,
+            "retry": 0
+          }
+        ]
+      }
+    ]
+  },
+  "compiler": {
+    "project": [
+      "web/src/components/icon.tsx",
+      "web/src/lib/utils.ts",
+      "web/src/components/ui/button.tsx",
+      "web/src/lib/preferences.tsx",
+      "web/src/components/theme-menu.tsx",
+      "web/src/api/types.ts",
+      "web/src/api/authorization.ts",
+      "web/src/api/client.ts",
+      "web/src/lib/format.ts",
+      "web/src/components/animate/slot.tsx",
+      "web/src/components/animate/button.tsx",
+      "web/src/components/action-button.tsx",
+      "web/src/components/states.tsx",
+      "web/src/lib/use-resource.ts",
+      "web/src/lib/use-modal.ts",
+      "web/src/components/finding-dialog.tsx",
+      "web/src/lib/router.ts",
+      "web/src/pages/work.tsx",
+      "web/src/pages/integrations.tsx",
+      "web/src/lib/session.tsx",
+      "web/src/lib/application-input.ts",
+      "web/src/lib/use-scoped-action.ts",
+      "web/src/components/form-dialog.tsx",
+      "web/src/components/asset-editor.tsx",
+      "web/src/components/import-status.tsx",
+      "web/src/components/report-import.tsx",
+      "web/src/pages/assets.tsx",
+      "web/src/pages/gallery.tsx",
+      "web/src/App.tsx",
+      "web/src/main.tsx",
+      "web/tests/api-contract.ts",
+      "web/tests/fixtures.ts",
+      "web/tests/application-fixture.ts",
+      "web/tests/network.ts",
+      "web/tests/application-workflows.spec.ts",
+      "web/tests/source-approval.ts",
+      "web/tests/foundations.spec.ts",
+      "web/tests/harness.spec.ts",
+      "web/tests/m01-review-regressions.spec.ts",
+      "web/tests/responsive-session-controls.spec.ts",
+      "web/tests/shell.spec.ts",
+      "web/tests/workspace-reselection.spec.ts",
+      "web/tests/harness/main.tsx",
+      "web/scripts/review-capture.spec.ts",
+      "web/vite.config.ts",
+      "web/playwright.config.ts",
+      "web/review.config.ts"
+    ],
+    "dependencyDeclarationCount": 244,
+    "generatedExcluded": [],
+    "node": "v22.20.0",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "playwright": "1.63.0",
+    "dependencyScope": "Repository-owned compiler input list is covered by the guarded scope. Installed dependency declarations are recorded separately in typecheck-files.txt; dependency inputs are pinned by the unchanged package/lock controls and the existing build inventory."
+  },
+  "evidence": {
+    "guardLogSHA256": "9a46f4cd981ade5d5b6fdff09ecb655dc6f216c9abdc73f6e7c2b36918094923",
+    "fileListSHA256": "e6984f35c0350bd36a246eadaaf34227c0fd3a25546fb8f033ce97dbf38955fc",
+    "sourceManifestSHA256": "d838acc604352c61bbe3c9d757cef9958628b2ddb0bf30dd1b82ff11d04045d0",
+    "fullResultsSHA256": "40336608afc73edf48747340e11b168436e19e7b608819cf17dd54ab4004c9ab",
+    "compilerListSHA256": "2d105e3f4250b0eaec3e5fa554686398cbc8f5624425db08a35655aac264924c"
+  },
+  "limits": [
+    "Browser tests use the existing mocked same-origin HTTP boundary, not real backend authorization or native integration proof.",
+    "Only SARIF 2.1.0 and fixed-mapping Generic JSON upload profiles are wired.",
+    "Status is manually refreshed and only the latest receipt remains in page memory; no import-history browser or automatic polling.",
+    "Inventory/import selection and finding history use the returned API page and disclose next cursors without loading additional pages.",
+    "Asset owner selector supports unassigned, self and the existing owner, not an all-members directory.",
+    "Finding decisions and notes remain read only.",
+    "No backend, service, installer, deployment, dependency, test, approved component, signature or runtime configuration changes; no live rollout or release acceptance."
+  ]
+}

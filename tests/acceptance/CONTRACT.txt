@@ -1,0 +1,156 @@
+M03-M07 ACCEPTANCE CONTRACT
+==========================
+17 milestone tests plus one real-service gate; all input is synthetic. These are
+bounded implementation slices, not completion of the full milestone roadmap.
+Missing production bindings fail explicitly. Missing services/credentials fail
+BLOCKED, never skip. No scanners, auth bypasses, proof or third-party testing runs.
+
+RUN from C:\bahadr\serious\aspm with Go 1.27.1 and existing dependencies:
+  go test -mod=readonly -count=1 -run '^TestM03_' .\tests\acceptance
+  go test -tags=integration -mod=readonly -count=1 -timeout=300s .\tests\acceptance
+  go test -tags=integration -mod=readonly -count=1 -run '^TestM06_' .\tests\acceptance
+Protected Windows runner:
+  .\tests\acceptance\Test-Acceptance.ps1 -PlanOnly
+  .\tests\acceptance\Test-Acceptance.ps1 -RuntimeConfig '<authorized-runtime-json>' -ModuleCache '.cache\modules'
+-Go selects an installed executable; -Run selects tests. The runner restores its
+process environment, disables downloads/IMDS, redacts credential values, and puts
+build/work/output in acceptance\.run. Default module cache is .run\modules;
+-ModuleCache reuses an existing cache. Direct Go commands assume similarly local
+build/work cache settings. Do not change manifests or weaken TLS to get a pass.
+Remove acceptance\.run after inspecting output; it is disposable test tooling data.
+
+SERVICES: process-local ASPM_TEST_DATABASE_URL, ASPM_TEST_S3_ENDPOINT,
+ASPM_TEST_S3_ACCESS_KEY, ASPM_TEST_S3_SECRET_KEY, ASPM_TEST_S3_BUCKET.
+Private runtime keys match M02: databaseUrl,s3Endpoint,s3AccessKey,s3SecretKey,
+s3Bucket. No runtime file is copied. PG credentials must be explicit; S3 uses
+static credentials, path-style addressing, us-east-1 and an existing bucket.
+Each fixture owns acceptance_<24 random hex> and acceptance/<same nonce>/.
+Cleanup drops ONLY that new schema and its objects (4 x 100 keys max), never
+existing schemas, databases, buckets, roles, policies or deployments.
+TestAcceptance_OwnedServices checks real PG commit/reconnect and exact S3 bytes.
+
+BINDING: contract_test.go defines the exact Go interface:
+  Production.Plan(ctx, json.RawMessage) (InstallationPlan, error)
+  Production.OpenApplication(ctx, ApplicationConfig) (Application, error)
+The coder supplies forwarding-only test bindings, untagged for Plan and tagged
+integration for the application if needed. Bindings ONLY construct/forward real
+components and convert public types/errors. No SQL, business logic, worker loops,
+fake HTTP responses, or map/file-backed substitutes belong in them.
+OpenApplication applies real idempotent migrations in the pre-created Schema,
+honors connection limits/label and Storage.Prefix+workspaceId+"/", and returns
+Handler, Close and ProcessImports(ctx). Close releases resources, not state.
+Reopen preserves enrollment, sessions, assets and queued work. ManualProcessing
+disables automatic workers; ProcessImports forwards real parsing/reconciliation
+to terminal states within ctx. HTTP/startup must not process queued reports inline.
+Now controls auth/domain expiry, not M02 DB lease time. Logs use LogOutput.
+ProcessImports is required by intake tests, not by the independent M04 tests.
+
+M03: Plan accepts partial M00 Installation JSON: apiVersion,kind,release,
+target (linux+host OR kubernetes+context+namespace), access.baseURL.
+Resolve existing docs/contracts/v1alpha1 defaults, not another config vocabulary.
+Return {ID,Configuration}, with resolved M00 JSON and stable nonempty identity.
+Equivalent explicit/resolved intent gives the same ID; target/reference changes
+change it. Invalid/missing targets, HTTP access, unapproved public exposure,
+public storage and inline credentials fail with no usable ID. Export reference
+names, never values. No service/tool access or secret generation is needed.
+This is a CONFIGURATION PREVIEW, not inspected-target/signed-artifact deployment
+approval, installer apply, backup/restore, or Linux/Kubernetes readiness evidence.
+
+HTTP COMMON: real production Handler via HTTPS httptest requests, not fake routes.
+All JSON has apiVersion="aspm/v1alpha1". Preserve M01 WorkResponse/FindingResponse/
+CatalogResponse (web/tests/api-contract.ts); additions below do not replace them.
+dataOrigin stays live|synthetic, not a verification claim. Small lists have
+total and nextCursor=null. X-ASPM-Workspace-ID selects a membership, never grants
+one. No membership =>403; foreign object within a valid workspace =>404.
+Missing/invalid/expired/revoked auth =>401. Writes carry matching HTTPS Origin.
+Errors: {apiVersion,error:{code,message,requestId,retryable:false}}, with codes
+unauthorized/forbidden/not-found/conflict/invalid-input/too-large/unsupported-format/
+method-not-allowed for 401/403/404/409/400/413/415/405 respectively.
+
+M04 ROUTES:
+POST /api/v1/bootstrap {workspaceName,name,email,password}, with out-of-band
+  X-ASPM-Bootstrap-Token from config =>201 {user,workspace}; first role=admin.
+  Missing/wrong token =>401; re-enrollment with valid token =>409, including reopen.
+POST /api/v1/login {email,password} =>200 {user,workspaces,expiresAt} plus
+  aspm_session cookie: HttpOnly,Secure,Path=/,SameSite=Lax|Strict.
+GET /api/v1/session =>200 {user,workspaces,expiresAt}; user={id,name,email},
+  membership={id,name,role}. JSON never includes passwords/session-token values.
+POST /api/v1/logout =>204; revoke server session AND expire cookie.
+POST /api/v1/workspaces {name} =>201 {workspace}; admin only, creator joins as admin.
+POST /api/v1/users {name,email,password,role} =>201 {user}; admin creates a local
+  user in the SELECTED workspace. Roles=admin|analyst|viewer, no implicit memberships.
+POST /api/v1/assets =>201 {asset}; GET collection =>200 {items,total,nextCursor};
+  GET/PATCH /api/v1/assets/{id} =>200 {asset}; DELETE =>204, then GET =>404.
+  Asset={id,workspaceId,name,kind,environment,criticality,tags,ownerId:null|userId}.
+  Admin/analyst CRUD; viewer reads only. Owner must belong to selected workspace.
+  Fixtures use repository, test/staging, medium/high. Viewer/analyst cannot
+  create users/workspaces. No large auth framework or OIDC is required here.
+
+M05 ROUTES:
+POST /api/v1/imports uses ONE JSON wrapper, not multipart:
+  {apiVersion,assetId,format,report:<exact original bytes as JSON string>,
+   sourceId,scanId,scope:{id,revision,branch},sourceScanAt:RFC3339|null,
+   collectedAt:RFC3339,sourceStatus:succeeded|failed,scanKind:full|delta,
+   completeness:complete|partial|unknown,mapping?:<M07 mapping>}
+Source IDs label intake sources, not required native connectors. Admin/analyst
+import, viewer cannot; foreign asset =>404. Entire body limit=MaxUploadBytes
+(65536 in tests). Bad wrapper =>400, unknown format =>415, oversized =>413.
+First upload =>202 {import:{id,runId,state:"queued",...}}. Identical completed
+replay may be 200/succeeded or 202/queued, but retains the SAME runId.
+GET /api/v1/imports/{id} =>200 {import}; also expose format,sourceId,scanId,scope,
+  sourceScanAt,collectedAt,importedAt,reportDigest,observationCount (per-run).
+  States=queued|processing|succeeded|failed. Malformed report bytes may queue,
+  but terminate failed with failure:{code:"invalid-report",message}, not empty success.
+GET /api/v1/imports/{id}/evidence =>200 exact original bytes, authorized only.
+  Digest=sha256:<lowercase hex> of decoded report-string bytes, never S3 ETag.
+GET /api/v1/work?q=... and GET /api/v1/findings/{id} preserve M01 DTOs.
+  q is case-insensitive substring matching title/assetName/ownerName.
+GET /api/v1/work/export?format=csv&q=... =>text/csv with the same authorized
+  membership and M01 field columns; order/extra columns are unrestricted.
+Never replace source scan time with collection/import time. This exercises
+the route M01 consumes, not browser behavior or concurrent snapshot exports.
+
+M06: Add finding assetId,workspaceId,ownerId,sourceState,sourceFreshnessAt,
+disposition,acceptedRiskExpiresAt,riskAcceptanceExpired,verifiedResolution,
+notes:[{id,text}],observations:[{id,runId,sourceId,scanId,scope,sourceScanAt,
+sourceFindingId,sourceSeverity,normalizedSeverity,sourceLocation:{uri,line},
+impact,remediation,unmapped,evidenceDigest}]. Unknown times/expiry remain null.
+PATCH /api/v1/findings/{id} {ownerId,workflowState,disposition,acceptedRiskExpiresAt}
+  =>200 {finding}; POST .../{id}/notes {text} =>201 {note}.
+Tests use open/in-progress and none/accepted-risk, not a replacement state model.
+Run identity includes workspace/source/scope id+revision+branch/scanId. Identical
+reimport adds no observation; conflicting report bytes =>409. A new scan retains
+canonical identity, prior observations and human decisions even if a stable SARIF
+GUID moves line. Risk expiry is visible without silently erasing the decision.
+Only strictly newer, successful, complete, full, same-source/scope absence can
+infer sourceState=inferred-resolved and advance comparable freshness. Failed,
+partial, delta, different source/branch/revision, stale or unknown-time absence
+cannot. Inference never changes human workflow/disposition, verifies resolution,
+or changes evidence.verificationState from not-run. Reappearance reuses the issue.
+
+M07: All formats use the same import/worker/detail/evidence path. Fixtures define
+admitted shapes, NOT broad vendor-version certification:
+- SARIF 2.1.0: rule shortDescription/fullDescription/help => title/description/
+  remediation; result GUID, message evidence, physicalLocation and properties
+  impact/vendorNote survive. Source warning=>medium, note=>info; retain raw level.
+- generic-json array / generic-csv quoted rows: mapping maps sourceFindingId,
+  title,sourceSeverity,sourceLocation,sourceLine,impact,remediation,description
+  to literal field/column names, never scripts. HIGH normalizes to high.
+- manual object: sourceFindingId,title,severity,sourceLocation,impact,remediation,
+  description. Unmapped fields retain original names/values in every format.
+- Trivy SchemaVersion=2: VulnerabilityID,Title,Severity,Description,Target;
+  remediation includes FixedVersion; PkgName/InstalledVersion/FixedVersion/
+  VendorNote remain in unmapped.
+- ZAP JSON @version=2.16.1: alertRef,alert,riskcode,desc,solution,instance URI;
+  "2"=>medium; confidence/otherinfo retained. No scanner is launched.
+- Gitleaks v8 array: Fingerprint,Description,File/StartLine,Commit,RuleID,Date.
+  No native severity =>sourceSeverity="", normalized high. Commit Date is NOT
+  sourceScanAt. Secret/Match contain only an explicitly redacted synthetic marker.
+GET /api/v1/integrations/catalog: exactly github,gitlab,azure-devops,aws,azure,
+  jira,teams,slack, using M01 names/DTO. All planned/unconfigured, readyToConnect=false,
+  verification not-run with reason until M08-M09. POST =>405; import formats do
+  not inflate native family count or prove native support.
+
+Retention/merge-split, enterprise performance, browser interaction, full installer
+operation, OIDC, native network connectors and independent verification remain
+separate gates. After handoff, expectation changes require a real issue.

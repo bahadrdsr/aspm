@@ -1,0 +1,17 @@
+.git
+.cache
+.artifacts
+**/node_modules
+**/.cache
+**/.artifacts
+web/dist
+**/*.env
+**/*.key
+**/*.pem
+**/terraform.tfstate*
+**/kubeconfig
+tests
+web/tests
+web/scripts/review-capture.spec.ts
+web/review.config.ts
+web/playwright.config.ts

@@ -1,0 +1,36 @@
+THREE-WORKFLOW REVIEW - ACTUAL CHROMIUM RED
+========================================
+Final full compatibility run: 41 cases = 34 prior PASS, 7 new RED, zero skips.
+TypeScript typecheck PASS. No fixture/auth/budget/provenance guard failure.
+Held production files remain unchanged against BEFORE.json.
+Parent-reported tested UI tree:
+  8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3
+Parent-reported web source:
+  1fc9fd729992622d8195408ccbfb5a800b3b35ff3eb56371feae7f4652add6f0
+
+403 and 404 receipts (2 RED):
+  ID, state and count reappear during held retry AND after the 503 response.
+  Six failed presentation assertions per case. Initial denial hiding and
+  subsequent authorized-200 recovery pass.
+Same-ID replay (1 RED):
+  Newly acknowledged succeeded/one-observation receipt remains queued/count absent
+  while an older GET is held, and stays/reverts old after release. Four assertions
+  fail. Two POSTs share one stored receipt; the queued replay identity guard passes.
+Keyboard Save (4 RED):
+  Both motion modes lose meaningful visible focus during held refresh.
+  Without a later user move, BODY/invalid focus persists after updated-row render.
+  If the user moves focus to Workspace, completion correctly does NOT steal it.
+  Workspace, scroll-context and single-PATCH controls pass.
+
+Evidence:
+  .artifacts\workflow-review-v2\compat-red-02.json plus run-02 screenshots/traces.
+  A byte-identical frozen report is retained under this handoff's evidence/.
+  compiler-files.txt and COMPILATION.json record the current compiler closure.
+Initial draft red-01.json remains separate; its extra absolute GET-count assertion
+was removed from the NEW test before freezing because development startup already
+performs duplicate initial reads. No existing expectation/budget was changed.
+The final artifact contains only the seven genuine reported-behavior failures.
+
+No live credentials/endpoints, backend/storage bypass, production fix or deployment
+proof is claimed. Existing user/application/security/provenance controls remain
+unchanged except the documented additive application HTTP fixture capabilities.

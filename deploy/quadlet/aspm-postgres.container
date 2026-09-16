@@ -1,0 +1,16 @@
+[Unit]
+Description=ASPM PostgreSQL
+
+[Container]
+Image=docker.io/library/postgres:18.6-alpine
+ContainerName=aspm-postgres
+Network=aspm.network
+EnvironmentFile=/etc/aspm/postgres.env
+Volume=aspm-postgres.volume:/var/lib/postgresql
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

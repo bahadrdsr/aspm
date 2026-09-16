@@ -1,0 +1,7 @@
+# Independent real-S3 readiness compatibility RED baseline.
+# Exact bytes; paths relative to this new package; manifest excludes itself.
+# No existing readiness_bootstrap or other frozen root is amended.
+1c25186f255536c2a23852e30ab2148ef5e0ba3a82b277bc013435d9a23acffc  readiness_test.go
+6bb085f2e15eb15ebd9a3ec4df5ef04cde90b92e6c69658abc85e43017424c1b  Test-ReadinessCompatibility.ps1
+14f5c2a58165aa67b4c369c258da16948cc0abb0081141c052d11de9cc6b1599  CONTRACT.txt
+e3690dc23f78657b2fe42f9b5526563036e1633b2b1408f58ffcbbd8c0e9bd8a  .run\frozen-red.jsonl

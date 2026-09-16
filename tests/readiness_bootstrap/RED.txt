@@ -1,0 +1,44 @@
+READINESS BOOTSTRAP - REAL PRE-IMPLEMENTATION EVIDENCE
+===================================================
+Six top-level tests: 1 PASS, 5 executed semantic RED, zero skips.
+Compilation succeeded. No missing dependency or missing-package prerequisite
+was substituted for execution. The new Config flag is absent, observed without
+adding a fake implementation or binding.
+Evidence: .run/red.jsonl and .run/red.log. Service logs contain their native
+2026/09/16 local timestamps; the task/input snapshot was requested September 15.
+
+PASS:
+- Existing sentinel bytes remain exact. Real core and independent ingestion
+  both reached /readyz with reachable PostgreSQL and their OWN correctly signed
+  HEAD 200 requests to the selected object. No successful PUT occurred.
+
+EXECUTED RED:
+- Opt-in fresh core: actual core-key HEAD 404, then startup exits. No preparation.
+- Concurrent fresh starts: core exits before conditional PUTs reach the barrier.
+  Atomic-winner/412 convergence assertions are present but NOT claimed executed.
+- Missing readiness key under opt-in: actual DB tripwire counted one connection.
+  Missing access/secret, out-of-scope key and invalid-prefix zero-I/O controls PASS.
+- Real-write-denial and conditional-write-transport-failure cases stop at actual
+  HEAD 404 without a conditional PUT. Future failure-handling behavior is NOT
+  claimed verified merely because today's startup fails.
+- Config.PrepareReadiness bool is absent; an invalid explicit environment flag
+  is silently accepted. Flag-off require-preseed behavior remains intact.
+
+Additional real controls PASS:
+- Ingestion starts read-only against preseeded data with its own key.
+- Reports reaches real DB-only readiness with no storage/HTTP activity.
+- All owned service processes, selected objects, schemas and asset directories
+  are stopped/cleaned. No operator key is passed to service startup.
+
+No production, existing tests/manifests, installer/deployment controls, privilege
+settings, storage policy or live main/Kubernetes configuration was changed by
+this test-author task.
+The scope is the startup opt-in only, not installer/renderer/CLI flag wiring.
+FROZEN.sha256 freezes new controls and evidence; inputs.before.json records the
+existing protected inputs for independent comparison. Hashes are not themselves
+review approval or permission to apply/deploy.
+
+Read-only input comparison observed the deployment canonical FROZEN.sha256
+change concurrently from named A3 to FROZEN.A3-STRUCTURAL.sha256. The named A3,
+installer controls and all recorded production readiness inputs remain identical.
+inputs.after.json records exact old/new pointer hashes; no old record was rewritten.

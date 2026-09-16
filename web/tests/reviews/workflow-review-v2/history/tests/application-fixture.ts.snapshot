@@ -1,0 +1,240 @@
+import { createHash } from "node:crypto";
+import { expect, test as base } from "@playwright/test";
+import type { Page, Route } from "@playwright/test";
+import { apiVersion } from "./api-contract";
+import { catalogResponse, findingResponse, syntheticSession, workItems, workResponse } from "./fixtures";
+
+export const alpha = syntheticSession().workspaces[0];
+export const beta = { id: "33333333-3333-4333-8333-333333333333", name: "Synthetic Beta workspace", role: "analyst" };
+export const password = "SYNTHETIC-UI-PASSWORD-ONLY-42";
+export const wrongPassword = "SYNTHETIC-WRONG-PASSWORD-ONLY";
+export const bootstrapToken = "SYNTHETIC-BOOTSTRAP-TOKEN-ONLY";
+export const sessionCookie = "synthetic-http-only-ui-session";
+const secretCanaries = [password, wrongPassword, bootstrapToken, sessionCookie];
+
+export const originalAsset = {
+  id: "22222222-2222-4222-8222-222222222222", workspaceId: alpha.id, name: "alpha-repository",
+  kind: "repository", environment: "test", criticality: "medium", tags: ["synthetic"], ownerId: null,
+};
+export const createdAsset = {
+  ...originalAsset, id: "55555555-5555-4555-8555-555555555555",
+  name: "synthetic-new-repository", tags: ["ui-synthetic", "owned"],
+};
+export const updatedAsset = { ...createdAsset, name: "synthetic-renamed-repository", environment: "staging", criticality: "high" };
+export const scope = { id: "synthetic-scope-main", revision: "1", branch: "main" };
+export const sourceId = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+export const sourceScanAt = "2026-09-03T08:00:00Z";
+export const sourceFreshnessAt = "2026-09-04T08:00:00Z";
+export const observations = ["synthetic-scan-one", "synthetic-scan-two"].map((scanId, index) => ({
+  id: `synthetic-observation-${index + 1}`, runId: `synthetic-run-${index + 1}`, sourceId, scanId, scope,
+  sourceScanAt: index === 0 ? "2026-09-01T08:00:00Z" : sourceScanAt,
+  sourceFindingId: "synthetic-stable-result", sourceSeverity: "warning", normalizedSeverity: "medium",
+  sourceLocation: { uri: "src/synthetic.ts", line: index === 0 ? 12 : 36 },
+  impact: "Synthetic preserved impact.", remediation: "Review synthetic configuration.",
+  unmapped: { vendorNote: `Synthetic retained note ${index + 1}` }, evidenceDigest: `sha256:${String(index + 1).repeat(64)}`,
+}));
+export const detailedFinding = {
+  ...findingResponse.finding, assetId: originalAsset.id, workspaceId: alpha.id, ownerId: null,
+  workflowState: "in-progress" as const, severity: "medium" as const, sourceScanAt, sourceFreshnessAt,
+  collectedAt: "2026-09-05T10:00:00Z", importedAt: "2026-09-05T10:01:00Z",
+  sourceState: "inferred-resolved", disposition: "accepted-risk", acceptedRiskExpiresAt: null,
+  riskAcceptanceExpired: false, verifiedResolution: false, observations,
+  notes: [{ id: "synthetic-note-1", text: "Synthetic analyst note retained." }],
+};
+
+interface APICall {
+  method: string;
+  path: string;
+  workspace: string | undefined;
+  body: Record<string, unknown>;
+  bootstrap: string | undefined;
+}
+type ImportState = "queued" | "processing" | "succeeded" | "failed";
+
+export class ApplicationAPI {
+  authenticated = true;
+  bootstrapAvailable = false;
+  readonly requests: APICall[] = [];
+  readonly violations: string[] = [];
+  readonly assets = [originalAsset, {
+    ...originalAsset, id: "44444444-4444-4444-8444-444444444444", workspaceId: beta.id, name: "beta-repository",
+  }];
+  readonly imports = new Map<string, { body: Record<string, unknown>; state: ImportState; importedAt: string }>();
+  private sessionSeen = false;
+  private workGate: { workspace: string; wait: Promise<void>; release: () => void } | null = null;
+
+  calls(method: string, path: string) { return this.requests.filter((call) => call.method === method && call.path === path); }
+
+  holdWork(workspace: string) {
+    let release!: () => void;
+    const wait = new Promise<void>((resolve) => { release = resolve; });
+    this.workGate = { workspace, wait, release };
+  }
+
+  releaseWork() { this.workGate?.release(); this.workGate = null; }
+
+  setImportState(id: string, state: ImportState) {
+    const receipt = this.imports.get(id);
+    if (!receipt) throw new Error("No acknowledged synthetic import to advance.");
+    receipt.state = state;
+  }
+
+  private receipt(id: string) {
+    const value = this.imports.get(id);
+    if (!value) throw new Error("Unknown synthetic import receipt.");
+    const body = value.body;
+    return { id, runId: `run-${id}`, state: value.state, assetId: body.assetId, format: body.format,
+      sourceId: body.sourceId, scanId: body.scanId, scope: body.scope, sourceScanAt: body.sourceScanAt,
+      collectedAt: body.collectedAt, importedAt: value.importedAt,
+      reportDigest: `sha256:${createHash("sha256").update(String(body.report)).digest("hex")}`,
+      observationCount: value.state === "succeeded" ? 1 : 0,
+      failure: value.state === "failed" ? { code: "invalid-report", message: "Synthetic parser rejected this report." } : null };
+  }
+
+  private async error(route: Route, status: number, code: string, message: string) {
+    await route.fulfill({ status, json: { apiVersion, error: { code, message, requestId: "synthetic-ui-request", retryable: false } } });
+  }
+
+  async install(page: Page, origin: string) {
+    await page.context().addCookies([{ name: "aspm_session", value: sessionCookie, url: origin, httpOnly: true, sameSite: "Lax" }]);
+    await page.route("**/*", async (route) => {
+      const request = route.request(), url = new URL(request.url());
+      if (url.origin !== origin) {
+        this.violations.push("Unexpected external request; no native third-party traffic is authorized.");
+        await route.abort();
+        return;
+      }
+      if (!url.pathname.startsWith("/api/")) { await route.continue(); return; }
+      const headers = await request.allHeaders(), method = request.method(), path = url.pathname;
+      if (headers.authorization) this.violations.push("Browser sent an Authorization/provider token instead of its HttpOnly session.");
+      if (secretCanaries.some((secret) => url.href.includes(secret) || url.href.includes(encodeURIComponent(secret)))) {
+        this.violations.push("A synthetic password/setup/session value was put in a request URL.");
+      }
+      if (headers["x-aspm-bootstrap-token"] && !(method === "POST" && path === "/api/v1/bootstrap")) {
+        this.violations.push("Bootstrap token was sent outside the bootstrap operation.");
+      }
+      let body: Record<string, unknown> = {};
+      if (method === "POST" || method === "PATCH") {
+        if (headers.origin !== origin) this.violations.push("Application write omitted its matching Origin.");
+        if (path !== "/api/v1/logout") {
+          if (!headers["content-type"]?.startsWith("application/json")) {
+            this.violations.push("Application write must use JSON, not multipart or native form navigation.");
+            await this.error(route, 400, "invalid-input", "Expected a JSON request.");
+            return;
+          }
+          let value: unknown;
+          try { value = request.postDataJSON(); } catch (error) {
+            if (!(error instanceof SyntaxError)) throw error;
+            this.violations.push("Application sent malformed JSON.");
+            await this.error(route, 400, "invalid-input", "Malformed JSON request.");
+            return;
+          }
+          if (value && typeof value === "object" && !Array.isArray(value)) body = value as Record<string, unknown>;
+          else this.violations.push("Application write did not contain a JSON object.");
+        }
+      }
+      this.requests.push({ method, path, workspace: headers["x-aspm-workspace-id"], body, bootstrap: headers["x-aspm-bootstrap-token"] });
+      if (this.requests.length > 60) {
+        this.violations.push("Browser exceeded the bounded per-case API request budget.");
+        await this.error(route, 429, "rate-limited", "Synthetic request budget exceeded.");
+        return;
+      }
+      const session = () => ({ ...syntheticSession(), workspaces: [alpha, beta] });
+      const hasCookie = headers.cookie?.split(";").some((item) => item.trim() === `aspm_session=${sessionCookie}`);
+      if (method === "GET" && path === "/api/v1/session") {
+        this.sessionSeen = true;
+        if (this.authenticated && hasCookie) await route.fulfill({ json: session() });
+        else await this.error(route, 401, "unauthorized", "Sign in to continue.");
+        return;
+      }
+      if (method === "POST" && path === "/api/v1/login") {
+        if (body.email !== syntheticSession().user.email || body.password !== password) {
+          await this.error(route, 401, "unauthorized", "Invalid email or password.");
+        } else {
+          this.authenticated = true;
+          await route.fulfill({ json: session(), headers: { "set-cookie": `aspm_session=${sessionCookie}; Path=/; HttpOnly; SameSite=Lax` } });
+        }
+        return;
+      }
+      if (method === "POST" && path === "/api/v1/bootstrap") {
+        if (!this.bootstrapAvailable || headers["x-aspm-bootstrap-token"] !== bootstrapToken) {
+          await this.error(route, 401, "unauthorized", "Instance setup was not authorized.");
+        } else {
+          this.bootstrapAvailable = false;
+          await route.fulfill({ status: 201, json: { apiVersion,
+            user: { id: syntheticSession().user.id, name: body.name, email: body.email },
+            workspace: { ...alpha, name: body.workspaceName } } });
+        }
+        return;
+      }
+      if (!this.sessionSeen) this.violations.push("Protected API read/write started before GET /api/v1/session completed.");
+      if (!this.authenticated || !hasCookie) { await this.error(route, 401, "unauthorized", "Session expired. Sign in again."); return; }
+      if (method === "POST" && path === "/api/v1/logout") {
+        this.authenticated = false;
+        await route.fulfill({ status: 204, headers: { "set-cookie": "aspm_session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax" } });
+        return;
+      }
+      const workspace = headers["x-aspm-workspace-id"] ?? alpha.id;
+      if (!headers["x-aspm-workspace-id"]) this.violations.push("Protected request omitted the selected workspace header.");
+      if (![alpha.id, beta.id].includes(workspace)) { await this.error(route, 403, "forbidden", "Workspace access denied."); return; }
+      if (method === "GET" && path === "/api/v1/work") {
+        if (this.workGate?.workspace === workspace) await this.workGate.wait;
+        await route.fulfill({ json: workResponse(url.searchParams.get("q") ?? "", workspace === alpha.id ? [detailedFinding, workItems[1]] : [workItems[2]]) });
+      } else if (method === "GET" && path === `/api/v1/findings/${detailedFinding.id}` && workspace === alpha.id) {
+        await route.fulfill({ json: { apiVersion, dataOrigin: "synthetic", finding: detailedFinding } });
+      } else if (method === "GET" && path === "/api/v1/integrations/catalog") {
+        await route.fulfill({ json: catalogResponse });
+      } else if (method === "GET" && path === "/api/v1/assets") {
+        const items = this.assets.filter((asset) => asset.workspaceId === workspace);
+        await route.fulfill({ json: { apiVersion, items, total: items.length, nextCursor: null } });
+      } else if (method === "POST" && path === "/api/v1/assets" && workspace === alpha.id) {
+        this.assets.push(createdAsset);
+        await route.fulfill({ status: 201, json: { apiVersion, asset: createdAsset } });
+      } else if (method === "PATCH" && path === `/api/v1/assets/${createdAsset.id}` && workspace === alpha.id) {
+        const index = this.assets.findIndex((asset) => asset.id === createdAsset.id);
+        if (index < 0) { await this.error(route, 404, "not-found", "Unknown asset."); return; }
+        this.assets[index] = updatedAsset;
+        await route.fulfill({ json: { apiVersion, asset: updatedAsset } });
+      } else if (method === "GET" && path.startsWith("/api/v1/assets/")) {
+        const asset = this.assets.find((item) => item.id === path.split("/").at(-1) && item.workspaceId === workspace);
+        if (asset) await route.fulfill({ json: { apiVersion, asset } });
+        else await this.error(route, 404, "not-found", "Unknown asset.");
+      } else if (method === "POST" && path === "/api/v1/imports" && workspace === alpha.id) {
+        const id = `synthetic-import-${this.imports.size + 1}`;
+        this.imports.set(id, { body, state: "queued", importedAt: new Date().toISOString() });
+        await route.fulfill({ status: 202, json: { apiVersion, import: this.receipt(id) } });
+      } else if (method === "GET" && path.startsWith("/api/v1/imports/") && workspace === alpha.id && this.imports.has(path.split("/").at(-1) ?? "")) {
+        await route.fulfill({ json: { apiVersion, import: this.receipt(path.split("/").at(-1)!) } });
+      } else {
+        this.violations.push(`Undeclared application API operation: ${method} ${path}.`);
+        await this.error(route, 404, "not-found", "Undeclared synthetic endpoint.");
+      }
+    });
+  }
+}
+
+export const test = base.extend<{ app: ApplicationAPI }>({
+  app: async ({ page, baseURL }, use) => {
+    if (!baseURL) throw new Error("Missing loopback browser test baseURL.");
+    const app = new ApplicationAPI(), pageErrors: string[] = [], consoleText: string[] = [];
+    page.on("pageerror", (error) => pageErrors.push(error.message));
+    page.on("console", (message) => consoleText.push(message.text()));
+    await app.install(page, new URL(baseURL).origin);
+    try { await use(app); } finally {
+      app.releaseWork();
+      expect.soft(app.violations, "Only the declared authenticated application HTTP boundary may be used.").toEqual([]);
+      expect.soft(pageErrors, "No unhandled browser exceptions.").toEqual([]);
+      if (!page.isClosed() && page.url().startsWith(baseURL)) {
+        const snapshot = await page.evaluate(() => ({
+          visible: document.body.innerText, cookie: document.cookie,
+          storage: [...Object.entries(localStorage), ...Object.entries(sessionStorage)],
+        }));
+        expect.soft(snapshot.storage.map(([key]) => key).filter((key) => /token|api.?key|password|secret|credential/i.test(key))).toEqual([]);
+        for (const secret of secretCanaries) {
+          expect.soft(JSON.stringify(snapshot) + page.url() + consoleText.join("\n"), "Synthetic passwords/setup/session values must not leak into DOM, URL, script-readable cookies, storage or console.").not.toContain(secret);
+        }
+      }
+    }
+  },
+});
+export { expect } from "@playwright/test";

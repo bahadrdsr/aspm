@@ -1,0 +1,65 @@
+CONDITIONAL-FIRST READINESS COMPATIBILITY
+========================================
+Independent test-author gate. Only this new package/runner/contract is authored.
+It calls the public production evidence.PrepareReadiness against the owned real
+S3 fixture, not an application mock or simulated AWS 403-success scenario.
+
+Run from aspm:
+  .\tests\readiness_compatibility\Test-ReadinessCompatibility.ps1 -RuntimeConfig '<private-storage-isolation-json>'
+Private fields: endpoint,region,bucket,roles.{admin,core,ingestion}.{accessKey,secretKey}.
+The runner alone reads them, restores process environment and redacts captured
+output before persistence. Root Go dependencies are reused without any manifest
+change. Missing configuration/capability/setup/cleanup fails, never skips.
+
+Required sequence, for the selected object and supplied role identity:
+  FIRST actual request: PutObject with If-None-Match:*.
+  Successful PUT or native 412/PreconditionFailed: real GetObject confirmation
+  must follow. A PUT 403 is a failure, never readiness success or read fallback.
+  A successful PUT followed by GET 403 is also failure, never success.
+  Existing readable sentinel bytes must survive unchanged.
+No production HeadBucket/list operation or broad permission is required.
+
+Observation boundary
+--------------------
+The pass-through tap preserves signed Host/path/body and real responses from
+127.0.0.1:18335/aspm-isolation. It verifies the actual supplied signing identity,
+conditional header, ordering, status and native error code. It does not fabricate
+responses. Operator/admin only seeds, independently verifies and deletes exact
+owned object keys. Every target has a random per-case suffix within raw/team-a/
+or normalized/team-a/. Role controls use separate owned keys, not the selected
+PrepareReadiness probe, and do not pollute that request-order trace.
+Actual ingestion controls verify raw GET success/PUT 403 and normalized PUT
+success/GET 403. No policies, other prefixes, buckets or native main roles change.
+
+Observed current RED / controls
+------------------------------
+Public readiness.go SHA256 before AND after the real run:
+24bc17696ac295c9f1266fa6859084e5ebff287f9b7f2ece8cd9b02945014a9e
+Actual selected-object native sequences:
+  core fresh:          GET 404 -> PUT 200 -> GET 200
+  ingestion raw RO:    GET 404 -> PUT 403
+  ingestion normalized WO: GET 403
+  core existing sentinel: GET 200
+All FOUR conditional-first ordering gates are RED. All FOUR separate native
+denial/byte-preservation controls PASS. The readable core object is actually
+created; denied operations remain failures; the sentinel is not overwritten.
+The expected conditional-conflict/readback sequence is not observed yet for the
+existing sentinel because current code stops after its first successful GET.
+Exit 1, zero skips; package time 5.033 seconds. Evidence is redacted and frozen
+under .run/frozen-red.jsonl. FROZEN.sha256 records exact new source/runner hashes.
+No successful I/O is faked, and 403 is never treated as proof of readiness.
+
+Compatibility rationale / limits
+--------------------------------
+AWS documents that an absent-key GET can return 403 to callers without
+s3:ListBucket. This local store instead returned 404 for these permitted raw
+reads. The regression therefore checks the real conditional-first sequence,
+not a fabricated AWS response, added ListBucket permission or a live AWS claim.
+Native permission/readability and sentinel controls are distinct from the
+ordering defect. Full AWS account behavior, deployment readiness and native
+service/Kubernetes changes are not certified here.
+Existing readiness_bootstrap and all frozen roots/oracles remain untouched.
+
+Primary protocol references:
+https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html
+https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html

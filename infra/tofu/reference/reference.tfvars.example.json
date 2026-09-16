@@ -1,0 +1,9 @@
+{
+  "allow_provisioning": false,
+  "libvirt_uri": "qemu:///system",
+  "base_image_path": "/operator-supplied/aspm-lab/ubuntu-24.04.5-reviewed.qcow2",
+  "base_image_sha256": "REPLACE_WITH_THE_REVIEWED_IMAGE_SHA256",
+  "pool_path": "/var/lib/libvirt/aspm-lab",
+  "memory_mib": 4096,
+  "vcpus": 2
+}

@@ -1,0 +1,41 @@
+REAL API / WORKER SECURITY RED - SEPTEMBER 15, 2026
+================================================
+Ten top-level gates compile. Existing production HTTP/worker binding and real
+operator-fixture PostgreSQL/S3 were used. No agents, production changes or fake
+database/storage results.
+
+PASS (2):
+  Viewer/foreign denials preserve prior finding/provenance/evidence.
+  Hostile raw report authority fields cannot override caller routing/human state.
+
+REPRODUCED BEHAVIORAL RED (5):
+  Existing source scan scope/branch rebinding returned 202 instead of 409 and
+    produced extra work. Changed-asset conflict remains a positive control.
+  Identical historical scan replay still returned 200 after first acceptance+24h;
+    initial historical intake, within-window replay and distinct historical scans
+    remain valid controls.
+  Partial AND delta positive after newer complete absence depends on processing
+    order; forward-order controls pass.
+  ZAP serialized observations: 15,425 / 49,313 / 171,841 bytes for 8 / 16 / 32
+    instances. Both doublings exceed 2.5x; field/evidence preservation controls pass.
+  TWO actual S3 PUTs were published and their responses held with pool size 2.
+    Both authenticated session and Work reads returned 503 before release.
+    After release, processing, exact evidence and idempotent replays passed.
+
+REQUIRED API RED (1):
+  An actual analyst-import S3 GET was blocked before delivered evidence.
+  Authenticated admin PATCH /api/v1/users/{id} returned 404, not 200.
+  Cancellation/final authorization behavior is NOT claimed verified without that
+    operation. The blocked worker was cancelled and prior data remained intact.
+
+INSTRUMENTATION BLOCKED (2, fail rather than skip):
+  Count/page worker-commit interleaving.
+  Independent-worker finalization authorization.
+  QueryTracer is not yet forwarded into the production pgx pool. No synthetic
+    query result was substituted and no race reproduction is claimed for these.
+
+Exact first-slice hashes: security-behavior.handoff.json.
+Sanitized real-run logs: .security-run\behavior-red.jsonl and
+  .security-run\concurrency-red.jsonl. Final frozen source/evidence hashes are
+  recorded in security-hashes.after.json for parent review/signing.
+Run: go test -tags=integration -mod=readonly -count=1 -timeout=240s -run '^TestSecurity' .\tests\acceptance

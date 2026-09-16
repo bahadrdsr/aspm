@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "date": "2026-09-15",
+  "stage": "bounded-security-handoff-frozen-before-coder-fixes",
+  "signature": "unsigned integrity record for parent review/signing, not oracle authorization",
+  "existingAmendment": "ApplicationConfig.QueryTracer only; no existing assertions or installer files changed",
+  "results": {
+    "topLevel": 10,
+    "pass": 2,
+    "behavioralRed": 5,
+    "missingRoleAPI": 1,
+    "blockedTracer": 2,
+    "skip": 0
+  },
+  "files": [
+    {
+      "path": "tests\\acceptance\\.security-run\\behavior-red.jsonl",
+      "bytes": 11849,
+      "sha256": "96fbabb88e2abc6606b91f5de20bf447de97e9b816f395d09b54bd7e239a5cb4"
+    },
+    {
+      "path": "tests\\acceptance\\.security-run\\concurrency-red.jsonl",
+      "bytes": 6483,
+      "sha256": "33359ebccbf90096f829f25afc01c120dd4681565c2754b9fa58a67a6e4a0814"
+    },
+    {
+      "path": "tests\\acceptance\\api_test.go",
+      "bytes": 12658,
+      "sha256": "cedd4a1aa6fb662a4e28a27e102a30b7689201b09d7eb7f789b79ab9d351a57f"
+    },
+    {
+      "path": "tests\\acceptance\\contract_test.go",
+      "bytes": 2556,
+      "sha256": "b89d01a43d2c5493a4113ab1b7f285f7b3ff8c28c6d2abc21345bb71646be80f"
+    },
+    {
+      "path": "tests\\acceptance\\CONTRACT.txt",
+      "bytes": 11183,
+      "sha256": "1cb200de3d63682e9a25ae67f9128231f2d41b0afd1852a1f02709303ddca51f"
+    },
+    {
+      "path": "tests\\acceptance\\m03_test.go",
+      "bytes": 5961,
+      "sha256": "67861502185ef16eb9b69b052705cedfc44c0e8de6568cbee3219e77da73aa8a"
+    },
+    {
+      "path": "tests\\acceptance\\m04_test.go",
+      "bytes": 6632,
+      "sha256": "75ae0a4c38c3e54f97a47ff1f3c496db5b2ee7adde2ff1889d4756d853b71646"
+    },
+    {
+      "path": "tests\\acceptance\\m05_test.go",
+      "bytes": 8775,
+      "sha256": "345a0f464f204d818dfef1668f71dd5eddc14c0a947f721762522ff6e2fedd3f"
+    },
+    {
+      "path": "tests\\acceptance\\m06_test.go",
+      "bytes": 8219,
+      "sha256": "908e65dd4d4c8aff36d767d303d23a3a27cc8bfd353f57e996bd4643bf03c358"
+    },
+    {
+      "path": "tests\\acceptance\\m07_test.go",
+      "bytes": 6997,
+      "sha256": "dda7f151116ff158ae763fcfbb5841a2022b13f67a9af00640d5e3f5d98b0b90"
+    },
+    {
+      "path": "tests\\acceptance\\RED.txt",
+      "bytes": 1867,
+      "sha256": "01eb0d5edb2cc83ec164bd799225cbdd15b789c195bc7e3d3dc5c2eda9ceeede"
+    },
+    {
+      "path": "tests\\acceptance\\security_behavior_test.go",
+      "bytes": 13619,
+      "sha256": "63c47d31ad07594848899d9a7967bfe2a314d657b6762889882a8e579492b975"
+    },
+    {
+      "path": "tests\\acceptance\\security_concurrency_test.go",
+      "bytes": 7674,
+      "sha256": "ce2b0eaee643ca60ca2da54da6d33c78eaf19e40a1e42223af94b61636d63054"
+    },
+    {
+      "path": "tests\\acceptance\\security_io_test.go",
+      "bytes": 8217,
+      "sha256": "6a2be390f06cd26655fd71267dae994235145ddfcae77f5cfdd8a4b4ccaf93a9"
+    },
+    {
+      "path": "tests\\acceptance\\security-behavior.handoff.json",
+      "bytes": 1321,
+      "sha256": "33147709159c89334d0cd1ed33cae2e6eb7effeca399505f50d6ce1b0d887c2d"
+    },
+    {
+      "path": "tests\\acceptance\\security-CONTRACT.txt",
+      "bytes": 7108,
+      "sha256": "f6e528cc466702a57f6cbb89eaf40807dd2fa56e9a294b3f7cbaaa224255a6ae"
+    },
+    {
+      "path": "tests\\acceptance\\security-hashes.before.json",
+      "bytes": 4847,
+      "sha256": "0929117c9cf76bfdd9c4b7696304f7d732274b32c7aea4805801128f15f98a95"
+    },
+    {
+      "path": "tests\\acceptance\\security-RED.txt",
+      "bytes": 2385,
+      "sha256": "ffd77f321d804d78146d8bf144a4be39d4f1b6db2738f8ee9080570d27390ee2"
+    },
+    {
+      "path": "tests\\acceptance\\services_test.go",
+      "bytes": 7299,
+      "sha256": "9b47472ae7c488e96932626698466a0492850cd88f522750bc949ce136b093b6"
+    },
+    {
+      "path": "tests\\acceptance\\Test-Acceptance.ps1",
+      "bytes": 4179,
+      "sha256": "2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\generic-json.json",
+      "bytes": 326,
+      "sha256": "25554cd1ca77c599c9675b26a4f36b41205ae86e16446781242fb5715dd029ac"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\generic.csv",
+      "bytes": 243,
+      "sha256": "62a2cf93cfd1214fd994e549dde82798b822db8b87fb164adb2af13bc15a9e10"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\gitleaks.json",
+      "bytes": 661,
+      "sha256": "73ed1e05c05e5a2a35db0af9513ca33ee49d9fc33f4577eb5b03f00981ca7354"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\manual.json",
+      "bytes": 350,
+      "sha256": "7dae0087d90091d4a46c6986810fae58f4f3f7f628f1b6440970c12400f1d249"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\sarif.json",
+      "bytes": 916,
+      "sha256": "76a29fde1673ccfc08a860d576c8a300fd9238ede49bfae4408db4e58b64e15a"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\trivy.json",
+      "bytes": 540,
+      "sha256": "18c489e6b61fd2525dbb759f5d42bede76d60fd49111b7b3a2e1bfeb718ded66"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\zap.json",
+      "bytes": 737,
+      "sha256": "cf2a3bfc002670d2c79f05133b9d63a8067c6d1d29754764f1b4ae314ca967c8"
+    },
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "bytes": 2083,
+      "sha256": "4a78e8f90350aa337da05951a5e609acda84b83c682ec36b897f51007bff079e"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "bytes": 9698,
+      "sha256": "db94c5b3e1aee7d5584dd127e3caa8873e24fdfad1e9f658b04ec52670766ec5"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "bytes": 18518,
+      "sha256": "fa47767a0dd4532c97cd965bfd128f75ab87adb458afe0a9ae54d1a63dd65b11"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "bytes": 16066,
+      "sha256": "cf3412cd263d4cd72482f77805f60cecf192f077a0f1896040b726fd4a62123a"
+    },
+    {
+      "path": "tests\\installer\\handoff-hashes.after.json",
+      "bytes": 4543,
+      "sha256": "ee8e0031fbbfc5762a07daae988544ecfa5d90a61f1160e0d21d53a6bff6977e"
+    },
+    {
+      "path": "tests\\installer\\handoff-hashes.before.json",
+      "bytes": 4449,
+      "sha256": "32ac59a65a4a86b75f448512f1d499414a7e420edf4a57895e4149fb3eb9cf97"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "bytes": 2071,
+      "sha256": "525dcaa19abb19794c393a0b2aafde59c111df373478caeb57f025cbfb68057c"
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "bytes": 11308,
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "date": "2026-09-15",
+  "stage": "frozen-independent-installer-role-key-amendment",
+  "signature": "unsigned integrity record, parent oracle signing required",
+  "files": [
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "bytes": 2905,
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "bytes": 24083,
+      "sha256": "b3006c93d77cc58293a4d06eeaceb60118196a377d22c8147bb71360bee92b87"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "bytes": 25430,
+      "sha256": "48480df8d2e7e748778d88a978c2af5ab4786b6796abba87db66f44916f10b8a"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "bytes": 14308,
+      "sha256": "937f577c52df87f71629a4d4e99764b181f717a89d79c5d1d29640d87887b5d5"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "bytes": 3158,
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    },
+    {
+      "path": "tests\\installer\\role-key-hashes.before.json",
+      "bytes": 1350,
+      "sha256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8"
+    },
+    {
+      "path": "tests\\installer\\role-key-amendment.json",
+      "bytes": 3891,
+      "sha256": "d27fd79b740daf167d9c3cae0537e7a7a1bff0f183652135c1a45c80536e8264"
+    },
+    {
+      "path": "tests\\installer\\.role-run\\red-run.jsonl",
+      "bytes": 11404,
+      "sha256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+    }
+  ]
+}

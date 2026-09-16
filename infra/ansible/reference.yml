@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Check an explicitly selected aspm reference host",
+    "hosts": "aspm_reference",
+    "gather_facts": true,
+    "become": false,
+    "tasks": [
+      {
+        "name": "Require the declared reference OS and profile",
+        "ansible.builtin.assert": {
+          "that": [
+            "ansible_facts['distribution'] == 'Ubuntu'",
+            "ansible_facts['distribution_version'] == '24.04'",
+            "ansible_facts['service_mgr'] == 'systemd'",
+            "aspm_profile in ['linux', 'kubernetes']"
+          ],
+          "fail_msg": "Use an authorized Ubuntu 24.04.5 reference image and an explicit Linux or Kubernetes profile."
+        }
+      },
+      {
+        "name": "Inspect cgroup v2 without changing the host",
+        "ansible.builtin.stat": { "path": "/sys/fs/cgroup/cgroup.controllers" },
+        "register": "aspm_cgroup"
+      },
+      {
+        "name": "Require cgroup v2",
+        "ansible.builtin.assert": { "that": ["aspm_cgroup.stat.exists"], "fail_msg": "cgroup v2 must be prepared explicitly by the host operator." }
+      },
+      {
+        "name": "Gather existing package facts",
+        "ansible.builtin.package_facts": { "manager": "auto" }
+      },
+      {
+        "name": "Require an existing Podman package for the Linux profile",
+        "ansible.builtin.assert": { "that": ["'podman' in ansible_facts.packages"], "fail_msg": "Prepare and pin Podman on the reference host; no package installation is hidden in M01." },
+        "when": "aspm_profile == 'linux'"
+      },
+      {
+        "name": "Create only the explicitly approved dedicated lab input directory",
+        "ansible.builtin.file": { "path": "/var/lib/aspm-lab", "state": "directory", "mode": "0700" },
+        "become": true,
+        "when": "aspm_allow_host_changes | default(false) | bool"
+      },
+      {
+        "name": "State the remaining deployment boundary",
+        "ansible.builtin.debug": {
+          "msg": "Reference prerequisites inspected only. Guest enrollment, K3s/CSI/ingress, Quadlet/Helm application resources, persistence and deployment checks are not implemented by M01."
+        }
+      }
+    ]
+  }
+]

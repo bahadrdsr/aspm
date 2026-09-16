@@ -1,0 +1,64 @@
+BLOCKED-READ APPROVAL SECURITY HANDOFF - SEPTEMBER 15, 2026
+==========================================================
+Source: tests\analysis\approval_revocation_test.go.
+Only this new test file was changed. Existing analysis bindings/oracles,
+successful storage tests, production code, dependencies and UI files are not
+implementation targets for this handoff.
+
+Run from aspm:
+  go test -mod=readonly -count=1 -timeout=30s -run '^TestM12Approval(ChangesTerminateBlockedRead|IsCurrentAfterEvidenceClose)$' .\tests\analysis
+
+Four bounded scenarios
+----------------------
+1. A trusted, initially valid approval expires while Evidence.Read is blocked.
+2. The trusted approval is revoked after that read starts.
+3. The caller cancels during a blocked read, independently of approval policy.
+4. Approval is revoked at evidence Close, after valid fixture data reaches EOF.
+
+The reader never releases successful data in the blocked-read cases. It can
+stop only when its operation context is cancelled or the reader is closed.
+Expiry/revocation must actively terminate the read within two seconds of the
+policy change, then finish verification without reopening/resuming evidence.
+Finishing the read and discarding its result is not an acceptable substitute.
+The constructor/caller deadline is ten seconds, outside that policy window;
+the fixture itself does not implement cancellation or approval business logic.
+
+Policy expiry/revocation: ErrPolicy, outcome=blocked, caller still active.
+Caller cancellation: context.Canceled, outcome=cancelled, not ErrPolicy.
+All stopped cases must close their reader and return no success artifact
+references, false-positive classification or finding-closure decision.
+The final-result case requires a fresh trusted LookupApproval AFTER evidence
+EOF/Close, before success/artifacts can be returned. Reusing an old approved
+snapshot is not sufficient.
+
+Observed RED
+------------
+The focused run exited 1: three failures, one passing control, zero skips.
+Go package time: 9.670 seconds.
+  expires:          FAIL - read remained blocked after expiry + two seconds.
+  revoked:          FAIL - read remained blocked two seconds after revocation.
+  caller-cancelled: PASS - cancellation stops the read and remains distinct.
+  final approval:   FAIL - no fresh post-Close lookup; required policy-blocked,
+                    artifact-free result was not returned.
+All test-owned blocked readers were released during bounded cleanup; no live
+storage credentials or provider accounts were loaded by this run.
+
+Evidence: tests\storage_security\.run\approval-revocation-red.jsonl.
+Test SHA256:
+68b5e19321c04f463905e2a060b81a12f8d82c0b41e78002a13ce2ff5e459f04
+RED evidence SHA256:
+ba6cafa3e372b25585b2772f46d0caca015d1658e16f920db06da1ade8c37b90
+FROZEN.sha256 in this directory records exact-byte inputs/evidence, with paths
+relative to the aspm root. Do not change tests, bindings or fixture expectations
+to accommodate an implementation; changes require independent author review.
+
+Coverage boundary
+-----------------
+This exercises the real verifier through its existing production binding and
+a context-aware I/O boundary fixture. It does not prove native remote-reader
+cancellation, real approval-database mutation, runtime credential replacement
+or the still-unimplemented full AI job/API flow.
+The verifier contract has no provider/job execution hook. No-later-provider-call
+and provider-cancellation guarantees in a complete AI workflow remain separate,
+unverified gates; evidence Open/Read counts and result artifacts are checked here.
+The independently green storage credential matrix is not rerun or changed.

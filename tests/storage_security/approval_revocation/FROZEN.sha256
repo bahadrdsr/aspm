@@ -1,0 +1,8 @@
+# Independent approval test-author RED baseline: 2026-09-15.
+# Exact bytes; paths relative to the aspm root; manifest excludes itself.
+68b5e19321c04f463905e2a060b81a12f8d82c0b41e78002a13ce2ff5e459f04  tests\analysis\approval_revocation_test.go
+88ec70b175d3fec58d6d1d0be5fc0a3768a27b0e6f302bea84d673749b166802  tests\analysis\contract_test.go
+af7b72210156f48a54d19ba24efa40987c6ccc160447e15f9932d6065fd73e4b  tests\analysis\verification_test.go
+84aa931c5985d02e1910f9d6944412d20dffc7aaeae84526f65f7855aee8466b  tests\analysis\production_bindings_test.go
+ba6cafa3e372b25585b2772f46d0caca015d1658e16f920db06da1ade8c37b90  tests\storage_security\.run\approval-revocation-red.jsonl
+943e402e9722e8def344caee68a82b70b93daccc2df854199033efb056016e7e  tests\storage_security\approval_revocation\HANDOFF.txt

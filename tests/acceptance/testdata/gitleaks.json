@@ -1,0 +1,13 @@
+[
+  {
+    "Description": "Synthetic redacted credential fixture",
+    "StartLine": 4, "EndLine": 4, "StartColumn": 1, "EndColumn": 20,
+    "Match": "[REDACTED SYNTHETIC]", "Secret": "[REDACTED SYNTHETIC]",
+    "File": "config/example.txt", "SymlinkFile": "",
+    "Commit": "0123456789abcdef0123456789abcdef01234567", "Entropy": 0.0,
+    "Author": "Synthetic Author", "Email": "author@example.invalid",
+    "Date": "2026-09-01T09:00:00Z", "Message": "Synthetic commit time, not scan time",
+    "Tags": ["synthetic"], "RuleID": "synthetic-rule",
+    "Fingerprint": "0123456789abcdef0123456789abcdef01234567:config/example.txt:synthetic-rule:4"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "preserve",
+    "strict": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@/registry/primitives/animate/slot": ["./src/components/animate/slot.tsx"],
+      "@workspace/ui/lib/utils": ["./src/lib/utils.ts"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "tests", "scripts", "vite.config.ts", "playwright.config.ts", "review.config.ts"],
+  "exclude": ["node_modules", "dist", ".cache", ".artifacts", "tests/upstream"]
+}

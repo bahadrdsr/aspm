@@ -1,0 +1,96 @@
+param(
+    [Parameter(Mandatory = $true)] [string] $RuntimeConfig,
+    [Parameter(Mandatory = $true)] [string] $StorageConfig,
+    [string] $Go = 'go',
+    [string] $Run = '^TestReadinessBootstrap_'
+)
+
+$ErrorActionPreference = 'Stop'
+$RuntimeConfig = (Resolve-Path -LiteralPath $RuntimeConfig).Path
+$StorageConfig = (Resolve-Path -LiteralPath $StorageConfig).Path
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$mapping = [ordered]@{
+    ASPM_READINESS_ENDPOINT = 'endpoint'
+    ASPM_READINESS_REGION = 'region'
+    ASPM_READINESS_BUCKET = 'bucket'
+}
+$names = @('GOTOOLCHAIN','GOWORK','GOENV','GOPROXY','GOSUMDB','GOPATH','GOMODCACHE',
+    'GOCACHE','GOTMPDIR','TEMP','TMP','AWS_EC2_METADATA_DISABLED','ASPM_READINESS_DATABASE_URL') + @($mapping.Keys)
+foreach ($role in @('ADMIN','CORE','INGESTION')) {
+    $names += "ASPM_READINESS_${role}_ACCESS_KEY", "ASPM_READINESS_${role}_SECRET_KEY"
+}
+$previous = @{}
+foreach ($name in $names) { $previous[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
+$exitCode = 1
+Push-Location $PSScriptRoot
+try {
+    try {
+        $runtime = Get-Content -LiteralPath $RuntimeConfig -Raw | ConvertFrom-Json -AsHashtable
+        $storage = Get-Content -LiteralPath $StorageConfig -Raw | ConvertFrom-Json -AsHashtable
+    } catch { throw 'BLOCKED: cannot read authorized private fixture metadata; contents withheld.' }
+    if (-not ($runtime.databaseUrl -is [string]) -or [string]::IsNullOrWhiteSpace($runtime.databaseUrl)) {
+        throw 'BLOCKED: private databaseUrl is missing.'
+    }
+    $env:ASPM_READINESS_DATABASE_URL = $runtime.databaseUrl
+    $secrets = @($runtime.databaseUrl, $runtime.postgresPassword)
+    try {
+        $userinfo = ([Uri]$runtime.databaseUrl).UserInfo
+        if ($userinfo.Contains(':')) { $secrets += [Uri]::UnescapeDataString($userinfo.Split(':',2)[1]) }
+    } catch { throw 'BLOCKED: invalid private PostgreSQL URL; value withheld.' }
+    foreach ($entry in $mapping.GetEnumerator()) {
+        $value = $storage[$entry.Value]
+        if (-not ($value -is [string]) -or [string]::IsNullOrWhiteSpace($value)) {
+            throw "BLOCKED: missing storage field $($entry.Value)."
+        }
+        [Environment]::SetEnvironmentVariable($entry.Key, $value, 'Process')
+    }
+    foreach ($role in @('admin','core','ingestion')) {
+        foreach ($field in @('accessKey','secretKey')) {
+            $value = $storage.roles[$role][$field]
+            if (-not ($value -is [string]) -or [string]::IsNullOrWhiteSpace($value)) {
+                throw "BLOCKED: missing private role field $role.$field."
+            }
+            $suffix = if ($field -eq 'accessKey') { 'ACCESS_KEY' } else { 'SECRET_KEY' }
+            [Environment]::SetEnvironmentVariable("ASPM_READINESS_$($role.ToUpperInvariant())_$suffix", $value, 'Process')
+            $secrets += $value
+        }
+    }
+    $redactions = @($secrets | Where-Object { $_ } | Sort-Object -CaseSensitive -Unique)
+    foreach ($value in @($redactions)) {
+        $redactions += [Uri]::EscapeDataString($value)
+        $quoted = ConvertTo-Json -InputObject $value -Compress
+        $redactions += $quoted.Substring(1, $quoted.Length - 2)
+    }
+    $redactions = @($redactions | Sort-Object -CaseSensitive -Unique | Sort-Object Length -Descending)
+    foreach ($directory in @('.run\build','.run\work','.run\gopath')) {
+        New-Item -ItemType Directory -Path $directory -Force | Out-Null
+    }
+    $env:GOTOOLCHAIN = 'local'; $env:GOWORK = 'off'; $env:GOENV = 'off'
+    $env:GOPROXY = 'off'; $env:GOSUMDB = 'off'; $env:AWS_EC2_METADATA_DISABLED = 'true'
+    $env:GOPATH = Join-Path $PSScriptRoot '.run\gopath'
+    $env:GOMODCACHE = Join-Path $root '.cache\modules'
+    $env:GOCACHE = Join-Path $PSScriptRoot '.run\build'
+    $env:GOTMPDIR = Join-Path $PSScriptRoot '.run\work'
+    $env:TEMP = $env:GOTMPDIR; $env:TMP = $env:GOTMPDIR
+    $raw = @(& $Go test -json -tags=integration -mod=readonly -count=1 -timeout=180s -run $Run . 2>&1)
+    $exitCode = $LASTEXITCODE
+    $safe = @($raw | ForEach-Object {
+        $line = $_.ToString()
+        foreach ($value in $redactions) { $line = $line.Replace($value, '[REDACTED]') }
+        $line
+    })
+    $safe | Set-Content -LiteralPath '.run\red.jsonl' -Encoding utf8
+    $readable = foreach ($line in $safe) {
+        if ($line.StartsWith('{')) {
+            $event = $line | ConvertFrom-Json -AsHashtable
+            if ($event.Output) { $event.Output.TrimEnd() }
+        } else { $line }
+    }
+    $readable | Set-Content -LiteralPath '.run\red.log' -Encoding utf8
+    $readable | Write-Output
+}
+finally {
+    Pop-Location
+    foreach ($name in $names) { [Environment]::SetEnvironmentVariable($name, $previous[$name], 'Process') }
+}
+exit $exitCode

@@ -1,0 +1,37 @@
+INSTALLER V3 - NEW MANAGED READINESS WIRING ASSERTIONS
+===================================================
+Two new top-level cases in v3_readiness_test.go. This is NEW feature coverage
+after independent V2 acceptance, not a repair or replacement of any V2 control.
+Every V2 assertion/helper/type/binding/history byte and signed manifest remains
+unchanged. V3-BEFORE.json records the original control hashes and current source
+inputs; the named V2 manifest is also archived byte-exactly.
+
+Approved managed installation must materialize opt-in preparation for CORE:
+- actual Helm producer values: core.prepareReadiness = true (JSON boolean);
+- actual Linux etc/aspm/core.env: ASPM_S3_PREPARE_READINESS=true, literal native
+  Podman env-file bytes through the already-corrected V2 parser.
+Core's caller-selected rawPrefix/readinessKey and supplied private role bytes
+must remain exact. Ingestion retains its own keys/raw/readiness/normalized scope
+and receives NO preparation flag or core bootstrap. Reports remains DB-only
+with no ASPM_S3_*, AWS_* or bootstrap fields and no preparation selection.
+The ambient preparation flag is deliberately false; it is not configuration
+authority or a fallback. No RuntimeRoles or M00 schema field is introduced.
+Existing explicit selected ReadinessKey authorizes this managed materialization,
+not a different tenant/prefix or broader storage permissions.
+
+Both tests call the real production Plan/DryRun/Execute through the existing
+frozen binding and I/O boundaries. Plan/DryRun remains application-secret-free
+and nonmutating. The Helm observer reads actual values at command invocation
+and returns the existing runner result unchanged; no test-side rendering.
+No native cluster/systemd/container action, runtime credential, module/dependency
+change, production or deployment-author modification is involved.
+Runtime preparation semantics and actual Helm rendering/default-off/core-only
+checks remain independently owned, not claimed by these producer tests.
+
+Run from aspm using the existing Go toolchain/dependency cache and task-specific
+.cache/installer-v3 build/work/gopath plus a NEW current output filename:
+  go test -json -mod=readonly -count=1 -timeout=120s -run '^TestInstallerV3_' .\tests\installer
+Never overwrite historical RED, FROZEN.V2.sha256 or another signed control.
+V3-RED.txt records actual execution results; FROZEN.V3.sha256 and V3-HANDOFF.json
+record exact new controls/evidence for parent verification/signing, not self-
+issued deployment or reviewer approval.

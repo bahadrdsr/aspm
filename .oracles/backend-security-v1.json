@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "scope": "backend-security-correction",
+  "phase": "pre-code-red",
+  "author": "independent-ac4e6adc-with-reviewed-forwarding-instrumentation",
+  "capturedAt": "2026-09-15T18:24:04.835Z",
+  "redEvidence": {
+    "sha256": "72cf75d2e52cdcfa87d3b2c755e8da4143884ff123d7083c1579470000bf0e44",
+    "exitCode": 1
+  },
+  "protectedRoots": [
+    "tests/acceptance/testdata"
+  ],
+  "bindingPaths": [],
+  "files": [
+    {
+      "path": "go.mod",
+      "normalization": "none",
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "normalization": "none",
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal/app/auth_test.go",
+      "normalization": "none",
+      "sha256": "7f2937983197a96fc555b879a2273c3e6da9913076cfa71b9f445ea9413c27a9"
+    },
+    {
+      "path": "internal/parsers/parsers_test.go",
+      "normalization": "none",
+      "sha256": "b3a34373251e5ab4d9f39eab934c4c23d7b96ed5f0b50bfb3d38bbba7cf62a4e"
+    },
+    {
+      "path": "tests/acceptance/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "1cb200de3d63682e9a25ae67f9128231f2d41b0afd1852a1f02709303ddca51f"
+    },
+    {
+      "path": "tests/acceptance/RED.txt",
+      "normalization": "none",
+      "sha256": "01eb0d5edb2cc83ec164bd799225cbdd15b789c195bc7e3d3dc5c2eda9ceeede"
+    },
+    {
+      "path": "tests/acceptance/Test-Acceptance.ps1",
+      "normalization": "none",
+      "sha256": "2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6"
+    },
+    {
+      "path": "tests/acceptance/api_test.go",
+      "normalization": "none",
+      "sha256": "cedd4a1aa6fb662a4e28a27e102a30b7689201b09d7eb7f789b79ab9d351a57f"
+    },
+    {
+      "path": "tests/acceptance/application_bindings_test.go",
+      "normalization": "none",
+      "sha256": "be223a9a5122b7c33efcf3c11dc1ce25dd1605e9de11de7f0f9b82f2f6094144"
+    },
+    {
+      "path": "tests/acceptance/contract_test.go",
+      "normalization": "none",
+      "sha256": "b89d01a43d2c5493a4113ab1b7f285f7b3ff8c28c6d2abc21345bb71646be80f"
+    },
+    {
+      "path": "tests/acceptance/m03_test.go",
+      "normalization": "none",
+      "sha256": "67861502185ef16eb9b69b052705cedfc44c0e8de6568cbee3219e77da73aa8a"
+    },
+    {
+      "path": "tests/acceptance/m04_oidc_test.go",
+      "normalization": "none",
+      "sha256": "84f8e4396f2aee48b1ecde5fa91088328f386c16bf819bd63e86d9c818236842"
+    },
+    {
+      "path": "tests/acceptance/m04_test.go",
+      "normalization": "none",
+      "sha256": "75ae0a4c38c3e54f97a47ff1f3c496db5b2ee7adde2ff1889d4756d853b71646"
+    },
+    {
+      "path": "tests/acceptance/m05_test.go",
+      "normalization": "none",
+      "sha256": "345a0f464f204d818dfef1668f71dd5eddc14c0a947f721762522ff6e2fedd3f"
+    },
+    {
+      "path": "tests/acceptance/m06_test.go",
+      "normalization": "none",
+      "sha256": "908e65dd4d4c8aff36d767d303d23a3a27cc8bfd353f57e996bd4643bf03c358"
+    },
+    {
+      "path": "tests/acceptance/m07_test.go",
+      "normalization": "none",
+      "sha256": "dda7f151116ff158ae763fcfbb5841a2022b13f67a9af00640d5e3f5d98b0b90"
+    },
+    {
+      "path": "tests/acceptance/m10_test.go",
+      "normalization": "none",
+      "sha256": "aa5c82530093c3ba75f7dbd15e288fb66c887033154efee9ae2b67f9a37021fa"
+    },
+    {
+      "path": "tests/acceptance/plan_bindings_test.go",
+      "normalization": "none",
+      "sha256": "4fe67e558a327f9f71b3ab7bd69ae57de248c68d0848d82138b854813cd340ba"
+    },
+    {
+      "path": "tests/acceptance/security-CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "f6e528cc466702a57f6cbb89eaf40807dd2fa56e9a294b3f7cbaaa224255a6ae"
+    },
+    {
+      "path": "tests/acceptance/security-RED.txt",
+      "normalization": "none",
+      "sha256": "ffd77f321d804d78146d8bf144a4be39d4f1b6db2738f8ee9080570d27390ee2"
+    },
+    {
+      "path": "tests/acceptance/security-behavior.handoff.json",
+      "normalization": "none",
+      "sha256": "33147709159c89334d0cd1ed33cae2e6eb7effeca399505f50d6ce1b0d887c2d"
+    },
+    {
+      "path": "tests/acceptance/security-hashes.after.json",
+      "normalization": "none",
+      "sha256": "050bc7167ab82771a265be9b2ce05b7e5937ff56efabcac1a002558789c93dcb"
+    },
+    {
+      "path": "tests/acceptance/security-hashes.before.json",
+      "normalization": "none",
+      "sha256": "0929117c9cf76bfdd9c4b7696304f7d732274b32c7aea4805801128f15f98a95"
+    },
+    {
+      "path": "tests/acceptance/security_behavior_test.go",
+      "normalization": "none",
+      "sha256": "63c47d31ad07594848899d9a7967bfe2a314d657b6762889882a8e579492b975"
+    },
+    {
+      "path": "tests/acceptance/security_concurrency_test.go",
+      "normalization": "none",
+      "sha256": "ce2b0eaee643ca60ca2da54da6d33c78eaf19e40a1e42223af94b61636d63054"
+    },
+    {
+      "path": "tests/acceptance/security_io_test.go",
+      "normalization": "none",
+      "sha256": "6a2be390f06cd26655fd71267dae994235145ddfcae77f5cfdd8a4b4ccaf93a9"
+    },
+    {
+      "path": "tests/acceptance/services_test.go",
+      "normalization": "none",
+      "sha256": "9b47472ae7c488e96932626698466a0492850cd88f522750bc949ce136b093b6"
+    },
+    {
+      "path": "tests/acceptance/testdata/generic-json.json",
+      "normalization": "none",
+      "sha256": "25554cd1ca77c599c9675b26a4f36b41205ae86e16446781242fb5715dd029ac"
+    },
+    {
+      "path": "tests/acceptance/testdata/generic.csv",
+      "normalization": "none",
+      "sha256": "62a2cf93cfd1214fd994e549dde82798b822db8b87fb164adb2af13bc15a9e10"
+    },
+    {
+      "path": "tests/acceptance/testdata/gitleaks.json",
+      "normalization": "none",
+      "sha256": "73ed1e05c05e5a2a35db0af9513ca33ee49d9fc33f4577eb5b03f00981ca7354"
+    },
+    {
+      "path": "tests/acceptance/testdata/manual.json",
+      "normalization": "none",
+      "sha256": "7dae0087d90091d4a46c6986810fae58f4f3f7f628f1b6440970c12400f1d249"
+    },
+    {
+      "path": "tests/acceptance/testdata/sarif.json",
+      "normalization": "none",
+      "sha256": "76a29fde1673ccfc08a860d576c8a300fd9238ede49bfae4408db4e58b64e15a"
+    },
+    {
+      "path": "tests/acceptance/testdata/trivy.json",
+      "normalization": "none",
+      "sha256": "18c489e6b61fd2525dbb759f5d42bede76d60fd49111b7b3a2e1bfeb718ded66"
+    },
+    {
+      "path": "tests/acceptance/testdata/zap.json",
+      "normalization": "none",
+      "sha256": "cf2a3bfc002670d2c79f05133b9d63a8067c6d1d29754764f1b4ae314ca967c8"
+    }
+  ]
+}

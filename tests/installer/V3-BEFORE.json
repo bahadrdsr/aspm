@@ -1,0 +1,188 @@
+{
+  "version": 3,
+  "requestedAt": "2026-09-16T03:39:38.900+02:00",
+  "kind": "NEW managed-install readiness wiring assertions, not a V2 repair",
+  "reportedAcceptedOwnedTree": "452fde38ef45d0e6dace80f685788f6352013b8f36004e06a62c4b278b4d0e57",
+  "v2ManifestSHA256": "225d5742fc209a0a16ae9184de115692645b7e6bbada84ca870ac27110ce7511",
+  "frozenV2": [
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\.role-run\\red-run.jsonl.snapshot",
+      "sha256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\contract_test.go.snapshot",
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\CONTRACT.txt.snapshot",
+      "sha256": "937f577c52df87f71629a4d4e99764b181f717a89d79c5d1d29640d87887b5d5"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\execution_test.go.snapshot",
+      "sha256": "48480df8d2e7e748778d88a978c2af5ab4786b6796abba87db66f44916f10b8a"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\fixtures_test.go.snapshot",
+      "sha256": "b3006c93d77cc58293a4d06eeaceb60118196a377d22c8147bb71360bee92b87"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\handoff-hashes.after.json.snapshot",
+      "sha256": "ee8e0031fbbfc5762a07daae988544ecfa5d90a61f1160e0d21d53a6bff6977e"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\handoff-hashes.before.json.snapshot",
+      "sha256": "32ac59a65a4a86b75f448512f1d499414a7e420edf4a57895e4149fb3eb9cf97"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\production_bindings_test.go.snapshot",
+      "sha256": "3b27de361affe87b78efce97d2cd540e0396838d8b72c62b1c3c3b30b3c197ee"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\RED.txt.snapshot",
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\role-key-amendment.json.snapshot",
+      "sha256": "d27fd79b740daf167d9c3cae0537e7a7a1bff0f183652135c1a45c80536e8264"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\role-key-hashes.after.json.snapshot",
+      "sha256": "5d5f01834eb3249a1b44f88fb2757ba8ca49d0503844bd0a30902f0a0bf98064"
+    },
+    {
+      "path": "tests\\installer\\.history\\v1-before-v2\\role-key-hashes.before.json.snapshot",
+      "sha256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8"
+    },
+    {
+      "path": "tests\\installer\\.history\\v2-red\\red-01.jsonl.snapshot",
+      "sha256": "2c401294bcb570d5886b234bd2cdbbeb81ab217a14cb5c644ac581082bf0eb98"
+    },
+    {
+      "path": "tests\\installer\\.role-run\\red-run.jsonl",
+      "sha256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+    },
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "sha256": "2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "sha256": "ffdf381b2124134bfa2ca83dc44eec1584f72d62ff2f5ee5034616d4bf83798e"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "sha256": "7e0ada6323305bc46d49c26fdb571fab25c7201c5df77e24c0412d490e5896e0"
+    },
+    {
+      "path": "tests\\installer\\handoff-hashes.after.json",
+      "sha256": "ee8e0031fbbfc5762a07daae988544ecfa5d90a61f1160e0d21d53a6bff6977e"
+    },
+    {
+      "path": "tests\\installer\\handoff-hashes.before.json",
+      "sha256": "32ac59a65a4a86b75f448512f1d499414a7e420edf4a57895e4149fb3eb9cf97"
+    },
+    {
+      "path": "tests\\installer\\production_bindings_test.go",
+      "sha256": "3b27de361affe87b78efce97d2cd540e0396838d8b72c62b1c3c3b30b3c197ee"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    },
+    {
+      "path": "tests\\installer\\role-key-amendment.json",
+      "sha256": "d27fd79b740daf167d9c3cae0537e7a7a1bff0f183652135c1a45c80536e8264"
+    },
+    {
+      "path": "tests\\installer\\role-key-hashes.after.json",
+      "sha256": "5d5f01834eb3249a1b44f88fb2757ba8ca49d0503844bd0a30902f0a0bf98064"
+    },
+    {
+      "path": "tests\\installer\\role-key-hashes.before.json",
+      "sha256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8"
+    },
+    {
+      "path": "tests\\installer\\v2_corrections_test.go",
+      "sha256": "91e73cb65e191d03ee94dd9bb98b250a6eef1eafcfe7c01f5e800bb6ba5abebd"
+    },
+    {
+      "path": "tests\\installer\\v2_support_test.go",
+      "sha256": "61bf72fd0d85292b6d2dfbd55f3f11dc866e5180f3a1ad5dc38f05414a137f72"
+    },
+    {
+      "path": "tests\\installer\\V2-AMENDMENT.json",
+      "sha256": "17563399d2a942eae46e1510c4069d0035783726ecd12fdc884b27b71f220acb"
+    },
+    {
+      "path": "tests\\installer\\V2-BEFORE.json",
+      "sha256": "a4e50ce371fad072de66be2e26e6629d96536882921048bf1de682f81a9b2efd"
+    },
+    {
+      "path": "tests\\installer\\V2-CONTRACT.txt",
+      "sha256": "7c8a88e25bef21d71f4d2e7ee10bc9f1e0ec8dd6c860245a4d92e1e83406023c"
+    },
+    {
+      "path": "tests\\installer\\V2-RED.txt",
+      "sha256": "96ac9c523037c83d77a11521a57f471f8a09aefa4b634346188f842e39c473f3"
+    }
+  ],
+  "productionAndCLI": [
+    {
+      "path": "cmd\\aspmctl\\execution.go",
+      "sha256": "0c47219022223c5b74c08b6c13d6bc14f02b7b48e63b07959732e8dde858cb79"
+    },
+    {
+      "path": "cmd\\aspmctl\\main.go",
+      "sha256": "4eaf96a01b7a4f81be0431bd8f10aea18a802dc99ca820b93a59b2391f8e9228"
+    },
+    {
+      "path": "cmd\\aspmctl\\review_regression_test.go",
+      "sha256": "abc3a42dd1b56d6dac1567d0afa6613ac0ca53d36e31d04e0bed0f07d59c69ba"
+    },
+    {
+      "path": "internal\\install\\execution\\bundle.go",
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    },
+    {
+      "path": "internal\\install\\execution\\configuration.go",
+      "sha256": "24103509eb9a552f14496df9118632096f8fdb56d31b79f2f211d5468d5ea748"
+    },
+    {
+      "path": "internal\\install\\execution\\credentials.go",
+      "sha256": "8e7ae9ba90ce9f81ef35f7d2f697b447cfe52f91777c7cd040a1cfcb9e144c81"
+    },
+    {
+      "path": "internal\\install\\execution\\files.go",
+      "sha256": "e3e65c311088a07f250f3c2a2f1a1a1f48c83e15254e1213ceee79be58e6ee73"
+    },
+    {
+      "path": "internal\\install\\execution\\installer.go",
+      "sha256": "5bcb6918680148266a3c2da91bfc803529a563866fc952c66ef8b238629fc25b"
+    },
+    {
+      "path": "internal\\install\\execution\\kubeconfig.go",
+      "sha256": "da82620a27100a92b8fe36d55d3d955f97f12527a98343fce8d71fa592e3a492"
+    },
+    {
+      "path": "internal\\install\\execution\\kubernetes.go",
+      "sha256": "373aedafa0b63ad224b6f01b35a7725853f8328d37978c1cbbe10551a0fbd89a"
+    },
+    {
+      "path": "internal\\install\\execution\\linux.go",
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "internal\\install\\execution\\state.go",
+      "sha256": "dd7b6d7661b31b5ec8ce7cbc286dcec18aaf4c12d328ff0f9651b4680478f5b7"
+    },
+    {
+      "path": "internal\\install\\execution\\types.go",
+      "sha256": "95cddd8ee68912f5a4cabc2a16b7a9795160da3b526298e63d5e6e22c3500203"
+    }
+  ],
+  "signature": "unsigned author input record for independent verification/signing"
+}

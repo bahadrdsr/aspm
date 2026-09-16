@@ -1,0 +1,672 @@
+package installer
+
+import (
+	"bytes"
+	"context"
+	"crypto/ed25519"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/fs"
+	"net/url"
+	"os"
+	"path/filepath"
+	"reflect"
+	"slices"
+	"strings"
+	"testing"
+	"time"
+)
+
+type object = map[string]any
+
+const (
+	callerToken    = "synthetic-caller-token-not-a-real-credential"
+	operatorAccess = "synthetic-ambient-operator-access-not-valid"
+	operatorSecret = "synthetic-ambient-operator-secret-not-valid"
+)
+
+func ok(t *testing.T, operation string, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("%s failed (%T; details withheld)", operation, err)
+	}
+}
+
+func equal(t *testing.T, label string, got, want any) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("%s differs from the execution contract", label)
+	}
+}
+
+func encoded(t *testing.T, value any) []byte {
+	t.Helper()
+	b, err := json.Marshal(value)
+	ok(t, "encode synthetic input", err)
+	return b
+}
+
+func digest(b []byte) string { return fmt.Sprintf("sha256:%x", sha256.Sum256(b)) }
+
+type disk struct {
+	root   *os.Root
+	reads  []string
+	writes int
+	modes  map[string]fs.FileMode
+}
+
+func (d *disk) Stat(path string) (fs.FileInfo, error) {
+	return d.root.Stat(path)
+}
+
+func (d *disk) ReadFile(path string) ([]byte, error) {
+	d.reads = append(d.reads, filepath.ToSlash(path))
+	return d.root.ReadFile(path)
+}
+func (d *disk) WriteFile(path string, b []byte, mode fs.FileMode) error {
+	if err := d.root.MkdirAll(filepath.Dir(path), 0700); err != nil {
+		return err
+	}
+	if err := d.root.WriteFile(path, b, mode); err != nil {
+		return err
+	}
+	d.writes++
+	d.modes[filepath.ToSlash(path)] = mode
+	return nil
+}
+func (d *disk) Rename(from, to string) error {
+	if err := d.root.Rename(from, to); err != nil {
+		return err
+	}
+	d.writes++
+	d.modes[filepath.ToSlash(to)] = d.modes[filepath.ToSlash(from)]
+	delete(d.modes, filepath.ToSlash(from))
+	return nil
+}
+func (d *disk) Remove(path string) error {
+	if err := d.root.Remove(path); err != nil {
+		return err
+	}
+	d.writes++
+	delete(d.modes, filepath.ToSlash(path))
+	return nil
+}
+
+type bundle struct {
+	APIVersion string            `json:"apiVersion"`
+	Kind       string            `json:"kind"`
+	Release    string            `json:"release"`
+	Files      map[string]string `json:"files"`
+	Images     map[string]string `json:"images"`
+}
+
+type fixture struct {
+	t           *testing.T
+	ctx         context.Context
+	options     Options
+	input       Intent
+	config      object
+	manifest    bundle
+	signingKey  ed25519.PrivateKey
+	files       *disk
+	app         Installer
+	output      bytes.Buffer
+	calls       []Command
+	clusterUID  string
+	failUpgrade bool
+	secret      map[string]string
+	secretName  string
+	secrets     map[string]map[string]string
+}
+
+func newFixture(t *testing.T, target string) *fixture {
+	t.Helper()
+	var id [12]byte
+	_, err := rand.Read(id[:])
+	ok(t, "name owned sandbox", err)
+	dir := filepath.Join(".run", "case-"+hex.EncodeToString(id[:]))
+	ok(t, "create owned sandbox", os.MkdirAll(dir, 0700))
+	root, err := os.OpenRoot(dir)
+	ok(t, "open rooted disk sandbox", err)
+	t.Cleanup(func() {
+		ok(t, "close disk sandbox", root.Close())
+		ok(t, "remove only this owned sandbox", os.RemoveAll(dir))
+	})
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	t.Cleanup(cancel)
+	f := &fixture{t: t, ctx: ctx, clusterUID: "11111111-1111-4111-8111-111111111111",
+		files:  &disk{root: root, modes: map[string]fs.FileMode{}},
+		secret: map[string]string{}, secrets: map[string]map[string]string{}}
+	f.options.Root, err = filepath.Abs(dir)
+	ok(t, "resolve owned sandbox", err)
+	f.options.Files, f.options.Run, f.options.Output = f.files, f.run, &f.output
+	f.options.LocalHost.OS, f.options.LocalHost.EUID = "linux", 0
+	scopeID := hex.EncodeToString(id[:8])
+	f.options.RoleKeys = RoleCredentials{
+		Core:      RoleCredential{AccessKey: "synthetic-core-access-" + scopeID, SecretKey: "synthetic-core-secret-" + scopeID},
+		Ingestion: RoleCredential{AccessKey: "synthetic-ingestion-access-" + scopeID, SecretKey: "synthetic-ingestion-secret-" + scopeID},
+	}
+	for name, value := range map[string]string{"ASPM_S3_ACCESS_KEY": operatorAccess, "ASPM_S3_SECRET_KEY": operatorSecret,
+		"AWS_ACCESS_KEY_ID": operatorAccess, "AWS_SECRET_ACCESS_KEY": operatorSecret} {
+		t.Setenv(name, value)
+	}
+	if target == "kubernetes" {
+		f.options.Kubeconfig = filepath.Join("caller", "kubeconfig.json")
+		kubeconfig := object{"apiVersion": "v1", "kind": "Config", "current-context": "owned-test-context",
+			"clusters": []any{object{"name": "owned", "cluster": object{"server": "https://cluster.example.invalid"}}},
+			"contexts": []any{object{"name": "owned-test-context", "context": object{"cluster": "owned", "user": "operator"}}},
+			"users":    []any{object{"name": "operator", "user": object{"token": callerToken}}}}
+		ok(t, "seed explicit synthetic caller credentials", f.seed(f.options.Kubeconfig, encoded(t, kubeconfig)))
+	}
+	f.signingKey = ed25519.NewKeyFromSeed(bytes.Repeat([]byte{0x31}, ed25519.SeedSize))
+	f.options.TrustedKey = bytes.Clone(f.signingKey.Public().(ed25519.PublicKey))
+	f.manifest = bundle{APIVersion: "aspm/v1alpha1", Kind: "InstallerBundle", Release: "0.1.0-dev.1",
+		Files: map[string]string{}, Images: map[string]string{
+			"application": "aspm:0.1.0-dev@" + digest([]byte("synthetic application OCI identity")),
+			"postgres":    "docker.io/library/postgres:18.6-alpine@" + digest([]byte("synthetic PostgreSQL OCI identity")),
+			"storage":     "docker.io/chrislusf/seaweedfs:4.47@sha256:ce9e796f1fe6f06968f4c04bdaf8f678dad9c8acdfef3d244133d71bfa6bf882",
+		}}
+	for _, tree := range []string{filepath.Join("deploy", "helm", "aspm"), filepath.Join("deploy", "quadlet")} {
+		source := filepath.Join("..", "..", tree)
+		ok(t, "copy only existing deployment artifacts", filepath.WalkDir(source, func(path string, entry fs.DirEntry, walkErr error) error {
+			if walkErr != nil || entry.IsDir() {
+				return walkErr
+			}
+			if !entry.Type().IsRegular() {
+				return errors.New("fixture deployment input must be a regular file")
+			}
+			rel, err := filepath.Rel(source, path)
+			if err != nil {
+				return err
+			}
+			data, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			key := filepath.ToSlash(filepath.Join(tree, rel))
+			f.manifest.Files[key] = digest(data)
+			return f.seed(filepath.Join("bundle", filepath.FromSlash(key)), data)
+		}))
+	}
+	f.sign()
+	ok(t, "seed synthetic local machine identity", f.seed(filepath.Join("etc", "machine-id"), []byte("0123456789abcdef0123456789abcdef\n")))
+	raw, err := os.ReadFile(filepath.Join("..", "..", "docs", "contracts", "v1alpha1", "install.defaults.json"))
+	ok(t, "read existing M00 vocabulary", err)
+	var defaults struct {
+		Profiles []struct {
+			ID            string
+			Configuration object
+		}
+	}
+	ok(t, "decode installation defaults", json.Unmarshal(raw, &defaults))
+	for _, profile := range defaults.Profiles {
+		if profile.ID == target+"-small" {
+			f.config = profile.Configuration
+		}
+	}
+	if f.config == nil {
+		t.Fatal("requested M00 target profile is missing")
+	}
+	f.config["release"] = object{"version": f.manifest.Release, "artifactSource": "installer-bundle"}
+	if target == "kubernetes" {
+		f.config["target"] = object{"kind": "kubernetes", "context": "owned-test-context", "namespace": "aspm-installer-test"}
+	} else {
+		f.config["target"] = object{"kind": "linux", "host": "localhost"}
+	}
+	f.input = Intent{Configuration: encoded(t, f.config), BundleDir: "bundle", Operation: "apply"}
+	rawPrefix := "raw/selected-" + scopeID + "/"
+	f.input.RuntimeRoles = RuntimeRoles{
+		Core: RoleSelection{
+			S3Secret:  SecretSelection{Name: "core-" + scopeID, AccessKeyKey: "read-access", SecretKeyKey: "read-secret"},
+			RawPrefix: rawPrefix, ReadinessKey: rawPrefix + "readiness.txt",
+		},
+		Ingestion: RoleSelection{
+			S3Secret:  SecretSelection{Name: "ingestion-" + scopeID, AccessKeyKey: "worker-access", SecretKeyKey: "worker-secret"},
+			RawPrefix: rawPrefix, ReadinessKey: rawPrefix + "readiness.txt", NormalizedPrefix: "normalized/selected-" + scopeID + "/",
+		},
+	}
+	manifest, err := root.ReadFile(filepath.Join("bundle", "manifest.json"))
+	ok(t, "read signed fixture manifest", err)
+	signature, err := root.ReadFile(filepath.Join("bundle", "manifest.sig"))
+	ok(t, "read detached fixture signature", err)
+	if !ed25519.Verify(f.options.TrustedKey, manifest, signature) {
+		t.Fatal("synthetic fixture signature does not verify independently")
+	}
+	if Production.OpenInstaller == nil {
+		t.Fatal("M03 execution production binding missing: OpenInstaller; forward to real installer execution")
+	}
+	f.open()
+	t.Cleanup(func() {
+		if f.app != nil {
+			ok(t, "close installer", f.app.Close())
+		}
+	})
+	return f
+}
+
+func (f *fixture) seed(path string, data []byte) error {
+	if err := f.files.root.MkdirAll(filepath.Dir(path), 0700); err != nil {
+		return err
+	}
+	return f.files.root.WriteFile(path, data, 0600)
+}
+
+func (f *fixture) sign() {
+	f.t.Helper()
+	raw := encoded(f.t, f.manifest)
+	ok(f.t, "write test manifest", f.seed(filepath.Join("bundle", "manifest.json"), raw))
+	ok(f.t, "sign test manifest", f.seed(filepath.Join("bundle", "manifest.sig"), ed25519.Sign(f.signingKey, raw)))
+}
+
+func (f *fixture) open() {
+	f.t.Helper()
+	var err error
+	f.app, err = Production.OpenInstaller(f.ctx, f.options)
+	ok(f.t, "open real installer", err)
+	if f.app == nil {
+		f.t.Fatal("OpenInstaller returned nil without an error")
+	}
+}
+
+func (f *fixture) reopen() {
+	f.t.Helper()
+	ok(f.t, "close before resume", f.app.Close())
+	f.app = nil
+	f.open()
+}
+
+func flag(args []string, names ...string) string {
+	for i, arg := range args {
+		for _, name := range names {
+			if arg == name && i+1 < len(args) {
+				return args[i+1]
+			}
+			if strings.HasPrefix(arg, name+"=") {
+				return strings.TrimPrefix(arg, name+"=")
+			}
+		}
+	}
+	return ""
+}
+
+func mutating(c Command) bool {
+	for _, verb := range []string{"apply", "create", "delete", "upgrade", "install", "uninstall", "enable", "start", "restart", "stop", "disable", "daemon-reload"} {
+		if slices.Contains(c.Args, verb) {
+			return true
+		}
+	}
+	return false
+}
+
+func (f *fixture) run(ctx context.Context, c Command) (CommandResult, error) {
+	c.Args, c.Stdin = slices.Clone(c.Args), bytes.Clone(c.Stdin)
+	f.calls = append(f.calls, c)
+	if err := ctx.Err(); err != nil {
+		return CommandResult{}, err
+	}
+	if !slices.Contains([]string{"kubectl", "helm", "systemctl"}, c.Tool) {
+		f.t.Fatalf("unexpected external tool %q; no command was executed", c.Tool)
+	}
+	if c.Tool == "kubectl" || c.Tool == "helm" {
+		equal(f.t, "no ambient kubeconfig fallback", flag(c.Args, "--kubeconfig"), filepath.Join(f.options.Root, f.options.Kubeconfig))
+	}
+	if c.Tool == "kubectl" {
+		equal(f.t, "explicit kubectl context", flag(c.Args, "--context"), "owned-test-context")
+		if slices.Contains(c.Args, "get") && slices.Contains(c.Args, "kube-system") {
+			return CommandResult{Stdout: encoded(f.t, object{"apiVersion": "v1", "kind": "Namespace", "metadata": object{"name": "kube-system", "uid": f.clusterUID}})}, nil
+		}
+		if slices.Contains(c.Args, "get") && slices.Contains(c.Args, "pvc") {
+			return CommandResult{Stdout: encoded(f.t, object{"items": []any{
+				object{"metadata": object{"name": "data-aspm-aspm-postgres-0"}},
+				object{"metadata": object{"name": "data-aspm-aspm-storage-0"}},
+			}})}, nil
+		}
+		if slices.Contains(c.Args, "apply") && len(c.Stdin) != 0 {
+			var manifest struct {
+				Kind       string
+				Metadata   struct{ Name, Namespace string }
+				Data       map[string]string
+				StringData map[string]string
+			}
+			ok(f.t, "decode production kubectl JSON stdin", json.Unmarshal(c.Stdin, &manifest))
+			if manifest.Kind == "Secret" {
+				equal(f.t, "kubectl consumes protected stdin", flag(c.Args, "--filename", "-f"), "-")
+				equal(f.t, "Secret command namespace", flag(c.Args, "--namespace", "-n"), "aspm-installer-test")
+				equal(f.t, "Secret namespace", manifest.Metadata.Namespace, "aspm-installer-test")
+				data := map[string]string{}
+				for key, value := range manifest.Data {
+					decoded, err := base64.StdEncoding.DecodeString(value)
+					ok(f.t, "decode Kubernetes Secret transport", err)
+					data[key] = string(decoded)
+				}
+				for key, value := range manifest.StringData {
+					data[key] = value
+				}
+				f.secrets[manifest.Metadata.Name] = data
+				if data["database-url"] != "" {
+					f.secretName, f.secret = manifest.Metadata.Name, data
+				}
+			}
+		}
+	}
+	if c.Tool == "helm" {
+		equal(f.t, "explicit Helm context", flag(c.Args, "--kube-context"), "owned-test-context")
+		equal(f.t, "explicit Helm namespace", flag(c.Args, "--namespace", "-n"), "aspm-installer-test")
+		if f.failUpgrade && slices.Contains(c.Args, "upgrade") {
+			return CommandResult{ExitCode: 19, Stderr: []byte("synthetic command failure " + f.secret["postgres-password"])}, nil
+		}
+	}
+	if c.Tool == "systemctl" {
+		if slices.Contains(c.Args, "--user") || !slices.Contains(c.Args, "--no-ask-password") {
+			f.t.Fatal("local Linux execution must use the privileged system manager without password prompts")
+		}
+		return CommandResult{Stdout: []byte("running\n")}, nil
+	}
+	return CommandResult{Stdout: []byte("synthetic external-tool receipt\n")}, nil
+}
+
+func (f *fixture) plan() Plan {
+	f.t.Helper()
+	f.input.Configuration = encoded(f.t, f.config)
+	p, err := f.app.Plan(f.ctx, f.input)
+	ok(f.t, "plan inspected deployment", err)
+	return p
+}
+
+func (f *fixture) execute(p Plan) State {
+	f.t.Helper()
+	state, err := f.app.Execute(f.ctx, f.input, Approval{PlanID: p.ID})
+	ok(f.t, "execute approved deployment", err)
+	f.noLeaks(state, err)
+	return state
+}
+
+func (f *fixture) noLeaks(state State, err error) {
+	f.t.Helper()
+	ordinary := append(encoded(f.t, state), f.output.Bytes()...)
+	if err != nil {
+		ordinary = append(ordinary, err.Error()...)
+	}
+	for _, call := range f.calls {
+		ordinary = append(ordinary, strings.Join(call.Args, "\x00")...)
+	}
+	values := []string{callerToken, operatorAccess, operatorSecret}
+	for _, value := range []string{f.options.RoleKeys.Core.AccessKey, f.options.RoleKeys.Core.SecretKey,
+		f.options.RoleKeys.Ingestion.AccessKey, f.options.RoleKeys.Ingestion.SecretKey} {
+		if value != "" {
+			values = append(values, value)
+		}
+	}
+	for _, data := range f.secrets {
+		for _, value := range data {
+			values = append(values, value)
+		}
+	}
+	for _, value := range f.secret {
+		if !slices.Contains(values, value) {
+			values = append(values, value)
+		}
+	}
+	for _, value := range values {
+		if len(value) < 8 {
+			f.t.Fatal("test-observed credential material must not be empty or trivial")
+		}
+		for _, representation := range []string{value, base64.StdEncoding.EncodeToString([]byte(value)), url.QueryEscape(value)} {
+			if bytes.Contains(ordinary, []byte(representation)) {
+				f.t.Fatal("secret material leaked into argv, ordinary output, error or public state")
+			}
+		}
+	}
+}
+
+func (f *fixture) roleInputsRejected(p Plan) {
+	f.t.Helper()
+	for _, change := range []func(*RuntimeRoles){
+		func(r *RuntimeRoles) { r.Core.S3Secret.Name = "" },
+		func(r *RuntimeRoles) { r.Core.S3Secret.AccessKeyKey = "" },
+		func(r *RuntimeRoles) { r.Core.S3Secret.SecretKeyKey = "" },
+		func(r *RuntimeRoles) { r.Ingestion.S3Secret.Name = "" },
+		func(r *RuntimeRoles) { r.Ingestion.S3Secret.AccessKeyKey = "" },
+		func(r *RuntimeRoles) { r.Ingestion.S3Secret.SecretKeyKey = "" },
+		func(r *RuntimeRoles) { r.Ingestion.S3Secret = r.Core.S3Secret },
+		func(r *RuntimeRoles) { r.Core.RawPrefix = "" },
+		func(r *RuntimeRoles) { r.Core.ReadinessKey = "" },
+		func(r *RuntimeRoles) { r.Ingestion.RawPrefix = "" },
+		func(r *RuntimeRoles) { r.Ingestion.ReadinessKey = "" },
+		func(r *RuntimeRoles) { r.Ingestion.NormalizedPrefix = "" },
+		func(r *RuntimeRoles) { r.Core.ReadinessKey = "outside-selected-raw/probe" },
+		func(r *RuntimeRoles) { r.Ingestion.NormalizedPrefix = r.Ingestion.RawPrefix },
+	} {
+		input := f.input
+		change(&input.RuntimeRoles)
+		f.rejectedBeforeTools(input, p.ID, ErrCredential, ErrUnsupported)
+	}
+	original := f.options.RoleKeys
+	for _, change := range []func(*RoleCredentials){
+		func(k *RoleCredentials) { k.Core.AccessKey = "" },
+		func(k *RoleCredentials) { k.Core.SecretKey = "" },
+		func(k *RoleCredentials) { k.Ingestion.AccessKey = "" },
+		func(k *RoleCredentials) { k.Ingestion.SecretKey = "" },
+		func(k *RoleCredentials) { k.Ingestion = k.Core },
+		func(k *RoleCredentials) { k.Ingestion.AccessKey = k.Core.SecretKey },
+		func(k *RoleCredentials) { k.Core.SecretKey = k.Core.AccessKey },
+	} {
+		f.options.RoleKeys = original
+		change(&f.options.RoleKeys)
+		f.rejectedOptionsBeforeTools(p.ID, ErrCredential)
+	}
+	f.options.RoleKeys = original
+	if f.app != nil {
+		ok(f.t, "close invalid role-key instance", f.app.Close())
+	}
+	f.app = nil
+	f.open()
+}
+
+func (f *fixture) operatorKeys() []string {
+	f.t.Helper()
+	values := []string{operatorAccess, operatorSecret}
+	found := false
+	roles := map[string]bool{}
+	bucket, _ := section(f.t, f.config, "objectStore")["bucket"].(string)
+	expectedActions := map[string][]string{
+		"core": {"Read:" + bucket + "/" + f.input.RuntimeRoles.Core.RawPrefix + "*",
+			"Write:" + bucket + "/" + f.input.RuntimeRoles.Core.RawPrefix + "*"},
+		"ingestion": {"Read:" + bucket + "/" + f.input.RuntimeRoles.Ingestion.RawPrefix + "*",
+			"Write:" + bucket + "/" + f.input.RuntimeRoles.Ingestion.NormalizedPrefix + "*"},
+	}
+	for _, data := range f.secrets {
+		if data["s3.json"] == "" {
+			continue
+		}
+		var policy struct {
+			Identities []struct {
+				Actions     []string
+				Credentials []struct{ AccessKey, SecretKey string }
+			}
+		}
+		ok(f.t, "decode private storage control-plane policy", json.Unmarshal([]byte(data["s3.json"]), &policy))
+		for _, identity := range policy.Identities {
+			for _, key := range identity.Credentials {
+				for role, expected := range map[string]RoleCredential{"core": f.options.RoleKeys.Core, "ingestion": f.options.RoleKeys.Ingestion} {
+					if key.AccessKey == expected.AccessKey && key.SecretKey == expected.SecretKey {
+						got, want := slices.Clone(identity.Actions), slices.Clone(expectedActions[role])
+						slices.Sort(got)
+						slices.Sort(want)
+						equal(f.t, role+" policy uses only its selected scopes", got, want)
+						roles[role] = true
+					}
+				}
+			}
+			if slices.Contains(identity.Actions, "Admin") {
+				for _, key := range identity.Credentials {
+					if key.AccessKey == "" || key.SecretKey == "" {
+						f.t.Fatal("control-plane operator credentials are missing")
+					}
+					values = append(values, key.AccessKey, key.SecretKey)
+					found = true
+				}
+			}
+		}
+	}
+	if !found {
+		f.t.Fatal("managed storage policy must retain separate control-plane provisioning credentials")
+	}
+	if !roles["core"] || !roles["ingestion"] {
+		f.t.Fatal("managed policy did not bind the supplied role keys to caller-selected scopes")
+	}
+	return values
+}
+
+func (f *fixture) roleSecret(selection RoleSelection, expected RoleCredential) {
+	f.t.Helper()
+	data, exists := f.secrets[selection.S3Secret.Name]
+	if !exists {
+		f.t.Fatal("the selected runtime role Secret was not published")
+	}
+	equal(f.t, "selected role access key", data[selection.S3Secret.AccessKeyKey], expected.AccessKey)
+	equal(f.t, "selected role secret key", data[selection.S3Secret.SecretKeyKey], expected.SecretKey)
+	for _, key := range []string{"s3-access-key", "s3-secret-key", "s3.json", "database-url", "bootstrap-token"} {
+		if _, present := data[key]; present {
+			f.t.Fatal("runtime role Secret includes legacy, operator or unrelated credential material")
+		}
+	}
+	for _, operator := range f.operatorKeys() {
+		for _, value := range data {
+			if value == operator {
+				f.t.Fatal("control-plane operator key was copied into an application role Secret")
+			}
+		}
+	}
+	other := f.options.RoleKeys.Core
+	if selection.S3Secret == f.input.RuntimeRoles.Core.S3Secret {
+		other = f.options.RoleKeys.Ingestion
+	}
+	if f.input.RuntimeRoles.Core.S3Secret.Name != f.input.RuntimeRoles.Ingestion.S3Secret.Name {
+		for _, value := range data {
+			if value == other.AccessKey || value == other.SecretKey {
+				f.t.Fatal("a dedicated role Secret contains the other application's credential")
+			}
+		}
+	}
+}
+
+func (f *fixture) environment(name string) (map[string]string, []byte) {
+	f.t.Helper()
+	data, err := f.files.root.ReadFile(filepath.Join("etc", "aspm", name))
+	ok(f.t, "read protected role environment", err)
+	result := map[string]string{}
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		key, value, present := strings.Cut(line, "=")
+		_, duplicate := result[key]
+		if !present || duplicate {
+			f.t.Fatal("role environment has an unsupported or duplicate assignment")
+		}
+		result[key] = strings.Trim(value, "\"'\r")
+	}
+	if mode := f.files.modes["etc/aspm/"+name]; mode.Perm()&0077 != 0 || mode.Perm()&0400 == 0 {
+		f.t.Fatal("role environment was not written with owner-only protection")
+	}
+	return result, data
+}
+
+func (f *fixture) secretFiles(state State) map[string]string {
+	f.t.Helper()
+	if len(state.SecretFiles) == 0 {
+		f.t.Fatal("apply must retain protected credential files for resumable reapply")
+	}
+	hashes := map[string]string{}
+	for _, path := range state.SecretFiles {
+		data, err := f.files.root.ReadFile(filepath.FromSlash(path))
+		ok(f.t, "read only sandbox credential bytes", err)
+		mode, seen := f.files.modes[filepath.ToSlash(path)]
+		if !seen || mode.Perm()&0077 != 0 || mode.Perm()&0400 == 0 {
+			f.t.Fatal("credential file was not written with owner-only access")
+		}
+		hashes[path] = digest(data)
+	}
+	return hashes
+}
+
+func (f *fixture) mutationCount() int {
+	n := 0
+	for _, call := range f.calls {
+		if mutating(call) {
+			n++
+		}
+	}
+	return n
+}
+
+func (f *fixture) rejected(input Intent, approval string, want error) {
+	f.t.Helper()
+	before, writes := f.mutationCount(), f.files.writes
+	state, err := f.app.Execute(f.ctx, input, Approval{PlanID: approval})
+	if !errors.Is(err, want) || state.Phase == "applied" {
+		f.t.Fatal("invalid approval/input did not fail with the declared error")
+	}
+	equal(f.t, "rejection precedes infrastructure mutation", f.mutationCount(), before)
+	equal(f.t, "rejection precedes file/credential mutation", f.files.writes, writes)
+	f.noLeaks(state, err)
+}
+
+func (f *fixture) rejectedBeforeTools(input Intent, approval string, allowed ...error) {
+	f.t.Helper()
+	matches := func(err error) bool {
+		for _, want := range allowed {
+			if errors.Is(err, want) {
+				return true
+			}
+		}
+		return false
+	}
+	calls, writes := len(f.calls), f.files.writes
+	for _, dryRun := range []bool{false, true} {
+		state, err := f.app.Execute(f.ctx, input, Approval{PlanID: approval, DryRun: dryRun})
+		if !matches(err) || state.Phase == "applied" || state.Phase == "planned" {
+			f.t.Fatal("missing credentials/trust or forbidden bypass returned a usable execution")
+		}
+		equal(f.t, "failure precedes ANY tool call", len(f.calls), calls)
+		equal(f.t, "failure precedes file/credential writes", f.files.writes, writes)
+		f.noLeaks(state, err)
+	}
+	p, err := f.app.Plan(f.ctx, input)
+	if !matches(err) || p.ID != "" {
+		f.t.Fatal("missing credentials/trust or forbidden bypass returned usable deployment approval")
+	}
+	equal(f.t, "rejected operational plan invokes no tools", len(f.calls), calls)
+	equal(f.t, "rejected operational plan writes no files", f.files.writes, writes)
+}
+
+func (f *fixture) rejectedOptionsBeforeTools(approval string, want error) {
+	f.t.Helper()
+	if f.app != nil {
+		ok(f.t, "close before invalid caller options", f.app.Close())
+		f.app = nil
+	}
+	calls, writes := len(f.calls), f.files.writes
+	opened, err := Production.OpenInstaller(f.ctx, f.options)
+	f.app = opened
+	equal(f.t, "invalid-option constructor invokes no tools", len(f.calls), calls)
+	equal(f.t, "invalid-option constructor writes no files", f.files.writes, writes)
+	if err != nil {
+		if !errors.Is(err, want) {
+			f.t.Fatal("invalid caller options must fail explicitly")
+		}
+		f.noLeaks(State{}, err)
+		return
+	}
+	if opened == nil {
+		f.t.Fatal("invalid-option constructor returned nil success")
+	}
+	f.rejectedBeforeTools(f.input, approval, want)
+}

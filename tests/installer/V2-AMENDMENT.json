@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "authority": "original independent installer test author; explicit user-authorized reviewer V2 amendment",
+  "requestedAt": "2026-09-16T01:50:29.835+02:00",
+  "reason": "Correct native Podman env-byte oracle and chart-input path model; add four executor review regressions without production changes",
+  "signature": "unsigned integrity amendment for parent verification/signing, not replacement of historical signed controls",
+  "beforeSnapshotSHA256": "a4e50ce371fad072de66be2e26e6629d96536882921048bf1de682f81a9b2efd",
+  "existingFileChanges": [
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "oldSHA256": "937f577c52df87f71629a4d4e99764b181f717a89d79c5d1d29640d87887b5d5",
+      "newSHA256": "2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "oldSHA256": "48480df8d2e7e748778d88a978c2af5ab4786b6796abba87db66f44916f10b8a",
+      "newSHA256": "ffdf381b2124134bfa2ca83dc44eec1584f72d62ff2f5ee5034616d4bf83798e"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "oldSHA256": "b3006c93d77cc58293a4d06eeaceb60118196a377d22c8147bb71360bee92b87",
+      "newSHA256": "7e0ada6323305bc46d49c26fdb571fab25c7201c5df77e24c0412d490e5896e0"
+    }
+  ],
+  "allowedModelChanges": [
+    "Preserve literal native bytes after first equals; no shell unquote/unescape",
+    "Observe exact approved chart membership/bytes at Helm invocation; admit approved tar/tgz/directory snapshots"
+  ],
+  "newGoSources": [
+    "v2_support_test.go",
+    "v2_corrections_test.go"
+  ],
+  "binding": "Unchanged complete forwarding/type/error adapter",
+  "primarySemantics": {
+    "repository": "containers/podman",
+    "revision": "v4.9.3",
+    "path": "pkg/env/env.go",
+    "interpretation": "parseEnv/parseEnvFile keeps quote/backslash/value bytes after first equals; no vendor parser source copied"
+  },
+  "heldOwnedDigestReportedByParent": "409d36503632e91a73ef3e600b44d018b3c4f6b389ae7c12e3666c073a128737",
+  "heldExecutorAndCLI": "All 13 recorded source files, including review_regression_test.go, remained byte-identical",
+  "results": {
+    "topLevel": 13,
+    "pass": 7,
+    "fail": 6,
+    "v1Pass": 7,
+    "v1Fail": 1,
+    "v2TopLevelRed": 5,
+    "namedNegativeOrVariantSubcases": 6,
+    "subcasePass": 1,
+    "subcaseRed": 5,
+    "skip": 0
+  },
+  "frozenEvidence": {
+    "path": "tests\\installer\\.history\\v2-red\\red-01.jsonl.snapshot",
+    "sha256": "2c401294bcb570d5886b234bd2cdbbeb81ab217a14cb5c644ac581082bf0eb98"
+  },
+  "nativeCommandsExecuted": 0
+}

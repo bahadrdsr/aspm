@@ -1,0 +1,20 @@
+{
+  "event": "tested-tree-verified",
+  "treeDigest": "sha256:8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3",
+  "oracleDigest": "sha256:4444f0dc14f53768db281ac5ddf11fe1ae1e941269c8f6994910e86001d697ae",
+  "fileCount": 97,
+  "authorityFingerprint": "sha256:79e363637bf277a7d4c11ca9b2b88dd491c94478fdeb3d51fb5500f1211cedb5",
+  "configDigest": "sha256:a08dd84c78a471f39473e54e676c90f688a0093e20fca2aba9dd8a42b535b7b1",
+  "oracles": [
+    {
+      "scope": "ui-and-validation-controls",
+      "phase": "reviewed-baseline",
+      "author": "coordinator-reviewed-independent-handoffs",
+      "capturedAt": "2026-09-15T16:51:58.485Z",
+      "redEvidence": null,
+      "manifestDigest": "sha256:5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9",
+      "oracleDigest": "sha256:18e47c2034a32cadb9ab52577387215c52ddd2f82b7e9bc42b41db7a40ccc0d8"
+    }
+  ],
+  "independentAcceptance": "required-separately"
+}

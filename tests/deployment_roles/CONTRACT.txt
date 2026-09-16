@@ -1,0 +1,120 @@
+SHIPPED DEPLOYMENT ROLE CREDENTIAL GATES
+=======================================
+Four artifact tests. Only tests/deployment_roles is authored here.
+The nested Go module isolates the proper YAML parser dependency from the parent
+module and existing installer/UI/storage oracles. gopkg.in/yaml.v3 v3.0.1 is
+already recorded in the parent's go.sum; its primary LICENSE permits MIT or
+Apache-2.0 use. No hand-written YAML parser or fake Helm output is accepted.
+
+Windows, from aspm:
+  .\tests\deployment_roles\Test-DeploymentRoles.ps1 -Helm '<verified-absolute-tool-path>'
+Portable: from tests/deployment_roles, set ASPM_TEST_HELM to an absolute real
+Helm executable, GOWORK=off, then run go test -mod=readonly -count=1 -timeout=120s .
+For this new isolated manifest only, run go mod tidy before the first readonly
+test if its locked parser has not been restored. No parent manifest change.
+Missing Helm/parser/build prerequisites FAIL, never skip. Helm invokes the
+actual ../../deploy/helm/aspm chart, with template --dry-run=client, a synthetic
+explicit empty kubeconfig, private temporary values, isolated Helm directories
+and no dependency update, install, post-renderer, plugins or server validation.
+Each render is bounded to 15 seconds, 2 MiB per output stream and 32 YAML documents.
+
+Exact proposed values (reference names, NEVER credential values)
+---------------------------------------------------------------
+existingSecret: synthetic-operator-control-plane
+storage.prefix: operator-only-not-runtime/    # deliberate fallback canary
+core.s3Secret.name: synthetic-core-storage
+core.s3Secret.accessKeyKey: core-s3-access-key
+core.s3Secret.secretKeyKey: core-s3-secret-key
+core.rawPrefix: raw/team-a/
+core.readinessKey: raw/team-a/readiness.txt
+ingestion.s3Secret.name: synthetic-ingestion-storage
+ingestion.s3Secret.accessKeyKey: ingestion-s3-access-key
+ingestion.s3Secret.secretKeyKey: ingestion-s3-secret-key
+ingestion.rawPrefix: raw/team-a/
+ingestion.readinessKey: raw/team-a/readiness.txt
+ingestion.normalizedPrefix: normalized/team-a/
+All three selected roles use replicas=1. The chart must honor these explicit
+overrides. Operator configuration can remain available to storage/control-plane
+artifacts, but runtime containers/init containers must not reference legacy
+s3-access-key, s3-secret-key, s3.json or operator S3 keys, including via envFrom.
+
+Rendered credential env uses valueFrom.secretKeyRef, not literal values:
+ASPM_S3_ACCESS_KEY / ASPM_S3_SECRET_KEY -> the selected per-role name/key above,
+with optional=false or omitted. Core and ingestion key references are distinct.
+ASPM_S3_PREFIX / ASPM_S3_READINESS_KEY -> selected rawPrefix/readinessKey.
+Ingestion also gets ASPM_S3_NORMALIZED_PREFIX -> normalizedPrefix.
+These are selected Helm fixture overrides, not mandated production defaults.
+An unrelated/default/operator prefix may not replace that selected raw scope.
+An explicitly selected evidence/ prefix is legitimate for preserved evidence.
+
+Reports must have required ASPM_DATABASE_URL -> database-url, but no ASPM_S3_*,
+AWS_* or ASPM_BOOTSTRAP_TOKEN env and no non-database secret reference.
+An empty selected s3Secret.name/accessKeyKey/secretKeyKey for either core or
+ingestion MUST fail actual rendering with a diagnostic naming that exact values
+path, despite existingSecret/operator configuration being present. Do not use
+default/coalesce/common-key fallback. An actual absent Kubernetes Secret/key
+cannot be discovered by client-only rendering; non-optional refs are required
+so the runtime cannot silently omit missing credential input.
+
+Quadlet source and selected-render contract (author amendment A1)
+---------------------------------------------------------------
+Read actual deploy/quadlet/aspm-core.container, aspm-ingestion@.container,
+aspm-reports.container. Their single required Container.EnvironmentFile values:
+  /etc/aspm/core.env
+  /etc/aspm/ingestion.env
+  /etc/aspm/reports.env
+No shared/optional runtime.env, Service.EnvironmentFile, EnvironmentHost=true,
+Secret directive or opaque PodmanArgs env override. Literal single-line directives form this
+first profile; unsupported interpretation/continuations fail visibly.
+SHIPPED DEFAULTS ARE NOT REQUIRED TO CONTAIN A SYNTHETIC TENANT PREFIX.
+S3/AWS credential values belong only in the role-specific protected files,
+not inline directives. Reports' inline env is limited to database URL/schema/
+connection budget and nonsecret listen/worker identity.
+reports.env is contractually DB-only. Its actual installer-generated private
+contents are NOT read or certified by these source tests.
+
+The following minimal PURE production-renderer boundary receives the actual
+shipped unit bytes and an explicit selection derived by the installer/caller:
+  Production.RenderQuadletRole(ctx, source []byte, config QuadletRoleConfig)
+    -> (renderedUnit []byte, error)
+  QuadletRoleConfig={Role,EnvironmentFile,RawPrefix,ReadinessKey,NormalizedPrefix}
+  All five fields are strings; the factory is initially nil with explicit RED.
+Add only a forwarding production_bindings_test.go to connect the REAL production
+renderer. No test-side render/replace/merge/default implementation is permitted.
+No credentials, storage operations, tools, file publication or authorization
+disabling are part of this function. It must preserve unrelated shipped unit
+directives/environment and return at most 64 KiB.
+
+For core and ingestion, RawPrefix and ReadinessKey are REQUIRED explicit inputs.
+The readiness key must stay inside the selected raw prefix. Ingestion additionally
+requires a separate, non-overlapping NormalizedPrefix. Render them as literal
+Container.Environment ASPM_S3_PREFIX / ASPM_S3_READINESS_KEY and, for ingestion,
+ASPM_S3_NORMALIZED_PREFIX. EnvironmentFile is required for every role and must
+not fall back to a shared runtime.env. Reports reject all storage-scope inputs
+and emit no storage/AWS/bootstrap configuration.
+Tests render two EXPLICIT selections, not shipping defaults:
+  preserved: RawPrefix=evidence/, ReadinessKey=evidence/readiness/role-probe.txt,
+             NormalizedPrefix=normalized/ (ingestion only).
+  selected:  RawPrefix=raw/selected-tenant/,
+             ReadinessKey=raw/selected-tenant/readiness/role-probe.txt,
+             NormalizedPrefix=normalized/selected-tenant/ (ingestion only).
+Missing or forbidden selection must return an error and NO usable unit, even
+when a test-owned copy of the source contains stale operator/default scope.
+The caller must derive selected scope from resolved installation configuration;
+no tenant string in these fixtures authorizes rewriting preserved evidence.
+Helm credential, scope-override and missing-secret assertions are UNCHANGED.
+AMENDMENT-A1.txt records the exact superseded assertion and author authorization.
+
+Boundaries / ownership
+----------------------
+Rendering/reference separation is not proof of Kubernetes secret contents,
+native systemd execution, role-key byte uniqueness, permissions, network/storage
+isolation, readiness-object existence or deployment success. Existing real
+runtime-role/storage gates cover actual consumers separately.
+The installer author owns any amendment needed to generate new role keys/files;
+tests/installer/CONTRACT.txt is deliberately unchanged. No existing installer
+expectation may be rewritten here to obtain green. A legacy operator credential
+may remain in its control plane, but may never be runtime env or a fallback.
+No live credentials, provisioning, production changes or commits are involved.
+
+Primary parser license: https://raw.githubusercontent.com/go-yaml/yaml/v3.0.1/LICENSE

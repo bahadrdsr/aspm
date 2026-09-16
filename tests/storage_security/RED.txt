@@ -1,0 +1,57 @@
+REAL STORAGE CREDENTIAL RED - SEPTEMBER 15, 2026
+===============================================
+Authorized SeaweedFS 4.47 fixture: http://127.0.0.1:18335, aspm-isolation.
+Direct existing AWS S3 SDK, four distinct credential identities. Credentials
+are read only inside Test-StorageSecurity.ps1 from the private runtime config;
+allowedPrefixes is NOT an oracle. No IAM/bucket policy is changed by this suite.
+
+Run from aspm:
+  .\tests\storage_security\Test-StorageSecurity.ps1 -RuntimeConfig '<private-json>'
+JSON fields: endpoint,region,bucket,roles.{admin,ai,ingestion,core}.{accessKey,secretKey}.
+The runner restores process environment and redacts output before persistence.
+No credentials are passed in command arguments, logged, copied into test files,
+or obtained from an ambient/default credential chain.
+
+OBSERVED REAL RED
+-----------------
+48 direct role-operation cases, 13 permitted controls passed, 35 required-denial
+gates FAILED, zero skips, exit 1; Go package time 5.213 seconds.
+  AI:         1 passed, 15 failed
+  Ingestion:  2 passed, 14 failed
+  Core:      10 passed,  6 failed
+Forbidden GetObject/PutObject calls actually succeeded under the deliberately
+permissive baseline. These are not missing-fixture, absent-object or app ErrScope
+failures. Each object was first written and byte-verified with fixture-admin.
+Denied writes also changed actual stored bytes, independently read by admin.
+
+FROZEN TARGET
+-------------
+AI: Read approved/team-a/grant-1/* only; PutObject nowhere.
+Ingestion: Read raw/team-a/*; PutObject normalized/team-a/* only.
+Core: Read/PutObject raw/* and approved/*, not normalized/* or other/*.
+The matrix covers raw team-a/team-b, approved team-a grant-1/grant-2/team-b,
+normalized team-a/team-b and other/. Objects have unique random test suffixes.
+Every denied operation requires BOTH native HTTP 403 and SDK AccessDenied.
+An app rejection, missing key/404 or generic network/authentication failure does
+not pass. Allowed writes are checked through a fresh admin GetObject; denied
+writes must leave the original bytes unchanged.
+Admin is used only to preseed, independently verify and delete exact owned keys.
+No List*, HeadBucket, CreateBucket, DeleteBucket or policy operations are used.
+The role clients do not need a broad bucket probe just to be constructed.
+
+Evidence: .run\last-run.jsonl and .run\last-run.log (already redacted).
+Preserved baseline: .run\permissive-red.jsonl
+Baseline SHA256: b84a8b616ab43c154852b6a5dec139e1605a7045a079a943a0b2d87c1e9bb776
+Exact pre-run source/runner hashes: FROZEN.sha256. Keep those inputs unchanged
+when the parent tightens real storage policy, then rerun the same gate.
+Any expectation change requires independent test-author review.
+
+BOUNDARIES
+----------
+This run proves real permission violations in the isolated permissive baseline,
+not achieved isolation. It covers GetObject and PutObject on this one bucket's
+declared prefixes, not every S3 operation or cross-bucket policy behavior.
+No real AI job, application API, provider inference or production credential
+wiring was exercised. An app-only scope check is not storage authorization.
+The separately authored analysis/approval_revocation_test.go is not executed
+or included in this frozen storage RED handoff.

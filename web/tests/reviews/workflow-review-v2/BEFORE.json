@@ -1,0 +1,336 @@
+{
+  "version": 2,
+  "requestedAt": "2026-09-16T06:42:48.567+02:00",
+  "kind": "independent three-workflow UI review correction",
+  "reportedUITree": "8ee28b74a5f8d28252e477c448a033ec46cd890c8186b68fe393a262dd4d9ae3",
+  "reportedWebSrc": "1fc9fd729992622d8195408ccbfb5a800b3b35ff3eb56371feae7f4652add6f0",
+  "signature": "unsigned author pre-code history, not replacement of a signed manifest",
+  "priorTestFiles": 25,
+  "testAndCompilerControls": [
+    {
+      "path": "tests\\ACCEPTANCE.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\ACCEPTANCE.txt.snapshot",
+      "sha256": "84abb85f90dc3309eab3ec308859cde81a694eb2a11e6cf1b5d5f889374cec87"
+    },
+    {
+      "path": "tests\\api-contract.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\api-contract.ts.snapshot",
+      "sha256": "109791bb5f4e7525662003ae12bb3c19dcfac178ada0824d0134f75c3d44b701"
+    },
+    {
+      "path": "tests\\application-fixture.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\application-fixture.ts.snapshot",
+      "sha256": "adbe9118d6bd0c86bf23efa052c372cd0a2c7478007c07b269c6a400d41eb50f"
+    },
+    {
+      "path": "tests\\application-workflows.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\application-workflows.spec.ts.snapshot",
+      "sha256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470"
+    },
+    {
+      "path": "tests\\approved-component-sources.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\approved-component-sources.json.snapshot",
+      "sha256": "822b08fc926604da8c43ea6b2b7d44aab6dfd435f12100fb9909686559ca348e"
+    },
+    {
+      "path": "tests\\dependency-metadata.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\dependency-metadata.json.snapshot",
+      "sha256": "39a231b84594017429b518921e369da8af41e7739a0da06b5d9eda54912b263e"
+    },
+    {
+      "path": "tests\\fixtures.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\fixtures.ts.snapshot",
+      "sha256": "71d0ea42033a064513bd72a59b6083fd2881f67b7dbdc53572dd24d66b1d0297"
+    },
+    {
+      "path": "tests\\foundations.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\foundations.spec.ts.snapshot",
+      "sha256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085"
+    },
+    {
+      "path": "tests\\HANDOFF.sha256",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\HANDOFF.sha256.snapshot",
+      "sha256": "5ed554b52530819230c67086adfbcd7a9c3a1dc08242cfb0d78d9506c91eaac3"
+    },
+    {
+      "path": "tests\\HANDOFF.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\HANDOFF.txt.snapshot",
+      "sha256": "23f688155c62d51a5cc32ce216319c05f2f09f4ef66b8ff764182ce941c6d6bf"
+    },
+    {
+      "path": "tests\\harness.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\harness.spec.ts.snapshot",
+      "sha256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67"
+    },
+    {
+      "path": "tests\\m01-review-regressions.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\m01-review-regressions.spec.ts.snapshot",
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    },
+    {
+      "path": "tests\\network.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\network.ts.snapshot",
+      "sha256": "e3be6b57de0946a86acd4c766c7636ed5abecb91e9c109c22fe91ceec6ca79ec"
+    },
+    {
+      "path": "tests\\responsive-session-controls.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\responsive-session-controls.spec.ts.snapshot",
+      "sha256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1"
+    },
+    {
+      "path": "tests\\shell.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\shell.spec.ts.snapshot",
+      "sha256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f"
+    },
+    {
+      "path": "tests\\source-approval.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\source-approval.ts.snapshot",
+      "sha256": "4eb90208a12373a5b3951e2d62826e054f164c1b496330868621aa9079003229"
+    },
+    {
+      "path": "tests\\workspace-reselection.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\workspace-reselection.spec.ts.snapshot",
+      "sha256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372"
+    },
+    {
+      "path": "tests\\harness\\index.html",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\harness\\index.html.snapshot",
+      "sha256": "787fa7c7ba3c617436db150f4a85bd84cfc5014be6afa08f931eb2016df07f65"
+    },
+    {
+      "path": "tests\\harness\\main.tsx",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\harness\\main.tsx.snapshot",
+      "sha256": "05344719e1367cd853a1b8c7b21908ad0dd6481ecea322e5904b2f831b08d7bc"
+    },
+    {
+      "path": "tests\\reviews\\m01-source-approval.md",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\reviews\\m01-source-approval.md.snapshot",
+      "sha256": "cb5aebc318857fa32fb798caa32c1372db4fe5d6cb25f11c458e286c709d0566"
+    },
+    {
+      "path": "tests\\upstream\\animate-button.tsx.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\upstream\\animate-button.tsx.txt.snapshot",
+      "sha256": "cd300bc42b8111f81b911b113a56607601c187038e8d16a9a44f2e288348b5de"
+    },
+    {
+      "path": "tests\\upstream\\animate-LICENSE.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\upstream\\animate-LICENSE.txt.snapshot",
+      "sha256": "d2349753738223c0237d8b5908c4e4da825bbfc951e4fa7081ebc5563c8ceea0"
+    },
+    {
+      "path": "tests\\upstream\\animate-slot.tsx.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\upstream\\animate-slot.tsx.txt.snapshot",
+      "sha256": "71ab5d88b89e0766d69bb5b4fd3918a263c14ed01f5745fc0323ed25a9cb87c8"
+    },
+    {
+      "path": "tests\\upstream\\shadcn-button.tsx.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\upstream\\shadcn-button.tsx.txt.snapshot",
+      "sha256": "82403231e33fd3d45b111e5e819df194cdfa7cef9a726770185724a60bd20932"
+    },
+    {
+      "path": "tests\\upstream\\shadcn-LICENSE.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tests\\upstream\\shadcn-LICENSE.txt.snapshot",
+      "sha256": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    {
+      "path": "scripts\\audit-dependencies.mjs",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\scripts\\audit-dependencies.mjs.snapshot",
+      "sha256": "fad990a2f3f104274356ca69534b403b7eb066ee14c9e6292e3d4b9473a127b5"
+    },
+    {
+      "path": "scripts\\live-auth-check.mjs",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\scripts\\live-auth-check.mjs.snapshot",
+      "sha256": "6c3a3baba138e5ff715292feb983f5a0556f9131bf9c42962e4529598b2d6d7c"
+    },
+    {
+      "path": "scripts\\normalize-lock.mjs",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\scripts\\normalize-lock.mjs.snapshot",
+      "sha256": "756521335bd1e3f44b4e3f5f275da29b8a0818aa1cdee4d7e790b2df3e0ab9ae"
+    },
+    {
+      "path": "scripts\\playwright.mjs",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\scripts\\playwright.mjs.snapshot",
+      "sha256": "4df69b83a466c18e625c8729d510d30d934d7b00607e868ac6d7c8da7e5e25a1"
+    },
+    {
+      "path": "scripts\\review-capture.spec.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\scripts\\review-capture.spec.ts.snapshot",
+      "sha256": "d5f59cca0c25d3709d982fd838a713a255157d243baba2819db95d4da9f596fd"
+    },
+    {
+      "path": ".gitattributes",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\.gitattributes.snapshot",
+      "sha256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893"
+    },
+    {
+      "path": ".npmrc",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\.npmrc.snapshot",
+      "sha256": "e5ff309835c0699682deaec26655607558ba1a2f3f9632c1d2e93cbb965b09e3"
+    },
+    {
+      "path": "index.html",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\index.html.snapshot",
+      "sha256": "bfd16da052da30515dae0c3bd6e4c6fc3bba0119a2b25eefb5335c6cace6739a"
+    },
+    {
+      "path": "package-lock.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\package-lock.json.snapshot",
+      "sha256": "def182f3fbccb232bcb2411a6b387e6ac0152c9860e65f6cc2670543009e9825"
+    },
+    {
+      "path": "package.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\package.json.snapshot",
+      "sha256": "fd862a4bd142e0864ddeeff049c739d2485b99995acae64aa6b78ccaade19b93"
+    },
+    {
+      "path": "playwright.config.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\playwright.config.ts.snapshot",
+      "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+    },
+    {
+      "path": "review.config.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\review.config.ts.snapshot",
+      "sha256": "c2f40686c08969b38b4b94136fe2a99d2dee407a0d8308d82fd6f8834295e6cd"
+    },
+    {
+      "path": "tsconfig.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\tsconfig.json.snapshot",
+      "sha256": "2c233d484659a18d90e6c5bcf6fd74759541a9f4dd9e5cfb24d64005c09f3a82"
+    },
+    {
+      "path": "vite.config.ts",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\vite.config.ts.snapshot",
+      "sha256": "810f2fffb363f2e08fcd9f4264d028f5081ba9ed7d412f035405e4f8a221998a"
+    }
+  ],
+  "heldProduction": [
+    {
+      "path": "src\\api\\authorization.ts",
+      "sha256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277"
+    },
+    {
+      "path": "src\\api\\client.ts",
+      "sha256": "f5f66e8dc36337b58a2f6dcc48cc190d44f453f82552cbe2e3e21d56b6ee7219"
+    },
+    {
+      "path": "src\\api\\types.ts",
+      "sha256": "0ef6fe0c9442be7e212c2650a597cbedc27d63ab22a96102d04c684ed84c7af2"
+    },
+    {
+      "path": "src\\App.tsx",
+      "sha256": "e1293b642b8a6ff6b9373dba4086e30e8277437232e31ae994322bf99a21188b"
+    },
+    {
+      "path": "src\\components\\action-button.tsx",
+      "sha256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc"
+    },
+    {
+      "path": "src\\components\\animate\\button.tsx",
+      "sha256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794"
+    },
+    {
+      "path": "src\\components\\animate\\slot.tsx",
+      "sha256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7"
+    },
+    {
+      "path": "src\\components\\asset-editor.tsx",
+      "sha256": "9d61c595870ef0b2432b860fc786a3bc44fd0a040333c1f80e3451620308cb9a"
+    },
+    {
+      "path": "src\\components\\finding-dialog.tsx",
+      "sha256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc"
+    },
+    {
+      "path": "src\\components\\form-dialog.tsx",
+      "sha256": "e3a669844e0f3dd2876473da33e7163740ba372dcae10390310120423a63e90b"
+    },
+    {
+      "path": "src\\components\\icon.tsx",
+      "sha256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4"
+    },
+    {
+      "path": "src\\components\\import-status.tsx",
+      "sha256": "1565df53ef50dccc9494253978856aaff6f067fec58b81f4f5c3f1177f109b4d"
+    },
+    {
+      "path": "src\\components\\provenance.json",
+      "sha256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411"
+    },
+    {
+      "path": "src\\components\\report-import.tsx",
+      "sha256": "b6ae2a5d475135106b33cc23e9192f54dbbfcc9505e8b290492a03c38337500b"
+    },
+    {
+      "path": "src\\components\\states.tsx",
+      "sha256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4"
+    },
+    {
+      "path": "src\\components\\theme-menu.tsx",
+      "sha256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12"
+    },
+    {
+      "path": "src\\components\\ui\\button.tsx",
+      "sha256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d"
+    },
+    {
+      "path": "src\\lib\\application-input.ts",
+      "sha256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd"
+    },
+    {
+      "path": "src\\lib\\format.ts",
+      "sha256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6"
+    },
+    {
+      "path": "src\\lib\\preferences.tsx",
+      "sha256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8"
+    },
+    {
+      "path": "src\\lib\\router.ts",
+      "sha256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e"
+    },
+    {
+      "path": "src\\lib\\session.tsx",
+      "sha256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de"
+    },
+    {
+      "path": "src\\lib\\use-modal.ts",
+      "sha256": "63bb0008373e5cc0c77f1cfaa2e1f3edd4b7384d0c33f8357435d021a348e3ee"
+    },
+    {
+      "path": "src\\lib\\use-resource.ts",
+      "sha256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23"
+    },
+    {
+      "path": "src\\lib\\use-scoped-action.ts",
+      "sha256": "4b95ee7fd18d580325687b3ca632c71c8b47af91697d9b808fd905db56f3c467"
+    },
+    {
+      "path": "src\\lib\\utils.ts",
+      "sha256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431"
+    },
+    {
+      "path": "src\\main.tsx",
+      "sha256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f"
+    },
+    {
+      "path": "src\\pages\\assets.tsx",
+      "sha256": "3c4b80587a8198fc9414bebde2ecfa4901542c9e35123b4b2f3ed92eb026eafd"
+    },
+    {
+      "path": "src\\pages\\gallery.tsx",
+      "sha256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8"
+    },
+    {
+      "path": "src\\pages\\integrations.tsx",
+      "sha256": "5391029a0012f24681683f986600911c12864e3f3dd89266188db1283926750b"
+    },
+    {
+      "path": "src\\pages\\work.tsx",
+      "sha256": "724752b555e42ec77b6c1672a6813ffea9f3eede417d2fdf47f6097dd43d1dce"
+    },
+    {
+      "path": "src\\styles.css",
+      "sha256": "03221c53496707613906649fc41da840e1a8e0dfebce5f7b302dd1651392e0ad"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "when": [{ "event": "manual", "branch": "main" }],
+  "labels": { "aspm-worker": "isolated-release" },
+  "steps": [
+    {
+      "name": "reviewed-artifact-signing",
+      "image": "aspm-build-worker:node22.20.0-go1.27.1",
+      "environment": {
+        "ASPM_RELEASE_APPROVED_REVISION": { "from_secret": "aspm_reviewed_revision" },
+        "ASPM_SIGNING_KEY_FILE": "/run/aspm-release/signing-key.pem"
+      },
+      "commands": [
+        "test -n \"$ASPM_ORACLE_CHECKER\"",
+        "cd web",
+        "npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org",
+        "npm run test:install-browser -- --with-deps",
+        "cd ..",
+        "node \"$ASPM_ORACLE_CHECKER\" check-env -- node scripts/check.mjs",
+        "node scripts/build.mjs",
+        "node scripts/sign.mjs sign .artifacts/development/artifact-manifest.json"
+      ]
+    }
+  ]
+}

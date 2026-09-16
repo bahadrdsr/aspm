@@ -1,0 +1,25 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "automationDetails": {"id": "acceptance/main"},
+    "tool": {"driver": {
+      "name": "Acceptance SARIF", "version": "1.0.0",
+      "rules": [{
+        "id": "SYN001",
+        "shortDescription": {"text": "Synthetic transport setting"},
+        "fullDescription": {"text": "Synthetic configuration description."},
+        "help": {"text": "Review the synthetic setting."}
+      }]
+    }},
+    "results": [{
+      "guid": "11111111-1111-4111-8111-111111111111",
+      "ruleId": "SYN001", "level": "warning",
+      "message": {"text": "Synthetic configuration requires review."},
+      "locations": [{"physicalLocation": {
+        "artifactLocation": {"uri": "src/settings.go"},
+        "region": {"startLine": 12}
+      }}],
+      "properties": {"impact": "Synthetic configuration impact.", "vendorNote": "Keep the SARIF source note."}
+    }]
+  }]
+}

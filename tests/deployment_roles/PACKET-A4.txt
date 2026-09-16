@@ -1,0 +1,67 @@
+INDEPENDENT SOURCE-PARSER REGRESSION PACKET A4
+============================================
+Parent-authorized addition following reviewer4f2739db's source BLOCK.
+Authorization received 2026-09-16T00:22:11.830+02:00.
+The ONLY Go compiler-source addition is quadlet_config_loader_test.go.
+All previous A3 assertions/helpers/module/forwarding bytes remain unchanged.
+No production implementation, policy, existing installer control or commit edit.
+
+NEW SOURCE-ONLY REQUIREMENTS
+----------------------------
+Use valid shipped source and valid selected Config for core, ingestion, reports.
+Positive controls preserve Restart, TimeoutStartSec, added RestartSec, safe
+Container.Environment ASPM_SCHEMA and all unrelated shipped directives. Existing
+role-file and explicit selected raw/readiness/normalized rules remain enforced.
+
+Twelve inert input cases per role must return errors.Is(err, quadlet.ErrUnit)
+AND zero output:
+  Container.ContainersConfModule -> never-loaded synthetic module pathname.
+  Container.GlobalArgs -> synthetic --module selector.
+  Service.Environment -> CONTAINERS_CONF, CONTAINERS_STORAGE_CONF,
+    CONTAINERS_REGISTRIES_CONF, ASPM_S3_ACCESS_KEY, ASPM_S3_SECRET_KEY,
+    AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, ASPM_BOOTSTRAP_TOKEN.
+  Service.PassEnvironment -> configuration selectors or credential selectors.
+Input mutation inserts one literal line into a test-owned source copy. It does
+not render, validate policy, load a named configuration file or execute a tool.
+The existing forwarding binding calls the real production renderer.
+
+ACTUAL RED BEFORE PRODUCTION FIX
+-------------------------------
+Held internal/install/quadlet/role.go SHA256 before AND after execution:
+95cfdf1cdd1745ac00fdaa70a735ea17a16766a28bc873b46a8cab1697e9daea
+The held renderer accepted every injected path: 36 rejection cases RED,
+zero required ErrUnit rejections, three named positive preservation controls
+PASS, zero skips, exit 1. Package time 10.446 seconds.
+Source-only RED evidence: .run/a4-source-red.jsonl
+SHA256: 9b2fcc0ad015de13ae2f13928dd3c0adfd97b09fad2d9ee74412dbbf7b2aec39
+New test SHA256:
+63c09e453ae218409ecccf5436aa07f53646e2e69796c919144ab18afbebd671
+The unmodified existing Quadlet selected-scope/role-file gate also PASSed:
+.run/a4-existing-scope-control.jsonl. No existing assertion was relaxed.
+
+BOUNDARY
+--------
+No Podman/systemd process, referenced synthetic file, real credential, target
+contact, configuration loading or runtime bypass was exercised. These are
+source-parser acceptance/rejection observations ONLY, not live exploitation,
+native execution, deployed storage isolation or installer/release acceptance.
+Official Podman 4.9.3 source semantics were checked in:
+https://docs.podman.io/en/v4.9.3/markdown/podman-systemd.unit.5.html
+https://docs.podman.io/en/v4.9.3/markdown/podman.1.html
+The module/global argument mappings and configuration-selector meanings justify
+rejecting these source paths; no commands from the documentation were executed.
+
+FULL PACKET / HISTORY / HOLD
+----------------------------
+Current: FROZEN.A4.sha256; canonical FROZEN.sha256 is an identical alias.
+COMPILATION.A4.json records all FIVE Go/init/compiler sources and the closed
+non-.run file set. Verify-CompilationPacket-A4.ps1 checks every input regardless
+of -run. The original Verify-CompilationPacket.ps1 remains untouched A3 history.
+A0/A1/A2/A3 manifests, assertions/helpers, module and forwarding remain intact.
+Previous CURRENT_PACKET.txt is preserved in .run/a3-before-a4/.
+Added: this handoff, the new regression, COMPILATION.A4.json, FROZEN.A4.sha256,
+Verify-CompilationPacket-A4.ps1, and the two named source-only evidence files.
+Only CURRENT_PACKET.txt and canonical FROZEN.sha256 update their current
+packet pointers. Existing signed installer controls are not touched.
+HOLD the exact A4 test packet for the parent's production fix and independent
+review. No further scope expansion or acknowledgment loop is needed.

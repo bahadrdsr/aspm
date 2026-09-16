@@ -1,0 +1,36 @@
+DEPLOYMENT ROLE ARTIFACT RED - SEPTEMBER 15, 2026
+================================================
+Actual verified Helm: v4.3.0+gbec5b06.
+Executable SHA256:
+2f65add9f1d5c96fc70ad70f06f1c47b3ef21bee4a9f086d861bb138429e9c13
+
+Final scoped run: four top-level tests RED, zero skips, exit 1.
+Go package time: 6.075 seconds. Nine actual helm template invocations ran.
+Valid-reference rendering controls produced all three runtime Deployments and
+were decoded with the real YAML parser. There was no fake rendering, missing
+tool, cluster access or live credential input.
+
+Observed defects
+----------------
+1. Core and ingestion still reference common s3-access-key/s3-secret-key.
+   They ignore selected per-role references and raw/readiness values, instead
+   rendering the legacy operator-prefix canary; normalized scope is absent.
+2. Reports receive bootstrap-token and the common S3 environment/secret refs.
+3. All six empty selected role secret-reference fields still render successfully
+   despite the requirement to fail closed with an exact missing-field diagnostic.
+4. All three actual Quadlets reference /etc/aspm/runtime.env; core/ingestion
+   do not declare the narrow raw/readiness configuration.
+
+CONTRACT.txt defines exact proposed chart values, keys and role-file paths.
+FROZEN.sha256 records test/module/runner/docs and immutable synthetic render
+evidence. INPUTS.before.sha256 records shipped input artifact
+hashes and read-only parent/installer references; production artifacts may
+legitimately change during implementation, but existing oracles are not amended.
+.run\frozen-red.jsonl and .run\frozen-renders retain the actual RED baseline.
+
+These are rendering and unit-source observations only. They do not prove role
+credential bytes differ, private environment-file contents are DB-only, native
+Linux/systemd operation, network denial, storage policy or deployment readiness.
+Existing runtime-role/storage tests remain the separate consumer evidence.
+No production, parent dependency manifest, existing installer/UI/storage oracle,
+live policy, real credential or commit was changed.

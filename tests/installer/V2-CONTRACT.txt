@@ -1,0 +1,80 @@
+INSTALLER V2 - EXPLICIT INDEPENDENT-AUTHOR REVIEW CORRECTIONS
+==========================================================
+Requested September 16, 2026 by the parent after reviewer62b57eda's four findings.
+No production, CLI regression, module, renderer/A5, readiness or other-author
+control is changed. No native Helm/systemd/Podman, cluster or privileged command
+runs. Existing forwarding binding remains byte-identical.
+
+V1 preservation / narrowly authorized oracle amendments
+-------------------------------------------------------
+V2-BEFORE.json records exact old control/evidence and executor/CLI source hashes.
+.history/v1-before-v2 contains byte-exact copies, with .snapshot extensions so
+historical Go code is not silently compiled as active tests. Old hash manifests
+and RED remain unchanged at their original locations as historical controls.
+The parent-supplied held ownership digest is recorded, not recomputed using a
+different invented ownership algorithm.
+
+Exactly two inaccurate former oracle models are corrected:
+1. fixture.environment now preserves literal bytes after the first '=', removing
+   only line framing/leading indentation. No quote stripping or shell unescaping.
+   Native primary semantics: containers/podman tag v4.9.3, pkg/env/env.go,
+   parseEnv/parseEnvFile. Only minimal independent expected-format checks are
+   implemented; no vendor parser source is copied.
+2. the original exact chart-directory argument assertion now accepts a directory
+   or tar/tgz snapshot/archive of the SAME complete signed deploy/helm/aspm chart.
+   Exact full membership and file-byte digests are observed at invocation time,
+   including ephemeral snapshots. Unlisted files, links, duplicate archive members,
+   partial charts and replacement stubs fail. No test-side renderer/filtering,
+   policy execution or tool-result substitution is used.
+
+All eight prior operational requirements continue to apply: external signing
+trust and signatureRequired=true, caller credentials before tools, nonmutating
+planning, target/config/artifact-bound approval, private per-role/scoped secrets,
+visible failed commands, resumable/idempotent state, and safe retained-data
+uninstall with separate destructive approval. Go/aspmctl remains the path.
+
+Five substantive new top-level correction gates
+-----------------------------------------------
+ENV BYTES: synthetic supported quote/backslash/interior-'=' role keys and supplied
+DB/bootstrap secret inputs must reach generated Podman files byte-exactly. Check
+DB URL, schema, postgres password, core/ingestion credentials and bootstrap.
+Owner-only files, DB-only reports, no ingestion bootstrap and no public/argv
+secret leakage remain required. Native container execution is not necessary.
+
+APPROVED CHART: add an inert, comment-only unsigned YAML file to the owned source
+copy before/after planning. Reject unlisted input before mutation, OR supply only
+the exact approved chart snapshot to Helm. Do not execute the extra template.
+The Run observer reads bytes only; it does not make the decision for production.
+
+SAME-RELEASE REVALIDATION: after the first completed kubectl mutation, change one
+owned chart input and validly re-sign the same release with the same trusted
+synthetic key. The external command result is forwarded unchanged. Any newly
+verified bundle-identity change must stop later native mutation under old approval
+(ErrApproval or ErrBundle). A prior-step/failure audit checkpoint is permitted;
+later secrets/Helm mutation or an applied result is not.
+
+LINUX UNINSTALL: remove or deactivate owned auto-activation definitions and
+reload the manager, not merely stop services and record uninstalled. Retained
+definitions cannot retain nonempty WantedBy/RequiredBy activation. Unrelated
+units, actual test-owned Podman volume data and every credential byte survive.
+No mocked systemd call secretly edits files on the executor's behalf.
+
+CALLER VS OWNERSHIP: reformat equivalent kubeconfig JSON, add an unused context,
+or renew selected caller auth against the same inspected cluster UID. Fresh
+approval must reapply successfully while retaining stable TargetFingerprint and
+all application secret bytes. Renewed caller auth invalidates stale approval
+independently of stable target ownership. A genuinely different cluster is still
+rejected, even with a freshly computed plan, when reusing existing owned state.
+No private-state surgery, fake inspection result or key rotation is prescribed.
+
+Run / evidence
+--------------
+From aspm with the existing Go toolchain/dependency cache:
+  go test -mod=readonly -count=1 -timeout=180s -run '^TestInstallerV2_' .\tests\installer
+  go test -mod=readonly -count=1 -timeout=180s -run '^Test(M03Execution_|InstallerV2_)' .\tests\installer
+Use task-specific .cache/installer-v2 build/work/gopath and new V2 log names.
+Never overwrite .role-run/red-run.jsonl or any historical/signed control.
+V2-RED.txt distinguishes top-level results, negative controls and exact causes.
+V2-AMENDMENT.json and FROZEN.V2.sha256 record the authorized old/new delta and
+new frozen controls/evidence. They are author integrity records for parent
+review/signing, not authorization to modify older signed manifests.

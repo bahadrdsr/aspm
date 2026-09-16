@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "policy": "independent-immutable-foss-approval",
+  "approvalOwner": "coordinator-or-independent-reviewer-not-production-coder",
+  "licenseReviewedCandidates": [
+    {
+      "provider": "animate-ui",
+      "repository": "imskyleen/animate-ui",
+      "commit": "38b917762e3b6059c06a7af703071ba11a89091e",
+      "license": {
+        "path": "LICENSE.md",
+        "gitBlob": "0ca4a48bd712fd8db31fff20c8b241c5cf41e4db",
+        "expression": "MIT",
+        "additionalTerms": []
+      },
+      "review": {
+        "status": "license-reviewed",
+        "authority": "coordinator",
+        "reportedAt": "2026-09-14",
+        "fullTextReviewed": true,
+        "unrestrictedPermissionAndSellConfirmed": true,
+        "whitespaceNormalizedComparison": true
+      },
+      "adoptionState": "selected-files-approved"
+    }
+  ],
+  "approvedSources": [
+    {
+      "provider": "shadcn",
+      "repository": "shadcn-ui/ui",
+      "commit": "f1dd9c6903d4d9030efe7bd61533db3fa21e68d8",
+      "path": "apps/v4/registry/new-york-v4/ui/button.tsx",
+      "sourceSHA256": "82403231e33fd3d45b111e5e819df194cdfa7cef9a726770185724a60bd20932",
+      "license": {
+        "expression": "MIT",
+        "path": "LICENSE.md",
+        "gitBlob": "fad4d887a681dd49233e5ed01ee2c7a1513089a0",
+        "snapshotPath": "tests/upstream/shadcn-LICENSE.txt",
+        "sha256": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f",
+        "additionalTerms": []
+      },
+      "approval": {
+        "status": "approved",
+        "authority": "coordinator",
+        "foss": true,
+        "perFileLicenseReviewed": true,
+        "dependencyClosureReviewed": true,
+        "reviewRef": "tests/reviews/m01-source-approval.md"
+      }
+    },
+    {
+      "provider": "animate-ui",
+      "repository": "imskyleen/animate-ui",
+      "commit": "38b917762e3b6059c06a7af703071ba11a89091e",
+      "path": "apps/www/registry/primitives/buttons/button/index.tsx",
+      "sourceSHA256": "cd300bc42b8111f81b911b113a56607601c187038e8d16a9a44f2e288348b5de",
+      "license": {
+        "expression": "MIT",
+        "path": "LICENSE.md",
+        "gitBlob": "0ca4a48bd712fd8db31fff20c8b241c5cf41e4db",
+        "snapshotPath": "tests/upstream/animate-LICENSE.txt",
+        "sha256": "d2349753738223c0237d8b5908c4e4da825bbfc951e4fa7081ebc5563c8ceea0",
+        "additionalTerms": []
+      },
+      "approval": {
+        "status": "approved",
+        "authority": "coordinator",
+        "foss": true,
+        "perFileLicenseReviewed": true,
+        "dependencyClosureReviewed": true,
+        "reviewRef": "tests/reviews/m01-source-approval.md"
+      }
+    },
+    {
+      "provider": "animate-ui",
+      "repository": "imskyleen/animate-ui",
+      "commit": "38b917762e3b6059c06a7af703071ba11a89091e",
+      "path": "apps/www/registry/primitives/animate/slot/index.tsx",
+      "sourceSHA256": "71ab5d88b89e0766d69bb5b4fd3918a263c14ed01f5745fc0323ed25a9cb87c8",
+      "license": {
+        "expression": "MIT",
+        "path": "LICENSE.md",
+        "gitBlob": "0ca4a48bd712fd8db31fff20c8b241c5cf41e4db",
+        "snapshotPath": "tests/upstream/animate-LICENSE.txt",
+        "sha256": "d2349753738223c0237d8b5908c4e4da825bbfc951e4fa7081ebc5563c8ceea0",
+        "additionalTerms": []
+      },
+      "approval": {
+        "status": "approved",
+        "authority": "coordinator",
+        "foss": true,
+        "perFileLicenseReviewed": true,
+        "dependencyClosureReviewed": true,
+        "reviewRef": "tests/reviews/m01-source-approval.md"
+      }
+    }
+  ],
+  "pending": []
+}

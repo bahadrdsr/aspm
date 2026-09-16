@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "authority": "original independent readiness-bootstrap test author; explicit user-authorized runner/artifact correction",
+  "requestedAt": "2026-09-16T00:35:24.166+02:00",
+  "reason": "Ordinary reruns previously overwrote frozen independent RED evidence and placed evolving compiler artifacts in the protected test root",
+  "changedSource": "Test-ReadinessBootstrap.ps1",
+  "oldRunnerSHA256": "624132d5c7fea007a61dffc3fda2805add50a9462c0ae18dd9c5cbeba5a9ec46",
+  "newRunnerSHA256": "5e232fe1e210edb03356b5fb49e89d00116acda3691af85c6b536bcc420fbb22",
+  "priorManifestSHA256": "818d718bf503deec6c8b8cb605b2e382ceb9477efb68895d19ac4479c52b8119",
+  "originalRunnerArchive": ".run\\runner-before-amendment\\runner.before.txt",
+  "originalManifestArchive": ".run\\runner-before-amendment\\FROZEN.sha256",
+  "newMutableRoot": ".cache\\readiness-bootstrap (relative to aspm)",
+  "newMutableFiles": [
+    "build\\",
+    "work\\",
+    "gopath\\",
+    "last-run.jsonl",
+    "last-run.log"
+  ],
+  "originalRed": [
+    {
+      "path": ".run\\red.jsonl",
+      "sha256": "bf80665f341ffe11c86a7c7f388efe484e935c9f04336c06bddd16a50ed08eaf"
+    },
+    {
+      "path": ".run\\red.log",
+      "sha256": "0a2b57c9ae8ded80410a62693616eedf3527767cda81a098653ae723b91e8096"
+    }
+  ],
+  "unchanged": "All six assertions, fixture logic, flags, credential loading/redaction, real-I/O boundaries, original CONTRACT/RED text and eight non-runner baseline files are byte-identical",
+  "validation": "PowerShell AST parse and allowed-path-only source comparison passed; destinations resolve outside protected root; no runner or readiness test was executed",
+  "relocation": "No old build/work/gopath directories existed; no original RED/source/evidence file was moved or regenerated",
+  "documentation": "This record supersedes only the old CONTRACT runner-cache/current-log location description. Original frozen RED stays in .run/red.*; future rerun output is separate outside the protected test root.",
+  "signature": "unsigned amendment/control record for parent verification and signing, not review/apply approval"
+}

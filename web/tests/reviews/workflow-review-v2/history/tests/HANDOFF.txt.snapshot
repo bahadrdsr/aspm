@@ -1,0 +1,138 @@
+M04-M07 FIRST APPLICATION UI WIRING GATES
+=======================================
+Seven independent Playwright cases in application-workflows.spec.ts visit the
+real root App. application-fixture.ts mocks ONLY same-origin HTTP responses;
+it does not replace React, routing, controls, file handling or application state.
+Run from aspm\web with the existing local browser/dependencies:
+  npm.cmd run typecheck
+  npm.cmd test -- application-workflows.spec.ts
+Compatibility run:
+  npm.cmd test -- shell.spec.ts m01-review-regressions.spec.ts
+ASPM_WEB_TEST_PORT can isolate this run from another author's server. Playwright
+owns/stops Vite and Chromium; no detached process or real backend is required.
+
+Public API authority: tests\acceptance\CONTRACT.txt at repository root.
+No backend routes, authorization or persistence are invented by these tests.
+All users, memberships, reports, cookie values and setup/password canaries are
+explicitly synthetic. Mock success is UI mapping evidence, not real auth/PG/S3
+or scanner, live integration, verification, deployment or permission evidence.
+
+Planned auth behavior shift, not a bypass
+---------------------------------------
+Startup calls GET /api/v1/session before protected requests. A 200 supplies
+{apiVersion,user:{id,name,email},workspaces:[{id,name,role}],expiresAt}.
+401 shows Sign in without rendering cached findings/assets/details/workspaces.
+Use credentials:same-origin and the server's HttpOnly aspm_session cookie;
+never Authorization, browser token storage, URL credentials or credential logs.
+New cookie fixtures use loopback HTTP and HttpOnly. Production Secure/HTTPS
+cookie and server revocation requirements remain in the real backend gates.
+The browser suite does not weaken or claim to retest those transport guarantees.
+
+The legacy M01 fixture gains only synthetic GET /api/v1/session and an empty
+GET /api/v1/assets response for navigation. Its GET-only credential/network
+guards and ALL existing assertions remain unchanged. The new fixture admits
+only the explicit writes below. No test-mode flag or fixture import belongs in
+production. No provenance/source-approval test or record is changed.
+
+Security-first review and frozen expectations
+--------------------------------------------
+Prioritize cases 1, 2 and 4: session entry, logout/expiry and scope changes must
+remove protected data, including hidden/cached views, before more happy-path
+breadth. A workspace header is a selector, not authority. Real application
+authorization must bind the authenticated session to server-owned membership,
+role and object workspace; hidden controls or client-supplied roles cannot grant
+access. Current browser fixtures do NOT prove that enforcement: their admin/
+analyst metadata does not exercise real viewer-write denial or role revocation.
+Require separate real-application negative authorization evidence.
+
+The next test work is security-negative coverage, not more CRUD/import breadth.
+The parent will arrange authorized real storage fixtures for:
+  - An owned-object positive control using scoped credentials, plus actual
+    storage-service denial for a different prefix and a different bucket.
+  - Revocation while a read is deliberately blocked, with a bounded release/
+    cancellation and an assertion that no protected data is disclosed afterward.
+Keep application authorization, storage credential/policy denial and in-flight
+revocation evidence distinct. An app-only 403/prefix check or a mocked storage
+error does NOT prove storage isolation. The held Beta response in browser case
+4 only checks workspace-switch presentation; it is not a revocation test.
+These real security cases are NOT RUN / UNVERIFIED pending the parent's scoped
+fixtures. Do not use broad existing fixture credentials as isolation evidence,
+copy credential values into this handoff, or modify shared storage policies.
+
+HANDOFF.sha256 records exact-byte SHA-256 hashes of the delivered browser tests,
+fixtures, contracts and existing M01 expectation/provenance controls before the
+coder handoff. Paths are relative to this tests directory; the manifest excludes
+itself. Formatting/line-ending changes also change a hash. The production coder
+must not edit expectations or regenerate the baseline to make implementation
+pass. Any contract change requires separate independent test-author review.
+
+First accessible workflows
+--------------------------
+1. Authenticated entry shows a native select/combobox named Workspace whose
+   values are membership IDs. Sign out POSTs /api/v1/logout, then unmounts
+   protected data/context. Reload must not restore a logged-out view.
+2. A form named Sign in has Email and Password labels and a Sign in submit.
+   POST /api/v1/login sends {email,password}; password input is masked.
+   Invalid credentials show an actionable alert without echoing the password.
+   Login's user/workspaces response enters Work with no client-held auth token.
+   A later protected 401 (Refresh on Work) clears cached data immediately and
+   returns to Sign in; reload remains denied.
+3. The unauthenticated entry offers Set up instance for the operator with an
+   out-of-band token. This is not automatic bootstrap-state discovery: no such
+   discovery endpoint exists in the public contract. The form of that name has
+   Workspace name, Name, Email, Password and masked Bootstrap token fields.
+   POST /api/v1/bootstrap sends {workspaceName,name,email,password}, with token
+   ONLY in X-ASPM-Bootstrap-Token. After 201, show setup success and Sign in.
+   This first flow requires explicit login, not implicit session creation.
+4. Workspace change updates X-ASPM-Workspace-ID on protected reads/writes and
+   clears query, selection, detail and old rows BEFORE the new work response.
+   A held Beta response tests this boundary without timing sleeps.
+5. Assets has Create asset and a form named Create asset. Labels: Asset name,
+   Kind (repository), Environment (text), Criticality (medium/high), Tags
+   (comma-separated text). Empty owner maps to ownerId:null.
+   POST /api/v1/assets returns the actual asset ID and row in table Assets.
+   Its Edit asset button opens Edit asset with populated values; Save asset
+   PATCHes /api/v1/assets/{returned-id}. Keep selected workspace and Assets route.
+6. Assets offers Import report and a form named Import report. Labels:
+   Asset, Format, Report file, Source ID, Scan ID, Scope ID, Scope revision,
+   Branch, Source scan time, Source status, Scan kind, Completeness.
+   Select controls use API values. Source scan time accepts RFC3339 UTC text;
+   blank means null, never now. The client supplies current collectedAt.
+   Format values: sarif and generic-json. Report file is a real file input;
+   tests select in-memory local File payloads with CRLF/trailing newline bytes.
+   POST /api/v1/imports is the ONE JSON wrapper in the backend contract, not
+   multipart. Preserve report string bytes and every source/scan/scope field.
+   First Generic JSON profile uses literal array-field mapping:
+     sourceFindingId=id, title=title, sourceSeverity=severity,
+     sourceLocation=path, sourceLine=line, impact=impact,
+     remediation=remediation, description=description.
+   No mapping scripts or broad format/UI framework are required.
+   An accessible status/alert named Import status shows queued/pending after
+   202, not success. Refresh import status GETs /api/v1/imports/{returned-id}.
+   Display processing, succeeded and failed from responses, including failure
+   diagnostics. Optional bounded polling may coexist, but never simulate job
+   completion in a UI timer. The JSON fixture deliberately returns a server
+   failure despite valid local JSON, so client parsing is not success evidence.
+7. Work still uses table Findings, Filter findings and its existing detail
+   dialog. In detail, list Observations retains BOTH scan records, source IDs,
+   uri:line locations, source warning severity and unmapped source notes.
+   Preserve the analyst note, accepted-risk disposition and inferred source
+   resolution without changing the human workflow or claiming verified closure.
+   The existing Freshness & provenance section exposes separate <time datetime>
+   values for source scan, source freshness, collection and import. Keep the
+   queue's source-scan <time>; collection/import cannot replace it.
+   Evidence remains Not verified / Verification not run.
+
+Limits: 60 API requests per case; all external/undeclared operations fail the
+fixture. Missing controls/routes are RED, not skips. Password/setup/session
+canaries are checked in DOM, URLs, script-readable cookies, storage and console.
+These are first usable forms, not all role-management, import formats, pending
+job history, retention, mobile layout or production auth deployment coverage.
+
+Observed RED against the unchanged App, September 15, 2026
+---------------------------------------------------------
+Typecheck passed. Browser run: 7 new failures, 13 existing M01 passes, 0 skips.
+Missing: startup session request, Sign in form, Set up instance action,
+Workspace selector, Create asset action, Import report action, observation list.
+Combined JSON evidence: web\.artifacts\reports\m01-results.json (repository root).
+The failures are missing real UI wiring, not missing browser/backend fixtures.

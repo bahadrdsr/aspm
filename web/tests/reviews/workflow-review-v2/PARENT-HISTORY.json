@@ -1,0 +1,54 @@
+{
+  "description": "Byte-preserved parent application handoff history, including old oracle reference and 55-control receipt; no signed manifest rewritten",
+  "reportedHistoricalControlCounts": [
+    35,
+    55
+  ],
+  "files": [
+    {
+      "source": "..\\.cache\\application-ui\\before.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\before.json.snapshot",
+      "sha256": "c78ac33ecfb0b5a2d7e42394b83a7998d4966c61c3ba6e29d4ba5c36512ea752"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\handoff.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\handoff.json.snapshot",
+      "sha256": "00dfdb25fcc4b1ed3c3ab8d9a7d2405f1e02b86921b936344ef561f05113627e"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\receipt.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\receipt.json.snapshot",
+      "sha256": "1b86ad6323f8acfda5e5331ce9a031655b400e3958b1e35df77f56346e707fe7"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\source-manifest.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\source-manifest.json.snapshot",
+      "sha256": "d838acc604352c61bbe3c9d757cef9958628b2ddb0bf30dd1b82ff11d04045d0"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\ui-inputs.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\ui-inputs.json.snapshot",
+      "sha256": "e6984f35c0350bd36a246eadaaf34227c0fd3a25546fb8f033ce97dbf38955fc"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\protected-comparison.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\protected-comparison.json.snapshot",
+      "sha256": "345672b1d381de669e46dd914d933d940c12eb645370ef1f2152c643df4af900"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\typecheck-files.txt",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\typecheck-files.txt.snapshot",
+      "sha256": "2d105e3f4250b0eaec3e5fa554686398cbc8f5624425db08a35655aac264924c"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\guarded-validation.log",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\guarded-validation.log.snapshot",
+      "sha256": "9a46f4cd981ade5d5b6fdff09ecb655dc6f216c9abdc73f6e7c2b36918094923"
+    },
+    {
+      "source": "..\\.cache\\application-ui\\full-results.json",
+      "archive": "tests\\reviews\\workflow-review-v2\\history\\parent-application-ui\\full-results.json.snapshot",
+      "sha256": "40336608afc73edf48747340e11b168436e19e7b608819cf17dd54ab4004c9ab"
+    }
+  ]
+}

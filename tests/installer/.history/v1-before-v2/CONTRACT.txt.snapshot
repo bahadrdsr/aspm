@@ -1,0 +1,200 @@
+M03 OPERATIONAL INSTALLER - BOUNDED TEST-AUTHOR HANDOFF
+====================================================
+Eight behavioral tests; no production binding, new dependency or real deployment.
+INDEPENDENT-AUTHOR AMENDMENT (September 15, 2026): shipping now needs distinct core
+and ingestion storage keys and a DB-only report worker. The prior five-file oracle
+was verified and hashed BEFORE editing in role-key-hashes.before.json. This is an
+explicit role-separation amendment, not a relaxation of any original security gate.
+Run from aspm with the existing Go toolchain and project-local build/temp caches:
+  go test -mod=readonly -count=1 -timeout=120s .\tests\installer
+  go test -mod=readonly -count=1 -run '^TestM03Execution_Plan' .\tests\installer
+No integration tag or real credentials/services are needed; fixtures supply a
+synthetic explicit kubeconfig. Missing OpenInstaller is
+explicit RED, never a skip. tests/acceptance and all existing expectations are
+unchanged. Exact Go types live in contract_test.go.
+
+ONE CODER-OWNED FACTORY
+  Production.OpenInstaller(ctx, Options) (Installer,error)
+  Installer.Plan(ctx, Intent) (Plan,error)
+  Installer.Execute(ctx, Intent, Approval) (State,error)
+  Installer.Status(ctx) (State,error)
+  Installer.Close() error
+The later production_bindings_test.go only constructs/forwards real components
+and converts public types/errors. It must not implement hashing, signatures,
+approval, rendering, credential generation, command sequencing or checkpointing.
+Intent retains existing M00 Installation JSON; production must reuse install.Resolve.
+It adds operational inputs: BundleDir, Operation=apply|uninstall, DeleteData and
+RuntimeRoles. RuntimeRoles uses existing Helm role-selection field names below;
+it does not alter the M00 Installation schema or configuration-only resolver.
+DevelopmentPolicy is retained only to test rejection of the former unsigned bypass.
+Approval={PlanID,DryRun}; a preview ConfigID is NOT approval.
+
+IO BOUNDARIES
+Options has Root, Kubeconfig, rooted Files, Run, independently trusted Ed25519 public
+key, Output, LocalHost={OS,EUID}, and private RoleKeys={Core,Ingestion}. Each RoleKeys
+entry has AccessKey,SecretKey supplied out of band through protected input, never
+argv or public configuration JSON. Plan does not fetch/generate these inputs.
+Root is a new, random test-owned on-disk directory.
+Files has Stat/ReadFile/WriteFile(mode)/Rename/Remove, with ROOT-RELATIVE paths.
+WriteFile may create parent directories privately; Rename enables atomic state
+publication. The test adapter delegates to os.Root and records actual IO requests.
+No state/hash/render behavior is simulated in that adapter. Owner-only requested
+file modes are asserted portably; these tests do not certify native Windows ACLs.
+LocalHost is trusted process/sandbox runtime identity, never an Installation or
+bundle-supplied privilege claim. The CLI must derive it from the actual host/user.
+Close releases installer-owned resources, not caller-owned Files or persistent data.
+
+Run(ctx, Command{Tool,Args,Stdin}) returns {ExitCode,Stdout,Stderr},error.
+Tool is kubectl, helm or systemctl. No shell, sudo, ssh, package installation,
+external network client, plugin or arbitrary uploaded command is admitted.
+Only this runner intercepts tools; none are launched by the tests. All ordinary
+output/errors must be redacted before reaching Output or caller diagnostics.
+Root-relative file paths become Root-absolute paths when passed to an external
+tool. Tests never write /etc, a real kubeconfig, a real cluster or shared state.
+Kubeconfig is an explicit root-relative caller input for Kubernetes. Every kubectl
+and Helm invocation must pass its absolute path with --kubeconfig; never use
+KUBECONFIG, a home-directory default, in-cluster credentials or ambient fallback.
+Missing/empty/unusable caller authentication or required supplied credential files
+=>ErrCredential BEFORE ANY tool invocation, including inspection/version probes.
+Missing external signing identity or required signature =>ErrBundle before tools.
+The check applies at construction when possible, and again before operational
+Plan/Execute/DryRun; cached approval cannot bypass it. Presence checks may use Stat.
+Both RoleKeys pairs are REQUIRED. Missing fields or reuse of any access/secret
+value within/across roles =>ErrCredential BEFORE ANY native I/O. Ambient ASPM_S3_*
+or AWS_* operator values cannot fill a missing role input. M00
+objectStore.credentialRef remains operator/storage-policy provisioning input only.
+
+PARAMETERIZED RUNTIME SELECTIONS
+Intent.RuntimeRoles and Plan.RuntimeRoles:
+  {core:{s3Secret:{name,accessKeyKey,secretKeyKey},rawPrefix,readinessKey},
+   ingestion:{s3Secret:{name,accessKeyKey,secretKeyKey},rawPrefix,readinessKey,
+              normalizedPrefix}}
+Every field is a selected NONSECRET value. Secret triples must be complete and
+cannot reuse another role's credential reference. Raw prefixes end in "/" and
+readiness keys identify objects inside the selected raw scope. Ingestion's
+normalized prefix is valid and disjoint from raw. Missing/unsafe selections fail
+before native I/O (ErrCredential or ErrUnsupported); existingSecret/storage.prefix
+cannot fill missing selections. Nonce-based fixture scopes and custom Secret
+names/data-key names must reach generated configuration, never hardcoded team-a,
+evidence/ or other synthetic-tenant defaults.
+Deployment ID binds RuntimeRoles AND supplied role credential identities without
+exposing their values. Changing either invalidates approval. ConfigID still
+describes only the unmodified M00 Installation configuration.
+
+SIGNED BUNDLE FIXTURE
+BundleDir is relative to Root. It contains exact COPIES of deploy/helm/aspm and
+deploy/quadlet, manifest.json, and a detached raw 64-byte manifest.sig.
+manifest.json:
+  {apiVersion:"aspm/v1alpha1",kind:"InstallerBundle",release:"0.1.0-dev.1",
+   files:{"deploy/helm/aspm/Chart.yaml":"sha256:<hex>",...},
+   images:{application:"aspm:0.1.0-dev@sha256:<hex>",
+           postgres:"docker.io/library/postgres:18.6-alpine@sha256:<hex>",
+           storage:"docker.io/chrislusf/seaweedfs:4.47@sha256:<hex>"}}
+Signature covers the EXACT manifest bytes. Each declared file must also match
+its hash; bundle identity is sha256:<hex> of the manifest. Image references are
+exact signed identities, not mutable tags. Fixture OCI identities are synthetic;
+the suite does not pull images, verify native image execution or prove air-gap use.
+The deterministic signing seed is test-only, never a production trust root.
+Only Options.TrustedKey grants trust. A public.key inside a bundle, even declared
+and hashed in its manifest, cannot establish trust by itself.
+
+APPROVAL / READ-ONLY PLANNING
+Plan exposes ID, ConfigID, BundleDigest, Images, TargetFingerprint, Trust,
+Operation, DeleteData, RuntimeRoles. ConfigID must equal the existing config-sha256 identity.
+Its separate deployment ID binds ALL those semantic inputs and stays stable for
+unchanged intent. Kubernetes fingerprint must derive from an actual injected
+kubectl --kubeconfig <explicit file> --context <context> get namespace kube-system
+-o json UID response.
+Linux fingerprint derives from the sandbox's etc/machine-id, not just "localhost".
+Execute rechecks config, file hashes/signature, image identity and inspected
+target BEFORE any mutation or credential resolution. Old/missing/config-preview
+approval =>ErrApproval; signature/hash/missing external trust =>ErrBundle.
+Operational Plan/DryRun validate supplied caller authentication before inspection;
+they do not write files, generate/resolve application secrets, mutate infrastructure
+or claim applied success. Application file references are checked for availability,
+not read for their secret values. DryRun needs no approval and returns Phase=planned
+only when required inputs are present. Configuration-only install.Resolve remains
+nonmutating and performs no credential resolution; its existing tests are unchanged.
+
+KUBERNETES APPLY
+Selected existing context and namespace are explicit on tool commands; release=aspm.
+Send a real production-rendered v1 Secret JSON object through kubectl apply -f -
+stdin, never secret values in argv, values files, logs, error text or public State.
+The common database/core-bootstrap Secret retains postgres-password,database-url,
+bootstrap-token, but MUST NOT contain legacy s3-access-key/s3-secret-key fallback.
+Publish each selected role Secret name/data-key entry with its exact supplied role
+credential. Dedicated role Secrets contain no database/bootstrap, operator/s3.json
+or other-role credential material. Separate private s3.json may remain available
+to control-plane storage configuration; its Admin identity cannot be copied into
+an application Secret/file. Retain all credentials in owner-only files.
+For this AI-disabled profile, the managed policy grants core Read/Write only on
+bucket/<selected rawPrefix>* and ingestion Read on raw plus Write on its selected
+normalized prefix. The exact supplied key pairs must carry those scopes, never
+Admin/broad/other-tenant grants. Additional approved/AI scopes require a separate
+explicit selection/amendment, not a hardcoded synthetic tenant.
+Use helm upgrade --install aspm <Root/BundleDir/deploy/helm/aspm> with explicit
+--kube-context/--namespace, --wait and a positive --timeout of at most 10 minutes.
+Production renders JSON values via -f <sandbox file> or -f - stdin. Existing
+existingSecret,publicOrigin,core.replicas,image.repository/tag,database.image,
+storage.image must reflect the actual Installation and signed image identities.
+Map both selected s3Secret triples/rawPrefix/readinessKey and ingestion's
+normalizedPrefix verbatim. Core/ingestion/reports remain enabled. Reports has no
+storage/bootstrap selection, but its required database reference remains intact.
+The current chart's repository:tag rendering can carry tag@sha256:<digest>.
+Helm values contain references, not credentials; no replacement chart is accepted.
+
+STATE / RESUME / UNINSTALL
+State={Phase,PlanID,Trust,Completed,FailedStep,FailureCode,SecretFiles}; SecretFiles
+are root-relative protected references, never values. Phases exercised:
+planned,applied,failed,uninstalled. "applied" means tool completion, not native proof.
+Nonzero tool exit =>ErrCommand and persisted failed state with nonempty FailedStep,
+FailureCode=command-failed. Preserve completed checkpoints, but never mark the
+failed step completed. Reopen/resume retries that step, keeps credential bytes,
+and retains prior checkpoints and ALL role credential bytes. Reapply does not rotate credentials or duplicate
+checkpoints. Expected domain failures must be visible, not swallowed by the binding.
+Uninstall has its own approval and uses Helm uninstall while retaining PVCs and
+credential files/Secret by default. DeleteData=true requires a DIFFERENT explicit
+approval before mutation. Cleanup may delete only named owned PVCs and secrets
+in the selected namespace, never namespace/PV/--all or unrelated resources.
+Fixture-owned PVCs: data-aspm-aspm-postgres-0 and data-aspm-aspm-storage-0.
+kubectl get pvc -o json is available as an injected read-only discovery response.
+
+LOCAL LINUX / DEVELOPMENT BOUNDARIES
+Only local Linux localhost with already-privileged EUID=0 is admitted here.
+Install existing units under etc/containers/systemd, preserving their service,
+network, volume and isolation settings while pinning Image to signed identities.
+Core, ingestion and reports use protected etc/aspm/core.env, ingestion.env and
+reports.env respectively; never shared/optional runtime.env, EnvironmentHost,
+opaque PodmanArgs overrides or inline credential values. Preserve postgres.env
+and the separate private s3.json control-plane policy.
+Only allowlisted Image, role EnvironmentFile and selected scope directives may
+change in copied units; all other source service/isolation/volume settings remain.
+Core/ingestion files receive only their supplied role keys and selected raw/
+readiness scope; ingestion also gets normalized scope, never core bootstrap.
+Reports.env permits DB URL/schema/connection budget and nonsecret listen/worker/
+workspace identity ONLY: no ASPM_S3_*, AWS_* or ASPM_BOOTSTRAP_TOKEN fields.
+No operator or other application's key may appear in an application's role file.
+Reload the system manager and activate aspm-core, aspm-ingestion@1, aspm-reports,
+aspm-postgres and aspm-storage. Every systemctl call uses --no-ask-password, never --user
+or implicit elevation. Remote SSH and rootless =>ErrUnsupported before mutation.
+The existing schema requires signatureRequired=true. Unsigned bundles ALWAYS fail,
+including when allow-unsigned-development is supplied: ErrBundle or ErrUnsupported,
+with no usable approval, no tool calls and no writes. No unsigned fallback or
+successful development-unsigned state is admitted by this contract.
+
+Tests exercise real production crypto/state/render code behind IO boundaries.
+Native Helm rendering/deployment, runtime readiness, host permission enforcement,
+restore, release/CI, SSH/rootless provisioning and HA remain separate work.
+The parent performs the real owned-cluster deployment after these tests pass.
+handoff-hashes.before.json records all 24 test-author handoff files before this
+explicit boundary amendment; handoff-hashes.after.json records the amended set.
+These unsigned integrity snapshots are inputs for parent review/signing, NOT
+test-oracle authorization. Coder bindings are excluded from test-author ownership.
+role-key-amendment.json records this amendment's reason and exact prior/new hashes.
+role-key-hashes.after.json is its new frozen installer handoff, not a self-issued
+signed oracle. The previous hash records remain unchanged.
+Field alignment follows tests/deployment_roles/CONTRACT.txt by deployment author
+019e10da-c314-4cf6-8ed3-c1d436ddde5a. Coordination messages were delivered; a direct
+reply was not available, so the published contract is the alignment source.
+No other author's oracle is edited here. Its synthetic source examples are
+parameterized in installer-generated copies, not treated as tenant defaults.

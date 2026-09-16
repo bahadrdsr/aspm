@@ -1,0 +1,78 @@
+OPT-IN SCOPED READINESS PREPARATION - INDEPENDENT TEST HANDOFF
+============================================================
+Six bounded top-level integration tests, direct production service.Environment
+and service.Run. No alternate server/worker, source implementation, new dependency
+or forwarding stub. Existing installer/deployment/runtime/app/storage controls
+are not edited. Default startup behavior must remain unchanged.
+
+Proposed additive production surface:
+  service.Config.PrepareReadiness bool
+  service.Environment("core") reads ASPM_S3_PREPARE_READINESS, default false.
+The boolean is captured in Config; Run must not reread ambient flags. Invalid
+explicit boolean input fails. Configuration-shape observation uses reflection
+only to keep pre-implementation tests compiling; it supplies no preparation logic.
+Non-core Environment may reject the opt-in or ignore it, but direct Run with
+PrepareReadiness=true for ingestion/reports must reject before DB/HTTP I/O.
+
+Behavior
+--------
+Only core, with explicit selected raw scope/key and its own nonempty credential
+pair, may prepare. Missing key/credentials, invalid prefix or readiness outside
+raw fail before DB connections, HTTP calls, listener readiness or object writes.
+Never borrow operator/ingestion/ambient credentials or broaden policy.
+Preparation uses an atomic conditional object create: PUT If-None-Match: *.
+The chosen probe is nonempty, <=4096 bytes, nonsecret and not an arbitrary target.
+Existing probe bytes remain exact. Concurrent preparation has one actual write
+winner, a real precondition conflict, then both cores establish readable-object
+readiness. A conflict is not success by itself: the object must actually exist
+and be accessible. Repeated starts cannot rewrite it.
+Core does not need HeadBucket, list, Admin or privileges beyond its selected raw
+prefix. An independent ingestion process uses its OWN read-only raw key to consume
+the resulting probe. Ingestion never prepares. Reports remains storage-free.
+Flag-off retains require-preseed behavior for an explicitly selected readiness
+key; missing preseed cannot become success. Storage 403, transport failure and
+failed conditional publication remain visible and must not claim readiness.
+
+Actual fixtures and observations
+-------------------------------
+Use authorized local PostgreSQL and security S3 http://127.0.0.1:18335, bucket
+aspm-isolation. Each fixture creates only readiness_bootstrap_<random> plus
+raw/team-a/readiness-<random>/readiness.txt. No shared schema/bucket/policy changes.
+Operator credentials are used ONLY by fixture seed/read/cleanup. The services
+receive core/ingestion credentials, or no storage credentials for reports.
+Each storage tap verifies the actual SigV4 signing identity without printing it,
+preserves signed Host/path/body and forwards to the real store. It returns no fake
+success. Only the selected object and HEAD/GET/conditional PUT are admitted.
+Concurrent PUTs can be paused before forwarding to make the race deterministic.
+The transport-failure case closes owned PUT connections; this is explicitly a
+fault injection, not a claimed native S3 error. The write-denial case uses the
+real ingestion read-only raw credential and requires actual S3 PUT 403.
+Invalid-input DB/TCP and HTTP tripwires return no successful response and assert
+zero attempted I/O. Real /readyz must report the selected service, reachable DB
+and scoped-object-accessible storage (reports: not-required).
+No imported report URL, scanner, Kubernetes, Helm, installer command, internet
+target, policy widening or privilege elevation is involved. All futures, object
+cleanup and schema cleanup are bounded; missing prerequisites FAIL, never skip.
+
+Run from aspm
+-------------
+  .\tests\readiness_bootstrap\Test-ReadinessBootstrap.ps1 -RuntimeConfig '<private-runtime-json>' -StorageConfig '<private-storage-isolation-json>' -Go '<existing-Go-1.27.1-executable>'
+The first private file supplies databaseUrl; the second supplies endpoint,region,
+bucket and roles.{admin,core,ingestion}.{accessKey,secretKey}. The runner consumes
+them only in memory/process environment, redacts output, restores environment and
+keeps build/work/report artifacts in this new package. It disables downloads and
+uses the existing parent dependency cache. No credential file is copied.
+Equivalent configured run:
+  go test -tags=integration -mod=readonly -count=1 -timeout=180s -run '^TestReadinessBootstrap_' .\tests\readiness_bootstrap
+
+Controls/evidence
+-----------------
+inputs.before.json records inspected production inputs and existing frozen
+installer/deployment controls before coding. inputs.after.json records the
+read-only post-run comparison, including any external canonical-pointer change.
+FROZEN.sha256 records exact new
+controls and actual redacted evidence. These hashes are integrity records, not
+independent review or apply approval. RED.txt distinguishes executed semantic
+failures from any compiler prerequisite or missing-fixture failure. No native
+deployment, readiness-object seeding outside owned fixtures, or future flag wiring
+is claimed by this handoff.

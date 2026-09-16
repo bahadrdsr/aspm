@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "date": "2026-09-15",
+  "authority": "original independent installer test author, explicit user-directed amendment",
+  "reason": "Distinct core/ingestion S3 identities and selected scopes; DB-only reports; no common/operator fallback; retain every original operational security requirement",
+  "signature": "unsigned author record for parent review/signing, not oracle approval",
+  "priorSnapshotSHA256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8",
+  "priorFiles": [
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "bytes": 2083,
+      "sha256": "4a78e8f90350aa337da05951a5e609acda84b83c682ec36b897f51007bff079e"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "bytes": 16066,
+      "sha256": "cf3412cd263d4cd72482f77805f60cecf192f077a0f1896040b726fd4a62123a"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "bytes": 18518,
+      "sha256": "fa47767a0dd4532c97cd965bfd128f75ab87adb458afe0a9ae54d1a63dd65b11"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "bytes": 9698,
+      "sha256": "db94c5b3e1aee7d5584dd127e3caa8873e24fdfad1e9f658b04ec52670766ec5"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "bytes": 2071,
+      "sha256": "525dcaa19abb19794c393a0b2aafde59c111df373478caeb57f025cbfb68057c"
+    }
+  ],
+  "amendedFiles": [
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "bytes": 2905,
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests\\installer\\fixtures_test.go",
+      "bytes": 24083,
+      "sha256": "b3006c93d77cc58293a4d06eeaceb60118196a377d22c8147bb71360bee92b87"
+    },
+    {
+      "path": "tests\\installer\\execution_test.go",
+      "bytes": 25430,
+      "sha256": "48480df8d2e7e748778d88a978c2af5ab4786b6796abba87db66f44916f10b8a"
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "bytes": 14308,
+      "sha256": "937f577c52df87f71629a4d4e99764b181f717a89d79c5d1d29640d87887b5d5"
+    },
+    {
+      "path": "tests\\installer\\RED.txt",
+      "bytes": 3158,
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    }
+  ],
+  "originalEightTestNames": [
+    "TestM03Execution_PlanAndDryRunAreInspectedButReadOnly",
+    "TestM03Execution_ChangedApprovalInputsRejectBeforeMutation",
+    "TestM03Execution_RequiredCredentialsAndIndependentTrustFailBeforeTools",
+    "TestM03Execution_KubernetesUsesOwnedChartAndProtectedSecretChannels",
+    "TestM03Execution_FailureResumeAndReapplyRetainCredentialsAndState",
+    "TestM03Execution_UninstallPreservesDataUnlessSeparatelyApproved",
+    "TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation",
+    "TestM03Execution_DevelopmentFlagsCannotBypassRequiredSignature"
+  ],
+  "coordination": {
+    "authorAgent": "019e10da-c314-4cf6-8ed3-c1d436ddde5a",
+    "messages": "delivered; no direct reply available",
+    "alignmentSource": "tests\\deployment_roles\\CONTRACT.txt",
+    "alignmentSourceSHA256": "39a50fd2689477e15fb0634c2ff8d09f95b93adb6216e8af3b8d44d2050c94fd",
+    "boundary": "No M00 schema or other-author test changes; same Helm fields, parameterized generated copies"
+  },
+  "interfaces": [
+    "Intent/Plan.RuntimeRoles {core,ingestion}: selected s3Secret/rawPrefix/readinessKey; ingestion normalizedPrefix",
+    "Options.RoleKeys {Core,Ingestion}: private AccessKey/SecretKey, mandatory and distinct before native I/O"
+  ],
+  "validation": {
+    "tests": 8,
+    "red": 8,
+    "skips": 0,
+    "reason": "production binding missing: OpenInstaller",
+    "productionCommandsInvoked": 0,
+    "evidence": "tests\\installer\\.role-run\\red-run.jsonl",
+    "evidenceSHA256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+  }
+}

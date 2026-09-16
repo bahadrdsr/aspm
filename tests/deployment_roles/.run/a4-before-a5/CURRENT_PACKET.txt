@@ -1,0 +1,11 @@
+CURRENT INDEPENDENT-AUTHOR PACKET: A4 (INERT SOURCE-PARSER SECURITY REGRESSION)
+Authoritative manifest: FROZEN.A4.sha256
+Canonical alias: FROZEN.sha256 (byte-identical current manifest)
+Compiler/file-set closure: COMPILATION.A4.json
+Verifier: Verify-CompilationPacket-A4.ps1
+Exact new assertion/RED/safety boundary: PACKET-A4.txt
+Current evidence: .run/a4-source-red.jsonl (source-only, no native execution)
+Control: .run/a4-existing-scope-control.jsonl
+A0-A3 history and all original assertions/helpers/module/forwarding are intact.
+No production changes, config loading, Podman/systemd or runtime bypass test.
+HOLD this exact full five-source packet for parent fix/review; stop scope here.

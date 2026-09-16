@@ -1,0 +1,15 @@
+[Unit]
+Description=aspm maintainer reference OCI registry (loopback only)
+
+[Container]
+Image=registry:3.0.0
+ContainerName=aspm-reference-registry
+PublishPort=127.0.0.1:5000:5000
+Volume=aspm-reference-registry-data:/var/lib/registry
+Environment=REGISTRY_STORAGE_DELETE_ENABLED=false
+
+[Service]
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,22 @@
+[Unit]
+Description=ASPM background report worker
+After=network-online.target aspm-postgres.service aspm-storage.service
+Wants=network-online.target
+
+[Container]
+Image=localhost/aspm:0.1.0-dev
+ContainerName=aspm-reports
+Network=aspm.network
+EnvironmentFile=/etc/aspm/reports.env
+Exec=/app/bin/report-worker
+ReadOnly=true
+Tmpfs=/tmp:rw,size=2g
+NoNewPrivileges=true
+DropCapability=all
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

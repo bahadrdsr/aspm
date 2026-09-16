@@ -1,0 +1,29 @@
+{
+  "when": [{ "event": ["push", "pull_request", "manual"] }],
+  "steps": [
+    {
+      "name": "browser-and-static-assets",
+      "image": "node:22.20.0-bookworm",
+      "commands": [
+        "test -n \"$ASPM_ORACLE_CHECKER\"",
+        "node \"$ASPM_ORACLE_CHECKER\" check-env -- sh -eu -c 'cd web; npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org; npm run check:lock; npm run typecheck; npm run test:install-browser -- --with-deps; npm test; npm run build'"
+      ]
+    },
+    {
+      "name": "go-contracts-and-host",
+      "image": "aspm-build-worker:node22.20.0-go1.27.1",
+      "commands": [
+        "test -n \"$ASPM_ORACLE_CHECKER\"",
+        "node \"$ASPM_ORACLE_CHECKER\" check-env -- sh -eu -c 'go test -count=1 -mod=readonly ./...; go build -mod=readonly ./...'"
+      ]
+    },
+    {
+      "name": "configuration-structure",
+      "image": "node:22.20.0-bookworm",
+      "commands": [
+        "test -n \"$ASPM_ORACLE_CHECKER\"",
+        "node \"$ASPM_ORACLE_CHECKER\" check-env -- sh -eu -c 'node --test scripts/tests/oracles.test.mjs; node scripts/check-config.mjs; node scripts/sign.mjs self-test'"
+      ]
+    }
+  ]
+}

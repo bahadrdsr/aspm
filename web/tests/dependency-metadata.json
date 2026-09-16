@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-09-14T21:49:28.7832869Z",
+  "method": "npm.cmd view <package>@<explicit-stable-version> version license engines peerDependencies dist.integrity --json --strict-ssl=true with process-local NODE_USE_SYSTEM_CA=1",
+  "transport": "Existing environment-configured npm-public package mirror. All nine unchanged stable pins were reverified with system CAs and strict TLS verification enabled.",
+  "directOfficialEndpointVerification": {
+    "status": "unavailable",
+    "reason": "A direct canonical-registry retry for @playwright/test@1.63.0 still failed TLS negotiation with NODE_USE_SYSTEM_CA=1 in this session; an earlier official React version-detail webpage returned HTTP 403. The recorded version/license/engine fields were rechecked through the configured npm-public mirror, not independently re-fetched from the canonical endpoint."
+  },
+  "selection": "Stable versions only. Earlier React latest metadata was a canary and the coordinator also reported a Vite beta default tag. This verification queried the unchanged explicit stable versions, never a default tag. React DOM and React type majors match React; Node types match installed Node 22.",
+  "referenceRuntime": {
+    "node": "22.20.0",
+    "npm": "10.9.3"
+  },
+  "componentSourceGate": {
+    "updatedAt": "2026-09-14",
+    "status": "historical-license-reviewed-components-pending",
+    "reason": "The coordinator independently reviewed the full standard MIT license at the exact historical candidate. This does not approve individual components or dependency closure. Current main remains unapproved; no component source was fetched or copied.",
+    "candidateCommit": "38b917762e3b6059c06a7af703071ba11a89091e",
+    "candidateLicenseGitBlob": "0ca4a48bd712fd8db31fff20c8b241c5cf41e4db",
+    "approvalArtifact": "tests/approved-component-sources.json",
+    "permittedPath": "Only components independently approved at the exact candidate commit/license-blob pair, with per-file license review, source hashes and dependency-closure review, may be adopted. Never fetch current Animate UI registry dependencies."
+  },
+  "packages": [
+    {"name": "react", "version": "19.2.8", "license": "MIT", "node": ">=0.10.0"},
+    {"name": "react-dom", "version": "19.2.8", "license": "MIT", "reactPeer": "^19.2.8"},
+    {"name": "@types/react", "version": "19.2.18", "license": "MIT"},
+    {"name": "@types/react-dom", "version": "19.2.7", "license": "MIT", "reactTypesPeer": "^19.2.0"},
+    {"name": "@types/node", "version": "22.20.1", "license": "MIT"},
+    {"name": "typescript", "version": "7.0.2", "license": "Apache-2.0", "node": ">=16.20.0"},
+    {"name": "vite", "version": "8.2.2", "license": "MIT", "node": "^20.19.0 || >=22.12.0"},
+    {"name": "@vitejs/plugin-react", "version": "6.1.1", "license": "MIT", "node": "^20.19.0 || >=22.12.0", "vitePeer": "^8.0.0"},
+    {"name": "@playwright/test", "version": "1.63.0", "license": "Apache-2.0", "node": ">=20"}
+  ],
+  "limits": [
+    "Registry license declarations are input to review, not a complete dependency/distribution license audit.",
+    "shadcn/Motion behavior remains expected. Animate UI adoption is blocked until independent immutable-source approval; a license label or README alone does not establish FOSS status.",
+    "After source approval, compatible primitives, Motion/Tailwind dependencies, approved source snapshots and notices are coder-owned M01 work, not supplied production code.",
+    "No proprietary CI service or environment-specific package mirror is a project requirement."
+  ]
+}

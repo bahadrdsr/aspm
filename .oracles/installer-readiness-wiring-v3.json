@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "scope": "installer-readiness-wiring-v3",
+  "phase": "pre-code-red",
+  "author": "independent-ac4e6adc-new-managed-readiness-feature",
+  "capturedAt": "2026-09-16T01:55:08.002Z",
+  "redEvidence": {
+    "sha256": "2b8c4f3a2630ff433e5571e44ba09eb7ea8c9bab67e32138a8eeea9ffaef4a16",
+    "exitCode": 1
+  },
+  "protectedRoots": [
+    "tests/installer"
+  ],
+  "bindingPaths": [],
+  "files": [
+    {
+      "path": ".oracles/cli-existing-controls-v1.json",
+      "normalization": "none",
+      "sha256": "efc49ba3eb105f689639bc52019573f37b3310a454711d4042c03843e280a41c"
+    },
+    {
+      "path": ".oracles/cli-existing-controls-v1.json.sig",
+      "normalization": "none",
+      "sha256": "b85564ee68339effa44dee2cfab88f190a7b4044fbb20c8f39fcb35c70baddec"
+    },
+    {
+      "path": ".oracles/installer-execution-v1.json",
+      "normalization": "none",
+      "sha256": "563a89e164dcb459b4b37c850c60a5d27aa915ea2b5af0032ab872f9b1ac54e0"
+    },
+    {
+      "path": ".oracles/installer-execution-v1.json.sig",
+      "normalization": "none",
+      "sha256": "d8d7315c7523694370192b2f087bb18e5396e2e5d5f2a551487b86df2b6eeafd"
+    },
+    {
+      "path": ".oracles/installer-review-corrections-v2.json",
+      "normalization": "none",
+      "sha256": "d854016b9e9f839ba44508bfdfbf2d80313ab2acdc1614a80149141191a1b7f7"
+    },
+    {
+      "path": ".oracles/installer-review-corrections-v2.json.sig",
+      "normalization": "none",
+      "sha256": "dba71c34902518853a8978c89f58b3445af9f057fc4fce9594ba92211d38b9c0"
+    },
+    {
+      "path": "cmd/aspmctl/review_regression_test.go",
+      "normalization": "none",
+      "sha256": "abc3a42dd1b56d6dac1567d0afa6613ac0ca53d36e31d04e0bed0f07d59c69ba"
+    },
+    {
+      "path": "docs/contracts/embed.go",
+      "normalization": "none",
+      "sha256": "7822d5c0ae0d55e3880fde0ae4ebb3a10a263535cfc14f6ae4ea6e527cc084b8"
+    },
+    {
+      "path": "docs/contracts/v1alpha1/install.defaults.json",
+      "normalization": "none",
+      "sha256": "4d7e6f52617a2ee66d8b60cc90a44bd84cf2c3aca23b3f03c9a264d1595743a4"
+    },
+    {
+      "path": "docs/contracts/v1alpha1/install.schema.json",
+      "normalization": "none",
+      "sha256": "dfccf65eb9374a149b748e1978d2d3c2829c4d840f065c8b167cf6a9f343d66c"
+    },
+    {
+      "path": "docs/contracts/v1alpha1/installer.contract.json",
+      "normalization": "none",
+      "sha256": "72745620a2eac0a0f0ae3c92236be47d3590a41eba7d4b68c09c3d7b44701c59"
+    },
+    {
+      "path": "go.mod",
+      "normalization": "none",
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "normalization": "none",
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/.role-run/red-run.jsonl.snapshot",
+      "normalization": "none",
+      "sha256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/contract_test.go.snapshot",
+      "normalization": "none",
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/CONTRACT.txt.snapshot",
+      "normalization": "none",
+      "sha256": "937f577c52df87f71629a4d4e99764b181f717a89d79c5d1d29640d87887b5d5"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/execution_test.go.snapshot",
+      "normalization": "none",
+      "sha256": "48480df8d2e7e748778d88a978c2af5ab4786b6796abba87db66f44916f10b8a"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/fixtures_test.go.snapshot",
+      "normalization": "none",
+      "sha256": "b3006c93d77cc58293a4d06eeaceb60118196a377d22c8147bb71360bee92b87"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/handoff-hashes.after.json.snapshot",
+      "normalization": "none",
+      "sha256": "ee8e0031fbbfc5762a07daae988544ecfa5d90a61f1160e0d21d53a6bff6977e"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/handoff-hashes.before.json.snapshot",
+      "normalization": "none",
+      "sha256": "32ac59a65a4a86b75f448512f1d499414a7e420edf4a57895e4149fb3eb9cf97"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/production_bindings_test.go.snapshot",
+      "normalization": "none",
+      "sha256": "3b27de361affe87b78efce97d2cd540e0396838d8b72c62b1c3c3b30b3c197ee"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/RED.txt.snapshot",
+      "normalization": "none",
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/role-key-amendment.json.snapshot",
+      "normalization": "none",
+      "sha256": "d27fd79b740daf167d9c3cae0537e7a7a1bff0f183652135c1a45c80536e8264"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/role-key-hashes.after.json.snapshot",
+      "normalization": "none",
+      "sha256": "5d5f01834eb3249a1b44f88fb2757ba8ca49d0503844bd0a30902f0a0bf98064"
+    },
+    {
+      "path": "tests/installer/.history/v1-before-v2/role-key-hashes.before.json.snapshot",
+      "normalization": "none",
+      "sha256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8"
+    },
+    {
+      "path": "tests/installer/.history/v2-before-v3/FROZEN.V2.sha256.snapshot",
+      "normalization": "none",
+      "sha256": "225d5742fc209a0a16ae9184de115692645b7e6bbada84ca870ac27110ce7511"
+    },
+    {
+      "path": "tests/installer/.history/v2-red/red-01.jsonl.snapshot",
+      "normalization": "none",
+      "sha256": "2c401294bcb570d5886b234bd2cdbbeb81ab217a14cb5c644ac581082bf0eb98"
+    },
+    {
+      "path": "tests/installer/.history/v3-red/author-red-01.jsonl.snapshot",
+      "normalization": "none",
+      "sha256": "02f68a268572df6c9b5126c652145a6ded20210272a40ed7489a1310efefb40f"
+    },
+    {
+      "path": "tests/installer/.role-run/red-run.jsonl",
+      "normalization": "none",
+      "sha256": "d09a7c9a4b19ca48d28613bdd7ca3b7804664618e25edfa1836bc852bac13cd4"
+    },
+    {
+      "path": "tests/installer/contract_test.go",
+      "normalization": "none",
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f"
+    },
+    {
+      "path": "tests/installer/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15"
+    },
+    {
+      "path": "tests/installer/execution_test.go",
+      "normalization": "none",
+      "sha256": "ffdf381b2124134bfa2ca83dc44eec1584f72d62ff2f5ee5034616d4bf83798e"
+    },
+    {
+      "path": "tests/installer/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "7e0ada6323305bc46d49c26fdb571fab25c7201c5df77e24c0412d490e5896e0"
+    },
+    {
+      "path": "tests/installer/FROZEN.V2.sha256",
+      "normalization": "none",
+      "sha256": "225d5742fc209a0a16ae9184de115692645b7e6bbada84ca870ac27110ce7511"
+    },
+    {
+      "path": "tests/installer/FROZEN.V3.sha256",
+      "normalization": "none",
+      "sha256": "bf42d5c726e8fa48a370a62cf58dbb347db7114166a981d1b00d7a7b49ee9f4d"
+    },
+    {
+      "path": "tests/installer/handoff-hashes.after.json",
+      "normalization": "none",
+      "sha256": "ee8e0031fbbfc5762a07daae988544ecfa5d90a61f1160e0d21d53a6bff6977e"
+    },
+    {
+      "path": "tests/installer/handoff-hashes.before.json",
+      "normalization": "none",
+      "sha256": "32ac59a65a4a86b75f448512f1d499414a7e420edf4a57895e4149fb3eb9cf97"
+    },
+    {
+      "path": "tests/installer/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "3b27de361affe87b78efce97d2cd540e0396838d8b72c62b1c3c3b30b3c197ee"
+    },
+    {
+      "path": "tests/installer/RED.txt",
+      "normalization": "none",
+      "sha256": "c87427906063e1a6b7da1b6d9ff3263d718eb06eec2c61266b54fff6ec7a13e3"
+    },
+    {
+      "path": "tests/installer/role-key-amendment.json",
+      "normalization": "none",
+      "sha256": "d27fd79b740daf167d9c3cae0537e7a7a1bff0f183652135c1a45c80536e8264"
+    },
+    {
+      "path": "tests/installer/role-key-hashes.after.json",
+      "normalization": "none",
+      "sha256": "5d5f01834eb3249a1b44f88fb2757ba8ca49d0503844bd0a30902f0a0bf98064"
+    },
+    {
+      "path": "tests/installer/role-key-hashes.before.json",
+      "normalization": "none",
+      "sha256": "ae7c835a431a8e6ac0268366f8e152372bd6bcd77d049bbc73ede6f6a27da9b8"
+    },
+    {
+      "path": "tests/installer/v2_corrections_test.go",
+      "normalization": "none",
+      "sha256": "91e73cb65e191d03ee94dd9bb98b250a6eef1eafcfe7c01f5e800bb6ba5abebd"
+    },
+    {
+      "path": "tests/installer/v2_support_test.go",
+      "normalization": "none",
+      "sha256": "61bf72fd0d85292b6d2dfbd55f3f11dc866e5180f3a1ad5dc38f05414a137f72"
+    },
+    {
+      "path": "tests/installer/V2-AMENDMENT.json",
+      "normalization": "none",
+      "sha256": "17563399d2a942eae46e1510c4069d0035783726ecd12fdc884b27b71f220acb"
+    },
+    {
+      "path": "tests/installer/V2-BEFORE.json",
+      "normalization": "none",
+      "sha256": "a4e50ce371fad072de66be2e26e6629d96536882921048bf1de682f81a9b2efd"
+    },
+    {
+      "path": "tests/installer/V2-CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "7c8a88e25bef21d71f4d2e7ee10bc9f1e0ec8dd6c860245a4d92e1e83406023c"
+    },
+    {
+      "path": "tests/installer/V2-RED.txt",
+      "normalization": "none",
+      "sha256": "96ac9c523037c83d77a11521a57f471f8a09aefa4b634346188f842e39c473f3"
+    },
+    {
+      "path": "tests/installer/v3_readiness_test.go",
+      "normalization": "none",
+      "sha256": "6cecc2da183a5a7f44042604a05ffc4d88440be0cdf7fd21aeca03aa20ec3e08"
+    },
+    {
+      "path": "tests/installer/V3-BEFORE.json",
+      "normalization": "none",
+      "sha256": "c3b9afc61440875fa3a1b6de9dd279d15870a534a90f2c9d8a4385810b5548ea"
+    },
+    {
+      "path": "tests/installer/V3-CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "b0b522eb7f9c4dfa5307ed9bdb7f47497568911d266df639af66e4dbdde3ff8c"
+    },
+    {
+      "path": "tests/installer/V3-HANDOFF.json",
+      "normalization": "none",
+      "sha256": "a6f32edda78aa2b80ad49e18f22a11ed1efc2ac2e54a11763e3bee38af37f27b"
+    },
+    {
+      "path": "tests/installer/V3-RED.txt",
+      "normalization": "none",
+      "sha256": "e49e5fa162f67a8f55d4f5c04c40c6ad0c06f840cf2096ea5f0267007bb191bd"
+    }
+  ]
+}

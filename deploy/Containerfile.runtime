@@ -1,0 +1,12 @@
+FROM alpine:3.23
+RUN apk add --no-cache ca-certificates && addgroup -S -g 10001 aspm && \
+    adduser -S -D -u 10001 -G aspm aspm
+WORKDIR /app
+COPY bin/ /app/bin/
+COPY web/ /app/web/
+COPY LICENSE NOTICE manifest.json /app/
+ENV ASPM_LISTEN=0.0.0.0:8080 ASPM_ASSETS=/app/web
+USER 10001:10001
+EXPOSE 8080
+ENTRYPOINT []
+CMD ["/app/bin/core-api"]

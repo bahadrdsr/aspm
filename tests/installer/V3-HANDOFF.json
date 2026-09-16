@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "authority": "original independent installer test author",
+  "requestedAt": "2026-09-16T03:39:38.900+02:00",
+  "kind": "NEW feature assertions after accepted V2; no repair/rewrite of V2",
+  "reason": "Managed materialization must opt only core into preparing its already-selected scoped readiness probe",
+  "signature": "unsigned author control record for parent verification/signing",
+  "reportedAcceptedV2OwnedTree": "452fde38ef45d0e6dace80f685788f6352013b8f36004e06a62c4b278b4d0e57",
+  "priorV2ManifestSHA256": "225d5742fc209a0a16ae9184de115692645b7e6bbada84ca870ac27110ce7511",
+  "newTestSource": "v3_readiness_test.go",
+  "unchanged": "Every recorded V2 assertion/helper/type/binding/history byte and all accepted execution/CLI source files",
+  "results": {
+    "topLevel": 2,
+    "semanticRed": 2,
+    "skip": 0,
+    "failed": [
+      "TestInstallerV3_ManagedHelmValuesOptInOnlyCoreReadiness",
+      "TestInstallerV3_ManagedLinuxFilesOptInOnlyCoreReadiness"
+    ],
+    "controls": "Plan/DryRun nonmutation, selected scopes/role bytes, and ingestion/report prohibitions passed"
+  },
+  "frozenEvidence": {
+    "path": "tests\\installer\\.history\\v3-red\\author-red-01.jsonl.snapshot",
+    "sha256": "02f68a268572df6c9b5126c652145a6ded20210272a40ed7489a1310efefb40f"
+  },
+  "nativeCommandsExecuted": 0
+}

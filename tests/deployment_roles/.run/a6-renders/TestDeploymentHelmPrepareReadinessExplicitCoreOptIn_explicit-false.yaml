@@ -1,0 +1,314 @@
+---
+# Source: aspm/templates/application.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: role-probe-aspm-core
+spec:
+  selector: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: core}
+  ports: [{name: http, port: 8080, targetPort: http}]
+
+---
+# Source: aspm/templates/storage.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: role-probe-aspm-postgres
+spec:
+  clusterIP: None
+  selector: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: postgres}
+  ports: [{name: postgres, port: 5432}]
+
+---
+# Source: aspm/templates/storage.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: role-probe-aspm-storage
+spec:
+  selector: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: storage}
+  ports: [{name: s3, port: 8333}]
+
+---
+# Source: aspm/templates/application.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: role-probe-aspm-core
+  labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: core}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: core}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: core}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, runAsGroup: 10001, fsGroup: 10001}
+      terminationGracePeriodSeconds: 20
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: core}
+      containers:
+        - name: core
+          image: "aspm:0.1.0-dev"
+          imagePullPolicy: IfNotPresent
+          command: ["/app/bin/core-api"]
+          ports: [{name: http, containerPort: 8080}]
+          env:
+            - name: ASPM_DATABASE_URL
+              valueFrom:
+                secretKeyRef: {name: "synthetic-operator-control-plane", key: database-url}
+            - name: ASPM_SCHEMA
+              value: "aspm"
+            - name: ASPM_DB_MAX_CONNECTIONS
+              value: "5"
+            - name: ASPM_PUBLIC_ORIGIN
+              value: ""
+            - name: ASPM_BOOTSTRAP_TOKEN
+              valueFrom:
+                secretKeyRef: {name: "synthetic-operator-control-plane", key: bootstrap-token, optional: true}
+            - name: ASPM_S3_ENDPOINT
+              value: "http://role-probe-aspm-storage:8333"
+            - name: ASPM_S3_BUCKET
+              value: "aspm-evidence"
+            - name: ASPM_S3_PREFIX
+              value: "raw/team-a/"
+            - name: ASPM_S3_READINESS_KEY
+              value: "raw/team-a/readiness.txt"
+            - name: ASPM_S3_REGION
+              value: "us-east-1"
+            - name: ASPM_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef: {name: "synthetic-core-storage", key: "core-s3-access-key"}
+            - name: ASPM_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef: {name: "synthetic-core-storage", key: "core-s3-secret-key"}
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+            seccompProfile: {type: RuntimeDefault}
+          volumeMounts: [{name: tmp, mountPath: /tmp}]
+          startupProbe: {httpGet: {path: /readyz, port: http}, failureThreshold: 30, periodSeconds: 5}
+          readinessProbe: {httpGet: {path: /readyz, port: http}, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /healthz, port: http}, periodSeconds: 15}
+      volumes: [{name: tmp, emptyDir: {sizeLimit: 2Gi}}]
+
+---
+# Source: aspm/templates/application.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: role-probe-aspm-ingestion
+  labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: ingestion}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: ingestion}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: ingestion}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, runAsGroup: 10001, fsGroup: 10001}
+      terminationGracePeriodSeconds: 20
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: ingestion}
+      containers:
+        - name: ingestion
+          image: "aspm:0.1.0-dev"
+          imagePullPolicy: IfNotPresent
+          command: ["/app/bin/ingestion"]
+          ports: [{name: http, containerPort: 8080}]
+          env:
+            - name: ASPM_DATABASE_URL
+              valueFrom:
+                secretKeyRef: {name: "synthetic-operator-control-plane", key: database-url}
+            - name: ASPM_SCHEMA
+              value: "aspm"
+            - name: ASPM_DB_MAX_CONNECTIONS
+              value: "5"
+            - name: ASPM_S3_ENDPOINT
+              value: "http://role-probe-aspm-storage:8333"
+            - name: ASPM_S3_BUCKET
+              value: "aspm-evidence"
+            - name: ASPM_S3_PREFIX
+              value: "raw/team-a/"
+            - name: ASPM_S3_READINESS_KEY
+              value: "raw/team-a/readiness.txt"
+            - name: ASPM_S3_REGION
+              value: "us-east-1"
+            - name: ASPM_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef: {name: "synthetic-ingestion-storage", key: "ingestion-s3-access-key"}
+            - name: ASPM_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef: {name: "synthetic-ingestion-storage", key: "ingestion-s3-secret-key"}
+            - name: ASPM_S3_NORMALIZED_PREFIX
+              value: "normalized/team-a/"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+            seccompProfile: {type: RuntimeDefault}
+          volumeMounts: [{name: tmp, mountPath: /tmp}]
+          startupProbe: {httpGet: {path: /readyz, port: http}, failureThreshold: 30, periodSeconds: 5}
+          readinessProbe: {httpGet: {path: /readyz, port: http}, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /healthz, port: http}, periodSeconds: 15}
+      volumes: [{name: tmp, emptyDir: {sizeLimit: 2Gi}}]
+
+---
+# Source: aspm/templates/application.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: role-probe-aspm-reports
+  labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: reports}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: reports}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: reports}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, runAsGroup: 10001, fsGroup: 10001}
+      terminationGracePeriodSeconds: 20
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: reports}
+      containers:
+        - name: reports
+          image: "aspm:0.1.0-dev"
+          imagePullPolicy: IfNotPresent
+          command: ["/app/bin/report-worker"]
+          ports: [{name: http, containerPort: 8080}]
+          env:
+            - name: ASPM_DATABASE_URL
+              valueFrom:
+                secretKeyRef: {name: "synthetic-operator-control-plane", key: database-url}
+            - name: ASPM_SCHEMA
+              value: "aspm"
+            - name: ASPM_DB_MAX_CONNECTIONS
+              value: "5"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+            seccompProfile: {type: RuntimeDefault}
+          volumeMounts: [{name: tmp, mountPath: /tmp}]
+          startupProbe: {httpGet: {path: /readyz, port: http}, failureThreshold: 30, periodSeconds: 5}
+          readinessProbe: {httpGet: {path: /readyz, port: http}, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /healthz, port: http}, periodSeconds: 15}
+      volumes: [{name: tmp, emptyDir: {sizeLimit: 2Gi}}]
+
+---
+# Source: aspm/templates/storage.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: role-probe-aspm-postgres
+spec:
+  serviceName: role-probe-aspm-postgres
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: postgres}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: postgres}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: postgres
+          image: "postgres:18.6-alpine"
+          env:
+            - {name: POSTGRES_DB, value: "aspm"}
+            - {name: POSTGRES_USER, value: "aspm"}
+            - name: POSTGRES_PASSWORD
+              valueFrom: {secretKeyRef: {name: "synthetic-operator-control-plane", key: postgres-password}}
+          ports: [{name: postgres, containerPort: 5432}]
+          resources: {requests: {cpu: 100m, memory: 256Mi}, limits: {cpu: "1", memory: 1Gi}}
+          volumeMounts: [{name: data, mountPath: /var/lib/postgresql}]
+          readinessProbe:
+            exec: {command: ["pg_isready", "-U", "aspm", "-d", "aspm"]}
+            initialDelaySeconds: 5
+  volumeClaimTemplates:
+    - metadata: {name: data}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources: {requests: {storage: "10Gi"}}
+
+---
+# Source: aspm/templates/storage.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: role-probe-aspm-storage
+spec:
+  serviceName: role-probe-aspm-storage
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: storage}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: role-probe, app.kubernetes.io/component: storage}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: storage
+          image: "chrislusf/seaweedfs:4.47"
+          args: ["mini", "-dir=/data", "-s3.config=/etc/seaweed/s3.json", "-bucket=aspm-evidence", "-master.telemetry=false", "-admin.ui=false", "-webdav=false", "-s3.port.iceberg=0", "-s3.port.lance=0", "-s3.iam=false", "-s3.allowDeleteBucketNotEmpty=false", "-filer.disableDirListing=true", "-filer.exposeDirectoryData=false"]
+          ports: [{name: s3, containerPort: 8333}]
+          resources: {requests: {cpu: 100m, memory: 256Mi}, limits: {cpu: "1", memory: 1Gi}}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: credentials, mountPath: /etc/seaweed, readOnly: true}
+          readinessProbe: {tcpSocket: {port: s3}, initialDelaySeconds: 5, periodSeconds: 5}
+      volumes:
+        - name: credentials
+          secret: {secretName: "aspm-storage-policy", items: [{key: "s3.json", path: s3.json}]}
+  volumeClaimTemplates:
+    - metadata: {name: data}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources: {requests: {storage: "10Gi"}}

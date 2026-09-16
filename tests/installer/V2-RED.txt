@@ -1,0 +1,51 @@
+INSTALLER V2 - OBSERVED HELD-IMPLEMENTATION RED
+=============================================
+Run: go test -json -mod=readonly -count=1 -timeout=180s
+     -run '^Test(M03Execution_|InstallerV2_)' .\tests\installer
+Current output: .cache\installer-v2\red-01.jsonl (outside the protected root).
+Frozen byte-identical evidence: .history\v2-red\red-01.jsonl.snapshot.
+No native Helm/systemd/Podman, cluster, policy or privileged command was executed.
+
+TOP-LEVEL: 13 gates, 7 PASS, 6 FAIL, zero skips; compilation succeeded.
+Original eight: 7 PASS, 1 RED. Correcting quote-stripping now exposes the original
+Linux role-file check's core access-key byte mismatch. That requirement was not
+relaxed; it was previously hidden by the inaccurate fixture parser.
+New V2 gates: all five RED, reproducing all four reviewer findings.
+Named V2 subcases: 1 PASS negative control, 5 RED cases.
+
+1. ENV BYTES
+Fourteen exact field comparisons fail across core.env, ingestion.env, reports.env
+and postgres.env: DB URL/schema/name/user/password, core/ingestion role keys and
+core bootstrap. Generated quotes/escapes are literal Podman values, not removed
+by the native parser. Supported synthetic quotes/backslashes/interior '=' were
+used; credential bytes are intentionally absent from diagnostics.
+
+2. APPROVED SNAPSHOT / REVALIDATION
+Both unsigned-template insertion timings reach Helm with SEVEN files although
+the signed approved chart contains SIX. The extra YAML is inert/comment-only and
+was never rendered or executed.
+A different validly signed same-release bundle introduced after the namespace
+step is accepted under old approval: FIVE later native-mutation intents occur,
+including Helm, and execution reports applied. The test forwards the original
+mock tool result unchanged; the bug is in production revalidation/orchestration.
+
+3. LINUX UNINSTALL
+Execution records uninstalled after stopping services, with no manager reload.
+All FIVE owned container definitions retain automatic WantedBy activation.
+Unrelated-unit bytes, actual owned volume sentinel bytes and all credential-file
+hashes remain intact as positive retained-data controls.
+
+4. CALLER IDENTITY / TARGET OWNERSHIP
+Format-only, unused-context and renewed-auth changes all alter TargetFingerprint
+for the same inspected cluster UID. Each fresh approved reapply is blocked with
+an approval error. Application credential bytes remain intact.
+Negative control PASS: a genuinely different inspected cluster is rejected under
+both stale and newly calculated approval while reusing existing owned state.
+Renewed caller auth's stale approval remains rejected.
+
+The parent-supplied owned-source digest was
+409d36503632e91a73ef3e600b44d018b3c4f6b389ae7c12e3666c073a128737.
+V2-BEFORE.json records exact tested executor/CLI file hashes independently.
+Production, CLI regression, modules, renderer/A5, readiness, bindings and other-
+author controls were not edited. All V1 source/control/RED bytes are retained.
+This is a test-author correction handoff, not an implementation or native proof.

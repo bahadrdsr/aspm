@@ -1,0 +1,30 @@
+Acceptance RED baseline - September 15, 2026
+===========================================
+Compilation: PASS with integration tag, existing pgx/S3 dependencies and stdlib.
+Fixtures: six JSON files and one quoted CSV parsed successfully.
+
+Full integration run: 18 top-level tests, 1 PASS, 17 expected FAIL, 0 SKIP.
+  M03: 3 fail - production binding missing: Plan.
+  M04: 4 fail - production binding missing: OpenApplication.
+  M05: 3 fail - production binding missing: OpenApplication.
+  M06: 4 fail - production binding missing: OpenApplication.
+  M07: 3 fail - production binding missing: OpenApplication.
+  TestAcceptance_OwnedServices: PASS - real PostgreSQL commit/reconnect,
+    exact S3 roundtrip, and bounded owned-schema/prefix cleanup.
+An independent run with ASPM_TEST_* cleared failed explicitly BLOCKED for the
+missing ASPM_TEST_DATABASE_URL. It did not skip or pass.
+
+M03 also ran without integration: all three intentional missing-binding failures.
+No production bindings or fake application behaviors were added. Milestone
+assertions beyond the binding guards are NOT claimed to have passed.
+
+Commands from aspm, with authorized process-local service variables and the
+existing Go toolchain/dependency cache (CONTRACT.txt includes the private runner):
+  go test -tags=integration -mod=readonly -run '^$' .\tests\acceptance
+  go test -mod=readonly -count=1 -run '^TestM03_' .\tests\acceptance
+  go test -tags=integration -mod=readonly -count=1 -timeout=300s .\tests\acceptance
+  go test -tags=integration -mod=readonly -count=1 -run '^TestAcceptance_OwnedServices$' .\tests\acceptance
+
+Only tests\acceptance and its fixtures/artifacts were written. No git operation,
+production change, existing-schema change, deployment, or dependency-manifest
+change was performed. Service credentials were consumed privately, not copied.

@@ -1,0 +1,20 @@
+ACTUAL A3 PRE-CODE COMPILATION RESULT
+====================================
+September 15, 2026. Whole package; GOPROXY=off; GOWORK=off; -mod=readonly.
+Command: go test -json -mod=readonly -count=1 -timeout=30s .
+Exit 1, setup failed before any test ran:
+  production_bindings_test.go:6:2:
+  cannot find module providing package
+  github.com/bahadrdsr/aspm/internal/install/quadlet:
+  import lookup disabled by -mod=readonly
+
+The production leaf was absent when this result was captured. The explicit
+parent module require/local replace and exact forwarding binding are present.
+This is a PRE-CODE BLOCKER, not a semantic test failure or a passing renderer.
+The author did not implement/fake/exclude the missing package or download a
+different provider for it. Parent implementation of the specified stdlib leaf
+is the intended next input change; frozen test/module wiring stays unchanged.
+
+Binding SHA256:
+b8f73cfd1943932d059427e85c06e7ea690491a539be9409889ff34d8edeef3b
+Evidence: .run/a3-precode.jsonl.

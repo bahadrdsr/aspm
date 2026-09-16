@@ -1,0 +1,11 @@
+CURRENT INDEPENDENT-AUTHOR PACKET: A5 (INERT BYTE / LINE-BOUNDARY REGRESSION)
+Authoritative manifest: FROZEN.A5.sha256
+Canonical alias: FROZEN.sha256 (byte-identical current manifest)
+Compiler/file-set closure: COMPILATION.A5.json
+Verifier: Verify-CompilationPacket-A5.ps1
+Exact new assertion/observed counts/safety boundary: PACKET-A5.txt
+Current evidence: .run/a5-line-boundary-red.jsonl (source-only)
+Six LF/CRLF positives pass; three malformed cases already reject; nine are RED.
+A0-A4 history and all original assertions/helpers/module/forwarding are intact.
+No production/config loading/native execution/credential/target/bypass activity.
+HOLD this exact full six-source packet for parent fix/review; stop scope here.

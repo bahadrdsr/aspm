@@ -1,0 +1,120 @@
+M11-M12 FIRST ANALYSIS ADAPTER GATES
+==================================
+Run from aspm: go test -mod=readonly -count=1 -timeout=45s .\tests\analysis
+Five top-level gates. Missing factories FAIL, never skip. HTTP fixtures use
+synthetic prompts/credentials; evidence fixtures implement only the existing
+evidence-reader boundary. No inference accounts, targets or executors are used.
+
+Binding / public DTO contract
+----------------------------
+contract_test.go defines exact required Go types/signatures. Add a forwarding-
+only production_bindings_test.go: construction, public DTO conversions and
+errors.Is translation, never provider/policy/verification logic in the binding.
+Production.OpenAssessor(ctx, ProviderConfig) -> (Assessor, error)
+  Assess(ctx, AssessmentRequest) -> (AssessmentResult, error)
+Profile: ID, Family, Endpoint, Model, Deployment, APIKey, Revision,
+StructuredOutput (explicitly reviewed capability, not an inferred catalog fact).
+Policy: Mode, ApprovalRef, Revision, Workspaces, Tasks, DataClasses,
+AllowedDestinations, FallbackProfileIDs. ProviderConfig: Profiles, Policy,
+Client, MaxAttempts, MaxOutputTokens, MaxResponseBytes.
+AssessmentRequest: WorkspaceID, RunID, FindingID, ProfileID, Task, DataClass,
+PromptRevision, EvidenceID, EvidenceDigest, EvidenceText.
+AssessmentResult preserves those identities/revisions/digest plus RequestID,
+RequestedModel, ReturnedModel, Deployment, native StopReason, Usage, RetryAfter
+and nullable Assessment. Assessment has conclusion, uncertainty, evidenceRefs.
+The exact JSON schema is assessmentSchema in contract_test.go: all three fields
+required, conclusion supported/contradicted/inconclusive, no extra properties.
+References must belong to supplied evidence. Generated prose is not asserted.
+
+Frozen first routes / request-response mappings
+----------------------------------------------
+Endpoint is the configured base; no model-list discovery or dated model catalog.
+openai: POST /v1/responses, Authorization: Bearer APIKey.
+azure-foundry: POST /openai/v1/responses, api-key: APIKey.
+  Foundry request model is the independently configured Deployment; preserve
+  configured Model and returned model separately. No dated api-version query.
+  Both Responses profiles use input, store=false, max_output_tokens,
+  stream=false, text.format={type:json_schema, name, strict:true, schema}.
+  Read message/output_text blocks, not blindly output[0]; reject incomplete
+  status. Native request-ID headers: x-request-id / apim-request-id.
+anthropic: POST /v1/messages, x-api-key and anthropic-version: 2023-06-01.
+  No beta headers. Native messages, max_tokens, stream=false,
+  output_config.format={type:json_schema, schema}; read content text blocks,
+  stop_reason and request-id header. Do not coerce OpenAI response fields.
+local: POST /v1/chat/completions, operator-managed compatible endpoint.
+  No auth when APIKey is empty; messages, max_tokens, stream=false,
+  response_format={type:json_schema,json_schema:{name,strict:true,schema}}.
+  Read choices[].message.content, finish_reason and x-request-id when supplied.
+All profiles forbid tools. The schema/capability is explicit, not a claim every
+model or compatible runtime supports structured output.
+
+Usage.InputTokens is total input: Responses input_tokens and chat prompt_tokens
+already include cached input. For Anthropic sum input_tokens,
+cache_read_input_tokens and cache_creation_input_tokens. Preserve cached reads
+and cache writes separately, plus output tokens. Missing usage remains unknown
+(Known=false), not fabricated zero-use. ReturnedModel is observed text, not
+proof that an alias resolved to an immutable model identity.
+
+Policy / error boundaries
+-------------------------
+Factories do no I/O. Check policy before inference: disabled means no request;
+local-only rejects hosted families even on loopback; approved-hosted requires
+the scoped approval snapshot and exact configured allowed destination.
+Check workspace/task/data class. Catalog presence does not authorize fallback.
+No fallback is approved in these fixtures. Unverified structured-output
+capability returns ErrCapability before I/O. Configured MaxAttempts=1 includes
+SDK retries; return Retry-After, do not sleep/retry or switch providers.
+401/403 -> ErrAuth, 429 -> ErrRateLimited, unavailable deployment/5xx/529 ->
+ErrProvider; incomplete/schema/grounding errors -> ErrOutput; native tool calls
+or tool_use blocks -> ErrToolOutput. No assessment-shaped success on failure.
+Oversized response -> ErrLimit. Reject redirects before forwarding keys.
+Context cancellation must prevent a request. Prompts never contain credentials.
+Do not execute, relay or register model shell/network tools. A tool suggestion
+is untrusted output, never authorization or a verification plan to execute.
+
+Deterministic verification contract (no external HTTP routes)
+-----------------------------------------------------------
+Production.OpenVerifier(ctx, VerifierConfig) -> (Verifier, error)
+  Verify(ctx, VerificationRequest) -> (VerificationResult, error)
+VerifierConfig: Evidence (EvidenceReader), LookupApproval(ctx, ref), Now(),
+MaxBytes.
+EvidenceReader.Open(ctx, workspace, evidence.Ref) -> (io.ReadCloser, error)
+matches internal/evidence.Store.Open; reuse its integrity/scope semantics.
+VerificationRequest: WorkspaceID, FindingID, RunID, ApprovalRef, Method,
+ScopeRevision, EnvironmentID, Evidence (the existing evidence.Ref type).
+LookupApproval resolves a trusted Approval with ID, matching workspace/finding/
+method/scope/environment/digest, Approved=true and ExpiresAt > Now().
+Only Method=deterministic-evidence is allowed. Read the exact approved reference
+under MaxBytes; consume through EOF AND Close and retain integrity failures.
+The only fixture document is:
+  {"schema":"aspm.synthetic-fixture/v1","environmentId":"...","condition":true}
+Its environment must match approval. True -> reproduced, false ->
+not-reproduced, meaning ONLY the synthetic evidence condition, not an exploit.
+Unavailable/corrupt evidence -> error; denied scope/approval/method -> blocked;
+oversized declared evidence -> blocked/ErrLimit before reading; cancellation ->
+cancelled/context.Canceled. Denial must occur before opening evidence.
+VerificationResult: WorkspaceID, FindingID, RunID, EnvironmentID, ScopeRevision,
+Outcome, Artifacts []evidence.Ref, CloseFinding=false, FalsePositive=false.
+Neither non-reproduction nor a successful fixture check closes/classifies a
+finding. No subprocess, arbitrary shell, target URL, browser, network probe or
+autonomous offensive workflow exists in this interface. Approval is resolved,
+not inferred from an imported report or an AI response.
+
+Capability boundaries
+---------------------
+This does not certify M10 reports, real-provider availability/quality/retention,
+credential bootstrap, shared distributed quota enforcement, streaming,
+approved fallback execution, Ollama native /api/chat, runtime/model licensing,
+deployment isolation or enforced inference-runtime egress. Those are separate
+gates. M12 is a deterministic evidence coordinator boundary, not a proof engine
+or a replacement for M02's real S3 integrity suite.
+Every provider's live account/model/deployment/runtime status remains
+UNVERIFIED without separately authorized real evidence. Mocks never promote it.
+
+Primary protocol sources consulted (2026-09-15)
+---------------------------------------------
+https://developers.openai.com/api/reference/resources/responses/methods/create
+https://learn.microsoft.com/en-us/azure/ai-foundry/openai/quickstart
+https://platform.claude.com/docs/en/api/messages
+https://platform.claude.com/docs/en/build-with-claude/structured-outputs
+https://docs.ollama.com/api/openai-compatibility

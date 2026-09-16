@@ -5,7 +5,13 @@ Original project source, documentation, contracts, synthetic fixtures and future
 SDKs are licensed under Apache-2.0. See LICENSE.
 
 Third-party works retain their own licenses and attribution requirements.
-See docs\dependencies.md for the current dependency review and its limitations.
-No shadcn/ui, Animate UI or Motion source is bundled in this M00 snapshot.
+See docs\dependencies.md for the historical M00 review and
+docs\m01-foundation.md for the M01 adoption and distribution boundaries.
+
+M01 includes independently approved historical shadcn/ui and Animate UI source
+under their MIT licenses. Full notices are retained in web\public\notices and
+the upstream snapshots in web\tests\upstream. The build generates complete
+installed runtime dependency notices, an inventory and a CycloneDX SBOM into
+the same public notices directory. Current Animate UI main is not adopted.
 
 This notice is informational and does not modify any license.

@@ -1,0 +1,78 @@
+THREE-WORKFLOW UI REVIEW CORRECTION - INDEPENDENT AUTHOR
+=====================================================
+Seven new Chromium cases in tests/application-review-regressions.spec.ts.
+Only tests/application-fixture.ts changes among existing files, with explicitly
+additive same-origin synthetic response controls. No React/state replacement,
+production, backend, dependency, installer, deployment or prior assertion edit.
+
+Receipt access-loss presentation
+-------------------------------
+After either 403 or 404, prior receipt ID/state/observation count must remain
+absent from the DOM during a held retry and after its 503 failure. Clearing an
+action error is not renewed authority to display the old receipt. Later authorized
+200 data or a new acknowledged receipt may restore presentation. These are UI
+presentation checks only, NOT evidence of backend/storage authorization bypass.
+Both initial denial hiding and later authorized-200 recovery are positive controls.
+
+Same-ID acknowledgement freshness
+--------------------------------
+Begin with an acknowledged queued receipt. Hold an older queued status GET, then
+submit the same original report/scan identity again. POST returns HTTP 200 with
+the SAME receipt ID, succeeded and one observation. That latest acknowledgement
+must render while the old GET remains held. Releasing the older GET cannot revert
+state/count. The fixture retains the GET payload captured at REQUEST time, not a
+later map state. Production may cancel or ignore the older response.
+
+Keyboard asset-save focus/context
+--------------------------------
+Use real keyboard Save and response-held inventory GET, in no-preference and
+reduced motion. Focus must remain connected, enabled, visible and meaningful
+through refresh and updated-row rendering, never BODY or the disabled Edit button.
+Acceptable stable context is the edited row/its controls, inventory/table region,
+main landmark or visible save status. No forced test ID, DOM hack or specific
+focus-restoration implementation is required.
+Keep workspace and Assets destination. Keep horizontal/inventory scroll offsets;
+for vertical feedback reflow, retain either absolute offset or the edited-row
+anchor (one-pixel rounding tolerance), not a reset to another part of the page.
+If the user subsequently tabs to Workspace while refresh is held, completing it
+must not steal focus back. Preserve the user's resulting scroll context.
+
+Additive fixture API
+--------------------
+queueImportStatus(id, {status:200,state} | {status:403|404|503}, held=false)
+  queues only a declared receipt response for an already acknowledged ID.
+holdAssets(workspace)
+  holds the next declared GET /api/v1/assets for that known membership.
+Both return {requested,delivered,release}; response bytes are snapshotted at
+request arrival. Helpers await these barriers/render commit, not timing sleeps.
+queueReplayReceipt(id,state)
+  makes the next POST import return the existing ID/state. It must match the
+original synthetic request's report/asset/source/scan/scope/mapping metadata;
+only collectedAt may differ. Default new-import behavior is unchanged.
+releaseResponses releases pending holds during fixture cleanup.
+Every request still passes the ORIGINAL origin, JSON, cookie/session, workspace,
+credential, bootstrap-header, declaration and 60-request guards BEFORE scheduling.
+Every request remains recorded. Teardown credential/storage/console/provenance
+assertions are unchanged. No permissive route override is used by the new tests.
+
+History / compiler controls / evidence
+-------------------------------------
+BEFORE.json records exact original test/compiler and held production file hashes.
+history/ retains original fixture, tests, manifests and compiler controls byte
+for byte, plus the parent's original application handoff/receipt/input history
+(including the reported original 35/55-control generations). Old signed manifests
+and HANDOFF.sha256 are never rewritten or relabeled as the new fixture.
+AMENDMENT.json records the old/new fixture hash and narrowly permitted additions.
+COMPILATION.json records all 292 actual compiler inputs under unchanged tsconfig,
+package, lock, Vite/Playwright and provenance settings. Installed dependency bytes
+are recorded, not copied or replaced. No dependency was installed.
+FROZEN.sha256 seals the new file/fixture/owned compiler controls and historical
+evidence for parent verification/signing, not self-issued reviewer approval.
+
+Run from aspm\web with existing Chromium/dependencies:
+  npm.cmd run typecheck
+  npm.cmd test -- application-review-regressions.spec.ts --output .artifacts\workflow-review-v2\current --reporter=line
+Compatibility: unchanged full browser suite plus the new file.
+ASPM_WEB_TEST_PORT may isolate the owned Vite server. No flag/compiler setting is
+weakened. Current output lives outside the protected tests root; historical RED
+uses distinct run names and is never overwritten. Production fixes follow.

@@ -1,0 +1,30 @@
+INSTALLER V3 - NEW MANAGED READINESS PRODUCER GATES
+================================================
+Two top-level tests executed: 2 semantic RED, 0 skips; compilation succeeded.
+The real accepted executor completed managed apply through the existing I/O
+boundaries. No native cluster/systemd/container command was executed.
+
+Kubernetes RED:
+  Actual captured Helm producer JSON omits core.prepareReadiness=true.
+Linux RED:
+  Actual generated etc/aspm/core.env omits literal
+  ASPM_S3_PREPARE_READINESS=true under the corrected V2 native env parser.
+
+Executed controls passed:
+  Plan/DryRun remain nonmutating and write no application secret files.
+  Caller-selected raw/readiness/normalized scope and private role bytes/references
+  remain exact. Ingestion/reports receive no preparation flag; reporting stays
+  DB-only and ingestion receives no core bootstrap.
+  Ambient ASPM_S3_PREPARE_READINESS=false does not authorize the required new
+  managed materialization.
+
+Current output: .cache\installer-v3\author-red-01.jsonl.
+Frozen identical evidence: .history\v3-red\author-red-01.jsonl.snapshot.
+Run: go test -json -mod=readonly -count=1 -timeout=120s -run '^TestInstallerV3_' .\tests\installer
+All 31 V2 controls and the named V2 manifest remain byte-identical. V2 was already
+independently accepted; these are new producer-wiring assertions, not V2 repairs.
+The parent-reported accepted ownership tree is
+452fde38ef45d0e6dace80f685788f6352013b8f36004e06a62c4b278b4d0e57.
+Exact current executor/CLI file hashes are recorded in V3-BEFORE.json.
+No modules, previous oracles, runtime-role/M00 schemas, deployment-author files,
+production source or historical RED were changed.

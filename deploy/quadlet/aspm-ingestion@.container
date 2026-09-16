@@ -1,0 +1,22 @@
+[Unit]
+Description=ASPM ingestion worker %i
+After=network-online.target aspm-postgres.service aspm-storage.service
+Wants=network-online.target
+
+[Container]
+Image=localhost/aspm:0.1.0-dev
+ContainerName=aspm-ingestion-%i
+Network=aspm.network
+EnvironmentFile=/etc/aspm/ingestion.env
+Exec=/app/bin/ingestion
+ReadOnly=true
+Tmpfs=/tmp:rw,size=2g
+NoNewPrivileges=true
+DropCapability=all
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

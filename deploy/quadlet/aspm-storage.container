@@ -1,0 +1,17 @@
+[Unit]
+Description=ASPM private shared evidence storage
+
+[Container]
+Image=docker.io/chrislusf/seaweedfs:4.47
+ContainerName=aspm-storage
+Network=aspm.network
+Volume=aspm-storage.volume:/data
+Volume=/etc/aspm/s3.json:/etc/seaweed/s3.json:ro
+Exec=mini -dir=/data -s3.config=/etc/seaweed/s3.json -bucket=aspm-evidence -master.telemetry=false -admin.ui=false -webdav=false -s3.port.iceberg=0 -s3.port.lance=0 -s3.iam=false -s3.allowDeleteBucketNotEmpty=false -filer.disableDirListing=true -filer.exposeDirectoryData=false
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

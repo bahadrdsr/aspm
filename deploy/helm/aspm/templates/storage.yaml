@@ -1,0 +1,96 @@
+{{- if .Values.database.managed }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aspm.name" . }}-postgres
+spec:
+  clusterIP: None
+  selector: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: postgres}
+  ports: [{name: postgres, port: 5432}]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "aspm.name" . }}-postgres
+spec:
+  serviceName: {{ include "aspm.name" . }}-postgres
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: postgres}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: postgres}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: postgres
+          image: {{ .Values.database.image | quote }}
+          env:
+            - {name: POSTGRES_DB, value: {{ .Values.database.name | quote }}}
+            - {name: POSTGRES_USER, value: {{ .Values.database.user | quote }}}
+            - name: POSTGRES_PASSWORD
+              valueFrom: {secretKeyRef: {name: {{ .Values.existingSecret | quote }}, key: postgres-password}}
+          ports: [{name: postgres, containerPort: 5432}]
+          resources: {requests: {cpu: 100m, memory: 256Mi}, limits: {cpu: "1", memory: 1Gi}}
+          volumeMounts: [{name: data, mountPath: /var/lib/postgresql}]
+          readinessProbe:
+            exec: {command: ["pg_isready", "-U", {{ .Values.database.user | quote }}, "-d", {{ .Values.database.name | quote }}]}
+            initialDelaySeconds: 5
+  volumeClaimTemplates:
+    - metadata: {name: data}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.database.storageClass }}
+        storageClassName: {{ .Values.database.storageClass | quote }}
+        {{- end }}
+        resources: {requests: {storage: {{ .Values.database.storage | quote }}}}
+---
+{{- end }}
+{{- if .Values.storage.managed }}
+{{- $policy := .Values.storage.policySecret | default dict }}
+{{- $policyName := required "storage.policySecret.name is required for managed storage" $policy.name }}
+{{- $policyKey := required "storage.policySecret.key is required for managed storage" $policy.key }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aspm.name" . }}-storage
+spec:
+  selector: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: storage}
+  ports: [{name: s3, port: 8333}]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "aspm.name" . }}-storage
+spec:
+  serviceName: {{ include "aspm.name" . }}-storage
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: storage}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: aspm, app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: storage}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: storage
+          image: {{ .Values.storage.image | quote }}
+          args: ["mini", "-dir=/data", "-s3.config=/etc/seaweed/s3.json", {{ printf "-bucket=%s" .Values.storage.bucket | quote }}, "-master.telemetry=false", "-admin.ui=false", "-webdav=false", "-s3.port.iceberg=0", "-s3.port.lance=0", "-s3.iam=false", "-s3.allowDeleteBucketNotEmpty=false", "-filer.disableDirListing=true", "-filer.exposeDirectoryData=false"]
+          ports: [{name: s3, containerPort: 8333}]
+          resources: {requests: {cpu: 100m, memory: 256Mi}, limits: {cpu: "1", memory: 1Gi}}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: credentials, mountPath: /etc/seaweed, readOnly: true}
+          readinessProbe: {tcpSocket: {port: s3}, initialDelaySeconds: 5, periodSeconds: 5}
+      volumes:
+        - name: credentials
+          secret: {secretName: {{ $policyName | quote }}, items: [{key: {{ $policyKey | quote }}, path: s3.json}]}
+  volumeClaimTemplates:
+    - metadata: {name: data}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- if .Values.storage.storageClass }}
+        storageClassName: {{ .Values.storage.storageClass | quote }}
+        {{- end }}
+        resources: {requests: {storage: {{ .Values.storage.size | quote }}}}
+{{- end }}

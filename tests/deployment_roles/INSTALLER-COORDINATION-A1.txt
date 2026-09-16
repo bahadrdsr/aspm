@@ -1,0 +1,53 @@
+GO-ONLY INSTALLER / QUADLET COORDINATION - SEPTEMBER 15, 2026
+===========================================================
+Coordinated with original independent installer author
+ac4e6adc-140c-473e-beaa-6e796ac413dc. His 21:19:34 +02:00 proposal matches
+the following separation. No production or older-author oracle is edited here.
+
+NONSECRET operational inputs, outside the existing M00 Installation JSON:
+  Intent.RuntimeRoles / Plan.RuntimeRoles:
+    core: {s3Secret:{name,accessKeyKey,secretKeyKey},rawPrefix,readinessKey}
+    ingestion: {s3Secret:{name,accessKeyKey,secretKeyKey},rawPrefix,readinessKey,
+                normalizedPrefix}
+There is no reports storage selection. No existing M00 schema extension defines
+these fields; install.Resolve and ConfigID retain their existing meaning.
+Caller-selected workspace/tenant scope is the explicit selected prefix/key text.
+Selecting evidence/ preserves that layout; nothing implicitly migrates it.
+
+PRIVATE inputs:
+  Options.RoleKeys.{Core,Ingestion}.{AccessKey,SecretKey}, json:"-".
+Both pairs are required and cannot reuse access/secret values within/across
+roles. Missing/reused values => ErrCredential before any native tool I/O.
+Secret selections must be complete and cannot reuse another role's credential
+reference. objectStore.credentialRef remains operator/storage control-plane
+input only, never an application key or fallback. Plan must not resolve secrets.
+
+PURE GO helper boundary (A1 test declaration is unchanged):
+  RenderQuadletRole(context.Context, []byte, QuadletRoleConfig) ([]byte,error)
+  Config fields: Role, EnvironmentFile, RawPrefix, ReadinessKey, NormalizedPrefix.
+Map core/ingestion strings VERBATIM from RuntimeRoles. EnvironmentFile is
+/etc/aspm/core.env, /etc/aspm/ingestion.env or /etc/aspm/reports.env.
+Reports receive empty raw/readiness/normalized strings. RoleKeys and Secret
+material never enter this unit-render helper. The helper may live in
+internal/install, consumed by Go/aspmctl and a forwarding-only test binding.
+No Node installation dependency or new external tool is required.
+
+Raw prefixes are explicit, valid relative prefixes ending in "/"; readiness
+must stay inside raw; ingestion normalized scope must be valid and disjoint.
+Missing/unsafe inputs fail before I/O (installer ErrCredential/ErrUnsupported);
+the pure renderer returns error and zero usable output. No common runtime.env,
+operator/default scope or credential fallback. Preserve unrelated unit/service/
+isolation directives. Signed-image pinning remains a separate allowlisted step.
+
+The installer author owns protected etc/aspm/core.env, ingestion.env and
+reports.env generation. Core/ingestion receive only their own supplied role
+credentials; bootstrap is core-only. Reports is DB-only plus nonsecret runtime
+identity. Our artifact test does not certify actual private file contents.
+Static shipped units select separate role files, not fixture tenant strings.
+A1 already moved exact prefix assertions to parameterized rendered outputs.
+
+All eight installer security requirements remain: signed/target-bound approval,
+mandatory caller credentials/trust before native I/O, no unsigned override,
+read-only planning, protected secrets, resume/reapply, explicit failure state,
+and retained-data uninstall. Installer author owns his independent amendment.
+Helm credential assertions and frozen A1 Quadlet source are unchanged by this note.

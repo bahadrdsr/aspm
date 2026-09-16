@@ -1,0 +1,15 @@
+{
+  "@version": "2.16.1", "@generated": "Tue, 01 Sep 2026 10:00:00",
+  "site": [{
+    "@name": "https://fixture.example.invalid", "@host": "fixture.example.invalid",
+    "@port": "443", "@ssl": "true",
+    "alerts": [{
+      "pluginid": "10038", "alertRef": "10038", "alert": "Synthetic header policy",
+      "name": "Synthetic header policy", "riskcode": "2", "riskdesc": "Medium (Medium)",
+      "confidence": "2", "desc": "Synthetic response header finding.",
+      "instances": [{"uri": "https://fixture.example.invalid/health", "method": "GET", "evidence": "Synthetic header evidence."}],
+      "count": "1", "solution": "Review synthetic header policy.",
+      "otherinfo": "Keep the ZAP source note."
+    }]
+  }]
+}

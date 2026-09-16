@@ -1,0 +1,48 @@
+M03 installer execution RED - September 15, 2026
+===============================================
+Eight top-level behavioral tests compile with Go 1.27.1 and standard library only.
+All eight fail intentionally:
+  M03 execution production binding missing: OpenInstaller
+Zero skips, no undefined production imports, no deployment tool invocation.
+
+Before each binding guard, the fixture copies the existing Helm/Quadlet artifacts
+into a random owned disk sandbox and verifies its synthetic Ed25519 signature.
+Those setup and cleanup paths ran successfully. Production approval, rendering,
+state, crypto and execution assertions are NOT claimed to have passed.
+
+Gates cover inspected approval and dry-run; stale approvals after config/bundle/
+target changes; missing caller credentials/trust before ANY tool call; tampering;
+real-chart/secret wiring; failure
+and resume/reapply; default-retaining uninstall and separate destructive approval;
+declared privileged local Linux; and mandatory rejection of unsigned development
+bypass. signatureRequired=true is never relaxed. No acceptance, integration,
+deployment or dependency files edited.
+
+Boundary amendment requested September 15, 2026: explicit Kubeconfig plus Files.Stat
+support pre-native credential checks. Missing/empty/auth-less kubeconfig and missing
+supplied credential references fail, even with an ambient KUBECONFIG available.
+Configuration-only preview expectations remain unchanged.
+Pre-edit and amended SHA-256 snapshots cover all 24 test-author handoff files.
+They are unsigned records, not the parent's forthcoming signed test-oracle guard.
+
+Independent role-separation amendment requested September 15, 2026:
+  Intent/Plan.RuntimeRoles carries selected core/ingestion Secret references and
+    raw/readiness/normalized scopes; Options.RoleKeys supplies private distinct
+    caller role credentials, never ambient operator fallback.
+  Missing/reused role keys and selections are negative pre-native-I/O cases.
+  Helm publishes selected per-role Secrets; Quadlet renders core.env,
+    ingestion.env and DB-only reports.env. Operator material is control-plane only.
+  Scope/key changes invalidate approval; resume/reapply preserves all role keys.
+  All original eight operational security requirements remain mandatory.
+Prior baseline: role-key-hashes.before.json, verified against the prior handoff.
+Amended frozen baseline and reason: role-key-hashes.after.json and
+role-key-amendment.json. These are unsigned author records, not oracle approval.
+Actual amended run: .role-run\red-run.jsonl; all eight tests compiled and failed
+only at missing OpenInstaller, zero skips. No operational behavior is claimed green.
+
+From aspm with the existing Go toolchain and project-local caches:
+  go test -mod=readonly -count=1 -timeout=120s .\tests\installer
+  go test -mod=readonly -count=1 -run '^TestM03Execution_Plan' .\tests\installer
+Interfaces and the minimal tool/bundle protocol are in CONTRACT.txt and
+contract_test.go. The parent supplies the forwarding binding and later performs
+separate native deployment verification against its owned cluster.

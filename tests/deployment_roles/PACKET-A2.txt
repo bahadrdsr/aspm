@@ -1,0 +1,69 @@
+STABLE FULL DEPLOYMENT TEST COMPILATION PACKET A2
+==============================================
+Independent test-author freeze, September 15, 2026.
+Status: HOLD UNCHANGED until reviewer 4f2739db accepts this exact packet.
+
+CURRENT AUTHORITY
+-----------------
+FROZEN.A2.sha256 is the complete current packet manifest. FROZEN.sha256 is an
+exact-byte current alias of it, so the default manifest cannot still describe A0.
+The original FROZEN.sha256 bytes are preserved as FROZEN.A0.sha256 (SHA256
+28dc47d37ced767b74eeac89a98a5a02eaeb7617dcb096f67586cf39635f0f13).
+FROZEN.A1.sha256 and older hash notes remain historical evidence. Their paths
+describe their then-current snapshots, not a claim that A0/A1 match today's tree.
+Do not regenerate a manifest or exclude files merely to make review pass.
+
+WHY THE VERSION CHANGED
+-----------------------
+A0 assumed literal synthetic raw/team-a scope in shipping Quadlets. The parent
+explicitly authorized A1 to remove that mistaken shipping-default requirement.
+A1 requires actual parameterized production rendering from selected nonsecret
+Role/EnvironmentFile/RawPrefix/ReadinessKey/NormalizedPrefix, including explicitly
+selected evidence/. Shared/operator fallback, missing/unsafe scope, report
+storage input and unrelated unit changes remain denied. No test-side renderer.
+Go/internal-install/aspmctl integration was coordinated with the original
+installer author. No Node installation dependency or M00 schema change.
+
+A2 changes NO test assertion or Go compiler source from accepted-for-review A1.
+It closes the packet/versioning gap that blocked exact-input review: every
+same-package Go file, including unselected _test.go/init code, is protected.
+There is deliberately NO Helm-only compilation-input exclusion.
+
+COMPILATION CLOSURE
+-------------------
+COMPILATION.A2.json records the actual go list package inputs, toolchain/build
+settings, and closed non-.run file set. All compiler/helper files and module
+manifests are hashed by FROZEN.A2.sha256. All files outside .run must match that
+closed list; adding a new _test.go, init file, binding, embed resource, script or
+other package-tree file is a packet change, even when -run selects Helm tests.
+Named frozen RED/render artifacts under .run are hashed separately in the same
+manifest. Other transient .run build/test output is not a compiler/oracle input.
+Verify-CompilationPacket.ps1 checks both file-set closure and exact bytes.
+It also checks that the canonical and versioned current manifests are identical.
+
+REVIEW / RUN
+------------
+Run Verify-CompilationPacket.ps1 before and after review/tests. Use the existing
+Test-DeploymentRoles.ps1 with an explicit real Helm executable to run all four
+tests. For selection by -run, the entire Go package still compiles unchanged.
+No real credentials, live deployment, systemd execution or network-isolation
+claim belongs to this source/render packet. CONTRACT.txt remains normative.
+ARTIFACTS.A2.sha256 records the production artifact input snapshot for this run;
+it is not authority to edit production or older installer/UI/storage oracles.
+
+CHANGED PATHS / SCOPE (all under tests/deployment_roles)
+-------------------------------------------------------
+A1 assertion amendment:
+  modified quadlet_test.go and CONTRACT.txt
+  added AMENDMENT-A1.txt, FROZEN.A1.sha256, .run/quadlet-a1-red.jsonl
+Coordination only:
+  added INSTALLER-COORDINATION-A1.txt and INSTALLER-COORDINATION-A1.sha256
+A2 packet/evidence only:
+  added PACKET-A2.txt, CURRENT_PACKET.txt, COMPILATION.A2.json,
+        Verify-CompilationPacket.ps1, FROZEN.A0.sha256, FROZEN.A2.sha256,
+        ARTIFACTS.A2.sha256, RED-A2.txt, .run/a2-red.jsonl, .run/a2-renders/
+  replaced FROZEN.sha256 only as an exact current-manifest alias
+Unchanged since A0: render_test.go, helm_test.go, go.mod, go.sum and
+Test-DeploymentRoles.ps1. Original RED.txt/INPUTS.before.sha256 and A0 render
+captures are retained as historical evidence. No production implementation,
+parent dependency changes, older-oracle edits, agents or commits were made.

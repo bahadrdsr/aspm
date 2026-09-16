@@ -1,0 +1,9 @@
+CURRENT INDEPENDENT-AUTHOR PACKET: A2
+Authoritative manifest: FROZEN.A2.sha256
+Canonical alias: FROZEN.sha256 (must be byte-identical to FROZEN.A2.sha256)
+Compiler/file-set closure: COMPILATION.A2.json
+Verifier: Verify-CompilationPacket.ps1
+Reason, history and complete changed paths: PACKET-A2.txt
+Fresh run evidence: RED-A2.txt and .run/a2-red.jsonl
+Earlier A0/A1 manifests are historical, not current verification targets.
+HOLD all packet files unchanged until reviewer 4f2739db accepts this exact input.

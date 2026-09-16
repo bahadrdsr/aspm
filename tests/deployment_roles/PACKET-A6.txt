@@ -1,0 +1,62 @@
+INDEPENDENT NEW FEATURE TESTS A6 - READINESS PREPARATION OPT-IN
+===========================================================
+Parent authorization: 2026-09-16T03:11:46.178+02:00.
+The ONLY added Go compiler source is readiness_opt_in_test.go.
+Every A0-A5 assertion/helper/module/forwarding byte and history is preserved.
+No installerV2/readiness root, production, policy, dependency or native deployment
+change is part of this task. No coordination or credential input is needed.
+
+NEW NONSECRET CHART SELECTION
+-----------------------------
+core.prepareReadiness is a strict boolean, default false.
+Actual rendered core env MUST contain ASPM_S3_PREPARE_READINESS as a YAML STRING:
+  omitted/default -> "false"
+  explicit false  -> "false"
+  explicit true   -> "true"
+Only explicit boolean true opts in. No Secret/config-map reference substitutes
+for this nonsecret selector. Ingestion/reports containers and init containers
+must not receive the flag.
+Explicit non-boolean "true", "false" and integer 1 fixtures must fail actual
+client rendering with a diagnostic naming core.prepareReadiness. They must not
+be silently coerced to enabled or disabled.
+
+Tests reuse the existing real Helm renderer, proper YAML parser and complete
+synthetic role Secret/prefix/readiness/normalized selections. No test-side
+template or new dependency is introduced. All original mapping, DB-only report
+and no common/operator fallback requirements remain unchanged.
+
+SHIPPED UNIT CONTROL
+--------------------
+Actual shipped ingestion/reports units must have no inline preparation flag.
+Core also must not impose an inline true OR false that would override its
+protected core.env. The runtime defaults off; a later installer can explicitly
+opt in through core.env. Both Container.Environment and Service.Environment
+are inspected. No private role environment file is read/certified here.
+
+OBSERVED REAL-RENDER RED
+------------------------
+Three boolean/default mapping cases RED: core flag is absent for all three.
+Three invalid-type cases RED: actual Helm rendering incorrectly succeeds.
+All three shipping-unit controls PASS; they were not made artificially RED.
+All three unchanged existing Helm role/security gates also PASS.
+Zero skips, exit 1, package time 7.111 seconds; 16 actual Helm render captures.
+Chart values/helpers/application inputs were hashed before/after and did not
+drift during execution. No source wiring was changed by the test author.
+Evidence: .run/a6-feature-red.jsonl and .run/a6-renders/.
+RED SHA256: d5f38f9dd0f18da67e323e48349da37b82552abb166498990f6f3d5f8860ea5a
+New test SHA256:
+dff0582a4668ec9826486cf9e50a65e242c5f163770f7c355af6a89556971aee
+
+FULL COMPILER PACKET / BOUNDARY
+-------------------------------
+FROZEN.A6.sha256 is current; FROZEN.sha256 is its identical alias.
+COMPILATION.A6.json closes the full package tree and ALL SEVEN Go/init/compiler
+sources regardless of -run. Verify-CompilationPacket-A6.ps1 checks exact bytes.
+All 90 A5 recorded inputs/evidence were verified unchanged before versioning.
+A0-A5 history remains; old CURRENT_PACKET.txt is in .run/a5-before-a6/.
+Only the new feature test and versioned packet metadata/evidence are added.
+CURRENT_PACKET.txt and canonical FROZEN.sha256 only update current pointers.
+This is artifact opt-in wiring evidence, not a readiness preparation execution,
+live storage permission, Kubernetes/systemd deployment or installer acceptance.
+Parent owns source wiring and later validation with the accepted runtime.
+HOLD the exact A6 packet for fix/review and stop scope here.

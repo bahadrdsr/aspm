@@ -1,0 +1,17 @@
+{
+  "all": {
+    "children": {
+      "aspm_reference": {
+        "hosts": {
+          "aspm-linux": { "ansible_host": "192.0.2.10", "aspm_profile": "linux" },
+          "aspm-k3s-server": { "ansible_host": "192.0.2.11", "aspm_profile": "kubernetes" },
+          "aspm-k3s-agent": { "ansible_host": "192.0.2.12", "aspm_profile": "kubernetes" }
+        },
+        "vars": {
+          "ansible_user": "aspm-operator",
+          "aspm_allow_host_changes": false
+        }
+      }
+    }
+  }
+}

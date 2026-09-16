@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "requestedAt": "2026-09-16T00:35:24.166+02:00",
+  "reason": "Preserve independent frozen RED evidence during ordinary reruns; isolate evolving compiler artifacts outside protected test root",
+  "priorManifestSHA256": "818d718bf503deec6c8b8cb605b2e382ceb9477efb68895d19ac4479c52b8119",
+  "files": [
+    {
+      "path": "fixtures_test.go",
+      "sha256": "2934d04c65078f59048ff85c7758e57578d4e198ff4e50ad05fbed4525334651"
+    },
+    {
+      "path": "bootstrap_test.go",
+      "sha256": "ae57160a36c112874c48c04cd842cb3d7f30803de222cbb1b5dea459910ae685"
+    },
+    {
+      "path": "Test-ReadinessBootstrap.ps1",
+      "sha256": "624132d5c7fea007a61dffc3fda2805add50a9462c0ae18dd9c5cbeba5a9ec46"
+    },
+    {
+      "path": "CONTRACT.txt",
+      "sha256": "a5b33a53a830f2d99229e94f576fa7097557c773f3570ecf454ca362f537043e"
+    },
+    {
+      "path": "RED.txt",
+      "sha256": "9de19a0ae6e7cbe69866be39bd2e1e9f8045a68559c6eaee98010e0046df70bf"
+    },
+    {
+      "path": "inputs.before.json",
+      "sha256": "b5b31ede3376edac9e81f99ac5a72621b3ab7d49f4ec712ffa9f98822e62afcb"
+    },
+    {
+      "path": "inputs.after.json",
+      "sha256": "13ed17eec460f13aa68c739b09418895e193e53df5b1dea3947404da2bfb1ffb"
+    },
+    {
+      "path": ".run\\red.jsonl",
+      "sha256": "bf80665f341ffe11c86a7c7f388efe484e935c9f04336c06bddd16a50ed08eaf"
+    },
+    {
+      "path": ".run\\red.log",
+      "sha256": "0a2b57c9ae8ded80410a62693616eedf3527767cda81a098653ae723b91e8096"
+    }
+  ]
+}

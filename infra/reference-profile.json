@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "ReferenceLabFoundation",
+  "status": "not-deployed",
+  "scope": "Existing KVM/libvirt host; reference VMs and explicit host prerequisite checks only",
+  "productionApplicationInstalled": false,
+  "secretsInConfiguration": false,
+  "candidateVersions": {
+    "go": "1.27.1",
+    "node": "22.20.0",
+    "opentofu": "1.10.6",
+    "libvirtProvider": "0.8.3",
+    "ansibleCore": "2.19.3",
+    "ubuntu": "24.04.5"
+  },
+  "owners": {
+    "virtualMachinesNetworksDisks": "OpenTofu",
+    "explicitHostPreparation": "Ansible",
+    "futureLinuxApplication": "Podman Quadlet",
+    "futureKubernetesApplication": "Helm"
+  },
+  "validation": {
+    "jsonAndSafetyChecks": "scripts/check-config.mjs",
+    "nativeToolValidation": "requires the declared tools on an authorized Linux/libvirt reference host",
+    "deploymentEvidence": null
+  }
+}

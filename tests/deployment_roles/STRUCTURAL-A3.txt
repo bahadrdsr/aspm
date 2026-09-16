@@ -1,0 +1,53 @@
+FINAL A3 AUTHOR-APPROVED STRUCTURAL WIRING BASELINE
+=================================================
+Classification finalized under the parent's instruction received at
+2026-09-16T00:06:44.287+02:00 (2026-09-15T22:06:44.287Z).
+This is STRUCTURAL MODULE/BINDING evidence, not pre-code behavioral evidence
+for a production leaf that now exists.
+
+ONLY AUTHORIZED COMPILER DELTA FROM A2
+------------------------------------
+Nested go.mod requires github.com/bahadrdsr/aspm v0.0.0 and replaces that module
+with the literal local path "../..". It resolves to the actual parent checkout.
+production_bindings_test.go contains only init assignment, explicit conversion
+of the existing five string fields to quadlet.Config, and direct forwarding of
+context/source/result/error to internal/install/quadlet.RenderRole.
+No policy, assertion, mock, fallback, rendering or I/O logic was added there.
+Binding SHA256:
+b8f73cfd1943932d059427e85c06e7ea690491a539be9409889ff34d8edeef3b
+Nested go.mod SHA256:
+aa041661e50048ded79b1289d0f039367271bc31aa2764eb497b4a7c1130095c
+
+All original assertion/helper Go files, nested go.sum and parent go.mod/go.sum
+remain unchanged. No production implementation or older-oracle edit was made.
+All FOUR same-package Go/init sources remain protected even for Helm-only -run.
+No Node dependency, fake renderer, missing-package exclusion or schema change.
+
+PROVENANCE / CURRENT STATE
+--------------------------
+A0/A1/A2 manifests and evidence remain historical. A1's parameterized-scope RED
+and A2's full-package behavioral RED are the genuine pre-implementation behavioral
+provenance. The earlier A3 missing-import diagnostic is retained as a wiring
+prerequisite observation only, not evidence of unimplemented leaf behavior.
+The leaf was already resolving on read-only recheck. Current whole-package
+compilation with -mod=readonly/GOPROXY=off succeeds; no tests were selected.
+Evidence: .run/a3-structural-compilation.jsonl. This does not replace the parent's
+complete final guarded test run or independent production-source review.
+
+CURRENT FULL-PACKET AUTHORITY
+-----------------------------
+FROZEN.A3-STRUCTURAL.sha256 and canonical FROZEN.sha256 are identical.
+COMPILATION.A3-STRUCTURAL.json records the closed file set, all four sources,
+local module mapping and actual compiler inputs. Verify-CompilationPacket.ps1
+checks all package files regardless of test selection. Prior FROZEN.A3.sha256
+(bc2105686e7652ebc5fc8d0fb38bb26dec7120ed7d8c1448f2c766aaff8b614f)
+and its descriptors remain historical; their then-current pointer/verifier bytes
+are preserved under .run/a3-before-structural/.
+This finalization changes metadata/classification only, not the already frozen
+binding, module wiring, test assertions or helpers. HOLD this exact test packet
+unchanged for parent final guarded tests and review. No further negotiation.
+
+Metadata paths added: STRUCTURAL-A3.txt, COMPILATION.A3-STRUCTURAL.json,
+FROZEN.A3-STRUCTURAL.sha256, .run/a3-structural-compilation.jsonl,
+.run/a3-before-structural/. CURRENT_PACKET.txt, Verify-CompilationPacket.ps1
+and canonical FROZEN.sha256 only change their current-version references.

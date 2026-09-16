@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "date": "2026-09-15",
+  "ownership": "independent test-author; frozen before coder fixes",
+  "signature": "unsigned integrity handoff, not oracle authorization",
+  "files": [
+    {
+      "path": "tests\\acceptance\\security_behavior_test.go",
+      "sha256": "63c47d31ad07594848899d9a7967bfe2a314d657b6762889882a8e579492b975"
+    },
+    {
+      "path": "tests\\acceptance\\.security-run\\behavior-red.jsonl",
+      "sha256": "96fbabb88e2abc6606b91f5de20bf447de97e9b816f395d09b54bd7e239a5cb4"
+    }
+  ],
+  "results": [
+    {
+      "test": "TestSecurityM04_DeniedWritesCannotChangeExistingFindingOrEvidence",
+      "result": "pass"
+    },
+    {
+      "test": "TestSecurityM05_RawReportCannotChooseRoutingOwnershipOrWorkflow",
+      "result": "pass"
+    },
+    {
+      "test": "TestSecurityM06_ExistingSourceScanCannotBeReboundToAnotherAssetOrScope",
+      "result": "fail"
+    },
+    {
+      "test": "TestSecurityM06_HistoricalIntakeIsValidButReplayExpiresFromServerAcceptance",
+      "result": "fail"
+    },
+    {
+      "test": "TestSecurityM06_LatePartialOrDeltaPositiveHonorsStoredCompleteCoverage",
+      "result": "fail"
+    },
+    {
+      "test": "TestSecurityM07_ZAPObservationGrowthIsLinearAndPreservesInstanceFields",
+      "result": "fail"
+    }
+  ]
+}

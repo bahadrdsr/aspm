@@ -1,0 +1,264 @@
+M01 FRONTEND TEST-AUTHOR HANDOFF
+==============================
+
+Scope
+-----
+This is a browser/test/build scaffold, not the production UI or completed M01.
+M00 contracts, Go schemas and other projects are untouched. No authentication
+backend, ingestion implementation, live connector or hosted AI is required here.
+M00 review still gates M01 completion. The normal UI must show genuine API
+failures until Go implements the declared endpoints; it must not load this test
+corpus as a production fallback.
+
+Run from C:\bahadr\serious\aspm\web:
+  npm.cmd ci
+  npm.cmd run test:install-browser
+  npm.cmd run typecheck
+  npm.cmd run test:harness
+  npm.cmd test
+  npm.cmd run build
+
+npm.cmd avoids an npm.ps1 invocation-wrapper problem in this Windows environment.
+For registry access in this environment, set process-local
+  $env:NODE_USE_SYSTEM_CA = '1'
+before invoking npm.cmd. The Playwright child runner enables the same setting
+and rejects NODE_TLS_REJECT_UNAUTHORIZED=0. Project npm configuration keeps
+strict-ssl=true. Do not disable certificate verification or change machine-wide
+TLS settings. Query explicit stable versions, never blindly the default tag.
+The usual npm commands work on other development hosts. Direct dependencies are
+exactly pinned; package-lock.json locks transitive dependencies. No special CI
+provider is involved. dependency-metadata.json records registry metadata and
+selection limitations. React canary versions were deliberately not selected.
+Direct official-endpoint re-verification remains unavailable in this session:
+the canonical registry still failed TLS negotiation with system CAs enabled
+(an earlier official version-page request returned HTTP 403). All nine existing
+stable pins were rechecked through the configured npm-public mirror using system
+CAs and strict TLS verification. No versions or default tags were substituted.
+The project .npmrc keeps npm cache files local and permits the configured registry
+to replace historical mirror URLs in the lockfile. For a canonical-registry build:
+  npm.cmd ci --registry=https://registry.npmjs.org
+An offline clean install using that registry selection has also been validated
+against the downloaded integrity-locked package cache; the environment's public
+package mirror is not a required CI service or source-build dependency.
+Playwright uses only a project-local headless Chromium cache. No browser or
+application process is detached; Playwright owns and stops its loopback Vite
+server. ASPM_WEB_TEST_PORT may select an unused port (default 48217).
+.cache, .artifacts, node_modules and build outputs are ignored.
+
+Why browser tests, not mocked components
+---------------------------------------
+Two harness tests prove React JSX/event handling in a real browser and a static
+Vite build without relying on production App code. A third exercises the
+fail-closed source/license approval predicate with in-memory synthetic records;
+those records never authorize an actual upstream revision. The tiny counter
+under tests/harness is clearly test-only and is never the missing application.
+The acceptance suite mocks ONLY the HTTP boundary using Playwright routing.
+React, navigation, controls, focus, themes, Motion and CSS are not substituted.
+This avoids calling a jsdom preference stub proof of composed reduced motion.
+No Vitest/testing-library dependency is needed for this bounded browser suite.
+
+Expected coder-owned entrypoints
+--------------------------------
+  index.html
+  src/main.tsx
+  src/App.tsx
+  src/components/provenance.json
+
+The first three form the real production React/Vite application. Tests visit its
+actual root URL, not a wrapper that implements its behavior. Until it exists,
+the browser gates fail with "M01 production UI is intentionally missing".
+The foundation gate checks independent source approval first and reports the
+unresolved licensing prerequisite before reading any component source.
+Assets and Reports may be honest M01 placeholders with their proper headings;
+these tests do not require M04 inventory/auth or M05 ingestion.
+
+Planned M04 application-wiring shift (September 15, 2026)
+------------------------------------------------------
+The M01 read-only cases now have an explicit synthetic authenticated HTTP
+session from GET /api/v1/session. A synthetic empty GET /api/v1/assets response
+keeps their navigation case valid when the Assets placeholder starts reading
+the implemented inventory API. This is test fixture setup, not a production
+auth bypass or sample-data fallback. The real App must use its normal session
+endpoint and must never detect/import test code. Existing write/credential
+denial, focus, motion, verification and source-approval expectations are intact.
+application-workflows.spec.ts separately exercises denied/expired sessions and
+the first user-initiated writes through an isolated HTTP fixture. HANDOFF.txt
+defines that bounded M04-M07 browser contract; backend acceptance remains separate.
+
+Accessible shell contract
+-------------------------
+One navigation landmark named "Primary" has exactly Work, Assets, Integrations,
+Reports, Settings links. Its selected link uses aria-current="page"; main has
+the corresponding destination heading. A button named "Color theme" opens
+Light/Dark menuitems. The initial theme follows the OS; explicit choice survives
+reload. Root color-scheme and actual page colors must agree.
+
+Work has a table named "Findings", at most eight default column headers including
+selection, and a textbox named "Filter findings". A row checkbox selects that
+finding. The finding title is one button OR link, activated with Enter to open
+one dialog named by the title. Escape returns focus immediately to the trigger,
+without waiting for decorative exit motion. Filtering and selection survive.
+Full-motion and reduced-motion variants run the same workflow. Reduced mode
+must also avoid actual continuous/movement animations in composed CSS/WAAPI.
+The test is a bounded motion/interaction gate, not complete WCAG conformance.
+
+Loading findings is an accessible status with visible loading text. An API 503
+shows an actionable alert and Retry, not sample rows. Successful empty results
+show "No findings". A 403 is a permission/access alert, not an empty or success
+state. Untrusted evidence markup is displayed literally, not interpreted.
+
+Integrations has a list named "Native integrations" with eight labeled entries:
+github/GitHub, gitlab/GitLab, azure-devops/Azure DevOps, aws/AWS, azure/Azure,
+jira/Jira, teams/Microsoft Teams, slack/Slack. Each synthetic profile visibly
+says Not verified, Unverified or Not run. Planned/mock profiles must never be
+presented as Verified, Live verified or Ready to connect.
+
+Settings links to "Component gallery". The gallery heading is "Synthetic
+component gallery". A note named "Synthetic data notice" says its examples are
+not live data or verification. A region named "State samples" contains headings
+Empty, Loading, Error, Permission denied, Partial data, Success. Gallery examples
+may be owned production gallery fixtures, but may never import tests/fixtures
+or become API-failure fallback. A light gallery screenshot is attached for
+independent visual review; screenshots are not automatically approved baselines.
+
+Compact read-only HTTP contract
+------------------------------
+All responses are JSON with apiVersion="aspm/v1alpha1".
+
+GET /api/v1/work?q=<optional filter text>
+  {apiVersion,dataOrigin:"synthetic"|"live",items:WorkItem[],total,
+   nextCursor:string|null}
+  WorkItem:
+    {id,title,assetName,severity:"critical"|"high"|"medium"|"low"|"info",
+     ownerName:string|null,workflowState:"open"|"in-progress"|"resolved",
+     sourceScanAt:RFC3339|null,collectedAt:RFC3339,importedAt:RFC3339}
+  q searches title, assetName or ownerName. M01 may filter its small response
+  locally; future Go query/pagination handling must preserve the same semantics.
+  Source scan time is not a collection/import freshness substitute.
+
+GET /api/v1/findings/<id>
+  {apiVersion,dataOrigin,finding:{...WorkItem,scopeLabel,description,
+    evidence:{text,sourceLabel,verificationState:"not-run"|"blocked"|"verified"},
+    remediation}}
+  These tests use deterministic, synthetic evidence only and never claim
+  independently verified findings. No artifact URL or storage credentials are
+  needed in the M01 detail prototype.
+
+GET /api/v1/integrations/catalog
+  {apiVersion,dataOrigin,items:[{id,name,kind:"native",capabilities:[],
+    supportMaturity,connectionState,readyToConnect,
+    liveVerification:{state,reason}}]}
+  Support and connection state are separate. The fixture has all eight families
+  planned/unconfigured/not-run, with readyToConnect=false. There are no passwords,
+  provider tokens, credential values, secret recovery fields or credential-read
+  endpoints in this DTO. Do not return raw backend configuration to populate UI.
+
+403/404/503:
+  {apiVersion,error:{code:"forbidden"|"not-found"|"unavailable",
+    message,requestId,retryable:boolean}}
+
+api-contract.ts gives precise test-only TypeScript DTOs; fixtures.ts contains
+only synthetic data. The HTTP fixture rejects undeclared endpoints, writes,
+provider/bearer credentials and external requests. Browser storage may hold
+non-secret preferences, never long-lived credentials. Backend authorization,
+redaction and isolation need their own later Go contract/integration tests;
+M01 mocks are not evidence that an unimplemented backend enforces these rules.
+
+Actual reviewed source, not merely lookalike controls
+---------------------------------------------------
+The shadcn/shared-Motion behavior expectations remain in force. On September 14,
+2026 the coordinator reported that current Animate UI LICENSE.md includes MIT
+plus Commons Clause. The earlier blanket plain-MIT/FOSS assumption is withdrawn.
+Do not fetch or copy current Animate UI component source, use a mutable current
+registry to obtain it, or treat a README/license label as permission to adopt it.
+
+The coordinator supplied this immutable historical license-reviewed candidate:
+  Commit: 38b917762e3b6059c06a7af703071ba11a89091e
+  LICENSE.md Git blob: 0ca4a48bd712fd8db31fff20c8b241c5cf41e4db
+The coordinator independently read the full standard MIT text and confirmed
+the unrestricted permission/sell clause using a whitespace-normalized comparison.
+That is recorded as license-only evidence, NOT approval of copied components or
+their dependencies. Current main and current registry dependencies stay unapproved.
+
+tests/approved-component-sources.json separates licenseReviewedCandidates from
+approvedSources. Its approvedSources array remains empty. It is owned
+by the coordinator/independent review process, not by the production coder.
+Do not populate it with synthetic approvals or edit it merely to obtain green.
+
+An approvedSources entry has:
+  {provider:"shadcn"|"animate-ui",repository,commit,path,sourceSHA256,
+   license:{expression,path,gitBlob,snapshotPath,sha256,additionalTerms:[]},
+   approval:{status:"approved",authority:"coordinator"|"independent-reviewer",
+     foss:true,perFileLicenseReviewed:true,dependencyClosureReviewed:true,reviewRef}}
+
+Approval must bind the exact immutable commit, source path/hash, full applicable
+license text/hash and copied/registry dependency closure. Animate UI requires
+the exact candidate commit/license-blob pair plus separate per-file and dependency
+approval. A root license review cannot fill those approval fields automatically.
+The helper also rejects Commons Clause text even if a record calls it
+MIT and gives that text a matching hash. Source and license snapshots are read
+only after a matching independent approval exists. No source is fetched by tests.
+These checks enforce the recorded policy; they are not an automated legal audit.
+
+Only after approval may the coder adopt the corresponding reviewed source.
+Runtime dependencies, tokens, styles, notices and the compatible primitive
+choice belong to that implementation phase. The provenance gate expects:
+
+src/components/provenance.json:
+  {schemaVersion:1,primitiveFamily:"radix"|"base-ui",components:[
+    {id,provider:"shadcn"|"animate-ui",localPath,localSHA256,
+     upstream:{repository,commit,path,snapshotPath,sha256,license},
+     adaptation:"verbatim"|"reviewed-patch",patchRef?,reviewRef}
+  ]}
+
+Repository IDs are shadcn-ui/ui and imskyleen/animate-ui. Commits are full
+40-character hashes, not mutable branch labels. The claimed license must match
+the independent approval, not a blanket assumption about today's upstream.
+Snapshots, reviews and optional
+patches are nonempty web-relative files; upstream snapshots can be .txt files
+under tests/upstream to avoid compiling duplicate raw component sources.
+localPath is under src/components. SHA-256 values describe UTF-8 content with
+CRLF normalized to LF. License Git blob IDs additionally bind the EXACT raw bytes
+using Git's blob header and byte length. Semantic whitespace comparison is not
+substituted for byte identity. tests/upstream snapshots are marked -text in the
+web .gitattributes so Git does not rewrite their line endings. Verbatim copies
+must match; adaptations require a reviewable patch and review evidence. Retain
+all required upstream notices.
+
+The final foundation gate still requires approved source from both providers
+and the shared Motion runtime; it cannot pass while source approval is blocked.
+This is NOT a requirement to obtain the restricted current revision. If the
+candidate's component/dependency review fails, the coordinator must resolve scope
+rather than silently dropping the requirement or substituting restricted code.
+Parking copied files unused beside handwritten substitutes does not pass.
+The same in-memory build rejects imports from tests and checks harmless synthetic
+credential canaries are absent from output, including accidental public VITE_ key
+exposure. No real credential is created, fetched, stored or embedded by the tests.
+
+The independent reviewer must verify upstream snapshots against pinned commits,
+inspect adaptations and confirm controls are actually reviewed source. Hashes
+and self-authored review references alone cannot authenticate upstream origin or
+human review. Checking only an old root license is insufficient if component
+dependencies are then fetched from an unapproved current registry. Do not mark
+this manual gate complete merely because tests pass.
+
+Requirement-to-test/review map
+-----------------------------
+M01-BUILD: the browser/static-build harness tests; production source/build gate.
+M01-NAV / Plan 4: five-destination navigation test.
+M01-THEME / UX-10: OS/explicit light-dark behavior test.
+M01-CONTEXT / UX-03 / UX-07: both keyboard finding-detail variants.
+M01-STATES / UX-09: loading, failure, retry, empty, permission test.
+M01-CATALOG / UX-05 / UX-06: exact eight families with honest unverified status.
+M01-GALLERY / UX-09 / UX-10: labeled synthetic component/state gallery test.
+M01-SOURCE: independent immutable-source/full-license approval, the rejection
+predicate harness test, pinned hashes, reviewed adaptations and actual build
+usage gate. The historical root-license candidate is recorded; per-file adoption,
+upstream authenticity and dependency-closure review remain blocking prerequisites.
+M01-NO-CREDENTIALS: HTTP allowlist/browser-storage checks and build canaries.
+
+Still manual and blocking for completion: approve rendered light/dark references,
+small-screen/zoom/keyboard/focus states, coherent tokens, copied-source/licensing
+review, full dependency/SBOM and release-signing review, and final independent
+review on the exact passing revision. Non-web infrastructure/repository/CI work
+from M01 is outside this test-author scope. Nothing here closes M00 or M01.

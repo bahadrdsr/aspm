@@ -1,0 +1,23 @@
+FULL COMPILATION PACKET A2 - CURRENT RUN
+=======================================
+September 15, 2026. Actual Helm v4.3.0, actual shipped chart/unit inputs.
+All four tests were run in the same Go package; no Helm-only file exclusion.
+All three same-package Go sources and both module files were hashed before
+and after execution. The complete Go source set and every hash were unchanged.
+
+PASS TestDeploymentHelmDistinctRuntimeSecretsAndScopes
+PASS TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv
+PASS TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback
+RED  TestDeploymentQuadletRoleFilesAndNarrowScopes
+
+Quadlet RED comprises three shared runtime.env source violations and two
+explicit missing-production-renderer groups. The parameterized renderer remains
+unimplemented/unbound; selected-scope output behavior is not claimed passing.
+The A1 tests continue to accept explicit evidence/ and a custom selected prefix,
+not require fixture tenant strings in shipping units.
+
+Exit 1; zero skips; Go package time 4.063 seconds.
+Evidence: .run/a2-red.jsonl and .run/a2-renders/.
+The earlier A0/A1 RED captures remain historical; this is the current full run.
+Rendering/reference evidence is not runtime, network or credential-isolation
+proof. No production implementation or older-oracle changes were made here.

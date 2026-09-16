@@ -1,0 +1,9 @@
+# Independent real-main-role RED baseline: 2026-09-15.
+# Exact bytes; paths relative to this directory; manifest excludes itself.
+# Binding changes must remain forwarding-only and receive independent review.
+faff945703aa92ef74c7f4aadb595887347dc3e8a6594c614261a35699861a96  bindings_test.go
+8255591dca603b9a1da9eabd2ce76c8aeaf200d2bda39d828cfe3dc3e8a610cf  fixtures_test.go
+ad7a1972c99d74fb91a8c5efbf796bece828d5842f2d529386213c87f9052bf1  roles_test.go
+69cb370026c78b22262e278311914560e70426993a0429ed891f89d49efdcf54  Test-RuntimeRoles.ps1
+76d190e54ca3cdc66b9376fed14b27318fb219402d2164dd442f7b32039032ee  CONTRACT.txt
+ab450b85f88eb224622f1083435d389d299c9c27a356f4bde1ec2f4656d2e507  .run\frozen-red.jsonl

@@ -1,0 +1,435 @@
+TAP version 13
+# Subtest: native Git LF/CRLF calibration and frozen input controls
+ok 1 - native Git LF/CRLF calibration and frozen input controls
+  ---
+  duration_ms: 1955.3729
+  type: 'test'
+  ...
+# {"kind":"policy-before-run","files":[{"path":".gitattributes","bytes":296,"sha256":"972f8aac74c0dc9d2d071150de2e95b58f6b55cbd19e79f92245be89321819bd"},{"path":".gitignore","bytes":342,"sha256":"265cafb3158afc14dc7a5c64014f951a147326e5d4c29aab4ddda7d8a6e93fcb"},{"path":"tests/publication/.gitattributes","bytes":9,"sha256":"8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"},{"path":"web/.gitattributes","bytes":25,"sha256":"90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893"}]}
+# {"kind":"control-before-run","files":[{"path":".gitattributes","bytes":9,"sha256":"8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"},{"path":"CONTRACT.txt","bytes":5996,"sha256":"77058629758573dcbeb5f3b5deeb5d616935222f2c8a21dd2dc1e2ac28f185e4"},{"path":"inputs.before.json","bytes":2749,"sha256":"b7ebb5d555758af25e1bae9dd20a7a61e95ab4cdbbcd81776a98c83ec5ab0fc3"},{"path":"publication.test.mjs","bytes":17032,"sha256":"607bef7ca070fb0dfbe091ff76323e881d49df7d0240b9413663f94ed14ddd8d"},{"path":"run.mjs","bytes":907,"sha256":"029d4e95ec9662219b88d6e09b5856efae0b9a65fdeea0cb27c7fbb1618f7c04"},{"path":"controls.before.sha256","bytes":411,"sha256":"2279fdac8f6ff54d44d54d9dffdbb8de84f61b8ff0030e9ad378fc4ae56d790b"}]}
+# {"kind":"git-version","autocrlf":false,"version":"git version 2.55.0.windows.3"}
+# {"kind":"calibration","autocrlf":false,"path":"forced-lf.txt","sourceSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":false,"path":"forced-crlf.txt","sourceSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":false,"path":"raw-lf.txt","sourceSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":false,"path":"raw-crlf.txt","sourceSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","blobSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","checkoutSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","passed":true}
+# {"kind":"calibration","autocrlf":false,"path":"automatic-lf.txt","sourceSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":false,"path":"automatic-crlf.txt","sourceSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","blobSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","checkoutSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","passed":true}
+# {"kind":"git-version","autocrlf":true,"version":"git version 2.55.0.windows.3"}
+# {"kind":"calibration","autocrlf":true,"path":"forced-lf.txt","sourceSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":true,"path":"forced-crlf.txt","sourceSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":true,"path":"raw-lf.txt","sourceSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","passed":true}
+# {"kind":"calibration","autocrlf":true,"path":"raw-crlf.txt","sourceSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","blobSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","checkoutSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","passed":true}
+# {"kind":"calibration","autocrlf":true,"path":"automatic-lf.txt","sourceSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","passed":true}
+# {"kind":"calibration","autocrlf":true,"path":"automatic-crlf.txt","sourceSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","blobSha256":"c4905832e96794db70ecc2b4eda49ec718d7682e51b741208645c93ed74f6d51","checkoutSha256":"f81f68287a1663ab2d0b4f30352f7bcf0e326ca78b5c959fd85f1de06d9e1728","passed":true}
+# Subtest: selected protected inputs retain exact blob and clean checkout bytes
+not ok 2 - selected protected inputs retain exact blob and clean checkout bytes
+  ---
+  duration_ms: 2606.7041
+  type: 'test'
+  location: 'C:\\bahadr\\serious\\aspm\\tests\\publication\\publication.test.mjs:280:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Exact-byte publication mismatch:
+    [
+      {
+        "path": ".oracles/ui-workflow-review-v2.json.sig",
+        "autocrlf": false,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.mod",
+        "autocrlf": false,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.sum",
+        "autocrlf": false,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "scripts/process.mjs",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "web/tests/application-fixture.ts",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/acceptance/Test-Acceptance.ps1",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/installer/CONTRACT.txt",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": true
+      },
+      {
+        "path": ".oracles/ui-workflow-review-v2.json.sig",
+        "autocrlf": true,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.mod",
+        "autocrlf": true,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.sum",
+        "autocrlf": true,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "scripts/process.mjs",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "web/tests/application-fixture.ts",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/acceptance/Test-Acceptance.ps1",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/installer/CONTRACT.txt",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": true
+      }
+    ]
+    + actual - expected
+    
+    + [
+    +   {
+    +     autocrlf: false,
+    +     blobExact: true,
+    +     checkoutExact: false,
+    +     path: '.oracles/ui-workflow-review-v2.json.sig'
+    +   },
+    +   {
+    +     autocrlf: false,
+    +     blobExact: true,
+    +     checkoutExact: false,
+    +     path: 'go.mod'
+    +   },
+    +   {
+    +     autocrlf: false,
+    +     blobExact: true,
+    +     checkoutExact: false,
+    +     path: 'go.sum'
+    +   },
+    +   {
+    +     autocrlf: false,
+    +     blobExact: false,
+    +     checkoutExact: false,
+    +     path: 'scripts/process.mjs'
+    +   },
+    +   {
+    +     autocrlf: false,
+    +     blobExact: false,
+    +     checkoutExact: false,
+    +     path: 'web/tests/application-fixture.ts'
+    +   },
+    +   {
+    +     autocrlf: false,
+    +     blobExact: false,
+    +     checkoutExact: false,
+    +     path: 'tests/acceptance/Test-Acceptance.ps1'
+    +   },
+    +   {
+    +     autocrlf: false,
+    +     blobExact: false,
+    +     checkoutExact: true,
+    +     path: 'tests/installer/CONTRACT.txt'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: true,
+    +     checkoutExact: false,
+    +     path: '.oracles/ui-workflow-review-v2.json.sig'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: true,
+    +     checkoutExact: false,
+    +     path: 'go.mod'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: true,
+    +     checkoutExact: false,
+    +     path: 'go.sum'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: false,
+    +     checkoutExact: false,
+    +     path: 'scripts/process.mjs'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: false,
+    +     checkoutExact: false,
+    +     path: 'web/tests/application-fixture.ts'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: false,
+    +     checkoutExact: false,
+    +     path: 'tests/acceptance/Test-Acceptance.ps1'
+    +   },
+    +   {
+    +     autocrlf: true,
+    +     blobExact: false,
+    +     checkoutExact: true,
+    +     path: 'tests/installer/CONTRACT.txt'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      path: '.oracles/ui-workflow-review-v2.json.sig'
+      autocrlf: false
+      blobExact: true
+      checkoutExact: false
+    1:
+      path: 'go.mod'
+      autocrlf: false
+      blobExact: true
+      checkoutExact: false
+    2:
+      path: 'go.sum'
+      autocrlf: false
+      blobExact: true
+      checkoutExact: false
+    3:
+      path: 'scripts/process.mjs'
+      autocrlf: false
+      blobExact: false
+      checkoutExact: false
+    4:
+      path: 'web/tests/application-fixture.ts'
+      autocrlf: false
+      blobExact: false
+      checkoutExact: false
+    5:
+      path: 'tests/acceptance/Test-Acceptance.ps1'
+      autocrlf: false
+      blobExact: false
+      checkoutExact: false
+    6:
+      path: 'tests/installer/CONTRACT.txt'
+      autocrlf: false
+      blobExact: false
+      checkoutExact: true
+    7:
+      path: '.oracles/ui-workflow-review-v2.json.sig'
+      autocrlf: true
+      blobExact: true
+      checkoutExact: false
+    8:
+      path: 'go.mod'
+      autocrlf: true
+      blobExact: true
+      checkoutExact: false
+    9:
+      path: 'go.sum'
+      autocrlf: true
+      blobExact: true
+      checkoutExact: false
+    10:
+      path: 'scripts/process.mjs'
+      autocrlf: true
+      blobExact: false
+      checkoutExact: false
+    11:
+      path: 'web/tests/application-fixture.ts'
+      autocrlf: true
+      blobExact: false
+      checkoutExact: false
+    12:
+      path: 'tests/acceptance/Test-Acceptance.ps1'
+      autocrlf: true
+      blobExact: false
+      checkoutExact: false
+    13:
+      path: 'tests/installer/CONTRACT.txt'
+      autocrlf: true
+      blobExact: false
+      checkoutExact: true
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/bahadr/serious/aspm/tests/publication/publication.test.mjs:298:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":".oracles/ui-workflow-review-v2.json","sourceSha256":"105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615","blobSha256":"105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615","checkoutSha256":"105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615","blobExact":true,"checkoutExact":true}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":".oracles/ui-workflow-review-v2.json.sig","sourceSha256":"96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a","blobSha256":"96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a","checkoutSha256":"43518ba4b288a92afd1f4c4b2ef4d535abe0dfdbed217861a1f55ed63f6de39f","blobExact":true,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"go.mod","sourceSha256":"8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038","blobSha256":"8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038","checkoutSha256":"f1ea7355f4a2ef0913506c30088a7ccbeefc329300b552fc545facb28153bee7","blobExact":true,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"go.sum","sourceSha256":"3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6","blobSha256":"3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6","checkoutSha256":"5a3e5a6d9bc6a9d9e47fca78e9ae03ea8c353471b9a872a6f8465e68f4a4a259","blobExact":true,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"scripts/process.mjs","sourceSha256":"b1aa330a639acdc943184581fb2b0ca49c810aba5d519db2872d24bf4085242f","blobSha256":"37a522a49e19e2f25abb951f90bc388cad94741e8ed5f850ec06000b7bde0cae","checkoutSha256":"37a522a49e19e2f25abb951f90bc388cad94741e8ed5f850ec06000b7bde0cae","blobExact":false,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"web/tests/application-fixture.ts","sourceSha256":"bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091","blobSha256":"baf513a8dce2e52779d60e9ef32b9f752a65d3664cf3c69d496ef0d252c1fd6f","checkoutSha256":"baf513a8dce2e52779d60e9ef32b9f752a65d3664cf3c69d496ef0d252c1fd6f","blobExact":false,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"tests/acceptance/Test-Acceptance.ps1","sourceSha256":"2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6","blobSha256":"239a75ec0fc296b69dab4a85791447bbc23accbbe0aa9e1e72f9661c84f7da18","checkoutSha256":"239a75ec0fc296b69dab4a85791447bbc23accbbe0aa9e1e72f9661c84f7da18","blobExact":false,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"tests/installer/CONTRACT.txt","sourceSha256":"2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15","blobSha256":"2b2630290c79862d080e00c28cad337d02c1ad3580723a52020be5c8db145914","checkoutSha256":"2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15","blobExact":false,"checkoutExact":true}
+# {"kind":"exact-byte-roundtrip","autocrlf":false,"path":"tests/installer/contract_test.go","sourceSha256":"77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f","blobSha256":"77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f","checkoutSha256":"77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f","blobExact":true,"checkoutExact":true}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":".oracles/ui-workflow-review-v2.json","sourceSha256":"105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615","blobSha256":"105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615","checkoutSha256":"105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615","blobExact":true,"checkoutExact":true}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":".oracles/ui-workflow-review-v2.json.sig","sourceSha256":"96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a","blobSha256":"96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a","checkoutSha256":"43518ba4b288a92afd1f4c4b2ef4d535abe0dfdbed217861a1f55ed63f6de39f","blobExact":true,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"go.mod","sourceSha256":"8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038","blobSha256":"8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038","checkoutSha256":"f1ea7355f4a2ef0913506c30088a7ccbeefc329300b552fc545facb28153bee7","blobExact":true,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"go.sum","sourceSha256":"3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6","blobSha256":"3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6","checkoutSha256":"5a3e5a6d9bc6a9d9e47fca78e9ae03ea8c353471b9a872a6f8465e68f4a4a259","blobExact":true,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"scripts/process.mjs","sourceSha256":"b1aa330a639acdc943184581fb2b0ca49c810aba5d519db2872d24bf4085242f","blobSha256":"37a522a49e19e2f25abb951f90bc388cad94741e8ed5f850ec06000b7bde0cae","checkoutSha256":"37a522a49e19e2f25abb951f90bc388cad94741e8ed5f850ec06000b7bde0cae","blobExact":false,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"web/tests/application-fixture.ts","sourceSha256":"bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091","blobSha256":"baf513a8dce2e52779d60e9ef32b9f752a65d3664cf3c69d496ef0d252c1fd6f","checkoutSha256":"baf513a8dce2e52779d60e9ef32b9f752a65d3664cf3c69d496ef0d252c1fd6f","blobExact":false,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"tests/acceptance/Test-Acceptance.ps1","sourceSha256":"2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6","blobSha256":"239a75ec0fc296b69dab4a85791447bbc23accbbe0aa9e1e72f9661c84f7da18","checkoutSha256":"239a75ec0fc296b69dab4a85791447bbc23accbbe0aa9e1e72f9661c84f7da18","blobExact":false,"checkoutExact":false}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"tests/installer/CONTRACT.txt","sourceSha256":"2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15","blobSha256":"2b2630290c79862d080e00c28cad337d02c1ad3580723a52020be5c8db145914","checkoutSha256":"2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15","blobExact":false,"checkoutExact":true}
+# {"kind":"exact-byte-roundtrip","autocrlf":true,"path":"tests/installer/contract_test.go","sourceSha256":"77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f","blobSha256":"77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f","checkoutSha256":"77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f","blobExact":true,"checkoutExact":true}
+# Subtest: mutable generated paths are ignored by copied repository policy
+not ok 3 - mutable generated paths are ignored by copied repository policy
+  ---
+  duration_ms: 307.0222
+  type: 'test'
+  location: 'C:\\bahadr\\serious\\aspm\\tests\\publication\\publication.test.mjs:301:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Mutable publication paths remain eligible for accidental staging.
+    + actual - expected
+    
+    + [
+    +   'tests/acceptance/.run/build/synthetic-cache.a',
+    +   'tests/acceptance/.run/work/synthetic-work.go',
+    +   'tests/acceptance/.run/modules/example.invalid/synthetic@v0.0.0/go.mod',
+    +   'tests/acceptance/.run/gopath/pkg/synthetic-cache.a',
+    +   'tests/acceptance/.run/current.jsonl',
+    +   'tests/acceptance/.run/private.env',
+    +   'tests/readiness_bootstrap/.run/build/synthetic-cache.a',
+    +   'tests/publication-fixture/deep/.run/work/generated.txt',
+    +   'tests/acceptance/.security-run/build/synthetic-cache.a',
+    +   'tests/acceptance/.security-run/work/synthetic-work.go',
+    +   'tests/acceptance/.security-run/modules/example.invalid/synthetic@v0.0.0/go.mod',
+    +   'tests/acceptance/.security-run/gopath/pkg/synthetic-cache.a',
+    +   'tests/acceptance/.security-run/current.jsonl',
+    +   'tests/analysis/deep/.security-run/current.jsonl',
+    +   'private.env'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tests/acceptance/.run/build/synthetic-cache.a'
+    1: 'tests/acceptance/.run/work/synthetic-work.go'
+    2: 'tests/acceptance/.run/modules/example.invalid/synthetic@v0.0.0/go.mod'
+    3: 'tests/acceptance/.run/gopath/pkg/synthetic-cache.a'
+    4: 'tests/acceptance/.run/current.jsonl'
+    5: 'tests/acceptance/.run/private.env'
+    6: 'tests/readiness_bootstrap/.run/build/synthetic-cache.a'
+    7: 'tests/publication-fixture/deep/.run/work/generated.txt'
+    8: 'tests/acceptance/.security-run/build/synthetic-cache.a'
+    9: 'tests/acceptance/.security-run/work/synthetic-work.go'
+    10: 'tests/acceptance/.security-run/modules/example.invalid/synthetic@v0.0.0/go.mod'
+    11: 'tests/acceptance/.security-run/gopath/pkg/synthetic-cache.a'
+    12: 'tests/acceptance/.security-run/current.jsonl'
+    13: 'tests/analysis/deep/.security-run/current.jsonl'
+    14: 'private.env'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/bahadr/serious/aspm/tests/publication/publication.test.mjs:307:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"kind":"generated-ignore","path":"tests/acceptance/.run/build/synthetic-cache.a","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.run/work/synthetic-work.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.run/modules/example.invalid/synthetic@v0.0.0/go.mod","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.run/gopath/pkg/synthetic-cache.a","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.run/current.jsonl","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.run/private.env","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/readiness_bootstrap/.run/build/synthetic-cache.a","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/publication-fixture/deep/.run/work/generated.txt","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.security-run/build/synthetic-cache.a","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.security-run/work/synthetic-work.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.security-run/modules/example.invalid/synthetic@v0.0.0/go.mod","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.security-run/gopath/pkg/synthetic-cache.a","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/acceptance/.security-run/current.jsonl","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":"tests/analysis/deep/.security-run/current.jsonl","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"generated-ignore","path":".cache/publication-tests/synthetic/current.jsonl","ignored":true,"source":".gitignore","line":"1","pattern":".cache"}
+# {"kind":"generated-ignore","path":".cache/node_modules/synthetic/index.js","ignored":true,"source":".gitignore","line":"1","pattern":".cache"}
+# {"kind":"generated-ignore","path":"node_modules/synthetic/index.js","ignored":true,"source":".gitignore","line":"3","pattern":"node_modules"}
+# {"kind":"generated-ignore","path":"web/node_modules/synthetic/index.js","ignored":true,"source":".gitignore","line":"3","pattern":"node_modules"}
+# {"kind":"generated-ignore","path":".artifacts/publication-preview.zip","ignored":true,"source":".gitignore","line":"2","pattern":".artifacts"}
+# {"kind":"generated-ignore","path":"web/.artifacts/publication-preview.zip","ignored":true,"source":".gitignore","line":"5","pattern":"web/.artifacts"}
+# {"kind":"generated-ignore","path":"private.env","ignored":false,"source":"","line":"","pattern":""}
+# Subtest: sources, licenses, evidence and explicitly tracked historical RED remain versionable
+ok 4 - sources, licenses, evidence and explicitly tracked historical RED remain versionable
+  ---
+  duration_ms: 1020.2108
+  type: 'test'
+  ...
+# {"kind":"source-visible","path":".oracles/ui-workflow-review-v2.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":".oracles/ui-workflow-review-v2.json.sig","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"go.mod","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"go.sum","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"scripts/process.mjs","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/tests/application-fixture.ts","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/acceptance/Test-Acceptance.ps1","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/installer/CONTRACT.txt","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/installer/contract_test.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"cmd/aspmctl/publication_fixture.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"internal/publication-fixture/policy.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"internal/publication-fixture/policy_test.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/acceptance/publication_fixture_test.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/src/publication-fixture.ts","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/tests/publication-fixture.spec.ts","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/acceptance/testdata/publication-source.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/tests/fixtures.ts","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"LICENSE","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"NOTICE","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/public/notices/radix-MIT.txt","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/tests/upstream/animate-LICENSE.txt","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"web/tests/upstream/shadcn-LICENSE.txt","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"evidence/publication-finding.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"findings/publication-review.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"vulnerability-findings/publication-review.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"docs/evidence/publication-review.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/acceptance/evidence/publication-review.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/acceptance/vulnerability-findings/publication-review.json","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"internal/evidence/publication_fixture.go","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/publication/.gitattributes","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/publication/publication.test.mjs","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/publication/CONTRACT.txt","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/publication/RED.tap","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"source-visible","path":"tests/publication/PACKET.sha256","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"historical-default-ignore-informational","path":"tests/readiness_bootstrap/.run/red.jsonl","ignored":false,"source":"","line":"","pattern":""}
+# {"kind":"historical-default-ignore-informational","path":"tests/readiness_bootstrap/.run/red.log","ignored":false,"source":"","line":"","pattern":""}
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6196.1133

@@ -1,0 +1,6 @@
+{"ImportPath":"github.com/bahadrdsr/aspm/internal/install/quadlet","Action":"build-output","Output":"# github.com/bahadrdsr/aspm/tests/deployment_roles\n"}
+{"ImportPath":"github.com/bahadrdsr/aspm/internal/install/quadlet","Action":"build-output","Output":"production_bindings_test.go:6:2: cannot find module providing package github.com/bahadrdsr/aspm/internal/install/quadlet: import lookup disabled by -mod=readonly\n"}
+{"ImportPath":"github.com/bahadrdsr/aspm/internal/install/quadlet","Action":"build-fail"}
+{"Time":"2026-09-15T23:28:09.069092+02:00","Action":"start","Package":"github.com/bahadrdsr/aspm/tests/deployment_roles"}
+{"Time":"2026-09-15T23:28:09.069092+02:00","Action":"output","Package":"github.com/bahadrdsr/aspm/tests/deployment_roles","Output":"FAIL\tgithub.com/bahadrdsr/aspm/tests/deployment_roles [setup failed]\n","OutputType":"frame"}
+{"Time":"2026-09-15T23:28:09.069092+02:00","Action":"fail","Package":"github.com/bahadrdsr/aspm/tests/deployment_roles","Elapsed":0,"FailedBuild":"github.com/bahadrdsr/aspm/internal/install/quadlet"}

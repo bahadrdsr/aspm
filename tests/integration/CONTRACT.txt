@@ -1,0 +1,217 @@
+M02 DURABILITY / SHARED-EVIDENCE TEST-AUTHOR HANDOFF
+=================================================
+
+Scope and execution
+-------------------
+This is a Go integration conformance suite and fixture infrastructure, not a
+production implementation or completed M02. All Go files here use the
+"integration" build tag. Ordinary untagged Go unit/build work does not start
+these service-dependent tests.
+
+From the aspm repository root, with authorized process-local fixture variables:
+  go test -tags=integration -mod=readonly -count=1 -timeout=120s .\tests\integration
+
+Windows runner, using a protected runtime metadata file without exposing values:
+  .\tests\integration\Test-M02.ps1 -RuntimeConfig '<authorized-runtime-json-path>'
+Reachability-only check:
+  .\tests\integration\Test-M02.ps1 -RuntimeConfig '<authorized-runtime-json-path>' -Run '^TestM02LiveFixtureRoundTrips$'
+
+The gate MUST run the integration tag. Missing configuration, unavailable
+PostgreSQL/S3, authentication errors and cleanup failures fail; they never skip
+or produce a passing gate. The runner captures and redacts output before writing
+.cache\m02\last-run.jsonl / last-run.log and restores its process environment.
+It never copies credentials into source, arguments, a committed file or logs.
+Credentials are consumed only through:
+  ASPM_TEST_DATABASE_URL
+  ASPM_TEST_S3_ENDPOINT
+  ASPM_TEST_S3_ACCESS_KEY
+  ASPM_TEST_S3_SECRET_KEY
+  ASPM_TEST_S3_BUCKET
+
+Runtime-file field names are databaseUrl, s3Endpoint, s3AccessKey, s3SecretKey,
+s3Bucket, with postgresPassword additionally used for log redaction. No personal
+runtime path or credential value is embedded in this repository. The database
+URL must explicitly carry its fixture username/password, not use ambient pgpass
+or service-profile credentials. S3 uses the supplied endpoint/static credentials,
+path-style addressing and an explicit signing region; no AWS default credential
+chain, IMDS discovery, arbitrary endpoint probing or hosted AWS account is used.
+The runner also disables EC2 metadata discovery within its own process.
+
+Dependencies
+------------
+Standard testing/context/crypto/io packages drive the assertions. Real protocol
+clients are necessary rather than mocks or hand-written PG/SigV4 implementations:
+  github.com/jackc/pgx/v5 v5.11.0: MIT, full downloaded license inspected.
+  github.com/aws/aws-sdk-go-v2 v1.47.0: Apache-2.0.
+  github.com/aws/aws-sdk-go-v2/credentials v1.20.5: Apache-2.0.
+  github.com/aws/aws-sdk-go-v2/service/s3 v1.113.1: Apache-2.0.
+The three downloaded AWS module license texts are identical to one another;
+the full upstream Apache license was inspected. Module metadata was checked
+before adding manifests. Go 1.27.1 satisfies their Go 1.24/1.25 minima.
+go.mod/go.sum lock the graph. pgx requires the coupled x/text upgrade to v0.29.0.
+No proprietary CI, Docker daemon or Kubernetes context is a test dependency.
+The supplied services may run in the coordinator's local container lab.
+
+Small test-side adapter, not a second implementation
+--------------------------------------------------
+contract_test.go declares the exact Go types and interfaces. Production code
+must not import this test package. The coder adds one tagged
+production_bindings_test.go in package integration and fills:
+
+  Production.OpenJobs(ctx, JobConfig) (Jobs, error)
+  Production.OpenEvidence(ctx, EvidenceConfig) (Evidence, error)
+  Production.RunIntegrityOnce(ctx, WorkerConfig) (WorkReport, error)
+
+The binding only constructs real production components, converts public types,
+and translates errors (including streaming reader errors) to the contract
+sentinels with errors.Is support. It must NOT implement SQL, job transitions,
+hash verification, storage, retries, timers or fake results itself. Do not
+replace PostgreSQL/S3 with maps, local files or test doubles. Missing bindings
+produce explicit "M02 production binding missing" failures, not import/compiler
+failures. Separate factories preserve separate job, evidence and worker ownership;
+this facade does not prescribe a monolithic application process.
+
+JobConfig names the existing database URL, the test-owned pre-created Schema,
+ApplicationName, MaxConnections, MaxLease, MaxAttempts, RetryDelay and
+MaxRetryDelay. OpenJobs applies idempotent production migrations ONLY within
+that schema, honors its bounded connection pool/application label and preserves
+existing jobs on reopen. Do not create/drop a database, change shared schemas,
+change roles or mutate unrelated resources. Close releases client resources,
+is safe to repeat and does not complete/delete/requeue leased work implicitly.
+
+Jobs:
+  Enqueue(ctx, Envelope) (Enqueued, error)
+  Claim(ctx, Claim) (Lease, error)
+  Heartbeat(ctx, Lease, extension) (Lease, error)
+  Complete(ctx, Lease, Result) (Receipt, error)
+  Fail(ctx, Lease, Failure) error
+  Get(ctx, workspaceID, jobID) (Job, error)
+  Close() error
+
+Envelope contains Version="aspm/v1alpha1", Kind="evidence-integrity-check",
+WorkspaceID, SourceID, RunID, BatchID, ParserRevision, TraceID, IdempotencyKey,
+MaxAttempts, and an EvidenceRef. No whole report, command, executable, target URL
+or model tool call is a job payload. M02's parser revision label explicitly means
+an internal integrity operation, not a claim that M05 parsers exist.
+
+Idempotency is scoped by (workspace, source, run, kind, idempotency key).
+Concurrent identical enqueue returns one JobID and exactly one Created=true.
+Reusing that intent with different immutable evidence/envelope semantics returns
+ErrConflict, never overwrites the original. Different workspaces/sources/runs
+remain distinct. Required missing identities, unsupported versions/kinds and
+invalid attempt limits return ErrInvalid. A foreign workspace Get is ErrNotFound.
+Envelope identity/provenance is preserved through lease, heartbeat, reopen and
+reclaim. Collection/import activity is not a new source scan.
+
+Claim takes WorkspaceID, WorkerID and LeaseFor. It atomically leases at most one
+eligible job, or returns ErrNoJob. Zero/negative/over-policy durations are invalid.
+Use the PostgreSQL clock for eligibility/expiry, not a client-controlled clock.
+Leases carry the immutable envelope, job/worker IDs, monotonic positive Fence,
+Attempt and ExpiresAt. Each new claim/reclaim consumes one bounded attempt.
+Heartbeat preserves identity/fence and sets a bounded expiry relative to now;
+it cannot accumulate an unlimited future lease or resurrect an expired lease.
+
+Claim also reclaims expired leases with a strictly newer fence. Expiry itself
+invalidates completion/heartbeat, even before another worker reclaims. All old,
+expired or wrong-owner mutations return ErrLeaseLost and preserve current state.
+Complete atomically records the terminal job and processing receipt. Repeating
+the SAME winning completion returns the SAME receipt ID; an older losing fence
+does not become valid merely because another worker has already succeeded.
+
+Job diagnostics expose State, Attempts, AvailableAt, Lease, LastFailure and
+Receipt. States: queued, leased, retry-wait, succeeded, failed. Retryable failure
+records its cause and a future eligibility time within RetryDelay/MaxRetryDelay.
+Attempts never exceed the lesser per-job/configured maximum. Exhaustion is a
+visible failed state, not silent dropping or success. Claim encountering a final
+expired attempt marks it failed with code "lease-expired" rather than renewing it
+forever. An unrelated workspace still makes progress during another's backoff.
+
+Shared evidence / deterministic worker
+-------------------------------------
+EvidenceConfig supplies endpoint, static credentials, existing bucket, region,
+owned Prefix and IO timeout. No local data directory is supplied or required.
+The caller supplies a workspace and object ID; returned keys stay under
+Prefix + workspaceID + "/" (further layout is implementation-owned).
+
+Evidence:
+  Put(ctx, workspaceID, objectID, io.Reader, size) (EvidenceRef, error)
+  Open(ctx, workspaceID, EvidenceRef) (io.ReadCloser, error)
+  Close() error
+
+EvidenceRef contains WorkspaceID, Bucket, Key, SHA256="sha256:<lowercase hex>",
+and SizeBytes. Preserve exact bytes, including CRLF, NUL and non-UTF8 bytes.
+Do not treat an S3 ETag as the content SHA-256. Failed input/publication must not
+return a usable success-shaped reference. Put must not acknowledge an available
+reference before the object is actually available in shared storage.
+
+Open verifies expected length and digest. Integrity failure may surface on Open,
+Read-to-EOF or Close; it must remain errors.Is(ErrIntegrity). Missing objects
+are ErrNotFound, not cached success. Foreign workspace/out-of-prefix reads are
+ErrScope. The tests independently read production-written bytes with the AWS
+SDK and seed objects directly through that SDK before a fresh production client
+reads them. Reopening the client and a second OS process must retrieve identical
+remote bytes without a writer-local cache. Tests deliberately corrupt/delete
+only their own keys; they never change a shared bucket's policy or lifecycle.
+
+RunIntegrityOnce claims one eligible internal integrity job and uses real shared
+evidence plus the real durable store. Success records exact digest/byte count in
+one receipt. Corruption is a visible failed job with FailureCode/LastFailure.Code
+"evidence-integrity" and no success receipt. WorkReport explicitly distinguishes
+Processed=false (empty queue) from processed success/failure. Expected domain
+failure is not hidden as success. This is byte-integrity verification only:
+no finding reproduction, false-positive classification or scan/run closure.
+No M04 user auth, M05 parsing or arbitrary command execution is required.
+
+Isolation, process faults and coverage
+-------------------------------------
+Each fixture creates a random m02_it_<24 hex> PostgreSQL schema and matching
+m02-it/<same nonce>/ S3 prefix, with synthetic workspace/run/object IDs.
+Only those owned schemas/objects are cleaned. The shared database/bucket and
+cluster resources are never deleted. Connections/objects have bounded cleanup.
+Factory implementation must respect the supplied schema/prefix; the forwarding
+adapter is not allowed to silently use public/default namespaces.
+
+The ONLY subprocess is the already compiled Go test executable. It accepts two
+fixed, bounded test modes: hold an actual committed lease, or reopen/read known
+shared evidence. Credentials are inherited through process-local environment,
+not command arguments or control messages. The parent kills only its own worker
+process handle, observes the committed job from an independent client and reclaims
+it after database-clock expiry. No shell, external command or user job text runs.
+Child control messages are bounded; unrelated logs and sensitive errors are not
+echoed. No AI subagent is launched by this suite.
+
+Requirement-to-test map (8 substantive gates plus 1 fixture gate):
+  TestM02LiveFixtureRoundTrips:
+    authenticated real PG commit/reconnect and exact S3 byte/digest roundtrip.
+  TestM02EnqueueIsIdempotentAndScoped:
+    at-least-once intake receipts, concurrent replay, immutable workspace/source/
+    run identity and reopen durability (M02, Plan 5, duplicate-delivery).
+  TestM02ClaimsAreExclusiveAndBounded:
+    exclusive claims, valid version/kind/identity/attempt bounds, bounded leases
+    and the supplied pool budget (M02, Plan 5).
+  TestM02HeartbeatAndReclaimFenceStaleWorkers:
+    durable heartbeat, expiry, newer fences, stale mutation rejection and
+    idempotent winning receipts (M02, expired-lease).
+  TestM02KilledWorkerRecoveryPreservesAcknowledgedWork:
+    real child-process termination after committed claim, independent reconnect,
+    recovery and late-worker rejection (M02, worker-termination).
+  TestM02RetriesAndLeaseExhaustionAreBoundedAndVisible:
+    visible bounded backoff/attempt exhaustion and independent workspace progress
+    (M02, stalled-stage/failure principles).
+  TestM02EvidenceSurvivesIndependentClientsAndProcesses:
+    real S3 bytes, independent raw SDK confirmation and new-process retrieval.
+  TestM02EvidenceRejectsCorruptionMissingObjectsAndForeignScope:
+    no local-cache fallback, ownership boundaries, corruption and failed publish.
+  TestM02IntegrityJobConnectsDurableQueueAndSharedEvidence:
+    deterministic end-to-end internal work plus visible terminal corruption.
+
+Still outside this narrow increment
+-----------------------------------
+This suite does NOT certify a live core/ingestion application deployment, actual
+cross-node Kubernetes scheduling, Quadlet/Helm release parity, measured API
+latency, one-versus-two-worker throughput, HA, or network isolation. Those are
+remaining M02 deployment/performance gates, not waived requirements. Separate
+core/ingestion ownership and resource manifests must be demonstrated by the coder.
+The existing two-node Kind cluster is not changed or recreated, and its default
+CNI is not evidence of NetworkPolicy enforcement. No global kubeconfig is read
+or modified. M00/M01 expectations are not edited by this increment.

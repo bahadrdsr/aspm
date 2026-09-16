@@ -1,0 +1,94 @@
+MAIN-RUNTIME ROLE SECURITY GATES
+===============================
+Three focused integration gates. The factories in bindings_test.go delegate
+directly to the SAME production service.Run used by the core, ingestion and
+report-worker commands. No alternate application, fake queue, mock API result,
+SQL business implementation or auth-disable flag belongs in a binding.
+
+Run from aspm:
+  .\tests\runtime_roles\Test-RuntimeRoles.ps1 -RuntimeConfig '<private-PG-runtime-json>' -StorageConfig '<private-storage-isolation-json>'
+The first file supplies databaseUrl; the second supplies endpoint,region,bucket
+and roles.{admin,core,ingestion,ai}.{accessKey,secretKey}. Only the redacting runner
+reads private values. It restores process environment. No policy, shared schema,
+bucket, dependency or existing test is changed.
+
+Small caller-owned interfaces (bindings_test.go)
+----------------------------------------------
+Core(CoreConfig) -> CoreRole { Run(context.Context) error }
+Ingestion(IngestionConfig) -> IngestionRole { Run(context.Context) error }
+Reports(ReportConfig) -> ReportWorker { Run(context.Context) error }
+Factories only construct/delegate. Run owns startup, serving/processing and
+bounded context-driven shutdown; invalid required inputs must fail BEFORE I/O.
+DatabaseConfig: URL, Schema, ApplicationName, MaxConnections.
+ScopedStorage: Endpoint, Region, Bucket, Prefix, ReadinessKey, AccessKey, SecretKey.
+CoreConfig: Database, Raw, Listen, Assets, PublicOrigin, BootstrapToken.
+IngestionConfig: Database, Raw, NormalizedPrefix, Listen.
+ReportConfig: Database and health Listen only. No storage credentials/config,
+application handler, auth configuration or permission-disabling flag.
+
+ReadinessKey explicitly identifies the admin-preseeded, nonsecret object inside
+raw/team-a/<owned-suffix>/. No storage probe is mandatory. If a readiness read is
+needed, use that scoped object, never HeadBucket/list/whole-bucket authority.
+Legacy service.Config has no ReadinessKey/NormalizedPrefix fields. Small additive
+production configuration and forwarding may be needed; implementing probes or
+processing logic inside bindings is forbidden. All actual runtime callers must
+use these same role-specific paths, not a test-only constructor.
+
+Gate 1: real core -> real independent ingestion
+----------------------------------------------
+Use existing loopback PostgreSQL plus the security store at 127.0.0.1:18335,
+bucket aspm-isolation. Each case owns one random runtime_role_* schema and
+random suffixes inside raw/team-a/, normalized/team-a/ and the seeded denial
+target approved/team-a/grant-1/. Admin is used only for seed/verification/cleanup.
+Distinct core/ingestion credentials are supplied to actual service.Run.
+Small loopback forwarding taps preserve signed Host/path/body and pass responses
+unchanged from the real store. They compare actual signing identity to the
+caller-supplied role key without logging it. They do not fake authorization.
+The ingestion credential first reads its known raw readiness object and must
+receive native HTTP 403/AccessDenied for the existing approved-prefix object.
+Core must start without broad probes; HTTPS requests then exercise real
+bootstrap/login, asset creation and POST /api/v1/imports. The SARIF report's
+exact bytes, including CRLF, must reach raw storage under the core identity.
+The independent ingestion main role must claim that real queued import and
+read the same raw object with its own key, with no admin fallback. Its real
+reconciliation must become succeeded/one observation through the core API/PG.
+Any ingestion S3 writes must stay in the supplied normalized prefix. This first
+slice may keep normalized observations in PostgreSQL; it does not invent an
+extra normalized-object publication requirement.
+
+Gate 2: reporting without storage or an application/auth surface
+--------------------------------------------------------------
+service.Environment("reports") must accept DB-only configuration. Generic AWS/
+ASPM storage credential variables are cleared. The narrow report worker must
+start and expose no /api/v1/session handler (404, not a bypassed auth handler).
+After a real authenticated core enqueues a report snapshot, a separately started
+report main role must persist the actual snapshot from real PG data: one owned
+unscanned asset, zero findings. Core must leave reporting work queued until the
+worker runs. Report startup/processing must perform no storage/HTTP I/O; a
+zero-expected-I/O transport guard and the real storage taps observe this.
+No test-side snapshot generation or direct business-table insertion is used.
+
+Gate 3: required caller credentials before I/O
+---------------------------------------------
+For core and ingestion, independently omit access key and secret key while all
+other configuration is structurally valid. Actual service.Run must return an
+error before connecting to PostgreSQL or making storage requests. Owned TCP/
+HTTP tripwires detect attempted I/O; they never return simulated DB/API success.
+
+RED / limits
+------------
+Initial real run: all three gates RED, no missing fixture or binding fallback.
+Core: actual whole-bucket HEAD -> 403, despite valid scoped credentials.
+Reports: main environment rejects missing storage; actual report main exits
+before readiness with DB-only configuration.
+Credential preflight: all four core/ingestion omissions dial PostgreSQL once
+before validation. The independent ingestion allowed-read/403 denial control
+passed against real S3. Overall exit 1; package time 1.179 seconds.
+Later enqueue/worker/snapshot assertions are intentionally blocked by these
+startup failures and are NOT claimed as executed or passing.
+
+Source/fixture/runner hashes and redacted evidence are recorded separately.
+This is in-process real-main-entrypoint consumption on owned fixtures, not
+Kubernetes/Quadlet deployment certification, PG role isolation, complete AI job/
+API execution or proof that other main-runtime shared credentials are replaced.
+The successful storage and UI oracles remain unchanged.

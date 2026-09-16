@@ -1,0 +1,69 @@
+AUTHOR-APPROVED COMPILER WIRING EXCEPTION A3
+==========================================
+Parent authorization: September 15, 2026, 23:20:49 +02:00.
+This is a bounded exception to the A2 HOLD for structural Go wiring only.
+It changes NO assertion, test helper, selected configuration shape or policy.
+
+EXACT ALLOWED COMPILER CHANGES
+------------------------------
+1. Nested tests/deployment_roles/go.mod adds:
+     require github.com/bahadrdsr/aspm v0.0.0
+     replace github.com/bahadrdsr/aspm => ../..
+   The existing yaml.v3 pin and go.sum are unchanged. Parent go.mod/go.sum
+   are unchanged. No Node, production dependency or remote module substitute.
+2. Add production_bindings_test.go with ONLY init assignment, five-field
+   Config conversion and direct forwarding to:
+     github.com/bahadrdsr/aspm/internal/install/quadlet
+     type Config struct {
+       Role, EnvironmentFile, RawPrefix, ReadinessKey, NormalizedPrefix string
+     }
+     func RenderRole(context.Context, []byte, Config) ([]byte, error)
+   Source bytes, context, output and error pass through unchanged.
+   No validation/policy/rendering/defaults, assertions, mocking, I/O or fallback
+   is implemented in the binding. The exact binding is frozen by SHA-256.
+
+PRODUCTION BOUNDARY
+-------------------
+Parent will implement only the dependency-free stdlib Go leaf named above.
+It must implement the EXISTING A1 selected-scope contract. The test author
+does not implement the leaf or add a stub merely to obtain compilation.
+The operational executor belongs separately in internal/install/execution
+and reuses install.Resolve unchanged. No new M00 schema negotiation or
+authorization bypass is introduced. No secret material enters the renderer.
+Adding the production leaf outside this test package is expected implementation
+work, not permission to edit any frozen test input or the parent module graph.
+
+PRE-CODE STATE
+--------------
+The exact binding is compiled with the whole package, even for Helm-only -run.
+There is no build tag or file-set exclusion hiding it. Before the production
+leaf exists, compilation is explicitly BLOCKED by the unresolved local package.
+No A3 test execution, Helm rendering or renderer success is claimed.
+PRECODE-A3.txt and .run/a3-precode.jsonl record the actual compiler result.
+Do not run go mod tidy/get to replace or remove the missing local production
+import. Once the stdlib-only leaf exists, the same readonly module should
+compile without test-module or parent-module changes.
+
+FULL-PACKAGE PROTECTION / HOLD
+------------------------------
+Current authority: FROZEN.A3.sha256; FROZEN.sha256 is its exact-byte alias.
+COMPILATION.A3.json records all FOUR same-package Go/init sources, module
+selection and the closed non-.run file set. Verify-CompilationPacket.ps1 checks
+all files regardless of -run. New/modified bindings, helpers or assertions are
+not an open exception: only the exact authorized addition above is admitted.
+HOLD all A3 packet files unchanged pending review; no silent coder amendments.
+
+A2 HISTORY / CHANGED PATHS
+--------------------------
+FROZEN.A2.sha256 and its evidence remain unchanged historical records:
+722e78408c79fbc61737e76b0b5e40411d0caa0f051554d348be9a42d8cf6a0a
+Exact pre-wiring go.mod, CURRENT_PACKET.txt and verifier bytes are preserved
+under .run/a2-before-wiring/. The previous three assertion/helper Go files
+remain byte-identical to A2.
+Modified: go.mod; CURRENT_PACKET.txt; Verify-CompilationPacket.ps1 (version
+references/messages only, not verification rules); canonical FROZEN.sha256.
+Added: production_bindings_test.go; PACKET-A3.txt; PRECODE-A3.txt;
+COMPILATION.A3.json; ROOT-MODULES.A3.sha256; FROZEN.A3.sha256;
+.run/a3-precode.jsonl; .run/a2-before-wiring/.
+All changes are within tests/deployment_roles. No source implementation,
+older installer/UI/storage oracle, live policy, agent or commit is changed.

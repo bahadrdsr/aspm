@@ -1,0 +1,41 @@
+INDEPENDENT TEST-AUTHOR AMENDMENT A1 - SEPTEMBER 15, 2026
+======================================================
+Authorized by the parent's explicit scope clarification at 20:52:20 +02:00.
+This corrects a test-author design error, not a production-driven weakening.
+
+Superseded ONLY in the new Quadlet scope gate:
+The original gate required raw/team-a/, its readiness key and normalized/team-a/
+to appear literally in SHIPPING units. Those strings were synthetic fixture
+selections and must not become production defaults or migrate evidence/ data.
+
+Replacement:
+Keep the shipping role-env-file/no-common-fallback/no-inline-credential and
+DB-only-report requirements. Check exact selected scope only on output from a
+parameterized REAL production renderer. It receives shipped bytes plus explicit
+Role, EnvironmentFile, RawPrefix, ReadinessKey and NormalizedPrefix strings.
+Preserved evidence/ and a different selected prefix are independent valid inputs.
+Missing selections, shared runtime.env fallback, out-of-scope readiness,
+overlapping normalization and report storage inputs remain denied.
+The renderer must preserve unrelated unit directives and environment.
+
+No renderer is fabricated in tests. Missing production binding is RED until the
+parent supplies the minimal pure renderer and forwarding-only test binding.
+The original FROZEN.sha256, INPUTS.before.sha256, RED.txt and frozen render output
+remain HISTORICAL A0 evidence, not silently rewritten checksums.
+FROZEN.A1.sha256 will record this amended source/contract and fresh RED.
+
+Unchanged: render_test.go, helm_test.go, Helm value/credential expectations,
+test module manifests, tool runner, and all older installer/UI/storage oracles.
+This amendment does not authorize changes to tests/installer/CONTRACT.txt.
+Actual private role-env-file contents and runtime/network/storage behavior are
+separate evidence; this source/render gate does not claim to verify them.
+
+Fresh A1 RED (selected Quadlet test only)
+---------------------------------------
+Exit 1, five failing subcases, zero skips; package time 2.611 seconds.
+Three shipped role units still reference runtime.env. No shipping-prefix
+assertion failed or required raw/team-a/ to be written into those files.
+The two renderer groups fail explicitly because RenderQuadletRole is unbound.
+No rendered-fixture outcome is claimed until the real renderer is connected.
+Evidence: .run\quadlet-a1-red.jsonl.
+Helm was not rerun by this amendment; its source assertions/fixtures are unchanged.

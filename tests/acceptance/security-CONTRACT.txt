@@ -1,0 +1,100 @@
+REAL API / WORKER SECURITY HANDOFF - SEPTEMBER 15, 2026
+====================================================
+Ten bounded integration tests in security_behavior_test.go and
+security_concurrency_test.go, with security_io_test.go scheduling helpers.
+Existing assertions and the installer handoff are unchanged. The only existing
+file amendment is additive ApplicationConfig.QueryTracer (pgx.QueryTracer).
+No production implementation, query results or business logic are supplied here.
+
+Run from aspm with the existing authorized process-local ASPM_TEST_* fixtures:
+  go test -tags=integration -mod=readonly -count=1 -timeout=240s -run '^TestSecurity' .\tests\acceptance
+The existing Test-Acceptance.ps1 accepts -Run '^TestSecurity' and a private runtime
+file. Do not print/copy credentials, relax TLS, or change dependency manifests.
+Tests use random owned schemas/prefixes and the existing bounded cleanup.
+They do not contact report URLs, scanners, providers, external targets or real
+users. Storage requests go only to the supplied fixture endpoint via a loopback
+proxy. Historical reports and hostile authority fields are synthetic data only.
+
+FIRST FROZEN SLICE
+security-behavior.handoff.json records exact source/evidence hashes before fixes.
+Viewer and foreign-workspace writes must leave prior finding owner, workflow,
+notes, disposition, observations, source scope and authorized evidence unchanged.
+A separate denied-attempt audit record is permitted.
+Raw SARIF routing/owner/workflow/verification/requester/role fields cannot override
+the authenticated wrapper, server-side principal or human decisions. Preserve
+exact original report bytes and append genuine new observations instead.
+For an EXISTING (workspaceId,sourceId,scanId), assetId and complete scope
+{id,revision,branch} are immutable. Changed asset/scope =>409 conflict, never a
+second binding for the same source scan. New scan IDs/branches remain admissible.
+This explicitly tightens source-scan binding, without editing earlier assertions.
+Identical-run replay is allowed for 24 hours from FIRST SERVER ACCEPTANCE, not
+sourceScanAt/collectedAt or the last retry. ImportedAt retains that first server
+acceptance time. After 24h, replay =>409 error.code="replay-expired", with existing
+work/provenance/evidence intact. A new historical scan ID is still valid.
+Older successful partial/delta positives must respect a newer stored complete
+same-scope absence even when the positive finding did not previously exist.
+Both processing orders yield inferred-resolved at the newer coverage time;
+human workflow stays open and no independent verification is invented.
+ZAP uses real imports with 8/16/32 instances. Preserve each instance's URI,
+evidence/context and shared confidence/otherinfo, plus exact original S3 evidence.
+Total serialized observations may grow by at most 2.5x on each doubling. Shared
+fields may be retained per observation; duplicating the WHOLE instances array
+per observation does not meet the approximately linear storage bound.
+
+REAL S3 PAUSES, NOT SUCCESS-SHAPED STORAGE MOCKS
+The loopback reverse proxy preserves the signed Host header and forwards to the
+actual configured S3 endpoint with normal TLS checks and no ambient HTTP proxy.
+Only the owned bucket/prefix and its read-only HEAD are admitted. No S3 response,
+bytes or success status is synthesized. Gates pause AFTER actual successful S3
+response headers, before acknowledgement/evidence is delivered to the application.
+Two PUTs use distinct imports with MaxConnections=2. While both acknowledgements
+are held, independently read their real objects, and require authenticated session
+and Work requests to return 200 within their controlled request deadlines.
+Then release both, process real queued work, verify exact evidence and replay.
+The GET gate exposes the actual request context and counts later GETs/body bytes.
+It must be cancelled on role revocation, not merely released to let a worker
+finish successfully. All pauses/futures have cancellation and bounded cleanup.
+
+ONE ADDITIVE READ-ONLY SQL INSTRUMENT
+ApplicationConfig.QueryTracer must be forwarded unchanged by the coder binding
+to the production pgx pool's ConnConfig.Tracer BEFORE pool construction, for both
+HTTP and worker operations. No SQL or result shaping belongs in the binding.
+securityTracer only observes actual pgx query callbacks and waits on channels.
+It never submits SQL, replaces results, modifies arguments or implements policy.
+Test-only context values identify a Work request or worker, not HTTP credentials.
+The Work gate pauses a real count/count-window query at TraceQueryEnd; a REAL
+worker then commits another import before the response continues. total, items
+and nextCursor must describe one consistent snapshot, not count=1/page=2.
+The finalization gate pauses the first real worker BEGIN after actual S3 EOF.
+A separately opened production Application processes that worker, avoiding a
+test-only in-memory authorization shortcut in the primary HTTP application.
+Missing tracer forwarding fails explicitly BLOCKED, never skips or fabricates
+the purported database interleaving.
+
+ADDITIVE ADMIN ROLE OPERATION / WORKER AUTHORIZATION
+PATCH /api/v1/users/{id}, X-ASPM-Workspace-ID selected membership, JSON {role}.
+Admin only; role is admin|analyst|viewer. 200 {apiVersion,user:{id,name,email}}.
+Only the selected workspace membership changes; GET /api/v1/session reflects it.
+No global role grant, session-token response or special test-only HTTP bypass.
+The import's submitting actor must come from authenticated server state, never
+raw report fields. Persist enough authorization provenance for a real worker.
+After an analyst's selected membership becomes viewer through this admin API:
+- cancel its active import S3 read;
+- do not retry/read more source bytes or commit observation/finding success;
+- record terminal import state=failed, failure.code="authorization-revoked";
+- retain prior records/decisions/evidence access. Viewer read access is preserved.
+Recheck selected-workspace write authorization at finalization as well as intake.
+The independent-worker gate revokes through the primary API AFTER storage read
+and BEFORE finalization. It must not rely on stale intake authorization.
+Only the prior finding/evidence projection is compared; legitimate audit events
+are not mistaken for forbidden mutations.
+
+OWNERSHIP AND LIMITS
+security-hashes.before.json captured exact existing handoff hashes before coding.
+Final hashes/evidence are integrity records for parent signing, not self-issued
+test-oracle approval. Do not relax expectations or introduce implementation in
+bindings merely to obtain green. Missing role API/tracer wiring is distinguished
+from a reproduced behavioral failure in security-RED.txt.
+Installer remains frozen. Per-role core/ingestion storage keys and DB-only reports
+with NO storage/bootstrap keys need a SEPARATE test-author deployment amendment;
+nothing here weakens required signatures or credential-before-tool boundaries.
