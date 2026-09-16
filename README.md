@@ -93,6 +93,30 @@ Finding detail retains each returned observation, literal unmapped source
 context, analyst notes and disposition. Source scan, comparable source freshness,
 collection and import times remain distinct. Source-inferred resolution and
 accepted risk do not alter human workflow or claim independent verification.
+Admins and analysts can **Assign to me** with one activation, explicitly
+**Unassign**, or select a workflow and **Save workflow** in the same dialog.
+Confirmed facts and matching loaded Work rows use the full PATCH response,
+including the service's owner display name. Earlier Work reads cannot undo that
+acknowledgement; a subsequent explicit refresh can receive newer server facts.
+An owner change that removes a row from the current filter is explained, with
+a safe Work focus fallback rather than an invented matching row.
+
+Risk acceptance is a deliberate disposition and optional RFC3339 expiry.
+Blank means no expiry. **Save risk acceptance** sends only the chosen risk
+fields; expiry-only edits do not resend owner, workflow or disposition.
+Failures retain the draft and the service's previous expiry and expired flag.
+Human resolution is not independent verification.
+
+**Add note** accepts literal multiline text up to 8,192 UTF-8 bytes, without
+trimming or truncation. The encoded note request must also fit the service's
+32 KiB JSON limit. Only a validated HTTP 201 receipt adds a note; confirmed note
+IDs are reconciled with canonical responses without merging different notes
+that happen to contain identical text. Drafts stay in the open dialog only.
+Viewer sessions have no write controls, and the server still authorizes every
+action. Closing cancels pending browser actions but cannot roll back a request
+already committed by the service. Finding-action source review and real HTTPS
+qualification remain separate from the synthetic browser checks.
+
 Finding-history pagination is not yet wired; a returned next-page cursor is disclosed
 rather than presenting the loaded page as the complete history. Workspace
 changes, logout and session rejection clear these scoped views and cancel their

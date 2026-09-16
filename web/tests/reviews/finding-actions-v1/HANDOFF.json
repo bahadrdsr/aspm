@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "scope": "finding-actions-v1",
+  "authorRole": "independent-test-author",
+  "status": "FROZEN_RED_PENDING_PARENT_SEAL",
+  "capturedAt": "2026-09-16T16:07:53.748Z",
+  "controls": [
+    {
+      "path": "web\\tests\\finding-actions-data.ts",
+      "bytes": 7431,
+      "sha256": "685b4891a2dc9f1e8236a577d9d2ccad954ae39ee64b819cfcc805818b3a6c3a"
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "bytes": 21604,
+      "sha256": "5a9c4945255981d2ee2d62a77677fdc3f83bdb05ecadb4e00bd76b13ec0aea42"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45146,
+      "sha256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084"
+    }
+  ],
+  "contract": "CONTRACT.txt",
+  "humanHandoff": "HANDOFF.txt",
+  "before": "BEFORE.json",
+  "guardComparison": "GUARDS.json",
+  "compilerComparison": "COMPILATION.json",
+  "redEvidence": "RED.json",
+  "externalEvidenceInventory": "EVIDENCE.json",
+  "outcomes": {
+    "typecheck": "PASS",
+    "priorChromiumPass": 50,
+    "newChromiumMissingFeatureRed": 8,
+    "skipped": 0,
+    "flaky": 0,
+    "secondaryFixtureFailures": 0,
+    "baselineFilesCompared": 742,
+    "baselineFileChanges": 0,
+    "existingControlDigestsCompared": 512,
+    "existingControlDigestChanges": 0,
+    "compilerInputsBefore": 299,
+    "compilerInputsAfter": 302,
+    "addedCompiledFiles": 3
+  },
+  "productionEdits": [],
+  "existingFileEdits": [],
+  "sharedFixtureAmendments": [],
+  "dependencyChanges": [],
+  "compilerChanges": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "realAPIMutations": 0,
+  "signaturesOrOraclesCreatedOrChanged": [],
+  "historicalHead": "ac2aa14efec80c882d8a92266175324b4ac704e0",
+  "sourceHeadAtRed": "6cb5044fe0c583184e203028259fe12e976d3d38",
+  "publicationHeadAdvanceIsNotAGuardEdit": true,
+  "caveats": [
+    "Eight new tests stop at absent production controls. Their mutation/error/authority/lifecycle/focus assertions are authored but blocked, not passing evidence.",
+    "Prior 50 and new 8 were executed in separate runs against unchanged baseline source/control bytes.",
+    "HTTP fixture observations do not prove live membership enforcement, database persistence or server rollback.",
+    "Note-ID behavior is checked through receipts and overlap uniqueness, not React-key introspection."
+  ],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify input/baseline/packet hashes and reproduce the eight missing-control RED cases.",
+    "Seal only NEW finding-actions feature controls; leave every previous oracle, signature and Reports/publication/UI history unchanged.",
+    "Hand frozen controls to the separate production coder, then the independent reviewer.",
+    "Keep later logs and traces outside protected roots and use fresh output destinations."
+  ]
+}

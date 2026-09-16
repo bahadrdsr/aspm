@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "authorRole": "original-independent-test-author",
+  "capturedAt": "2026-09-16T17:11:00.479Z",
+  "authorization": "User requested only FA7 subcase-entry setup correction after independent coder/parent identified retained Beta selection. No production-behavior changes authorized.",
+  "testFile": "web\\tests\\finding-actions.spec.ts",
+  "classification": "CONFIRMED_ORIGINAL_TEST_SETUP_DEFECT",
+  "originalBehavior": {
+    "firstSubcase": "workspace/PATCH cancel and late-ACK assertions passed",
+    "nextNavigation": "goto /#/work returned {} in the actual browser trace: same-document navigation",
+    "selectedWorkspace": "Synthetic triage Beta remained correctly selected",
+    "failedSetup": "Next subcase applied the Alpha filter and waited at original line 621 for an Alpha checkbox that could not exist in Beta",
+    "productionResetOnHashNavigationRequired": false
+  },
+  "correction": {
+    "mechanism": "Use the real accessible native Workspace combobox to select actionAlpha.id and assert that selection before the existing queue/filter/selection setup.",
+    "addedLines": 3,
+    "removedLines": 0,
+    "allOtherCaseBytesIdentical": true,
+    "allExistingFA7LifecycleAssertionsIdentical": true,
+    "timeoutsUnchanged": true,
+    "requestBudgetUnchanged": 60,
+    "runnerOrFixtureOrHelperChanges": false
+  },
+  "delta": {
+    "oldSHA256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084",
+    "newSHA256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b",
+    "oldBytes": 45146,
+    "newBytes": 45348,
+    "addedBytes": 202,
+    "addedLines": 3,
+    "removedLines": 0,
+    "insertionByteOffset": 37292,
+    "insertion": "      const workspace = page.getByRole(\"combobox\", { name: \"Workspace\", exact: true });\r\n      await workspace.selectOption(actionAlpha.id);\r\n      await expect(workspace).toHaveValue(actionAlpha.id);\r\n",
+    "unchangedPrefixSHA256": "8ff541d121a6d79b73b08e18bfa683bb454199a485af62a5ef73f2e10629382f",
+    "unchangedSuffixSHA256": "87757a04c6a42f39bd83352828e0ed4ea62147092247f21f859bf7a6f26cc010",
+    "allOtherBytesIdentical": true,
+    "lineEndingsPreserved": "CRLF"
+  },
+  "evidence": {
+    "before": {
+      "path": ".artifacts\\finding-actions-v1-a1\\BEFORE-A1.json",
+      "bytes": 315385,
+      "sha256": "a89e837fe8ed7e5b44e3d6a64583ff0c9f5ed1b6c5ac6c103d71f65d06a24b98"
+    },
+    "originalReproduction": {
+      "path": ".artifacts\\finding-actions-v1-a1\\reproduction-observation.json",
+      "bytes": 3143,
+      "sha256": "bf0cf8b6b4c9cb3260149870edcca8da4cfe32b811a242d8e6ca549376e6a12b"
+    },
+    "exactByteDelta": {
+      "path": ".artifacts\\finding-actions-v1-a1\\DELTA-A1.json",
+      "bytes": 793,
+      "sha256": "a61c20d88851baafacaff84d5154b2b780f0917a46f217b909771406f6ab5249"
+    },
+    "correctedTargetedObservation": {
+      "path": ".artifacts\\finding-actions-v1-a1\\corrected-observation.json",
+      "bytes": 2335,
+      "sha256": "5294c1a2c570f257b6e6fcb2936d9b10916b746ba6966177fa9da88ad12cacc7"
+    }
+  },
+  "archives": [
+    {
+      "source": "web\\tests\\finding-actions.spec.ts",
+      "archive": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\finding-actions.spec.ts.before.txt",
+      "bytes": 45146,
+      "sha256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084"
+    },
+    {
+      "source": "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+      "archive": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 3649,
+      "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+    },
+    {
+      "source": "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+      "archive": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 78,
+      "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+    }
+  ],
+  "archivalPolicy": "Only the original amended spec and old PACKET/digest pair were copied, with byte-identical noncompiled .txt extensions. No prior review directory, source snapshot, compiler input or signature was copied.",
+  "oldPacketRemainsHistoricalInPlace": true,
+  "newCurrentPacket": "PACKET-A1.json",
+  "previousSignaturesRetainedUnchanged": true,
+  "productionChanges": [],
+  "fixtureChanges": [],
+  "dependencyChanges": [],
+  "runnerChanges": [],
+  "provenanceChanges": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "realAPIMutations": 0,
+  "parentMustVerifyAndSealNewCurrentControls": true
+}

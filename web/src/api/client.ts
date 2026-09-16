@@ -1,6 +1,6 @@
 import { apiVersion } from "./types";
 import type {
-  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingResponse,
+  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingNoteResponse, FindingPatch, FindingResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   Session, SourceScope, WorkItem, WorkResponse,
@@ -177,6 +177,33 @@ export function parseFinding(value: unknown): FindingResponse {
       observationsNextCursor: finding.observationsNextCursor === undefined ? undefined : nullableText(finding.observationsNextCursor, "observations cursor"),
     },
   };
+}
+
+function parseFindingUpdate(value: unknown, id: string, workspace: string | null): FindingResponse {
+  const result = parseFinding(value);
+  const finding = result.finding;
+  if (finding.id !== id || finding.workspaceId !== workspace ||
+    finding.ownerId === undefined || (finding.ownerId !== null && !/^[a-f0-9]{32}$/.test(finding.ownerId)) ||
+    (finding.ownerId === null) !== (finding.ownerName === null) ||
+    finding.disposition === undefined || finding.acceptedRiskExpiresAt === undefined ||
+    finding.riskAcceptanceExpired === undefined || finding.verifiedResolution === undefined ||
+    finding.sourceState === undefined || finding.sourceFreshnessAt === undefined ||
+    finding.notes === undefined || finding.observations === undefined) return invalid("updated finding");
+  return result;
+}
+
+function parseFindingNote(value: unknown, submittedText: string): FindingNoteResponse {
+  const item = object(versioned(value).note, "note receipt");
+  const id = text(item.id, "note identifier");
+  const noteText = text(item.text, "note text");
+  if (!/^[a-f0-9]{32}$/.test(id) || noteText !== submittedText) return invalid("note acknowledgement");
+  return { apiVersion, note: { id, text: noteText } };
+}
+
+function findingBodyLimit(body: FindingPatch | { text: string }, bytes: number): void {
+  if (new TextEncoder().encode(JSON.stringify(body)).byteLength > bytes) {
+    throw new APIError("The encoded finding action exceeds the service's request size limit. Shorten the input and retry.", "invalid-input", false);
+  }
 }
 
 function asset(value: unknown, workspace: string | null): Asset {
@@ -379,7 +406,7 @@ interface RequestOptions {
   body?: unknown;
   scoped?: boolean;
   headers?: Record<string, string>;
-  expectedStatus?: 200 | 202;
+  expectedStatus?: 200 | 201 | 202;
 }
 
 export async function request<T>(path: string, parse: (value: unknown) => T, options: RequestOptions = {}): Promise<T> {
@@ -439,7 +466,36 @@ async function reportRead<T>(path: string, parse: (value: unknown) => T, signal:
 
 export const api = {
   work: (signal: AbortSignal) => request("/api/v1/work", parseWork, { signal }),
-  finding: (id: string, signal: AbortSignal) => request(`/api/v1/findings/${encodeURIComponent(id)}`, parseFinding, { signal }),
+  finding: (id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return request(`/api/v1/findings/${encodeURIComponent(id)}`, (value) => {
+      const result = parseFinding(value);
+      if (result.finding.id !== id || (result.finding.workspaceId !== undefined && result.finding.workspaceId !== workspace)) {
+        return invalid("selected finding");
+      }
+      return result;
+    }, { signal, expectedStatus: 200 });
+  },
+  updateFinding: (id: string, input: FindingPatch, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    const body: FindingPatch = {};
+    if (input.ownerId !== undefined) body.ownerId = input.ownerId;
+    if (input.workflowState !== undefined) body.workflowState = input.workflowState;
+    if (input.disposition !== undefined) body.disposition = input.disposition;
+    if (input.acceptedRiskExpiresAt !== undefined) body.acceptedRiskExpiresAt = input.acceptedRiskExpiresAt;
+    findingBodyLimit(body, 16 << 10);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}`, (value) => parseFindingUpdate(value, id, workspace),
+      { method: "PATCH", body, signal, expectedStatus: 200 });
+  },
+  addFindingNote: (id: string, noteText: string, signal: AbortSignal) => {
+    if (noteText.trim() === "" || noteText.includes("\0") || new TextEncoder().encode(noteText).byteLength > 8192) {
+      throw new APIError("A note must be nonblank, NUL-free and at most 8192 UTF-8 bytes. Your draft has not been changed.", "invalid-input", false);
+    }
+    const body = { text: noteText };
+    findingBodyLimit(body, 32 << 10);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/notes`, (value) => parseFindingNote(value, noteText),
+      { method: "POST", body, signal, expectedStatus: 201 });
+  },
   catalog: (signal: AbortSignal) => request("/api/v1/integrations/catalog", parseCatalog, { signal }),
   assets: (signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

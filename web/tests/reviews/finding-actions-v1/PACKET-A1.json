@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "scope": "finding-actions-v1",
+  "amendment": "A1",
+  "phase": "frozen-original-author-setup-correction",
+  "frozenAt": "2026-09-16T17:16:03.753Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned original-author amendment inventory only. Parent verifies and seals the NEW current control set.",
+  "currentSpec": {
+    "path": "web\\tests\\finding-actions.spec.ts",
+    "bytes": 45348,
+    "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+  },
+  "payloadFileCount": 21,
+  "ownedFileCount": 23,
+  "ownedFiles": [
+    "web\\tests\\finding-actions-data.ts",
+    "web\\tests\\finding-actions-fixture.ts",
+    "web\\tests\\finding-actions.spec.ts",
+    "web\\tests\\reviews\\finding-actions-v1\\AMENDMENT-A1.json",
+    "web\\tests\\reviews\\finding-actions-v1\\BEFORE.json",
+    "web\\tests\\reviews\\finding-actions-v1\\COMPILATION.json",
+    "web\\tests\\reviews\\finding-actions-v1\\CONTRACT.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\EVIDENCE.json",
+    "web\\tests\\reviews\\finding-actions-v1\\GUARDS-A1.json",
+    "web\\tests\\reviews\\finding-actions-v1\\GUARDS.json",
+    "web\\tests\\reviews\\finding-actions-v1\\HANDOFF-A1.json",
+    "web\\tests\\reviews\\finding-actions-v1\\HANDOFF-A1.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.json",
+    "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.json",
+    "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.sha256",
+    "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+    "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+    "web\\tests\\reviews\\finding-actions-v1\\RED.json",
+    "web\\tests\\reviews\\finding-actions-v1\\VALIDATION-A1.json",
+    "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\PACKET.json.before.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\PACKET.sha256.before.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\finding-actions.spec.ts.before.txt"
+  ],
+  "files": [
+    {
+      "path": "web\\tests\\finding-actions-data.ts",
+      "bytes": 7431,
+      "sha256": "685b4891a2dc9f1e8236a577d9d2ccad954ae39ee64b819cfcc805818b3a6c3a"
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "bytes": 21604,
+      "sha256": "5a9c4945255981d2ee2d62a77677fdc3f83bdb05ecadb4e00bd76b13ec0aea42"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\AMENDMENT-A1.json",
+      "bytes": 4555,
+      "sha256": "8619a787cf47b534562eb25757d85431d93bdce6518161b7af5ab052838ec77e"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\BEFORE.json",
+      "bytes": 147638,
+      "sha256": "80bf84d4d395f684976d60e7bdbe44e21f741a95b2c2614592b2f30168410c6f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\COMPILATION.json",
+      "bytes": 76633,
+      "sha256": "df890687247560dd7d553f6c112300e03a86a6784e554455713563cebe3650f0"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\CONTRACT.txt",
+      "bytes": 15570,
+      "sha256": "10562081e3b1faa64e8121878a90b68e30e8632fc66d34f2e28f74745d1d93c3"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\EVIDENCE.json",
+      "bytes": 24641,
+      "sha256": "24b479ec5b07278a757011b41aa60ef169c60c49a2801a8d617a81c07d3fc1d8"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\GUARDS-A1.json",
+      "bytes": 16258,
+      "sha256": "089a8f5cd5f6fc32e3e9ac8937afc7a2a0b186fd694ee1b0bc53a918ff32835f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\GUARDS.json",
+      "bytes": 4647,
+      "sha256": "042802d0c8ce75247c2bafd9209c44226cbd739f8675a2b88ee0a029040c3e56"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\HANDOFF-A1.json",
+      "bytes": 2812,
+      "sha256": "1163011d8130d8d5724e284dadfc0d63cebf88b4d6fb49c1fc290746e5c8d8a8"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\HANDOFF-A1.txt",
+      "bytes": 5665,
+      "sha256": "53c778298e78c96e1e57c046aeec1ccc646fe146f0e5b7a510d31449bd03f0c3"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.json",
+      "bytes": 2804,
+      "sha256": "d61da26d8ed2df2ff3462ad168e1c1825560b5e3b21bc3e26d8a4c1a86804178"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.txt",
+      "bytes": 4755,
+      "sha256": "c87848de683f40e2ce9f5b616cd8a4936847b0191d9a43d059341c5c4f88a567"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\finding-actions.spec.ts.before.txt",
+      "bytes": 45146,
+      "sha256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 3649,
+      "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 78,
+      "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+      "bytes": 3649,
+      "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\RED.json",
+      "bytes": 46663,
+      "sha256": "16bef588c81e4ec1ba66eb77116a3cf47916fa9ee52de2388e4e5e45b33f9c82"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\VALIDATION-A1.json",
+      "bytes": 23590,
+      "sha256": "45b4bad5b5d517206fe964e0aa96c9b592eee0aeeb416c040deebd31714a72ff"
+    }
+  ],
+  "originalPacketHistorical": {
+    "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+    "bytes": 3649,
+    "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+  },
+  "originalPacketDigestHistorical": {
+    "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+    "bytes": 78,
+    "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+  },
+  "originalControlReferences": {
+    "manifest": {
+      "path": ".oracles\\finding-actions-v1.json",
+      "bytes": 107513,
+      "sha256": "6dc927236de4aa10933e5ac1394b4049bed22b17d3f22f33d34952b598fc21f6"
+    },
+    "signature": {
+      "path": ".oracles\\finding-actions-v1.json.sig",
+      "bytes": 89,
+      "sha256": "5a54b6c3bb991d45341d80f9128f0f81fcd156783072fad732f86834c6c30402"
+    },
+    "originalFileHashArrayPointer": "/files",
+    "requiredControlCount": 527,
+    "unchangedOtherRequiredDigests": 526,
+    "authorizedDeltaReference": "AMENDMENT-A1.json",
+    "originalSignaturesUntouched": true
+  },
+  "originalSpecArchive": {
+    "path": "web\\tests\\reviews\\finding-actions-v1\\history\\a1\\finding-actions.spec.ts.before.txt",
+    "bytes": 45146,
+    "sha256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084"
+  },
+  "evidence": "VALIDATION-A1.json",
+  "guardComparison": "GUARDS-A1.json",
+  "handoff": "HANDOFF-A1.json",
+  "externalArtifacts": ".artifacts\\finding-actions-v1-a1",
+  "selfBinding": "PACKET-A1.sha256 binds the raw PACKET-A1.json bytes. Only this self-digest pair is excluded from payload hashes.",
+  "notAnOldOracleResign": true
+}

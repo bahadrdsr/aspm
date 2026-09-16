@@ -1,0 +1,251 @@
+FINDING ACTIONS V1 - INDEPENDENT TEST-AUTHOR CONTRACT
+==================================================
+
+Scope and ownership
+-------------------
+This packet adds eight coherent Chromium cases at the real App's existing
+Work/finding-detail entry. It does not implement production code. Assignment,
+unassignment, human workflow, accepted risk and notes stay in the selected
+finding dialog, not a separate wizard or a new product destination.
+
+The author changed no pre-existing file, assertion, fixture, compiler option,
+dependency, source approval, signature, oracle, publication control or UI
+history. No agent, commit, backend run, database modification, native/cloud
+operation or real API mutation was used. The parent handles publication and
+the new feature-control seal. Independent implementation and review follow.
+
+New compiled controls:
+  web\tests\finding-actions-data.ts
+  web\tests\finding-actions-fixture.ts
+  web\tests\finding-actions.spec.ts
+
+Source authority read before authoring:
+  internal\app\findings.go, http.go, types.go, work.go, auth.go, assets.go
+  web\src\components\finding-dialog.tsx, action-button.tsx, form-dialog.tsx
+  web\src\pages\work.tsx, App.tsx
+  web\src\api\client.ts, types.ts, authorization.ts
+  web\src\lib\session.tsx, router.ts, use-resource.ts, use-scoped-action.ts,
+      use-modal.ts, preferences.tsx, format.ts
+  Existing application, Reports, shell, regression and source-approval
+  fixtures/guards, the installed compiler inputs and existing test configs.
+
+Backend contract, not an invented API
+------------------------------------
+GET /api/v1/findings/{id} returns {apiVersion,dataOrigin,finding}, with the full
+canonical owner/workflow/disposition/expiry/source/verification fields and the
+returned notes/observations pages. PATCH to that same path returns that same
+full envelope, not an acknowledgement-only body.
+
+PATCH fields are optional and limited to:
+  ownerId: a current workspace member's ID, or null.
+  workflowState: open, in-progress, resolved. Null is invalid.
+  disposition: none, accepted-risk. Null is invalid.
+  acceptedRiskExpiresAt: RFC3339 timestamp or null.
+
+Omitted fields retain their server values. Selecting disposition:none without
+an expiry field clears expiry on the backend. A non-null expiry is valid only
+with accepted-risk. The backend checks owner membership even when the PATCH
+does not select a new owner. IDs are 32 lowercase hexadecimal characters.
+The browser has no members-directory GET API. Self, unassigned and the existing
+current owner are the only initial contextual owner choices in this slice.
+
+Use sparse, intentional writes. Assignment/unassignment sends ownerId alone.
+Workflow sends workflowState alone. Accepting risk sends disposition plus the
+explicit optional expiry; changing only its expiry sends acceptedRiskExpiresAt
+alone. Clearing acceptance may send disposition:none alone, or also an explicit
+null expiry. No unrelated owner/workflow/risk fields, workspace, author,
+apiVersion, revision or browser-generated IDs belong in a mutation body.
+
+No If-Match, revision, snapshot token, conditional-write or optimistic-lock API
+is introduced. The backend's current transaction and post-commit read semantics
+remain authoritative. Discarding an obsolete browser response is not a new
+backend concurrency promise.
+
+POST /api/v1/findings/{id}/notes accepts only {text} and returns HTTP 201 with
+{apiVersion,note:{id,text}}. The service generates the ID. Text is nonblank,
+NUL-free and at most 8192 UTF-8 bytes, not 8192 JavaScript code units. The backend
+JSON limits are 16 KiB for PATCH and 32 KiB for note POST. The fixture models
+these limits; it is not evidence of live decoder or database behavior.
+
+All protected requests need the authenticated HttpOnly session and selected
+X-ASPM-Workspace-ID. Writes need matching Origin and JSON. Backend membership,
+not displayed role metadata, authorizes writes: admin/analyst can write; viewer
+cannot. The HTTP fixture intentionally separates session role metadata from
+current server role so a stale analyst UI can encounter a real fixture 403.
+
+Human workflow and accepted risk never change sourceState, source freshness,
+source evidence verification or independently verified resolution. The source
+warning must explain that human resolution is not independent verification.
+Use the returned riskAcceptanceExpired value and returned expiry; do not invent
+or silently extend a date. Blank expiry is an explicit nullable choice.
+
+Accessible, ordinary action UX
+------------------------------
+Keep the existing finding title and canonical definition-list facts readable:
+Owner, Scope, Human workflow, Disposition, Scanner-inferred state, and applicable
+Risk acceptance expiry / Expiry state from service. Editing controls are drafts;
+these confirmed facts must not become unacknowledged success values.
+
+Required one-activation quick action: button "Assign to me". It uses session
+user.id, not a guessed ID or the session display name as a replacement owner.
+The assignment fixture deliberately changes the service's member display name
+after the session/detail read. Detail and matching Work row must use the
+PATCH-returned owner name before any follow-up Work read can finish.
+
+Ownership may use an explicit Unassign / Unassign finding / Clear owner button,
+or a native Owner / Finding Owner select with a contextual Save form. An
+existing owner remains readable. A select exposes self, Unassigned and the
+current owner, without invented member choices.
+
+Workflow may use a native select labelled Workflow, Workflow state, Human
+Workflow or Finding Workflow, with a contextual Save form. Editing that select
+does not implicitly submit. Alternatively use explicit Start work / Start
+progress / Start in progress / Mark in progress, Resolve / Resolve finding /
+Mark resolved, and Reopen / Reopen finding actions.
+
+Risk may use a native Disposition / Finding Disposition select plus Save, or
+explicit Accept risk and Clear risk acceptance / Clear acceptance / Clear
+accepted risk actions. The expiry label is Risk acceptance expiry / expires at,
+or Accepted risk expiry / expires at, with an optional parenthetical qualifier.
+Use a datetime-local input or explicit RFC3339 text input. Tests use UTC for
+unambiguous local input. An inline acceptance form can be revealed by Accept
+risk; a second modal, unrelated workflow or multi-step wizard is not required.
+Contextual form Save labels may be Save, Save changes, Save owner, Save workflow,
+Save disposition or Save risk acceptance. Styling and arrangement are not fixed.
+
+Add note uses a multiline textarea labelled New note, Note text, Analyst note
+or Add note, inside its own contextual form with button Add note. Keep the
+existing list named Analyst notes and existing observations list. No forced
+test IDs, client-state inspection, fabricated components or DOM replacement.
+
+Errors use accessible alerts; pending and successful actions use truthful
+status messages. Pending disables duplicate activation. Failed saves retain
+the user's draft and the last confirmed data, without appending notes, clearing
+the form, presenting a generated receipt or leaving a misleading success.
+Client validation or an actual fixture 400 can reject invalid note input.
+Do not silently trim/truncate pasted text to force it under the byte limit.
+URLs and markup in notes remain literal, non-executable and unlinked. Line
+breaks remain visible, not merely present in an invisible textContent value.
+
+Keep source evidence, every supplied observation's source metadata and original
+notes intact after actions. Matching Work rows update from canonical PATCH
+responses without losing query, checkbox selection or context. If unassignment
+actually removes the row from an owner filter, remove that row truthfully,
+explain that it no longer matches in an accessible status, preserve the query
+and return focus to a safe Work heading/filter fallback.
+
+The modal must remain the same mounted native dialog during a mutation or
+background Work refresh. Do not steal a user's note-draft focus or caret when
+an older Work request completes. Old Work data must not overwrite a newer,
+confirmed matching row. Normal close/Escape returns to the original row with
+selection and scrolling preserved. Native keyboard trapping, 390px layout and
+both motion preferences are exercised without forced clicks or DOM mutations.
+
+Eight acceptance narratives
+--------------------------
+FA1: Admin quick self-assignment. A held 503 leaves confirmed owner/row unchanged
+     and prevents duplicate activation. A later single activation uses only
+     authenticated self ID and the different, canonical service display name.
+     A follow-up Work read is held, requiring the PATCH itself to update the
+     matching row. Source, query, selection, dialog and return focus survive.
+
+FA2: An analyst unassigns a current owner while filtering by that owner. Only
+     ownerId:null is sent. Existing in-progress workflow, expired acceptance,
+     scanner inference, observations and notes survive. The filtered-out row
+     disappears with an explicit explanation and safe focus fallback.
+
+FA3: Analyst open -> in-progress -> resolved -> open, each as a sparse PATCH.
+     Pending still shows the previous confirmed workflow. Owner, expired risk,
+     source state, provenance and verification are unchanged. Resolution has
+     a human-not-verified explanation; matching Work context survives.
+
+FA4: Accept risk with deliberately blank/null expiry. An expired-date edit is
+     rejected with 503, retaining draft and previous confirmed data, then saved
+     explicitly. A rejected clear keeps the confirmed expired indicator/date
+     and draft choice; retry clears only acceptance/expiry. No cross-field
+     writes, guessed date or silent expiry extension.
+
+FA5: Existing literal notes are checked before the missing editor gate. Blank,
+     8193 ASCII-byte and 8194 multibyte-byte drafts cannot become successful
+     notes. A 503 keeps literal draft and old list. Held 201 prevents duplicate
+     submissions and appends the server receipt once. A pre-existing note has
+     identical text but a different ID, so text-based deduplication is wrong.
+     Overlapping canonical PATCH and a fresh GET preserve exactly two notes
+     with that text, not one or three. A valid 8192-byte note is accepted.
+
+FA6: Viewer reads existing context with absent/disabled write controls. Fresh
+     stale-analyst entries separately attempt PATCH and note POST against 403,
+     with no fabricated success. Fresh entries are deliberate: implementations
+     may correctly disable further writes after a denial. Then protected
+     PATCH and note 401 each unmount all workspace/detail/summary data, including
+     hidden data, and reload stays signed out. Between those checks the actual
+     synthetic login form establishes a new authorized session.
+
+FA7: Workspace switch and logout each cross a held PATCH and a held note POST.
+     The native modal is first closed with Escape so actual accessible sidebar
+     controls can be used; no forced interaction through an inert background.
+     Scope/session loss must abort the request. Releasing its already-captured
+     ACK cannot repopulate old rows, names, draft/note text, detail or summary.
+     Beta loading is held to check clearing before new authorized data arrives.
+
+FA8: At 390x844 in reduced and ordinary motion, 28 additional loaded rows make
+     scrolling real. A background Work refresh captures old data before a
+     keyboard assignment. The same native dialog stays mounted. Its note draft,
+     focus and caret survive the late Work completion, and the canonical row
+     does not roll back. Reduced-motion hover must not scale the shared action.
+     Tab remains trapped, Escape restores scrolled Work/query/selection/focus,
+     and reopening starts with no discarded unsent draft.
+
+Fixture boundaries and limits
+-----------------------------
+Only same-origin HTTP is intercepted. The fixture does not replace React,
+fetch, AbortController, navigation, modal behavior, keyboard, storage or DOM.
+DataOrigin is synthetic. All users, memberships, findings, cookies, names and
+dates are synthetic. The original credential canaries remain checked, as does
+an additional synthetic HttpOnly cookie. The combined API budget remains 60.
+Undeclared writes, external requests, authorization/bootstrap headers, missing
+workspace/Origin, malformed JSON and unsupported endpoints fail the boundary.
+Browser storage may retain only the current app's non-sensitive theme choice.
+No report/finding/note/owner/credential values belong in browser storage.
+
+The new fixture imports constants/types and the existing production-existence
+guard, but does not extend, amend, wrap around or weaken any previous fixture.
+No additional Reports or members-directory requests are allowed in this slice.
+GET /work honors q, the actual limit default 100/range 1..500 and id>cursor order.
+The current UI filters loaded results locally. Unsupported query keys fail the
+test allowlist; that is not a claim that the backend rejects extra query keys.
+
+Finding notes and observations are sorted by ID and page at 500 with real
+derived continuation cursors. Seeds represent complete synthetic server
+records; hand-authored cursor tokens are rejected. The UI cases use small
+returned pages and preserve the existing read-only pagination explanation.
+They do NOT claim new notes pagination, full-history loading, backend locking,
+database persistence, real authorization or arbitrary timestamp decoder tests.
+
+Held successful mutations commit to the synthetic service model and capture
+their full response before waiting for delivery. Browser cancellation cannot
+be treated as server rollback. Each lifecycle subscenario explicitly seeds a
+new synthetic record before a fresh authorized UI entry. Later authorized reads
+of a legitimately committed value are not a stale-ACK violation.
+
+Note-ID authority is observed at HTTP 201, overlapping canonical responses and
+visible list uniqueness, including same-text/different-ID notes. No opaque IDs
+are required in the UI and React keys are not inspected. This is observable
+behavioral coverage, not proof of an unobservable internal key representation.
+
+RED evidence and sealing
+------------------------
+All later mutation, permission, race and focus checks remain BLOCKED/NOT RUN
+until their first missing action/editor is implemented. A failed top-level
+case is not passing evidence for later branches. No tests are marked skipped,
+expected-failure or retried into green. Existing 50-case compatibility remains
+separate from this feature's intentionally failing eight-case RED run.
+
+BEFORE.json is historical and immutable even when Reports publication advances
+HEAD. GUARDS.json compares file bytes, not commit identity. COMPILATION.json
+records original compiler inputs plus exactly three new TypeScript files.
+RED.json and EVIDENCE.json record actual runs, first blockers, request ledgers,
+fixture/page errors, artifact paths and raw hashes. PACKET.json is an unsigned
+raw-byte inventory, not an oracle or a signature. The parent independently
+verifies RED and seals NEW feature controls, without modifying previous
+oracles, publication controls, accepted Reports history or their signatures.

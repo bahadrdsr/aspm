@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "scope": "finding-actions-v1",
+  "phase": "frozen-test-author-red",
+  "frozenAt": "2026-09-16T16:09:36.519Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned author inventory only. Parent must independently verify RED and seal NEW feature controls.",
+  "payloadFileCount": 11,
+  "ownedFileCount": 13,
+  "ownedFiles": [
+    "web\\tests\\finding-actions-data.ts",
+    "web\\tests\\finding-actions-fixture.ts",
+    "web\\tests\\finding-actions.spec.ts",
+    "web\\tests\\reviews\\finding-actions-v1\\BEFORE.json",
+    "web\\tests\\reviews\\finding-actions-v1\\COMPILATION.json",
+    "web\\tests\\reviews\\finding-actions-v1\\CONTRACT.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\EVIDENCE.json",
+    "web\\tests\\reviews\\finding-actions-v1\\GUARDS.json",
+    "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.json",
+    "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.txt",
+    "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+    "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+    "web\\tests\\reviews\\finding-actions-v1\\RED.json"
+  ],
+  "files": [
+    {
+      "path": "web\\tests\\finding-actions-data.ts",
+      "bytes": 7431,
+      "sha256": "685b4891a2dc9f1e8236a577d9d2ccad954ae39ee64b819cfcc805818b3a6c3a"
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "bytes": 21604,
+      "sha256": "5a9c4945255981d2ee2d62a77677fdc3f83bdb05ecadb4e00bd76b13ec0aea42"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45146,
+      "sha256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\BEFORE.json",
+      "bytes": 147638,
+      "sha256": "80bf84d4d395f684976d60e7bdbe44e21f741a95b2c2614592b2f30168410c6f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\COMPILATION.json",
+      "bytes": 76633,
+      "sha256": "df890687247560dd7d553f6c112300e03a86a6784e554455713563cebe3650f0"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\CONTRACT.txt",
+      "bytes": 15570,
+      "sha256": "10562081e3b1faa64e8121878a90b68e30e8632fc66d34f2e28f74745d1d93c3"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\EVIDENCE.json",
+      "bytes": 24641,
+      "sha256": "24b479ec5b07278a757011b41aa60ef169c60c49a2801a8d617a81c07d3fc1d8"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\GUARDS.json",
+      "bytes": 4647,
+      "sha256": "042802d0c8ce75247c2bafd9209c44226cbd739f8675a2b88ee0a029040c3e56"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.json",
+      "bytes": 2804,
+      "sha256": "d61da26d8ed2df2ff3462ad168e1c1825560b5e3b21bc3e26d8a4c1a86804178"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\HANDOFF.txt",
+      "bytes": 4755,
+      "sha256": "c87848de683f40e2ce9f5b616cd8a4936847b0191d9a43d059341c5c4f88a567"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\RED.json",
+      "bytes": 46663,
+      "sha256": "16bef588c81e4ec1ba66eb77116a3cf47916fa9ee52de2388e4e5e45b33f9c82"
+    }
+  ],
+  "manifestSelfBinding": "PACKET.sha256 binds raw PACKET.json bytes. PACKET.json inventories every other authored file except this self-digest pair, avoiding circular hashes.",
+  "sourceWitness": "web\\tests\\reviews\\finding-actions-v1\\RED.json",
+  "runtimeEvidence": "web\\tests\\reviews\\finding-actions-v1\\EVIDENCE.json",
+  "excludedRuntimeRoots": [
+    ".artifacts\\finding-actions-v1",
+    "web\\.cache"
+  ],
+  "previousOraclesOrPublicationOrReportsHistoryChanged": false
+}

@@ -1,15 +1,20 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { api } from "@/api/client";
-import type { Observation } from "@/api/types";
+import type { FindingNote, FindingResponse, Observation, WorkItem } from "@/api/types";
 import { useResource } from "@/lib/use-resource";
 import { usePreferences } from "@/lib/preferences";
 import { label, timestampLabel } from "@/lib/format";
 import { useModal } from "@/lib/use-modal";
+import { useSession } from "@/lib/session";
+import { matchesWorkQuery } from "@/pages/work";
+import { FindingActions, FindingNoteForm } from "./finding-actions";
 import { Button } from "./ui/button";
 import { DataNotice, ErrorState, LoadingState, SeverityBadge, WorkflowBadge } from "./states";
 import { Icon } from "./icon";
+import "./finding-actions.css";
 
 function DetailTime({ value }: { value: string | null | undefined }) {
   if (value === undefined) return <>Not supplied</>;
@@ -39,31 +44,75 @@ function ObservationEntry({ observation }: { observation: Observation }) {
   </li>;
 }
 
-export function FindingDialog({ id, initialTitle, returnFocus, onClose }: {
-  id: string; initialTitle: string; returnFocus: HTMLElement | null; onClose: () => void;
+export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirmed, onClose }: {
+  id: string; initialTitle: string; returnFocus: HTMLElement | null; query: string;
+  onConfirmed: (finding: WorkItem) => void; onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
-  const load = useCallback((signal: AbortSignal) => api.finding(id, signal), [id]);
+  const mutationRevision = useRef(0);
+  const [confirmed, setConfirmed] = useState<{ response: FindingResponse; revision: number } | null>(null);
+  const [addedNotes, setAddedNotes] = useState<ReadonlyMap<string, FindingNote>>(new Map());
+  const [message, setMessage] = useState<{ target: "decision" | "note"; text: string } | null>(null);
+  const load = useCallback(async (signal: AbortSignal) => {
+    const revision = mutationRevision.current;
+    return { response: await api.finding(id, signal), revision };
+  }, [id]);
   const resource = useResource(load);
+  const response = resource.data === null ? null :
+    confirmed && confirmed.revision > resource.data.revision ? confirmed.response : resource.data.response;
+  const notes = useMemo(() => {
+    const supplied = response?.finding.notes;
+    if (supplied === undefined && addedNotes.size === 0) return undefined;
+    // Confirmed 201 receipts survive an overlapping canonical page, keyed by ID, not text.
+    return [...new Map([...(supplied ?? []).map((note) => [note.id, note] as const), ...addedNotes]).values()]
+      .sort((a, b) => a.id.localeCompare(b.id));
+  }, [response, addedNotes]);
+  const { workspace } = useSession();
+  const canWrite = workspace.role !== "viewer";
   const { reducedMotion } = usePreferences();
   useModal(dialog, closeButton, returnFocus, "work-heading");
   const close = () => {
     dialog.current?.close();
     onClose();
   };
-  const finding = resource.data?.finding;
+  function acceptPatch(result: FindingResponse, text: string) {
+    mutationRevision.current += 1;
+    setConfirmed({ response: result, revision: mutationRevision.current });
+    setMessage({ target: "decision", text });
+    onConfirmed(result.finding);
+  }
+  function addNote(note: FindingNote) {
+    setAddedNotes((previous) => new Map(previous).set(note.id, note));
+    setMessage({ target: "note", text: "Note added." });
+  }
+  function trapTab(event: KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== "Tab") return;
+    const controls = [...event.currentTarget.querySelectorAll<HTMLElement>("button, input, select, textarea, a[href], [tabindex]")]
+      .filter((element) => element.tabIndex >= 0 && !element.matches(":disabled") && !element.closest("[inert]") &&
+        element.getClientRects().length > 0 && getComputedStyle(element).visibility !== "hidden");
+    const first = controls[0], last = controls.at(-1);
+    if (first && last && (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    }
+  }
+  const finding = response ? { ...response.finding, notes } : undefined;
   const title = finding?.title ?? initialTitle;
-  return createPortal(<dialog ref={dialog} className="finding-dialog" aria-labelledby="finding-dialog-title" aria-describedby="finding-dialog-purpose" onCancel={(event) => { event.preventDefault(); close(); }}>
+  return createPortal(<dialog ref={dialog} className="finding-dialog" aria-labelledby="finding-dialog-title" aria-describedby="finding-dialog-purpose"
+    onKeyDown={trapTab} onCancel={(event) => { event.preventDefault(); close(); }}>
     <motion.div className="dialog-surface" initial={reducedMotion ? false : { opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.22 }}>
       <header className="dialog-topbar"><span><Icon name="file" size={17} />Finding evidence</span><Button ref={closeButton} type="button" variant="ghost" size="icon" aria-label="Close finding details" onClick={close}><Icon name="close" /></Button></header>
-      <div className="dialog-heading"><p id="finding-dialog-purpose" className="eyebrow">Read-only source context</p><h2 id="finding-dialog-title">{title}</h2>{resource.data && <DataNotice origin={resource.data.dataOrigin} />}</div>
+      <div className="dialog-heading"><p id="finding-dialog-purpose" className="eyebrow">{canWrite ? "Source context & analyst actions" : "Read-only source context"}</p><h2 id="finding-dialog-title">{title}</h2>{response && <DataNotice origin={response.dataOrigin} />}</div>
       <div className="dialog-content">
         {resource.error && <ErrorState error={resource.error} retry={resource.reload} stale={finding !== undefined} />}
         {resource.status === "loading" && !finding && <LoadingState label="Loading finding evidence" />}
         {finding && <>
-          <div className="finding-status-line"><SeverityBadge severity={finding.severity} /><WorkflowBadge value={finding.workflowState} /><span className="badge neutral"><Icon name="shield" size={13} />{finding.evidence.verificationState === "verified" && resource.data?.dataOrigin === "live" ? "Source reports verified" : finding.evidence.verificationState === "blocked" ? "Verification blocked" : "Not verified"}</span></div>
+          <div className="finding-status-line"><SeverityBadge severity={finding.severity} /><WorkflowBadge value={finding.workflowState} /><span className="badge neutral"><Icon name="shield" size={13} />{finding.evidence.verificationState === "verified" && response?.dataOrigin === "live" ? "Source reports verified" : finding.evidence.verificationState === "blocked" ? "Verification blocked" : "Not verified"}</span></div>
           <dl className="detail-facts"><div><dt>Asset</dt><dd><Icon name="code" size={15} />{finding.assetName}</dd></div><div><dt>Owner</dt><dd><Icon name="user" size={15} />{finding.ownerName ?? "Unassigned"}</dd></div><div className="full-width"><dt>Scope</dt><dd>{finding.scopeLabel}</dd></div></dl>
+          {canWrite && <FindingActions finding={finding} message={message?.target === "decision" ? message.text : null}
+            outsideFilter={confirmed !== null && !matchesWorkQuery(finding, query)}
+            onBegin={() => setMessage(null)} onConfirmed={acceptPatch} />}
           <section className="detail-section"><h3>What the source observed</h3><p>{finding.description || "The source did not supply a description."}</p></section>
           <section className="detail-section"><div className="section-heading"><h3>Original evidence</h3><span className="subtle-pill">Literal text</span></div><p className="evidence-source"><Icon name="file" size={14} />{finding.evidence.sourceLabel}</p><pre className="evidence-text">{finding.evidence.text || "The source did not supply evidence text."}</pre></section>
           <section className="detail-section"><h3>Source remediation context</h3><p>{finding.remediation || "No remediation guidance was supplied by the source."}</p><p className="section-note">Source text is evidence to review, not an instruction to execute.</p></section>
@@ -87,6 +136,8 @@ export function FindingDialog({ id, initialTitle, returnFocus, onClose }: {
             <p className="section-note">{finding.verifiedResolution === true ? "The service records an independently verified resolution." : finding.verifiedResolution === false ? "No independently verified resolution is recorded." : "Independent resolution verification was not supplied."}</p>
           </section>
           <section className="detail-section"><h3>Analyst notes</h3>
+            {canWrite && <FindingNoteForm id={id} message={message?.target === "note" ? message.text : null}
+              onBegin={() => setMessage(null)} onAdded={addNote} />}
             {finding.notes && finding.notes.length > 0 ? <ul className="analyst-notes" aria-label="Analyst notes">{finding.notes.map((note) => <li key={note.id}><p>{note.text}</p></li>)}</ul> : <p>{finding.notes === undefined ? "Analyst notes were not supplied." : "No analyst notes in this response."}</p>}
             {finding.notesNextCursor && <p className="section-note">More notes exist on the service. This view shows the returned page only.</p>}
           </section>

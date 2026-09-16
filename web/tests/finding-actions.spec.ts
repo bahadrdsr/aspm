@@ -1,0 +1,768 @@
+import type { ElementHandle, Locator, Page } from "@playwright/test";
+import { password } from "./application-fixture";
+import {
+  actionAlpha, actionBeta, actionObservations, actionUser, backendID, betaFinding, confirmedOwnerName,
+  currentOwner, expiredRiskAt, findingPath, identicalTextNote, literalNote, notesPath, originalNote,
+  primaryFinding, validNoteText,
+} from "./finding-actions-data";
+import type { ActionFinding, ActionFindingResponse, ActionNote } from "./finding-actions-data";
+import { expect, test } from "./finding-actions-fixture";
+import type { FindingActionControl, FindingActionsAPI } from "./finding-actions-fixture";
+import { requireProductionUI } from "./network";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+test.beforeEach(async ({ actions }) => {
+  requireProductionUI();
+  expect(actions.requests).toEqual([]);
+});
+
+const workflowNames = { open: "Open", "in-progress": "In progress", resolved: "Resolved" };
+const workflowLabel = /^(?:Human |Finding )?Workflow(?: state)?$/i;
+const ownerLabel = /^(?:Finding )?Owner$/i;
+const dispositionLabel = /^(?:Finding )?Disposition$/i;
+const noteLabel = /^(?:New note|Note text|Analyst note|Add note)$/i;
+const expiryLabel = /^(?:Risk acceptance|Accepted risk) expir(?:y|es at)(?: \(.*\))?$/i;
+const saveName = /^Save(?: (?:changes|owner|workflow|disposition|risk acceptance))?$/i;
+const positiveMessage = /(?:\bassigned\b|\bunassigned\b|\bsaved\b|\badded\b|\bupdated\b|\bchanged\b|\bcleared\b|\bsuccess(?:ful)?\b)/i;
+
+function panel(page: Page) {
+  return page.getByRole("dialog", { name: primaryFinding.title, exact: true });
+}
+function queue(page: Page) {
+  return page.getByRole("table", { name: "Findings", exact: true, includeHidden: true });
+}
+function row(page: Page, title = primaryFinding.title) {
+  return queue(page).getByRole("row", { includeHidden: true }).filter({ hasText: title });
+}
+function findingTrigger(page: Page) {
+  return row(page).getByRole("button", { name: primaryFinding.title, exact: true, includeHidden: true })
+    .or(row(page).getByRole("link", { name: primaryFinding.title, exact: true, includeHidden: true }));
+}
+function filter(page: Page) {
+  return page.getByRole("textbox", { name: "Filter findings", exact: true, includeHidden: true });
+}
+function selection(page: Page) {
+  return row(page).getByRole("checkbox", { name: `Select ${primaryFinding.title}`, exact: true, includeHidden: true });
+}
+function literal(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+function fact(dialog: Locator, label: string) {
+  const terms = dialog.getByRole("term").filter({ hasText: new RegExp(`^${literal(label)}$`, "i") });
+  return (label === "Scope" ? terms.first() : terms).locator("xpath=following-sibling::dd[1]");
+}
+function assign(dialog: Locator) { return dialog.getByRole("button", { name: "Assign to me", exact: true }); }
+function noteField(dialog: Locator) { return dialog.getByRole("textbox", { name: noteLabel }); }
+function noteList(dialog: Locator) { return dialog.getByRole("list", { name: "Analyst notes", exact: true }); }
+function alerts(dialog: Locator) { return dialog.getByRole("alert"); }
+function success(dialog: Locator) { return dialog.getByRole("status").filter({ hasText: positiveMessage }); }
+
+async function renderBoundary(page: Page, frames = 2) {
+  await page.evaluate(async (count) => {
+    for (let index = 0; index < count; index++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  }, frames);
+}
+async function openFinding(page: Page, query?: string, selected = false) {
+  await page.goto("/#/work");
+  await expect(queue(page)).toBeVisible();
+  if (query !== undefined) await filter(page).fill(query);
+  if (selected) await selection(page).check();
+  await findingTrigger(page).click();
+  await expect(panel(page)).toBeVisible();
+  await expect(fact(panel(page), "Owner")).toBeVisible();
+  return panel(page);
+}
+async function buttonHandle(button: Locator) {
+  await expect(button).toBeVisible();
+  const handle = await button.elementHandle();
+  if (!handle) throw new Error("Expected an actual accessible action button.");
+  return handle;
+}
+async function pending(dialog: Locator, button: ElementHandle<HTMLElement | SVGElement>) {
+  await expect(dialog.getByRole("status").filter({ hasText: /pending|assigning|saving|adding|updating|submitting|please wait/i }).first(),
+    "A pending write needs an accessible, truthful status.").toBeVisible();
+  await expect.poll(() => button.evaluate((element) => element instanceof HTMLButtonElement &&
+    element.isConnected && (element.disabled || element.getAttribute("aria-disabled") === "true")),
+  "The pending action must not allow duplicate activation.").toBe(true);
+  await expect(success(dialog), "An unacknowledged write is not a success.").toHaveCount(0);
+}
+async function requested(actions: FindingActionsAPI, control: FindingActionControl, method: string, path: string, body: Record<string, unknown>) {
+  await expect.poll(() => control.call !== null, `Expected the real UI to send ${method} ${path}.`).toBe(true);
+  expect(control.call).toMatchObject({ method, path, workspace: actionAlpha.id, query: {}, body });
+  expect(control.call!.body, "Only this action's selected fields may be sent.").toEqual(body);
+  expect(actions.calls(method, path).at(-1)).toBe(control.call);
+}
+async function release(page: Page, control: FindingActionControl) {
+  control.release();
+  await control.delivered;
+  await renderBoundary(page);
+}
+function acknowledgedFinding(control: FindingActionControl): ActionFinding {
+  expect(control.call?.status).toBe(200);
+  const response = control.call?.response as ActionFindingResponse | null;
+  expect(response?.apiVersion).toBe("aspm/v1alpha1");
+  expect(response?.finding.id).toBe(primaryFinding.id);
+  if (!response) throw new Error("No full canonical PATCH response.");
+  return response.finding;
+}
+async function unchangedSource(dialog: Locator, finding: ActionFinding = primaryFinding) {
+  await expect(dialog.getByText(finding.evidence.text, { exact: true })).toBeVisible();
+  await expect(dialog.getByText(finding.evidence.sourceLabel, { exact: true })).toBeVisible();
+  await expect(dialog.getByText(finding.description, { exact: true })).toBeVisible();
+  await expect(dialog.getByText(finding.remediation, { exact: true })).toBeVisible();
+  await expect(dialog.getByText("Not verified", { exact: true })).toBeVisible();
+  await expect(dialog.getByText(/No independently verified resolution is recorded/i)).toBeVisible();
+  await expect(fact(dialog, "Scanner-inferred state")).toHaveText(finding.sourceState === "observed" ? /^Observed$/i : /^Inferred resolved$/i);
+  await expect(fact(dialog, "Scope")).toHaveText(finding.scopeLabel);
+  for (const stamp of [finding.sourceFreshnessAt, finding.collectedAt, finding.importedAt].filter((value): value is string => value !== null)) {
+    await expect(dialog.locator(`time[datetime="${stamp}"]`).first()).toBeVisible();
+  }
+  await expect(dialog.getByText("Unknown source time", { exact: true }).first()).toBeVisible();
+  const observations = dialog.getByRole("list", { name: "Observations", exact: true });
+  await expect(observations.getByRole("listitem")).toHaveCount(actionObservations.length);
+  for (const observation of actionObservations) {
+    const entry = observations.getByRole("listitem").filter({ hasText: observation.scanId });
+    for (const value of [observation.runId, observation.sourceId, observation.evidenceDigest, observation.unmapped.retained,
+      observation.impact, observation.remediation]) {
+      await expect(entry).toContainText(value);
+    }
+    await expect(fact(entry, "Scope")).toHaveText(observation.scope.id);
+    await expect(fact(entry, "Revision / branch")).toHaveText(`${observation.scope.revision} / ${observation.scope.branch}`);
+    await expect(fact(entry, "Source severity")).toHaveText(observation.sourceSeverity);
+    await expect(entry).toContainText(`${observation.sourceLocation.uri}:${observation.sourceLocation.line}`);
+    if (observation.sourceScanAt !== null) await expect(entry.locator(`time[datetime="${observation.sourceScanAt}"]`)).toBeVisible();
+    else await expect(entry.getByText("Unknown source time", { exact: true })).toBeVisible();
+  }
+  await expect(noteList(dialog).getByText(originalNote.text, { exact: true })).toHaveCount(1);
+}
+async function rowConfirmed(page: Page, finding: ActionFinding) {
+  await expect(row(page), "The matching queue row must remain in its existing context.").toHaveCount(1);
+  await expect(row(page).getByRole("cell", { includeHidden: true }).filter({ hasText: finding.ownerName ?? "Unassigned" })).toHaveCount(1);
+  await expect(row(page).getByRole("cell", { includeHidden: true }).filter({ hasText: new RegExp(`^${workflowNames[finding.workflowState]}$`, "i") })).toHaveCount(1);
+}
+async function sameDialog(handle: ElementHandle<HTMLElement | SVGElement>) {
+  expect(await handle.evaluate((element) => element.isConnected && element instanceof HTMLDialogElement && element.open),
+    "A mutation or background queue refresh must not replace/remount the finding dialog.").toBe(true);
+}
+async function formSave(field: Locator, names = saveName) {
+  const form = field.locator("xpath=ancestor::form[1]");
+  await expect(form, "A native editable field needs a contextual form, not an ambiguous global Save.").toHaveCount(1);
+  const button = form.getByRole("button", { name: names });
+  await expect(button).toBeVisible();
+  return button;
+}
+async function workflowAction(dialog: Locator, value: ActionFinding["workflowState"]) {
+  const field = dialog.getByRole("combobox", { name: workflowLabel });
+  const names = value === "in-progress" ? /^(?:Start work|Start progress|Start in progress|Mark in progress)$/i :
+    value === "resolved" ? /^(?:Resolve|Resolve finding|Mark resolved)$/i : /^(?:Reopen|Reopen finding)$/i;
+  const direct = dialog.getByRole("button", { name: names });
+  await expect(field.or(direct).first(), "Provide a labelled native workflow select plus Save, or an explicit workflow action.").toBeVisible();
+  if (await field.count()) {
+    expect(await field.evaluate((element) => element.tagName)).toBe("SELECT");
+    await field.selectOption(value);
+    return formSave(field);
+  }
+  return direct;
+}
+async function unassignAction(dialog: Locator) {
+  const field = dialog.getByRole("combobox", { name: ownerLabel });
+  const direct = dialog.getByRole("button", { name: /^(?:Unassign|Unassign finding|Clear owner)$/i });
+  await expect(field.or(direct).first(), "Unassignment must be available in the existing finding context.").toBeVisible();
+  if (await field.count()) {
+    expect(await field.evaluate((element) => element.tagName)).toBe("SELECT");
+    const options = await field.getByRole("option").evaluateAll((items) => items.map((item) => ({
+      value: (item as HTMLOptionElement).value, label: item.textContent ?? "", disabled: (item as HTMLOptionElement).disabled,
+    })));
+    expect(options.some((option) => option.value === currentOwner.id)).toBe(true);
+    expect(options.some((option) => option.value === actionUser.id)).toBe(true);
+    expect(options.filter((option) => !option.disabled).every((option) =>
+      [currentOwner.id, actionUser.id].includes(option.value) || /^unassigned$/i.test(option.label)),
+    "Do not invent a members directory or arbitrary owner IDs.").toBe(true);
+    const unassigned = options.find((option) => /^unassigned$/i.test(option.label));
+    expect(unassigned).toBeDefined();
+    await field.selectOption(unassigned!.value);
+    return formSave(field);
+  }
+  return direct;
+}
+async function riskForm(dialog: Locator) {
+  const disposition = dialog.getByRole("combobox", { name: dispositionLabel });
+  const accept = dialog.getByRole("button", { name: /^Accept risk$/i });
+  const expiry = dialog.getByLabel(expiryLabel);
+  await expect(disposition.or(accept).or(expiry).first(),
+    "Risk acceptance needs an explicit in-context action and an optional, deliberate expiry input.").toBeVisible();
+  if (await disposition.count()) {
+    expect(await disposition.evaluate((element) => element.tagName)).toBe("SELECT");
+    await disposition.selectOption("accepted-risk");
+  } else if (await expiry.count() === 0) await accept.click();
+  await expect(expiry).toBeVisible();
+  expect(await expiry.getAttribute("type"), "Use datetime-local or explicit RFC3339 text, not a silently completed date.").toMatch(/^(?:datetime-local|text)$/);
+  const save = await formSave(expiry, /^Accept risk$|^Save(?: (?:changes|disposition|risk acceptance))?$/i);
+  return { expiry, save };
+}
+async function fillExpiry(field: Locator, value: string) {
+  const displayed = await field.getAttribute("type") === "datetime-local" ? value.slice(0, 16) : value;
+  await field.fill(displayed);
+  return displayed;
+}
+async function clearRiskAction(dialog: Locator) {
+  const disposition = dialog.getByRole("combobox", { name: dispositionLabel });
+  if (await disposition.count()) {
+    await disposition.selectOption("none");
+    return formSave(disposition);
+  }
+  const button = dialog.getByRole("button", { name: /^(?:Clear risk acceptance|Clear acceptance|Clear accepted risk)$/i });
+  await expect(button).toBeVisible();
+  return button;
+}
+async function addNoteAction(dialog: Locator) {
+  const field = noteField(dialog);
+  await expect(field, "Add a labelled multiline note form without replacing the existing literal note list.").toBeVisible();
+  expect(await field.evaluate((element) => element.tagName)).toBe("TEXTAREA");
+  return formSave(field, /^Add note$/i);
+}
+async function noteCounts(dialog: Locator, total: number, duplicateLiteralCount: number) {
+  await expect(noteList(dialog).getByRole("listitem")).toHaveCount(total);
+  await expect(noteList(dialog).getByText(literalNote, { exact: true })).toHaveCount(duplicateLiteralCount);
+  expect(await noteList(dialog).getByText(literalNote, { exact: true }).allTextContents()).toEqual(Array(duplicateLiteralCount).fill(literalNote));
+  await expect(noteList(dialog).getByText(originalNote.text, { exact: true })).toHaveCount(1);
+  await expect(noteList(dialog).locator("script, a, iframe, img, svg, b"),
+    "Note text and URLs must stay inert, not turn into markup, links or executable elements.").toHaveCount(0);
+}
+async function noAlphaData(page: Page) {
+  await expect(page.getByRole("dialog", { includeHidden: true })).toHaveCount(0);
+  for (const value of [primaryFinding.title, primaryFinding.assetName, originalNote.text, literalNote, confirmedOwnerName]) {
+    await expect(page.locator("body")).not.toContainText(value);
+  }
+  await expect(page.getByRole("textbox", { name: noteLabel, includeHidden: true })).toHaveCount(0);
+}
+async function protectedGone(page: Page) {
+  await noAlphaData(page);
+  await expect(page.getByRole("table", { name: "Findings", includeHidden: true })).toHaveCount(0);
+  await expect(page.getByRole("combobox", { name: "Workspace", exact: true, includeHidden: true })).toHaveCount(0);
+  await expect(page.getByLabel("Current result summary", { exact: true })).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(actionUser.name);
+  await expect(page.locator("body")).not.toContainText(actionAlpha.name);
+}
+async function signIn(page: Page) {
+  const form = page.getByRole("form", { name: "Sign in", exact: true });
+  await expect(form).toBeVisible();
+  await form.getByLabel("Email", { exact: true }).fill(actionUser.email);
+  await form.getByLabel("Password", { exact: true }).fill(password);
+  await form.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(queue(page)).toBeVisible();
+}
+
+test("FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership", async ({ page, actions }) => {
+  actions.roles.set(actionAlpha.id, "admin");
+  actions.serverRoles.set(actionAlpha.id, "admin");
+  const dialog = await openFinding(page, primaryFinding.assetName, true);
+  await unchangedSource(dialog);
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(0);
+  actions.members.get(actionAlpha.id)!.set(actionUser.id, confirmedOwnerName);
+  const stableDialog = await dialog.elementHandle();
+  if (!stableDialog) throw new Error("No native finding dialog.");
+
+  await test.step("failed assignment preserves confirmed owner without success", async () => {
+    const failed = actions.queuePatch(503, true);
+    const button = assign(dialog), handle = await buttonHandle(button);
+    await button.click();
+    await requested(actions, failed, "PATCH", findingPath, { ownerId: actionUser.id });
+    await pending(dialog, handle);
+    await page.keyboard.press("Enter");
+    await renderBoundary(page);
+    expect(actions.calls("PATCH", findingPath)).toHaveLength(1);
+    await expect(fact(dialog, "Owner")).toHaveText("Unassigned");
+    await rowConfirmed(page, primaryFinding);
+    await release(page, failed);
+    await expect(alerts(dialog).filter({ hasText: /could not|unavailable|confirm|failed/i }).first()).toBeVisible();
+    await expect(success(dialog)).toHaveCount(0);
+    await expect(fact(dialog, "Owner")).toHaveText("Unassigned");
+    expect(actions.finding().ownerId).toBeNull();
+    await sameDialog(stableDialog);
+  });
+
+  await test.step("authoritative PATCH updates detail and row before any follow-up Work read", async () => {
+    actions.holdWork(actionAlpha.id);
+    const saved = actions.queuePatch(200, true);
+    await assign(dialog).click();
+    await requested(actions, saved, "PATCH", findingPath, { ownerId: actionUser.id });
+    await expect(fact(dialog, "Owner")).toHaveText("Unassigned");
+    await release(page, saved);
+    const confirmed = acknowledgedFinding(saved);
+    expect(confirmed.ownerName).toBe(confirmedOwnerName);
+    expect(confirmed.ownerName).not.toBe(actionUser.name);
+    await expect(fact(dialog, "Owner")).toHaveText(confirmed.ownerName!);
+    await rowConfirmed(page, confirmed);
+    await expect(success(dialog).first()).toBeVisible();
+    await sameDialog(stableDialog);
+    await unchangedSource(dialog);
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+    await expect(findingTrigger(page)).toBeFocused();
+    await expect(filter(page)).toHaveValue(primaryFinding.assetName);
+    await expect(selection(page)).toBeChecked();
+    await rowConfirmed(page, confirmed);
+    expect(actions.calls("PATCH", findingPath)).toHaveLength(2);
+    expect(actions.calls("POST", notesPath)).toHaveLength(0);
+  });
+});
+
+test("FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter", async ({ page, actions }) => {
+  const initial: ActionFinding = {
+    ...primaryFinding, ownerId: currentOwner.id, ownerName: currentOwner.name, workflowState: "in-progress",
+    disposition: "accepted-risk", acceptedRiskExpiresAt: expiredRiskAt, riskAcceptanceExpired: true,
+    sourceState: "inferred-resolved",
+  };
+  actions.seedFinding(initial);
+  const dialog = await openFinding(page, currentOwner.name, true);
+  await expect(fact(dialog, "Owner")).toHaveText(currentOwner.name);
+  const stableDialog = await dialog.elementHandle();
+  if (!stableDialog) throw new Error("No native finding dialog.");
+  const save = await unassignAction(dialog);
+  expect(actions.calls("PATCH", findingPath), "Editing a native owner select must not implicitly write.").toHaveLength(0);
+  const saved = actions.queuePatch();
+  await save.click();
+  await requested(actions, saved, "PATCH", findingPath, { ownerId: null });
+  await saved.delivered;
+  const confirmed = acknowledgedFinding(saved);
+  expect(confirmed).toMatchObject({
+    ownerId: null, ownerName: null, workflowState: initial.workflowState, disposition: initial.disposition,
+    acceptedRiskExpiresAt: expiredRiskAt, riskAcceptanceExpired: true, sourceState: initial.sourceState, verifiedResolution: false,
+  });
+  await expect(fact(dialog, "Owner")).toHaveText("Unassigned");
+  await expect(fact(dialog, "Expiry state from service")).toHaveText("Expired");
+  await unchangedSource(dialog, initial);
+  await sameDialog(stableDialog);
+  await expect(row(page), "Do not invent membership in an owner-filtered loaded result set.").toHaveCount(0);
+  await expect(dialog.getByRole("status").filter({ hasText: /no longer match|outside.{0,40}filter|not.{0,20}match.{0,30}filter|removed from.{0,30}(?:filter|view)/i })).toBeVisible();
+  await expect(filter(page)).toHaveValue(currentOwner.name);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  const workHeading = page.getByRole("heading", { name: "Work", exact: true });
+  expect(await filter(page).evaluate((element) => element === document.activeElement) ||
+    await workHeading.evaluate((element) => element === document.activeElement),
+  "When the original row is legitimately filtered out, focus needs a safe Work/filter fallback.").toBe(true);
+  await expect(filter(page)).toHaveValue(currentOwner.name);
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(1);
+});
+
+test("FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification", async ({ page, actions }) => {
+  const initial: ActionFinding = {
+    ...primaryFinding, ownerId: currentOwner.id, ownerName: currentOwner.name,
+    disposition: "accepted-risk", acceptedRiskExpiresAt: expiredRiskAt, riskAcceptanceExpired: true,
+  };
+  actions.seedFinding(initial);
+  const dialog = await openFinding(page, primaryFinding.assetName, true);
+  let previous = initial.workflowState;
+  for (const value of ["in-progress", "resolved", "open"] as const) await test.step(value, async () => {
+    const before = actions.calls("PATCH", findingPath).length;
+    const save = await workflowAction(dialog, value);
+    expect(actions.calls("PATCH", findingPath), "Selecting a draft workflow is not an implicit save.").toHaveLength(before);
+    const saved = actions.queuePatch(200, true);
+    const handle = await buttonHandle(save);
+    await save.click();
+    await requested(actions, saved, "PATCH", findingPath, { workflowState: value });
+    await pending(dialog, handle);
+    await expect(fact(dialog, "Human workflow")).toHaveText(new RegExp(`^${workflowNames[previous]}$`, "i"));
+    await release(page, saved);
+    const confirmed = acknowledgedFinding(saved);
+    expect(confirmed).toMatchObject({
+      workflowState: value, ownerId: currentOwner.id, disposition: "accepted-risk", acceptedRiskExpiresAt: expiredRiskAt,
+      riskAcceptanceExpired: true, sourceState: initial.sourceState, evidence: initial.evidence, verifiedResolution: false,
+    });
+    await expect(fact(dialog, "Human workflow")).toHaveText(new RegExp(`^${workflowNames[value]}$`, "i"));
+    await rowConfirmed(page, confirmed);
+    await unchangedSource(dialog, initial);
+    await expect(fact(dialog, "Expiry state from service")).toHaveText("Expired");
+    if (value === "resolved") {
+      await expect(dialog).toContainText(/human[\s\S]{0,160}(?:not|never)[\s\S]{0,80}verif|workflow[\s\S]{0,80}(?:not|never)[\s\S]{0,80}verif|resolv[\s\S]{0,100}does not[\s\S]{0,80}verif/i);
+    }
+    previous = value;
+  });
+  await page.keyboard.press("Escape");
+  await expect(filter(page)).toHaveValue(primaryFinding.assetName);
+  await expect(selection(page)).toBeChecked();
+  await expect(findingTrigger(page)).toBeFocused();
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(3);
+});
+
+test("FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes", async ({ page, actions }) => {
+  const initial = { ...primaryFinding, ownerId: currentOwner.id, ownerName: currentOwner.name, workflowState: "in-progress" as const };
+  actions.seedFinding(initial);
+  const dialog = await openFinding(page);
+  const { expiry, save } = await riskForm(dialog);
+  await expect(expiry, "A blank expiry is allowed and must not become a guessed date.").toHaveValue("");
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(0);
+  const accepted = actions.queuePatch(200, true);
+  const handle = await buttonHandle(save);
+  await save.click();
+  await requested(actions, accepted, "PATCH", findingPath, { disposition: "accepted-risk", acceptedRiskExpiresAt: null });
+  await pending(dialog, handle);
+  await expect(fact(dialog, "Disposition")).toHaveText("None");
+  await release(page, accepted);
+  await expect(fact(dialog, "Disposition")).toHaveText(/^Accepted risk$/i);
+  await expect(fact(dialog, "Risk acceptance expiry")).toHaveText("No expiry supplied");
+  await expect(fact(dialog, "Expiry state from service")).toHaveText("Not expired");
+
+  const edit = await riskForm(dialog), displayed = await fillExpiry(edit.expiry, expiredRiskAt);
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(1);
+  const rejected = actions.queuePatch(503);
+  await edit.save.click();
+  await expect.poll(() => rejected.call !== null).toBe(true);
+  expect(Object.keys(rejected.call!.body), "Changing expiry alone must not resend stale owner, workflow or disposition.").toEqual(["acceptedRiskExpiresAt"]);
+  expect(Date.parse(String(rejected.call!.body.acceptedRiskExpiresAt))).toBe(Date.parse(expiredRiskAt));
+  await rejected.delivered;
+  await expect(alerts(dialog).filter({ hasText: /could not|confirm|unavailable|failed/i }).first()).toBeVisible();
+  await expect(edit.expiry).toHaveValue(displayed);
+  await expect(fact(dialog, "Risk acceptance expiry")).toHaveText("No expiry supplied");
+  await expect(fact(dialog, "Expiry state from service")).toHaveText("Not expired");
+  await expect(success(dialog)).toHaveCount(0);
+
+  const saved = actions.queuePatch();
+  await edit.save.click();
+  await requested(actions, saved, "PATCH", findingPath, rejected.call!.body);
+  await saved.delivered;
+  const confirmed = acknowledgedFinding(saved);
+  expect(confirmed.riskAcceptanceExpired).toBe(true);
+  await expect(fact(dialog, "Risk acceptance expiry").locator(`time[datetime="${confirmed.acceptedRiskExpiresAt}"]`)).toBeVisible();
+  await expect(fact(dialog, "Expiry state from service")).toHaveText("Expired");
+  expect(confirmed).toMatchObject({ ownerId: currentOwner.id, workflowState: "in-progress", sourceState: "observed", verifiedResolution: false });
+
+  const clear = await clearRiskAction(dialog), clearRejected = actions.queuePatch(503);
+  await clear.click();
+  await expect.poll(() => clearRejected.call !== null).toBe(true);
+  expect([{ disposition: "none" }, { disposition: "none", acceptedRiskExpiresAt: null }]).toContainEqual(clearRejected.call!.body);
+  await clearRejected.delivered;
+  await expect(alerts(dialog).filter({ hasText: /could not|confirm|unavailable|failed/i }).first()).toBeVisible();
+  await expect(fact(dialog, "Disposition")).toHaveText(/^Accepted risk$/i);
+  await expect(fact(dialog, "Expiry state from service")).toHaveText("Expired");
+  await expect(fact(dialog, "Risk acceptance expiry").locator(`time[datetime="${confirmed.acceptedRiskExpiresAt}"]`)).toBeVisible();
+  const dispositionDraft = dialog.getByRole("combobox", { name: dispositionLabel });
+  if (await dispositionDraft.count()) await expect(dispositionDraft).toHaveValue("none");
+  await expect(success(dialog)).toHaveCount(0);
+  const cleared = actions.queuePatch();
+  await clear.click();
+  await requested(actions, cleared, "PATCH", findingPath, clearRejected.call!.body);
+  await cleared.delivered;
+  expect(acknowledgedFinding(cleared)).toMatchObject({
+    disposition: "none", acceptedRiskExpiresAt: null, riskAcceptanceExpired: false, ownerId: currentOwner.id, workflowState: "in-progress",
+  });
+  await expect(fact(dialog, "Disposition")).toHaveText("None");
+  await expect(fact(dialog, "Risk acceptance expiry")).toHaveCount(0);
+  await expect(dialog.getByText("Expired", { exact: true })).toHaveCount(0);
+  await unchangedSource(dialog, initial);
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(5);
+});
+
+test("FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities", async ({ page, actions }) => {
+  expect(validNoteText("x\0y")).toBe(false);
+  expect(validNoteText("é".repeat(4096))).toBe(true);
+  expect(validNoteText("é".repeat(4097))).toBe(false);
+  const dialog = await openFinding(page), field = noteField(dialog);
+  await noteCounts(dialog, 2, 1);
+  const add = await addNoteAction(dialog);
+  for (const invalid of [" \n\t ", "x".repeat(8193), "é".repeat(4097)]) await test.step(`invalid draft: ${Buffer.byteLength(invalid, "utf8")} bytes`, async () => {
+    const before = actions.calls("POST", notesPath).length;
+    await field.fill(invalid);
+    await expect(field, "Do not silently trim/truncate an analyst's draft to make it valid.").toHaveValue(invalid);
+    if (await add.isEnabled()) await add.click();
+    await expect.poll(async () => {
+      const localInvalid = await field.evaluate((element) => element instanceof HTMLTextAreaElement &&
+        (!element.validity.valid || element.getAttribute("aria-invalid") === "true"));
+      return localInvalid || await alerts(dialog).count() > 0 || await add.isDisabled();
+    }, "Invalid text needs accessible validation or a non-submittable action.").toBe(true);
+    await renderBoundary(page);
+    const attempts = actions.calls("POST", notesPath).slice(before);
+    expect(attempts.length).toBeLessThanOrEqual(1);
+    if (attempts.length) {
+      await expect.poll(() => attempts[0].status).toBe(400);
+      await expect(alerts(dialog).first()).toBeVisible();
+    }
+    await noteCounts(dialog, 2, 1);
+    await expect(field).toHaveValue(invalid);
+    await expect(success(dialog)).toHaveCount(0);
+  });
+  await field.fill(literalNote);
+  const failed = actions.queueNote(503);
+  await add.click();
+  await requested(actions, failed, "POST", notesPath, { text: literalNote });
+  await failed.delivered;
+  await expect(alerts(dialog).filter({ hasText: /could not|confirm|unavailable|failed/i }).first()).toBeVisible();
+  await expect(field).toHaveValue(literalNote);
+  await noteCounts(dialog, 2, 1);
+  await expect(success(dialog)).toHaveCount(0);
+
+  const before = actions.calls("POST", notesPath).length;
+  const posted = actions.queueNote(201, true), handle = await buttonHandle(add);
+  await add.click();
+  await requested(actions, posted, "POST", notesPath, { text: literalNote });
+  await pending(dialog, handle);
+  await page.keyboard.press("Control+Enter");
+  await page.keyboard.press("Control+Enter");
+  await renderBoundary(page);
+  expect(actions.calls("POST", notesPath)).toHaveLength(before + 1);
+  await expect(field).toHaveValue(literalNote);
+  await noteCounts(dialog, 2, 1);
+  await release(page, posted);
+  const response = posted.call!.response as { apiVersion: string; note: ActionNote };
+  expect(posted.call!.status).toBe(201);
+  expect(response.apiVersion).toBe("aspm/v1alpha1");
+  expect(backendID(response.note.id)).toBe(true);
+  expect([originalNote.id, identicalTextNote.id]).not.toContain(response.note.id);
+  expect(response.note.text).toBe(literalNote);
+  await expect(field).toHaveValue("");
+  await expect(success(dialog).first()).toBeVisible();
+  await noteCounts(dialog, 3, 2);
+  for (const text of await noteList(dialog).getByText(literalNote, { exact: true }).all()) {
+    expect(await text.evaluate((element) => ["pre", "pre-wrap", "pre-line", "break-spaces"].includes(getComputedStyle(element).whiteSpace) ||
+      element.querySelector("br") !== null), "Literal note line breaks must remain visible, not just survive in textContent.").toBe(true);
+  }
+
+  const workflow = await workflowAction(dialog, "in-progress"), canonical = actions.queuePatch();
+  await workflow.click();
+  await requested(actions, canonical, "PATCH", findingPath, { workflowState: "in-progress" });
+  await canonical.delivered;
+  expect(acknowledgedFinding(canonical).notes.filter((note) => note.id === response.note.id)).toEqual([response.note]);
+  await noteCounts(dialog, 3, 2);
+  await page.keyboard.press("Escape");
+  await findingTrigger(page).click();
+  await expect(panel(page)).toBeVisible();
+  await noteCounts(panel(page), 3, 2);
+
+  const boundary = "é".repeat(4096), full = actions.queueNote();
+  await noteField(panel(page)).fill(boundary);
+  await (await addNoteAction(panel(page))).click();
+  await requested(actions, full, "POST", notesPath, { text: boundary });
+  await full.delivered;
+  await expect(noteList(panel(page)).getByRole("listitem")).toHaveCount(4);
+  expect(await noteList(panel(page)).getByText(boundary, { exact: true }).textContent()).toBe(boundary);
+  await unchangedSource(panel(page));
+});
+
+test("FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace", async ({ page, actions }) => {
+  actions.roles.set(actionAlpha.id, "viewer");
+  actions.serverRoles.set(actionAlpha.id, "viewer");
+  let dialog = await openFinding(page);
+  await unchangedSource(dialog);
+  const controls = [
+    assign(dialog),
+    dialog.getByRole("button", { name: /^(?:Unassign|Unassign finding|Clear owner|Start work|Start progress|Start in progress|Mark in progress|Resolve|Resolve finding|Mark resolved|Reopen|Reopen finding|Accept risk|Clear acceptance|Clear risk acceptance|Clear accepted risk|Add note|Save(?: changes| owner| workflow| disposition| risk acceptance)?)$/i }),
+    dialog.getByRole("combobox", { name: ownerLabel }),
+    dialog.getByRole("combobox", { name: workflowLabel }),
+    dialog.getByRole("combobox", { name: dispositionLabel }),
+    dialog.getByLabel(expiryLabel),
+    noteField(dialog),
+  ];
+  for (const matches of controls) for (const control of await matches.all()) await expect(control).toBeDisabled();
+  expect(actions.calls("PATCH", findingPath)).toHaveLength(0);
+  expect(actions.calls("POST", notesPath)).toHaveLength(0);
+
+  await page.keyboard.press("Escape");
+  actions.roles.set(actionAlpha.id, "analyst");
+  await page.reload();
+  await findingTrigger(page).click();
+  dialog = panel(page);
+  await expect(assign(dialog), "A real writer affordance is needed to test stale UI authority against the server.").toBeVisible();
+  await assign(dialog).click();
+  await expect.poll(() => actions.calls("PATCH", findingPath).at(-1)?.status).toBe(403);
+  expect(actions.calls("PATCH", findingPath).at(-1)?.body).toEqual({ ownerId: actionUser.id });
+  await expect(alerts(dialog).filter({ hasText: /denied|permission|not permitted|forbidden/i }).first()).toBeVisible();
+  await expect(fact(dialog, "Owner")).toHaveText("Unassigned");
+  await expect(success(dialog)).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await page.reload();
+  await findingTrigger(page).click();
+  dialog = panel(page);
+  const field = noteField(dialog), add = await addNoteAction(dialog);
+  const draft = "Synthetic denied note remains a draft.";
+  await field.fill(draft);
+  await add.click();
+  await expect.poll(() => actions.calls("POST", notesPath).at(-1)?.status).toBe(403);
+  await expect(field).toHaveValue(draft);
+  await expect(alerts(dialog).filter({ hasText: /denied|permission|not permitted|forbidden/i }).first()).toBeVisible();
+  await noteCounts(dialog, 2, 1);
+  await expect(success(dialog)).toHaveCount(0);
+
+  actions.serverRoles.set(actionAlpha.id, "analyst");
+  await page.keyboard.press("Escape");
+  await page.reload();
+  await findingTrigger(page).click();
+  for (const kind of ["PATCH", "note"] as const) await test.step(`protected ${kind} 401`, async () => {
+    dialog = panel(page);
+    const expired = kind === "PATCH" ? actions.queuePatch(401) : actions.queueNote(401);
+    if (kind === "PATCH") {
+      await assign(dialog).click();
+      await requested(actions, expired, "PATCH", findingPath, { ownerId: actionUser.id });
+    } else {
+      const add = await addNoteAction(dialog);
+      await noteField(dialog).fill(draft);
+      await add.click();
+      await requested(actions, expired, "POST", notesPath, { text: draft });
+    }
+    await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+    await protectedGone(page);
+    await page.reload();
+    await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+    await protectedGone(page);
+    if (kind === "PATCH") {
+      await signIn(page);
+      await findingTrigger(page).click();
+    }
+  });
+});
+
+test("FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs", async ({ page, actions }) => {
+  for (const boundary of ["workspace", "logout"] as const) for (const kind of ["PATCH", "note"] as const) {
+    await test.step(`${boundary}: held ${kind}`, async () => {
+      actions.seedFinding(primaryFinding);
+      await page.goto("/#/work");
+      if (!actions.authenticated) await signIn(page);
+      const workspace = page.getByRole("combobox", { name: "Workspace", exact: true });
+      await workspace.selectOption(actionAlpha.id);
+      await expect(workspace).toHaveValue(actionAlpha.id);
+      await expect(queue(page)).toBeVisible();
+      await filter(page).fill(primaryFinding.assetName);
+      await selection(page).check();
+      await findingTrigger(page).click();
+      const dialog = panel(page);
+      await expect(dialog).toBeVisible();
+      const held = kind === "PATCH" ? actions.queuePatch(200, true) : actions.queueNote(201, true);
+      const draft = "Synthetic late note acknowledgement must not return to another context.";
+      if (kind === "PATCH") {
+        await expect(assign(dialog)).toBeVisible();
+        await assign(dialog).click();
+        await requested(actions, held, "PATCH", findingPath, { ownerId: actionUser.id });
+      } else {
+        const add = await addNoteAction(dialog);
+        await noteField(dialog).fill(draft);
+        await add.click();
+        await requested(actions, held, "POST", notesPath, { text: draft });
+      }
+      await page.keyboard.press("Escape");
+      await expect(dialog).toHaveCount(0);
+      if (boundary === "workspace") {
+        const beta = actions.holdWork(actionBeta.id);
+        await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(actionBeta.id);
+        await expect.poll(() => beta.call !== null).toBe(true);
+        await noAlphaData(page);
+        await expect(filter(page)).toHaveValue("");
+        await expect(page.getByRole("checkbox", { checked: true, includeHidden: true })).toHaveCount(0);
+        await release(page, held);
+        await expect.poll(() => held.call?.failure, "Context loss must abort the request, not merely hide its eventual success.").toMatch(/abort/i);
+        await noAlphaData(page);
+        await expect(page.locator("body")).not.toContainText(draft);
+        await release(page, beta);
+        await expect(row(page, betaFinding.title)).toBeVisible();
+        await expect(queue(page).getByRole("row").filter({ has: page.getByRole("cell") })).toHaveCount(1);
+        await expect(page.getByLabel("Current result summary", { exact: true })).toContainText("of 1 returned by the API");
+        await noAlphaData(page);
+      } else {
+        await page.getByRole("button", { name: "Sign out", exact: true }).click();
+        await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+        await protectedGone(page);
+        await release(page, held);
+        await expect.poll(() => held.call?.failure).toMatch(/abort/i);
+        await protectedGone(page);
+        await expect(page.locator("body")).not.toContainText(draft);
+        await page.reload();
+        await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+        await protectedGone(page);
+      }
+    });
+  }
+});
+
+test("FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh", async ({ page, actions }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  actions.seedQueueRows(28);
+  for (const reducedMotion of ["reduce", "no-preference"] as const) await test.step(reducedMotion, async () => {
+    actions.seedFinding(primaryFinding);
+    await page.emulateMedia({ reducedMotion });
+    await page.goto("/#/work");
+    await expect(queue(page)).toBeVisible();
+    await filter(page).fill(primaryFinding.assetName);
+    await selection(page).check();
+    const oldWork = actions.holdWork(actionAlpha.id);
+    await page.getByRole("button", { name: "Refresh", exact: true }).click();
+    await expect.poll(() => oldWork.call !== null).toBe(true);
+    const trigger = findingTrigger(page);
+    await trigger.scrollIntoViewIfNeeded();
+    await trigger.focus();
+    const position = () => trigger.evaluate((element) => {
+      let innerX = 0, innerY = 0;
+      for (let parent = element.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
+        innerX += parent.scrollLeft; innerY += parent.scrollTop;
+      }
+      const rect = element.getBoundingClientRect();
+      return { pageX: scrollX, pageY: scrollY, innerX, innerY, inViewport: rect.top < innerHeight && rect.bottom > 0 };
+    });
+    const before = await position();
+    expect(before.pageY + before.innerY, "Exercise an actually scrolled queue, not an already-visible first row.").toBeGreaterThan(200);
+    await trigger.press("Enter");
+    const dialog = panel(page);
+    await expect(dialog).toBeVisible();
+    const stableDialog = await dialog.elementHandle();
+    if (!stableDialog) throw new Error("No native finding dialog.");
+    const action = assign(dialog), button = await buttonHandle(action), held = actions.queuePatch(200, true);
+    await action.focus();
+    await action.press("Enter");
+    await requested(actions, held, "PATCH", findingPath, { ownerId: actionUser.id });
+    await pending(dialog, button);
+    await sameDialog(stableDialog);
+    await release(page, held);
+    const confirmed = acknowledgedFinding(held);
+    await expect(fact(dialog, "Owner")).toHaveText(confirmed.ownerName!);
+    await rowConfirmed(page, confirmed);
+    const field = noteField(dialog), draft = "Synthetic unsubmitted note draft.\nKeep this second line.";
+    await expect(field).toBeVisible();
+    await field.fill(draft);
+    await field.press("Home");
+    await field.press("ArrowRight");
+    const caret = await field.evaluate((element) => {
+      const textarea = element as HTMLTextAreaElement;
+      return { start: textarea.selectionStart, end: textarea.selectionEnd };
+    });
+    await release(page, oldWork);
+    await sameDialog(stableDialog);
+    await expect(field).toBeFocused();
+    await expect(field).toHaveValue(draft);
+    expect(await field.evaluate((element) => {
+      const textarea = element as HTMLTextAreaElement;
+      return { start: textarea.selectionStart, end: textarea.selectionEnd };
+    })).toEqual(caret);
+    await rowConfirmed(page, confirmed);
+    await expect(fact(dialog, "Owner")).toHaveText(confirmed.ownerName!);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+      "The 390px page must not overflow horizontally.").toBe(true);
+    expect(await dialog.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.left >= -1 && rect.right <= innerWidth + 1;
+    })).toBe(true);
+    const add = await addNoteAction(dialog);
+    if (reducedMotion === "reduce") {
+      await add.hover();
+      await renderBoundary(page, 8);
+      expect(await add.evaluate((element) => getComputedStyle(element).transform.replace(/\s/g, "")),
+        "Reduced motion must not scale the real shared action control on hover.").toMatch(/^(?:none|matrix\(1,0,0,1,0,0\))$/);
+    }
+    for (let index = 0; index < 12; index++) {
+      await page.keyboard.press("Tab");
+      expect(await stableDialog.evaluate((element) => element.contains(document.activeElement)),
+        "Keyboard focus stays inside the native modal.").toBe(true);
+    }
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+    await expect(selection(page)).toBeChecked();
+    await expect(filter(page)).toHaveValue(primaryFinding.assetName);
+    const after = await position();
+    for (const key of ["pageX", "pageY", "innerX", "innerY"] as const) {
+      expect(Math.abs(after[key] - before[key]), `Dismissal preserves Work ${key}.`).toBeLessThanOrEqual(2);
+    }
+    expect(after.inViewport).toBe(true);
+    expect(actions.calls("POST", notesPath), "A draft and background refresh are not note submissions.").toHaveLength(0);
+    await trigger.press("Enter");
+    await expect(noteField(panel(page))).toHaveValue("");
+    await unchangedSource(panel(page));
+    await page.keyboard.press("Escape");
+  });
+});

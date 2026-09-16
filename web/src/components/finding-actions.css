@@ -1,0 +1,23 @@
+dialog.finding-dialog { width: min(615px, 100%); max-width: 100%; }
+.finding-actions { min-width: 0; }
+.finding-owner-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.finding-actions button, .finding-note-form button { min-height: 40px; font-size: 11px; }
+.finding-workflow-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-top: 17px; }
+.finding-workflow-form > label { flex: 1; min-width: 140px; }
+.finding-edit-field { display: grid; gap: 7px; min-width: 0; font-size: 11px; font-weight: 550; }
+.finding-edit-field input, .finding-edit-field select, .finding-edit-field textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 40px; border: 1px solid var(--line-strong); border-radius: 7px; padding: 9px 11px; font-size: 12px; font-weight: 400; color: var(--ink); background: var(--surface); }
+.finding-edit-field textarea { resize: vertical; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.finding-edit-field :disabled { opacity: .65; cursor: not-allowed; }
+.finding-edit-field [aria-invalid="true"] { border-color: var(--danger); }
+.finding-risk-form { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr); align-items: end; gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.finding-risk-form > .section-note { grid-column: 1 / -1; margin: 0; }
+.finding-risk-form > button { grid-column: 1 / -1; justify-self: start; }
+.finding-action-feedback { font-size: 11px; color: var(--muted); line-height: 1.75; overflow-wrap: anywhere; }
+.finding-action-feedback > * { margin-top: 12px; }
+.finding-note-form { display: grid; gap: 12px; margin: 0 0 18px; }
+.finding-note-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.finding-note-footer .section-note { flex: 1; min-width: 170px; margin: 0; }
+.finding-dialog .analyst-notes p { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 540px) {
+  .finding-risk-form { grid-template-columns: minmax(0, 1fr); }
+}

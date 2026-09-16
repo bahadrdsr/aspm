@@ -1,0 +1,678 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "completedAt": "2026-09-16T17:14:05.685Z",
+  "result": "PASS_ON_HELD_PRODUCTION_PENDING_PARENT_CONTROL_SEAL",
+  "originalReproduction": {
+    "result": "CONFIRMED_TEST_SETUP_TIMEOUT_NOT_PRODUCT_FAILURE",
+    "report": {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02.json",
+      "bytes": 34432,
+      "sha256": "02b41f56d0bd7dc69242872c166b09cc1fa38324dc36ce5eb34e7aebce624a8d"
+    },
+    "log": {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02.log",
+      "bytes": 3317,
+      "sha256": "2c791ddee0a9e0b8d42d29849d75787fe22562c59c798e61f5bd51b686e9942c"
+    },
+    "observation": {
+      "path": ".artifacts\\finding-actions-v1-a1\\reproduction-observation.json",
+      "bytes": 3143,
+      "sha256": "bf0cf8b6b4c9cb3260149870edcca8da4cfe32b811a242d8e6ca549376e6a12b"
+    },
+    "exitCode": 1,
+    "selectedWorkspaceAtFailure": "Synthetic triage Beta",
+    "navigationReturnedNoDocumentResponse": true
+  },
+  "typecheck": {
+    "result": "PASS",
+    "exitCode": 0,
+    "command": "npm.cmd run typecheck",
+    "log": {
+      "path": ".artifacts\\finding-actions-v1-a1\\typecheck-a1.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  },
+  "targetedFA7": {
+    "result": "PASS",
+    "exitCode": 0,
+    "command": "npm.cmd test -- 'finding-actions[.]spec[.]ts$' --grep FA7 --output ..\\.artifacts\\finding-actions-v1-a1\\fa7-corrected --reporter=list,json",
+    "report": {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-corrected.json",
+      "bytes": 88850,
+      "sha256": "0ce6392db78984165f2f22be3ac18df3ed51f449defd0f099d3b807bb28c75ed"
+    },
+    "log": {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-corrected.log",
+      "bytes": 410,
+      "sha256": "c53431a3d272792c52fbd5f579439502e5223155945d45e8f0225228b70cad3f"
+    },
+    "durationMilliseconds": 11572,
+    "attempts": 1,
+    "retry": 0,
+    "apiRequestCount": 33,
+    "allFourSubcasesReached": true,
+    "abortedHeldMutationCount": 4,
+    "logoutRequests": 2,
+    "fixtureViolations": [],
+    "pageErrors": []
+  },
+  "fullCompatibility": {
+    "result": "PASS",
+    "exitCode": 0,
+    "command": "npm.cmd test -- --output ..\\.artifacts\\finding-actions-v1-a1\\compatibility-58 --reporter=list,json",
+    "report": {
+      "path": ".artifacts\\finding-actions-v1-a1\\compatibility-58.json",
+      "bytes": 666693,
+      "sha256": "2a95a97ea8b33cbb4432f9dcf18db4af434350a6d78d48c90b18d426f51ba9fe"
+    },
+    "log": {
+      "path": ".artifacts\\finding-actions-v1-a1\\compatibility-58.log",
+      "bytes": 8916,
+      "sha256": "d133838b6a2e9300cf9868a9b10b86ecf6b1e7e2dac2db8658ee48b93cef25dc"
+    },
+    "statistics": {
+      "startTime": "2026-09-16T17:05:24.027Z",
+      "duration": 244203.41499999998,
+      "expected": 58,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "globalErrors": [],
+    "priorPassed": 50,
+    "findingActionCasesPassed": 8,
+    "fa7": {
+      "durationMilliseconds": 6651,
+      "apiRequestCount": 33,
+      "abortedHeldMutations": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/findings/51000000000000000000000000000001",
+          "status": 200,
+          "failure": "net::ERR_ABORTED",
+          "workspace": "11000000000000000000000000000001"
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/findings/51000000000000000000000000000001/notes",
+          "status": 201,
+          "failure": "net::ERR_ABORTED",
+          "workspace": "11000000000000000000000000000001"
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/findings/51000000000000000000000000000001",
+          "status": 200,
+          "failure": "net::ERR_ABORTED",
+          "workspace": "11000000000000000000000000000001"
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/findings/51000000000000000000000000000001/notes",
+          "status": 201,
+          "failure": "net::ERR_ABORTED",
+          "workspace": "11000000000000000000000000000001"
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": []
+    },
+    "cases": [
+      {
+        "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M04 assets can be created and edited without leaving their selected workspace",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "harness compiles React and exercises real browser keyboard events",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "harness produces static assets without needing the production UI",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "approval guard distinguishes reviewed license candidates from approved components",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M01 skip link focuses main without changing any destination or hash",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 390px by pointer",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 390px by keyboard",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 683px by pointer",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 683px by keyboard",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 850px by pointer",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 850px by keyboard",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 851px by pointer",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "authenticated session controls remain reachable at 851px by keyboard",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "primary navigation exposes the five focused destinations",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "theme follows the system and preserves an explicit light/dark choice",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "finding details retain filter, selection and keyboard focus (reduce)",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      },
+      {
+        "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+        "expectedStatus": "passed",
+        "result": "passed",
+        "attempts": 1,
+        "retry": 0
+      }
+    ]
+  },
+  "postValidationHold": {
+    "sourceFileCount": 39,
+    "beforeWebSrcTreeDigest": "sha256:db15efdb1ca7d3be7af66e7890675506700f31f519c60a0dcc133ecf649abdc4",
+    "afterWebSrcTreeDigest": "sha256:db15efdb1ca7d3be7af66e7890675506700f31f519c60a0dcc133ecf649abdc4",
+    "originalQualificationFilesChanged": [
+      "web/tests/finding-actions.spec.ts"
+    ],
+    "beforeOriginalQualificationDigest": "sha256:d1c9f07eada16546aaa0da5239567b39a98befad4f368d5b30d7b76ea94ec76d",
+    "afterOriginalQualificationDigest": "sha256:a569232a4afe9f2de738baff75c2f4c9291bd182bc39f939554a9f07498695ee",
+    "note": "Only the amended test changes the original qualification digest; no production file changes."
+  },
+  "diagnosticOnly": {
+    "report": {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original.json",
+      "bytes": 2592,
+      "sha256": "ee47c7e662581e8d5bfc15a960ab2ab6e88e8d8b8ba1ce7f93b4cb944b2f6e3c"
+    },
+    "log": {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original.log",
+      "bytes": 355,
+      "sha256": "4ed7f463751d22d204855bc42467226458151193b594b9a9bf9957ce208a2a5f"
+    },
+    "reason": "Initial ^FA7 grep matched no full test title. No test ran; not a product failure or case retry."
+  },
+  "compilerInputCount": 303,
+  "compilerInputsAdded": [],
+  "compilerInputsRemoved": [],
+  "buildRerunByAuthor": false,
+  "productionChangesByAuthor": [],
+  "oldSignaturesChanged": false,
+  "oracleResigned": false,
+  "retriesEnabled": false,
+  "suppressedAssertions": 0,
+  "realAPIMutations": 0,
+  "externalArtifactRoot": ".artifacts\\finding-actions-v1-a1",
+  "externalArtifactInventory": [
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\archive-receipt.json",
+      "bytes": 1079,
+      "sha256": "70bb754309d1e35c6fc6ca4fc684579d2e47212cddc20d107d9b968c9138bd6f"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\BEFORE-A1.json",
+      "bytes": 315385,
+      "sha256": "a89e837fe8ed7e5b44e3d6a64583ff0c9f5ed1b6c5ac6c103d71f65d06a24b98"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\compatibility-58.json",
+      "bytes": 666693,
+      "sha256": "2a95a97ea8b33cbb4432f9dcf18db4af434350a6d78d48c90b18d426f51ba9fe"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\compatibility-58.log",
+      "bytes": 8916,
+      "sha256": "d133838b6a2e9300cf9868a9b10b86ecf6b1e7e2dac2db8658ee48b93cef25dc"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\compatibility-58\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\compiler-inputs-a1.txt",
+      "bytes": 22314,
+      "sha256": "df39ac3cf912982bc9f60533ca6360da109fc335b5be906f54d4471a6b084db5"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\corrected-observation.json",
+      "bytes": 2335,
+      "sha256": "5294c1a2c570f257b6e6fcb2936d9b10916b746ba6966177fa9da88ad12cacc7"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\DELTA-A1.json",
+      "bytes": 793,
+      "sha256": "a61c20d88851baafacaff84d5154b2b780f0917a46f217b909771406f6ab5249"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-corrected.json",
+      "bytes": 88850,
+      "sha256": "0ce6392db78984165f2f22be3ac18df3ed51f449defd0f099d3b807bb28c75ed"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-corrected.log",
+      "bytes": 410,
+      "sha256": "c53431a3d272792c52fbd5f579439502e5223155945d45e8f0225228b70cad3f"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-corrected\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02.json",
+      "bytes": 34432,
+      "sha256": "02b41f56d0bd7dc69242872c166b09cc1fa38324dc36ce5eb34e7aebce624a8d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02.log",
+      "bytes": 3317,
+      "sha256": "2c791ddee0a9e0b8d42d29849d75787fe22562c59c798e61f5bd51b686e9942c"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02\\.last-run.json",
+      "bytes": 96,
+      "sha256": "9cc342ed4758ad36566e9b54ae91050170d85c8a23dd531a707c6cb487f317f7"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\error-context.md",
+      "bytes": 17102,
+      "sha256": "cb02ab4759ca2d45e7b92e1120361c4ab7ca3ff427c904605f997304212d3621"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\test-failed-1.png",
+      "bytes": 62314,
+      "sha256": "376e2cbb8a48643e3d06accfce22163f3e384d092fa8bba2f4d157efc09b1014"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original-02\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\trace.zip",
+      "bytes": 1273877,
+      "sha256": "76fb87503e2f1f2d7bf0a13a58179acbebd5a733285f5b9cdeb2cddc200b1a42"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original.json",
+      "bytes": 2592,
+      "sha256": "ee47c7e662581e8d5bfc15a960ab2ab6e88e8d8b8ba1ce7f93b4cb944b2f6e3c"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original.log",
+      "bytes": 355,
+      "sha256": "4ed7f463751d22d204855bc42467226458151193b594b9a9bf9957ce208a2a5f"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\fa7-original\\.last-run.json",
+      "bytes": 45,
+      "sha256": "e22df5d0991eb28c09093b1e678b3fa8cd1fab48185d38e67cf79fb6e63ad5ea"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\reproduction-observation.json",
+      "bytes": 3143,
+      "sha256": "bf0cf8b6b4c9cb3260149870edcca8da4cfe32b811a242d8e6ca549376e6a12b"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1-a1\\typecheck-a1.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  ]
+}

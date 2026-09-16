@@ -1,0 +1,102 @@
+FINDING ACTIONS V1 - ORIGINAL-AUTHOR AMENDMENT A1
+=============================================
+
+Scope: FA7 subcase-entry setup only. Production, fixtures, helpers, all other
+case bytes, lifecycle assertions, timeouts, request budgets, runner settings,
+dependencies, source provenance and original signatures are not amended.
+
+Confirmed original defect
+-------------------------
+The original FA7 was reproduced against the held coder source. Its first
+workspace/PATCH subcase completed the cancellation and late-ACK assertions,
+then deliberately left Beta selected. The next goto("/#/work") was a
+same-document navigation: its trace result was {}, not a new document response.
+No new session/Alpha Work read occurred. The actual page snapshot still selected
+Synthetic triage Beta, with the next Alpha filter producing no matching row.
+The test then timed out awaiting the Alpha checkbox at original line 621.
+The fixture ledger had nine requests, one aborted Alpha PATCH, and a final
+successful Beta Work read, with no fixture violations or page errors.
+
+This was an original-author test-setup defect, not production misbehavior.
+Ordinary hash navigation must not reset a valid selected workspace. Seeding
+the synthetic service record does not reset the browser's workspace either.
+
+Exact authorized correction
+--------------------------
+Three lines are added after the existing goto/login entry and before the
+existing queue/filter/selection setup, within the FA7 subcase loop:
+
+  const workspace = page.getByRole("combobox", { name: "Workspace", exact: true });
+  await workspace.selectOption(actionAlpha.id);
+  await expect(workspace).toHaveValue(actionAlpha.id);
+
+This uses the actual accessible native Workspace control and checks the
+selected membership. It works whether goto performed a full document entry
+or retained the SPA. Existing login remains the route out of a logged-out
+subcase. An already-selected Alpha remains a normal same-workspace reselection.
+
+No other source/test statement is changed or removed. Exact raw-byte comparison
+against the original archive proves that this CRLF insertion is the complete
+delta, including preservation of all other FA7 assertions and FA1-6/FA8 bytes.
+
+The corrected targeted FA7 passed without changing the production HOLD, raising
+timeouts, extending the 60-request budget, adding retries or suppressing any
+assertion. All four subcases now execute: workspace/PATCH, workspace/note,
+logout/PATCH and logout/note. See VALIDATION-A1.json for final measured results
+and any additional full-suite compatibility outcome, not an inferred pass.
+
+History and authority
+---------------------
+Only three original files were byte-copied into history\a1 as noncompiled .txt:
+  finding-actions.spec.ts.before.txt
+  PACKET.json.before.txt
+  PACKET.sha256.before.txt
+
+No old review tree, compiler input, source snapshot or signature was copied.
+Old tests/compiler/provenance controls are referenced by their original
+manifest hashes, not duplicated recursively. The original v1 packet and digest
+also remain untouched in place as historical evidence. Their old spec hash
+resolves to the exact archived original, not to the corrected active spec.
+
+PACKET-A1.json / PACKET-A1.sha256 are the NEW current amendment inventory.
+They do not replace or re-sign the original oracle. The old signed control
+manifest is expected to report the single authorized spec change until the
+parent verifies A1 and seals a new current control set. The other 526 of its
+527 required file digests remain unchanged. No current-old-oracle success is
+claimed after modifying its explicitly authorized test file.
+
+Production HOLD
+---------------
+The starting 576-file qualification digest was:
+  sha256:d1c9f07eada16546aaa0da5239567b39a98befad4f368d5b30d7b76ea94ec76d
+The 39-file web/src digest was:
+  sha256:db15efdb1ca7d3be7af66e7890675506700f31f519c60a0dcc133ecf649abdc4
+
+The whole qualification inventory includes test controls, so its digest must
+change after this authorized spec correction. That is not a production edit.
+GUARDS-A1.json records before/after per-file comparisons, the unchanged
+production source digest, the exact one-file qualification delta, all old
+control references and the unchanged active compiler-input set. Source,
+public assets, README, runner, compiler and dependency bytes stay on HOLD.
+
+Evidence and reproduction
+-------------------------
+All new logs, traces, raw results and intermediate hash receipts are outside
+protected roots in .artifacts\finding-actions-v1-a1. Coder evidence is referenced
+in place in .cache\finding-actions-coder, not copied into this packet.
+
+From C:\bahadr\serious\aspm\web, with a free loopback port:
+  npm.cmd run typecheck
+  $env:ASPM_WEB_TEST_PORT='18663'
+  $env:PLAYWRIGHT_JSON_OUTPUT_FILE='..\.artifacts\finding-actions-v1-a1\parent-fa7-01.json'
+  npm.cmd test -- 'finding-actions[.]spec[.]ts$' --grep FA7 --output ..\.artifacts\finding-actions-v1-a1\parent-fa7-01 --reporter=list,json
+
+Playwright grep operates on the full title including its file. The initial
+anchored ^FA7 grep selected no tests; that diagnostic is not an executed case,
+a retry, or production failure. The actual original reproduction used --grep
+FA7 and reached the documented Beta/Alpha setup timeout.
+
+Use fresh output names for parent/reviewer runs. Do not overwrite evidence,
+alter another assertion to obtain green, reset workspace in production on hash
+navigation, re-sign old history or resume production changes before the parent
+verifies this bounded amendment and seals the new current controls.

@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { requestAuthority } from "@/api/authorization";
+import type { WorkItem } from "@/api/types";
 import { Icon } from "@/components/icon";
 import type { IconName } from "@/components/icon";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,7 @@ import { usePreferences } from "@/lib/preferences";
 import { showFinding, useRoute } from "@/lib/router";
 import type { Destination } from "@/lib/router";
 import { WorkPage } from "@/pages/work";
-import type { WorkContext } from "@/pages/work";
+import type { ConfirmedWorkUpdates, WorkContext } from "@/pages/work";
 import { IntegrationsPage } from "@/pages/integrations";
 import { AssetsPage } from "@/pages/assets";
 import { GalleryPage } from "@/pages/gallery";
@@ -44,11 +46,29 @@ function WorkspaceApplication() {
   const route = useRoute();
   const { warning } = usePreferences();
   const [workContext, setWorkContext] = useState<WorkContext>({ query: "", selected: new Set(), page: 0, sort: "source-order" });
+  const [workUpdates, setWorkUpdates] = useState<ConfirmedWorkUpdates>({ revision: 0, items: new Map() });
+  const confirmFinding = useCallback((finding: WorkItem) => {
+    setWorkUpdates((previous) => {
+      const revision = previous.revision + 1;
+      const items = new Map(previous.items);
+      const { id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt } = finding;
+      items.set(id, { revision, item: { id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt } });
+      return { revision, items };
+    });
+  }, []);
   const filterRef = useRef<HTMLInputElement>(null);
   const [focusFilter, setFocusFilter] = useState(false);
   const [opened, setOpened] = useState<{ title: string; trigger: HTMLElement | null }>({ title: "Finding details", trigger: null });
   const primary = route.destination === "gallery" ? "settings" : route.destination;
   const current = destinations.find((item) => item.id === primary)!;
+  useLayoutEffect(() => {
+    const revision = requestAuthority().revision;
+    return () => {
+      if (requestAuthority().revision === revision) return;
+      const url = new URL(window.location.hash.replace(/^#/, "") || "/work", window.location.origin);
+      if (/^\/work\/?$/.test(url.pathname) && url.searchParams.has("finding")) showFinding(null);
+    };
+  }, []);
   useEffect(() => {
     document.title = `${route.destination === "gallery" ? "Component gallery" : current.name} - aspm`;
   }, [current.name, route.destination]);
@@ -80,7 +100,8 @@ function WorkspaceApplication() {
       <header className="topbar"><div className="breadcrumb"><span>Workspace</span><Icon name="chevron" size={13} /><strong>{current.name}</strong>{route.destination === "gallery" && <><Icon name="chevron" size={13} /><span>Gallery</span></>}</div><div className="topbar-actions"><button type="button" className="quick-search" aria-label="Find findings" onClick={() => { window.location.hash = "/work"; setFocusFilter(true); }}><Icon name="search" size={16} /><span>Find findings</span><kbd>Ctrl K</kbd></button><span className="topbar-divider" /><ThemeMenu /><span className="preview-label">Engineering preview</span></div></header>
       <main id="main-content" tabIndex={-1}>
         {warning && <p role="alert" className="preference-warning"><Icon name="warning" />{warning}</p>}
-        {route.destination === "work" && <WorkPage context={workContext} setContext={setWorkContext} filterRef={filterRef} openFinding={(finding, trigger) => { setOpened({ title: finding.title, trigger }); showFinding(finding.id); }} />}
+        {route.destination === "work" && <WorkPage context={workContext} setContext={setWorkContext} filterRef={filterRef} confirmed={workUpdates}
+          canWrite={workspace.role !== "viewer"} openFinding={(finding, trigger) => { setOpened({ title: finding.title, trigger }); showFinding(finding.id); }} />}
         {route.destination === "assets" && <AssetsPage />}
         {route.destination === "reports" && <ReportsPage />}
         {route.destination === "integrations" && <IntegrationsPage />}
@@ -88,6 +109,7 @@ function WorkspaceApplication() {
         {route.destination === "gallery" && <GalleryPage />}
       </main>
     </div>
-    {route.findingId && <FindingDialog key={route.findingId} id={route.findingId} initialTitle={opened.title} returnFocus={opened.trigger} onClose={() => showFinding(null)} />}
+    {route.findingId && <FindingDialog key={route.findingId} id={route.findingId} initialTitle={opened.title} returnFocus={opened.trigger}
+      query={workContext.query} onConfirmed={confirmFinding} onClose={() => showFinding(null)} />}
   </div>;
 }

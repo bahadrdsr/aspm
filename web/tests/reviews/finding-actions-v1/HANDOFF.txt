@@ -1,0 +1,76 @@
+FINDING ACTIONS V1 - HANDOFF TO PARENT / SEPARATE CODER / INDEPENDENT REVIEWER
+=========================================================================
+
+Keep the authored TypeScript controls and this packet frozen. Do not alter
+pre-existing tests/fixtures, source provenance, compiler/dependency guards,
+credential/origin/workspace protections, the 60-request budget or old oracles.
+The parent owns the next feature-control seal and publication. This author did
+not implement production behavior, commit, sign, delegate or call a real API.
+
+Read CONTRACT.txt for the exact accessible UX and sparse backend contract.
+Read RED.json for verified final blockers and explicitly unexecuted downstream
+checks. EVIDENCE.json links immutable hashes to logs/traces stored OUTSIDE
+protected test roots. GUARDS.json and COMPILATION.json record before/after
+byte and compiler-input comparisons. PACKET.json inventories the frozen files;
+PACKET.sha256 is its raw digest, not an oracle signature.
+
+Tests:
+  web\tests\finding-actions-data.ts
+  web\tests\finding-actions-fixture.ts
+  web\tests\finding-actions.spec.ts
+
+No shared fixture amendment was necessary. There is no archive/re-signing of
+an old control set. BEFORE.json remains the original historical capture.
+Reports publication may advance HEAD while keeping every baseline byte equal;
+that is explicitly allowed, not treated as a guard edit.
+
+Run from C:\bahadr\serious\aspm\web:
+  npm.cmd run typecheck
+
+The Playwright CLI treats selectors as regular expressions. A Windows path
+with single backslashes does NOT select these files. Use a filename regex:
+  $env:ASPM_WEB_TEST_PORT='18661'
+  $env:PLAYWRIGHT_JSON_OUTPUT_FILE='..\.artifacts\finding-actions-v1\coder-run-01.json'
+  npm.cmd test -- 'finding-actions[.]spec[.]ts$' --output ..\.artifacts\finding-actions-v1\coder-run-01 --reporter=list,json
+
+Use fresh artifact destinations and an unused loopback port for later runs.
+The existing package wrapper selects the already-installed local Chromium and
+project-local caches. No browser install, package install or new dependency is
+required. Keep retries, worker count, timeout and compiler settings unchanged.
+The eight new cases select UTC only to make deliberate expiry input unambiguous.
+
+Full normal discovery includes the 50 prior cases plus the eight new cases:
+  $env:PLAYWRIGHT_JSON_OUTPUT_FILE='..\.artifacts\finding-actions-v1\coder-full-01.json'
+  npm.cmd test -- --output ..\.artifacts\finding-actions-v1\coder-full-01 --reporter=list,json
+
+To reproduce exact historical compatibility without selecting the new cases:
+  $baseline = Get-Content tests\reviews\finding-actions-v1\BEFORE.json -Raw | ConvertFrom-Json
+  $selectors = @($baseline.priorSpecFiles | ForEach-Object { [IO.Path]::GetFileName($_).Replace('.', '[.]') + '$' })
+  $env:ASPM_WEB_TEST_PORT='18662'
+  $env:PLAYWRIGHT_JSON_OUTPUT_FILE='..\.artifacts\finding-actions-v1\prior-rerun-01.json'
+  npm.cmd test -- @selectors --output ..\.artifacts\finding-actions-v1\prior-rerun-01 --reporter=list,json
+
+Implementation boundaries:
+  - Use PATCH-returned canonical detail to update the matching Work row in place.
+  - Keep source evidence/verification separate from human workflow/risk decisions.
+  - Sparse owner/workflow/expiry/acceptance bodies must not overwrite other fields.
+  - Notes are literal text with server IDs, not HTML, URL execution or fake success.
+  - Use current session authority and abort/clear on actual context loss.
+  - Native modal close is the accessible way to reach workspace/logout controls.
+  - Do not add members directories, API revisions, conditional writes, bulk ops,
+    deletion, ticketing, new filters/views/pagination or production fallback data.
+  - Keep the approved shared shadcn/Animate controls and reduced-motion behavior.
+
+Important evidence limits:
+The current production dialog is read-only. Missing controls stop each new case
+before mutation assertions can execute. Passing legacy source/bundle/auth tests,
+successful read-only fixture entry, viewer read checks and empty violation
+ledgers do not verify the unimplemented mutations or the blocked late-response,
+403/401, duplicate-submission and focus branches. The independent coder/reviewer
+must execute those branches after implementation against the frozen controls.
+
+The packet also retains diagnostic history in external artifacts: an initial
+unused-import typecheck failure, Windows-path selector discovery failures, and
+the first draft's ambiguous Scope locator. These were author/harness issues,
+not product RED evidence. Their corrections changed only the three NEW test
+files, and final evidence distinguishes them from missing production controls.

@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T16:07:53.748Z",
+  "artifactRoot": ".artifacts\\finding-actions-v1",
+  "artifactFiles": 101,
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "files": [
+    {
+      "path": ".artifacts\\finding-actions-v1\\compiler-inputs-after-final.txt",
+      "bytes": 22251,
+      "sha256": "7a1982c25633c62130c1469546e43618e92b3c2949ff846b09cef09076ad017a"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\compiler-inputs-after.txt",
+      "bytes": 22251,
+      "sha256": "7a1982c25633c62130c1469546e43618e92b3c2949ff846b09cef09076ad017a"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\compiler-inputs-before.txt",
+      "bytes": 22074,
+      "sha256": "fb670f6a87b6c0336088acb0311495d5b8fa506c9bde7968dafb56ab5822e4d8"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\compiler-inputs-frozen.txt",
+      "bytes": 22251,
+      "sha256": "7a1982c25633c62130c1469546e43618e92b3c2949ff846b09cef09076ad017a"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-01.json",
+      "bytes": 2562,
+      "sha256": "c67010b38f8a2d6d62ad98d4cf8992329c6dd242d652af186fca83c51719d411"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-01.log",
+      "bytes": 342,
+      "sha256": "aad5e30af06fe37bb4a880b2fd8b5d93a0becd7bfffe24a61947f4eb78511885"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-01\\.last-run.json",
+      "bytes": 45,
+      "sha256": "e22df5d0991eb28c09093b1e678b3fa8cd1fab48185d38e67cf79fb6e63ad5ea"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02.json",
+      "bytes": 276457,
+      "sha256": "e0a1603c65b1ddc85ffe72bdb91bbc944cb0eb1e4aae92bd033e148a98496883"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02.log",
+      "bytes": 32173,
+      "sha256": "f8a4732b2b433f3a1b7235b5e7e1703f0e5acc7f67e7bc502da1902187524755"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\.last-run.json",
+      "bytes": 439,
+      "sha256": "6648eaf7163afca8f72779a06f77bd59e84d8471b6bd093182d41093a0a90a88"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\error-context.md",
+      "bytes": 31516,
+      "sha256": "76c4c3661c3a38d4f3b7c1cbb1b501c1b4644df47207f30959a5375a40a9fd5d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\test-failed-1.png",
+      "bytes": 94223,
+      "sha256": "f4ba99b848c539e67d54f7d0633a1cc8bd3f3b5f4ab823190b6e5eddbd3d4e42"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\trace.zip",
+      "bytes": 418153,
+      "sha256": "896ea9ef9c7d6bafc19c7a83d4442842394b6cfd885932d846b956929d01e803"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\error-context.md",
+      "bytes": 25146,
+      "sha256": "0d58f19d369a636be446791dccc9481937c88343dda7e960caf24ee5ba1cff0a"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\test-failed-1.png",
+      "bytes": 95361,
+      "sha256": "36134216dbe7d08e7990c32671f779ca30957cdd015de0d81ef5f2c798d2e521"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\trace.zip",
+      "bytes": 418724,
+      "sha256": "3b03ba636f483e5c9aaa21816c1f5250ba26c0318254a41abe2ff100c882f978"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\error-context.md",
+      "bytes": 25285,
+      "sha256": "4bd45c1fa4bdc76cf1b138253c235073ad61a1d2aa60144b379f7156fe011f1d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\test-failed-1.png",
+      "bytes": 94823,
+      "sha256": "5ba1b8c1e8f97c1f2c5c7915397464d03d4f5c18fa07cff0f0b6752aaab2a8d9"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\trace.zip",
+      "bytes": 415970,
+      "sha256": "976e4db206c9f93669ddbd831921015fb265c030b69afd74e43c329093f90546"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\error-context.md",
+      "bytes": 25095,
+      "sha256": "89ea0f0d43b719e1c0d4b6d83ad18abc5a52401e745732d34527caa752916acd"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\test-failed-1.png",
+      "bytes": 94672,
+      "sha256": "71df73330dd709332e89b96348481a048fd1209d4121a0201fe659eecd7e05ab"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\trace.zip",
+      "bytes": 316276,
+      "sha256": "b016bdd3ff5f1869a07f6b68c10452b85a9da7e8eeff2e1c9115eb2134b1d31d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\error-context.md",
+      "bytes": 23693,
+      "sha256": "429351ec3d9c5022117375f0f2ffd0fa3e9a3248e94bc08dcbd28ba5f6b5ae4c"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\test-failed-1.png",
+      "bytes": 93529,
+      "sha256": "6cc554cebadcddcad66484505ec04edcae2c0d6972d6e806a04775f830e7a1bf"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\trace.zip",
+      "bytes": 315745,
+      "sha256": "b07afd0935e9e13b8a13aab0e976e328f38f5d3ad4aec0056d7ec4c264074b6d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\error-context.md",
+      "bytes": 31005,
+      "sha256": "dd3e11db5cbf180dfc57626d06f18876baac97e39be1a61e0b260f860d4475b4"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\test-failed-1.png",
+      "bytes": 93521,
+      "sha256": "3a4f40eb8377f83ebfec80bcc82c18ec7d60af6be1c833a3ac2212dcaff72025"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\trace.zip",
+      "bytes": 320306,
+      "sha256": "e6a4119980b05ebef0f9e0814c1fe13c9afa1bf991bc0f00dfba8245452d9483"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\error-context.md",
+      "bytes": 22268,
+      "sha256": "d2558ae972c3346760ed8a98cc00d7f1143bf3e651b158ccce627c40fb218961"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\test-failed-1.png",
+      "bytes": 94223,
+      "sha256": "f4ba99b848c539e67d54f7d0633a1cc8bd3f3b5f4ab823190b6e5eddbd3d4e42"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\trace.zip",
+      "bytes": 412309,
+      "sha256": "fd49096cd116f51682e317c1210c238016797250b7f3582acd009ee7d71622b1"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\error-context.md",
+      "bytes": 37113,
+      "sha256": "9b6fc359f0dc727deb8bebbdaa5b4dd78f2f1f1c1dd33ae2e7cf58b9e995f3ec"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\test-failed-1.png",
+      "bytes": 37569,
+      "sha256": "69e7585884b42571e4adbff7b571d21490c37576162adf8dc35a0c43ec852893"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\trace.zip",
+      "bytes": 314905,
+      "sha256": "a756af829200d18439d4c55e9d9c30a27106125139fac7959977e6a97d625f2e"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03.json",
+      "bytes": 290533,
+      "sha256": "40636be988d870cdbe20037822798265d6cb2dc2ceb4f63e5b77c40ec88c77c7"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03.log",
+      "bytes": 30760,
+      "sha256": "78edb427196f2ca2e0927b6be4c183877426cb5d036d2a2da0fdaa5bad538b82"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\.last-run.json",
+      "bytes": 439,
+      "sha256": "6648eaf7163afca8f72779a06f77bd59e84d8471b6bd093182d41093a0a90a88"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\error-context.md",
+      "bytes": 22231,
+      "sha256": "0b6cf549626e78662f857acea64d90965cef27c5b5500f270acb569017df0cc0"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\test-failed-1.png",
+      "bytes": 94223,
+      "sha256": "f4ba99b848c539e67d54f7d0633a1cc8bd3f3b5f4ab823190b6e5eddbd3d4e42"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\trace.zip",
+      "bytes": 341237,
+      "sha256": "c62fd7995b89ee5db5cebaf2d6b2d983856764be69febc1113e3e56618021884"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\error-context.md",
+      "bytes": 25317,
+      "sha256": "77858ac84909f0dd194614e3eb4dcad7c25269cd81e3c89ff905d43363ba03ab"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\test-failed-1.png",
+      "bytes": 95361,
+      "sha256": "36134216dbe7d08e7990c32671f779ca30957cdd015de0d81ef5f2c798d2e521"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\trace.zip",
+      "bytes": 384054,
+      "sha256": "3b4db3968e7f234abcca59fc5cc9f0553dedc9e1c17b74b0ba67817149757f93"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\error-context.md",
+      "bytes": 25245,
+      "sha256": "2f15fc8d57ccbab886e2984a5c0f4881bd27b4c4321d6dce7b50ad7e8935cf83"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\test-failed-1.png",
+      "bytes": 94823,
+      "sha256": "5ba1b8c1e8f97c1f2c5c7915397464d03d4f5c18fa07cff0f0b6752aaab2a8d9"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\trace.zip",
+      "bytes": 416252,
+      "sha256": "45afc19ea3f7fe5b2a5812fc323a6c69d78a984d1f62d65e79f21c8b507482cc"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\error-context.md",
+      "bytes": 24991,
+      "sha256": "8cb5e50c5f2033f59d40790067783881936e34eceed85df9d4d57e6ae66a60ea"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\test-failed-1.png",
+      "bytes": 94672,
+      "sha256": "71df73330dd709332e89b96348481a048fd1209d4121a0201fe659eecd7e05ab"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\trace.zip",
+      "bytes": 316371,
+      "sha256": "95310991576cf1506c8143d804c00a0d3bd1972a4a0fcc2cba90ca723ab4e45f"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\error-context.md",
+      "bytes": 23733,
+      "sha256": "74640739cae2f27835f7dac0dc0f4424d504d76371e0e4a05343e6b347a79bc1"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\test-failed-1.png",
+      "bytes": 93529,
+      "sha256": "6cc554cebadcddcad66484505ec04edcae2c0d6972d6e806a04775f830e7a1bf"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\trace.zip",
+      "bytes": 294428,
+      "sha256": "75bdb1cf66f981ecff32a3b62193c1e2bb30c8570a5e6e4b3b36cd6592107163"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\error-context.md",
+      "bytes": 22519,
+      "sha256": "d99928d49b437d03ccde0feaa322a38b4b497850bc9c83624acefcbd9c54e4ff"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\test-failed-1.png",
+      "bytes": 93529,
+      "sha256": "6cc554cebadcddcad66484505ec04edcae2c0d6972d6e806a04775f830e7a1bf"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\trace.zip",
+      "bytes": 541714,
+      "sha256": "c5b78717ed9e40af0044f78e0ba7d5e6510eaa44d13d435b073c2838810cc4b1"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\error-context.md",
+      "bytes": 22485,
+      "sha256": "a089573c1d5432b2781494882a58e7651e41c2269ae55d9aba2d16566571e778"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\test-failed-1.png",
+      "bytes": 94223,
+      "sha256": "f4ba99b848c539e67d54f7d0633a1cc8bd3f3b5f4ab823190b6e5eddbd3d4e42"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\trace.zip",
+      "bytes": 410348,
+      "sha256": "64ebeae53443cf6e9eefa85469c606ceb03394b63115348e02a32037a10d6abb"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\error-context.md",
+      "bytes": 37185,
+      "sha256": "9cc2332be7393b91d0623dfa42fc55bad8f2268d1a619ead5265c94d9167cb1e"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\test-failed-1.png",
+      "bytes": 37569,
+      "sha256": "69e7585884b42571e4adbff7b571d21490c37576162adf8dc35a0c43ec852893"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\trace.zip",
+      "bytes": 284105,
+      "sha256": "2df6542dc2403a6b2e30cf0a9f8a681d046a071c3074fa5c11d452a5ba4ef5dd"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04-inputs.json",
+      "bytes": 1905,
+      "sha256": "c1742af256b6326962b4222040ba3895cbb48b5b4f456664ca1a105088d9456f"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04.json",
+      "bytes": 292230,
+      "sha256": "2ead196bc906ba496b0510ceb71f55f67c7e0320a7f463e44929864ed72a3547"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04.log",
+      "bytes": 30761,
+      "sha256": "9de924516386fdc6084d80d8b06107405512b0e19f45fae81d1560a2637d4034"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\.last-run.json",
+      "bytes": 439,
+      "sha256": "6648eaf7163afca8f72779a06f77bd59e84d8471b6bd093182d41093a0a90a88"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\error-context.md",
+      "bytes": 22229,
+      "sha256": "fc98c10e6e3e5c01d5ec8afb73162850dc76628814646161fec73996f6e977f0"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\test-failed-1.png",
+      "bytes": 94139,
+      "sha256": "4ee97dc3c776b537703a7f0984f353cdfb39fcdb6e1d5c16b5987753391ab357"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\trace.zip",
+      "bytes": 459822,
+      "sha256": "f8f02d6b4f3d5dcfbb5794d4ad4c234c1d78c39dcce3d20dafb509f5f52b4da4"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\error-context.md",
+      "bytes": 25340,
+      "sha256": "689cfac86bee2e3421b59a4330e529974b829eba97fcf17372c7cb1726adb907"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\test-failed-1.png",
+      "bytes": 95361,
+      "sha256": "36134216dbe7d08e7990c32671f779ca30957cdd015de0d81ef5f2c798d2e521"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\trace.zip",
+      "bytes": 418580,
+      "sha256": "fc2d415001b83d8c85d7d8855cc5b5ef97216a1c426691f47ea2ee554269482d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\error-context.md",
+      "bytes": 25247,
+      "sha256": "b55da72d9b06a96ac541cff2d542e21f67fe6a68c2201acf9c3e1518bb2caab1"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\test-failed-1.png",
+      "bytes": 94823,
+      "sha256": "5ba1b8c1e8f97c1f2c5c7915397464d03d4f5c18fa07cff0f0b6752aaab2a8d9"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\trace.zip",
+      "bytes": 413951,
+      "sha256": "5cb894924ae2c8336229a86e7c3584eb55f7270580c64813335a0a18d5dec18f"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\error-context.md",
+      "bytes": 24956,
+      "sha256": "de8ed5d531cb939bd25c93676fe7293a16b701133e38e79335b262015ba6ce02"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\test-failed-1.png",
+      "bytes": 94672,
+      "sha256": "71df73330dd709332e89b96348481a048fd1209d4121a0201fe659eecd7e05ab"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\trace.zip",
+      "bytes": 316562,
+      "sha256": "4ea123960e453bfc9a84ea22f74474f114702cb7b75593a9558ab0820ed2ca6d"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\error-context.md",
+      "bytes": 23719,
+      "sha256": "c9da9ae2887b28aaf17846a027a975b5cbb8e524c78fd8837d82026ef92a06fa"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\test-failed-1.png",
+      "bytes": 93529,
+      "sha256": "6cc554cebadcddcad66484505ec04edcae2c0d6972d6e806a04775f830e7a1bf"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\trace.zip",
+      "bytes": 315815,
+      "sha256": "a7386688ad8b6bfa3da07713d7badc6f59b72f128aa14263b28af17cd1fd0ea1"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\error-context.md",
+      "bytes": 22326,
+      "sha256": "ce8c406e3620f8bc51a5f4d17b27df88367f3d157aa3189c78a661f775d9fe78"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\test-failed-1.png",
+      "bytes": 93529,
+      "sha256": "6cc554cebadcddcad66484505ec04edcae2c0d6972d6e806a04775f830e7a1bf"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\trace.zip",
+      "bytes": 541868,
+      "sha256": "ee705f4a6508c3f8c16d773e7f2e4b2ebba512f4d0640f832ebe0ada4b8429a7"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\error-context.md",
+      "bytes": 21989,
+      "sha256": "e0fd6c8eb029db9c93bcc04bfe4aba7d431c41def2f2da60ae587f3bd6ea8aa7"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\test-failed-1.png",
+      "bytes": 94223,
+      "sha256": "f4ba99b848c539e67d54f7d0633a1cc8bd3f3b5f4ab823190b6e5eddbd3d4e42"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\trace.zip",
+      "bytes": 410034,
+      "sha256": "92f4ae85e4fe8874179cbebbb32cf345e78207375dd50a2a9b4e60b765096626"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\error-context.md",
+      "bytes": 37185,
+      "sha256": "e21296232712c7934fc4395516986468a58241d306658e59f1996108215895d7"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\test-failed-1.png",
+      "bytes": 37569,
+      "sha256": "69e7585884b42571e4adbff7b571d21490c37576162adf8dc35a0c43ec852893"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\trace.zip",
+      "bytes": 301653,
+      "sha256": "2a0c73dcd45e5ef89f75956f97d4f6f45344a94af495566c0dfcc9d1129256f9"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-01.json",
+      "bytes": 2902,
+      "sha256": "f9401ed4cc247b2923e62fdbe2aa9961a1ac4f39c67f8e273347506608cab5b4"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-01.log",
+      "bytes": 605,
+      "sha256": "b3cd5f4d85c1b033ca0fe49c891fe97c3fbe19129719398ab668cb8b17bc49ff"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-01\\.last-run.json",
+      "bytes": 45,
+      "sha256": "e22df5d0991eb28c09093b1e678b3fa8cd1fab48185d38e67cf79fb6e63ad5ea"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-02.json",
+      "bytes": 167207,
+      "sha256": "ad8d2f6a30b0a93c7afa4fa4c65cc6ccde46888baf8ca4112d46d0cd1b2e7166"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-02.log",
+      "bytes": 7833,
+      "sha256": "5f610b2675503e2d07b2f519a02f0cc35889be07d0f15388b3b33c8de3b8c2d0"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-02\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-discovery.log",
+      "bytes": 6426,
+      "sha256": "2d78757301868e7d8eb7ccd7d8597979e7cbc47c0a6c0c4421b20eef235c7388"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\typecheck-authored-01.log",
+      "bytes": 153,
+      "sha256": "380158f494a87ece27a58a82adfe9779d33c6877080b6680afae0e13caf51b38"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\typecheck-authored-02.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\typecheck-before.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\typecheck-final.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\typecheck-frozen.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  ],
+  "note": "Runtime logs, JSON reports, HTTP-ledger attachments, screenshots and traces remain outside protected test roots. Earlier attempts are diagnostics, not substitutions for frozen RED."
+}

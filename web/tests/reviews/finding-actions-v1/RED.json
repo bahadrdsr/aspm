@@ -1,0 +1,1074 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T16:07:53.748Z",
+  "status": "FROZEN_RED_PENDING_PARENT_SEAL",
+  "productionInputWitness": {
+    "path": ".artifacts\\finding-actions-v1\\focused-red-04-inputs.json",
+    "bytes": 1905,
+    "sha256": "c1742af256b6326962b4222040ba3895cbb48b5b4f456664ca1a105088d9456f"
+  },
+  "sourceBytesMatchWitness": true,
+  "focused": {
+    "command": "npm.cmd test -- 'finding-actions[.]spec[.]ts$' --output ..\\.artifacts\\finding-actions-v1\\focused-red-04 --reporter=list,json",
+    "port": 18661,
+    "exitCode": 1,
+    "report": {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04.json",
+      "bytes": 292230,
+      "sha256": "2ead196bc906ba496b0510ceb71f55f67c7e0320a7f463e44929864ed72a3547"
+    },
+    "log": {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-04.log",
+      "bytes": 30761,
+      "sha256": "9de924516386fdc6084d80d8b06107405512b0e19f45fae81d1560a2637d4034"
+    },
+    "statistics": {
+      "startTime": "2026-09-16T15:57:44.809Z",
+      "duration": 89155.265,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 8,
+      "flaky": 0
+    },
+    "globalErrors": [],
+    "cases": [
+      {
+        "id": "FA1",
+        "title": "FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 254,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 10400,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Assign to me",
+        "firstFailure": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\n",
+        "executedBeforeBlocker": [
+          "authenticated admin session and selected Work/detail HTTP entry",
+          "filter and checkbox context",
+          "read-only source, provenance, observations and original note assertions"
+        ],
+        "blockedDownstreamNotRun": [
+          "held assignment 503 / draft and confirmed-data preservation",
+          "duplicate suppression and accessible pending/success",
+          "single-activation authenticated ownerId-only PATCH",
+          "server display-name authority in detail and matching row",
+          "same-dialog and close/focus/context retention"
+        ],
+        "apiRequestCount": 6,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA1-Assign-074b4--confirmed-server-ownership\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA2",
+        "title": "FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 309,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 6944,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Unassign action or native Owner select",
+        "firstFailure": "Error: Unassignment must be available in the existing finding context.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Finding )?Owner$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^(?:Unassign|Unassign finding|Clear owner)$/i })).first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Unassignment must be available in the existing finding context. getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Finding )?Owner$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^(?:Unassign|Unassign finding|Clear owner)$/i })).first() with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Finding )?Owner$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^(?:Unassign|Unassign finding|Clear owner)$/i })).first()\n",
+        "executedBeforeBlocker": [
+          "authenticated analyst Work/detail entry with owner filter and selected row",
+          "current owner display"
+        ],
+        "blockedDownstreamNotRun": [
+          "contextual self/current/unassigned choices",
+          "ownerId:null only",
+          "expired risk and workflow/source preservation after unassignment",
+          "truthful filtered membership and accessible explanation",
+          "safe Work/filter focus fallback"
+        ],
+        "apiRequestCount": 6,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA2-Unassi-46ddf-ng-the-current-owner-filter\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA3",
+        "title": "FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 348,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 6847,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Workflow select/Save or explicit start action",
+        "firstFailure": "Error: Provide a labelled native workflow select plus Save, or an explicit workflow action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Human |Finding )?Workflow(?: state)?$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^(?:Start work|Start progress|Start in progress|Mark in progress)$/i })).first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Provide a labelled native workflow select plus Save, or an explicit workflow action. getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Human |Finding )?Workflow(?: state)?$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^(?:Start work|Start progress|Start in progress|Mark in progress)$/i })).first() with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Human |Finding )?Workflow(?: state)?$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^(?:Start work|Start progress|Start in progress|Mark in progress)$/i })).first()\n",
+        "executedBeforeBlocker": [
+          "authenticated analyst Work/detail entry"
+        ],
+        "blockedDownstreamNotRun": [
+          "open -> in-progress -> resolved -> open",
+          "sparse workflow-only bodies",
+          "pending old-confirmed workflow and queue refresh",
+          "unchanged owner/risk/source/observations/notes",
+          "human-not-verified resolution warning",
+          "filter/selection/return focus after mutations"
+        ],
+        "apiRequestCount": 6,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA3-Human--923d3-ship-or-source-verification\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA4",
+        "title": "FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 388,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 6553,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Accept risk / Disposition control / explicit expiry input",
+        "firstFailure": "Error: Risk acceptance needs an explicit in-context action and an optional, deliberate expiry input.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Finding )?Disposition$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^Accept risk$/i })).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByLabel(/^(?:Risk acceptance|Accepted risk) expir(?:y|es at)(?: \\(.*\\))?$/i)).first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Risk acceptance needs an explicit in-context action and an optional, deliberate expiry input. getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Finding )?Disposition$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^Accept risk$/i })).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByLabel(/^(?:Risk acceptance|Accepted risk) expir(?:y|es at)(?: \\(.*\\))?$/i)).first() with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('combobox', { name: /^(?:Finding )?Disposition$/i }).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: /^Accept risk$/i })).or(getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByLabel(/^(?:Risk acceptance|Accepted risk) expir(?:y|es at)(?: \\(.*\\))?$/i)).first()\n",
+        "executedBeforeBlocker": [
+          "authenticated analyst Work/detail entry"
+        ],
+        "blockedDownstreamNotRun": [
+          "explicit blank/null acceptance",
+          "failed expired-date edit preserves form and old confirmed data",
+          "expiry-only retry without cross-field overwrite",
+          "expired indicator retained through failed clear",
+          "explicit acceptance clear and retry without guessed dates"
+        ],
+        "apiRequestCount": 6,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA4-Accept-1acfa--without-cross-field-writes\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA5",
+        "title": "FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 456,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 6525,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Labelled multiline note editor",
+        "firstFailure": "Error: Add a labelled multiline note form without replacing the existing literal note list.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('textbox', { name: /^(?:New note|Note text|Analyst note|Add note)$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a labelled multiline note form without replacing the existing literal note list. getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('textbox', { name: /^(?:New note|Note text|Analyst note|Add note)$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('textbox', { name: /^(?:New note|Note text|Analyst note|Add note)$/i })\n",
+        "executedBeforeBlocker": [
+          "authenticated Work/detail entry",
+          "two existing literal notes, unchanged raw line-break text and inert markup/URLs",
+          "fixture helper checks for NUL and UTF-8 byte boundary"
+        ],
+        "blockedDownstreamNotRun": [
+          "blank and over-byte-limit UI validation or actual 400",
+          "failed POST preserves draft and old notes without success",
+          "held 201 pending and duplicate prevention",
+          "server-generated note ID receipt and exact literal append",
+          "same-text/different-ID identity and overlap reconciliation",
+          "visible created-note line breaks",
+          "valid 8192-byte submission"
+        ],
+        "apiRequestCount": 6,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA5-Notes--c8f38-cile-server-note-identities\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA6",
+        "title": "FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 541,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 7723,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Assign to me on a fresh stale-analyst entry",
+        "firstFailure": "Error: A real writer affordance is needed to test stale UI authority against the server.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - A real writer affordance is needed to test stale UI authority against the server. getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\n",
+        "executedBeforeBlocker": [
+          "viewer read-only source/provenance/note/observation assertions",
+          "viewer write affordances absent/disabled and no writes",
+          "fresh session metadata changed to analyst through HTTP reload"
+        ],
+        "blockedDownstreamNotRun": [
+          "server 403 on owner PATCH and note POST",
+          "failed note draft retention and no success",
+          "protected PATCH 401 removes details/workspace/metrics",
+          "real synthetic re-login between independent 401 checks",
+          "protected note 401 removes details/workspace/metrics",
+          "reload remains signed out after each 401"
+        ],
+        "apiRequestCount": 12,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA6-Viewer-9dbd4-d-401-removes-the-workspace\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA7",
+        "title": "FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 613,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 6490,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Assign to me in first workspace/PATCH branch",
+        "firstFailure": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\n",
+        "executedBeforeBlocker": [
+          "initial authenticated Work filter/selection/detail entry"
+        ],
+        "blockedDownstreamNotRun": [
+          "held PATCH then close/workspace switch",
+          "held note then close/workspace switch",
+          "held PATCH then close/logout",
+          "held note then close/logout",
+          "abort observation and late ACK discard for every branch",
+          "clear old names/notes/metrics before held Beta response",
+          "no protected or hidden data after logout/reload"
+        ],
+        "apiRequestCount": 6,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA7-Closin-9a1ec-ests-and-discards-late-ACKs\\trace.zip"
+        ]
+      },
+      {
+        "id": "FA8",
+        "title": "FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh",
+        "file": "web\\tests\\finding-actions.spec.ts",
+        "line": 671,
+        "result": "RED_MISSING_PRODUCTION_CONTROL",
+        "expectedTestStatus": "passed",
+        "actualStatus": "failed",
+        "durationMilliseconds": 7662,
+        "attempts": 1,
+        "retry": 0,
+        "firstMissingControl": "Assign to me after keyboard opening at 390px",
+        "firstFailure": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Triage alpha dependency review', exact: true }).getByRole('button', { name: 'Assign to me', exact: true })\n",
+        "executedBeforeBlocker": [
+          "390x844 reduced-motion viewport",
+          "30 matching loaded rows with real scrolling",
+          "filter/selection and held background Work read",
+          "keyboard opening of the native detail dialog"
+        ],
+        "blockedDownstreamNotRun": [
+          "keyboard PATCH and accessible pending",
+          "same mounted dialog during mutation",
+          "note draft/focus/caret survives old Work completion",
+          "canonical row not rolled back by old Work response",
+          "reduced-motion action hover and no horizontal overflow",
+          "native Tab trap and restored scroll/query/selection/focus",
+          "discarded unsent note draft after reopen",
+          "no-preference motion branch"
+        ],
+        "apiRequestCount": 7,
+        "mutationRequestCount": 0,
+        "requestSummary": [
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/session",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/work",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/findings/51000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000001",
+            "status": 200,
+            "failure": null
+          }
+        ],
+        "fixtureViolations": [],
+        "pageErrors": [],
+        "traceAndScreenshotPaths": [
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\test-failed-1.png",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\error-context.md",
+          ".artifacts\\finding-actions-v1\\focused-red-04\\finding-actions-FA8-At-390-d989e-h-a-held-background-refresh\\trace.zip"
+        ]
+      }
+    ]
+  },
+  "compatibility": {
+    "selectorSource": "BEFORE.json.priorSpecFiles converted to filename regexes",
+    "exitCode": 0,
+    "report": {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-02.json",
+      "bytes": 167207,
+      "sha256": "ad8d2f6a30b0a93c7afa4fa4c65cc6ccde46888baf8ca4112d46d0cd1b2e7166"
+    },
+    "log": {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-02.log",
+      "bytes": 7833,
+      "sha256": "5f610b2675503e2d07b2f519a02f0cc35889be07d0f15388b3b33c8de3b8c2d0"
+    },
+    "statistics": {
+      "startTime": "2026-09-16T15:44:41.878Z",
+      "duration": 140218.462,
+      "expected": 50,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "globalErrors": [],
+    "unchangedAssertionFiles": [
+      "web\\tests\\application-review-regressions.spec.ts",
+      "web\\tests\\application-workflows.spec.ts",
+      "web\\tests\\foundations.spec.ts",
+      "web\\tests\\harness.spec.ts",
+      "web\\tests\\m01-review-regressions.spec.ts",
+      "web\\tests\\reports-workflows.spec.ts",
+      "web\\tests\\responsive-session-controls.spec.ts",
+      "web\\tests\\shell.spec.ts",
+      "web\\tests\\workspace-reselection.spec.ts"
+    ],
+    "cases": [
+      {
+        "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M04 assets can be created and edited without leaving their selected workspace",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "harness compiles React and exercises real browser keyboard events",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "harness produces static assets without needing the production UI",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "approval guard distinguishes reviewed license candidates from approved components",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M01 skip link focuses main without changing any destination or hash",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 390px by pointer",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 390px by keyboard",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 683px by pointer",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 683px by keyboard",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 850px by pointer",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 850px by keyboard",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 851px by pointer",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "authenticated session controls remain reachable at 851px by keyboard",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "primary navigation exposes the five focused destinations",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "theme follows the system and preserves an explicit light/dark choice",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "finding details retain filter, selection and keyboard focus (reduce)",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      },
+      {
+        "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+        "status": "expected",
+        "result": "passed",
+        "attempts": 1
+      }
+    ]
+  },
+  "interpretation": {
+    "totalTopLevelCasesExecutedInSeparateRuns": 58,
+    "priorPass": 50,
+    "newFeatureRed": 8,
+    "officialSkips": 0,
+    "flakyCases": 0,
+    "newMutationBranchesExecuted": 0,
+    "downstreamStatus": "BLOCKED_NOT_RUN_NOT_PASSING_EVIDENCE",
+    "combined58CaseRunPerformed": false,
+    "liveBackendAuthorizationOrPersistenceProved": false
+  },
+  "authorDiagnosticsNotProductRed": [
+    {
+      "path": ".artifacts\\finding-actions-v1\\typecheck-authored-01.log",
+      "kind": "AUTHOR_UNUSED_IMPORT",
+      "correctedOnlyInNewFiles": true
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-01.log",
+      "kind": "SELECTOR_DISCOVERY_FAILURE_NO_TESTS_EXECUTED"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\prior-50-01.log",
+      "kind": "SELECTOR_DISCOVERY_FAILURE_NO_TESTS_EXECUTED"
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-02.json",
+      "kind": "DRAFT_LOCATOR_COLLISION_FA1_FA6_NOT_VALID_FINAL_RED",
+      "correctedOnlyInNewFiles": true
+    },
+    {
+      "path": ".artifacts\\finding-actions-v1\\focused-red-03.json",
+      "kind": "CLEAN_PRE_FREEZE_RED_SUPERSEDED_BY_FINAL_INPUT_RUN"
+    }
+  ]
+}

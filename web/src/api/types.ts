@@ -2,6 +2,7 @@ export const apiVersion = "aspm/v1alpha1" as const;
 export type DataOrigin = "synthetic" | "live";
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
 export type WorkflowState = "open" | "in-progress" | "resolved";
+export type FindingDisposition = "none" | "accepted-risk";
 
 export interface Membership {
   id: string;
@@ -70,11 +71,11 @@ export interface FindingDetail extends WorkItem {
   ownerId?: string | null;
   sourceState?: "observed" | "unknown" | "stale" | "inferred-resolved";
   sourceFreshnessAt?: string | null;
-  disposition?: "none" | "accepted-risk";
+  disposition?: FindingDisposition;
   acceptedRiskExpiresAt?: string | null;
   riskAcceptanceExpired?: boolean;
   verifiedResolution?: boolean;
-  notes?: { id: string; text: string }[];
+  notes?: FindingNote[];
   observations?: Observation[];
   notesNextCursor?: string | null;
   observationsNextCursor?: string | null;
@@ -85,6 +86,16 @@ export interface FindingResponse {
   dataOrigin: DataOrigin;
   finding: FindingDetail;
 }
+
+export interface FindingPatch {
+  ownerId?: string | null;
+  workflowState?: WorkflowState;
+  disposition?: FindingDisposition;
+  acceptedRiskExpiresAt?: string | null;
+}
+
+export interface FindingNote { id: string; text: string }
+export interface FindingNoteResponse { apiVersion: typeof apiVersion; note: FindingNote }
 
 export interface AssetFields {
   name: string;

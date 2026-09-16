@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T16:07:53.748Z",
+  "baseline": {
+    "path": "web\\tests\\reviews\\finding-actions-v1\\BEFORE.json",
+    "bytes": 147638,
+    "sha256": "80bf84d4d395f684976d60e7bdbe44e21f741a95b2c2614592b2f30168410c6f"
+  },
+  "historicalHead": "ac2aa14efec80c882d8a92266175324b4ac704e0",
+  "observedHeadAtFrozenRed": "6cb5044fe0c583184e203028259fe12e976d3d38",
+  "currentHead": "6cb5044fe0c583184e203028259fe12e976d3d38",
+  "headAdvanced": true,
+  "headIsNotTheByteGuard": true,
+  "comparedExistingFileCount": 742,
+  "changedExistingFiles": [],
+  "priorAssertionFiles": [
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "bytes": 11775,
+      "sha256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96"
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "bytes": 17775,
+      "sha256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470"
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "bytes": 7052,
+      "sha256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085"
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "bytes": 7613,
+      "sha256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67"
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "bytes": 11308,
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90"
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "bytes": 6804,
+      "sha256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1"
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "bytes": 9531,
+      "sha256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f"
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "bytes": 3823,
+      "sha256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372"
+    }
+  ],
+  "priorTests": {
+    "files": 9,
+    "cases": 50,
+    "allBytesUnchanged": true
+  },
+  "existingControlDigestComparison": {
+    "manifest": {
+      "path": ".oracles\\reports-ui-v1.json",
+      "bytes": 104706,
+      "sha256": "5bba4583f58b07be1715046ebbf44b16299c3464ee575490ea7a4abcdd060e61"
+    },
+    "comparedFiles": 512,
+    "mismatches": [],
+    "normalization": "none",
+    "signatureVerificationPerformedByAuthor": false,
+    "manifestsOrSignaturesRewritten": false
+  },
+  "sparseNewTestFilesOnly": [
+    {
+      "path": "web\\tests\\finding-actions-data.ts",
+      "bytes": 7431,
+      "sha256": "685b4891a2dc9f1e8236a577d9d2ccad954ae39ee64b819cfcc805818b3a6c3a"
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "bytes": 21604,
+      "sha256": "5a9c4945255981d2ee2d62a77677fdc3f83bdb05ecadb4e00bd76b13ec0aea42"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45146,
+      "sha256": "20ad666938a9e8ae3e535717f9a255fd86198b93537c5112dc90fa421d616084"
+    }
+  ],
+  "sharedFixtureAmendments": [],
+  "archivesOfAmendedSharedFixtures": [],
+  "compilerConfig": {
+    "path": "web\\tsconfig.json",
+    "bytes": 848,
+    "sha256": "2c233d484659a18d90e6c5bcf6fd74759541a9f4dd9e5cfb24d64005c09f3a82"
+  },
+  "browserConfig": {
+    "path": "web\\playwright.config.ts",
+    "bytes": 1481,
+    "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+  },
+  "packageManifest": {
+    "path": "web\\package.json",
+    "bytes": 1588,
+    "sha256": "fd862a4bd142e0864ddeeff049c739d2485b99995acae64aa6b78ccaade19b93"
+  },
+  "packageLock": {
+    "path": "web\\package-lock.json",
+    "bytes": 62150,
+    "sha256": "def182f3fbccb232bcb2411a6b387e6ac0152c9860e65f6cc2670543009e9825"
+  },
+  "productionReadOnlyWitness": {
+    "path": "web\\src\\components\\finding-dialog.tsx",
+    "bytes": 10088,
+    "sha256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc"
+  },
+  "finalRunInputWitness": {
+    "path": ".artifacts\\finding-actions-v1\\focused-red-04-inputs.json",
+    "bytes": 1905,
+    "sha256": "c1742af256b6326962b4222040ba3895cbb48b5b4f456664ca1a105088d9456f"
+  },
+  "policy": {
+    "apiRequestBudgetPerCase": 60,
+    "priorBudgetOrAuthOrCredentialGuardsChanged": false,
+    "productionImplementationByAuthor": false,
+    "dependenciesInstalled": false,
+    "agentsSpawned": 0,
+    "commitsByAuthor": 0,
+    "realAPIMutations": 0,
+    "oldOracleOrPublicationOrHistoryWrites": 0
+  }
+}
