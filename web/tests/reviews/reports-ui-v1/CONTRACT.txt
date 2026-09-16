@@ -1,0 +1,195 @@
+REPORTS UI - INDEPENDENT TEST-FIRST HANDOFF
+=========================================
+Status: HOLD the authored test and fixture bytes. Production implementation and
+independent review belong to separate agents. This author changed no production
+code, dependencies, package/lock files, compiler settings or existing assertions.
+No commit, signature, native integration, cloud workflow or backend run was made
+by this author. Existing signed manifests are accepted history, not rewritten.
+
+Entry and HTTP boundary
+-----------------------
+reports-workflows.spec.ts contains nine coherent top-level Chromium cases. They
+visit the actual App at /#/reports, or navigate there from the existing Work UI.
+reports-fixture.ts intercepts only same-origin HTTP. It does not replace React,
+routing, client state, fetch, AbortController, DOM controls, focus or animation.
+All memberships, users, cookies, report counts, names and dates are synthetic.
+Report response envelopes explicitly contain dataOrigin:synthetic. No synthetic
+result is evidence of real worker execution, persistence or server authorization.
+
+Backend authority read before authoring:
+  internal\app\reports.go
+  internal\app\report_snapshots.go
+  internal\app\report_worker.go
+  internal\app\http.go
+  internal\app\auth.go
+Also read App, session/request helpers, shared states/dialog components and the
+original browser fixtures, assertion files, guard and source-approval controls.
+
+GET /api/v1/reports/overview accepts freshnessDays, default 7, integer 1..365.
+Its envelope is {apiVersion,dataOrigin,report}. Display the returned totals,
+severity counts, coverage, asOf, freshnessWindow and verification limitation.
+Severity counts cover all canonical findings, not just open findings. Accepted
+risk, expired accepted risk and source-inferred resolution are independent
+dimensions, not additional verified closures. The actual backend currently
+reports verifiedResolved:0 and verification.state:not-run with its reason.
+Do not label source inference or accepted risk as independent verification.
+Unknown freshness is not an unscanned-asset count or an implicit current scan.
+
+GET /api/v1/reports/snapshots returns items,total,nextCursor. pageParameters in
+http.go uses limit (default 100, range 1..500) and cursor. IDs/cursors use the
+backend's 32 lower-case hexadecimal format. The tests seed 501 immutable
+summaries so any supported initial page size needs genuine continuation.
+The fixture honors the requested limit and id>cursor ordering. It rejects
+unsupported client query decorations, including page/pageSize/filter/trend,
+even though the current backend ignores extra list-query keys. This rejection
+is a boundary allowlist, not a claim of stricter backend query parsing.
+
+POST /api/v1/reports/snapshots sends only {name,freshnessDays}. Name must be
+nonblank, NUL-free and at most 256 UTF-8 bytes. Freshness uses the same 1..365
+bound. The 202 envelope contains a queued snapshot, not completed report data.
+Only admin/analyst may write. The selected header is X-ASPM-Workspace-ID; role
+and object authority remain server/session-owned, never body/query fields.
+GET /api/v1/reports/snapshots/{id} returns the summary plus nullable report.
+queued/processing have no completed report; failed may have diagnostics and no
+completedAt; succeeded has actual completedAt and immutable report. A queued
+retry can retain a retryable report-generation-failed diagnostic. The fixture
+allows only explicit test-driven nonterminal transitions, never timer success.
+No snapshot patch, delete, export, trend, native-worker or provider API exists
+in this browser slice's allowlist.
+
+Accessible surface contract
+---------------------------
+Keep the Reports heading and the existing five-destination navigation.
+Use named regions: Live overview, Saved snapshots, Selected snapshot. These
+separate current posture from a saved result, including its own freshness,
+as-of/completion time, state and immutable/saved explanation.
+
+The counts are semantic definition-list pairs: each dt/term is followed by its
+associated dd/definition. Pair wrappers and responsive styling are unrestricted.
+This is a native accessible value association, not a required chart library or
+test ID. Labels:
+  Assets; Findings; Open findings; Accepted risk; Expired accepted risk;
+  Inferred resolved; Verified resolved;
+  Critical; High; Medium; Low; Info;
+  Scanned assets; Unscanned assets; Stale assets; Unknown freshness.
+Use exact numeric server values, with optional English thousands separators.
+Expose as-of and both freshness bounds as real time[datetime] values. Display
+the applicable N days and the backend's verification limitation. Clearly label
+synthetic input, using the existing shared data-notice conventions.
+
+Live overview contains a native number input/spinbutton Freshness days with
+min 1, max 365, integer/native validity and required input. It starts at 7.
+Editing does not silently refresh, clamp, or send invalid values. Refresh
+report explicitly applies a valid window. While initially loading or denied,
+do not invent zeroes. True empty zeroes require an authorized server response
+and an empty explanation. Saved-history empty/loading/failure are independent.
+
+Saved snapshots contains table Snapshots. Each row has an Open snapshot button
+or link. Load more snapshots sends the actual returned cursor, disables during
+that request and appends rows once. A failed continuation retains the existing
+rows and retries the same cursor; no Next-page placeholder or duplicate rows.
+An exhausted Load more may be absent or disabled. Scope changes start again
+without the previous cursor or workspace's rows.
+
+Create snapshot opens dialog and form both named Create snapshot, with labelled
+Snapshot name and Freshness days initialized from the selected live window.
+The form's Create snapshot action POSTs that exact name/window. Creation errors
+stay actionable in the form without losing its name or claiming a receipt.
+Blank-name submission cannot create a job. A viewer's creation action is absent
+or disabled, and there is no viewer creation form. Stale analyst UI metadata
+does not turn a server 403 into success.
+
+Selected snapshot exposes the actual returned name and ID, a status or alert
+named Snapshot status, and Refresh snapshot. Queued/processing/failure contain
+no posture metrics. Display actual worker diagnostics/code, not inferred
+completion. A completed selection keeps its own report when live data changes.
+Manual Refresh is required; no poller, trend engine or third-party chart
+dependency is needed. Use the existing approved components/styles and Motion
+behavior, with native semantic content and low-clutter responsive layout.
+
+Nine acceptance narratives
+-------------------------
+1. Exact live mapping: all totals, severity and coverage; timestamps; default 7;
+   valid 1/365, invalid 0/366/fraction/empty, explicit refresh and actual new asOf.
+2. Independent loading/unavailable/denied/empty overview and history states;
+   no replacement zeroes or "no saved snapshots" during a failed history read.
+3. Snapshot creation: selected freshness, actual 202 queued receipt, processing,
+   queued retry diagnostics, failed and succeeded worker responses; completion
+   time; saved result unchanged when the live report is refreshed.
+4. True history continuation and recovery without duplicate rows; selected
+   workspace changes reset the continuation cursor and remove previous rows.
+5. Viewer reads but no creation; stale analyst controls encounter server 403,
+   preserve the form, and enter queued only after a later authorized 202.
+6. Hold old overview, continuation and selected-detail requests together; change
+   workspace; require aborts and remove all old data before new held replies.
+   Releasing old responses cannot repopulate visible or hidden protected data.
+7. Logout and protected-detail 401 each clear live/history/selection. Held old
+   reads are aborted and released after sign-in appears. Reload stays signed
+   out; a fresh authorized empty session cannot resurrect the previous report.
+8. Selected-detail 403 and 404 each latch old metrics/name/ID/state/timestamps
+   out of the selected panel through a held retry, 503, and held recovery, until
+   a new authorized 200 arrives. Independently authorized history can still
+   show its summary; this is not a requirement to hide authorized list data.
+9. 390x844, reduced motion, actual keyboard dialog focus/trapping/Escape and
+   submission, blank-name rejection, restored scroll/focus, wrapped long name,
+   held-refresh completion without focus stealing, and preserved Work filter/
+   selection context. No forced clicks, sleeps, test IDs or React replacements.
+
+Isolation and evidence
+---------------------
+The original 60-request application budget, authentication/origin/JSON/header/
+credential guards and all original 41 cases remain byte-identical. The new
+Reports boundary also enforces a combined 60-request budget, same-origin
+session-cookie entry, permitted writes only and credential-canary checks.
+External requests and undeclared operations fail the boundary. Held replies
+capture their payload at request time and are released during teardown.
+No service connection, storage credential, live scan or actual worker is used.
+
+The only existing-file amendment is network.ts: one new data-helper import
+and one explicit validated GET overview/history branch for the old navigation
+tests. Its original bytes are recovered exactly by removing those additions,
+including original CRLF line endings. fixtures.ts, application-fixture.ts,
+source approval and all old assertion files are untouched. Before/after
+network snapshots are noncompiled .txt files in this review's history.
+The legacy synthetic session's existing opaque UUID-like ID remains unchanged;
+the new Reports fixture uses actual valid 32-hex IDs. This is not server-ID
+validation evidence for the older navigation fixture.
+
+BEFORE.json records pre-author hashes and source snapshots. COMPILATION.json
+records 292 original plus exactly three added TypeScript inputs, no removed
+inputs and no compiled history. GUARDS.json records full-byte guard/source/
+compiler comparisons, including separately observed concurrent publication
+and unrelated pre-existing runtime-artifact changes outside this author's
+edits. Source fingerprints witness RED, not a prohibition on the later
+independent coder's intended production edits.
+
+Mutable logs, traces, screenshots and caches remain outside protected test
+roots, in .artifacts\reports-ui-v1 and web\.cache. Frozen evidence copies under
+this review use noncompiled .txt files. Use new output names for later runs.
+PACKET.json is an unsigned SHA-256 integrity inventory, not an oracle signature
+or replacement for .oracles\ui-workflow-review-v2.json/.sig. Parent independently
+reviews/captures the next oracle, then hands these frozen tests to the coder.
+
+Observed validation and limits
+------------------------------
+Actual Chromium run: 41 prior PASS, 9 new expected RED, 0 skipped, 0 flaky,
+0 global runner errors. Typecheck PASS. The real Reports placeholder renders
+but has no overview request, live loading/metrics region, Create snapshot,
+history table or Open snapshot action. The first missing controls stop the new
+cases; later lifecycle/race/permission/focus assertions have NOT yet been reached
+against implemented Reports UI and must not be described as passing evidence.
+Prior guards include the real in-memory Vite production-bundle/source-approval
+case. Its pass does not implement Reports or prove live backend behavior.
+
+Reproduce from C:\bahadr\serious\aspm\web, with an unused loopback port:
+  $env:NODE_USE_SYSTEM_CA='1'
+  $env:ASPM_WEB_TEST_PORT='18610'
+  npm.cmd run typecheck
+  npm.cmd test -- tests\reports-workflows.spec.ts
+Full compatibility uses the unchanged default test discovery:
+  npm.cmd test
+The recorded run changed only reporter/output destinations via CLI, not browser,
+timeouts, retries, workers, configuration, package scripts or compiler flags:
+  $env:PLAYWRIGHT_JSON_OUTPUT_FILE='..\.artifacts\reports-ui-v1\compat-red-01.json'
+  npm.cmd test -- --output ..\.artifacts\reports-ui-v1\chromium-01 --reporter=list,json
+Missing dependencies, browser or commands are failures, not skips or relaxations.

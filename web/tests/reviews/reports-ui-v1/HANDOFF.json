@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "milestone": "Reports UI against existing reporting APIs",
+  "phase": "HOLD - test-first handoff complete",
+  "createdAt": "2026-09-16T12:48:39.910Z",
+  "nextOwners": [
+    "separate production coder",
+    "separate independent reviewer"
+  ],
+  "authoredTestPaths": [
+    {
+      "path": "web\\tests\\network.ts",
+      "bytes": 5619,
+      "sha256": "11e810daaaecd5a892216df01a86f618ff059a7d0d00d91c10476eae16aab6fd",
+      "beforeSHA256": "e3be6b57de0946a86acd4c766c7636ed5abecb91e9c109c22fe91ceec6ca79ec",
+      "change": "additive validated fixture amendment only"
+    },
+    {
+      "path": "web\\tests\\reports-data.ts",
+      "bytes": 7505,
+      "sha256": "94e92e286f6f6abc15fbb47a1c732037dc912392dd7bfbbcb32644ba6d4eb2c6",
+      "beforeSHA256": null,
+      "change": "new test-author file"
+    },
+    {
+      "path": "web\\tests\\reports-fixture.ts",
+      "bytes": 19949,
+      "sha256": "f0d433b9f33c37cf28ca1aea7334651f4a65982daed7947bf81c25f0058825f2",
+      "beforeSHA256": null,
+      "change": "new test-author file"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90",
+      "beforeSHA256": null,
+      "change": "new test-author file"
+    }
+  ],
+  "reviewPath": "web\\tests\\reviews\\reports-ui-v1",
+  "before": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\BEFORE.json",
+    "bytes": 1204313,
+    "sha256": "8201619a1ac291558afa6de29a4e5614d90664f0b0130a3c8ccc9c5c5fe85cad"
+  },
+  "contract": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\CONTRACT.txt",
+    "bytes": 12487,
+    "sha256": "a4876e0307921bcdfc5a08731a65d32b18c2c1f3dc3b31d4a1024724f4a13ed2"
+  },
+  "redEvidence": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\RED.json",
+    "bytes": 28129,
+    "sha256": "7ef7c0b461a6b0042bb73f311dad1fb0f6788578eb88a3ee24f8554a5c5493e9"
+  },
+  "guardProof": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\GUARDS.json",
+    "bytes": 131951,
+    "sha256": "1212f4cdec89f80a88a0f254a28b194222966146d470af4ff276c9beac539a4d"
+  },
+  "compilation": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\COMPILATION.json",
+    "bytes": 49606,
+    "sha256": "2ab57b8f71db64b43a7f3190f9e5d1b57b46817dd738f7f4bba51fe0964ba26c"
+  },
+  "amendment": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\AMENDMENT.json",
+    "bytes": 5158,
+    "sha256": "f4a5d7c1066ca6fe74595a3542e0c6b1e12c0ce6edfac1f2fabedb595d4b81fd"
+  },
+  "counts": {
+    "topLevelNewCases": 9,
+    "newExpectedRed": 9,
+    "priorPassed": 41,
+    "skipped": 0,
+    "flaky": 0,
+    "typecheck": "PASS",
+    "compilerBeforeInputs": 292,
+    "compilerAfterInputs": 295,
+    "compiledHistoryInputs": 0
+  },
+  "sourceGuards": {
+    "originalAssertionsByteIdentical": true,
+    "originalProtectedTestsExceptNavigationByteIdentical": true,
+    "originalGuardAndProvenanceFilesByteIdentical": true,
+    "compilerRunnerPackageLockAndWebConfigByteIdentical": true,
+    "existingCompilerInputsExceptAdditiveNavigationByteIdentical": true,
+    "originalNetworkRecoveredByteExactly": true,
+    "productionSourceSetAndBytesUnchanged": true,
+    "signedUIHistoryByteIdentical": true
+  },
+  "sourceTreeSHA256": "18b3cd8c5bcfb5752a307f2d55d9baf458f556dfbe7679a74eed401103ef9c46",
+  "webSrcTreeSHA256": "7a67ff991d940b46a8457fef1e05b765927320e3bb110a1c2a71ff0b0dde9c3c",
+  "limitations": [
+    "Synthetic same-origin browser boundary only, not backend/native/cloud/worker/auth-enforcement evidence.",
+    "Reports remains the unchanged placeholder. Downstream new assertions are not yet exercised against implemented Reports UI.",
+    "Reporter/output locations were overridden via CLI only; no configuration, timeout, retry, worker or compiler relaxation.",
+    "Concurrent root publication/docs and separately changing pre-existing backend run artifacts are disclosed in GUARDS and AMENDMENT, not authored or reverted.",
+    "Unsigned integrity packet only. Parent must independently verify/capture the next oracle; existing signed history must not be rewritten."
+  ],
+  "hold": "Do not edit the new test/fixture bytes, any original assertions or guard controls to make the separate production implementation pass.",
+  "currentPacketInventory": "web\\tests\\reviews\\reports-ui-v1\\PACKET.json"
+}

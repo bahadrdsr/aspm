@@ -1,0 +1,408 @@
+
+> @aspm/web@0.0.0 test
+> node scripts/playwright.mjs test --output ..\.artifacts\reports-ui-v1\chromium-01 --reporter=list,json
+
+
+Running 50 tests using 1 worker
+
+  ✓   1 tests\application-review-regressions.spec.ts:53:3 › receipt 403 stays hidden through held retry and 503 until authorized recovery (3.2s)
+  ✓   2 tests\application-review-regressions.spec.ts:53:3 › receipt 404 stays hidden through held retry and 503 until authorized recovery (1.6s)
+  ✓   3 tests\application-review-regressions.spec.ts:84:1 › same-ID replay acknowledgement supersedes the old receipt and held status response (1.6s)
+  ✓   4 tests\application-review-regressions.spec.ts:148:5 › keyboard asset Save retains context/focus (no-preference, user-moves-focus=false) (2.0s)
+  ✓   5 tests\application-review-regressions.spec.ts:148:5 › keyboard asset Save retains context/focus (no-preference, user-moves-focus=true) (2.2s)
+  ✓   6 tests\application-review-regressions.spec.ts:148:5 › keyboard asset Save retains context/focus (reduce, user-moves-focus=false) (1.7s)
+  ✓   7 tests\application-review-regressions.spec.ts:148:5 › keyboard asset Save retains context/focus (reduce, user-moves-focus=true) (1.9s)
+  ✓   8 tests\application-workflows.spec.ts:39:1 › M04 authenticated startup uses the session endpoint and logout removes protected context (1.6s)
+  ✓   9 tests\application-workflows.spec.ts:58:1 › M04 invalid login is safe and an expired session cannot leave cached findings visible (2.1s)
+  ✓  10 tests\application-workflows.spec.ts:87:1 › M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in (1.0s)
+  ✓  11 tests\application-workflows.spec.ts:116:1 › M04 changing workspace clears filters, selection, details and old rows before the new response (1.4s)
+  ✓  12 tests\application-workflows.spec.ts:139:1 › M04 assets can be created and edited without leaving their selected workspace (1.5s)
+  ✓  13 tests\application-workflows.spec.ts:175:1 › M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure (1.9s)
+  ✓  14 tests\application-workflows.spec.ts:236:1 › M06 work/detail preserve both observations and distinct freshness without verified-resolution claims (1.1s)
+  ✓  15 tests\foundations.spec.ts:51:1 › production assets use independently approved source and shared Motion without test fixtures or credential canaries (1.8s)
+  ✓  16 tests\harness.spec.ts:9:1 › harness compiles React and exercises real browser keyboard events (511ms)
+  ✓  17 tests\harness.spec.ts:20:1 › harness produces static assets without needing the production UI (208ms)
+  ✓  18 tests\harness.spec.ts:33:1 › approval guard distinguishes reviewed license candidates from approved components (41ms)
+  ✓  19 tests\m01-review-regressions.spec.ts:66:7 › M01 desktop dialog › scroll lock and all dismissal paths preserve queue context (no-preference) (5.2s)
+  ✓  20 tests\m01-review-regressions.spec.ts:66:7 › M01 desktop dialog › scroll lock and all dismissal paths preserve queue context (reduce) (5.2s)
+  ✓  21 tests\m01-review-regressions.spec.ts:66:7 › M01 mobile-viewport dialog › scroll lock and all dismissal paths preserve queue context (no-preference) (6.1s)
+  ✓  22 tests\m01-review-regressions.spec.ts:66:7 › M01 mobile-viewport dialog › scroll lock and all dismissal paths preserve queue context (reduce) (5.8s)
+  ✓  23 tests\m01-review-regressions.spec.ts:145:1 › M01 skip link focuses main without changing any destination or hash (2.4s)
+  ✓  24 tests\m01-review-regressions.spec.ts:165:1 › M01 catalog verification is independent of readiness and never trusts synthetic or planned claims (4.6s)
+  ✘  25 tests\reports-workflows.spec.ts:185:1 › Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh (5.7s)
+  ✘  26 tests\reports-workflows.spec.ts:220:1 › Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes (6.3s)
+  ✘  27 tests\reports-workflows.spec.ts:261:1 › Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion (6.4s)
+  ✘  28 tests\reports-workflows.spec.ts:306:1 › Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change (5.9s)
+  ✘  29 tests\reports-workflows.spec.ts:361:1 › Viewer reports are read-only and stale writer controls cannot override a server creation denial (6.1s)
+  ✘  30 tests\reports-workflows.spec.ts:396:1 › Workspace switch aborts held current, history and selected reads before any old report can reappear (6.0s)
+  ✘  31 tests\reports-workflows.spec.ts:434:1 › Logout and protected 401 clear live, saved and selected report context and reject late old responses (6.4s)
+  ✘  32 tests\reports-workflows.spec.ts:481:1 › Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds (6.1s)
+  ✘  33 tests\reports-workflows.spec.ts:555:1 › Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion (6.5s)
+  ✓  34 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 390px by pointer (1.4s)
+  ✓  35 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 390px by keyboard (2.4s)
+  ✓  36 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 683px by pointer (1.3s)
+  ✓  37 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 683px by keyboard (2.3s)
+  ✓  38 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 850px by pointer (1.3s)
+  ✓  39 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 850px by keyboard (2.4s)
+  ✓  40 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 851px by pointer (1.3s)
+  ✓  41 tests\responsive-session-controls.spec.ts:86:5 › authenticated session controls remain reachable at 851px by keyboard (2.3s)
+  ✓  42 tests\shell.spec.ts:57:1 › primary navigation exposes the five focused destinations (1.3s)
+  ✓  43 tests\shell.spec.ts:70:1 › theme follows the system and preserves an explicit light/dark choice (1.8s)
+  ✓  44 tests\shell.spec.ts:87:3 › finding details retain filter, selection and keyboard focus (no-preference) (1.8s)
+  ✓  45 tests\shell.spec.ts:87:3 › finding details retain filter, selection and keyboard focus (reduce) (1.7s)
+  ✓  46 tests\shell.spec.ts:123:1 › loading, failure, retry, empty and permission denial are distinct with no sample fallback (1.4s)
+  ✓  47 tests\shell.spec.ts:145:1 › the eight native families remain explicitly unverified with synthetic catalog data (1.2s)
+  ✓  48 tests\shell.spec.ts:158:1 › the gallery labels synthetic states instead of presenting them as operational evidence (1.3s)
+  ✓  49 tests\workspace-reselection.spec.ts:21:1 › reselecting the active workspace preserves a pending authenticated Findings read (1.3s)
+  ✓  50 tests\workspace-reselection.spec.ts:42:1 › reselecting the loaded active workspace preserves its filter and selected finding (1.5s)
+
+
+  1) tests\reports-workflows.spec.ts:185:1 › Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh 
+
+    Error: Reports must request the existing overview API, not retain the foundation placeholder.
+
+    Reports must request the existing overview API, not retain the foundation placeholder.
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      185 | test("Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh", async ({ page, reports }) => {
+      186 |   await reportsPage(page);
+    > 187 |   await expect.poll(() => reports.calls("GET", overviewPath).length, "Reports must request the existing overview API, not retain the foundation placeholder.").toBe(1);
+          |                                                                                                                                                                ^
+      188 |   expect(reports.requests[0].path).toBe("/api/v1/session");
+      189 |   const initial = reports.calls("GET", overviewPath)[0];
+      190 |   expect(initial.workspace).toBe(reportAlpha.id);
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:187:160
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\reports-workflows.spec.ts:220:1 › Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }).getByRole('status')
+    Expected pattern: /loading.*report|loading.*overview/i
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }).getByRole('status') with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }).getByRole('status')
+
+
+      224 |   const saved = reports.holdHistory(reportAlpha.id);
+      225 |   await reportsPage(page);
+    > 226 |   await expect(live(page).getByRole("status")).toContainText(/loading.*report|loading.*overview/i);
+          |                                                ^
+      227 |   await first.requested;
+      228 |   await saved.requested;
+      229 |   await noMetricNumbers(live(page));
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:226:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\reports-workflows.spec.ts:261:1 › Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true }) with timeout 5000ms
+      - waiting for getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })
+
+
+      261 | test("Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion", async ({ page, reports }) => {
+      262 |   await reportsPage(page);
+    > 263 |   await expect(createAction(page)).toBeVisible();
+          |                                    ^
+      264 |   await exactReport(live(page), alphaOverview);
+      265 |   await applyFreshness(page, reports, 30);
+      266 |   const id = await createSnapshot(page, reports, "Synthetic worker-failure snapshot", 30);
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:263:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Snapshot-179e6--diagnostics-and-completion\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Snapshot-179e6--diagnostics-and-completion\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Snapshot-179e6--diagnostics-and-completion\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Snapshot-179e6--diagnostics-and-completion\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests\reports-workflows.spec.ts:306:1 › Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true })
+
+
+      307 |   reports.seedHistory(reportAlpha.id, 501);
+      308 |   await reportsPage(page);
+    > 309 |   await expect(historyTable(page)).toBeVisible();
+          |                                    ^
+      310 |   const first = lastHistory(reports);
+      311 |   const limit = Number(first.call.query.limit ?? "100");
+      312 |   expect(first.call.query.cursor ?? "").toBe("");
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:309:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) tests\reports-workflows.spec.ts:361:1 › Viewer reports are read-only and stale writer controls cannot override a server creation denial 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })
+
+
+      67 |
+      68 | async function exactReport(region: Locator, report: SyntheticPostureReport) {
+    > 69 |   await expect(region).toBeVisible();
+         |                        ^
+      70 |   for (const key of Object.keys(totalLabels) as Array<keyof typeof totalLabels>) await exactMetric(region, totalLabels[key], report.totals[key]);
+      71 |   for (const key of Object.keys(severityLabels) as Array<keyof typeof severityLabels>) await exactMetric(region, severityLabels[key], report.bySeverity[key]);
+      72 |   for (const key of Object.keys(coverageLabels) as Array<keyof typeof coverageLabels>) await exactMetric(region, coverageLabels[key], report.coverage[key]);
+        at exactReport (C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:69:24)
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:365:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) tests\reports-workflows.spec.ts:396:1 › Workspace switch aborts held current, history and selected reads before any old report can reappear 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })
+
+
+      67 |
+      68 | async function exactReport(region: Locator, report: SyntheticPostureReport) {
+    > 69 |   await expect(region).toBeVisible();
+         |                        ^
+      70 |   for (const key of Object.keys(totalLabels) as Array<keyof typeof totalLabels>) await exactMetric(region, totalLabels[key], report.totals[key]);
+      71 |   for (const key of Object.keys(severityLabels) as Array<keyof typeof severityLabels>) await exactMetric(region, severityLabels[key], report.bySeverity[key]);
+      72 |   for (const key of Object.keys(coverageLabels) as Array<keyof typeof coverageLabels>) await exactMetric(region, coverageLabels[key], report.coverage[key]);
+        at exactReport (C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:69:24)
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:399:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) tests\reports-workflows.spec.ts:434:1 › Logout and protected 401 clear live, saved and selected report context and reject late old responses › logout 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })
+
+
+      67 |
+      68 | async function exactReport(region: Locator, report: SyntheticPostureReport) {
+    > 69 |   await expect(region).toBeVisible();
+         |                        ^
+      70 |   for (const key of Object.keys(totalLabels) as Array<keyof typeof totalLabels>) await exactMetric(region, totalLabels[key], report.totals[key]);
+      71 |   for (const key of Object.keys(severityLabels) as Array<keyof typeof severityLabels>) await exactMetric(region, severityLabels[key], report.bySeverity[key]);
+      72 |   for (const key of Object.keys(coverageLabels) as Array<keyof typeof coverageLabels>) await exactMetric(region, coverageLabels[key], report.coverage[key]);
+        at exactReport (C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:69:24)
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:442:13
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:437:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) tests\reports-workflows.spec.ts:481:1 › Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('button', { name: 'Open snapshot', exact: true }).or(getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('link', { name: 'Open snapshot', exact: true }))
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('button', { name: 'Open snapshot', exact: true }).or(getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('link', { name: 'Open snapshot', exact: true })) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('button', { name: 'Open snapshot', exact: true }).or(getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('link', { name: 'Open snapshot', exact: true }))
+
+
+      127 |   const action = row.getByRole("button", { name: "Open snapshot", exact: true })
+      128 |     .or(row.getByRole("link", { name: "Open snapshot", exact: true }));
+    > 129 |   await expect(action).toBeVisible();
+          |                        ^
+      130 |   await action.click();
+      131 |   await expect(selected(page).getByText(snapshot.name, { exact: true })).toBeVisible();
+      132 |   await expect(selected(page).getByText(snapshot.id, { exact: true })).toBeVisible();
+        at selectSaved (C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:129:24)
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:483:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Selected-74c53--authorized-detail-succeeds\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Selected-74c53--authorized-detail-succeeds\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Selected-74c53--authorized-detail-succeeds\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Selected-74c53--authorized-detail-succeeds\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) tests\reports-workflows.spec.ts:555:1 › Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true }) with timeout 5000ms
+      - waiting for getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })
+
+
+      560 |   await page.getByRole("checkbox", { name: `Select ${workItems[0].title}`, exact: true }).check();
+      561 |   await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Reports", exact: true }).click();
+    > 562 |   await expect(createAction(page)).toBeVisible();
+          |                                    ^
+      563 |   await exactReport(live(page), alphaOverview);
+      564 |   await applyFreshness(page, reports, 30);
+      565 |   await selectSaved(page);
+        at C:\bahadr\serious\aspm\web\tests\reports-workflows.spec.ts:562:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\.artifacts\reports-ui-v1\chromium-01\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9 failed
+    tests\reports-workflows.spec.ts:185:1 › Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh 
+    tests\reports-workflows.spec.ts:220:1 › Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes 
+    tests\reports-workflows.spec.ts:261:1 › Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion 
+    tests\reports-workflows.spec.ts:306:1 › Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change 
+    tests\reports-workflows.spec.ts:361:1 › Viewer reports are read-only and stale writer controls cannot override a server creation denial 
+    tests\reports-workflows.spec.ts:396:1 › Workspace switch aborts held current, history and selected reads before any old report can reappear 
+    tests\reports-workflows.spec.ts:434:1 › Logout and protected 401 clear live, saved and selected report context and reject late old responses 
+    tests\reports-workflows.spec.ts:481:1 › Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds 
+    tests\reports-workflows.spec.ts:555:1 › Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion 
+  41 passed (3.0m)

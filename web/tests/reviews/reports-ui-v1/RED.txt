@@ -1,0 +1,41 @@
+REPORTS UI RED - September 16, 2026
+=================================
+Chromium command started at 2026-09-16T12:35:21.861Z and ran 180.616 seconds.
+Exit code: 1. Expected legacy passes: 41. New expected RED: 9.
+Skipped: 0. Flaky: 0. Global runner errors: 0.
+TypeScript command npm.cmd run typecheck: PASS, exit 0.
+Existing Vite/Playwright/TypeScript/package/lock configuration was not edited.
+
+Observed first failures, reports-workflows.spec.ts:
+1. No GET /api/v1/reports/overview. Expected 1; received 0.
+2. No Live overview loading status.
+3. No Create snapshot action.
+4. No Saved snapshots / Snapshots history table.
+5. No Live overview region.
+6. No Live overview region.
+7. No Live overview region, during the logout narrative.
+8. No saved row Open snapshot action.
+9. No Create snapshot action after genuine Work-to-Reports mobile navigation.
+
+Each failure was an actual browser assertion against the unchanged Reports
+placeholder, not a skipped case, missing dependency or native-service fake.
+The 390px screenshot shows the actual "Reporting is not available yet" page.
+No later metrics/lifecycle/race assertions have been exercised against a Reports
+implementation yet. These are frozen future acceptance requirements, not GREEN
+authorization, persistence, worker or UI-implementation claims.
+
+Raw mutable output, relative to repository root:
+  .artifacts\reports-ui-v1\compat-red-01.json
+  SHA-256 8f20056ddca9d999d3dc2b5ce95a67d18d883d94a6f15c86ee8a736ed0fe4e06
+  .artifacts\reports-ui-v1\compat-red-01.txt
+  .artifacts\reports-ui-v1\typecheck-01.txt
+  .artifacts\reports-ui-v1\chromium-01\...
+Frozen raw result and typecheck copies are in this review's evidence directory.
+RED.json records every new failure, every old result and attachment fingerprints.
+GUARDS.json distinguishes author changes from observed concurrent publication
+or runtime-artifact changes. Do not revert or attribute those changes to this
+author. Existing signed UI manifests were neither edited nor signed.
+
+HOLD: leave the new test/data/fixture and additive legacy fixture bytes intact.
+The parent will verify/capture the new oracle before the separate coding and
+review stages. This author must not implement production code to make RED pass.

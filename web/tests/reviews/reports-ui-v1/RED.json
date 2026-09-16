@@ -1,0 +1,582 @@
+{
+  "schemaVersion": 1,
+  "phase": "pre-code-red",
+  "author": "independent-reports-test-author",
+  "recordedAt": "2026-09-16T12:48:39.890Z",
+  "command": "npm.cmd test -- --output ..\\.artifacts\\reports-ui-v1\\chromium-01 --reporter=list,json",
+  "workingDirectory": "C:\\bahadr\\serious\\aspm\\web",
+  "environment": {
+    "NODE_USE_SYSTEM_CA": "1",
+    "ASPM_WEB_TEST_PORT": "18610",
+    "PLAYWRIGHT_JSON_OUTPUT_FILE": "..\\.artifacts\\reports-ui-v1\\compat-red-01.json"
+  },
+  "browser": "Chromium, configured browserName=chromium; existing chromium_headless_shell-1243 installation; actual screenshots and traces retained",
+  "exitCode": 1,
+  "stats": {
+    "startTime": "2026-09-16T12:35:21.861Z",
+    "duration": 180616.36599999998,
+    "expected": 41,
+    "skipped": 0,
+    "unexpected": 9,
+    "flaky": 0
+  },
+  "globalErrors": [],
+  "newFailures": [
+    {
+      "id": "R01",
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 5741,
+          "error": "Error: Reports must request the existing overview API, not retain the foundation placeholder.\n\nReports must request the existing overview API, not retain the foundation placeholder.\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 1\nReceived: 0\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\\error-context.md",
+              "bytes": 17189,
+              "sha256": "f52fd936d7b68314f07c62398ada49885eec3ce607dcf1ea41255fb0b38ed8ec"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--d7e1b-t-bounded-freshness-refresh\\trace.zip",
+              "bytes": 156935,
+              "sha256": "7a1028ece67a04b71c6ffe41b41f340c75782286325154d253903feefc41f8f4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6311,
+          "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }).getByRole('status')\nExpected pattern: /loading.*report|loading.*overview/i\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toContainText\" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }).getByRole('status') with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }).getByRole('status')\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\\error-context.md",
+              "bytes": 16131,
+              "sha256": "9891fc5d78de394534c4bc4355488a889ec7cda7b883eaea6e73467147a87c31"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--8aa23-a-without-fabricated-zeroes\\trace.zip",
+              "bytes": 155771,
+              "sha256": "6a94782bffb6160ddeadabca5719d96231bdfc2ede3766c38212861c28956eb4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "file": "reports-workflows.spec.ts",
+      "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6439,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Snapshot-179e6--diagnostics-and-completion\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Snapshot-179e6--diagnostics-and-completion\\error-context.md",
+              "bytes": 16212,
+              "sha256": "2baba73fcbcfe6a963c4e7165cb258b4f6eac4657ef9570889e47dd679d36b1e"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Snapshot-179e6--diagnostics-and-completion\\trace.zip",
+              "bytes": 153064,
+              "sha256": "adeac0b31d644c798166c1db648e1a887a79c289202a6e34bfb06cf6c8204639"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "file": "reports-workflows.spec.ts",
+      "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 5925,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true })\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\\error-context.md",
+              "bytes": 16299,
+              "sha256": "bdd948dda98afcaaaf8d7c3c4ddf2aa4c79abf979447c630c28ac374d0340d79"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Saved-sn-ef161--pagination-on-scope-change\\trace.zip",
+              "bytes": 152749,
+              "sha256": "a578cfac890bacc06bf9ca63bd7dfa228e181bb173519dfc0d7211d2c556815d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "file": "reports-workflows.spec.ts",
+      "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6126,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\\test-failed-1.png",
+              "bytes": 56520,
+              "sha256": "26822fe6b41c6b43c73a0bdd4f38aac76743f4ad432749c2ef9122cd213feb9e"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\\error-context.md",
+              "bytes": 14472,
+              "sha256": "a20d23ea5d0f39045b2c84e870db4c3edba768275d05941a405ad2bf4ec03c69"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Viewer-r-cf959-de-a-server-creation-denial\\trace.zip",
+              "bytes": 153214,
+              "sha256": "fba0d1d52ee3e7b696124bcc32d22d355bbe92c1c76ccbc91851ad2eae084743"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "file": "reports-workflows.spec.ts",
+      "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6031,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\\error-context.md",
+              "bytes": 14475,
+              "sha256": "0c8590f8596e449ab1213a709810b41327576c14fbd59ef5c4ebafc6261a0646"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Workspac-f74c9-any-old-report-can-reappear\\trace.zip",
+              "bytes": 153168,
+              "sha256": "d2397aff803c1c580c9cfb8cbfc9da62e59bad62e9ba336ea881d0ff401ab5fa"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "file": "reports-workflows.spec.ts",
+      "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6443,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: 'Live overview', exact: true, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Live overview', exact: true, includeHidden: true })\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\\error-context.md",
+              "bytes": 14476,
+              "sha256": "dd8f5965442049d10bb6afb9aff9f61996df4054c36e0b587c78c90a9566b8c0"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Logout-a-88b78-d-reject-late-old-responses\\trace.zip",
+              "bytes": 203168,
+              "sha256": "0bd56669058783cf72935cfd391cdfb63e5a189f05442977dc15ae77ee179d35"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "file": "reports-workflows.spec.ts",
+      "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6096,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('button', { name: 'Open snapshot', exact: true }).or(getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('link', { name: 'Open snapshot', exact: true }))\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('button', { name: 'Open snapshot', exact: true }).or(getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('link', { name: 'Open snapshot', exact: true })) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('button', { name: 'Open snapshot', exact: true }).or(getByRole('region', { name: 'Saved snapshots', exact: true, includeHidden: true }).getByRole('table', { name: 'Snapshots', exact: true, includeHidden: true }).getByRole('row').filter({ hasText: 'Synthetic Alpha saved snapshot 0001' }).getByRole('link', { name: 'Open snapshot', exact: true }))\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Selected-74c53--authorized-detail-succeeds\\test-failed-1.png",
+              "bytes": 56427,
+              "sha256": "1100f85d281070f25d4a94fd2c5e828c8e912afed0b192b7e5f160115a81f4de"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Selected-74c53--authorized-detail-succeeds\\error-context.md",
+              "bytes": 18276,
+              "sha256": "f081b838f6f3188227bef14e34aa0c5d85fcb58d55304f13f2631715292331d2"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Selected-74c53--authorized-detail-succeeds\\trace.zip",
+              "bytes": 154124,
+              "sha256": "a04305d86cc52610545509791bed3d2bb186c0dc043930bbba5089be8d6318c1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+      "expectedStatus": "passed",
+      "status": "unexpected",
+      "runs": [
+        {
+          "status": "failed",
+          "duration": 6508,
+          "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main').getByRole('button', { name: 'Create snapshot', exact: true })\n",
+          "attachments": [
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\\test-failed-1.png",
+              "bytes": 33378,
+              "sha256": "a603c52ec6dabc5e0515a371c07e9340490a68c6e1ffe06c48d25d63797c7ca2"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\\error-context.md",
+              "bytes": 13314,
+              "sha256": "62d820a166def5eb16fb6e13581623b37e19b9d8a067a006823a05c251fe6cbd"
+            },
+            {
+              "path": ".artifacts\\reports-ui-v1\\chromium-01\\reports-workflows-Reports--b4f28-t-390px-with-reduced-motion\\trace.zip",
+              "bytes": 172693,
+              "sha256": "483e1bb6747cafb19f7e86eded97a115eb724e40be73974bb822ff6b3bb0b169"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "priorCases": [
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+      "status": "expected",
+      "duration": 3191
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+      "status": "expected",
+      "duration": 1579
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+      "status": "expected",
+      "duration": 1589
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+      "status": "expected",
+      "duration": 2008
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+      "status": "expected",
+      "duration": 2242
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+      "status": "expected",
+      "duration": 1708
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+      "status": "expected",
+      "duration": 1937
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+      "status": "expected",
+      "duration": 1552
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+      "status": "expected",
+      "duration": 2140
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+      "status": "expected",
+      "duration": 1047
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+      "status": "expected",
+      "duration": 1420
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 assets can be created and edited without leaving their selected workspace",
+      "status": "expected",
+      "duration": 1484
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+      "status": "expected",
+      "duration": 1858
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+      "status": "expected",
+      "duration": 1143
+    },
+    {
+      "file": "foundations.spec.ts",
+      "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+      "status": "expected",
+      "duration": 1841
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "harness compiles React and exercises real browser keyboard events",
+      "status": "expected",
+      "duration": 511
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "harness produces static assets without needing the production UI",
+      "status": "expected",
+      "duration": 208
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "approval guard distinguishes reviewed license candidates from approved components",
+      "status": "expected",
+      "duration": 41
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "M01 skip link focuses main without changing any destination or hash",
+      "status": "expected",
+      "duration": 2421
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+      "status": "expected",
+      "duration": 4627
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+      "status": "expected",
+      "duration": 5222
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+      "status": "expected",
+      "duration": 5162
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+      "status": "expected",
+      "duration": 6053
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+      "status": "expected",
+      "duration": 5766
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 390px by pointer",
+      "status": "expected",
+      "duration": 1414
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 390px by keyboard",
+      "status": "expected",
+      "duration": 2393
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 683px by pointer",
+      "status": "expected",
+      "duration": 1320
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 683px by keyboard",
+      "status": "expected",
+      "duration": 2327
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 850px by pointer",
+      "status": "expected",
+      "duration": 1259
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 850px by keyboard",
+      "status": "expected",
+      "duration": 2350
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 851px by pointer",
+      "status": "expected",
+      "duration": 1275
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 851px by keyboard",
+      "status": "expected",
+      "duration": 2334
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "primary navigation exposes the five focused destinations",
+      "status": "expected",
+      "duration": 1340
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "theme follows the system and preserves an explicit light/dark choice",
+      "status": "expected",
+      "duration": 1836
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+      "status": "expected",
+      "duration": 1817
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "finding details retain filter, selection and keyboard focus (reduce)",
+      "status": "expected",
+      "duration": 1712
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+      "status": "expected",
+      "duration": 1404
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+      "status": "expected",
+      "duration": 1202
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+      "status": "expected",
+      "duration": 1272
+    },
+    {
+      "file": "workspace-reselection.spec.ts",
+      "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+      "status": "expected",
+      "duration": 1305
+    },
+    {
+      "file": "workspace-reselection.spec.ts",
+      "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+      "status": "expected",
+      "duration": 1460
+    }
+  ],
+  "rawResult": {
+    "path": ".artifacts\\reports-ui-v1\\compat-red-01.json",
+    "bytes": 229429,
+    "sha256": "8f20056ddca9d999d3dc2b5ce95a67d18d883d94a6f15c86ee8a736ed0fe4e06"
+  },
+  "frozenRawResult": {
+    "path": "web\\tests\\reviews\\reports-ui-v1\\evidence\\chromium-red.json.txt",
+    "bytes": 229429,
+    "sha256": "8f20056ddca9d999d3dc2b5ce95a67d18d883d94a6f15c86ee8a736ed0fe4e06"
+  },
+  "typecheck": {
+    "command": "npm.cmd run typecheck",
+    "exitCode": 0,
+    "status": "PASS",
+    "raw": {
+      "path": ".artifacts\\reports-ui-v1\\typecheck-01.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    "frozen": {
+      "path": "web\\tests\\reviews\\reports-ui-v1\\evidence\\typecheck.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  },
+  "interpretation": "41 legacy expected passes, 9 intentional test-first failures reported as unexpected by Playwright, 0 skipped, 0 flaky, 0 global errors. Missing Reports wiring stopped each new narrative at its first missing API/control. Later assertions are NOT RUN against an implemented Reports UI, not passing evidence.",
+  "noProductionEdits": true,
+  "noDependencyChanges": true,
+  "noNativeOrCloudWorkflowByThisAuthor": true
+}

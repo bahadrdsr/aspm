@@ -148,61 +148,6 @@ export interface ImportReceipt {
   failure: { code: string; message: string } | null;
 }
 
-export interface PostureReport {
-  workspaceId: string;
-  asOf: string;
-  totals: {
-    assets: number;
-    findings: number;
-    openFindings: number;
-    acceptedRisk: number;
-    expiredAcceptedRisk: number;
-    inferredResolved: number;
-    verifiedResolved: number;
-  };
-  bySeverity: Record<Severity, number>;
-  coverage: {
-    scannedAssets: number;
-    unscannedAssets: number;
-    staleAssets: number;
-    unknownFreshnessAssets: number;
-    freshnessWindowDays: number;
-  };
-  freshnessWindow: { from: string; to: string; days: number };
-  verification: { state: "not-run"; reason: string };
-}
-
-export interface ReportOverviewResponse {
-  apiVersion: typeof apiVersion;
-  dataOrigin: DataOrigin;
-  report: PostureReport;
-}
-
-export type ReportSnapshotState = "queued" | "processing" | "succeeded" | "failed";
-export interface ReportSnapshotInput { name: string; freshnessDays: number }
-export interface ReportSnapshotSummary extends ReportSnapshotInput {
-  id: string;
-  workspaceId: string;
-  requestedBy: string;
-  state: ReportSnapshotState;
-  createdAt: string;
-  completedAt: string | null;
-  failure: { code: string; message: string; retryable: boolean } | null;
-}
-export interface ReportSnapshot extends ReportSnapshotSummary { report: PostureReport | null }
-export interface ReportSnapshotResponse {
-  apiVersion: typeof apiVersion;
-  dataOrigin: DataOrigin;
-  snapshot: ReportSnapshot;
-}
-export interface ReportSnapshotsResponse {
-  apiVersion: typeof apiVersion;
-  dataOrigin: DataOrigin;
-  items: ReportSnapshotSummary[];
-  total: number;
-  nextCursor: string | null;
-}
-
 export type IntegrationId = "github" | "gitlab" | "azure-devops" | "aws" | "azure" | "jira" | "teams" | "slack";
 export interface IntegrationSummary {
   id: IntegrationId;

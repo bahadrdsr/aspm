@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "authority": "explicit independent test-author Reports UI request",
+  "phase": "pre-code-red",
+  "reason": "Existing primary-navigation and skip-link assertions visit Reports. Once the real Reports page loads its overview and history, the old GET-only fixture needs these two actual APIs without weakening any original assertions or guards.",
+  "existingFileChange": {
+    "path": "web\\tests\\network.ts",
+    "beforeSHA256": "e3be6b57de0946a86acd4c766c7636ed5abecb91e9c109c22fe91ceec6ca79ec",
+    "currentSHA256": "11e810daaaecd5a892216df01a86f618ff059a7d0d00d91c10476eae16aab6fd",
+    "recoveredOriginalSHA256": "e3be6b57de0946a86acd4c766c7636ed5abecb91e9c109c22fe91ceec6ca79ec",
+    "removedImportBytes": 125,
+    "removedEndpointBlockBytes": 1242,
+    "normalization": "none; original CRLF bytes retained",
+    "beforeSnapshot": "web\\tests\\reviews\\reports-ui-v1\\history\\before\\web\\tests\\network.ts.txt",
+    "afterSnapshot": "web\\tests\\reviews\\reports-ui-v1\\history\\after\\web\\tests\\network.ts.txt"
+  },
+  "additions": [
+    "One import of pure synthetic Reports data/query validators",
+    "One GET-only overview/history branch after the original method/Authorization guard; validates selected synthetic workspace, overview freshness, and real list limit/cursor names and bounds"
+  ],
+  "unchangedOriginalFiles": [
+    "fixtures.ts",
+    "application-fixture.ts",
+    "api-contract.ts",
+    "all eight original assertion files producing 41 Chromium cases",
+    "source approval, credential guards, 60-request budget and compiler/runner settings"
+  ],
+  "existingSignedHistory": [
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json",
+      "beforeSHA256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "currentSHA256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "unchanged": true
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json.sig",
+      "beforeSHA256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "currentSHA256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "unchanged": true
+    }
+  ],
+  "existingManifestsRewritten": false,
+  "existingManifestsSigned": false,
+  "currentNewFiles": [
+    {
+      "path": "web\\tests\\reports-data.ts",
+      "bytes": 7505,
+      "sha256": "94e92e286f6f6abc15fbb47a1c732037dc912392dd7bfbbcb32644ba6d4eb2c6"
+    },
+    {
+      "path": "web\\tests\\reports-fixture.ts",
+      "bytes": 19949,
+      "sha256": "f0d433b9f33c37cf28ca1aea7334651f4a65982daed7947bf81c25f0058825f2"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90"
+    }
+  ],
+  "oldScopeFormatNote": "The legacy opaque session membership ID stays byte-identical. New Reports fixtures use actual 32-lowercase-hex IDs. This boundary is synthetic UI mapping evidence only.",
+  "observedConcurrentNonAuthorChanges": [
+    {
+      "path": ".gitattributes",
+      "beforeSHA256": "972f8aac74c0dc9d2d071150de2e95b58f6b55cbd19e79f92245be89321819bd",
+      "currentSHA256": "be70b0ae94d82ca8c96d5155db137634d10188ecf70cbe5e8647ccb392373658",
+      "unchanged": false,
+      "classification": "concurrent publication/documentation change outside this author edit scope; not reverted",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": ".gitignore",
+      "beforeSHA256": "265cafb3158afc14dc7a5c64014f951a147326e5d4c29aab4ddda7d8a6e93fcb",
+      "currentSHA256": "df53e295a6292ecb51aa5f528952e23c7a9f1d45c069275ab5c00bce56749ad0",
+      "unchanged": false,
+      "classification": "concurrent publication/documentation change outside this author edit scope; not reverted",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": "scripts\\ORACLES.md",
+      "beforeSHA256": "d7fc8bfd8a978d88556e8ba9fb7aa7c0f404ee474fca3a30950088acdd2a12d2",
+      "currentSHA256": "af58f287f823e9f6036823e87906244dcf555d64c0c9cde230053e90a7ff7f54",
+      "unchanged": false,
+      "classification": "concurrent publication/documentation change outside this author edit scope; not reverted",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": "tests\\acceptance\\.run\\build\\trim.txt",
+      "beforeSHA256": "07f40d2d4b976adc400c10287c8788cc7d481fbbca2a48c57073ca698c7a6ed0",
+      "currentSHA256": "a03414b8dbdb07c96517d791aab2acc37271b326ae1922860577950c3c27ee2e",
+      "unchanged": false,
+      "classification": "incidental pre-existing runtime artifact captured by broad BEFORE inventory; not a Reports guard or author execution",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": "tests\\acceptance\\.run\\last-run.jsonl",
+      "beforeSHA256": "4f4afeaa18fadfc9aebca204afb553472c6f55a128e3923804cc2b6d976a993c",
+      "currentSHA256": "2f4c9237d61fa33a97d4cc91cb1147ed5b70e1c1e7bbe4c8591e097534637ff3",
+      "unchanged": false,
+      "classification": "incidental pre-existing runtime artifact captured by broad BEFORE inventory; not a Reports guard or author execution",
+      "authorChangedThisPath": false
+    }
+  ]
+}

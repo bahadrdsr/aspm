@@ -1,9 +1,7 @@
 import { apiVersion } from "./types";
 import type {
   Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingResponse,
-  ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportOverviewResponse,
-  ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
-  Session, SourceScope, WorkItem, WorkResponse,
+  ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, Session, SourceScope, WorkItem, WorkResponse,
 } from "./types";
 import { rejectSession, requestAuthority } from "./authorization";
 
@@ -223,117 +221,6 @@ function parseImport(value: unknown): ImportReceipt {
   };
 }
 
-function reportIdentifier(value: unknown, field: string): string {
-  const id = text(value, field);
-  if (!/^[a-f0-9]{32}$/.test(id)) return invalid(field);
-  return id;
-}
-
-function reportFreshness(value: unknown): number {
-  const days = count(value, "report freshness days");
-  if (days < 1 || days > 365) return invalid("report freshness days");
-  return days;
-}
-
-function postureReport(value: unknown, workspace: string | null, days: number): PostureReport {
-  const item = object(value, "posture report");
-  const workspaceId = text(item.workspaceId, "report workspace");
-  if (workspaceId !== workspace) return invalid("report workspace");
-  const totals = object(item.totals, "posture totals");
-  const severity = object(item.bySeverity, "severity counts");
-  const coverage = object(item.coverage, "posture coverage");
-  const window = object(item.freshnessWindow, "freshness window");
-  const verification = object(item.verification, "report verification");
-  const asOf = timestamp(item.asOf, "report as-of time");
-  const freshnessWindow = {
-    from: timestamp(window.from, "freshness start"), to: timestamp(window.to, "freshness end"),
-    days: reportFreshness(window.days),
-  };
-  const freshnessWindowDays = reportFreshness(coverage.freshnessWindowDays);
-  if (freshnessWindow.days !== days || freshnessWindowDays !== days ||
-    Date.parse(freshnessWindow.to) !== Date.parse(asOf) ||
-    Date.parse(freshnessWindow.from) >= Date.parse(freshnessWindow.to)) return invalid("report freshness window");
-  return {
-    workspaceId, asOf, freshnessWindow,
-    totals: {
-      assets: count(totals.assets, "asset total"), findings: count(totals.findings, "finding total"),
-      openFindings: count(totals.openFindings, "open finding total"),
-      acceptedRisk: count(totals.acceptedRisk, "accepted risk total"),
-      expiredAcceptedRisk: count(totals.expiredAcceptedRisk, "expired accepted risk total"),
-      inferredResolved: count(totals.inferredResolved, "source-inferred resolution total"),
-      verifiedResolved: count(totals.verifiedResolved, "verified resolution total"),
-    },
-    bySeverity: {
-      critical: count(severity.critical, "critical findings"), high: count(severity.high, "high findings"),
-      medium: count(severity.medium, "medium findings"), low: count(severity.low, "low findings"),
-      info: count(severity.info, "informational findings"),
-    },
-    coverage: {
-      scannedAssets: count(coverage.scannedAssets, "scanned assets"),
-      unscannedAssets: count(coverage.unscannedAssets, "unscanned assets"),
-      staleAssets: count(coverage.staleAssets, "stale assets"),
-      unknownFreshnessAssets: count(coverage.unknownFreshnessAssets, "unknown freshness assets"),
-      freshnessWindowDays,
-    },
-    verification: {
-      state: choice(verification.state, ["not-run"], "report verification state"),
-      reason: text(verification.reason, "report verification limitation"),
-    },
-  };
-}
-
-function parseReportOverview(value: unknown, workspace: string | null, days: number): ReportOverviewResponse {
-  const { body, dataOrigin } = envelope(value);
-  return { apiVersion, dataOrigin, report: postureReport(body.report, workspace, days) };
-}
-
-function reportSnapshotSummary(value: unknown, workspace: string | null): ReportSnapshotSummary {
-  const item = object(value, "snapshot summary");
-  const workspaceId = text(item.workspaceId, "snapshot workspace");
-  if (workspaceId !== workspace) return invalid("snapshot workspace");
-  const name = text(item.name, "snapshot name");
-  if (name.includes("\0") || new TextEncoder().encode(name).byteLength > 256) return invalid("snapshot name");
-  const state = choice(item.state, ["queued", "processing", "succeeded", "failed"], "snapshot state");
-  const completedAt = nullableTimestamp(item.completedAt, "snapshot completion time");
-  let failure: ReportSnapshotSummary["failure"] = null;
-  if (item.failure !== null) {
-    const detail = object(item.failure, "snapshot failure");
-    failure = {
-      code: text(detail.code, "snapshot failure code"), message: text(detail.message, "snapshot failure message"),
-      retryable: boolean(detail.retryable, "snapshot retry policy"),
-    };
-  }
-  if ((state === "succeeded") !== (completedAt !== null) ||
-    (state === "succeeded" && failure !== null) || (state === "failed" && failure === null) ||
-    (failure !== null && failure.retryable !== (state === "queued"))) return invalid("snapshot worker state");
-  return {
-    id: reportIdentifier(item.id, "snapshot identifier"), workspaceId, name,
-    requestedBy: reportIdentifier(item.requestedBy, "snapshot requester"), state, completedAt, failure,
-    freshnessDays: reportFreshness(item.freshnessDays), createdAt: timestamp(item.createdAt, "snapshot creation time"),
-  };
-}
-
-function parseReportSnapshot(value: unknown, workspace: string | null): ReportSnapshotResponse {
-  const { body, dataOrigin } = envelope(value);
-  const item = object(body.snapshot, "snapshot detail");
-  const summary = reportSnapshotSummary(item, workspace);
-  const report = item.report === null ? null : postureReport(item.report, workspace, summary.freshnessDays);
-  if ((summary.state === "succeeded") !== (report !== null) ||
-    (report !== null && Date.parse(report.asOf) !== Date.parse(summary.completedAt!))) return invalid("saved snapshot report");
-  return { apiVersion, dataOrigin, snapshot: { ...summary, report } };
-}
-
-function parseReportSnapshots(value: unknown, workspace: string | null, limit: number, cursor: string | null): ReportSnapshotsResponse {
-  const { body, dataOrigin } = envelope(value);
-  const items = uniqueIds(array(body.items, "snapshot history").map((value) => reportSnapshotSummary(value, workspace)));
-  const total = count(body.total, "snapshot count");
-  const nextCursor = body.nextCursor === null ? null : reportIdentifier(body.nextCursor, "snapshot cursor");
-  if (total < items.length || items.length > limit ||
-    items.some((item, index) => item.id <= (index === 0 ? cursor ?? "" : items[index - 1].id)) ||
-    (nextCursor !== null && nextCursor !== items.at(-1)?.id)) return invalid("snapshot history page");
-  return { apiVersion, dataOrigin, items, total, nextCursor };
-}
-
 export function parseCatalog(value: unknown): CatalogResponse {
   const { body, dataOrigin } = envelope(value);
   const items = array(body.items, "integration catalog").map((value): IntegrationSummary => {
@@ -379,7 +266,6 @@ interface RequestOptions {
   body?: unknown;
   scoped?: boolean;
   headers?: Record<string, string>;
-  expectedStatus?: 200 | 202;
 }
 
 export async function request<T>(path: string, parse: (value: unknown) => T, options: RequestOptions = {}): Promise<T> {
@@ -406,7 +292,6 @@ export async function request<T>(path: string, parse: (value: unknown) => T, opt
   }
   if (scoped && authority.revision !== requestAuthority().revision) throw new DOMException("Workspace changed", "AbortError");
   if (response.status === 401 && scoped) rejectSession(authority.revision);
-  if (response.ok && options.expectedStatus !== undefined && response.status !== options.expectedStatus) return invalid("HTTP response status");
   if (response.status === 204) return parse(null);
   let payload: unknown;
   try {
@@ -427,14 +312,6 @@ export async function request<T>(path: string, parse: (value: unknown) => T, opt
   }
   if (scoped && authority.revision !== requestAuthority().revision) throw new DOMException("Workspace changed", "AbortError");
   return parse(payload);
-}
-
-async function reportRead<T>(path: string, parse: (value: unknown) => T, signal: AbortSignal): Promise<T> {
-  const scopedSignal = AbortSignal.any([signal, requestAuthority().signal]);
-  // Allow an abandoned mounting effect to cancel before starting network I/O.
-  await Promise.resolve();
-  scopedSignal.throwIfAborted();
-  return request(path, parse, { signal: scopedSignal, expectedStatus: 200 });
 }
 
 export const api = {
@@ -463,36 +340,6 @@ export const api = {
     if (result.id !== id) return invalid("import identifier");
     return result;
   }, { signal }),
-  reportOverview: (days: number, signal: AbortSignal) => {
-    const workspace = requestAuthority().workspace;
-    return reportRead(`/api/v1/reports/overview?freshnessDays=${days}`,
-      (value) => parseReportOverview(value, workspace, days), signal);
-  },
-  reportSnapshots: (limit: number, cursor: string | null, signal: AbortSignal) => {
-    const workspace = requestAuthority().workspace;
-    const query = new URLSearchParams({ limit: String(limit) });
-    if (cursor !== null) query.set("cursor", cursor);
-    return reportRead(`/api/v1/reports/snapshots?${query}`,
-      (value) => parseReportSnapshots(value, workspace, limit, cursor), signal);
-  },
-  reportSnapshot: (id: string, signal: AbortSignal) => {
-    const workspace = requestAuthority().workspace;
-    return reportRead(`/api/v1/reports/snapshots/${encodeURIComponent(id)}`, (value) => {
-      const result = parseReportSnapshot(value, workspace);
-      if (result.snapshot.id !== id) return invalid("selected snapshot identifier");
-      return result;
-    }, signal);
-  },
-  createReportSnapshot: (input: ReportSnapshotInput, signal: AbortSignal) => {
-    const workspace = requestAuthority().workspace;
-    const body = { name: input.name, freshnessDays: input.freshnessDays };
-    return request("/api/v1/reports/snapshots", (value) => {
-      const result = parseReportSnapshot(value, workspace);
-      if (result.snapshot.state !== "queued" || result.snapshot.name !== body.name ||
-        result.snapshot.freshnessDays !== body.freshnessDays) return invalid("queued snapshot acknowledgement");
-      return result;
-    }, { method: "POST", body, signal, expectedStatus: 202 });
-  },
   session: (signal: AbortSignal) => request("/api/v1/session", parseSession, { signal, scoped: false }),
   login: (email: string, password: string, signal: AbortSignal) =>
     request("/api/v1/login", parseSession, { method: "POST", body: { email, password }, scoped: false, signal }),

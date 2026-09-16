@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "primitiveFamily": "radix",
+  "components": [
+    {
+      "id": "shadcn-button",
+      "provider": "shadcn",
+      "localPath": "src\\components\\ui\\button.tsx",
+      "localSHA256": "82403231e33fd3d45b111e5e819df194cdfa7cef9a726770185724a60bd20932",
+      "upstream": {
+        "repository": "shadcn-ui/ui",
+        "commit": "f1dd9c6903d4d9030efe7bd61533db3fa21e68d8",
+        "path": "apps/v4/registry/new-york-v4/ui/button.tsx",
+        "snapshotPath": "tests\\upstream\\shadcn-button.tsx.txt",
+        "sha256": "82403231e33fd3d45b111e5e819df194cdfa7cef9a726770185724a60bd20932",
+        "license": "MIT"
+      },
+      "adaptation": "verbatim",
+      "reviewRef": "tests\\reviews\\m01-source-approval.md"
+    },
+    {
+      "id": "animate-button",
+      "provider": "animate-ui",
+      "localPath": "src\\components\\animate\\button.tsx",
+      "localSHA256": "cd300bc42b8111f81b911b113a56607601c187038e8d16a9a44f2e288348b5de",
+      "upstream": {
+        "repository": "imskyleen/animate-ui",
+        "commit": "38b917762e3b6059c06a7af703071ba11a89091e",
+        "path": "apps/www/registry/primitives/buttons/button/index.tsx",
+        "snapshotPath": "tests\\upstream\\animate-button.tsx.txt",
+        "sha256": "cd300bc42b8111f81b911b113a56607601c187038e8d16a9a44f2e288348b5de",
+        "license": "MIT"
+      },
+      "adaptation": "verbatim",
+      "reviewRef": "tests\\reviews\\m01-source-approval.md"
+    },
+    {
+      "id": "animate-slot",
+      "provider": "animate-ui",
+      "localPath": "src\\components\\animate\\slot.tsx",
+      "localSHA256": "71ab5d88b89e0766d69bb5b4fd3918a263c14ed01f5745fc0323ed25a9cb87c8",
+      "upstream": {
+        "repository": "imskyleen/animate-ui",
+        "commit": "38b917762e3b6059c06a7af703071ba11a89091e",
+        "path": "apps/www/registry/primitives/animate/slot/index.tsx",
+        "snapshotPath": "tests\\upstream\\animate-slot.tsx.txt",
+        "sha256": "71ab5d88b89e0766d69bb5b4fd3918a263c14ed01f5745fc0323ed25a9cb87c8",
+        "license": "MIT"
+      },
+      "adaptation": "verbatim",
+      "reviewRef": "tests\\reviews\\m01-source-approval.md"
+    }
+  ],
+  "usageConditions": {
+    "animateButtonMode": "normal-button-only",
+    "animateSlotPolymorphismExposed": false,
+    "aliases": {
+      "@/lib/utils": "src\\lib\\utils.ts",
+      "@workspace/ui/lib/utils": "src\\lib\\utils.ts",
+      "@/registry/primitives/animate/slot": "src\\components\\animate\\slot.tsx"
+    },
+    "currentAnimateRegistryAllowed": false,
+    "applicationIntegrationReview": "pending-independent-M01-review"
+  }
+}

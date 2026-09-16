@@ -1,0 +1,2782 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T12:48:39.700Z",
+  "checks": {
+    "originalAssertionsByteIdentical": true,
+    "originalProtectedTestsExceptNavigationByteIdentical": true,
+    "originalGuardAndProvenanceFilesByteIdentical": true,
+    "compilerRunnerPackageLockAndWebConfigByteIdentical": true,
+    "existingCompilerInputsExceptAdditiveNavigationByteIdentical": true,
+    "originalNetworkRecoveredByteExactly": true,
+    "productionSourceSetAndBytesUnchanged": true,
+    "signedUIHistoryByteIdentical": true
+  },
+  "scopeNote": "Unchanged claims are bounded to their explicit groups. Parent independently prepares publication; the broad BEFORE inventory also captured unrelated mutable backend run artifacts. All concurrent deltas are disclosed below, not attributed to this author or reverted.",
+  "originalAssertionFiles": [
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "beforeSHA256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96",
+      "currentSHA256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "beforeSHA256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470",
+      "currentSHA256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "beforeSHA256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085",
+      "currentSHA256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "beforeSHA256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67",
+      "currentSHA256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "beforeSHA256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df",
+      "currentSHA256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "beforeSHA256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1",
+      "currentSHA256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "beforeSHA256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f",
+      "currentSHA256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "beforeSHA256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372",
+      "currentSHA256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372",
+      "unchanged": true
+    }
+  ],
+  "originalProtectedFileCount": 84,
+  "originalGuardFiles": [
+    {
+      "path": "web\\tests\\application-fixture.ts",
+      "beforeSHA256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "currentSHA256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\fixtures.ts",
+      "beforeSHA256": "71d0ea42033a064513bd72a59b6083fd2881f67b7dbdc53572dd24d66b1d0297",
+      "currentSHA256": "71d0ea42033a064513bd72a59b6083fd2881f67b7dbdc53572dd24d66b1d0297",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\api-contract.ts",
+      "beforeSHA256": "109791bb5f4e7525662003ae12bb3c19dcfac178ada0824d0134f75c3d44b701",
+      "currentSHA256": "109791bb5f4e7525662003ae12bb3c19dcfac178ada0824d0134f75c3d44b701",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\source-approval.ts",
+      "beforeSHA256": "4eb90208a12373a5b3951e2d62826e054f164c1b496330868621aa9079003229",
+      "currentSHA256": "4eb90208a12373a5b3951e2d62826e054f164c1b496330868621aa9079003229",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\approved-component-sources.json",
+      "beforeSHA256": "822b08fc926604da8c43ea6b2b7d44aab6dfd435f12100fb9909686559ca348e",
+      "currentSHA256": "822b08fc926604da8c43ea6b2b7d44aab6dfd435f12100fb9909686559ca348e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\dependency-metadata.json",
+      "beforeSHA256": "39a231b84594017429b518921e369da8af41e7739a0da06b5d9eda54912b263e",
+      "currentSHA256": "39a231b84594017429b518921e369da8af41e7739a0da06b5d9eda54912b263e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\provenance.json",
+      "beforeSHA256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411",
+      "currentSHA256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411",
+      "unchanged": true
+    }
+  ],
+  "criticalControls": [
+    {
+      "path": "go.mod",
+      "beforeSHA256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038",
+      "currentSHA256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038",
+      "unchanged": true
+    },
+    {
+      "path": "go.sum",
+      "beforeSHA256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6",
+      "currentSHA256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\.gitattributes",
+      "beforeSHA256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893",
+      "currentSHA256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893",
+      "unchanged": true
+    },
+    {
+      "path": "web\\.npmrc",
+      "beforeSHA256": "e5ff309835c0699682deaec26655607558ba1a2f3f9632c1d2e93cbb965b09e3",
+      "currentSHA256": "e5ff309835c0699682deaec26655607558ba1a2f3f9632c1d2e93cbb965b09e3",
+      "unchanged": true
+    },
+    {
+      "path": "web\\index.html",
+      "beforeSHA256": "bfd16da052da30515dae0c3bd6e4c6fc3bba0119a2b25eefb5335c6cace6739a",
+      "currentSHA256": "bfd16da052da30515dae0c3bd6e4c6fc3bba0119a2b25eefb5335c6cace6739a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\tsc.exe",
+      "beforeSHA256": "f9ecfbdc93753d2c972d66a8d0d75f5bd737fd4a5f88b422d9091ea282bcb2c7",
+      "currentSHA256": "f9ecfbdc93753d2c972d66a8d0d75f5bd737fd4a5f88b422d9091ea282bcb2c7",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\package.json",
+      "beforeSHA256": "6d8ec7623880a902bb225c53571112e2bbf0273412b2c534070b1193d2be0f6b",
+      "currentSHA256": "6d8ec7623880a902bb225c53571112e2bbf0273412b2c534070b1193d2be0f6b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\typescript\\bin\\tsc",
+      "beforeSHA256": "2219f428a7e55aaf1f7ad85b9b0f0cf5078aeb76ccc9a7c6036c92d48f492ffd",
+      "currentSHA256": "2219f428a7e55aaf1f7ad85b9b0f0cf5078aeb76ccc9a7c6036c92d48f492ffd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\typescript\\lib\\tsc.js",
+      "beforeSHA256": "cbdfbf11c26ed00dfc073155e316a42d6d6d8a387be61006b82fa9aa93ac572e",
+      "currentSHA256": "cbdfbf11c26ed00dfc073155e316a42d6d6d8a387be61006b82fa9aa93ac572e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\typescript\\package.json",
+      "beforeSHA256": "3722b30210616a13a3213ded11575ba6b2dbab10c32a5ef67afca8513e27017e",
+      "currentSHA256": "3722b30210616a13a3213ded11575ba6b2dbab10c32a5ef67afca8513e27017e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\package-lock.json",
+      "beforeSHA256": "def182f3fbccb232bcb2411a6b387e6ac0152c9860e65f6cc2670543009e9825",
+      "currentSHA256": "def182f3fbccb232bcb2411a6b387e6ac0152c9860e65f6cc2670543009e9825",
+      "unchanged": true
+    },
+    {
+      "path": "web\\package.json",
+      "beforeSHA256": "fd862a4bd142e0864ddeeff049c739d2485b99995acae64aa6b78ccaade19b93",
+      "currentSHA256": "fd862a4bd142e0864ddeeff049c739d2485b99995acae64aa6b78ccaade19b93",
+      "unchanged": true
+    },
+    {
+      "path": "web\\playwright.config.ts",
+      "beforeSHA256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e",
+      "currentSHA256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\review.config.ts",
+      "beforeSHA256": "c2f40686c08969b38b4b94136fe2a99d2dee407a0d8308d82fd6f8834295e6cd",
+      "currentSHA256": "c2f40686c08969b38b4b94136fe2a99d2dee407a0d8308d82fd6f8834295e6cd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\scripts\\audit-dependencies.mjs",
+      "beforeSHA256": "fad990a2f3f104274356ca69534b403b7eb066ee14c9e6292e3d4b9473a127b5",
+      "currentSHA256": "fad990a2f3f104274356ca69534b403b7eb066ee14c9e6292e3d4b9473a127b5",
+      "unchanged": true
+    },
+    {
+      "path": "web\\scripts\\live-auth-check.mjs",
+      "beforeSHA256": "6c3a3baba138e5ff715292feb983f5a0556f9131bf9c42962e4529598b2d6d7c",
+      "currentSHA256": "6c3a3baba138e5ff715292feb983f5a0556f9131bf9c42962e4529598b2d6d7c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\scripts\\normalize-lock.mjs",
+      "beforeSHA256": "756521335bd1e3f44b4e3f5f275da29b8a0818aa1cdee4d7e790b2df3e0ab9ae",
+      "currentSHA256": "756521335bd1e3f44b4e3f5f275da29b8a0818aa1cdee4d7e790b2df3e0ab9ae",
+      "unchanged": true
+    },
+    {
+      "path": "web\\scripts\\playwright.mjs",
+      "beforeSHA256": "4df69b83a466c18e625c8729d510d30d934d7b00607e868ac6d7c8da7e5e25a1",
+      "currentSHA256": "4df69b83a466c18e625c8729d510d30d934d7b00607e868ac6d7c8da7e5e25a1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\scripts\\review-capture.spec.ts",
+      "beforeSHA256": "d5f59cca0c25d3709d982fd838a713a255157d243baba2819db95d4da9f596fd",
+      "currentSHA256": "d5f59cca0c25d3709d982fd838a713a255157d243baba2819db95d4da9f596fd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tsconfig.json",
+      "beforeSHA256": "2c233d484659a18d90e6c5bcf6fd74759541a9f4dd9e5cfb24d64005c09f3a82",
+      "currentSHA256": "2c233d484659a18d90e6c5bcf6fd74759541a9f4dd9e5cfb24d64005c09f3a82",
+      "unchanged": true
+    },
+    {
+      "path": "web\\vite.config.ts",
+      "beforeSHA256": "810f2fffb363f2e08fcd9f4264d028f5081ba9ed7d412f035405e4f8a221998a",
+      "currentSHA256": "810f2fffb363f2e08fcd9f4264d028f5081ba9ed7d412f035405e4f8a221998a",
+      "unchanged": true
+    }
+  ],
+  "compilerInputProof": [
+    {
+      "path": "web\\node_modules\\@oxc-project\\types\\types.d.ts",
+      "beforeSHA256": "f76d2226b20ec0d3e884114cfbbb933cb4d25d26cc306e8315e21a0e3afafc39",
+      "currentSHA256": "f76d2226b20ec0d3e884114cfbbb933cb4d25d26cc306e8315e21a0e3afafc39",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@playwright\\test\\index.d.ts",
+      "beforeSHA256": "ec8997c2e5cea26befc76e7bf990750e96babb16977673a9ff3b5c0575d01e48",
+      "currentSHA256": "ec8997c2e5cea26befc76e7bf990750e96babb16977673a9ff3b5c0575d01e48",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@radix-ui\\react-slot\\dist\\index.d.mts",
+      "beforeSHA256": "a80ec72f5e178862476deaeed532c305bdfcd3627014ae7ac2901356d794fc93",
+      "currentSHA256": "a80ec72f5e178862476deaeed532c305bdfcd3627014ae7ac2901356d794fc93",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@rolldown\\pluginutils\\dist\\filter\\index.d.mts",
+      "beforeSHA256": "638a22f8e16b31c37297483fa38cfc760ed309b16d4c606a7b4532f4394c9c0c",
+      "currentSHA256": "638a22f8e16b31c37297483fa38cfc760ed309b16d4c606a7b4532f4394c9c0c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@rolldown\\pluginutils\\dist\\index.d.mts",
+      "beforeSHA256": "9394183f4c37b8591156f32e41223c9e0dd211eefe7499155d4cdf15268eaea8",
+      "currentSHA256": "9394183f4c37b8591156f32e41223c9e0dd211eefe7499155d4cdf15268eaea8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@tailwindcss\\vite\\dist\\index.d.mts",
+      "beforeSHA256": "7757c6ca7a8ad1992401c6aff33633d6a088515be5a39d7ee188b35bfc8e5f8e",
+      "currentSHA256": "7757c6ca7a8ad1992401c6aff33633d6a088515be5a39d7ee188b35bfc8e5f8e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\assert.d.ts",
+      "beforeSHA256": "0fa06ada475b910e2106c98c68b10483dc8811d0c14a8a8dd36efb2672485b29",
+      "currentSHA256": "0fa06ada475b910e2106c98c68b10483dc8811d0c14a8a8dd36efb2672485b29",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\assert\\strict.d.ts",
+      "beforeSHA256": "33e5e9aba62c3193d10d1d33ae1fa75c46a1171cf76fef750777377d53b0303f",
+      "currentSHA256": "33e5e9aba62c3193d10d1d33ae1fa75c46a1171cf76fef750777377d53b0303f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\async_hooks.d.ts",
+      "beforeSHA256": "2b06b93fd01bcd49d1a6bd1f9b65ddcae6480b9a86e9061634d6f8e354c1468f",
+      "currentSHA256": "2b06b93fd01bcd49d1a6bd1f9b65ddcae6480b9a86e9061634d6f8e354c1468f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\buffer.buffer.d.ts",
+      "beforeSHA256": "3af97acf03cc97de58a3a4bc91f8f616408099bc4233f6d0852e72a8ffb91ac9",
+      "currentSHA256": "3af97acf03cc97de58a3a4bc91f8f616408099bc4233f6d0852e72a8ffb91ac9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\buffer.d.ts",
+      "beforeSHA256": "6a0cd27e5dc2cfbe039e731cf879d12b0e2dded06d1b1dedad07f7712de0d7f4",
+      "currentSHA256": "6a0cd27e5dc2cfbe039e731cf879d12b0e2dded06d1b1dedad07f7712de0d7f4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\child_process.d.ts",
+      "beforeSHA256": "13f5c844119c43e51ce777c509267f14d6aaf31eafb2c2b002ca35584cd13b29",
+      "currentSHA256": "13f5c844119c43e51ce777c509267f14d6aaf31eafb2c2b002ca35584cd13b29",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\cluster.d.ts",
+      "beforeSHA256": "e60477649d6ad21542bd2dc7e3d9ff6853d0797ba9f689ba2f6653818999c264",
+      "currentSHA256": "e60477649d6ad21542bd2dc7e3d9ff6853d0797ba9f689ba2f6653818999c264",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\compatibility\\disposable.d.ts",
+      "beforeSHA256": "6c7176368037af28cb72f2392010fa1cef295d6d6744bca8cfb54985f3a18c3e",
+      "currentSHA256": "6c7176368037af28cb72f2392010fa1cef295d6d6744bca8cfb54985f3a18c3e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\compatibility\\index.d.ts",
+      "beforeSHA256": "21d819c173c0cf7cc3ce57c3276e77fd9a8a01d35a06ad87158781515c9a438a",
+      "currentSHA256": "21d819c173c0cf7cc3ce57c3276e77fd9a8a01d35a06ad87158781515c9a438a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\compatibility\\indexable.d.ts",
+      "beforeSHA256": "ab41ef1f2cdafb8df48be20cd969d875602483859dc194e9c97c8a576892c052",
+      "currentSHA256": "ab41ef1f2cdafb8df48be20cd969d875602483859dc194e9c97c8a576892c052",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\compatibility\\iterators.d.ts",
+      "beforeSHA256": "437e20f2ba32abaeb7985e0afe0002de1917bc74e949ba585e49feba65da6ca1",
+      "currentSHA256": "437e20f2ba32abaeb7985e0afe0002de1917bc74e949ba585e49feba65da6ca1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\console.d.ts",
+      "beforeSHA256": "c2510f124c0293ab80b1777c44d80f812b75612f297b9857406468c0f4dafe29",
+      "currentSHA256": "c2510f124c0293ab80b1777c44d80f812b75612f297b9857406468c0f4dafe29",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\constants.d.ts",
+      "beforeSHA256": "5524481e56c48ff486f42926778c0a3cce1cc85dc46683b92b1271865bcf015a",
+      "currentSHA256": "5524481e56c48ff486f42926778c0a3cce1cc85dc46683b92b1271865bcf015a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\crypto.d.ts",
+      "beforeSHA256": "4c829ab315f57c5442c6667b53769975acbf92003a66aef19bce151987675bd1",
+      "currentSHA256": "4c829ab315f57c5442c6667b53769975acbf92003a66aef19bce151987675bd1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\dgram.d.ts",
+      "beforeSHA256": "b2ade7657e2db96d18315694789eff2ddd3d8aea7215b181f8a0b303277cc579",
+      "currentSHA256": "b2ade7657e2db96d18315694789eff2ddd3d8aea7215b181f8a0b303277cc579",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\diagnostics_channel.d.ts",
+      "beforeSHA256": "78dbea00e90d2df8ea3dbef0cc379d95b8be9b71cd6bde4c28728f306811803b",
+      "currentSHA256": "78dbea00e90d2df8ea3dbef0cc379d95b8be9b71cd6bde4c28728f306811803b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\dns.d.ts",
+      "beforeSHA256": "4d631b81fa2f07a0e63a9a143d6a82c25c5f051298651a9b69176ba28930756d",
+      "currentSHA256": "4d631b81fa2f07a0e63a9a143d6a82c25c5f051298651a9b69176ba28930756d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\dns\\promises.d.ts",
+      "beforeSHA256": "836a356aae992ff3c28a0212e3eabcb76dd4b0cc06bcb9607aeef560661b860d",
+      "currentSHA256": "836a356aae992ff3c28a0212e3eabcb76dd4b0cc06bcb9607aeef560661b860d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\domain.d.ts",
+      "beforeSHA256": "1e0d1f8b0adfa0b0330e028c7941b5a98c08b600efe7f14d2d2a00854fb2f393",
+      "currentSHA256": "1e0d1f8b0adfa0b0330e028c7941b5a98c08b600efe7f14d2d2a00854fb2f393",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\events.d.ts",
+      "beforeSHA256": "41670ee38943d9cbb4924e436f56fc19ee94232bc96108562de1a734af20dc2c",
+      "currentSHA256": "41670ee38943d9cbb4924e436f56fc19ee94232bc96108562de1a734af20dc2c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\fs.d.ts",
+      "beforeSHA256": "8e1e46d0a9837ee058c100501080c920fa98081ea3956af0374308ba6f22a33e",
+      "currentSHA256": "8e1e46d0a9837ee058c100501080c920fa98081ea3956af0374308ba6f22a33e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\fs\\promises.d.ts",
+      "beforeSHA256": "272ca407e0c9068bdc5152552d876e68037ceae3de62e529306403e973dec8e1",
+      "currentSHA256": "272ca407e0c9068bdc5152552d876e68037ceae3de62e529306403e973dec8e1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\globals.d.ts",
+      "beforeSHA256": "808069bba06b6768b62fd22429b53362e7af342da4a236ed2d2e1c89fcca3b4a",
+      "currentSHA256": "808069bba06b6768b62fd22429b53362e7af342da4a236ed2d2e1c89fcca3b4a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\globals.typedarray.d.ts",
+      "beforeSHA256": "98cffbf06d6bab333473c70a893770dbe990783904002c4f1a960447b4b53dca",
+      "currentSHA256": "98cffbf06d6bab333473c70a893770dbe990783904002c4f1a960447b4b53dca",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\http.d.ts",
+      "beforeSHA256": "fa7834c715d5357e4540cee40ce96c3250ddb67a7b879a6b7fa0e86d6696f121",
+      "currentSHA256": "fa7834c715d5357e4540cee40ce96c3250ddb67a7b879a6b7fa0e86d6696f121",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\http2.d.ts",
+      "beforeSHA256": "22dfb07a7ab15b66ac043829056fe70124844636ae719551812ac631ba04985b",
+      "currentSHA256": "22dfb07a7ab15b66ac043829056fe70124844636ae719551812ac631ba04985b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\https.d.ts",
+      "beforeSHA256": "a10f0e1854f3316d7ee437b79649e5a6ae3ae14ffe6322b02d4987071a95362e",
+      "currentSHA256": "a10f0e1854f3316d7ee437b79649e5a6ae3ae14ffe6322b02d4987071a95362e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\index.d.ts",
+      "beforeSHA256": "71d3ae6a5e73ca4130762560425e00984ebaff64d5353a3333d1bb7eb86ef336",
+      "currentSHA256": "71d3ae6a5e73ca4130762560425e00984ebaff64d5353a3333d1bb7eb86ef336",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\inspector.d.ts",
+      "beforeSHA256": "e208f73ef6a980104304b0d2ca5f6bf1b85de6009d2c7e404028b875020fa8f2",
+      "currentSHA256": "e208f73ef6a980104304b0d2ca5f6bf1b85de6009d2c7e404028b875020fa8f2",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\inspector.generated.d.ts",
+      "beforeSHA256": "d163b6bc2372b4f07260747cbc6c0a6405ab3fbcea3852305e98ac43ca59f5bc",
+      "currentSHA256": "d163b6bc2372b4f07260747cbc6c0a6405ab3fbcea3852305e98ac43ca59f5bc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\module.d.ts",
+      "beforeSHA256": "e6fa9ad47c5f71ff733744a029d1dc472c618de53804eae08ffc243b936f87ff",
+      "currentSHA256": "e6fa9ad47c5f71ff733744a029d1dc472c618de53804eae08ffc243b936f87ff",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\net.d.ts",
+      "beforeSHA256": "a6f137d651076822d4fe884287e68fd61785a0d3d1fdb250a5059b691fa897db",
+      "currentSHA256": "a6f137d651076822d4fe884287e68fd61785a0d3d1fdb250a5059b691fa897db",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\os.d.ts",
+      "beforeSHA256": "24826ed94a78d5c64bd857570fdbd96229ad41b5cb654c08d75a9845e3ab7dde",
+      "currentSHA256": "24826ed94a78d5c64bd857570fdbd96229ad41b5cb654c08d75a9845e3ab7dde",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\path.d.ts",
+      "beforeSHA256": "8b479a130ccb62e98f11f136d3ac80f2984fdc07616516d29881f3061f2dd472",
+      "currentSHA256": "8b479a130ccb62e98f11f136d3ac80f2984fdc07616516d29881f3061f2dd472",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\perf_hooks.d.ts",
+      "beforeSHA256": "928af3d90454bf656a52a48679f199f64c1435247d6189d1caf4c68f2eaf921f",
+      "currentSHA256": "928af3d90454bf656a52a48679f199f64c1435247d6189d1caf4c68f2eaf921f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\process.d.ts",
+      "beforeSHA256": "bceb58df66ab8fb00170df20cd813978c5ab84be1d285710c4eb005d8e9d8efb",
+      "currentSHA256": "bceb58df66ab8fb00170df20cd813978c5ab84be1d285710c4eb005d8e9d8efb",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\punycode.d.ts",
+      "beforeSHA256": "3f16a7e4deafa527ed9995a772bb380eb7d3c2c0fd4ae178c5263ed18394db2c",
+      "currentSHA256": "3f16a7e4deafa527ed9995a772bb380eb7d3c2c0fd4ae178c5263ed18394db2c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\querystring.d.ts",
+      "beforeSHA256": "933921f0bb0ec12ef45d1062a1fc0f27635318f4d294e4d99de9a5493e618ca2",
+      "currentSHA256": "933921f0bb0ec12ef45d1062a1fc0f27635318f4d294e4d99de9a5493e618ca2",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\readline.d.ts",
+      "beforeSHA256": "71a0f3ad612c123b57239a7749770017ecfe6b66411488000aba83e4546fde25",
+      "currentSHA256": "71a0f3ad612c123b57239a7749770017ecfe6b66411488000aba83e4546fde25",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\readline\\promises.d.ts",
+      "beforeSHA256": "77fbe5eecb6fac4b6242bbf6eebfc43e98ce5ccba8fa44e0ef6a95c945ff4d98",
+      "currentSHA256": "77fbe5eecb6fac4b6242bbf6eebfc43e98ce5ccba8fa44e0ef6a95c945ff4d98",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\repl.d.ts",
+      "beforeSHA256": "4f9d8ca0c417b67b69eeb54c7ca1bedd7b56034bb9bfd27c5d4f3bc4692daca7",
+      "currentSHA256": "4f9d8ca0c417b67b69eeb54c7ca1bedd7b56034bb9bfd27c5d4f3bc4692daca7",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\sea.d.ts",
+      "beforeSHA256": "0cb167c371eaa8c869f8a7656a7296f2e4fae43b4d8b803a680236b24794e5f9",
+      "currentSHA256": "0cb167c371eaa8c869f8a7656a7296f2e4fae43b4d8b803a680236b24794e5f9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\sqlite.d.ts",
+      "beforeSHA256": "0a839dba0287cc0481ad4beedd48a1c64acf1e212ae865d1315f7007ca215161",
+      "currentSHA256": "0a839dba0287cc0481ad4beedd48a1c64acf1e212ae865d1315f7007ca215161",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\stream.d.ts",
+      "beforeSHA256": "38dc4655376cd1a4bd6bb3763d92949233e33d38d3dd3cbea7bbf218175a38ef",
+      "currentSHA256": "38dc4655376cd1a4bd6bb3763d92949233e33d38d3dd3cbea7bbf218175a38ef",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\stream\\consumers.d.ts",
+      "beforeSHA256": "45650f47bfb376c8a8ed39d4bcda5902ab899a3150029684ee4c10676d9fbaee",
+      "currentSHA256": "45650f47bfb376c8a8ed39d4bcda5902ab899a3150029684ee4c10676d9fbaee",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\stream\\promises.d.ts",
+      "beforeSHA256": "37ba7b45141a45ce6e80e66f2a96c8a5ab1bcef0fc2d0f56bb58df96ec67e972",
+      "currentSHA256": "37ba7b45141a45ce6e80e66f2a96c8a5ab1bcef0fc2d0f56bb58df96ec67e972",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\stream\\web.d.ts",
+      "beforeSHA256": "d61e0a64cd175208ac0b83670151a9a6b5916f0d1ffcdc5c29c90b1cebfc5045",
+      "currentSHA256": "d61e0a64cd175208ac0b83670151a9a6b5916f0d1ffcdc5c29c90b1cebfc5045",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\string_decoder.d.ts",
+      "beforeSHA256": "18fd40412d102c5564136f29735e5d1c3b455b8a37f920da79561f1fde068208",
+      "currentSHA256": "18fd40412d102c5564136f29735e5d1c3b455b8a37f920da79561f1fde068208",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\test.d.ts",
+      "beforeSHA256": "48a679952eefe4cb776d5a0e1ccba2d3eb53b57448bbb7abc1fcebcbd5440188",
+      "currentSHA256": "48a679952eefe4cb776d5a0e1ccba2d3eb53b57448bbb7abc1fcebcbd5440188",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\timers.d.ts",
+      "beforeSHA256": "f0be1b8078cd549d91f37c30c222c2a187ac1cf981d994fb476a1adc61387b14",
+      "currentSHA256": "f0be1b8078cd549d91f37c30c222c2a187ac1cf981d994fb476a1adc61387b14",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\timers\\promises.d.ts",
+      "beforeSHA256": "0aaed1d72199b01234152f7a60046bc947f1f37d78d182e9ae09c4289e06a592",
+      "currentSHA256": "0aaed1d72199b01234152f7a60046bc947f1f37d78d182e9ae09c4289e06a592",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\tls.d.ts",
+      "beforeSHA256": "2d14da6ecb49bf828d83948765ec2d3a579d476bbb9645e749610baa6ec880ca",
+      "currentSHA256": "2d14da6ecb49bf828d83948765ec2d3a579d476bbb9645e749610baa6ec880ca",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\trace_events.d.ts",
+      "beforeSHA256": "66ba1b2c3e3a3644a1011cd530fb444a96b1b2dfe2f5e837a002d41a1a799e60",
+      "currentSHA256": "66ba1b2c3e3a3644a1011cd530fb444a96b1b2dfe2f5e837a002d41a1a799e60",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\tty.d.ts",
+      "beforeSHA256": "7e514f5b852fdbc166b539fdd1f4e9114f29911592a5eb10a94bb3a13ccac3c4",
+      "currentSHA256": "7e514f5b852fdbc166b539fdd1f4e9114f29911592a5eb10a94bb3a13ccac3c4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\url.d.ts",
+      "beforeSHA256": "5b7aa3c4c1a5d81b411e8cb302b45507fea9358d3569196b27eb1a27ae3a90ef",
+      "currentSHA256": "5b7aa3c4c1a5d81b411e8cb302b45507fea9358d3569196b27eb1a27ae3a90ef",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\util.d.ts",
+      "beforeSHA256": "5987a903da92c7462e0b35704ce7da94d7fdc4b89a984871c0e2b87a8aae9e69",
+      "currentSHA256": "5987a903da92c7462e0b35704ce7da94d7fdc4b89a984871c0e2b87a8aae9e69",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\v8.d.ts",
+      "beforeSHA256": "ea08a0345023ade2b47fbff5a76d0d0ed8bff10bc9d22b83f40858a8e941501c",
+      "currentSHA256": "ea08a0345023ade2b47fbff5a76d0d0ed8bff10bc9d22b83f40858a8e941501c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\vm.d.ts",
+      "beforeSHA256": "0aef708fb4c7a6b915e8305cbfac40cd207b032dbaabe9a01889a5fff3254681",
+      "currentSHA256": "0aef708fb4c7a6b915e8305cbfac40cd207b032dbaabe9a01889a5fff3254681",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\wasi.d.ts",
+      "beforeSHA256": "ae062ce7d9510060c5d7e7952ae379224fb3f8f2dd74e88959878af2057c143b",
+      "currentSHA256": "ae062ce7d9510060c5d7e7952ae379224fb3f8f2dd74e88959878af2057c143b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\abortcontroller.d.ts",
+      "beforeSHA256": "1db0b7dca579049ca4193d034d835f6bfe73096c73663e5ef9a0b5779939f3d0",
+      "currentSHA256": "1db0b7dca579049ca4193d034d835f6bfe73096c73663e5ef9a0b5779939f3d0",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\domexception.d.ts",
+      "beforeSHA256": "9798340ffb0d067d69b1ae5b32faa17ab31b82466a3fc00d8f2f2df0c8554aaa",
+      "currentSHA256": "9798340ffb0d067d69b1ae5b32faa17ab31b82466a3fc00d8f2f2df0c8554aaa",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\events.d.ts",
+      "beforeSHA256": "f26b11d8d8e4b8028f1c7d618b22274c892e4b0ef5b3678a8ccbad85419aef43",
+      "currentSHA256": "f26b11d8d8e4b8028f1c7d618b22274c892e4b0ef5b3678a8ccbad85419aef43",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\fetch.d.ts",
+      "beforeSHA256": "b52476feb4a0cbcb25e5931b930fc73cb6643fb1a5060bf8a3dda0eeae5b4b68",
+      "currentSHA256": "b52476feb4a0cbcb25e5931b930fc73cb6643fb1a5060bf8a3dda0eeae5b4b68",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\navigator.d.ts",
+      "beforeSHA256": "f9501cc13ce624c72b61f12b3963e84fad210fbdf0ffbc4590e08460a3f04eba",
+      "currentSHA256": "f9501cc13ce624c72b61f12b3963e84fad210fbdf0ffbc4590e08460a3f04eba",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\storage.d.ts",
+      "beforeSHA256": "e7721c4f69f93c91360c26a0a84ee885997d748237ef78ef665b153e622b36c1",
+      "currentSHA256": "e7721c4f69f93c91360c26a0a84ee885997d748237ef78ef665b153e622b36c1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\web-globals\\streams.d.ts",
+      "beforeSHA256": "d97fb21da858fb18b8ae72c314e9743fd52f73ebe2764e12af1db32fc03f853f",
+      "currentSHA256": "d97fb21da858fb18b8ae72c314e9743fd52f73ebe2764e12af1db32fc03f853f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\worker_threads.d.ts",
+      "beforeSHA256": "ad9bdafb4e7abf14cc53ce7970486a84c87831e62891e5dfe798ddcd55e84701",
+      "currentSHA256": "ad9bdafb4e7abf14cc53ce7970486a84c87831e62891e5dfe798ddcd55e84701",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\node\\zlib.d.ts",
+      "beforeSHA256": "358765d5ea8afd285d4fd1532e78b88273f18cb3f87403a9b16fef61ac9fdcfe",
+      "currentSHA256": "358765d5ea8afd285d4fd1532e78b88273f18cb3f87403a9b16fef61ac9fdcfe",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\react-dom\\client.d.ts",
+      "beforeSHA256": "bc03c3c352f689e38c0ddd50c39b1e65d59273991bfc8858a9e3c0ebb79c023b",
+      "currentSHA256": "bc03c3c352f689e38c0ddd50c39b1e65d59273991bfc8858a9e3c0ebb79c023b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\react-dom\\index.d.ts",
+      "beforeSHA256": "be1cc4d94ea60cbe567bc29ed479d42587bf1e6cba490f123d329976b0fe4ee5",
+      "currentSHA256": "be1cc4d94ea60cbe567bc29ed479d42587bf1e6cba490f123d329976b0fe4ee5",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\react\\global.d.ts",
+      "beforeSHA256": "7e29f41b158de217f94cb9676bf9cbd0cd9b5a46e1985141ed36e075c52bf6ad",
+      "currentSHA256": "7e29f41b158de217f94cb9676bf9cbd0cd9b5a46e1985141ed36e075c52bf6ad",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\react\\index.d.ts",
+      "beforeSHA256": "814d5c7384f3ca276e9dc4bcfde5545801a3ea0bfae09916b3336774e662fd1b",
+      "currentSHA256": "814d5c7384f3ca276e9dc4bcfde5545801a3ea0bfae09916b3336774e662fd1b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@types\\react\\jsx-runtime.d.ts",
+      "beforeSHA256": "b838d4c72740eb0afd284bf7575b74c624b105eff2e8c7b4aeead57e7ac320ff",
+      "currentSHA256": "b838d4c72740eb0afd284bf7575b74c624b105eff2e8c7b4aeead57e7ac320ff",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.decorators.d.ts",
+      "beforeSHA256": "1ce14b81c5cc821994aa8ec1d42b220dd41b27fcc06373bce3958af7421b77d4",
+      "currentSHA256": "1ce14b81c5cc821994aa8ec1d42b220dd41b27fcc06373bce3958af7421b77d4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.decorators.legacy.d.ts",
+      "beforeSHA256": "b3a048b3e9302ef9a34ef4ebb9aecfb28b66abb3bce577206a79fee559c230da",
+      "currentSHA256": "b3a048b3e9302ef9a34ef4ebb9aecfb28b66abb3bce577206a79fee559c230da",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.dom.d.ts",
+      "beforeSHA256": "d6b1eba8496bdd0eed6fc8a685768fe01b2da4a0388b5fe7df558290bffcf32f",
+      "currentSHA256": "d6b1eba8496bdd0eed6fc8a685768fe01b2da4a0388b5fe7df558290bffcf32f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.dom.iterable.d.ts",
+      "beforeSHA256": "7f57fc4404ff020bc45b9c620aff2b40f700b95fe31164024c453a5e3c163c54",
+      "currentSHA256": "7f57fc4404ff020bc45b9c620aff2b40f700b95fe31164024c453a5e3c163c54",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.collection.d.ts",
+      "beforeSHA256": "f0b6b1d3624fb143656dd86a8dd3e1950b7e65f218319b47bde52f65d47e2e4b",
+      "currentSHA256": "f0b6b1d3624fb143656dd86a8dd3e1950b7e65f218319b47bde52f65d47e2e4b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.core.d.ts",
+      "beforeSHA256": "770011bd32a52f929fc98fbf9976c1fa9d80b6445171c02b08627fdba9778933",
+      "currentSHA256": "770011bd32a52f929fc98fbf9976c1fa9d80b6445171c02b08627fdba9778933",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.d.ts",
+      "beforeSHA256": "3f88bedbeb09c6f5a6645cb24c7c55f1aa22d19ae96c8e6959cbd8b85a707bc6",
+      "currentSHA256": "3f88bedbeb09c6f5a6645cb24c7c55f1aa22d19ae96c8e6959cbd8b85a707bc6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.generator.d.ts",
+      "beforeSHA256": "00343ca5b2e3d48fa5df1db6e32ea2a59afab09590274a6cccb1dbae82e60c7c",
+      "currentSHA256": "00343ca5b2e3d48fa5df1db6e32ea2a59afab09590274a6cccb1dbae82e60c7c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.iterable.d.ts",
+      "beforeSHA256": "ebd9f816d4002697cb2864bea1f0b70a103124e18a8cd9645eeccc09bdf80ab4",
+      "currentSHA256": "ebd9f816d4002697cb2864bea1f0b70a103124e18a8cd9645eeccc09bdf80ab4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.promise.d.ts",
+      "beforeSHA256": "2c1afac30a01772cd2a9a298a7ce7706b5892e447bb46bdbeef720f7b5da77ad",
+      "currentSHA256": "2c1afac30a01772cd2a9a298a7ce7706b5892e447bb46bdbeef720f7b5da77ad",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.proxy.d.ts",
+      "beforeSHA256": "7b0225f483e4fa685625ebe43dd584bb7973bbd84e66a6ba7bbe175ee1048b4f",
+      "currentSHA256": "7b0225f483e4fa685625ebe43dd584bb7973bbd84e66a6ba7bbe175ee1048b4f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.reflect.d.ts",
+      "beforeSHA256": "c0a4b8ac6ce74679c1da2b3795296f5896e31c38e888469a8e0f99dc3305de60",
+      "currentSHA256": "c0a4b8ac6ce74679c1da2b3795296f5896e31c38e888469a8e0f99dc3305de60",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.symbol.d.ts",
+      "beforeSHA256": "83e3871cda2abd4421970fa923cca51a9ce8cdbece6f898285643ab030cb80f3",
+      "currentSHA256": "83e3871cda2abd4421970fa923cca51a9ce8cdbece6f898285643ab030cb80f3",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2015.symbol.wellknown.d.ts",
+      "beforeSHA256": "c5079c53f0f141a0698faa903e76cb41cd664e3efb01cc17a5c46ec2eb0bef42",
+      "currentSHA256": "c5079c53f0f141a0698faa903e76cb41cd664e3efb01cc17a5c46ec2eb0bef42",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2016.array.include.d.ts",
+      "beforeSHA256": "32cafbc484dea6b0ab62cf8473182bbcb23020d70845b406f80b7526f38ae862",
+      "currentSHA256": "32cafbc484dea6b0ab62cf8473182bbcb23020d70845b406f80b7526f38ae862",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2016.d.ts",
+      "beforeSHA256": "7fe93b39b810eadd916be8db880dd7f0f7012a5cc6ffb62de8f62a2117fa6f1f",
+      "currentSHA256": "7fe93b39b810eadd916be8db880dd7f0f7012a5cc6ffb62de8f62a2117fa6f1f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2016.intl.d.ts",
+      "beforeSHA256": "fca4cdcb6d6c5ef18a869003d02c9f0fd95df8cfaf6eb431cd3376bc034cad36",
+      "currentSHA256": "fca4cdcb6d6c5ef18a869003d02c9f0fd95df8cfaf6eb431cd3376bc034cad36",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.arraybuffer.d.ts",
+      "beforeSHA256": "b93ec88115de9a9dc1b602291b85baf825c85666bf25985cc5f698073892b467",
+      "currentSHA256": "b93ec88115de9a9dc1b602291b85baf825c85666bf25985cc5f698073892b467",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.d.ts",
+      "beforeSHA256": "bb0074cc08b84a2374af33d8bf044b80851ccc9e719a5e202eacf40db2c31600",
+      "currentSHA256": "bb0074cc08b84a2374af33d8bf044b80851ccc9e719a5e202eacf40db2c31600",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.date.d.ts",
+      "beforeSHA256": "f5c06dcc3fe849fcb297c247865a161f995cc29de7aa823afdd75aaaddc1419b",
+      "currentSHA256": "f5c06dcc3fe849fcb297c247865a161f995cc29de7aa823afdd75aaaddc1419b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.intl.d.ts",
+      "beforeSHA256": "c7b3542146734342e440a84b213384bfa188835537ddbda50d30766f0593aff9",
+      "currentSHA256": "c7b3542146734342e440a84b213384bfa188835537ddbda50d30766f0593aff9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.object.d.ts",
+      "beforeSHA256": "b77e16112127a4b169ef0b8c3a4d730edf459c5f25fe52d5e436a6919206c4d7",
+      "currentSHA256": "b77e16112127a4b169ef0b8c3a4d730edf459c5f25fe52d5e436a6919206c4d7",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.sharedmemory.d.ts",
+      "beforeSHA256": "fbffd9337146eff822c7c00acbb78b01ea7ea23987f6c961eba689349e744f8c",
+      "currentSHA256": "fbffd9337146eff822c7c00acbb78b01ea7ea23987f6c961eba689349e744f8c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.string.d.ts",
+      "beforeSHA256": "6aaeba1e4f228fda4e9175e34d96807e2c6dc984d0b37a772b3af9365a456681",
+      "currentSHA256": "6aaeba1e4f228fda4e9175e34d96807e2c6dc984d0b37a772b3af9365a456681",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2017.typedarrays.d.ts",
+      "beforeSHA256": "ce6180fa19b1cccd07ee7f7dbb9a367ac19c0ed160573e4686425060b6df7f57",
+      "currentSHA256": "ce6180fa19b1cccd07ee7f7dbb9a367ac19c0ed160573e4686425060b6df7f57",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2018.asyncgenerator.d.ts",
+      "beforeSHA256": "3f02e2476bccb9dbe21280d6090f0df17d2f66b74711489415a8aa4df73c9675",
+      "currentSHA256": "3f02e2476bccb9dbe21280d6090f0df17d2f66b74711489415a8aa4df73c9675",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2018.asynciterable.d.ts",
+      "beforeSHA256": "45e3ab34c1c013c8ab2dc1ba4c80c780744b13b5676800ae2e3be27ae862c40c",
+      "currentSHA256": "45e3ab34c1c013c8ab2dc1ba4c80c780744b13b5676800ae2e3be27ae862c40c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2018.d.ts",
+      "beforeSHA256": "1a7daebe4f45fb03d9ec53d60008fbf9ac45a697fdc89e4ce218bc94b94f94d6",
+      "currentSHA256": "1a7daebe4f45fb03d9ec53d60008fbf9ac45a697fdc89e4ce218bc94b94f94d6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2018.intl.d.ts",
+      "beforeSHA256": "805c86f6cca8d7702a62a844856dbaa2a3fd2abef0536e65d48732441dde5b5b",
+      "currentSHA256": "805c86f6cca8d7702a62a844856dbaa2a3fd2abef0536e65d48732441dde5b5b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2018.promise.d.ts",
+      "beforeSHA256": "e42e397f1a5a77994f0185fd1466520691456c772d06bf843e5084ceb879a0ad",
+      "currentSHA256": "e42e397f1a5a77994f0185fd1466520691456c772d06bf843e5084ceb879a0ad",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2018.regexp.d.ts",
+      "beforeSHA256": "f4c2b41f90c95b1c532ecc874bd3c111865793b23aebcc1c3cbbabcd5d76ffb0",
+      "currentSHA256": "f4c2b41f90c95b1c532ecc874bd3c111865793b23aebcc1c3cbbabcd5d76ffb0",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2019.array.d.ts",
+      "beforeSHA256": "ab26191cfad5b66afa11b8bf935ef1cd88fabfcb28d30b2dfa6fad877d050332",
+      "currentSHA256": "ab26191cfad5b66afa11b8bf935ef1cd88fabfcb28d30b2dfa6fad877d050332",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2019.d.ts",
+      "beforeSHA256": "f94b133a3cb14a288803be545ac2683e0d0ff6661bcd37e31aaaec54fc382aed",
+      "currentSHA256": "f94b133a3cb14a288803be545ac2683e0d0ff6661bcd37e31aaaec54fc382aed",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2019.intl.d.ts",
+      "beforeSHA256": "689da16f46e647cef0d64b0def88910e818a5877ca5379ede156ca3afb780ac3",
+      "currentSHA256": "689da16f46e647cef0d64b0def88910e818a5877ca5379ede156ca3afb780ac3",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2019.object.d.ts",
+      "beforeSHA256": "2088bc26531e38fb05eedac2951480db5309f6be3fa4a08d2221abb0f5b4200d",
+      "currentSHA256": "2088bc26531e38fb05eedac2951480db5309f6be3fa4a08d2221abb0f5b4200d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2019.string.d.ts",
+      "beforeSHA256": "cb9d366c425fea79716a8fb3af0d78e6b22ebbab3bd64d25063b42dc9f531c1e",
+      "currentSHA256": "cb9d366c425fea79716a8fb3af0d78e6b22ebbab3bd64d25063b42dc9f531c1e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2019.symbol.d.ts",
+      "beforeSHA256": "500934a8089c26d57ebdb688fc9757389bb6207a3c8f0674d68efa900d2abb34",
+      "currentSHA256": "500934a8089c26d57ebdb688fc9757389bb6207a3c8f0674d68efa900d2abb34",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.bigint.d.ts",
+      "beforeSHA256": "bc21cc8b6fee4f4c2440d08035b7ea3c06b3511314c8bab6bef7a92de58a2593",
+      "currentSHA256": "bc21cc8b6fee4f4c2440d08035b7ea3c06b3511314c8bab6bef7a92de58a2593",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.d.ts",
+      "beforeSHA256": "f59d0650799f8782fd74cf73c19223730c6d1b9198671b1c5b3a38e1188b5953",
+      "currentSHA256": "f59d0650799f8782fd74cf73c19223730c6d1b9198671b1c5b3a38e1188b5953",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.date.d.ts",
+      "beforeSHA256": "7ca53d13d2957003abb47922a71866ba7cb2068f8d154877c596d63c359fed25",
+      "currentSHA256": "7ca53d13d2957003abb47922a71866ba7cb2068f8d154877c596d63c359fed25",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.intl.d.ts",
+      "beforeSHA256": "db839fa0625981ae6e20a55e079c3613184310ca246879245b294573e7cc6926",
+      "currentSHA256": "db839fa0625981ae6e20a55e079c3613184310ca246879245b294573e7cc6926",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.number.d.ts",
+      "beforeSHA256": "b7bf9377723203b5a6a4b920164df22d56a43f593269ba6ae1fdc97774b68855",
+      "currentSHA256": "b7bf9377723203b5a6a4b920164df22d56a43f593269ba6ae1fdc97774b68855",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.promise.d.ts",
+      "beforeSHA256": "54725f8c4df3d900cb4dac84b64689ce29548da0b4e9b7c2de61d41c79293611",
+      "currentSHA256": "54725f8c4df3d900cb4dac84b64689ce29548da0b4e9b7c2de61d41c79293611",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.sharedmemory.d.ts",
+      "beforeSHA256": "e5594bc3076ac29e6c1ebda77939bc4c8833de72f654b6e376862c0473199323",
+      "currentSHA256": "e5594bc3076ac29e6c1ebda77939bc4c8833de72f654b6e376862c0473199323",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.string.d.ts",
+      "beforeSHA256": "2f3eb332c2d73e729f3364fcc0c2b375e72a121e8157d25a82d67a138c83a95c",
+      "currentSHA256": "2f3eb332c2d73e729f3364fcc0c2b375e72a121e8157d25a82d67a138c83a95c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2020.symbol.wellknown.d.ts",
+      "beforeSHA256": "6f4427f9642ce8d500970e4e69d1397f64072ab73b97e476b4002a646ac743b1",
+      "currentSHA256": "6f4427f9642ce8d500970e4e69d1397f64072ab73b97e476b4002a646ac743b1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2021.d.ts",
+      "beforeSHA256": "8a15b4607d9a499e2dbeed9ec0d3c0d7372c850b2d5f1fb259e8f6d41d468a84",
+      "currentSHA256": "8a15b4607d9a499e2dbeed9ec0d3c0d7372c850b2d5f1fb259e8f6d41d468a84",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2021.intl.d.ts",
+      "beforeSHA256": "a917a49ac94cd26b754ab84e113369a75d1a47a710661d7cd25e961cc797065f",
+      "currentSHA256": "a917a49ac94cd26b754ab84e113369a75d1a47a710661d7cd25e961cc797065f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2021.promise.d.ts",
+      "beforeSHA256": "db9709688f82c9e5f65a119c64d835f906efe5f559d08b11642d56eb85b79357",
+      "currentSHA256": "db9709688f82c9e5f65a119c64d835f906efe5f559d08b11642d56eb85b79357",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2021.string.d.ts",
+      "beforeSHA256": "4b25b8c874acd1a4cf8444c3617e037d444d19080ac9f634b405583fd10ce1f7",
+      "currentSHA256": "4b25b8c874acd1a4cf8444c3617e037d444d19080ac9f634b405583fd10ce1f7",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2021.weakref.d.ts",
+      "beforeSHA256": "37be57d7c90cf1f8112ee2636a068d8fd181289f82b744160ec56a7dc158a9f5",
+      "currentSHA256": "37be57d7c90cf1f8112ee2636a068d8fd181289f82b744160ec56a7dc158a9f5",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.array.d.ts",
+      "beforeSHA256": "6d3261badeb7843d157ef3e6f5d1427d0eeb0af0cf9df84a62cfd29fd47ac86e",
+      "currentSHA256": "6d3261badeb7843d157ef3e6f5d1427d0eeb0af0cf9df84a62cfd29fd47ac86e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.d.ts",
+      "beforeSHA256": "26e0fe14baee4e127f4365d1ae0b276f400562e45e19e35fd2d4c296684715e6",
+      "currentSHA256": "26e0fe14baee4e127f4365d1ae0b276f400562e45e19e35fd2d4c296684715e6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.error.d.ts",
+      "beforeSHA256": "195daca651dde22f2167ac0d0a05e215308119a3100f5e6268e8317d05a92526",
+      "currentSHA256": "195daca651dde22f2167ac0d0a05e215308119a3100f5e6268e8317d05a92526",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.intl.d.ts",
+      "beforeSHA256": "8b11e4285cd2bb164a4dc09248bdec69e9842517db4ca47c1ba913011e44ff2f",
+      "currentSHA256": "8b11e4285cd2bb164a4dc09248bdec69e9842517db4ca47c1ba913011e44ff2f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.object.d.ts",
+      "beforeSHA256": "0508571a52475e245b02bc50fa1394065a0a3d05277fbf5120c3784b85651799",
+      "currentSHA256": "0508571a52475e245b02bc50fa1394065a0a3d05277fbf5120c3784b85651799",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.regexp.d.ts",
+      "beforeSHA256": "fc611fea8d30ea72c6bbfb599c9b4d393ce22e2f5bfef2172534781e7d138104",
+      "currentSHA256": "fc611fea8d30ea72c6bbfb599c9b4d393ce22e2f5bfef2172534781e7d138104",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2022.string.d.ts",
+      "beforeSHA256": "8f9af488f510c3015af3cc8c267a9e9d96c4dd38a1fdff0e11dc5a544711415b",
+      "currentSHA256": "8f9af488f510c3015af3cc8c267a9e9d96c4dd38a1fdff0e11dc5a544711415b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2023.array.d.ts",
+      "beforeSHA256": "0bd714129fca875f7d4c477a1a392200b0bcd13fb2e80928cd334b63830ea047",
+      "currentSHA256": "0bd714129fca875f7d4c477a1a392200b0bcd13fb2e80928cd334b63830ea047",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2023.collection.d.ts",
+      "beforeSHA256": "e2c9037ae6cd2c52d80ceef0b3c5ffdb488627d71529cf4f63776daf11161c9a",
+      "currentSHA256": "e2c9037ae6cd2c52d80ceef0b3c5ffdb488627d71529cf4f63776daf11161c9a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2023.d.ts",
+      "beforeSHA256": "1e9332c23e9a907175e0ffc6a49e236f97b48838cc8aec9ce7e4cec21e544b65",
+      "currentSHA256": "1e9332c23e9a907175e0ffc6a49e236f97b48838cc8aec9ce7e4cec21e544b65",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es2023.intl.d.ts",
+      "beforeSHA256": "135d5cf4d345f59f1a9caadfafcd858d3d9cc68290db616cc85797224448cccc",
+      "currentSHA256": "135d5cf4d345f59f1a9caadfafcd858d3d9cc68290db616cc85797224448cccc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@typescript\\typescript-win32-x64\\lib\\lib.es5.d.ts",
+      "beforeSHA256": "6388847232654d7fcbed7fe89ea511a65ad1f5104b41e905c43f90910e1408b6",
+      "currentSHA256": "6388847232654d7fcbed7fe89ea511a65ad1f5104b41e905c43f90910e1408b6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@vitejs\\plugin-react\\dist\\index.d.ts",
+      "beforeSHA256": "087049bb778b44ad4e720892e4bb22558e54bd6b51d5d746bd0e688eda35f4d8",
+      "currentSHA256": "087049bb778b44ad4e720892e4bb22558e54bd6b51d5d746bd0e688eda35f4d8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\@vitejs\\plugin-react\\types\\optionalTypes.d.ts",
+      "beforeSHA256": "6b50db6951aa5dd210715a37636f6f549ffc21556933ed6ff8a1653305a4c360",
+      "currentSHA256": "6b50db6951aa5dd210715a37636f6f549ffc21556933ed6ff8a1653305a4c360",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\class-variance-authority\\dist\\index.d.ts",
+      "beforeSHA256": "b94258ef37e67474ac5522e9c519489a55dcb3d4a8f645e335fc68ea2215fe88",
+      "currentSHA256": "b94258ef37e67474ac5522e9c519489a55dcb3d4a8f645e335fc68ea2215fe88",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\class-variance-authority\\dist\\types.d.ts",
+      "beforeSHA256": "2fbe402f0ee5aa8ab55367f88030f79d46211c0a0f342becaa9f648bf8534e9d",
+      "currentSHA256": "2fbe402f0ee5aa8ab55367f88030f79d46211c0a0f342becaa9f648bf8534e9d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\clsx\\clsx.d.mts",
+      "beforeSHA256": "c57b441e0c0a9cbdfa7d850dae1f8a387d6f81cbffbc3cd0465d530084c2417d",
+      "currentSHA256": "c57b441e0c0a9cbdfa7d850dae1f8a387d6f81cbffbc3cd0465d530084c2417d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\csstype\\index.d.ts",
+      "beforeSHA256": "ac51dd7d31333793807a6abaa5ae168512b6131bd41d9c5b98477fc3b7800f9f",
+      "currentSHA256": "ac51dd7d31333793807a6abaa5ae168512b6131bd41d9c5b98477fc3b7800f9f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\framer-motion\\dist\\index.d.ts",
+      "beforeSHA256": "5e8ef26ea90fb5636ac95a08903ffec4f20b585575dcffa56c32da0df53830b9",
+      "currentSHA256": "5e8ef26ea90fb5636ac95a08903ffec4f20b585575dcffa56c32da0df53830b9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\lightningcss\\node\\ast.d.ts",
+      "beforeSHA256": "f3fe8197217cb6fd6e07c0eaa0966e4ece77cd779cbfc55767a93704cc692e04",
+      "currentSHA256": "f3fe8197217cb6fd6e07c0eaa0966e4ece77cd779cbfc55767a93704cc692e04",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\lightningcss\\node\\index.d.ts",
+      "beforeSHA256": "617112682fcb55805f0a0e16450397edc016881962eee4298f4f4e3ef795aee8",
+      "currentSHA256": "617112682fcb55805f0a0e16450397edc016881962eee4298f4f4e3ef795aee8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\lightningcss\\node\\targets.d.ts",
+      "beforeSHA256": "a18642ddf216f162052a16cba0944892c4c4c977d3306a87cb673d46abbb0cbf",
+      "currentSHA256": "a18642ddf216f162052a16cba0944892c4c4c977d3306a87cb673d46abbb0cbf",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\motion-dom\\dist\\index.d.ts",
+      "beforeSHA256": "c9652107f5ecd1a5c86b601026821138f54454353e58543162b2690bd175cb3a",
+      "currentSHA256": "c9652107f5ecd1a5c86b601026821138f54454353e58543162b2690bd175cb3a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\motion-utils\\dist\\index.d.ts",
+      "beforeSHA256": "ffeb91f2c925ded5147acdeaef2b5060a8e48f5c5e528e646ea872f4440bd2be",
+      "currentSHA256": "ffeb91f2c925ded5147acdeaef2b5060a8e48f5c5e528e646ea872f4440bd2be",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\motion\\dist\\react.d.ts",
+      "beforeSHA256": "58a2f3be7277f1d44040962e1770733c012ca5ef00972d444df98ba94d957664",
+      "currentSHA256": "58a2f3be7277f1d44040962e1770733c012ca5ef00972d444df98ba94d957664",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\index.d.ts",
+      "beforeSHA256": "7a8ec10b0834eb7183e4bfcd929838ac77583828e343211bb73676d1e47f6f01",
+      "currentSHA256": "7a8ec10b0834eb7183e4bfcd929838ac77583828e343211bb73676d1e47f6f01",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\types\\protocol.d.ts",
+      "beforeSHA256": "0410ed82a9ac63269dc1471ed249b280e2d461249a3a331e71cdb54cdf10db33",
+      "currentSHA256": "0410ed82a9ac63269dc1471ed249b280e2d461249a3a331e71cdb54cdf10db33",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\types\\structs.d.ts",
+      "beforeSHA256": "c9b9179b7291c8562eb0fb781219ddbdcf36149ebd7bd355e5b4a553d6b60b81",
+      "currentSHA256": "c9b9179b7291c8562eb0fb781219ddbdcf36149ebd7bd355e5b4a553d6b60b81",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\types\\types.d.ts",
+      "beforeSHA256": "2806f6d7810fba0306066d500cd716a6d1128d90af2c3cf71723e3ea0a8904c4",
+      "currentSHA256": "2806f6d7810fba0306066d500cd716a6d1128d90af2c3cf71723e3ea0a8904c4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\playwright\\test.d.ts",
+      "beforeSHA256": "3f00324f263189b385c3a9383b1f4dae6237697bcf0801f96aa35c340512d79c",
+      "currentSHA256": "3f00324f263189b385c3a9383b1f4dae6237697bcf0801f96aa35c340512d79c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\playwright\\types\\test.d.ts",
+      "beforeSHA256": "0c45393d79498d440f99e8eb10d93609742f073dfc631feab5ab0f1a6b21c056",
+      "currentSHA256": "0c45393d79498d440f99e8eb10d93609742f073dfc631feab5ab0f1a6b21c056",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\at-rule.d.ts",
+      "beforeSHA256": "17f2922d41ddd032830a91371c948cd9ce903b35c95adca72271a54584f19b0b",
+      "currentSHA256": "17f2922d41ddd032830a91371c948cd9ce903b35c95adca72271a54584f19b0b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\comment.d.ts",
+      "beforeSHA256": "6332f565867cf4a740a70e30f31cefba37ef7cebcf74f22eab8d744fde6d193e",
+      "currentSHA256": "6332f565867cf4a740a70e30f31cefba37ef7cebcf74f22eab8d744fde6d193e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\container.d.ts",
+      "beforeSHA256": "9a195d8476f48523446ece812e5450b5b1ec8c3b6abf99efb8ee2479524f6f56",
+      "currentSHA256": "9a195d8476f48523446ece812e5450b5b1ec8c3b6abf99efb8ee2479524f6f56",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\css-syntax-error.d.ts",
+      "beforeSHA256": "e16dc2a81595736024a206c7d5c8a39bfe2e6039208ef29981d0d95434ba8fcf",
+      "currentSHA256": "e16dc2a81595736024a206c7d5c8a39bfe2e6039208ef29981d0d95434ba8fcf",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\declaration.d.ts",
+      "beforeSHA256": "38cb107048cd8ba54a70014ef9a30cf57bee0d9f10a0ca4cefa974056e1ee460",
+      "currentSHA256": "38cb107048cd8ba54a70014ef9a30cf57bee0d9f10a0ca4cefa974056e1ee460",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\document.d.ts",
+      "beforeSHA256": "e392e8fb5b514eafc585601c1d781485aa6dd6a320e75daf1064a4c6918a1b45",
+      "currentSHA256": "e392e8fb5b514eafc585601c1d781485aa6dd6a320e75daf1064a4c6918a1b45",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\input.d.ts",
+      "beforeSHA256": "e5bab5f871ef708d52d47b3e5d0aa72a08ee7a152f33931d9a60809711a2a9a3",
+      "currentSHA256": "e5bab5f871ef708d52d47b3e5d0aa72a08ee7a152f33931d9a60809711a2a9a3",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\lazy-result.d.ts",
+      "beforeSHA256": "a039dc21f045919f3cbee2ec13812cc6cc3eebc99dae4be00973230f468d19a6",
+      "currentSHA256": "a039dc21f045919f3cbee2ec13812cc6cc3eebc99dae4be00973230f468d19a6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\list.d.ts",
+      "beforeSHA256": "3eed76ede2a1a14d7c9bb0a642041282dcc264811139d3dd275c9fe14efc9840",
+      "currentSHA256": "3eed76ede2a1a14d7c9bb0a642041282dcc264811139d3dd275c9fe14efc9840",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\no-work-result.d.ts",
+      "beforeSHA256": "3fbe57af01460e49dcd29df55d6931e1672bc6f1be0fb073d11410bc16f9037d",
+      "currentSHA256": "3fbe57af01460e49dcd29df55d6931e1672bc6f1be0fb073d11410bc16f9037d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\node.d.ts",
+      "beforeSHA256": "3cc8a3d123b6b232d48d34b51b785f9da8d193f5b5817fa521fcd2f3b9315c55",
+      "currentSHA256": "3cc8a3d123b6b232d48d34b51b785f9da8d193f5b5817fa521fcd2f3b9315c55",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\postcss.d.mts",
+      "beforeSHA256": "8d369483f0c2b9ee388129cfdb6a43bc8112b377e86a41884bd06e19ce04f4c1",
+      "currentSHA256": "8d369483f0c2b9ee388129cfdb6a43bc8112b377e86a41884bd06e19ce04f4c1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\postcss.d.ts",
+      "beforeSHA256": "354a7f8e1287d9d6b7561bc97fdd8cbc2f7c1dd79e4cb37b942e8a5cfaff1085",
+      "currentSHA256": "354a7f8e1287d9d6b7561bc97fdd8cbc2f7c1dd79e4cb37b942e8a5cfaff1085",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\previous-map.d.ts",
+      "beforeSHA256": "52dcc257df5119fb66d864625112ce5033ac51a4c2afe376a0b299d2f7f76e4a",
+      "currentSHA256": "52dcc257df5119fb66d864625112ce5033ac51a4c2afe376a0b299d2f7f76e4a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\processor.d.ts",
+      "beforeSHA256": "f760be449e8562ec5c09bb5187e8e1eabf3c113c0c58cddda53ef8c69f3e2131",
+      "currentSHA256": "f760be449e8562ec5c09bb5187e8e1eabf3c113c0c58cddda53ef8c69f3e2131",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\result.d.ts",
+      "beforeSHA256": "44325ed13294fce6ab825b82947bbeed2611db7dad9d9135260192f375e5a189",
+      "currentSHA256": "44325ed13294fce6ab825b82947bbeed2611db7dad9d9135260192f375e5a189",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\root.d.ts",
+      "beforeSHA256": "19ee8416e6473ed6c7adb868fa796b5653cf0fa2a337658e677eaa0d134388c3",
+      "currentSHA256": "19ee8416e6473ed6c7adb868fa796b5653cf0fa2a337658e677eaa0d134388c3",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\rule.d.ts",
+      "beforeSHA256": "46e4a36e8ddbdfb4e7330e11c81c970dc8b218611df9183d39c41c5f8c653b55",
+      "currentSHA256": "46e4a36e8ddbdfb4e7330e11c81c970dc8b218611df9183d39c41c5f8c653b55",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\postcss\\lib\\warning.d.ts",
+      "beforeSHA256": "1328ab4e442614b28cdb3d4b414cf68325c0da0dca07287a338d0654b7a00261",
+      "currentSHA256": "1328ab4e442614b28cdb3d4b414cf68325c0da0dca07287a338d0654b7a00261",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\filter-index.d.mts",
+      "beforeSHA256": "4a2479741e1be22a0537a0a0b341ac0df26df60c62d3d0f1bcda536936066526",
+      "currentSHA256": "4a2479741e1be22a0537a0a0b341ac0df26df60c62d3d0f1bcda536936066526",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\index.d.mts",
+      "beforeSHA256": "4273ef5d82e0f998bf38e777967753cde645668daf16dc8c3a72162c9cb4ff71",
+      "currentSHA256": "4273ef5d82e0f998bf38e777967753cde645668daf16dc8c3a72162c9cb4ff71",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\parse-ast-index.d.mts",
+      "beforeSHA256": "0824e917b53180b0b433f4fa85a1cc1d689a6c5f118bfdbe2086aa3b328c12db",
+      "currentSHA256": "0824e917b53180b0b433f4fa85a1cc1d689a6c5f118bfdbe2086aa3b328c12db",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\plugins-index.d.mts",
+      "beforeSHA256": "33338bdcc31a340ca3a62ca2fac6086c5ac899b98cc50246d8fd4333c138e501",
+      "currentSHA256": "33338bdcc31a340ca3a62ca2fac6086c5ac899b98cc50246d8fd4333c138e501",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\shared\\binding-DZuNHVw4.d.mts",
+      "beforeSHA256": "709b4ace1214759ca558d2b85c1ac20011c384077769ed8e08d6b2e6d68ef6d9",
+      "currentSHA256": "709b4ace1214759ca558d2b85c1ac20011c384077769ed8e08d6b2e6d68ef6d9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\shared\\constructors-BM20b11r.d.mts",
+      "beforeSHA256": "ca8bf149019241a83e9ace4f614d0410c00bff1246dbd1bbe63f88737823723d",
+      "currentSHA256": "ca8bf149019241a83e9ace4f614d0410c00bff1246dbd1bbe63f88737823723d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\shared\\define-config-DNX0WekP.d.mts",
+      "beforeSHA256": "3ad031a1ffc57462a2c14b2f2e1e6eaa22787748fbcc32dd6a8a534a8e5e18b9",
+      "currentSHA256": "3ad031a1ffc57462a2c14b2f2e1e6eaa22787748fbcc32dd6a8a534a8e5e18b9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\shared\\logging-xuHO4mAy.d.mts",
+      "beforeSHA256": "fc5ad2ec8b130a59612c5cfcc2cdca9bcdd80851adb8acdb004aaeff00cc978d",
+      "currentSHA256": "fc5ad2ec8b130a59612c5cfcc2cdca9bcdd80851adb8acdb004aaeff00cc978d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\shared\\transform-CVse9_mH.d.mts",
+      "beforeSHA256": "e27361b231a041b6c4da9fae61463d39d99f64926e1cd732513fd413b77bf869",
+      "currentSHA256": "e27361b231a041b6c4da9fae61463d39d99f64926e1cd732513fd413b77bf869",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\rolldown\\dist\\utils-index.d.mts",
+      "beforeSHA256": "ae1da3dbcdf34006350c132fd8795b1fc9a86d8fa398cd00de50463bd1eba9e2",
+      "currentSHA256": "ae1da3dbcdf34006350c132fd8795b1fc9a86d8fa398cd00de50463bd1eba9e2",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\source-map-js\\source-map.d.ts",
+      "beforeSHA256": "402e5c534fb2b85fa771170595db3ac0dd532112c8fa44fc23f233bc6967488b",
+      "currentSHA256": "402e5c534fb2b85fa771170595db3ac0dd532112c8fa44fc23f233bc6967488b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\tailwind-merge\\dist\\types.d.ts",
+      "beforeSHA256": "ff4bfe3c147eadc1b722a8ac9e4d350e66411b5c9022eabe5f4ada871c9adc41",
+      "currentSHA256": "ff4bfe3c147eadc1b722a8ac9e4d350e66411b5c9022eabe5f4ada871c9adc41",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\agent.d.ts",
+      "beforeSHA256": "4893a895ea92c85345017a04ed427cbd6a1710453338df26881a6019432febdd",
+      "currentSHA256": "4893a895ea92c85345017a04ed427cbd6a1710453338df26881a6019432febdd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\api.d.ts",
+      "beforeSHA256": "0db18c6e78ea846316c012478888f33c11ffadab9efd1cc8bcc12daded7a60b6",
+      "currentSHA256": "0db18c6e78ea846316c012478888f33c11ffadab9efd1cc8bcc12daded7a60b6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\balanced-pool.d.ts",
+      "beforeSHA256": "ba7bc87d01492633cb5a0e5da8a4a42a1c86270e7b3d2dea5d156828a84e4882",
+      "currentSHA256": "ba7bc87d01492633cb5a0e5da8a4a42a1c86270e7b3d2dea5d156828a84e4882",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\cache.d.ts",
+      "beforeSHA256": "c46e079fe54c76f95c67fb89081b3e399da2c7d109e7dca8e4b58d83e332e605",
+      "currentSHA256": "c46e079fe54c76f95c67fb89081b3e399da2c7d109e7dca8e4b58d83e332e605",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\client.d.ts",
+      "beforeSHA256": "1d6e127068ea8e104a912e42fc0a110e2aa5a66a356a917a163e8cf9a65e4a75",
+      "currentSHA256": "1d6e127068ea8e104a912e42fc0a110e2aa5a66a356a917a163e8cf9a65e4a75",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\connector.d.ts",
+      "beforeSHA256": "c6fd2c5a395f2432786c9cb8deb870b9b0e8ff7e22c029954fabdd692bff6195",
+      "currentSHA256": "c6fd2c5a395f2432786c9cb8deb870b9b0e8ff7e22c029954fabdd692bff6195",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\content-type.d.ts",
+      "beforeSHA256": "2e85db9e6fd73cfa3d7f28e0ab6b55417ea18931423bd47b409a96e4a169e8e6",
+      "currentSHA256": "2e85db9e6fd73cfa3d7f28e0ab6b55417ea18931423bd47b409a96e4a169e8e6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\cookies.d.ts",
+      "beforeSHA256": "89167d696a849fce5ca508032aabfe901c0868f833a8625d5a9c6e861ef935d2",
+      "currentSHA256": "89167d696a849fce5ca508032aabfe901c0868f833a8625d5a9c6e861ef935d2",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\diagnostics-channel.d.ts",
+      "beforeSHA256": "4732aec92b20fb28c5fe9ad99521fb59974289ed1e45aecb282616202184064f",
+      "currentSHA256": "4732aec92b20fb28c5fe9ad99521fb59974289ed1e45aecb282616202184064f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\dispatcher.d.ts",
+      "beforeSHA256": "7f182617db458e98fc18dfb272d40aa2fff3a353c44a89b2c0ccb3937709bfb5",
+      "currentSHA256": "7f182617db458e98fc18dfb272d40aa2fff3a353c44a89b2c0ccb3937709bfb5",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\env-http-proxy-agent.d.ts",
+      "beforeSHA256": "24c6a117721e606c9984335f71711877293a9651e44f59f3d21c1ea0856f9cc9",
+      "currentSHA256": "24c6a117721e606c9984335f71711877293a9651e44f59f3d21c1ea0856f9cc9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\errors.d.ts",
+      "beforeSHA256": "5ded6427296cdf3b9542de4471d2aa8d3983671d4cac0f4bf9c637208d1ced43",
+      "currentSHA256": "5ded6427296cdf3b9542de4471d2aa8d3983671d4cac0f4bf9c637208d1ced43",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\eventsource.d.ts",
+      "beforeSHA256": "8bd86b8e8f6a6aa6c49b71e14c4ffe1211a0e97c80f08d2c8cc98838006e4b88",
+      "currentSHA256": "8bd86b8e8f6a6aa6c49b71e14c4ffe1211a0e97c80f08d2c8cc98838006e4b88",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\fetch.d.ts",
+      "beforeSHA256": "c464d66b20788266e5353b48dc4aa6bc0dc4a707276df1e7152ab0c9ae21fad8",
+      "currentSHA256": "c464d66b20788266e5353b48dc4aa6bc0dc4a707276df1e7152ab0c9ae21fad8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\file.d.ts",
+      "beforeSHA256": "25c8056edf4314820382a5fdb4bb7816999acdcb929c8f75e3f39473b87e85bc",
+      "currentSHA256": "25c8056edf4314820382a5fdb4bb7816999acdcb929c8f75e3f39473b87e85bc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\filereader.d.ts",
+      "beforeSHA256": "317e63deeb21ac07f3992f5b50cdca8338f10acd4fbb7257ebf56735bf52ab00",
+      "currentSHA256": "317e63deeb21ac07f3992f5b50cdca8338f10acd4fbb7257ebf56735bf52ab00",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\formdata.d.ts",
+      "beforeSHA256": "78d0d27c130d35c60b5e5566c9f1e5be77caf39804636bc1a40133919a949f21",
+      "currentSHA256": "78d0d27c130d35c60b5e5566c9f1e5be77caf39804636bc1a40133919a949f21",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\global-dispatcher.d.ts",
+      "beforeSHA256": "cadc8aced301244057c4e7e73fbcae534b0f5b12a37b150d80e5a45aa4bebcbd",
+      "currentSHA256": "cadc8aced301244057c4e7e73fbcae534b0f5b12a37b150d80e5a45aa4bebcbd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\global-origin.d.ts",
+      "beforeSHA256": "385aab901643aa54e1c36f5ef3107913b10d1b5bb8cbcd933d4263b80a0d7f20",
+      "currentSHA256": "385aab901643aa54e1c36f5ef3107913b10d1b5bb8cbcd933d4263b80a0d7f20",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\handlers.d.ts",
+      "beforeSHA256": "11396ed8a44c02ab9798b7dca436009f866e8dae3c9c25e8c1fbc396880bf1bb",
+      "currentSHA256": "11396ed8a44c02ab9798b7dca436009f866e8dae3c9c25e8c1fbc396880bf1bb",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\header.d.ts",
+      "beforeSHA256": "5929864ce17fba74232584d90cb721a89b7ad277220627cc97054ba15a98ea8f",
+      "currentSHA256": "5929864ce17fba74232584d90cb721a89b7ad277220627cc97054ba15a98ea8f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\index.d.ts",
+      "beforeSHA256": "bf67d53d168abc1298888693338cb82854bdb2e69ef83f8a0092093c2d562107",
+      "currentSHA256": "bf67d53d168abc1298888693338cb82854bdb2e69ef83f8a0092093c2d562107",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\interceptors.d.ts",
+      "beforeSHA256": "e61be3f894b41b7baa1fbd6a66893f2579bfad01d208b4ff61daef21493ef0a8",
+      "currentSHA256": "e61be3f894b41b7baa1fbd6a66893f2579bfad01d208b4ff61daef21493ef0a8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\mock-agent.d.ts",
+      "beforeSHA256": "13f6f39e12b1518c6650bbb220c8985999020fe0f21d818e28f512b7771d00f9",
+      "currentSHA256": "13f6f39e12b1518c6650bbb220c8985999020fe0f21d818e28f512b7771d00f9",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\mock-client.d.ts",
+      "beforeSHA256": "9b5369969f6e7175740bf51223112ff209f94ba43ecd3bb09eefff9fd675624a",
+      "currentSHA256": "9b5369969f6e7175740bf51223112ff209f94ba43ecd3bb09eefff9fd675624a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\mock-errors.d.ts",
+      "beforeSHA256": "24515859bc0b836719105bb6cc3d68255042a9f02a6022b3187948b204946bd2",
+      "currentSHA256": "24515859bc0b836719105bb6cc3d68255042a9f02a6022b3187948b204946bd2",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\mock-interceptor.d.ts",
+      "beforeSHA256": "c21dc52e277bcfc75fac0436ccb75c204f9e1b3fa5e12729670910639f27343e",
+      "currentSHA256": "c21dc52e277bcfc75fac0436ccb75c204f9e1b3fa5e12729670910639f27343e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\mock-pool.d.ts",
+      "beforeSHA256": "4fe9e626e7164748e8769bbf74b538e09607f07ed17c2f20af8d680ee49fc1da",
+      "currentSHA256": "4fe9e626e7164748e8769bbf74b538e09607f07ed17c2f20af8d680ee49fc1da",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\patch.d.ts",
+      "beforeSHA256": "615ba88d0128ed16bf83ef8ccbb6aff05c3ee2db1cc0f89ab50a4939bfc1943f",
+      "currentSHA256": "615ba88d0128ed16bf83ef8ccbb6aff05c3ee2db1cc0f89ab50a4939bfc1943f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\pool-stats.d.ts",
+      "beforeSHA256": "9670d44354bab9d9982eca21945686b5c24a3f893db73c0dae0fd74217a4c219",
+      "currentSHA256": "9670d44354bab9d9982eca21945686b5c24a3f893db73c0dae0fd74217a4c219",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\pool.d.ts",
+      "beforeSHA256": "0b8a9268adaf4da35e7fa830c8981cfa22adbbe5b3f6f5ab91f6658899e657a7",
+      "currentSHA256": "0b8a9268adaf4da35e7fa830c8981cfa22adbbe5b3f6f5ab91f6658899e657a7",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\proxy-agent.d.ts",
+      "beforeSHA256": "ea0148f897b45a76544ae179784c95af1bd6721b8610af9ffa467a518a086a43",
+      "currentSHA256": "ea0148f897b45a76544ae179784c95af1bd6721b8610af9ffa467a518a086a43",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\readable.d.ts",
+      "beforeSHA256": "763fe0f42b3d79b440a9b6e51e9ba3f3f91352469c1e4b3b67bfa4ff6352f3f4",
+      "currentSHA256": "763fe0f42b3d79b440a9b6e51e9ba3f3f91352469c1e4b3b67bfa4ff6352f3f4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\retry-agent.d.ts",
+      "beforeSHA256": "405822be75ad3e4d162e07439bac80c6bcc6dbae1929e179cf467ec0b9ee4e2e",
+      "currentSHA256": "405822be75ad3e4d162e07439bac80c6bcc6dbae1929e179cf467ec0b9ee4e2e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\retry-handler.d.ts",
+      "beforeSHA256": "dd3273ead9fbde62a72949c97dbec2247ea08e0c6952e701a483d74ef92d6a17",
+      "currentSHA256": "dd3273ead9fbde62a72949c97dbec2247ea08e0c6952e701a483d74ef92d6a17",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\util.d.ts",
+      "beforeSHA256": "bd0532fd6556073727d28da0edfd1736417a3f9f394877b6d5ef6ad88fba1d1a",
+      "currentSHA256": "bd0532fd6556073727d28da0edfd1736417a3f9f394877b6d5ef6ad88fba1d1a",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\undici-types\\websocket.d.ts",
+      "beforeSHA256": "a4d551dbf8746780194d550c88f26cf937caf8d56f102969a110cfaed4b06656",
+      "currentSHA256": "a4d551dbf8746780194d550c88f26cf937caf8d56f102969a110cfaed4b06656",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\client.d.ts",
+      "beforeSHA256": "74b98be6ab7723114273526706070ff9885fdf990d5c4e722801addca4d264e1",
+      "currentSHA256": "74b98be6ab7723114273526706070ff9885fdf990d5c4e722801addca4d264e1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\dist\\node\\chunks\\moduleRunnerTransport.d.ts",
+      "beforeSHA256": "c911b3bd083dade8fdb7775261aa25feae695d562a3b11209650b47be90043fc",
+      "currentSHA256": "c911b3bd083dade8fdb7775261aa25feae695d562a3b11209650b47be90043fc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\dist\\node\\index.d.ts",
+      "beforeSHA256": "b0d00966e18eb7d205f31e4766dba87631e14bc121c5bef41bc70dad3c39a902",
+      "currentSHA256": "b0d00966e18eb7d205f31e4766dba87631e14bc121c5bef41bc70dad3c39a902",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\dist\\node\\module-runner.d.ts",
+      "beforeSHA256": "046271de66ae07ca543f79eba0de19f342b78e759b597929159b2392e0a7ac87",
+      "currentSHA256": "046271de66ae07ca543f79eba0de19f342b78e759b597929159b2392e0a7ac87",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\customEvent.d.ts",
+      "beforeSHA256": "98580d6ed68c9cee7f956685abbb6502d70bd92f48175ac807ae6c5e254fadc6",
+      "currentSHA256": "98580d6ed68c9cee7f956685abbb6502d70bd92f48175ac807ae6c5e254fadc6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\hmrPayload.d.ts",
+      "beforeSHA256": "64ccfe7dcbcad9b8a661a042ecb2309e41b9ab957f7b8cd070b05583a7821a13",
+      "currentSHA256": "64ccfe7dcbcad9b8a661a042ecb2309e41b9ab957f7b8cd070b05583a7821a13",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\hot.d.ts",
+      "beforeSHA256": "4e003c868b0d8f8ad200b96cbc653e18e513fa23e1c19c4fe3cc25d4394efc47",
+      "currentSHA256": "4e003c868b0d8f8ad200b96cbc653e18e513fa23e1c19c4fe3cc25d4394efc47",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\importGlob.d.ts",
+      "beforeSHA256": "e50d04d261120f8f9d07e85698735d5b88f3a66bc395c08ce26c3d817d141a73",
+      "currentSHA256": "e50d04d261120f8f9d07e85698735d5b88f3a66bc395c08ce26c3d817d141a73",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\importMeta.d.ts",
+      "beforeSHA256": "72429cda84a47f092a3bf777bbc4ece9dda492fe0f02324aa7f197f3800089c6",
+      "currentSHA256": "72429cda84a47f092a3bf777bbc4ece9dda492fe0f02324aa7f197f3800089c6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\internal\\cssPreprocessorOptions.d.ts",
+      "beforeSHA256": "960bd764c62ac43edc24eaa2af958a4b4f1fa5d27df5237e176d0143b36a39c6",
+      "currentSHA256": "960bd764c62ac43edc24eaa2af958a4b4f1fa5d27df5237e176d0143b36a39c6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\internal\\esbuildOptions.d.ts",
+      "beforeSHA256": "e0864480ea083087d705f9405bd6bf59b795e8474c3447f0d6413b2bce535a09",
+      "currentSHA256": "e0864480ea083087d705f9405bd6bf59b795e8474c3447f0d6413b2bce535a09",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\internal\\lightningcssOptions.d.ts",
+      "beforeSHA256": "4ec16d7a4e366c06a4573d299e15fe6207fc080f41beac5da06f4af33ea9761e",
+      "currentSHA256": "4ec16d7a4e366c06a4573d299e15fe6207fc080f41beac5da06f4af33ea9761e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\internal\\rollupTypeCompat.d.ts",
+      "beforeSHA256": "7d3e062a778b8f5ea4f0cac7e925e31f88e6739812ebc5f827474324a4048f14",
+      "currentSHA256": "7d3e062a778b8f5ea4f0cac7e925e31f88e6739812ebc5f827474324a4048f14",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\internal\\terserOptions.d.ts",
+      "beforeSHA256": "f582b0fcbf1eea9b318ab92fb89ea9ab2ebb84f9b60af89328a91155e1afce72",
+      "currentSHA256": "f582b0fcbf1eea9b318ab92fb89ea9ab2ebb84f9b60af89328a91155e1afce72",
+      "unchanged": true
+    },
+    {
+      "path": "web\\node_modules\\vite\\types\\metadata.d.ts",
+      "beforeSHA256": "e67cbea16f1994af89efd700542dbf3828a46a52b29e4d67e801bd7869dc103c",
+      "currentSHA256": "e67cbea16f1994af89efd700542dbf3828a46a52b29e4d67e801bd7869dc103c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\playwright.config.ts",
+      "beforeSHA256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e",
+      "currentSHA256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\review.config.ts",
+      "beforeSHA256": "c2f40686c08969b38b4b94136fe2a99d2dee407a0d8308d82fd6f8834295e6cd",
+      "currentSHA256": "c2f40686c08969b38b4b94136fe2a99d2dee407a0d8308d82fd6f8834295e6cd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\scripts\\review-capture.spec.ts",
+      "beforeSHA256": "d5f59cca0c25d3709d982fd838a713a255157d243baba2819db95d4da9f596fd",
+      "currentSHA256": "d5f59cca0c25d3709d982fd838a713a255157d243baba2819db95d4da9f596fd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\App.tsx",
+      "beforeSHA256": "e1293b642b8a6ff6b9373dba4086e30e8277437232e31ae994322bf99a21188b",
+      "currentSHA256": "e1293b642b8a6ff6b9373dba4086e30e8277437232e31ae994322bf99a21188b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\api\\authorization.ts",
+      "beforeSHA256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277",
+      "currentSHA256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\api\\client.ts",
+      "beforeSHA256": "f5f66e8dc36337b58a2f6dcc48cc190d44f453f82552cbe2e3e21d56b6ee7219",
+      "currentSHA256": "f5f66e8dc36337b58a2f6dcc48cc190d44f453f82552cbe2e3e21d56b6ee7219",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\api\\types.ts",
+      "beforeSHA256": "0ef6fe0c9442be7e212c2650a597cbedc27d63ab22a96102d04c684ed84c7af2",
+      "currentSHA256": "0ef6fe0c9442be7e212c2650a597cbedc27d63ab22a96102d04c684ed84c7af2",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\action-button.tsx",
+      "beforeSHA256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc",
+      "currentSHA256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\animate\\button.tsx",
+      "beforeSHA256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794",
+      "currentSHA256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\animate\\slot.tsx",
+      "beforeSHA256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7",
+      "currentSHA256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\asset-editor.tsx",
+      "beforeSHA256": "87d209e88c2682ba8862b2adfbdb98061f6d7458efb559485aeea9160c2062c3",
+      "currentSHA256": "87d209e88c2682ba8862b2adfbdb98061f6d7458efb559485aeea9160c2062c3",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "beforeSHA256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc",
+      "currentSHA256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\form-dialog.tsx",
+      "beforeSHA256": "157e3e6c96a4b0ca24e536048c67480164e791ef845b4233b4dcbfd50ba68027",
+      "currentSHA256": "157e3e6c96a4b0ca24e536048c67480164e791ef845b4233b4dcbfd50ba68027",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\icon.tsx",
+      "beforeSHA256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4",
+      "currentSHA256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\import-status.tsx",
+      "beforeSHA256": "be8e6530f074ec3faa463cef258f3818682e1404ff4cf12ec63388b75e600469",
+      "currentSHA256": "be8e6530f074ec3faa463cef258f3818682e1404ff4cf12ec63388b75e600469",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\report-import.tsx",
+      "beforeSHA256": "b6ae2a5d475135106b33cc23e9192f54dbbfcc9505e8b290492a03c38337500b",
+      "currentSHA256": "b6ae2a5d475135106b33cc23e9192f54dbbfcc9505e8b290492a03c38337500b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\states.tsx",
+      "beforeSHA256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4",
+      "currentSHA256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\theme-menu.tsx",
+      "beforeSHA256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12",
+      "currentSHA256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\components\\ui\\button.tsx",
+      "beforeSHA256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d",
+      "currentSHA256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\application-input.ts",
+      "beforeSHA256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd",
+      "currentSHA256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\format.ts",
+      "beforeSHA256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6",
+      "currentSHA256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\preferences.tsx",
+      "beforeSHA256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8",
+      "currentSHA256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\router.ts",
+      "beforeSHA256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e",
+      "currentSHA256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\session.tsx",
+      "beforeSHA256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de",
+      "currentSHA256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\use-modal.ts",
+      "beforeSHA256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c",
+      "currentSHA256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\use-resource.ts",
+      "beforeSHA256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23",
+      "currentSHA256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\use-scoped-action.ts",
+      "beforeSHA256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4",
+      "currentSHA256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\lib\\utils.ts",
+      "beforeSHA256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431",
+      "currentSHA256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\main.tsx",
+      "beforeSHA256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f",
+      "currentSHA256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\pages\\assets.tsx",
+      "beforeSHA256": "0ec94ad62fdd0599e3439279d3b9971405b69173184ec3587ee371fcd952a830",
+      "currentSHA256": "0ec94ad62fdd0599e3439279d3b9971405b69173184ec3587ee371fcd952a830",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\pages\\gallery.tsx",
+      "beforeSHA256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8",
+      "currentSHA256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "beforeSHA256": "5391029a0012f24681683f986600911c12864e3f3dd89266188db1283926750b",
+      "currentSHA256": "5391029a0012f24681683f986600911c12864e3f3dd89266188db1283926750b",
+      "unchanged": true
+    },
+    {
+      "path": "web\\src\\pages\\work.tsx",
+      "beforeSHA256": "724752b555e42ec77b6c1672a6813ffea9f3eede417d2fdf47f6097dd43d1dce",
+      "currentSHA256": "724752b555e42ec77b6c1672a6813ffea9f3eede417d2fdf47f6097dd43d1dce",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\api-contract.ts",
+      "beforeSHA256": "109791bb5f4e7525662003ae12bb3c19dcfac178ada0824d0134f75c3d44b701",
+      "currentSHA256": "109791bb5f4e7525662003ae12bb3c19dcfac178ada0824d0134f75c3d44b701",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\application-fixture.ts",
+      "beforeSHA256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "currentSHA256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "beforeSHA256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96",
+      "currentSHA256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "beforeSHA256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470",
+      "currentSHA256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\fixtures.ts",
+      "beforeSHA256": "71d0ea42033a064513bd72a59b6083fd2881f67b7dbdc53572dd24d66b1d0297",
+      "currentSHA256": "71d0ea42033a064513bd72a59b6083fd2881f67b7dbdc53572dd24d66b1d0297",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "beforeSHA256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085",
+      "currentSHA256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "beforeSHA256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67",
+      "currentSHA256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\harness\\main.tsx",
+      "beforeSHA256": "05344719e1367cd853a1b8c7b21908ad0dd6481ecea322e5904b2f831b08d7bc",
+      "currentSHA256": "05344719e1367cd853a1b8c7b21908ad0dd6481ecea322e5904b2f831b08d7bc",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "beforeSHA256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df",
+      "currentSHA256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "beforeSHA256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1",
+      "currentSHA256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "beforeSHA256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f",
+      "currentSHA256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\source-approval.ts",
+      "beforeSHA256": "4eb90208a12373a5b3951e2d62826e054f164c1b496330868621aa9079003229",
+      "currentSHA256": "4eb90208a12373a5b3951e2d62826e054f164c1b496330868621aa9079003229",
+      "unchanged": true
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "beforeSHA256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372",
+      "currentSHA256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372",
+      "unchanged": true
+    },
+    {
+      "path": "web\\vite.config.ts",
+      "beforeSHA256": "810f2fffb363f2e08fcd9f4264d028f5081ba9ed7d412f035405e4f8a221998a",
+      "currentSHA256": "810f2fffb363f2e08fcd9f4264d028f5081ba9ed7d412f035405e4f8a221998a",
+      "unchanged": true
+    }
+  ],
+  "productionSource": {
+    "beforeCount": 120,
+    "currentCount": 120,
+    "beforeTreeSHA256": "18b3cd8c5bcfb5752a307f2d55d9baf458f556dfbe7679a74eed401103ef9c46",
+    "currentTreeSHA256": "18b3cd8c5bcfb5752a307f2d55d9baf458f556dfbe7679a74eed401103ef9c46",
+    "webSrcFileCount": 32,
+    "webSrcTreeSHA256": "7a67ff991d940b46a8457fef1e05b765927320e3bb110a1c2a71ff0b0dde9c3c",
+    "digestFormat": "UTF-8 of sorted repository-relative Windows path + NUL + exact file SHA-256 + LF, then SHA-256",
+    "files": [
+      {
+        "path": "cmd\\aspm-dev\\main.go",
+        "beforeSHA256": "f11c2bb327a5e7309c9820c8f2d67760a05e8bd148df6ff01fbf601e83e66787",
+        "currentSHA256": "f11c2bb327a5e7309c9820c8f2d67760a05e8bd148df6ff01fbf601e83e66787",
+        "unchanged": true
+      },
+      {
+        "path": "cmd\\aspmctl\\execution.go",
+        "beforeSHA256": "0c47219022223c5b74c08b6c13d6bc14f02b7b48e63b07959732e8dde858cb79",
+        "currentSHA256": "0c47219022223c5b74c08b6c13d6bc14f02b7b48e63b07959732e8dde858cb79",
+        "unchanged": true
+      },
+      {
+        "path": "cmd\\aspmctl\\main.go",
+        "beforeSHA256": "4eaf96a01b7a4f81be0431bd8f10aea18a802dc99ca820b93a59b2391f8e9228",
+        "currentSHA256": "4eaf96a01b7a4f81be0431bd8f10aea18a802dc99ca820b93a59b2391f8e9228",
+        "unchanged": true
+      },
+      {
+        "path": "cmd\\aspmctl\\review_regression_test.go",
+        "beforeSHA256": "abc3a42dd1b56d6dac1567d0afa6613ac0ca53d36e31d04e0bed0f07d59c69ba",
+        "currentSHA256": "abc3a42dd1b56d6dac1567d0afa6613ac0ca53d36e31d04e0bed0f07d59c69ba",
+        "unchanged": true
+      },
+      {
+        "path": "cmd\\core-api\\main.go",
+        "beforeSHA256": "d7b3b1a3aabb31ba0b37d4f5b920b1033143bff1566917341a5a10694758f4b1",
+        "currentSHA256": "d7b3b1a3aabb31ba0b37d4f5b920b1033143bff1566917341a5a10694758f4b1",
+        "unchanged": true
+      },
+      {
+        "path": "cmd\\ingestion\\main.go",
+        "beforeSHA256": "8f6de71c2ec5453050bb593f526700acb256eee4344a1ef1a7ac0b3ccac1c5fe",
+        "currentSHA256": "8f6de71c2ec5453050bb593f526700acb256eee4344a1ef1a7ac0b3ccac1c5fe",
+        "unchanged": true
+      },
+      {
+        "path": "cmd\\report-worker\\main.go",
+        "beforeSHA256": "10dbf16c73d812c50fdb5dc76812955a646d0db35d6f5b04b242a443eead974f",
+        "currentSHA256": "10dbf16c73d812c50fdb5dc76812955a646d0db35d6f5b04b242a443eead974f",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\app.go",
+        "beforeSHA256": "7beee5586e03e0214a5635cf7e169ea10bc60ff34000698b4fc2605236d44b24",
+        "currentSHA256": "7beee5586e03e0214a5635cf7e169ea10bc60ff34000698b4fc2605236d44b24",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\assets.go",
+        "beforeSHA256": "2b85887c4b2851e1631d3666119e0da05ff026b52ca611c0282ccebd8e50c0ac",
+        "currentSHA256": "2b85887c4b2851e1631d3666119e0da05ff026b52ca611c0282ccebd8e50c0ac",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\auth.go",
+        "beforeSHA256": "7d425f995d8eb2145eddd07b6f69fcd52a2bc4846c608a2ffe91b296f0be8cdb",
+        "currentSHA256": "7d425f995d8eb2145eddd07b6f69fcd52a2bc4846c608a2ffe91b296f0be8cdb",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\auth_test.go",
+        "beforeSHA256": "7f2937983197a96fc555b879a2273c3e6da9913076cfa71b9f445ea9413c27a9",
+        "currentSHA256": "7f2937983197a96fc555b879a2273c3e6da9913076cfa71b9f445ea9413c27a9",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\catalog.go",
+        "beforeSHA256": "7990bdee861c31f3c1924e1b0c33f73f5ec44ccf110e3f69860775bfc28c9a4e",
+        "currentSHA256": "7990bdee861c31f3c1924e1b0c33f73f5ec44ccf110e3f69860775bfc28c9a4e",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\database.go",
+        "beforeSHA256": "9c90aa184044ccdeddc17f88e9ec17e5eda914a38558c39d4be3e995e9c9375b",
+        "currentSHA256": "9c90aa184044ccdeddc17f88e9ec17e5eda914a38558c39d4be3e995e9c9375b",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\doc.go",
+        "beforeSHA256": "74ed3f70c99c81a0f75c226cccc0784b1517f8382ebefe1f6eed26cb7f95f59d",
+        "currentSHA256": "74ed3f70c99c81a0f75c226cccc0784b1517f8382ebefe1f6eed26cb7f95f59d",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\findings.go",
+        "beforeSHA256": "aadd5e679a5637d652264ea3f45401bcf8a6a53376204cb3e6936f2ad22e094e",
+        "currentSHA256": "aadd5e679a5637d652264ea3f45401bcf8a6a53376204cb3e6936f2ad22e094e",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\http.go",
+        "beforeSHA256": "74e7788f857f5bd62654924227b63e6d194919aaa504f46069690445274a6110",
+        "currentSHA256": "74e7788f857f5bd62654924227b63e6d194919aaa504f46069690445274a6110",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\import_authorization.go",
+        "beforeSHA256": "b5a04abfdc43b533827989c126a61a4d7ebd55e0cb3ae684a800d8d1b3b63773",
+        "currentSHA256": "b5a04abfdc43b533827989c126a61a4d7ebd55e0cb3ae684a800d8d1b3b63773",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\import_security_schema.go",
+        "beforeSHA256": "e6e98356057ea34bdf86f702b78a39dbbf33a506b11e4c04c56ddfa3aea09d54",
+        "currentSHA256": "e6e98356057ea34bdf86f702b78a39dbbf33a506b11e4c04c56ddfa3aea09d54",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\imports.go",
+        "beforeSHA256": "78db1963a2e64a81afc2f3d31cac70f8bd1bd025d2c6e23748e878445b985f53",
+        "currentSHA256": "78db1963a2e64a81afc2f3d31cac70f8bd1bd025d2c6e23748e878445b985f53",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\membership.go",
+        "beforeSHA256": "999b1ee075f598ccd8b516e4e5cb259bd39302e07510cafec8e550ee7edfdc55",
+        "currentSHA256": "999b1ee075f598ccd8b516e4e5cb259bd39302e07510cafec8e550ee7edfdc55",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\oidc.go",
+        "beforeSHA256": "98d18f89fa07d794a93c2879743b98a693348e67d6fa06fc431ba731061b72db",
+        "currentSHA256": "98d18f89fa07d794a93c2879743b98a693348e67d6fa06fc431ba731061b72db",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\oidc_identity.go",
+        "beforeSHA256": "095a1417f6323c960778cd65a58095ab02da9082ee4724bd7834161f5f15ef86",
+        "currentSHA256": "095a1417f6323c960778cd65a58095ab02da9082ee4724bd7834161f5f15ef86",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\oidc_provider.go",
+        "beforeSHA256": "cdd10d13e6ad940c1f84ac488fa4dc265ccb276b7ff4b211bae7058add001041",
+        "currentSHA256": "cdd10d13e6ad940c1f84ac488fa4dc265ccb276b7ff4b211bae7058add001041",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\oidc_schema.go",
+        "beforeSHA256": "df3fa9da88d362f93ce5f7e6f18a8a9f0e3a9ae096de83568aa39b86eb446428",
+        "currentSHA256": "df3fa9da88d362f93ce5f7e6f18a8a9f0e3a9ae096de83568aa39b86eb446428",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\reconcile.go",
+        "beforeSHA256": "e065af806acb5c19baff30f4ef76bb6f429054c6c95009cc60d18bbb6aa6580b",
+        "currentSHA256": "e065af806acb5c19baff30f4ef76bb6f429054c6c95009cc60d18bbb6aa6580b",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\report_snapshots.go",
+        "beforeSHA256": "46152f36be715fc338a60f95216ae026ce25715ec2b93c3015f7af6f6f2be7ac",
+        "currentSHA256": "46152f36be715fc338a60f95216ae026ce25715ec2b93c3015f7af6f6f2be7ac",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\report_worker.go",
+        "beforeSHA256": "8ba228276f2200c8ed8c1c3585dc7f436332f7601f633c0698450f67d71a5cf5",
+        "currentSHA256": "8ba228276f2200c8ed8c1c3585dc7f436332f7601f633c0698450f67d71a5cf5",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\reports.go",
+        "beforeSHA256": "1610e5a05ca238bdd15035d913fb98c415ad08ac0c4a4372df73acf42d97fed4",
+        "currentSHA256": "1610e5a05ca238bdd15035d913fb98c415ad08ac0c4a4372df73acf42d97fed4",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\reports_schema.go",
+        "beforeSHA256": "5f665312ddd3306630fc047d828fd8d1fc655050809439d0338dabb7a822a4ef",
+        "currentSHA256": "5f665312ddd3306630fc047d828fd8d1fc655050809439d0338dabb7a822a4ef",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\schema.go",
+        "beforeSHA256": "44325f5f5203738ab6119e4b730b7c59a9a4d02c42feef828cace6bae2616e19",
+        "currentSHA256": "44325f5f5203738ab6119e4b730b7c59a9a4d02c42feef828cace6bae2616e19",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\storage.go",
+        "beforeSHA256": "0c67eb3a99a42cd7440344d9853fa4e435a888cc02d359702ff757b79a3bb3fd",
+        "currentSHA256": "0c67eb3a99a42cd7440344d9853fa4e435a888cc02d359702ff757b79a3bb3fd",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\types.go",
+        "beforeSHA256": "d37675a41a0591a8dfd762a20b68364e92c362cfb3ef32296a8a6c9deb42321f",
+        "currentSHA256": "d37675a41a0591a8dfd762a20b68364e92c362cfb3ef32296a8a6c9deb42321f",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\work.go",
+        "beforeSHA256": "c9c6fc730ee3f20f518dafdfd00140743561125ceb68167758dcaf2b7db3cf45",
+        "currentSHA256": "c9c6fc730ee3f20f518dafdfd00140743561125ceb68167758dcaf2b7db3cf45",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\worker.go",
+        "beforeSHA256": "a86933b34dc015df3d87a835f422211874b6833bffc21e564313e6bcb7ed3e72",
+        "currentSHA256": "a86933b34dc015df3d87a835f422211874b6833bffc21e564313e6bcb7ed3e72",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\app\\worker_constructors.go",
+        "beforeSHA256": "dd062bcef87ed8e5c273dc551f92600930b2f45f60227b576bf24035f9d9db23",
+        "currentSHA256": "dd062bcef87ed8e5c273dc551f92600930b2f45f60227b576bf24035f9d9db23",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\README.txt",
+        "beforeSHA256": "40e629dbba730575aeca38b41e403ab11a40b05f4c39fff97f0e492cd5373a00",
+        "currentSHA256": "40e629dbba730575aeca38b41e403ab11a40b05f4c39fff97f0e492cd5373a00",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\ado.go",
+        "beforeSHA256": "af8727b0213c193e84d192044c7bb233d5a4e96b97e47b89cdbca2e479757936",
+        "currentSHA256": "af8727b0213c193e84d192044c7bb233d5a4e96b97e47b89cdbca2e479757936",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\aws.go",
+        "beforeSHA256": "19e00c678aaae21586bf075ba9b9228701e6a64f9db6bf5f00a4c9f72f79d5e0",
+        "currentSHA256": "19e00c678aaae21586bf075ba9b9228701e6a64f9db6bf5f00a4c9f72f79d5e0",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\azure.go",
+        "beforeSHA256": "e5dfd995cf5532a367fe8ef4eb6c814a9792932d06378b884a499e40dd5b63e5",
+        "currentSHA256": "e5dfd995cf5532a367fe8ef4eb6c814a9792932d06378b884a499e40dd5b63e5",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\collect.go",
+        "beforeSHA256": "93bfbfed6b3cf7cdca6a2fa57db96c1d997676521ac83944de07d43943611ab2",
+        "currentSHA256": "93bfbfed6b3cf7cdca6a2fa57db96c1d997676521ac83944de07d43943611ab2",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\collection_guardrails_test.go",
+        "beforeSHA256": "2341c7c267ef8b40a735f3572af2a6a6add98caa6c0f18c4f93b97ba13766618",
+        "currentSHA256": "2341c7c267ef8b40a735f3572af2a6a6add98caa6c0f18c4f93b97ba13766618",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\delivery.go",
+        "beforeSHA256": "973af817b699b76e317d539bc03065d027e2dba0cb77fc3f3a003f5684da827b",
+        "currentSHA256": "973af817b699b76e317d539bc03065d027e2dba0cb77fc3f3a003f5684da827b",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\github.go",
+        "beforeSHA256": "95123a1e0b076e68889a127cdcbc249b2655d51a7e5d6a5d66d3bed63b1ce042",
+        "currentSHA256": "95123a1e0b076e68889a127cdcbc249b2655d51a7e5d6a5d66d3bed63b1ce042",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\gitlab.go",
+        "beforeSHA256": "6785652d707874ec1ef6ac70048627894eae9a30a0328276b925e22f75fae88c",
+        "currentSHA256": "6785652d707874ec1ef6ac70048627894eae9a30a0328276b925e22f75fae88c",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\guardrails_test.go",
+        "beforeSHA256": "9d6ca42297da00fb52dd3e55229dca2066a2323312e1b0957b32ab489f6225d9",
+        "currentSHA256": "9d6ca42297da00fb52dd3e55229dca2066a2323312e1b0957b32ab489f6225d9",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\http.go",
+        "beforeSHA256": "6db2eeaf5c5e1dc4efa4f0b9ef0a95b35baf20611ba44505194c8a0ca4d201b5",
+        "currentSHA256": "6db2eeaf5c5e1dc4efa4f0b9ef0a95b35baf20611ba44505194c8a0ca4d201b5",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\jira.go",
+        "beforeSHA256": "2412c59505662f0eb55398d618706642a08d7c5954882269e756c46a1b59c157",
+        "currentSHA256": "2412c59505662f0eb55398d618706642a08d7c5954882269e756c46a1b59c157",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\notifications.go",
+        "beforeSHA256": "42157e1f07a28c8a6089c6ecee5e24dcf295a4caaa6a07de1b59e45ab37c85d1",
+        "currentSHA256": "42157e1f07a28c8a6089c6ecee5e24dcf295a4caaa6a07de1b59e45ab37c85d1",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\connectors\\types.go",
+        "beforeSHA256": "0aa06eab951f22794eb767ee3ffe428560ebea5dbc0ee387827b796ffd4836d8",
+        "currentSHA256": "0aa06eab951f22794eb767ee3ffe428560ebea5dbc0ee387827b796ffd4836d8",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\devhost\\handler.go",
+        "beforeSHA256": "5d37100c99c2fed48f416d880854315697a0d04ce99dda02a20d03e6c6629349",
+        "currentSHA256": "5d37100c99c2fed48f416d880854315697a0d04ce99dda02a20d03e6c6629349",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\devhost\\handler_test.go",
+        "beforeSHA256": "2a8d7c3597c75d3b210b708e416bd3d86ba872fabf715b221919157cd536c0c8",
+        "currentSHA256": "2a8d7c3597c75d3b210b708e416bd3d86ba872fabf715b221919157cd536c0c8",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\evidence\\doc.go",
+        "beforeSHA256": "bdb61df3ad6ce1197af6b0028004ad2619300aa32ce848a77a6fc1604b2c980e",
+        "currentSHA256": "bdb61df3ad6ce1197af6b0028004ad2619300aa32ce848a77a6fc1604b2c980e",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\evidence\\reader.go",
+        "beforeSHA256": "2d0164ad0b01f545e13d8acd233d2a0df6eb1c75ba5ff80fb3e961aa0ab9148e",
+        "currentSHA256": "2d0164ad0b01f545e13d8acd233d2a0df6eb1c75ba5ff80fb3e961aa0ab9148e",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\evidence\\readiness.go",
+        "beforeSHA256": "abad00cba6e16394862dfb6b17bacf2c1ea61e7bd5eb803c8bc3664bf9ac08d8",
+        "currentSHA256": "abad00cba6e16394862dfb6b17bacf2c1ea61e7bd5eb803c8bc3664bf9ac08d8",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\evidence\\store.go",
+        "beforeSHA256": "c61e945768987788cde2106fd144a94f3a310f62139511e6b35ce5f610177805",
+        "currentSHA256": "c61e945768987788cde2106fd144a94f3a310f62139511e6b35ce5f610177805",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\ingestion\\integrity.go",
+        "beforeSHA256": "836d259531d9ca66b5cae0a37ac8f2b4fe94844ae6f37fb86dec8121e4f022eb",
+        "currentSHA256": "836d259531d9ca66b5cae0a37ac8f2b4fe94844ae6f37fb86dec8121e4f022eb",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\bundle.go",
+        "beforeSHA256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958",
+        "currentSHA256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\configuration.go",
+        "beforeSHA256": "24103509eb9a552f14496df9118632096f8fdb56d31b79f2f211d5468d5ea748",
+        "currentSHA256": "24103509eb9a552f14496df9118632096f8fdb56d31b79f2f211d5468d5ea748",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\credentials.go",
+        "beforeSHA256": "c590db20aaf6d37e7a771fc9fd1669817b9cb37903a222ef671748afed356fca",
+        "currentSHA256": "c590db20aaf6d37e7a771fc9fd1669817b9cb37903a222ef671748afed356fca",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\files.go",
+        "beforeSHA256": "e3e65c311088a07f250f3c2a2f1a1a1f48c83e15254e1213ceee79be58e6ee73",
+        "currentSHA256": "e3e65c311088a07f250f3c2a2f1a1a1f48c83e15254e1213ceee79be58e6ee73",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\installer.go",
+        "beforeSHA256": "5bcb6918680148266a3c2da91bfc803529a563866fc952c66ef8b238629fc25b",
+        "currentSHA256": "5bcb6918680148266a3c2da91bfc803529a563866fc952c66ef8b238629fc25b",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\kubeconfig.go",
+        "beforeSHA256": "da82620a27100a92b8fe36d55d3d955f97f12527a98343fce8d71fa592e3a492",
+        "currentSHA256": "da82620a27100a92b8fe36d55d3d955f97f12527a98343fce8d71fa592e3a492",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\kubernetes.go",
+        "beforeSHA256": "90fb9a4eab8b044dd7db021081009a51eabf315ce129497a0b8fe69056f171cf",
+        "currentSHA256": "90fb9a4eab8b044dd7db021081009a51eabf315ce129497a0b8fe69056f171cf",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\linux.go",
+        "beforeSHA256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3",
+        "currentSHA256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\state.go",
+        "beforeSHA256": "dd7b6d7661b31b5ec8ce7cbc286dcec18aaf4c12d328ff0f9651b4680478f5b7",
+        "currentSHA256": "dd7b6d7661b31b5ec8ce7cbc286dcec18aaf4c12d328ff0f9651b4680478f5b7",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\execution\\types.go",
+        "beforeSHA256": "95cddd8ee68912f5a4cabc2a16b7a9795160da3b526298e63d5e6e22c3500203",
+        "currentSHA256": "95cddd8ee68912f5a4cabc2a16b7a9795160da3b526298e63d5e6e22c3500203",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\plan.go",
+        "beforeSHA256": "2299a5838d4e93f5a244e5ff4205fb240f5cb972832304c0d3f5b18288aaa25e",
+        "currentSHA256": "2299a5838d4e93f5a244e5ff4205fb240f5cb972832304c0d3f5b18288aaa25e",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\install\\quadlet\\role.go",
+        "beforeSHA256": "f0dd276ecfce924e29e194cb58bb9edc3cb354014ee947e482ff1d9f606135a4",
+        "currentSHA256": "f0dd276ecfce924e29e194cb58bb9edc3cb354014ee947e482ff1d9f606135a4",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\jobs\\store.go",
+        "beforeSHA256": "109eec4dd3d76c57cb0849b7d2bda5389b179f1d40a7d83fc052c6c39a59c09a",
+        "currentSHA256": "109eec4dd3d76c57cb0849b7d2bda5389b179f1d40a7d83fc052c6c39a59c09a",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\jobs\\types.go",
+        "beforeSHA256": "fe228ce6778a00231e7cccac58fc3e81d3c402ec58a268a14017900a7b373da4",
+        "currentSHA256": "fe228ce6778a00231e7cccac58fc3e81d3c402ec58a268a14017900a7b373da4",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\parsers\\native_reports.go",
+        "beforeSHA256": "222259b392fa652d49af8f69ceb06ca043a3a84756ecacffee5b96c990953671",
+        "currentSHA256": "222259b392fa652d49af8f69ceb06ca043a3a84756ecacffee5b96c990953671",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\parsers\\parsers.go",
+        "beforeSHA256": "7db82b6166ee38332c4e3e014431cfd50ce99fee164b6b404fecc1bcc40a8ca7",
+        "currentSHA256": "7db82b6166ee38332c4e3e014431cfd50ce99fee164b6b404fecc1bcc40a8ca7",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\parsers\\parsers_test.go",
+        "beforeSHA256": "b3a34373251e5ab4d9f39eab934c4c23d7b96ed5f0b50bfb3d38bbba7cf62a4e",
+        "currentSHA256": "b3a34373251e5ab4d9f39eab934c4c23d7b96ed5f0b50bfb3d38bbba7cf62a4e",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\parsers\\portable.go",
+        "beforeSHA256": "feef0ffcd8c0755b1f7b745aabb969b38cdb1abf7376777c4393ef531bf7f7df",
+        "currentSHA256": "feef0ffcd8c0755b1f7b745aabb969b38cdb1abf7376777c4393ef531bf7f7df",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\parsers\\sarif.go",
+        "beforeSHA256": "aadbeb84f25c41e41c5bb7e09b75e06b9d94bbd37f30e852a918b914595eaafe",
+        "currentSHA256": "aadbeb84f25c41e41c5bb7e09b75e06b9d94bbd37f30e852a918b914595eaafe",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\providers\\README.txt",
+        "beforeSHA256": "56e72028b05c497cd53ba415f7c2c49f75e8a9c44e684c94d3cb0ba7b06ec034",
+        "currentSHA256": "56e72028b05c497cd53ba415f7c2c49f75e8a9c44e684c94d3cb0ba7b06ec034",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\providers\\assessor.go",
+        "beforeSHA256": "cbb81de861b4df105d80ade8d0b5a86b074201f6c4d7888a32eca0c23fba6ac8",
+        "currentSHA256": "cbb81de861b4df105d80ade8d0b5a86b074201f6c4d7888a32eca0c23fba6ac8",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\providers\\types.go",
+        "beforeSHA256": "da26338e465a8c393863c943ac0464a0fea0b28db40f22afd5364ffe0dc1568d",
+        "currentSHA256": "da26338e465a8c393863c943ac0464a0fea0b28db40f22afd5364ffe0dc1568d",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\service\\check.go",
+        "beforeSHA256": "f48357dce84cf43bd177a1eee6ac1ecb00ad9da79672ef92aefbd57f4bcbfc7c",
+        "currentSHA256": "f48357dce84cf43bd177a1eee6ac1ecb00ad9da79672ef92aefbd57f4bcbfc7c",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\service\\config.go",
+        "beforeSHA256": "5ff05dded3cfd58a1a0d8e3b783027e2c42e2e004f3b2c6f9f5760b886aae678",
+        "currentSHA256": "5ff05dded3cfd58a1a0d8e3b783027e2c42e2e004f3b2c6f9f5760b886aae678",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\service\\doc.go",
+        "beforeSHA256": "ddc478bf63c6aead5f409aaa9b9232fe6e5176130fb3a48740942a5282ce7dd4",
+        "currentSHA256": "ddc478bf63c6aead5f409aaa9b9232fe6e5176130fb3a48740942a5282ce7dd4",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\service\\integrity.go",
+        "beforeSHA256": "d1a0656d6f504226f4faf96ee4f726b884e8e0b72084421e9b642dcf5c5c7d37",
+        "currentSHA256": "d1a0656d6f504226f4faf96ee4f726b884e8e0b72084421e9b642dcf5c5c7d37",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\service\\run.go",
+        "beforeSHA256": "f8f77cefce8eef4a523e1d7ed0048b46e5aceaa97ee6fd926251405daa1d5b5c",
+        "currentSHA256": "f8f77cefce8eef4a523e1d7ed0048b46e5aceaa97ee6fd926251405daa1d5b5c",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\storagepolicy\\doc.go",
+        "beforeSHA256": "88a21942040806815a5f4a8c5288ea98e45b6520d93d329892289d9eeaac1ad7",
+        "currentSHA256": "88a21942040806815a5f4a8c5288ea98e45b6520d93d329892289d9eeaac1ad7",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\storagepolicy\\policy.go",
+        "beforeSHA256": "d153d57c3e931488f4c47d2f3b78ff8cd4fbcb11dc5bcb0b77eed40da10969a2",
+        "currentSHA256": "d153d57c3e931488f4c47d2f3b78ff8cd4fbcb11dc5bcb0b77eed40da10969a2",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\storagepolicy\\runtime.go",
+        "beforeSHA256": "bf45345701ea97116a6b89b811ec06a4bb5d06e8148c04a6b78db1239e6b5ed6",
+        "currentSHA256": "bf45345701ea97116a6b89b811ec06a4bb5d06e8148c04a6b78db1239e6b5ed6",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\verification\\README.txt",
+        "beforeSHA256": "6cf0276e813c7be00f84cc0258141076a3a909e9ee2394f1f7117bb788b670b5",
+        "currentSHA256": "6cf0276e813c7be00f84cc0258141076a3a909e9ee2394f1f7117bb788b670b5",
+        "unchanged": true
+      },
+      {
+        "path": "internal\\verification\\verifier.go",
+        "beforeSHA256": "a604683f1d43cd6e157c603d36adddfad6443b7c9d9d4d3ab56d56e31d6edba0",
+        "currentSHA256": "a604683f1d43cd6e157c603d36adddfad6443b7c9d9d4d3ab56d56e31d6edba0",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\App.tsx",
+        "beforeSHA256": "e1293b642b8a6ff6b9373dba4086e30e8277437232e31ae994322bf99a21188b",
+        "currentSHA256": "e1293b642b8a6ff6b9373dba4086e30e8277437232e31ae994322bf99a21188b",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\api\\authorization.ts",
+        "beforeSHA256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277",
+        "currentSHA256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\api\\client.ts",
+        "beforeSHA256": "f5f66e8dc36337b58a2f6dcc48cc190d44f453f82552cbe2e3e21d56b6ee7219",
+        "currentSHA256": "f5f66e8dc36337b58a2f6dcc48cc190d44f453f82552cbe2e3e21d56b6ee7219",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\api\\types.ts",
+        "beforeSHA256": "0ef6fe0c9442be7e212c2650a597cbedc27d63ab22a96102d04c684ed84c7af2",
+        "currentSHA256": "0ef6fe0c9442be7e212c2650a597cbedc27d63ab22a96102d04c684ed84c7af2",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\action-button.tsx",
+        "beforeSHA256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc",
+        "currentSHA256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\animate\\button.tsx",
+        "beforeSHA256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794",
+        "currentSHA256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\animate\\slot.tsx",
+        "beforeSHA256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7",
+        "currentSHA256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\asset-editor.tsx",
+        "beforeSHA256": "87d209e88c2682ba8862b2adfbdb98061f6d7458efb559485aeea9160c2062c3",
+        "currentSHA256": "87d209e88c2682ba8862b2adfbdb98061f6d7458efb559485aeea9160c2062c3",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\finding-dialog.tsx",
+        "beforeSHA256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc",
+        "currentSHA256": "4f9a8861278deea22c64de389c9944ee4ca904b294da63d4cdfa4ec63793a4cc",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\form-dialog.tsx",
+        "beforeSHA256": "157e3e6c96a4b0ca24e536048c67480164e791ef845b4233b4dcbfd50ba68027",
+        "currentSHA256": "157e3e6c96a4b0ca24e536048c67480164e791ef845b4233b4dcbfd50ba68027",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\icon.tsx",
+        "beforeSHA256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4",
+        "currentSHA256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\import-status.tsx",
+        "beforeSHA256": "be8e6530f074ec3faa463cef258f3818682e1404ff4cf12ec63388b75e600469",
+        "currentSHA256": "be8e6530f074ec3faa463cef258f3818682e1404ff4cf12ec63388b75e600469",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\provenance.json",
+        "beforeSHA256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411",
+        "currentSHA256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\report-import.tsx",
+        "beforeSHA256": "b6ae2a5d475135106b33cc23e9192f54dbbfcc9505e8b290492a03c38337500b",
+        "currentSHA256": "b6ae2a5d475135106b33cc23e9192f54dbbfcc9505e8b290492a03c38337500b",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\states.tsx",
+        "beforeSHA256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4",
+        "currentSHA256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\theme-menu.tsx",
+        "beforeSHA256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12",
+        "currentSHA256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\components\\ui\\button.tsx",
+        "beforeSHA256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d",
+        "currentSHA256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\application-input.ts",
+        "beforeSHA256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd",
+        "currentSHA256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\format.ts",
+        "beforeSHA256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6",
+        "currentSHA256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\preferences.tsx",
+        "beforeSHA256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8",
+        "currentSHA256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\router.ts",
+        "beforeSHA256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e",
+        "currentSHA256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\session.tsx",
+        "beforeSHA256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de",
+        "currentSHA256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\use-modal.ts",
+        "beforeSHA256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c",
+        "currentSHA256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\use-resource.ts",
+        "beforeSHA256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23",
+        "currentSHA256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\use-scoped-action.ts",
+        "beforeSHA256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4",
+        "currentSHA256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\lib\\utils.ts",
+        "beforeSHA256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431",
+        "currentSHA256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\main.tsx",
+        "beforeSHA256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f",
+        "currentSHA256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\pages\\assets.tsx",
+        "beforeSHA256": "0ec94ad62fdd0599e3439279d3b9971405b69173184ec3587ee371fcd952a830",
+        "currentSHA256": "0ec94ad62fdd0599e3439279d3b9971405b69173184ec3587ee371fcd952a830",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\pages\\gallery.tsx",
+        "beforeSHA256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8",
+        "currentSHA256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\pages\\integrations.tsx",
+        "beforeSHA256": "5391029a0012f24681683f986600911c12864e3f3dd89266188db1283926750b",
+        "currentSHA256": "5391029a0012f24681683f986600911c12864e3f3dd89266188db1283926750b",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\pages\\work.tsx",
+        "beforeSHA256": "724752b555e42ec77b6c1672a6813ffea9f3eede417d2fdf47f6097dd43d1dce",
+        "currentSHA256": "724752b555e42ec77b6c1672a6813ffea9f3eede417d2fdf47f6097dd43d1dce",
+        "unchanged": true
+      },
+      {
+        "path": "web\\src\\styles.css",
+        "beforeSHA256": "03221c53496707613906649fc41da840e1a8e0dfebce5f7b302dd1651392e0ad",
+        "currentSHA256": "03221c53496707613906649fc41da840e1a8e0dfebce5f7b302dd1651392e0ad",
+        "unchanged": true
+      }
+    ]
+  },
+  "fixtureAmendment": {
+    "path": "web\\tests\\network.ts",
+    "beforeSHA256": "e3be6b57de0946a86acd4c766c7636ed5abecb91e9c109c22fe91ceec6ca79ec",
+    "currentSHA256": "11e810daaaecd5a892216df01a86f618ff059a7d0d00d91c10476eae16aab6fd",
+    "recoveredOriginalSHA256": "e3be6b57de0946a86acd4c766c7636ed5abecb91e9c109c22fe91ceec6ca79ec",
+    "removedImportBytes": 125,
+    "removedEndpointBlockBytes": 1242,
+    "normalization": "none; original CRLF bytes retained"
+  },
+  "signedHistory": [
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json",
+      "beforeSHA256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "currentSHA256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "unchanged": true
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json.sig",
+      "beforeSHA256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "currentSHA256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "unchanged": true
+    }
+  ],
+  "observedConcurrentNonAuthorChanges": [
+    {
+      "path": ".gitattributes",
+      "beforeSHA256": "972f8aac74c0dc9d2d071150de2e95b58f6b55cbd19e79f92245be89321819bd",
+      "currentSHA256": "be70b0ae94d82ca8c96d5155db137634d10188ecf70cbe5e8647ccb392373658",
+      "unchanged": false,
+      "classification": "concurrent publication/documentation change outside this author edit scope; not reverted",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": ".gitignore",
+      "beforeSHA256": "265cafb3158afc14dc7a5c64014f951a147326e5d4c29aab4ddda7d8a6e93fcb",
+      "currentSHA256": "df53e295a6292ecb51aa5f528952e23c7a9f1d45c069275ab5c00bce56749ad0",
+      "unchanged": false,
+      "classification": "concurrent publication/documentation change outside this author edit scope; not reverted",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": "scripts\\ORACLES.md",
+      "beforeSHA256": "d7fc8bfd8a978d88556e8ba9fb7aa7c0f404ee474fca3a30950088acdd2a12d2",
+      "currentSHA256": "af58f287f823e9f6036823e87906244dcf555d64c0c9cde230053e90a7ff7f54",
+      "unchanged": false,
+      "classification": "concurrent publication/documentation change outside this author edit scope; not reverted",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": "tests\\acceptance\\.run\\build\\trim.txt",
+      "beforeSHA256": "07f40d2d4b976adc400c10287c8788cc7d481fbbca2a48c57073ca698c7a6ed0",
+      "currentSHA256": "a03414b8dbdb07c96517d791aab2acc37271b326ae1922860577950c3c27ee2e",
+      "unchanged": false,
+      "classification": "incidental pre-existing runtime artifact captured by broad BEFORE inventory; not a Reports guard or author execution",
+      "authorChangedThisPath": false
+    },
+    {
+      "path": "tests\\acceptance\\.run\\last-run.jsonl",
+      "beforeSHA256": "4f4afeaa18fadfc9aebca204afb553472c6f55a128e3923804cc2b6d976a993c",
+      "currentSHA256": "2f4c9237d61fa33a97d4cc91cb1147ed5b70e1c1e7bbe4c8591e097534637ff3",
+      "unchanged": false,
+      "classification": "incidental pre-existing runtime artifact captured by broad BEFORE inventory; not a Reports guard or author execution",
+      "authorChangedThisPath": false
+    }
+  ]
+}

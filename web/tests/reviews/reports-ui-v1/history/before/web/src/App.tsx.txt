@@ -3,6 +3,7 @@ import { Icon } from "@/components/icon";
 import type { IconName } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import { ThemeMenu } from "@/components/theme-menu";
+import { EmptyState } from "@/components/states";
 import { FindingDialog } from "@/components/finding-dialog";
 import { usePreferences } from "@/lib/preferences";
 import { showFinding, useRoute } from "@/lib/router";
@@ -12,7 +13,6 @@ import type { WorkContext } from "@/pages/work";
 import { IntegrationsPage } from "@/pages/integrations";
 import { AssetsPage } from "@/pages/assets";
 import { GalleryPage } from "@/pages/gallery";
-import { ReportsPage } from "@/pages/reports";
 import { SessionBoundary, useSession } from "@/lib/session";
 
 const destinations: { id: Destination; name: string; icon: IconName }[] = [
@@ -23,6 +23,14 @@ const destinations: { id: Destination; name: string; icon: IconName }[] = [
   { id: "settings", name: "Settings", icon: "settings" },
 ];
 
+function PlaceholderPage({ name }: { name: "Assets" | "Reports" }) {
+  return <>
+    <header className="page-heading"><div><p className="eyebrow">{name === "Assets" ? "Understand ownership & coverage" : "Make posture explainable"}</p><h1>{name}</h1><p className="page-description">{name === "Assets" ? "A connected inventory starts with trustworthy source identity." : "Reports should explain changes, not confuse visibility with risk."}</p></div><span className="subtle-pill">Foundation preview</span></header>
+    <section className="surface placeholder-surface"><EmptyState icon={name === "Assets" ? "assets" : "reports"} title={`${name === "Assets" ? "Asset inventory" : "Reporting"} is not available yet`} description={name === "Assets" ? "Inventory and ownership need the later authenticated, persistent data service. No assets have been invented for this preview." : "Saved reports and exports depend on the later data and authorization services. This preview does not manufacture posture metrics."}><Button asChild variant="outline"><a href="#/integrations">View integration plans<Icon name="arrow" /></a></Button></EmptyState></section>
+    <div className="roadmap-note"><Icon name="info" /><p><strong>A deliberate boundary.</strong> M01 establishes the interface and reproducible builds. Persistence, authentication and ingestion are not implemented here.</p></div>
+  </>;
+}
+
 function SettingsPage() {
   const { reducedMotion, theme } = usePreferences();
   return <>
@@ -30,7 +38,7 @@ function SettingsPage() {
     <div className="settings-grid">
       <section className="surface settings-card"><span className="settings-icon"><Icon name="grid" size={24} /></span><h2>Design system</h2><p>Explore the real shared controls, both themes, and clearly labeled synthetic states.</p><Button asChild variant="outline"><a href="#/gallery">Component gallery<Icon name="arrow" /></a></Button></section>
       <section className="surface settings-card"><span className="settings-icon"><Icon name="sun" size={24} /></span><h2>Appearance</h2><p>Your explicit theme preference is the only persistent browser setting. It contains no credentials.</p><dl className="settings-values"><div><dt>Current theme</dt><dd>{theme === "dark" ? "Dark" : "Light"}</dd></div><div><dt>Motion</dt><dd>{reducedMotion ? "Reduced by system" : "System default"}</dd></div></dl><p className="muted small">Use the color theme control in the header to change appearance.</p></section>
-      <section className="surface settings-card full-width"><div className="section-heading"><h2>Preview boundaries</h2><span className="subtle-pill">Current limits</span></div><div className="boundary-grid"><div><Icon name="lock" /><h3>Session-based access</h3><p>Sign-in and instance-setup forms use this instance's API. SSO and credential management are not available in Settings.</p></div><div><Icon name="shield" /><h3>AI &amp; proof are inactive</h3><p>No provider calls, model tools or active verification are started from this interface.</p></div><div><Icon name="layers" /><h3>Server-owned data</h3><p>Unavailable data endpoints fail visibly. The component gallery is never an operational fallback for inventory or reports.</p></div></div></section>
+      <section className="surface settings-card full-width"><div className="section-heading"><h2>Preview boundaries</h2><span className="subtle-pill">M01</span></div><div className="boundary-grid"><div><Icon name="lock" /><h3>No account secrets</h3><p>Identity, SSO and credential management are not implemented. No credential-entry forms are exposed.</p></div><div><Icon name="shield" /><h3>AI &amp; proof are inactive</h3><p>No provider calls, model tools or active verification are started from this interface.</p></div><div><Icon name="layers" /><h3>No hidden backend</h3><p>Unimplemented data endpoints fail visibly. The component gallery is never an operational fallback.</p></div></div></section>
     </div>
   </>;
 }
@@ -82,7 +90,7 @@ function WorkspaceApplication() {
         {warning && <p role="alert" className="preference-warning"><Icon name="warning" />{warning}</p>}
         {route.destination === "work" && <WorkPage context={workContext} setContext={setWorkContext} filterRef={filterRef} openFinding={(finding, trigger) => { setOpened({ title: finding.title, trigger }); showFinding(finding.id); }} />}
         {route.destination === "assets" && <AssetsPage />}
-        {route.destination === "reports" && <ReportsPage />}
+        {route.destination === "reports" && <PlaceholderPage name="Reports" />}
         {route.destination === "integrations" && <IntegrationsPage />}
         {route.destination === "settings" && <SettingsPage />}
         {route.destination === "gallery" && <GalleryPage />}

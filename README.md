@@ -14,8 +14,10 @@ The application now has a real PostgreSQL/S3 backend: authenticated workspaces,
 roles, assets, queued report intake, findings and scan history, CSV exports,
 and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
-server-driven import status, and finding evidence, observations and analyst
-notes. Integration-setup and reporting screens remain unfinished.
+server-driven import status, finding evidence, observations and analyst notes,
+and live posture reports with saved snapshots. Integration setup remains
+unfinished; the Reports UI still awaits separate source review and live HTTPS
+workflow qualification.
 
 Core API, ingestion and reporting run as separate processes. Core and ingestion
 use distinct scoped storage identities; reporting is database-only. Real local
@@ -59,7 +61,7 @@ authentication. Do not expose it through a public reverse proxy.
 For hot reload, run `npm.cmd run dev` from `web` while the Go development host
 runs on port 8080. Vite proxies only `/api` to that loopback host. Browser
 acceptance tests instead mock the declared HTTP boundary, including the bounded
-asset/import writes, not React components. Their synthetic corpus is never in
+asset/import and snapshot-creation writes, not React components. Their synthetic corpus is never in
 production imports; these checks do not prove live backend permissions.
 
 For the actual application, use `cmd\core-api`, `cmd\ingestion` and
@@ -91,10 +93,31 @@ Finding detail retains each returned observation, literal unmapped source
 context, analyst notes and disposition. Source scan, comparable source freshness,
 collection and import times remain distinct. Source-inferred resolution and
 accepted risk do not alter human workflow or claim independent verification.
-History pagination is not yet wired; a returned next-page cursor is disclosed
+Finding-history pagination is not yet wired; a returned next-page cursor is disclosed
 rather than presenting the loaded page as the complete history. Workspace
 changes, logout and session rejection clear these scoped views and cancel their
 browser requests. No report or authentication data is stored in browser storage.
+
+In **Reports**, **Live overview** displays the service's exact totals, all-finding
+severity counts, coverage, as-of time and freshness bounds. Edit **Freshness days**
+(1 through 365, initially 7), then explicitly **Refresh report** to apply the
+window. Unknown source freshness is not an unscanned count or proof of a current
+scan. Accepted risk and source-inferred resolution are not independent verification;
+the service's verification limitation remains visible.
+
+Admins and analysts can **Create snapshot** with a name and freshness window.
+A 202 response means queued, not completed. **Refresh snapshot** reads actual
+worker state, retry diagnostics, failure or completion. Completed metrics retain
+their saved as-of time when the live overview changes. Viewers can read history
+and details but cannot create snapshots; server authorization remains authoritative.
+**Load more snapshots** follows the returned cursor, retains loaded rows on a
+continuation failure and retries that same cursor. Creation refreshes history;
+**Refresh history** otherwise starts again from the first page. Workspace or
+session changes clear reports and cancel old reads. Denied or missing selected
+details remain cleared until an authorized response succeeds. There is no
+automatic polling, report storage in the browser, trend engine or Reports export UI.
+Synthetic browser workflows do not qualify the real reporting worker, durable
+storage or live authorization; those require separate backend and HTTPS checks.
 
 The lockfile uses canonical registry archive URLs and exact versions. In the
 current maintainer environment, the configured mirror's nested archive URLs
