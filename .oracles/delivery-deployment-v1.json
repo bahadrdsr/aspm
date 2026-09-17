@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-deployment-v1",
+  "phase": "pre-code-red",
+  "author": "independent-delivery-artifact-test-author",
+  "capturedAt": "2026-09-17T01:36:08.520Z",
+  "redEvidence": {
+    "sha256": "3fecfc0548aff178e77e4205d06e843cad9b55bb01b5881013e87b76f75894f3",
+    "exitCode": 1
+  },
+  "protectedRoots": [
+    "tests/delivery_deployment"
+  ],
+  "bindingPaths": [],
+  "files": [
+    {
+      "path": "go.mod",
+      "normalization": "none",
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "normalization": "none",
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal/install/execution/bundle.go",
+      "normalization": "none",
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    },
+    {
+      "path": "internal/install/execution/linux.go",
+      "normalization": "none",
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "tests/delivery_deployment/artifacts_test.go",
+      "normalization": "none",
+      "sha256": "af730d272d62609e20ab1eb864c3df9f648a83db5f2839adee62c22575a5e7e5"
+    },
+    {
+      "path": "tests/delivery_deployment/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "3e01f1bf61caece4b98fb30ca559260bf1d58a550f621a3b9b6d40e898044bab"
+    },
+    {
+      "path": "tests/delivery_deployment/go.mod",
+      "normalization": "none",
+      "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+    },
+    {
+      "path": "tests/delivery_deployment/go.sum",
+      "normalization": "none",
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests/delivery_deployment/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "b1dca44f848434e5bf715e4e6782c9a9fd17570d1d9dd762374793a6a2b2274a"
+    },
+    {
+      "path": "tests/delivery_deployment/helm_helpers_test.go",
+      "normalization": "none",
+      "sha256": "0e8aa835928da3b2763688bd76fd62f29b7e879947bd2888f06a983eb492e55a"
+    },
+    {
+      "path": "tests/delivery_deployment/helm_test.go",
+      "normalization": "none",
+      "sha256": "27d7e91cf3b5de59cc403fd02bfbca2bf3c8c465eb9a368ec60a2c4a170c8774"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "14c200912e15b1bf886a5652c15fd3e88f4537ad8a007d14930b402d258a9f39"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "d62ad4f3642a650dde995f15cf3c7de2cb9465f56f10b30d7cecad006dd9cb68"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "e29272e385e722280f5c92fa46a73625e6336e39fb3e647539eb042df563f4c3"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "7f98b3a74c07d3c349c8468d17aee21679885df77715e25a480a81d3c80aa486"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/MODULE.json",
+      "normalization": "none",
+      "sha256": "890e4355c0234ede20cd0a3188d40fe7aac6a2e4b905ee01123dd2c8540a64e9"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "aa71e5d8175c1c86229ba4f6cf7029dfbaff92a3c6a468762d355f1dc59c213d"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "f45d6c53f1aecb1f10b2ef2f52613a80eb7a61237c0ef1db8e949e3183912da9"
+    },
+    {
+      "path": "tests/delivery_deployment/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "1a971ec277dec3c86bd462cd7dfc758bd86d531ea0345fb9bc07052c90dfc052"
+    },
+    {
+      "path": "tests/delivery_deployment/Test-DeliveryDeployment.ps1",
+      "normalization": "none",
+      "sha256": "6070c26d5d7d585404d950cdfb1cc888dcc2e84797d8a87552790d1c80c2c867"
+    },
+    {
+      "path": "tests/deployment_roles/AMENDMENT-A1.txt",
+      "normalization": "none",
+      "sha256": "6dc0567f0edc5e16dc9858695db2a59995494adef78634b59e4163fb8c42a368"
+    },
+    {
+      "path": "tests/deployment_roles/ARTIFACTS.A2.sha256",
+      "normalization": "none",
+      "sha256": "e452104f457182ee46a324c9a4f6cf0fc4a120d25d6b5aa936f972259aa81705"
+    },
+    {
+      "path": "tests/deployment_roles/COMPILATION.A2.json",
+      "normalization": "none",
+      "sha256": "4d07e139bdaeb4c5b41d1c131eba63bff763c02ba98a637c6607fbca39df41ae"
+    },
+    {
+      "path": "tests/deployment_roles/COMPILATION.A3-STRUCTURAL.json",
+      "normalization": "none",
+      "sha256": "2245ffe5cfbb1150f0087eb454cf00c7bd71f523b3e7ba1e3cd42e7f5f1396b6"
+    },
+    {
+      "path": "tests/deployment_roles/COMPILATION.A3.json",
+      "normalization": "none",
+      "sha256": "e6143e9ae787681fd57a45f795cfa00bf2c78b8b307ac16fe214c537ee066b76"
+    },
+    {
+      "path": "tests/deployment_roles/COMPILATION.A4.json",
+      "normalization": "none",
+      "sha256": "1a559e6776d9f9ef19ee3140136f4b2974e1e3b8f387779485e5e8c78efbfc27"
+    },
+    {
+      "path": "tests/deployment_roles/COMPILATION.A5.json",
+      "normalization": "none",
+      "sha256": "7a85334dd10dc0d0aae763bac3998b2aa393556808fbc38db667a4954a3d57c7"
+    },
+    {
+      "path": "tests/deployment_roles/COMPILATION.A6.json",
+      "normalization": "none",
+      "sha256": "005ed29651e3ac5ad1126336538371b604dab14fdafa2cf188ff43b9973c9412"
+    },
+    {
+      "path": "tests/deployment_roles/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "39a50fd2689477e15fb0634c2ff8d09f95b93adb6216e8af3b8d44d2050c94fd"
+    },
+    {
+      "path": "tests/deployment_roles/CURRENT_PACKET.txt",
+      "normalization": "none",
+      "sha256": "a439578e8e184609506f5ddd2f4e5746d53d61c02512055be17e733a45704532"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A0.sha256",
+      "normalization": "none",
+      "sha256": "28dc47d37ced767b74eeac89a98a5a02eaeb7617dcb096f67586cf39635f0f13"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A1.sha256",
+      "normalization": "none",
+      "sha256": "4d66d5dce498d5b5f168fbe15d084fa7f32357fa28bb6b74e1be6d5e9fdfc962"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A2.sha256",
+      "normalization": "none",
+      "sha256": "722e78408c79fbc61737e76b0b5e40411d0caa0f051554d348be9a42d8cf6a0a"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A3-STRUCTURAL.sha256",
+      "normalization": "none",
+      "sha256": "a44d5b9e66e29bf515688aad9729835cdba3d2ba23452cd2ace75392b67ffaa4"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A3.sha256",
+      "normalization": "none",
+      "sha256": "bc2105686e7652ebc5fc8d0fb38bb26dec7120ed7d8c1448f2c766aaff8b614f"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A4.sha256",
+      "normalization": "none",
+      "sha256": "9dab0f26bb963f8a2321fa6ba94bbb32ea0190cffafee8b10f50990f8ef46b12"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A5.sha256",
+      "normalization": "none",
+      "sha256": "faa514390cfbd66a49efb40b0a58835156d52b54004b4a1923027e7564ecfca3"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.A6.sha256",
+      "normalization": "none",
+      "sha256": "768ea2099be0945686b4b8e01c6c8aff0e5495473b123b191606fab9162d9678"
+    },
+    {
+      "path": "tests/deployment_roles/FROZEN.sha256",
+      "normalization": "none",
+      "sha256": "768ea2099be0945686b4b8e01c6c8aff0e5495473b123b191606fab9162d9678"
+    },
+    {
+      "path": "tests/deployment_roles/go.mod",
+      "normalization": "none",
+      "sha256": "aa041661e50048ded79b1289d0f039367271bc31aa2764eb497b4a7c1130095c"
+    },
+    {
+      "path": "tests/deployment_roles/go.sum",
+      "normalization": "none",
+      "sha256": "e42794fa9b56301ad073de55cac1dea683b320ed951454d8709ffc7156088dd2"
+    },
+    {
+      "path": "tests/deployment_roles/helm_test.go",
+      "normalization": "none",
+      "sha256": "a3d58a123d687942b4ffad031ab75af3cf5dfb33eff367617c57f4d43a1e5099"
+    },
+    {
+      "path": "tests/deployment_roles/INPUTS.before.sha256",
+      "normalization": "none",
+      "sha256": "2d198c56475cd13f6740138cc526106b02c49e61eb3f03d8efb6b78e201def5e"
+    },
+    {
+      "path": "tests/deployment_roles/INSTALLER-COORDINATION-A1.sha256",
+      "normalization": "none",
+      "sha256": "a276aa0fcb2633e2f62e1853aefbddb04423fc2e4eccd6bdbdd9e8f036a3411a"
+    },
+    {
+      "path": "tests/deployment_roles/INSTALLER-COORDINATION-A1.txt",
+      "normalization": "none",
+      "sha256": "d281c8615f086236fd5133337797df0b7296c0f6288c60bbd40b3f99820554b0"
+    },
+    {
+      "path": "tests/deployment_roles/PACKET-A2.txt",
+      "normalization": "none",
+      "sha256": "19558eb91d55c52b9bb7580f7bb40cb94b2f0ec2068e31734a17fead10c494a7"
+    },
+    {
+      "path": "tests/deployment_roles/PACKET-A3.txt",
+      "normalization": "none",
+      "sha256": "fd8382d5afd0acecc56dbd43da6cd3fbc8d49ff8f4f7390b8652f27592e2ef98"
+    },
+    {
+      "path": "tests/deployment_roles/PACKET-A4.txt",
+      "normalization": "none",
+      "sha256": "31f3d8def0956770ad9379268c5190b5008ee27f53f096c7cecba3174f0b71f5"
+    },
+    {
+      "path": "tests/deployment_roles/PACKET-A5.txt",
+      "normalization": "none",
+      "sha256": "ec5a8e796dabab856abba6ecae958fb1a134982f7d118449309feb597007ee87"
+    },
+    {
+      "path": "tests/deployment_roles/PACKET-A6.txt",
+      "normalization": "none",
+      "sha256": "5ad435c4fdfe4d11a5fc716c71b7d29efec9682ed7c5450464f06da6c52060b8"
+    },
+    {
+      "path": "tests/deployment_roles/PRECODE-A3.txt",
+      "normalization": "none",
+      "sha256": "18a42c1d5c53029189a7780e194213f2823e089b2512fb4eecfa91842ba6270b"
+    },
+    {
+      "path": "tests/deployment_roles/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "b8f73cfd1943932d059427e85c06e7ea690491a539be9409889ff34d8edeef3b"
+    },
+    {
+      "path": "tests/deployment_roles/quadlet_config_loader_test.go",
+      "normalization": "none",
+      "sha256": "63c09e453ae218409ecccf5436aa07f53646e2e69796c919144ab18afbebd671"
+    },
+    {
+      "path": "tests/deployment_roles/quadlet_line_endings_test.go",
+      "normalization": "none",
+      "sha256": "4189c700d0d19f503a4f0bd0e76fcba078050ffb7037ab26a521f8c141ced707"
+    },
+    {
+      "path": "tests/deployment_roles/quadlet_test.go",
+      "normalization": "none",
+      "sha256": "70d51fa79f7244c667fe625be4916a8ba6f8dcf3c3cce9cb013843f1716f8c22"
+    },
+    {
+      "path": "tests/deployment_roles/readiness_opt_in_test.go",
+      "normalization": "none",
+      "sha256": "dff0582a4668ec9826486cf9e50a65e242c5f163770f7c355af6a89556971aee"
+    },
+    {
+      "path": "tests/deployment_roles/RED-A2.txt",
+      "normalization": "none",
+      "sha256": "09f064a194d56a617a789ea0cc35686bc64bb38f0bbad02d5f3b825d98f94298"
+    },
+    {
+      "path": "tests/deployment_roles/RED.txt",
+      "normalization": "none",
+      "sha256": "9a6e6212eaf12a0a05de826717021f2266add19beba235ad88e0df9d8f28cbec"
+    },
+    {
+      "path": "tests/deployment_roles/render_test.go",
+      "normalization": "none",
+      "sha256": "f9b43ff3bcfeb4d47be47de530067177ff1e877e1003b2d5996491b7ccb5e7e0"
+    },
+    {
+      "path": "tests/deployment_roles/ROOT-MODULES.A3.sha256",
+      "normalization": "none",
+      "sha256": "b8801cef071d42bcbbdc82c82138ad3fa06e6ae1296467aad183af4f9bded3da"
+    },
+    {
+      "path": "tests/deployment_roles/STRUCTURAL-A3.txt",
+      "normalization": "none",
+      "sha256": "8c66906804ea07a6268e78a29067ca2f47d7f107aa0fae23182afa0c8dfdb55c"
+    },
+    {
+      "path": "tests/deployment_roles/Test-DeploymentRoles.ps1",
+      "normalization": "none",
+      "sha256": "3d946332cbdfa0f4e28acf8d1f63320012ea258eff8f0e118eb9b2d66aecbc1f"
+    },
+    {
+      "path": "tests/deployment_roles/Verify-CompilationPacket-A4.ps1",
+      "normalization": "none",
+      "sha256": "356e4cd00874816eb5e5c3bf7bb7d4587216cdcd3722af3805ef010fd9033a78"
+    },
+    {
+      "path": "tests/deployment_roles/Verify-CompilationPacket-A5.ps1",
+      "normalization": "none",
+      "sha256": "8316d7ea83a3047d8f27dd3edd6d9817da9c88c02f6515a9e30d064ba10ad38a"
+    },
+    {
+      "path": "tests/deployment_roles/Verify-CompilationPacket-A6.ps1",
+      "normalization": "none",
+      "sha256": "72242b44bc3380934deb3227b3838e3dd732d1dd3ef50211c288e4d53375ab66"
+    },
+    {
+      "path": "tests/deployment_roles/Verify-CompilationPacket.ps1",
+      "normalization": "none",
+      "sha256": "1641006c2d339bb2ba86ca5e6b1b56ad241614e7989883e052195cd8a126ae5b"
+    }
+  ]
+}

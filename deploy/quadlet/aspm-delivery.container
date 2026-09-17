@@ -1,0 +1,19 @@
+[Unit]
+Description=ASPM opt-in delivery worker
+After=network-online.target aspm-postgres.service
+Wants=network-online.target
+
+[Container]
+Image=localhost/aspm:0.1.0-dev
+ContainerName=aspm-delivery
+Network=aspm.network
+EnvironmentFile=/etc/aspm/delivery.env
+Exec=/app/bin/delivery-worker
+ReadOnly=true
+Tmpfs=/tmp:rw,size=256m
+NoNewPrivileges=true
+DropCapability=all
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=180

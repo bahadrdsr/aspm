@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T01:32:29.726926+00:00",
+  "scope": "delivery-deployment-v1",
+  "status": "FROZEN_REAL_ARTIFACT_RED_PENDING_PARENT_SEAL",
+  "actualRun": {
+    "receipt": {
+      "path": ".artifacts\\delivery-deployment-v1\\artifact-red-final\\receipt.json",
+      "bytes": 1096,
+      "sha256": "728de26783f9558534eb28e374034f783eb40366c166985d4669223d431a4b32"
+    },
+    "events": {
+      "path": ".artifacts\\delivery-deployment-v1\\artifact-red-final\\events.jsonl",
+      "bytes": 32066,
+      "sha256": "e58070154f0edc88821ff1e521b50f8e0f25aa893f21cca42e5bbb32a2deca8d"
+    },
+    "log": {
+      "path": ".artifacts\\delivery-deployment-v1\\artifact-red-final\\run.log",
+      "bytes": 7236,
+      "sha256": "f71db824bb33f01084d8ab717a28cdc34d3b965481fef654791181ef75280620"
+    },
+    "exitCode": 1,
+    "topLevelGates": 4,
+    "topLevelRed": 4,
+    "skips": 0,
+    "retries": 0,
+    "actualHelmRenders": 12,
+    "actualRootlessNativeGeneratorControls": 1,
+    "topLevelResults": [
+      {
+        "name": "TestDeliveryDeploymentContainerSourceBuildsAndRetainsWorkerBinary",
+        "result": "fail",
+        "elapsed": 0.11
+      },
+      {
+        "name": "TestDeliveryDeploymentQuadletIsProtectedAndOptInWithNativeSyntax",
+        "result": "fail",
+        "elapsed": 4.61
+      },
+      {
+        "name": "TestDeliveryDeploymentHelmOptInAndExactCoreDeliveryKeyReferences",
+        "result": "fail",
+        "elapsed": 0.81
+      },
+      {
+        "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker",
+        "result": "fail",
+        "elapsed": 1.43
+      }
+    ],
+    "passingControls": [
+      "TestDeliveryDeploymentQuadletIsProtectedAndOptInWithNativeSyntax/existing-native-parser-control",
+      "TestDeliveryDeploymentHelmOptInAndExactCoreDeliveryKeyReferences/default-absence-control"
+    ]
+  },
+  "observedMissingBehavior": [
+    "Source Containerfile lacks delivery-worker build command.",
+    "Host artifact helper command inventory omits delivery-worker.",
+    "Shipped aspm-delivery.container is absent.",
+    "Disabled-worker explicit key selection is not forwarded to core.",
+    "Enabled delivery Deployment is absent.",
+    "Missing/partial key selectors, nonboolean enabled flags and credential-bearing endpoint are silently accepted by real Helm rendering."
+  ],
+  "blockedDownstreamNotRun": [
+    "Enabled delivery command/key/default/override/health/isolation assertions after missing Deployment.",
+    "New delivery unit protected-env/opt-in and native generated-service assertions after missing source unit."
+  ],
+  "executedPositiveControls": [
+    "Actual default-off Helm render has no delivery Deployment or inherited integration key.",
+    "Actual native Podman 4.9.3 generator parses existing report unit/network under an unprivileged user.",
+    "Source runtime recipe retains complete bin COPY and original default core CMD."
+  ],
+  "notClaimed": [
+    "No actual container/image build or binary-success proof.",
+    "Host packaging build script not executed against shared publication outputs.",
+    "No Helm install/upgrade, cluster connection, systemd activation, container startup, installer execution, privilege or vendor-account action.",
+    "No live delivery behavior or vendor verification from artifact configuration."
+  ],
+  "helmYAMLWasActuallyParsed": true,
+  "nativeServiceOutputWasActuallyParsed": true
+}

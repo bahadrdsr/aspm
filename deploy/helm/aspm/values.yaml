@@ -3,6 +3,7 @@ image:
   tag: 0.1.0-dev
   pullPolicy: IfNotPresent
 existingSecret: aspm-secrets
+integrationKeySecret: {}
 publicOrigin: ""
 core:
   replicas: 1
@@ -30,6 +31,14 @@ ingestion:
     limits: {cpu: "1", memory: 512Mi}
 reports:
   replicas: 1
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: "1", memory: 512Mi}
+delivery:
+  enabled: false
+  replicas: 1
+  leaseDuration: "15s"
+  slackEndpoint: "https://slack.com"
   resources:
     requests: {cpu: 100m, memory: 128Mi}
     limits: {cpu: "1", memory: 512Mi}

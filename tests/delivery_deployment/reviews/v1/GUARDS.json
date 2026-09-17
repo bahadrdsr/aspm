@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T01:32:29.726926+00:00",
+  "before": {
+    "path": "tests\\delivery_deployment\\reviews\\v1\\BEFORE.json",
+    "bytes": 5787,
+    "sha256": "14c200912e15b1bf886a5652c15fd3e88f4537ad8a007d14930b402d258a9f39"
+  },
+  "historicalHead": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "observedHead": "b86bbad335f5df802736a4b9bd1239bcd47cc234",
+  "unchangedExistingWitnessCount": 30,
+  "unchangedExistingWitnesses": [
+    {
+      "path": "Containerfile",
+      "bytes": 1089,
+      "sha256": "444722acf08db553bc4522c0189bc7b9699d6b08627a6f2323077b860b0c18ec"
+    },
+    {
+      "path": "deploy\\Containerfile.runtime",
+      "bytes": 354,
+      "sha256": "fe72809ded87e851969407ab585acaab8a1d125f07571177635014c6b58325f2"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\Chart.yaml",
+      "bytes": 162,
+      "sha256": "69615360986d3b3978ee81d4798a922c11234171ab207fcba2b8166647889ed4"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\_helpers.tpl",
+      "bytes": 2672,
+      "sha256": "07c059e99e8b509d636eb2ed555bb722c57ad61f7f1210e2ca91d1d57184f062"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\application.yaml",
+      "bytes": 2752,
+      "sha256": "c31d4909d077c2f9eb93fe65c309720bdbeb2e0aa29f75567b9ffef34244a7dd"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\ingress.yaml",
+      "bytes": 717,
+      "sha256": "0899ee65509b0c011ad1a1c115f2e1659a19007372c2d5ef6ab218be198ef0b0"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\storage.yaml",
+      "bytes": 4385,
+      "sha256": "4e702920807edc775cbfdf56b2789a967df4977406622f7201689b9e04d22657"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\values.yaml",
+      "bytes": 1424,
+      "sha256": "02d1aeeced1268f540c2af0706d8938e241a2e13f078ea53daf2a41959d31b50"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-core.container",
+      "bytes": 498,
+      "sha256": "6f6d5e1edeccd75d3aa25e16103a203076ff424bbcda1b2e7dc06efcb6f2130f"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-ingestion@.container",
+      "bytes": 490,
+      "sha256": "7daaf93d1ee2294d7cd7b53a41a2d48fc5ad2481aa16b6ef8d9c61610784342b"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-postgres.container",
+      "bytes": 333,
+      "sha256": "0eb7326aa845858ff4ab01e84f4c701bec4fe9bcb38e7237f7656051dba1165e"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-postgres.volume",
+      "bytes": 36,
+      "sha256": "9c53a4fd4be9d901c814bb1f86af8132131688f05056f9ec009e0f8cc05f32c9"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-reports.container",
+      "bytes": 492,
+      "sha256": "bd4dea2673bbee2cc3d658bf74259cea100ba76f43b8c600975eb3122c18a7d4"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-storage.container",
+      "bytes": 623,
+      "sha256": "714dad236f41d8ad1ca7c08853be946005bcc4c6ba787ee9f6a9ba3406831f36"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-storage.volume",
+      "bytes": 35,
+      "sha256": "1a13faec9a161f5c0d81f1d843af4c3ac2edee9787183e108aad220c88e71d33"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm.network",
+      "bytes": 44,
+      "sha256": "cd5ab9d710e72c6cd5a9efd0c5955f2e58b66dac02e38fba6f288892aa9af231"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal\\install\\execution\\bundle.go",
+      "bytes": 6385,
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    },
+    {
+      "path": "internal\\install\\execution\\linux.go",
+      "bytes": 6205,
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "scripts\\package-image.mjs",
+      "bytes": 2582,
+      "sha256": "67b856f93b4cce3ac382d7145b629a9e32898d9520a533059565f904852348c9"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A6.json",
+      "bytes": 3920,
+      "sha256": "005ed29651e3ac5ad1126336538371b604dab14fdafa2cf188ff43b9973c9412"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A6.sha256",
+      "bytes": 16827,
+      "sha256": "768ea2099be0945686b4b8e01c6c8aff0e5495473b123b191606fab9162d9678"
+    },
+    {
+      "path": "tests\\deployment_roles\\go.mod",
+      "bytes": 203,
+      "sha256": "aa041661e50048ded79b1289d0f039367271bc31aa2764eb497b4a7c1130095c"
+    },
+    {
+      "path": "tests\\deployment_roles\\go.sum",
+      "bytes": 360,
+      "sha256": "e42794fa9b56301ad073de55cac1dea683b320ed951454d8709ffc7156088dd2"
+    },
+    {
+      "path": "tests\\deployment_roles\\helm_test.go",
+      "bytes": 3057,
+      "sha256": "a3d58a123d687942b4ffad031ab75af3cf5dfb33eff367617c57f4d43a1e5099"
+    },
+    {
+      "path": "tests\\deployment_roles\\production_bindings_test.go",
+      "bytes": 508,
+      "sha256": "b8f73cfd1943932d059427e85c06e7ea690491a539be9409889ff34d8edeef3b"
+    },
+    {
+      "path": "tests\\deployment_roles\\quadlet_test.go",
+      "bytes": 8378,
+      "sha256": "70d51fa79f7244c667fe625be4916a8ba6f8dcf3c3cce9cb013843f1716f8c22"
+    },
+    {
+      "path": "tests\\deployment_roles\\render_test.go",
+      "bytes": 7431,
+      "sha256": "f9b43ff3bcfeb4d47be47de530067177ff1e877e1003b2d5996491b7ccb5e7e0"
+    },
+    {
+      "path": "tests\\deployment_roles\\Test-DeploymentRoles.ps1",
+      "bytes": 1844,
+      "sha256": "3d946332cbdfa0f4e28acf8d1f63320012ea258eff8f0e118eb9b2d66aecbc1f"
+    }
+  ],
+  "changedExistingFiles": [],
+  "newControls": [
+    {
+      "path": "tests\\delivery_deployment\\artifacts_test.go",
+      "bytes": 10037,
+      "sha256": "af730d272d62609e20ab1eb864c3df9f648a83db5f2839adee62c22575a5e7e5"
+    },
+    {
+      "path": "tests\\delivery_deployment\\CONTRACT.txt",
+      "bytes": 8781,
+      "sha256": "3e01f1bf61caece4b98fb30ca559260bf1d58a550f621a3b9b6d40e898044bab"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.mod",
+      "bytes": 130,
+      "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\delivery_deployment\\HANDOFF.txt",
+      "bytes": 1759,
+      "sha256": "b1dca44f848434e5bf715e4e6782c9a9fd17570d1d9dd762374793a6a2b2274a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_helpers_test.go",
+      "bytes": 7818,
+      "sha256": "0e8aa835928da3b2763688bd76fd62f29b7e879947bd2888f06a983eb492e55a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_test.go",
+      "bytes": 6222,
+      "sha256": "27d7e91cf3b5de59cc403fd02bfbca2bf3c8c465eb9a368ec60a2c4a170c8774"
+    },
+    {
+      "path": "tests\\delivery_deployment\\Test-DeliveryDeployment.ps1",
+      "bytes": 4367,
+      "sha256": "6070c26d5d7d585404d950cdfb1cc888dcc2e84797d8a87552790d1c80c2c867"
+    }
+  ],
+  "tooling": {
+    "helm": {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\tools\\helm-4.3.0\\windows-amd64\\helm.exe",
+      "sha256": "2f65add9f1d5c96fc70ad70f06f1c47b3ef21bee4a9f086d861bb138429e9c13",
+      "version": "v4.3.0+gbec5b06"
+    },
+    "nativeGenerator": {
+      "path": ".cache\\podman-validation\\extracted\\usr\\libexec\\podman\\quadlet",
+      "bytes": 1999200,
+      "sha256": "9e95fafe06ef5b630dbb59cbf3630d38931c3fc27ba7c7f9cf472f064d9798b9"
+    },
+    "nativeGeneratorVersion": "4.9.3",
+    "nativeUser": "existing unprivileged WSL user, UID checked nonzero by actual test",
+    "go": {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    "goVersion": "1.27.1",
+    "nativeMode": [
+      "-user",
+      "-dryrun",
+      "-no-kmsg-log"
+    ]
+  },
+  "installerExecutionFilesAreHardByteControls": [
+    "internal\\install\\execution\\linux.go",
+    "internal\\install\\execution\\bundle.go"
+  ],
+  "oldA6ControlsChanged": false,
+  "rootModulesChanged": false,
+  "oldHistoryCopied": false,
+  "existingFileAmendments": [],
+  "archives": [],
+  "newDependencyPolicy": "Only isolated nested module using already-pinned cached YAML parser, recorded before tests."
+}

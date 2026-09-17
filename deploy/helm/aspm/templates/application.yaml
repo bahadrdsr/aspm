@@ -1,5 +1,11 @@
+{{- include "aspm.validateDelivery" . -}}
 {{- $root := . -}}
-{{- range $role := list "core" "ingestion" "reports" }}
+{{- $roles := list "core" "ingestion" "reports" -}}
+{{- $delivery := .Values.delivery | default dict -}}
+{{- if get $delivery "enabled" -}}
+{{- $roles = append $roles "delivery" -}}
+{{- end -}}
+{{- range $role := $roles }}
 {{- $config := index $root.Values $role }}
 ---
 apiVersion: apps/v1
@@ -30,7 +36,7 @@ spec:
         - name: {{ $role }}
           image: {{ printf "%s:%s" $root.Values.image.repository $root.Values.image.tag | quote }}
           imagePullPolicy: {{ $root.Values.image.pullPolicy }}
-          command: [{{ if eq $role "core" }}"/app/bin/core-api"{{ else if eq $role "reports" }}"/app/bin/report-worker"{{ else }}"/app/bin/ingestion"{{ end }}]
+          command: [{{ if eq $role "core" }}"/app/bin/core-api"{{ else if eq $role "reports" }}"/app/bin/report-worker"{{ else if eq $role "delivery" }}"/app/bin/delivery-worker"{{ else }}"/app/bin/ingestion"{{ end }}]
           ports: [{name: http, containerPort: 8080}]
           env:
             {{- include "aspm.environment" (dict "root" $root "role" $role) | nindent 12 }}

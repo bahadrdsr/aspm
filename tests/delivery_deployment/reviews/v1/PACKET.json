@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-deployment-v1",
+  "phase": "frozen-independent-opt-in-artifact-red",
+  "frozenAt": "2026-09-17T01:33:28.134431+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned NEW artifact-control inventory only. Parent verifies/seals; old A6/installer/runtime/UI/publication controls are not amended.",
+  "payloadFileCount": 14,
+  "ownedFileCount": 16,
+  "ownedFiles": [
+    "tests\\delivery_deployment\\CONTRACT.txt",
+    "tests\\delivery_deployment\\HANDOFF.txt",
+    "tests\\delivery_deployment\\Test-DeliveryDeployment.ps1",
+    "tests\\delivery_deployment\\artifacts_test.go",
+    "tests\\delivery_deployment\\go.mod",
+    "tests\\delivery_deployment\\go.sum",
+    "tests\\delivery_deployment\\helm_helpers_test.go",
+    "tests\\delivery_deployment\\helm_test.go",
+    "tests\\delivery_deployment\\reviews\\v1\\BEFORE.json",
+    "tests\\delivery_deployment\\reviews\\v1\\EVIDENCE.json",
+    "tests\\delivery_deployment\\reviews\\v1\\GUARDS.json",
+    "tests\\delivery_deployment\\reviews\\v1\\HANDOFF.json",
+    "tests\\delivery_deployment\\reviews\\v1\\MODULE.json",
+    "tests\\delivery_deployment\\reviews\\v1\\PACKET.json",
+    "tests\\delivery_deployment\\reviews\\v1\\PACKET.sha256",
+    "tests\\delivery_deployment\\reviews\\v1\\RED.json"
+  ],
+  "files": [
+    {
+      "path": "tests\\delivery_deployment\\artifacts_test.go",
+      "bytes": 10037,
+      "sha256": "af730d272d62609e20ab1eb864c3df9f648a83db5f2839adee62c22575a5e7e5"
+    },
+    {
+      "path": "tests\\delivery_deployment\\CONTRACT.txt",
+      "bytes": 8781,
+      "sha256": "3e01f1bf61caece4b98fb30ca559260bf1d58a550f621a3b9b6d40e898044bab"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.mod",
+      "bytes": 130,
+      "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\delivery_deployment\\HANDOFF.txt",
+      "bytes": 1759,
+      "sha256": "b1dca44f848434e5bf715e4e6782c9a9fd17570d1d9dd762374793a6a2b2274a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_helpers_test.go",
+      "bytes": 7818,
+      "sha256": "0e8aa835928da3b2763688bd76fd62f29b7e879947bd2888f06a983eb492e55a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_test.go",
+      "bytes": 6222,
+      "sha256": "27d7e91cf3b5de59cc403fd02bfbca2bf3c8c465eb9a368ec60a2c4a170c8774"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\BEFORE.json",
+      "bytes": 5787,
+      "sha256": "14c200912e15b1bf886a5652c15fd3e88f4537ad8a007d14930b402d258a9f39"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 13914,
+      "sha256": "d62ad4f3642a650dde995f15cf3c7de2cb9465f56f10b30d7cecad006dd9cb68"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\GUARDS.json",
+      "bytes": 8687,
+      "sha256": "e29272e385e722280f5c92fa46a73625e6336e39fb3e647539eb042df563f4c3"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3021,
+      "sha256": "7f98b3a74c07d3c349c8468d17aee21679885df77715e25a480a81d3c80aa486"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\MODULE.json",
+      "bytes": 1396,
+      "sha256": "890e4355c0234ede20cd0a3188d40fe7aac6a2e4b905ee01123dd2c8540a64e9"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\RED.json",
+      "bytes": 3504,
+      "sha256": "1a971ec277dec3c86bd462cd7dfc758bd86d531ea0345fb9bc07052c90dfc052"
+    },
+    {
+      "path": "tests\\delivery_deployment\\Test-DeliveryDeployment.ps1",
+      "bytes": 4367,
+      "sha256": "6070c26d5d7d585404d950cdfb1cc888dcc2e84797d8a87552790d1c80c2c867"
+    }
+  ],
+  "contract": "tests\\delivery_deployment\\CONTRACT.txt",
+  "handoff": "tests\\delivery_deployment\\HANDOFF.txt",
+  "red": "tests\\delivery_deployment\\reviews\\v1\\RED.json",
+  "moduleDecision": "tests\\delivery_deployment\\reviews\\v1\\MODULE.json",
+  "externalEvidence": "tests\\delivery_deployment\\reviews\\v1\\EVIDENCE.json",
+  "selfBinding": "PACKET.sha256 binds raw PACKET.json; only this self-digest pair is excluded from payload hashes.",
+  "archives": [],
+  "rootModuleOrExistingFileEdits": [],
+  "deploymentActivationOrImageBuildPerformed": false
+}

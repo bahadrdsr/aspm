@@ -14,6 +14,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -o /out/core-api ./cmd/core-api && \
     CGO_ENABLED=0 go build -trimpath -o /out/ingestion ./cmd/ingestion && \
     CGO_ENABLED=0 go build -trimpath -o /out/report-worker ./cmd/report-worker && \
+    CGO_ENABLED=0 go build -trimpath -o /out/delivery-worker ./cmd/delivery-worker && \
     CGO_ENABLED=0 go build -trimpath -o /out/aspmctl ./cmd/aspmctl
 
 FROM alpine:3.23

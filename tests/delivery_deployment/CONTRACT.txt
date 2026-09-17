@@ -1,0 +1,155 @@
+DELIVERY DEPLOYMENT V1 - OPT-IN MANUAL ARTIFACT TESTS
+=================================================
+
+Scope and dependency decision
+-----------------------------
+Four independent artifact gates live in this NEW tests/delivery_deployment
+directory. They do not edit accepted core/worker/UI code, old A6 deployment
+assertions/manifests, root modules, installer execution or earlier history.
+No deployment, cluster connection, container start, systemd activation, privilege
+change or vendor-account activity is performed.
+
+An explicitly isolated nested Go test module uses only the already-pinned,
+already-cached gopkg.in/yaml.v3 v3.0.1, matching the existing deployment_roles
+parser. go.mod/go.sum were added here only, with that decision recorded in
+reviews\v1\BEFORE.json before test execution. Root module files stay unchanged.
+
+Actual Helm/YAML, not a source proxy
+-----------------------------------
+The test invokes the real existing Helm executable against deploy\helm\aspm
+with template --dry-run=client, an explicit empty kubeconfig, plugin disabling
+and task-owned cache/config/data directories. It decodes every actual output
+document with the pinned YAML parser. Synthetic values contain Secret names/
+keys only, never secret contents or real integration credentials.
+
+New value vocabulary:
+  delivery.enabled: strict boolean, default false
+  delivery.leaseDuration: bounded runtime duration string, default "15s"
+  delivery.slackEndpoint: trusted HTTPS base string, default "https://slack.com"
+  integrationKeySecret: {name:string, key:string}, explicit nonsecret reference
+
+When delivery is omitted or false, no delivery Deployment renders. A complete
+integrationKeySecret provided while disabled is still forwarded to core so an
+administrator can configure connections before independently opting into a
+worker rollout.
+
+When delivery.enabled is true:
+  - A distinct Deployment has component label and main container name delivery.
+  - Its command is exactly ["/app/bin/delivery-worker"].
+  - Core and delivery receive ASPM_INTEGRATION_ENCRYPTION_KEY through exactly
+    the same selected required SecretKeyRef name/key, with no literal, optional,
+    operator/common/bootstrap/S3 key fallback.
+  - Ingestion/reports, including init containers, never receive that key.
+  - Delivery receives required DB configuration and the selected bounded lease/
+    trusted gateway as real YAML string values.
+  - No envFrom, ASPM_S3*, AWS_*, ASPM_BOOTSTRAP_TOKEN or ASPM_ASSETS is added to
+    delivery containers/init containers. No non-DB/non-integration Secret
+    reference is granted to them.
+  - Startup/readiness use /readyz and liveness uses /healthz, the accepted role
+    endpoints. Configuring the worker does not verify a vendor account.
+
+Missing/empty integrationKeySecret.name or .key must fail real render with
+that specific values path. No operator existingSecret fallback is allowed.
+An explicitly partial selection is invalid even while delivery is disabled.
+String "true"/"false" and integer 1 delivery.enabled values are rejected with
+delivery.enabled in the diagnostic. Credential-bearing delivery.slackEndpoint
+is rejected with that path; endpoint credentials are never shipped inline.
+The runtime's strict gateway/duration policy remains authoritative for execution.
+
+The enabled override control supplies leaseDuration:"30s" and a noncredential
+synthetic HTTPS gateway prefix; rendered values must not be silently rewritten.
+Core/ingestion storage Secret refs, raw/readiness/normalized scope semantics
+remain the existing selections. Existing core default command/storage behavior
+is not replaced by the optional worker.
+
+Source image and host artifact packaging
+----------------------------------------
+The application Containerfile must build delivery-worker from its actual
+cmd/delivery-worker alongside core-api, ingestion, report-worker and aspmctl.
+Its complete backend output is copied into /app/bin. The runtime artifact
+Containerfile continues COPY bin/ /app/bin/, so a packaged delivery-worker is
+not dropped. scripts/package-image.mjs must include delivery-worker in its
+actual host-build command inventory.
+
+Both image recipes retain their current default CMD /app/bin/core-api.
+This is a source artifact gate, not a container build or binary-existence
+claim. The host packaging helper is inspected, not replaced with test-side
+outputs or executed against the parent's shared publication build directory.
+No image was built or run by this author. A later explicit image-build proof
+is separate and must not be represented by placeholder binaries.
+
+Opt-in Quadlet
+--------------
+Ship deploy\quadlet\aspm-delivery.container with:
+  [Container]
+  EnvironmentFile=/etc/aspm/delivery.env
+  Exec=/app/bin/delivery-worker
+  Network=aspm.network
+  ReadOnly=true
+  NoNewPrivileges=true
+  DropCapability=all
+
+The protected env file is the only environment source. Do not add Container
+Environment, PodmanArgs, Secret, host environment import, or service-level
+Environment/EnvironmentFile bypasses. There are no inline key/endpoint
+credentials. A normal image, container identity, network/dependency, temporary
+filesystem and restart configuration may follow existing isolation conventions;
+the worker must not acquire an aspm-storage dependency.
+
+No Install.WantedBy, RequiredBy or Alias activates the unit. The current
+installer copy/start behavior remains BYTE-IDENTICAL. Tests hash the current
+execution/linux.go and bundle.go as explicit controls. No installer command is
+run or modified to activate this opt-in unit.
+
+The operator's later protected root-owned env-file provisioning and manual
+worker start are separate. Merely referencing /etc/aspm/delivery.env is not
+proof that an actual protected file/key was provisioned. Tests never read or
+create anything under /etc/aspm or activate systemd.
+
+Actual native syntax gate
+-------------------------
+The existing cached Podman 4.9.3 native generator runs under the existing
+unprivileged WSL user. Its actual -version must be 4.9.x. It is invoked only
+with -user -dryrun -no-kmsg-log and an exact task-owned QUADLET_UNIT_DIRS.
+HOME, XDG and TMPDIR point into that owned project artifact directory.
+Only the current selected unit and current aspm.network are staged as generator
+inputs. This is current-input staging, not copying old review history.
+
+Generated service output is parsed as INI sections/directives. The selected
+delivery service must retain its worker command, protected --env-file and no
+autostart target. An independent existing shipped report-unit generation is a
+passing native-parser control; it does not pretend the absent delivery unit
+already exists. Generator output contains podman commands as TEXT only.
+There is no podman run, systemctl, machine provisioning or cluster activation.
+
+Four coherent gates and initial evidence limits
+-----------------------------------------------
+1. Actual Helm default absence, optional preconfigured core key, and enabled
+   delivery/core exact key refs/default command/lease/gateway.
+2. Actual render denials for key/flag/credential-URL selections and enabled
+   worker env/health isolation without altering existing storage roles.
+3. Source Containerfile/host helper command inventory and complete bin copy.
+4. Shipped opt-in protected-env Quadlet plus actual Podman 4.9 native syntax.
+
+Current genuine RED includes absent core key wiring, absent enabled delivery
+Deployment, invalid values silently accepted, omitted delivery binary build/
+host packaging entry, and missing aspm-delivery.container. The default-off
+render and existing native-parser control are passing controls.
+Assertions after an absent delivery Deployment/unit remain BLOCKED/NOT RUN,
+not passing field/isolation/delivery-generator evidence.
+
+Run and freeze
+--------------
+From C:\bahadr\serious\aspm:
+  .\tests\delivery_deployment\Test-DeliveryDeployment.ps1 -Helm '<existing-helm.exe>' -OutputName parent-artifact-01
+
+The runner uses cached Go 1.27.1 and cached modules offline, with -mod=readonly,
+no test retries and a 120-second package bound. Native command/render timeouts
+and output/document sizes are bounded. Use fresh artifact labels.
+Logs, generated YAML, empty kubeconfig and native dryrun output stay outside
+protected roots in .artifacts\delivery-deployment-v1. Work files use project
+.cache\delivery-deployment-v1. No old A6 or other history is recopied.
+
+Parent verifies and seals this new packet before a separate artifact coder/
+reviewer implements the opt-in artifacts. Accepted manual-runtime publication,
+UI, installer provisioning and automatic scheduling remain separate increments.

@@ -8,7 +8,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const output = join(root, ".artifacts", "container");
 const architecture = process.env.ASPM_IMAGE_ARCH ?? "amd64";
 if (!["amd64", "arm64"].includes(architecture)) throw new Error("Unsupported image architecture.");
-const commands = ["core-api", "ingestion", "report-worker", "aspmctl"];
+const commands = ["core-api", "ingestion", "report-worker", "delivery-worker", "aspmctl"];
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, { cwd: root, stdio: "inherit", ...options });

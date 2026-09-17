@@ -1,6 +1,57 @@
 {{- define "aspm.name" -}}
 {{- printf "%s-aspm" .Release.Name | trunc 50 | trimSuffix "-" -}}
 {{- end -}}
+{{- define "aspm.validateDelivery" -}}
+{{- $delivery := dict -}}
+{{- if hasKey .Values "delivery" -}}
+{{- if not (kindIs "map" .Values.delivery) -}}
+{{- fail "delivery must be a mapping" -}}
+{{- end -}}
+{{- $delivery = .Values.delivery -}}
+{{- end -}}
+{{- $enabled := false -}}
+{{- if hasKey $delivery "enabled" -}}
+{{- if not (kindIs "bool" $delivery.enabled) -}}
+{{- fail "delivery.enabled must be a boolean" -}}
+{{- end -}}
+{{- $enabled = $delivery.enabled -}}
+{{- end -}}
+{{- $key := dict -}}
+{{- if hasKey .Values "integrationKeySecret" -}}
+{{- if not (kindIs "map" .Values.integrationKeySecret) -}}
+{{- fail "integrationKeySecret must be a mapping with name and key" -}}
+{{- end -}}
+{{- $key = .Values.integrationKeySecret -}}
+{{- end -}}
+{{- if or $enabled (gt (len $key) 0) -}}
+{{- range $field := list "name" "key" -}}
+{{- $value := get $key $field -}}
+{{- if not (kindIs "string" $value) -}}
+{{- fail (printf "integrationKeySecret.%s must be a nonempty string" $field) -}}
+{{- end -}}
+{{- if eq (trim $value) "" -}}
+{{- fail (printf "integrationKeySecret.%s is required" $field) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- range $field := list "leaseDuration" "slackEndpoint" -}}
+{{- if or $enabled (hasKey $delivery $field) -}}
+{{- $value := get $delivery $field -}}
+{{- if not (kindIs "string" $value) -}}
+{{- fail (printf "delivery.%s must be a nonempty string" $field) -}}
+{{- end -}}
+{{- if eq (trim $value) "" -}}
+{{- fail (printf "delivery.%s must be a nonempty string" $field) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if or $enabled (hasKey $delivery "slackEndpoint") -}}
+{{- $endpoint := get $delivery "slackEndpoint" -}}
+{{- if or (not (hasPrefix "https://" $endpoint)) (not (regexMatch "^https://[^/?#[:space:]@]+" $endpoint)) (regexMatch "^https://[^/?#]*@" $endpoint) -}}
+{{- fail "delivery.slackEndpoint must be an HTTPS base without credentials" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 {{- define "aspm.environment" -}}
 {{- $root := .root -}}
 {{- $role := .role -}}
@@ -12,6 +63,14 @@
   value: {{ $root.Values.database.schema | quote }}
 - name: ASPM_DB_MAX_CONNECTIONS
   value: {{ $root.Values.database.maxConnectionsPerReplica | quote }}
+{{- if or (eq $role "core") (eq $role "delivery") }}
+{{- $integrationKey := $root.Values.integrationKeySecret | default dict }}
+{{- if gt (len $integrationKey) 0 }}
+- name: ASPM_INTEGRATION_ENCRYPTION_KEY
+  valueFrom:
+    secretKeyRef: {name: {{ $integrationKey.name | quote }}, key: {{ $integrationKey.key | quote }}}
+{{- end }}
+{{- end }}
 {{- if eq $role "core" }}
 {{- if not (kindIs "bool" $settings.prepareReadiness) }}
 {{- fail "core.prepareReadiness must be a boolean" }}
@@ -24,7 +83,13 @@
   valueFrom:
     secretKeyRef: {name: {{ $root.Values.existingSecret | quote }}, key: bootstrap-token, optional: true}
 {{- end }}
-{{- if ne $role "reports" }}
+{{- if eq $role "delivery" }}
+- name: ASPM_DELIVERY_LEASE_DURATION
+  value: {{ $settings.leaseDuration | quote }}
+- name: ASPM_SLACK_ENDPOINT
+  value: {{ $settings.slackEndpoint | quote }}
+{{- end }}
+{{- if and (ne $role "reports") (ne $role "delivery") }}
 {{- $selected := $settings.s3Secret | default dict }}
 {{- $secretName := required (printf "%s.s3Secret.name is required" $role) $selected.name }}
 {{- $accessKey := required (printf "%s.s3Secret.accessKeyKey is required" $role) $selected.accessKeyKey }}

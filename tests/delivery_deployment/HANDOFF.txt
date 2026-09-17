@@ -1,0 +1,30 @@
+DELIVERY DEPLOYMENT V1 - INDEPENDENT TEST-FIRST HANDOFF
+=====================================================
+
+New nested package only; no production, old A6 assertions/manifests, installer
+execution, root-module, dependency-upgrade or earlier-history edits.
+The sole nested dependency is the existing cached/pinned YAML v3.0.1 parser.
+
+Read CONTRACT.txt for the exact opt-in delivery.enabled/integrationKeySecret
+values, per-role key isolation, worker command/defaults/health, Containerfile/
+host packaging source checks and non-autostart protected-env Quadlet.
+
+Actual Helm client rendering and proper YAML decoding are used. Actual rootless
+Podman 4.9 native dryrun is used, never a synthetic generator or systemd action.
+Source image checks are deliberately NOT an image build or placeholder-binary
+success claim. No vendor/cluster account or real secret is used.
+
+See reviews\v1\RED.json for measured failures, passing controls and downstream
+assertions blocked by missing production artifacts. Default-off and existing
+native report-unit parser controls remain positive evidence, not forced RED.
+
+Use the existing Helm binary and a fresh label:
+  .\tests\delivery_deployment\Test-DeliveryDeployment.ps1 -Helm '<existing-helm.exe>' -OutputName parent-artifact-01
+
+Runtime evidence is outside protected roots. Current unit/network copies there
+are required native-generator inputs only, not duplicated historical packets.
+All unchanged imported source/module/A6 controls are hash references.
+
+Parent verifies/seals the NEW packet, then assigns separate artifact coding
+and independent review. Do not modify installer activation/copy behavior, key
+provisioning, accepted runtime/UI or older oracle signatures to obtain green.

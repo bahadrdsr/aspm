@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-deployment-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_OPT_IN_ARTIFACT_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-17T01:32:29.726926+00:00",
+  "contract": "tests\\delivery_deployment\\CONTRACT.txt",
+  "humanHandoff": "tests\\delivery_deployment\\HANDOFF.txt",
+  "red": "RED.json",
+  "moduleDecision": "MODULE.json",
+  "guards": "GUARDS.json",
+  "externalEvidence": "EVIDENCE.json",
+  "controls": [
+    {
+      "path": "tests\\delivery_deployment\\artifacts_test.go",
+      "bytes": 10037,
+      "sha256": "af730d272d62609e20ab1eb864c3df9f648a83db5f2839adee62c22575a5e7e5"
+    },
+    {
+      "path": "tests\\delivery_deployment\\CONTRACT.txt",
+      "bytes": 8781,
+      "sha256": "3e01f1bf61caece4b98fb30ca559260bf1d58a550f621a3b9b6d40e898044bab"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.mod",
+      "bytes": 130,
+      "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\delivery_deployment\\HANDOFF.txt",
+      "bytes": 1759,
+      "sha256": "b1dca44f848434e5bf715e4e6782c9a9fd17570d1d9dd762374793a6a2b2274a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_helpers_test.go",
+      "bytes": 7818,
+      "sha256": "0e8aa835928da3b2763688bd76fd62f29b7e879947bd2888f06a983eb492e55a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_test.go",
+      "bytes": 6222,
+      "sha256": "27d7e91cf3b5de59cc403fd02bfbca2bf3c8c465eb9a368ec60a2c4a170c8774"
+    },
+    {
+      "path": "tests\\delivery_deployment\\Test-DeliveryDeployment.ps1",
+      "bytes": 4367,
+      "sha256": "6070c26d5d7d585404d950cdfb1cc888dcc2e84797d8a87552790d1c80c2c867"
+    }
+  ],
+  "results": {
+    "actualArtifactGates": 4,
+    "redGates": 4,
+    "helmRenders": 12,
+    "passingDefaultAndNativeParserControls": 2,
+    "skips": 0,
+    "oldArtifactInstallerA6ModuleWitnessesUnchanged": 30,
+    "existingFilesAmended": 0,
+    "rootDependenciesChanged": 0,
+    "nestedCachedParserOnly": true
+  },
+  "operatorKeyProvisioningAndAutomaticSchedulingIncluded": false,
+  "manualRuntimePublicationIndependent": true,
+  "coreWorkerUIEdits": [],
+  "installerExecutionChanges": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "liveClusterVendorOrPrivilegeActions": 0,
+  "archives": [],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify actual Helm/YAML and rootless native-generator RED/control evidence.",
+    "Verify the new nested module is the already-pinned cached YAML parser only, with root/old A6 controls unchanged.",
+    "Seal only NEW delivery deployment controls.",
+    "Assign separate artifact coder/reviewer; keep installer activation/key provisioning, runtime/UI and release publication separate."
+  ]
+}

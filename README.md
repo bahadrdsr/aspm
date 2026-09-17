@@ -168,8 +168,10 @@ go run .\cmd\delivery-worker
 The default outbound base is `https://slack.com`. Only trusted process
 configuration may select an approved HTTPS gateway and its optional CA file.
 See `internal\service\README.txt` for transport, lease and shutdown behavior.
-Helm/Quadlet/installer scheduling of this new role and production key rotation
-remain unfinished; the presence of the UI does not start a worker automatically.
+Helm and manual Quadlet deployment of this role are explicit opt-ins; see
+`docs\m02-runtime.md`. Installer key/env-file provisioning and automatic scheduling,
+plus production key rotation, remain unfinished. The presence of the UI does not
+start a worker automatically.
 
 In **Reports**, **Live overview** displays the service's exact totals, all-finding
 severity counts, coverage, as-of time and freshness bounds. Edit **Freshness days**

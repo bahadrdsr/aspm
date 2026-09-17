@@ -165,6 +165,30 @@ value is a string. Ingestion and reporting never receive that flag. Shipped
 Quadlets do not impose inline overrides, so an approved installer can opt in
 through the protected `core.env` without changing worker authority.
 
+Delivery packaging is opt-in. `delivery.enabled` is a strict boolean and defaults
+to `false`, leaving the original three application roles unchanged. An explicit
+`integrationKeySecret.name` and `.key` select an existing integration-encryption
+Secret key for core, including when the worker is disabled. Partial selections
+are rejected. Enabling delivery requires both selectors and gives only core and
+delivery that required reference; ingestion and reports never receive it.
+The delivery Deployment has its own replicas/resources, runs
+`/app/bin/delivery-worker`, and receives database configuration, the selected
+integration key, `delivery.leaseDuration` (default `"15s"`) and
+`delivery.slackEndpoint` (default `"https://slack.com"`). It receives no storage,
+bootstrap or UI credentials. The chart rejects non-string lease/gateway values
+and credential-bearing gateways; the runtime remains authoritative for full
+duration and HTTPS-base validation.
+
+On September 17, 2026, the owned Kubernetes lab explicitly enabled this role
+with a separate integration-key Secret. Core and delivery read identical selected
+key bytes; ingestion and reporting had no integration key, and delivery had no
+storage/bootstrap credentials. The actual packaged worker became ready with
+database access and `storage:not-required`. A reserved `https://slack.invalid`
+gateway was selected, so this rollout qualifies role startup and key wiring,
+not a live Slack send. The existing HTTPS authentication, intake and report
+flows remained functional. Actual native delivery was separately exercised
+against the owned certificate-validated protocol fixture.
+
 The role-specific Helm references have independent source acceptance and real
 rendering gates. Rendering alone cannot prove that selected Secret keys exist,
 contain distinct correctly scoped credentials, or match the policy/readiness
@@ -180,6 +204,15 @@ rejects missing/unsafe scope, shared-file fallback or report storage inputs.
 It does not resolve credentials, run tools or grant installation approval.
 The selected-scope output passed the actual Quadlet generator; that is syntax
 and generated-command evidence, not service activation.
+
+The separate `aspm-delivery.container` uses only the protected
+`/etc/aspm/delivery.env`, a read-only filesystem and the existing private network.
+It has no storage-service dependency or `[Install]` activation directives.
+The installer still copies and starts only its existing roles; it does not
+provision this env file or activate delivery. Protected key/file provisioning
+and an explicit operator-controlled worker start are separate from shipping
+the unit. Client rendering and rootless native-generator dryruns are not
+Kubernetes/systemd activation or proof that credentials have been provisioned.
 
 The core binds loopback by default. The real Ubuntu Quadlet 4.9.3 generator was
 extracted into a project-local ignored tool directory and used without
@@ -217,6 +250,20 @@ a SHA-256 artifact manifest, and prepares `.artifacts/container`.
 Podman can consume the same OCI build context. This is host-compiled artifact
 assembly, not a signed-release or reproducibility certificate. The later full
 source-image build is recorded separately as `aspm:0.1.0-source`.
+
+The source and host-build command inventories include `delivery-worker` alongside
+core, ingestion, reporting and `aspmctl`. Both image recipes retain the complete
+binary directory and default to `/app/bin/core-api`; adding a worker does not
+change the default process. These recipe changes alone do not prove that a
+current image contains the worker. An explicit reviewed image build and binary
+check remain separate from artifact source/render validation.
+
+The September 17 delivery packaging check built the full source Containerfile,
+verified all five executable binaries and the non-root core default, and ran the
+delivery binary with networking disabled to confirm missing-key preflight denial.
+The actual host packaging helper also produced five ELF binaries whose hashes
+matched its generated manifest. These development checks are not a signed
+release, cross-architecture certification or systemd activation.
 
 When Docker's multi-platform image store prevents Kind loading an incomplete
 image index, export only the selected platform and load the resulting archive.

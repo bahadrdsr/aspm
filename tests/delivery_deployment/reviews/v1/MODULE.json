@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T01:32:29.726926+00:00",
+  "decisionBeforeTests": {
+    "path": "tests\\delivery_deployment\\reviews\\v1\\BEFORE.json",
+    "bytes": 5787,
+    "sha256": "14c200912e15b1bf886a5652c15fd3e88f4537ad8a007d14930b402d258a9f39"
+  },
+  "module": {
+    "path": "tests\\delivery_deployment\\go.mod",
+    "bytes": 130,
+    "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+  },
+  "checksums": {
+    "path": "tests\\delivery_deployment\\go.sum",
+    "bytes": 364,
+    "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+  },
+  "rootModuleEdits": [],
+  "soleNestedRequirement": {
+    "module": "gopkg.in/yaml.v3",
+    "version": "v3.0.1",
+    "alreadyPinnedAuthority": [
+      {
+        "path": "tests\\deployment_roles\\go.mod",
+        "bytes": 203,
+        "sha256": "aa041661e50048ded79b1289d0f039367271bc31aa2764eb497b4a7c1130095c"
+      },
+      {
+        "path": "tests\\deployment_roles\\go.sum",
+        "bytes": 360,
+        "sha256": "e42794fa9b56301ad073de55cac1dea683b320ed951454d8709ffc7156088dd2"
+      }
+    ],
+    "cacheAlreadyPresent": true
+  },
+  "parserUsage": "Actual Helm YAML documents decoded with yaml.NewDecoder; no source-string substitute for chart output.",
+  "networkModuleDownloads": false,
+  "nestedPackageCompiledAndExecuted": true
+}
