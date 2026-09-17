@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "phase": "unsealed author fixture correction",
+  "reason": "JSON object member order is not part of the import API contract. Replace JSON.stringify metadata equality with Node structural equality, preserving exact report Buffer equality and all field/role/Origin/size guards. No existing source, assertion, fixture, runner or dependency changes.",
+  "source": "web\\tests\\report-formats-fixture.ts",
+  "archive": "web\\tests\\reviews\\report-formats-v1\\history\\red-01\\report-formats-fixture.ts.before.txt",
+  "bytes": 19170,
+  "originalSHA256": "363087216ac58ec55c8d9230a625d11a3ee56b3929e6ed52ba525c4521a04660",
+  "originalRED": ".artifacts\\report-formats-v1-author\\red-formats-01.results.json",
+  "originalSourceVector": ".artifacts\\report-formats-v1-author\\red-formats-01.inputs.json",
+  "originalREDPreserved": true,
+  "prior66InputsUnaffected": true
+}

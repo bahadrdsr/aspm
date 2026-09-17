@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "actualTypecheck": true,
+  "command": "npm.cmd run typecheck",
+  "finalExitCode": 0,
+  "runs": [
+    {
+      "command": "npm.cmd run typecheck",
+      "startedAt": "2026-09-17T03:03:14.4774145Z",
+      "endedAt": "2026-09-17T03:03:19.4088765Z",
+      "exitCode": 0,
+      "run": {
+        "path": ".artifacts\\report-formats-v1-author\\typecheck-01.run.json",
+        "bytes": 156,
+        "sha256": "3b4a5cfc6bd563565fc40970c014fd372c38d26c16370281037f178a6e1b65ee"
+      },
+      "stdout": {
+        "path": ".artifacts\\report-formats-v1-author\\typecheck-01.stdout.txt",
+        "bytes": 49,
+        "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+      }
+    },
+    {
+      "command": "npm.cmd run typecheck",
+      "startedAt": "2026-09-17T03:15:52.2304810Z",
+      "endedAt": "2026-09-17T03:15:58.2167487Z",
+      "exitCode": 0,
+      "scope": "Final fixture uses structural metadata equality, not JSON member order; exact file-byte comparison unchanged",
+      "run": {
+        "path": ".artifacts\\report-formats-v1-author\\typecheck-02.run.json",
+        "bytes": 280,
+        "sha256": "97b7ef5cb78f842189890d8bc68ccbf14d2303a54cdad51d03fba64e1327236f"
+      },
+      "stdout": {
+        "path": ".artifacts\\report-formats-v1-author\\typecheck-02.stdout.txt",
+        "bytes": 49,
+        "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+      }
+    }
+  ],
+  "compilerEnumerationIsNotTypecheck": true,
+  "compilerEnumeration": {
+    "path": ".artifacts\\report-formats-v1-author\\compiler-inputs-02.txt",
+    "bytes": 23146,
+    "sha256": "06e287e1b4d76ee44dc11469027103033199cfa0f98a35756be786d5c675f74c"
+  }
+}

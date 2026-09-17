@@ -115,7 +115,8 @@ export interface AssetsResponse {
   nextCursor: string | null;
 }
 
-export type ImportFormat = "sarif" | "generic-json";
+export const importFormats = ["sarif", "trivy", "zap", "gitleaks", "generic-json", "generic-csv", "manual"] as const;
+export type ImportFormat = typeof importFormats[number];
 export type ImportState = "queued" | "processing" | "succeeded" | "failed";
 export interface ImportMapping {
   sourceFindingId: string;

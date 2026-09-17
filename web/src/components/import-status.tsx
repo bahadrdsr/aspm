@@ -31,7 +31,7 @@ export function ImportStatus({ initial }: { initial: ImportReceipt }) {
       : "Receipt details are unavailable. Refresh to request an authorized response from the service."}</p>}
     {receipt && <>
       <div role={receipt.state === "failed" ? "alert" : "status"} aria-label="Import status" className={`import-state import-${receipt.state}`}>
-        <strong>{label(receipt.state)}</strong><p>{explanations[receipt.state]}</p>
+        <strong>{label(receipt.state)}</strong>{" "}<p>{explanations[receipt.state]}</p>
         {receipt.failure && <p className="import-failure">{receipt.failure.message} <code>({receipt.failure.code})</code></p>}
         {receipt.state === "succeeded" && <p>{receipt.observationCount.toLocaleString()} observations in this run. Processing success is not resolution verification.</p>}
       </div>

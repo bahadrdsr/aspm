@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "originalPreserved": true,
+  "finalRun": 2,
+  "sourceVectors": [
+    {
+      "path": ".artifacts\\report-formats-v1-author\\red-formats-01.inputs.json",
+      "bytes": 20812,
+      "sha256": "c6a99c71ea01cfc4db451cecc842d6c254854637eb2a5b7f18bb8eaaa92c03a4"
+    },
+    {
+      "path": ".artifacts\\report-formats-v1-author\\red-formats-02.inputs.json",
+      "bytes": 21148,
+      "sha256": "fb4e99b33a47e1480b7af909bb2a8ae60c9bc35a022567d5a2ac294684997b63"
+    }
+  ],
+  "sourceCorrection": {
+    "path": "web\\tests\\reviews\\report-formats-v1\\AUTHOR-CORRECTION.json",
+    "bytes": 891,
+    "sha256": "d1729b9fecc4125d07ae6ff01c1d6c8ee71bc9c922a74484bd1c240b419de5b8"
+  },
+  "runs": [
+    {
+      "run": {
+        "command": "npm.cmd test -- report-formats[.]spec[.]ts$ --output ..\\.artifacts\\report-formats-v1-author\\red-formats-01-traces --reporter=list,json",
+        "port": "49680",
+        "startedAt": "2026-09-17T03:06:52.2553366Z",
+        "endedAt": "2026-09-17T03:07:58.7196147Z",
+        "exitCode": 1,
+        "expected": "Six ordinary missing-profile UI assertion failures; no compiler, fixture or browser exception failure"
+      },
+      "runFile": {
+        "path": ".artifacts\\report-formats-v1-author\\red-formats-01.run.json",
+        "bytes": 412,
+        "sha256": "a5fb7a348c328913c84b06a1e6774ea7a9145d0c75162ed25fe90b1b6f6268e7"
+      },
+      "report": {
+        "path": ".artifacts\\report-formats-v1-author\\red-formats-01.results.json",
+        "bytes": 102371,
+        "sha256": "beb315f4c516d3f0db99fef6ba397d9c29f0529eeaf1d460e133231b5d5b3e2c"
+      },
+      "stdout": {
+        "path": ".artifacts\\report-formats-v1-author\\red-formats-01.stdout.txt",
+        "bytes": 24985,
+        "sha256": "bcd9a5149ce77e0d9decd6f98de95c0cb24b343affc45723b3b377dddebbdf19"
+      },
+      "stats": {
+        "startTime": "2026-09-17T03:06:57.723Z",
+        "duration": 60926.829000000005,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 6,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "RF1 The import selector names exactly seven implemented profiles with honest JSON/CSV/manual guidance and literal mapping",
+          "line": 150,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 3709,
+          "blockedAt": "Current selector has only sarif and generic-json",
+          "errors": [
+            {
+              "message": "Error: The current two-format starter must expand to all seven implemented backend profiles, not arbitrary scanners or XML.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 5\n+ Received  + 0\n\n  Array [\n-   \"generic-csv\",\n    \"generic-json\",\n-   \"gitleaks\",\n-   \"manual\",\n    \"sarif\",\n-   \"trivy\",\n-   \"zap\",\n  ]\n\n  155 |   })));\n  156 |   expect(options.filter((item) => item.value).map((item) => item.value).sort(),\n> 157 |     \"The current two-format starter must expand to all seven implemented backend profiles, not arbitrary scanners or XML.\").toEqual([...profiles].sort());\n      |                                                                                                                             ^\n  158 |   for (const option of options.filter((item) => item.value)) expect(option.disabled).toBe(false);\n  159 |   const labels: Record<ReportProfile, RegExp> = {\n  160 |     sarif: /SARIF\\s*2\\.1(?:\\.0)?/i, trivy: /Trivy.*JSON/i, zap: /ZAP.*JSON/i, gitleaks: /Gitleaks.*JSON/i,\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:157:125",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 125,
+                "line": 157
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit provenance in one JSON request without mapping or local success",
+          "line": 190,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6375,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported trivy, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"trivy\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported trivy, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"trivy\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"trivy\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:197:11\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:192:77",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays human-authored and plain prose is never converted",
+          "line": 219,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6360,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported generic-csv, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported generic-csv, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:225:11\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:221:45",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8, excessive file bytes and JSON-wrapper expansion without truncation",
+          "line": 259,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6323,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported generic-csv, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported generic-csv, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:262:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF5 New profiles retain central viewer/current-role authority and surface server 403/415/413/401 without guessing another parser",
+          "line": 291,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 7003,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported gitleaks, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"gitleaks\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported gitleaks, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"gitleaks\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"gitleaks\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:301:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 8,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets",
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF6 At 390px CSV file-read cancellation and held-import scope loss clear old bytes/progress while keeping keyboard asset context",
+          "line": 364,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6434,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported generic-csv, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported generic-csv, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:369:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        }
+      ]
+    },
+    {
+      "run": {
+        "command": "npm.cmd test -- report-formats[.]spec[.]ts$ --output ..\\.artifacts\\report-formats-v1-author\\red-formats-02-traces --reporter=list,json",
+        "port": "59129",
+        "startedAt": "2026-09-17T03:17:04.8134642Z",
+        "endedAt": "2026-09-17T03:18:13.2351201Z",
+        "exitCode": 1,
+        "expected": "Six missing-format assertion failures on final fixture; original RED preserved"
+      },
+      "runFile": {
+        "path": ".artifacts\\report-formats-v1-author\\red-formats-02.run.json",
+        "bytes": 389,
+        "sha256": "e2795c39313e2fb9562ccff85046174dfb7af992e5ca3bc128bec69bae2c2d56"
+      },
+      "report": {
+        "path": ".artifacts\\report-formats-v1-author\\red-formats-02.results.json",
+        "bytes": 102450,
+        "sha256": "4ab1d8de5f6e98996a7b332056c2840497cc8bd95dbc108bceb815105e0c7445"
+      },
+      "stdout": {
+        "path": ".artifacts\\report-formats-v1-author\\red-formats-02.stdout.txt",
+        "bytes": 24985,
+        "sha256": "90858f591f8c2d8002399a2525d7b851bb257b2fe54876d2c07a48eb3a2cf811"
+      },
+      "stats": {
+        "startTime": "2026-09-17T03:17:10.745Z",
+        "duration": 62369.51700000001,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 6,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "RF1 The import selector names exactly seven implemented profiles with honest JSON/CSV/manual guidance and literal mapping",
+          "line": 150,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 3015,
+          "blockedAt": "Current selector has only sarif and generic-json",
+          "errors": [
+            {
+              "message": "Error: The current two-format starter must expand to all seven implemented backend profiles, not arbitrary scanners or XML.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 5\n+ Received  + 0\n\n  Array [\n-   \"generic-csv\",\n    \"generic-json\",\n-   \"gitleaks\",\n-   \"manual\",\n    \"sarif\",\n-   \"trivy\",\n-   \"zap\",\n  ]\n\n  155 |   })));\n  156 |   expect(options.filter((item) => item.value).map((item) => item.value).sort(),\n> 157 |     \"The current two-format starter must expand to all seven implemented backend profiles, not arbitrary scanners or XML.\").toEqual([...profiles].sort());\n      |                                                                                                                             ^\n  158 |   for (const option of options.filter((item) => item.value)) expect(option.disabled).toBe(false);\n  159 |   const labels: Record<ReportProfile, RegExp> = {\n  160 |     sarif: /SARIF\\s*2\\.1(?:\\.0)?/i, trivy: /Trivy.*JSON/i, zap: /ZAP.*JSON/i, gitleaks: /Gitleaks.*JSON/i,\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:157:125",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 125,
+                "line": 157
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit provenance in one JSON request without mapping or local success",
+          "line": 190,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6986,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported trivy, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"trivy\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported trivy, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"trivy\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"trivy\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:197:11\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:192:77",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays human-authored and plain prose is never converted",
+          "line": 219,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6989,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported generic-csv, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported generic-csv, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:225:11\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:221:45",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8, excessive file bytes and JSON-wrapper expansion without truncation",
+          "line": 259,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6816,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported generic-csv, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported generic-csv, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:262:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF5 New profiles retain central viewer/current-role authority and surface server 403/415/413/401 without guessing another parser",
+          "line": 291,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 7567,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported gitleaks, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"gitleaks\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported gitleaks, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"gitleaks\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"gitleaks\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:301:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 8,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets",
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        },
+        {
+          "title": "RF6 At 390px CSV file-read cancellation and held-import scope loss clear old bytes/progress while keeping keyboard asset context",
+          "line": 364,
+          "status": "failed",
+          "retry": 0,
+          "durationMS": 6717,
+          "blockedAt": "Missing supported profile option",
+          "errors": [
+            {
+              "message": "Error: The existing report form must expose backend-supported generic-csv, without inventing an intake API.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The existing report form must expose backend-supported generic-csv, without inventing an intake API. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('combobox', { name: 'Format', exact: true }).locator('option[value=\"generic-csv\"]')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  46 |   const select = form(page).getByRole(\"combobox\", { name: \"Format\", exact: true });\n  47 |   await expect(select.locator(`option[value=\"${profile}\"]`),\n> 48 |     `The existing report form must expose backend-supported ${profile}, without inventing an intake API.`).toHaveCount(1);\n     |                                                                                                            ^\n  49 |   await select.selectOption(profile);\n  50 |   await expect(select).toHaveValue(profile);\n  51 |   await expect(form(page).getByLabel(\"Asset\", { exact: true }), \"Choosing a report format must not reset the selected asset.\").toHaveValue(selectedAsset.id);\n    at choose (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:48:108)\n    at prepare (C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:54:9)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts:369:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\report-formats.spec.ts",
+                "column": 108,
+                "line": 48
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "paths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/assets",
+            "GET /api/v1/assets"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalAttempts": 0
+        }
+      ]
+    }
+  ],
+  "blockedSemantics": "Only current form/session/assets and missing format choices were reached. Raw-file, native/manual/CSV submissions, size guards, role denials, file-read cancellation and held-ACK downstream requirements are not claimed executed successes.",
+  "noBackendParserOrWorkerQualificationClaim": true
+}

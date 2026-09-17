@@ -1,0 +1,208 @@
+REPORT FORMATS V1 - INDEPENDENT STARTER-INTAKE UI TEST CONTRACT
+=============================================================
+
+Scope and authority
+-------------------
+Six new grouped browser cases extend the existing Assets / Import report form.
+They are test-only HTTP-boundary acceptance, not new parsers, source scans,
+backend/deployment changes, import history, AI extraction or proof execution.
+The current published 66 browser assertions, all existing fixtures and guards,
+source approvals, compiler/runner and dependency files remain byte-identical.
+No legacy fixture amendment is needed: the existing application fixture does
+not need a format-allowlist expansion. No original file is archived or edited.
+
+Authoritative sources actually inspected:
+  internal\parsers\parsers.go, native_reports.go, portable.go
+  internal\app\imports.go, app.go, http.go, types.go, worker.go
+  tests\acceptance\m07_test.go, CONTRACT.txt, testdata\{sarif,trivy,zap,
+    gitleaks,generic-json,manual}.json and testdata\generic.csv
+  current web\src\components\report-import.tsx, import-status.tsx,
+    pages\assets.tsx, api\types.ts, api\client.ts,
+    lib\application-input.ts, lib\use-scoped-action.ts and existing UI tests.
+
+BEFORE.json records 121 bounded UI/parser/intake input hashes and hash-only
+references to prior review packets. No recursive old-review archive exists.
+The parent's unrelated packaging-script evolution/isolated worker-artifact
+publication is outside this author scope and must not be reverted or re-signed.
+
+Exact implemented profiles, not broad scanner certification
+----------------------------------------------------------
+The selectable values are exactly:
+  sarif         SARIF 2.1.0
+  trivy         Trivy JSON, SchemaVersion 2
+  zap           ZAP JSON, @version 2.16.1
+  gitleaks      Gitleaks JSON array (the admitted v8-style finding shape)
+  generic-json  Generic JSON array with the existing literal field mapping
+  generic-csv   Generic CSV header/quoted rows using that same literal mapping
+  manual        Manual JSON report, a human-authored structured object
+
+Do not add XML ZAP, YAML, arbitrary scanners, automatic format inference,
+provider connection claims, native scanner commands or free-text AI extraction.
+Selecting a format/file does not submit a report or prove it parses.
+Filename and MIME are file-picker metadata, not authority to switch parsers.
+The Trivy case deliberately uses a misleading .sarif filename.
+
+The synthetic examples retain the admitted source-fixture structure with
+different clearly synthetic IDs and cafe/CJK text. Native fields include:
+  Trivy: SchemaVersion, Results, Target, Vulnerabilities, VulnerabilityID,
+    Title, Severity, Description, PkgName and FixedVersion.
+  ZAP JSON: @version, site, alerts, alertRef, alert, riskcode, desc, solution
+    and instances[].uri. The synthetic URI is literal report text, never fetched.
+  Gitleaks: an array of Fingerprint, Description, File, StartLine, Commit and
+    Date; Secret/Match are only [REDACTED SYNTHETIC]. Commit Date is not scan time.
+  Manual: sourceFindingId, title and sourceLocation object, with optional
+    severity/description/impact/remediation and sourceLocation.uri/line.
+
+Manual guidance must say JSON object / human-authored structured input and
+identify sourceFindingId, title and sourceLocation. Do not imply every optional
+field is required or invent a parser that converts prose to a finding.
+Actual parser validity additionally bounds nonblank ID/title to 4096 UTF-8
+bytes, URI to 8192 bytes and a supplied line to a nonnegative signed 32-bit
+integer. The manual object requires sourceLocation even if it is otherwise
+empty. Plain prose may be rejected transparently in the browser, or submitted
+unchanged and shown as a service failed/invalid-report result. It must never
+be converted silently or presented as successful extraction.
+
+Mapping and exact intake envelope
+---------------------------------
+The existing displayed Generic JSON profile remains:
+  sourceFindingId: id
+  title: title
+  sourceSeverity: severity
+  sourceLocation: path
+  sourceLine: line
+  impact: impact
+  remediation: remediation
+  description: description
+Generic CSV displays and submits the same eight literal names. They are plain
+record keys/header names, not JSONPath, scripts or a new mapping framework.
+The browser does not send mapping at all for SARIF/native/manual profiles,
+including an empty mapping object. The generic forms submit exactly the fixed
+mapping shown to the user. Existing SARIF and Generic JSON behavior is guarded
+by the unchanged 66 compatibility cases, not rewritten assertions.
+
+POST /api/v1/imports is ONE JSON object, never multipart or native form upload:
+  {apiVersion:"aspm/v1alpha1",assetId,format,report:<exact original text>,
+   sourceId,scanId,scope:{id,revision,branch},sourceScanAt:RFC3339|null,
+   collectedAt:RFC3339,sourceStatus:succeeded|failed,scanKind:full|delta,
+   completeness:complete|partial|unknown,mapping?:<above>}
+
+All fields except mapping are present. IDs in new fixtures use backend-valid
+32-character lowercase hex. Source/scan/scope ID/revision/branch are nonblank,
+NUL-free, at most 512 UTF-8 bytes. Scope does not come from a report filename.
+The supplied explicit source timestamp stays exact in the submitted wrapper.
+Unknown is explicit null, never browser now or a Gitleaks commit timestamp.
+Collection time may be the actual browser collection time, but never replaces
+source time. The service normalizes receipt source/collection times to UTC.
+
+Fixtures compare Buffer equality and SHA-256 of the decoded report string
+against the real File input bytes. Native JSON includes CRLF, multiple trailing
+newlines and multibyte text. CSV includes quoted commas, doubled quotes and an
+embedded CRLF record value. No trimming, JSON reserialization, CSV-to-JSON
+conversion, replacement-character decoding or line-ending normalization is
+permitted. The outer JSON can escape characters normally; decoded report bytes
+are authoritative.
+
+Limits and errors
+-----------------
+The existing default core envelope limit and browser policy are 8 MiB. Core
+MaxUploadBytes can be configured from 1024 through 32 MiB; there is no new API
+for discovering that configuration. The separate parser's 32 MiB raw admission
+ceiling is NOT permission to exceed the default 8 MiB encoded HTTP envelope.
+Keep guidance that a service may set a lower limit and surface its 413.
+
+The six-case slice checks a valid CSV just 4096 bytes below the default raw
+limit whose encoded wrapper also fits, invalid UTF-8, a larger-than-8-MiB
+file, and valid quoted CSV below 8 MiB whose JSON escaping exceeds the encoded
+limit. CSV is not JSON: the valid large file must not be rejected because a
+local JSON parser cannot read it. Reject excessive bytes rather than truncate.
+Nonempty/UTF-8 and the existing 15-second cancellable file-read policy remain;
+no test or browser runner timeout is increased.
+
+The service may reject a request with 403/413/415/401. Errors retain their
+actual meanings; a 415 never triggers a fallback parser or an automatic second
+POST. Syntax/shape failure in an admitted report may instead queue then become
+failed/invalid-report. These are distinct from unsupported format vocabulary.
+No local JSON.parse result is presented as server processing or verification.
+
+Real response boundary and state
+--------------------------------
+The production UI, File input, FileReader, fatal UTF-8 decoder, scoped action
+and session components run normally. Only declared same-origin HTTP responses
+are supplied. Native scanner/provider/browser execution, evidence URL fetching,
+format-discovery APIs and new import-history routes are prohibited.
+
+The fixture owns synthetic response data only. It does not call the backend,
+invoke a parser, implement reconciliation or run a worker. A valid sample is
+not a guarantee that a synthetic service response succeeds; service-provided
+queued/processing/succeeded/failed data remains authoritative.
+
+POST acknowledges 202 queued with a full Import DTO:
+  id,runId,state,assetId,format,sourceId,scanId,scope,sourceScanAt,collectedAt,
+  importedAt,sourceStatus,scanKind,completeness,reportDigest,observationCount,
+  failure:null|{code,message,retryable:false}
+GET /api/v1/imports/{id} returns the current receipt. Manual Refresh import
+status is the only status progression exercised here. Success says processing
+finished, not verified resolution. Synthetic failed states use the actual
+invalid-report code/message. No finding/owner/workflow/risk mutation is allowed.
+
+Real session cookie, matching Origin, selected-workspace header, strict JSON,
+credential/privacy checks and the original combined 60-API-request budget
+apply to every new case. Cached session roles and current server roles are
+independent. Viewer cannot import. Stale-writer 403 cannot manufacture a receipt;
+401 removes active forms, file values, assets and progress, including reload.
+
+Context and bounded races
+------------------------
+Changing formats retains the deliberately selected second Alpha asset.
+Native Cancel/Escape preserves the Assets context and sensible focus.
+At 390x844 with reduced motion, long-form content is reachable, the document
+does not overflow horizontally and the modal retains keyboard focus.
+
+For the real-file-read edge, native form.requestSubmit() and the real Cancel
+button click occur in one browser task before asynchronous FileReader load
+delivery. No FileReader method, browser timer, React state or event handler is
+replaced. The shared useScopedAction layout cleanup cancels the read. No late
+import is permitted after this same-task cancellation.
+
+A separate POST is deliberately held after the synthetic server captures its
+queued intent. Closing then switching to Beta must abort the old request and
+discard the held ACK. No old filename, report/provenance, import ID or progress
+appears in Beta or after logout. Cancellation does not claim to undo a durable
+server job. Wider existing session, Slack, finding and Reports matrices remain
+the unchanged 66-case authority rather than being duplicated for every format.
+
+Six grouped cases and qualification
+----------------------------------
+RF1: Seven exact enabled choices, native version/shape/manual guidance,
+     same displayed literal JSON/CSV mapping, CSV chooser support and no I/O
+     from opening/selecting/canceling.
+RF2: Three native profiles, exact real file/wrapper/provenance, absent mapping,
+     held 202, actual manual-refresh states, unknown Gitleaks scan time and
+     preserved Assets context.
+RF3: CSV and manual exact files, mapping applicability, service success and
+     explicit nonconversion of manual prose with honest rejection/failure.
+RF4: Valid near-default-limit non-JSON CSV and the three distinct file/encoding
+     bounds, with no truncation, repair or implicit POST.
+RF5: Viewer/current-role behavior and authoritative 403/415/413/401, preserving
+     appropriate draft fields without retrying another parser or leaking scope.
+RF6: 390px/reduced-motion real-file cancellation, held-import close/scope loss,
+     native keyboard/focus/context and stale ACK/logout clearing.
+
+Actual typecheck precedes new missing-format RED and all 66 original browser
+cases. Use unchanged Playwright: one worker, no retries/skips, 20-second case
+and five-second expect timeouts. New selectors first assert that a missing
+backend profile option exists, so RED is an ordinary missing-UI assertion,
+not a 20-second hanging selectOption or a compiler replacement.
+
+Mutable logs, TAP-equivalent list output, JSON, screenshots and traces belong
+outside protected tests in .artifacts\report-formats-v1-author with unique run
+names. Reports redact large report bodies to byte counts/digests in HTTP
+ledgers; exact bytes are asserted in memory. Original RED must not be overwritten.
+Downstream checks blocked by the current two-format UI are authored
+requirements, not claimed executed successes.
+
+Freeze this unsigned packet for parent review/seal and separate implementation.
+Do not amend old assertions, fixtures, signatures/control sets, application/
+parser/deployment code, dependencies or intentional packaging changes to make
+the tests green. No agents or commits are authorized in this author task.

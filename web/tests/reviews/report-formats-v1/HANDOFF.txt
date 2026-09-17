@@ -1,0 +1,102 @@
+REPORT FORMATS V1 - FROZEN INDEPENDENT TEST-AUTHOR HANDOFF
+=======================================================
+
+Status
+------
+Stop for parent verification/seal and a separate UI coder/reviewer.
+This author added only three compiled test files plus this review packet:
+  web\tests\report-formats-data.ts
+  web\tests\report-formats-fixture.ts
+  web\tests\report-formats.spec.ts
+
+No existing assertion, fixture, source approval, credential/session/Origin/
+request-budget guard, compiler/Playwright config, dependency, production,
+parser, backend, worker, deployment or signing file was edited. No agents,
+commits, live scanner/provider calls or native backend/parser runs occurred.
+The parent's intentional packaging-script work remains outside this scope.
+
+Final measured results
+----------------------
+  npm.cmd run typecheck: passed, exit 0.
+  New report-format cases: six expected missing-UI assertion failures.
+  All prior 66 browser cases: passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+  Fixture violations/browser errors/external HTTP attempts in RED: 0.
+  RED requests per case: 4,4,4,4,8,4, within the original combined 60-call cap.
+  Original worker count 1, case timeout 20s and expect timeout 5s are unchanged.
+
+The real current form still has only sarif and generic-json. RF1 fails its
+seven-profile assertion; RF2-6 fail at absent trivy/generic-csv/gitleaks options.
+All later file/upload/state/size/authorization/cancellation checks are authored
+requirements, not claimed executed successes. No local parse is a proof of
+service processing, and these mocked UI tests qualify no native scanner.
+
+The original RED-01 logs and source vector remain frozen. Before parent seal,
+one new-fixture comparison was corrected: metadata compares structurally,
+not by JSON member order. Exact report Buffer equality and every guard remain.
+Only that actually amended new fixture is byte-archived as noncompiled .txt
+under history\red-01. AUTHOR-CORRECTION.json records its original hash.
+RED-02/typecheck-02 and the second complete 66-case pass use the final bytes.
+No old review tree, legacy fixture or unrelated input was archived.
+
+Scope of the six cases
+---------------------
+RF1: Exact seven enabled profiles and useful native/manual guidance; fixed
+     Generic JSON/CSV literal mapping and CSV chooser support; no auto-I/O.
+RF2: Real Trivy/ZAP/Gitleaks files with CRLF/trailing newlines/multibyte content,
+     one exact JSON wrapper, complete provenance, absent mapping, held 202
+     and manual service-status refresh rather than client parsing success.
+RF3: Quoted/multiline CSV, structured human-authored manual JSON and explicit
+     rejection or unchanged failed submission of plain prose, never conversion.
+RF4: Valid near-8-MiB CSV that is not JSON, invalid UTF-8, excessive raw file
+     bytes and below-limit CSV whose escaped JSON wrapper exceeds 8 MiB.
+RF5: Viewer read-only and independent current-role 403, actual 415/413/401,
+     no fallback parser, no false receipt and session/protected-data clearing.
+RF6: 390px/reduced-motion keyboard/asset context, real same-task submit/Cancel
+     before FileReader's asynchronous load, and held import ACK discarded
+     after closing/switching workspace and logout.
+
+API facts for the coder
+----------------------
+Admitted values:
+  sarif, trivy, zap, gitleaks, generic-json, generic-csv, manual
+ZAP is JSON @version 2.16.1, not XML. Trivy uses SchemaVersion 2 and the
+admitted Vulnerabilities shape. Gitleaks is an array with Fingerprint.
+Manual is a human-authored JSON object requiring sourceFindingId, title and
+sourceLocation object, not free text or AI extraction.
+
+Keep the existing literal Generic JSON mapping unchanged and apply the same
+displayed mapping to CSV. Omit mapping entirely for native/manual/SARIF.
+The decoded report string must equal original UTF-8 file bytes exactly.
+Preserve supplied sourceScanAt or explicit null. Collection/import timestamps
+are separate. Receipt timestamps normalize to service UTC.
+Default core/browser envelope limit is 8 MiB, not the parser's separate 32 MiB
+ceiling. Check actual UTF-8 file size and JSON-escaped complete request size;
+surface lower configured server limits honestly. Do not parse CSV as JSON.
+
+GET/POST vocabulary remains the existing session/assets/imports routes.
+No new format-discovery, import-history, mapping framework or execution API.
+Native file reading and React/session/scoped-action logic are not replaced by
+the fixture. Only same-origin HTTP responses are supplied and counted.
+
+Hash and evidence controls
+-------------------------
+BEFORE.json records 121 original input hashes and eight hash-only historical
+packet references. GUARDS.json verifies all 121 original bytes remain exact,
+including all 11 prior assertion files and their unchanged dependencies.
+The compiler adds only the three intended test files; the archive is not an
+active compiler input.
+
+COMPILATION.json, RED.json, COMPATIBILITY.json and EVIDENCE.json reference
+actual unique logs/results/screenshots/traces outside protected tests:
+  .artifacts\report-formats-v1-author
+Do not overwrite typecheck-01/02, red-formats-01/02 or compat-66-01/02 evidence.
+The 66-case commands use separate Windows-safe selector arguments, not shell
+alternation. Large synthetic report bodies are checked in memory and redacted
+to byte counts/digests in HTTP ledgers.
+
+PACKET.json inventories the final packet and new tests; PACKET.sha256 is its
+unkeyed digest. No existing signature or control set was modified or re-signed.
+Use fresh evidence names for parent/coder/reviewer validation. After separate
+implementation, run typecheck and all 72 browser cases without changing the
+original limits, assertions or guards.

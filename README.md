@@ -78,12 +78,29 @@ the service verifies membership and write authority. Viewer controls are
 read only. Inventory and the import selector currently use the loaded API page
 and explicitly disclose when more assets exist.
 
-**Import report** accepts an existing UTF-8 SARIF 2.1.0 or Generic JSON file.
-Generic JSON uses the displayed fixed literal field mapping. The browser
-preserves report text, including line endings, and sends one JSON request with
+**Import report** offers seven existing backend profiles: SARIF 2.1.0, Trivy JSON
+(SchemaVersion 2), ZAP JSON (@version 2.16.1), Gitleaks JSON (a v8-style array with
+Fingerprint), Generic JSON, Generic CSV and Manual JSON. XML, YAML, arbitrary
+scanner formats and AI prose extraction are not supported. Filename and MIME
+type never override the explicitly selected format.
+
+Generic JSON arrays and CSV header/quoted rows use the same displayed eight-field
+literal mapping. SARIF, native and manual profiles omit mapping entirely. Manual
+input is a human-authored JSON object requiring nonblank `sourceFindingId`, `title`
+and a `sourceLocation` object, which may be empty. Severity, description, impact,
+remediation and location URI/line are optional. Source IDs/titles are bounded to
+4096 UTF-8 bytes, location URI to 8192 bytes, and a supplied line to a nonnegative
+signed 32-bit integer. Plain prose is never silently converted to findings.
+
+The browser preserves exact UTF-8 report text, including CRLF, trailing newlines,
+CSV quoting and multibyte characters, and sends one JSON request with
 the selected asset and explicit source/scan/scope metadata. The encoded request
-is bounded to the default 8 MiB service limit; smaller operator limits still
-apply. No scan tools, mapping scripts or source-URL fetches run. Acknowledgement
+and raw file are each bounded to 8 MiB; smaller operator limits still apply, and
+larger limits are not discovered automatically. Invalid UTF-8 and oversized
+requests fail without repair or truncation. Unknown source scan time stays null;
+collection/import times and a Gitleaks commit Date never replace it.
+No scan tools, mapping scripts or source-URL fetches run. Selecting a format/file
+does not upload anything, and a rejected format is never retried as another parser. Acknowledgement
 is not processing success: **Refresh import status** displays the service's
 queued, processing, succeeded or failed response and failure diagnostic.
 This page keeps only its latest receipt in memory, without automatic polling

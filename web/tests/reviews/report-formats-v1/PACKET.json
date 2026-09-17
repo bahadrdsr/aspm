@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "name": "report-formats-v1",
+  "createdAt": "2026-09-17T03:24:59.836Z",
+  "status": "frozen unsigned test-author handoff",
+  "files": [
+    {
+      "path": "web\\tests\\report-formats-data.ts",
+      "bytes": 7608,
+      "sha256": "9876c99d6420c2d561615509376a67f77b9c7dd099f847ee25f8b2d45395edeb"
+    },
+    {
+      "path": "web\\tests\\report-formats-fixture.ts",
+      "bytes": 19203,
+      "sha256": "7d67fc1fc3d256b26035bbc2df008460855ad628483cd45d76366fc5dd0e0cb6"
+    },
+    {
+      "path": "web\\tests\\report-formats.spec.ts",
+      "bytes": 25258,
+      "sha256": "cd19d6294f409509b1ea6ba35da7eee7c37f31e5bef80ce5328472a8748365e6"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\AUTHOR-CORRECTION.json",
+      "bytes": 891,
+      "sha256": "d1729b9fecc4125d07ae6ff01c1d6c8ee71bc9c922a74484bd1c240b419de5b8"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\BEFORE.json",
+      "bytes": 22136,
+      "sha256": "a504a8fc273c4e5c946ed81dff76642e36bd70c12492fac9942c860382a2084d"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\COMPATIBILITY.json",
+      "bytes": 38133,
+      "sha256": "ad58c550f1eca8cf745cff5ae1d3e7adfc817167e5449a56301777be1f9df817"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\COMPILATION.json",
+      "bytes": 1707,
+      "sha256": "610ad07e46e0418cb7910d55e1a2962bb418de976b5a6d5e0ef9157913ca2f9a"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\CONTRACT.txt",
+      "bytes": 12493,
+      "sha256": "547172803c29120699a4c29615be8e0cad38bda649cb7f975cda33c604358128"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\EVIDENCE.json",
+      "bytes": 14826,
+      "sha256": "5382193b225ba9c3116951f9b0768759db017751c4abf71bc0d02e11bf0a9872"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\GUARDS.json",
+      "bytes": 9823,
+      "sha256": "6fff9304fe58e25e9dfb42064ec8574cf5f9300f8023a56e98610d453511adee"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\HANDOFF.json",
+      "bytes": 4925,
+      "sha256": "1253cd852c0557053be06b013d3d52ee65ad66b8ddad31fc56521f7b48243987"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\HANDOFF.txt",
+      "bytes": 5830,
+      "sha256": "e557ecec988eae6a484cc58aa742df4b05b5b3bf8927aa61395e4baae4755f90"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\RED.json",
+      "bytes": 37482,
+      "sha256": "7a44f2713e54ed34c403554c31e2cdd8fa83b328b053ea64552e28ed331668cc"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\history\\red-01\\report-formats-fixture.ts.before.txt",
+      "bytes": 19170,
+      "sha256": "363087216ac58ec55c8d9230a625d11a3ee56b3929e6ed52ba525c4521a04660"
+    }
+  ],
+  "qualifyingHead": "a74002a425b4d162e21d92d817ba11793fd06bfc",
+  "qualification": {
+    "actualTypecheckExitCode": 0,
+    "newCases": 6,
+    "expectedMissingProfileRED": 6,
+    "priorPassed": 66,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "fixtureViolations": 0,
+    "pageErrors": 0,
+    "externalHTTPAttempts": 0,
+    "finalREDRequestsPerCase": [
+      4,
+      4,
+      4,
+      4,
+      8,
+      4
+    ]
+  },
+  "protectedBaseline": {
+    "path": "web\\tests\\reviews\\report-formats-v1\\BEFORE.json",
+    "bytes": 22136,
+    "sha256": "a504a8fc273c4e5c946ed81dff76642e36bd70c12492fac9942c860382a2084d"
+  },
+  "evidence": {
+    "path": "web\\tests\\reviews\\report-formats-v1\\EVIDENCE.json",
+    "bytes": 14826,
+    "sha256": "5382193b225ba9c3116951f9b0768759db017751c4abf71bc0d02e11bf0a9872"
+  },
+  "parentSealRequired": true,
+  "productionImplementationClaim": false
+}
