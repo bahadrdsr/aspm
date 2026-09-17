@@ -232,8 +232,10 @@ go run .\cmd\collection-worker
 The default source endpoint is `https://api.github.com`; only trusted process
 configuration can choose an approved HTTPS gateway and CA file. Readiness reports
 database availability and `storage:configured-not-probed`, not provider authority
-or verified S3 permissions. Collection image/Helm/Quadlet packaging, installer
-provisioning and installation-bearer refresh remain separate unfinished work.
+or verified S3 permissions. The image and explicit opt-in Helm/manual Quadlet
+artifacts include this role; see `docs\m02-runtime.md` for their configuration
+and owned-cluster qualification. Installer key/env-file provisioning, native
+systemd activation and installation-bearer refresh remain unfinished.
 Opening the Sources UI does not start a worker or schedule collection.
 
 In **Integrations**, **Connections** lists workspace Slack destinations separately

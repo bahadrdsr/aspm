@@ -1,0 +1,1598 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-deployment-v1",
+  "capturedAt": "2026-09-17T19:45:51.066699+00:00",
+  "status": "FROZEN_REAL_ARTIFACT_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "actualRun": {
+    "receipt": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\receipt.json",
+      "bytes": 1940,
+      "sha256": "af214ac7d6c8d373c2948c4a124853234b306b0254f971e041ce387483104b81"
+    },
+    "events": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\events.jsonl",
+      "bytes": 68923,
+      "sha256": "1cc056aca0fb06c7e7a95d33a85ade7fc702002de170894b1f1790dcff518d10"
+    },
+    "log": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\run.log",
+      "bytes": 16683,
+      "sha256": "9f6e80b04bd52de567bc1e9e3cdeac76ca5f40effee5ebdd4ebd46a8edc3513c"
+    },
+    "exitCode": 1,
+    "compiled": true,
+    "topLevelCases": 4,
+    "topLevelRED": 4,
+    "leafControlPasses": 5,
+    "failedSubcases": 27,
+    "skipped": 0,
+    "automaticRetries": 0,
+    "helmClientRenders": 31,
+    "nativeGeneratorControlRuns": 1,
+    "results": [
+      {
+        "name": "TestCollectionDeploymentImageSourceAndHostPackagingInventory",
+        "result": "fail",
+        "elapsed": 0
+      },
+      {
+        "name": "TestCollectionDeploymentProtectedOptInQuadletAndNativeGeneration/existing-delivery-native-control",
+        "result": "pass",
+        "elapsed": 4.91
+      },
+      {
+        "name": "TestCollectionDeploymentProtectedOptInQuadletAndNativeGeneration/collection-protected-manual-unit",
+        "result": "fail",
+        "elapsed": 0
+      },
+      {
+        "name": "TestCollectionDeploymentProtectedOptInQuadletAndNativeGeneration",
+        "result": "fail",
+        "elapsed": 4.91
+      },
+      {
+        "name": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/default-and-explicit-off-controls",
+        "result": "pass",
+        "elapsed": 0.19
+      },
+      {
+        "name": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/existing-delivery-control",
+        "result": "pass",
+        "elapsed": 0
+      },
+      {
+        "name": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/complete-core-read-only-preconfiguration",
+        "result": "fail",
+        "elapsed": 0.16
+      },
+      {
+        "name": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/enabled-native-defaults",
+        "result": "fail",
+        "elapsed": 0.18
+      },
+      {
+        "name": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/selected-settings-coexist-with-delivery-distinct-key-tuples",
+        "result": "fail",
+        "elapsed": 0.27
+      },
+      {
+        "name": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities",
+        "result": "fail",
+        "elapsed": 1.12
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-endpoint",
+        "result": "fail",
+        "elapsed": 0.21
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-bucket",
+        "result": "fail",
+        "elapsed": 0.27
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-prefix",
+        "result": "fail",
+        "elapsed": 0.31
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-region",
+        "result": "fail",
+        "elapsed": 0.3
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-core-name",
+        "result": "fail",
+        "elapsed": 0.18
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-core-accessKeyKey",
+        "result": "fail",
+        "elapsed": 0.18
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-core-secretKeyKey",
+        "result": "fail",
+        "elapsed": 0.21
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-collection-name",
+        "result": "fail",
+        "elapsed": 0.19
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-collection-accessKeyKey",
+        "result": "fail",
+        "elapsed": 0.14
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-collection-secretKeyKey",
+        "result": "fail",
+        "elapsed": 0.16
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-integration-name",
+        "result": "pass",
+        "elapsed": 0.18
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-integration-key",
+        "result": "pass",
+        "elapsed": 0.15
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-whole-integration-selector",
+        "result": "fail",
+        "elapsed": 0.16
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/off-partial-storage",
+        "result": "fail",
+        "elapsed": 0.21
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/off-partial-reader",
+        "result": "fail",
+        "elapsed": 0.17
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/off-partial-publisher",
+        "result": "fail",
+        "elapsed": 0.17
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/string-true",
+        "result": "fail",
+        "elapsed": 0.21
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/string-false",
+        "result": "fail",
+        "elapsed": 0.15
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/numeric-enabled",
+        "result": "fail",
+        "elapsed": 0.16
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/numeric-storage-bucket",
+        "result": "fail",
+        "elapsed": 0.15
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/numeric-lease",
+        "result": "fail",
+        "elapsed": 0.2
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/identical-reader-publisher-tuple",
+        "result": "fail",
+        "elapsed": 0.19
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/credentials-in-storage-endpoint",
+        "result": "fail",
+        "elapsed": 0.22
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/credentials-in-github-endpoint",
+        "result": "fail",
+        "elapsed": 0.21
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/unsigned-provider-gateway",
+        "result": "fail",
+        "elapsed": 0.18
+      },
+      {
+        "name": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections",
+        "result": "fail",
+        "elapsed": 4.89
+      }
+    ]
+  },
+  "observedMissingArtifacts": [
+    "Collection worker build entry in source Containerfile.",
+    "Collection worker in actual host packager command inventory.",
+    "deploy/quadlet/aspm-collection.container.",
+    "Six selected collection-storage variables in core-only preconfiguration.",
+    "Collection Deployment when explicitly enabled, both standalone and alongside delivery."
+  ],
+  "observedValidationFailures": "23 of the 25 invalid selection cases are silently accepted by the current chart; all 25 render calls actually ran. The two existing incomplete integrationKeySecret denials correctly passed.",
+  "passingControls": [
+    "TestCollectionDeploymentProtectedOptInQuadletAndNativeGeneration/existing-delivery-native-control",
+    "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/default-and-explicit-off-controls",
+    "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/existing-delivery-control",
+    "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-integration-name",
+    "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-integration-key"
+  ],
+  "sourceChecksReachedWithoutFailure": [
+    "all five existing source command build entries",
+    "all five existing host command inventory entries",
+    "source/runtime complete bin COPY",
+    "source/runtime default core CMD",
+    "unchanged installer sources"
+  ],
+  "blockedDownstreamNotRun": [
+    "Collection replica/resource/command/pod-selector mapping after absent Deployment.",
+    "Enabled core/publisher exact distinct Secret authority, six-variable env and unrelated-worker isolation.",
+    "Collection health probe mapping and preservation comparison for enabled outputs.",
+    "Complete core-reader env and post-preconfiguration legacy preservation after missing core collection variables.",
+    "New collection protected-env/opt-in/native-service-generation checks after missing shipped unit."
+  ],
+  "notClaimed": [
+    "No image/container build or fake binary success.",
+    "No host packager, installer, systemd, Helm install/upgrade, live cluster or vendor account execution.",
+    "No actual Secret bytes or real read-only/publisher rights proved by unequal references.",
+    "No source/storage provider authorization inferred from probe configuration."
+  ],
+  "actualRenderReceipts": [
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\render-receipt.json",
+        "bytes": 564,
+        "sha256": "8ab944eb1c5a16b4bbd6a2286ed94058b46e7e713638346d03ca394fc04ce1e6"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/complete-core-read-only-preconfiguration"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\render.yaml",
+        "bytes": 15861,
+        "sha256": "569e03e34070f1c130a7edb93ffa70d0ae2ee7619b216d123f353941aa3bfb3e"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\values.json",
+        "bytes": 1206,
+        "sha256": "cd7f7d1b3769e6dc631019461dff4a05c53138481b1ab37b0e1bc0849b5257a7"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fa2850720f1d1ce42a56d5f\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\render-receipt.json",
+        "bytes": 552,
+        "sha256": "49ba22413dd7f22d39315a2a994fe33dc144afd8513f6d86ade07c83608026e7"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/off-partial-storage"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\values.json",
+        "bytes": 1151,
+        "sha256": "ce0be123fadf02a113105bc40a80c6d444c2de306de4b46b58e992a74feac625"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-1fecdb1caa946916ee0c7aad\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\render-receipt.json",
+        "bytes": 550,
+        "sha256": "6693c8c3da07d7b69534666920cee072fc2cb44bb29c69d8db052ee21a0ded8d"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-core-name"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\values.json",
+        "bytes": 1261,
+        "sha256": "fbd90cb53534994c2ce5ecac672dc5a4f7ac792c9afd9d01c3eeee94e26f9bf9"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-2596fb85d55c557b6d97c8ef\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\render-receipt.json",
+        "bytes": 564,
+        "sha256": "ad6bbef4f10a8880ddfd826663b2799a053017cc83f2ee65beac6ac93d6b2b37"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-collection-secretKeyKey"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\values.json",
+        "bytes": 1264,
+        "sha256": "6d97dcdb2b42a280027f0a5efcf3d6e5198982e1d65629ebb68ffce1aa255069"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-351c55774bd5ef1b30c3634e\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\render-receipt.json",
+        "bytes": 557,
+        "sha256": "f24094850ceeb19d9f66abc8152997593a589c576d79bd84e226c2f0eddd88c2"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/default-and-explicit-off-controls"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\render.yaml",
+        "bytes": 12958,
+        "sha256": "bfca010881e46b6cd5fbd134506ad60174ccbf275b4af01600d13556920e4577"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\values.json",
+        "bytes": 815,
+        "sha256": "7f068575e1863ec614ddd44bfb14256b56e30630816acaf443fc5bd0795a29a8"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4447e71729e84c2c0e1752a2\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\render-receipt.json",
+        "bytes": 523,
+        "sha256": "344450ff949f1741142d2db6d0f4396e90b7724134d535f56a75a218ca4fb6f6"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\render.yaml",
+        "bytes": 15861,
+        "sha256": "569e03e34070f1c130a7edb93ffa70d0ae2ee7619b216d123f353941aa3bfb3e"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\values.json",
+        "bytes": 895,
+        "sha256": "db088ecbb0f278297c60f19182e752384814d61e37c4e072efb22ab5c099e8af"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4f38395eb20fe9f0a359f2b2\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\render-receipt.json",
+        "bytes": 583,
+        "sha256": "d86dd9357fccf931796c2b85cdf7bd14fc209bd2057d44a959bcb2aa181deb65"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/selected-settings-coexist-with-delivery-distinct-key-tuples"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\render.yaml",
+        "bytes": 15861,
+        "sha256": "569e03e34070f1c130a7edb93ffa70d0ae2ee7619b216d123f353941aa3bfb3e"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\values.json",
+        "bytes": 1524,
+        "sha256": "e4d77fdc5172b748400c054d1fa1c60ad5db164076f7c505db1a6fda1d4146c1"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-4fa60d733115b44d6334ca94\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\render-receipt.json",
+        "bytes": 551,
+        "sha256": "8ca4654aaebbcd99cb0423bbfaefa2ae538695be3a203af15c16d1b384abc395"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/off-partial-reader"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\values.json",
+        "bytes": 1147,
+        "sha256": "19be40a95edef5350f3ca6a68e24d32498b2e083c27de945cc8bd099b1669a45"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-51cafda6f8b1e863ffc8a186\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\render-receipt.json",
+        "bytes": 555,
+        "sha256": "8e584015d58428f2c22255ccb51e5c562a1d75d43e2c9e94804ead404d06e135"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-bucket"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\values.json",
+        "bytes": 1262,
+        "sha256": "c0aed3d095af618d75c4abb119bbeac2a3ddd34edd5efd171a8dac8b8db86983"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5474385679928ee429391460\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\render-receipt.json",
+        "bytes": 564,
+        "sha256": "5e2e77c3eece9e5ca3004748320c69fe2f27f08124a2e2b16fbc358df7551d0c"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-collection-accessKeyKey"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\values.json",
+        "bytes": 1264,
+        "sha256": "6bc36fd1d2db982db18f51d95a2a9fa85b4ccf6d302f842680b555d047946091"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-59b0c7837d49374af6517c23\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\render-receipt.json",
+        "bytes": 558,
+        "sha256": "e751f655bc23c38ba7ecd316cdae9114181ffcc70cfe2db8a965992a8871cc39"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/unsigned-provider-gateway"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\values.json",
+        "bytes": 1357,
+        "sha256": "56ec00f30a5b469a6910c65ce49399d3bcbe8cf9fb40563f8cfa3239194ef106"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-5b5e3d5368dcf505a2c811c8\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\render-receipt.json",
+        "bytes": 547,
+        "sha256": "57e99fb863b7963fba6e565f05e05761f411eb0e633ad8f5a08ed0268e4dbf1a"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities/enabled-native-defaults"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\values.json",
+        "bytes": 1298,
+        "sha256": "0522d60bb22aca73e420f3f36145856b321b16db58d61cc0daa2306113edfcf8"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-7c2e7a5020e37cb67d948d60\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\render-receipt.json",
+        "bytes": 558,
+        "sha256": "aa635b111fd9749bb3813d4d0cc477f159f63f9013447345ea50afbf9e98b8ed"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\values.json"
+        ],
+        "success": false,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-integration-name"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\render.yaml",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\stderr.txt",
+        "bytes": 148,
+        "sha256": "128046d60eab33675c50f895cdcc11ce91dfef5196ea2784b192b4408d558440"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\values.json",
+        "bytes": 1263,
+        "sha256": "83041ba447616703aec4573db739b70cbf7bdeb90ff88cf86b8356eb2f9fec4a"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-89d951048b4f1a68bc481b44\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\render-receipt.json",
+        "bytes": 523,
+        "sha256": "e7051c81bca7a1517cad0d4e788ed4f6b9f121eba99a993e7c57800f9b602e41"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\render.yaml",
+        "bytes": 12958,
+        "sha256": "bfca010881e46b6cd5fbd134506ad60174ccbf275b4af01600d13556920e4577"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\values.json",
+        "bytes": 784,
+        "sha256": "4572d4838c65f4144c53b63c444483bd4b3d0156c6423c5251401ed5fdc54242"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-8fb5311194b3aca0256bc66e\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\render-receipt.json",
+        "bytes": 567,
+        "sha256": "3604e2fd608e3378b6ec77adfd60f869b5f5e5ea8857faa93ba8e409f1dbae9f"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-whole-integration-selector"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\render.yaml",
+        "bytes": 12958,
+        "sha256": "bfca010881e46b6cd5fbd134506ad60174ccbf275b4af01600d13556920e4577"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\values.json",
+        "bytes": 1215,
+        "sha256": "4f9d4e1f19943554371fdce3a5bd218ce3c68e5d402cd575f3e76b9165a6f221"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a4ad2a58bd1b4f95e4391f4d\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\render-receipt.json",
+        "bytes": 564,
+        "sha256": "7a7656a90f6de51c4c6378b69b61abdc03b551c52cfcc2d1047a241bee98147f"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/credentials-in-storage-endpoint"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\values.json",
+        "bytes": 1325,
+        "sha256": "b4c9d83152163086e3f097079ae7afae5e60185e69cb6815f50adea75bd06e46"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a6aec538012c48f5e7f5a9c1\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\render-receipt.json",
+        "bytes": 545,
+        "sha256": "5ce94a45f040e36242b7f77f18912e7c2bc258835e484d38abbc0fa128bfc902"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/string-false"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\values.json",
+        "bytes": 1301,
+        "sha256": "7aa4a0c1819ed5805d9721a9ff17218849f358d7413ededbdca6ef98de08c3a2"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-a826919c1346617984fcca86\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\render-receipt.json",
+        "bytes": 555,
+        "sha256": "65a3109ef66c65918cc78e37854a6dc88830e1e48747aee438e044f64660159e"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-prefix"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\values.json",
+        "bytes": 1263,
+        "sha256": "6292319c8088463a843375cce0c7b672ce29fda516bf6330721f02bfc4403914"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c0f343627124dcfed1b759c8\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\render-receipt.json",
+        "bytes": 563,
+        "sha256": "60268512b7292fb6b152b930cd85d9959fb9f2d6d0f0345b488c50f43db6ecc6"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/credentials-in-github-endpoint"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\values.json",
+        "bytes": 1385,
+        "sha256": "3dd2ae0e3c8f1310bab6a72bdff0b127fb003830def56d2445d5606816bddaf1"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c18f5c5e69409d4cfcd257c5\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\render-receipt.json",
+        "bytes": 558,
+        "sha256": "0c5d06be9cda4810a77bfb2a6a504e299af03aea806f44f743fb2b03f61a7018"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-core-accessKeyKey"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\values.json",
+        "bytes": 1267,
+        "sha256": "18a2fcdc8da6d3670c3ad461525ccae2ccbd20542ed6d4dd74aa457f4b08eae1"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c778fbd40c3c5b7ac8b6f72c\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\render-receipt.json",
+        "bytes": 548,
+        "sha256": "08cba62db98c875f038c8bba5165ea9493cf5a6420e786d3ed2309430d011bb3"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/numeric-enabled"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\values.json",
+        "bytes": 1295,
+        "sha256": "b61a3bc61e664578a09d3dfb94294ea270cf5c37314ea7055bc3b6b1583d5dd9"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-c863be9184c6319e2589c6b9\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\render-receipt.json",
+        "bytes": 556,
+        "sha256": "23303bb9a98df38b722122ab1d40a69728833866dad1b70c36aa5049f9c0d129"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-collection-name"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\values.json",
+        "bytes": 1258,
+        "sha256": "33b011dd0751fec661a8780ee67c932db311744b72d66072a4bd8ebd308f90db"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-d24f57652668a5d3be02f97a\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\render-receipt.json",
+        "bytes": 565,
+        "sha256": "ce701b9a06e898ed8d8372b2acb46e8193d166ebed9f58293775027a337aeab4"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/identical-reader-publisher-tuple"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\values.json",
+        "bytes": 1289,
+        "sha256": "0523ceed263d896438f99b2121df198cfe6f3ceef82223959221e4048c0821fa"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-db262a7fcea397f8ebb7f72c\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\render-receipt.json",
+        "bytes": 555,
+        "sha256": "20e2e4e2b36b02b1641af6c65548b385329687c90eee0a8695954bb5fd6afc95"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/numeric-storage-bucket"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\values.json",
+        "bytes": 1274,
+        "sha256": "6d84101babe3b94d0496816cef8abd8206c81d9ff317830d5a5a71845afdcf4d"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-dd88458ce07d6dcb98567e0f\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\render-receipt.json",
+        "bytes": 557,
+        "sha256": "99b89351f114d7705092c79ed2fcedc29d9d673ee1595f5358fba786bd22eae5"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-endpoint"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\values.json",
+        "bytes": 1250,
+        "sha256": "84cf20e4707bc972f52907f42244a2456ce34fa999b45f25b29a916e3ace537a"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ddd7936ac72c7c56e7bfd28b\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\render-receipt.json",
+        "bytes": 546,
+        "sha256": "dbb27f5aa1b20cf2e94264b5f69d0d74edca210b259a95f7f6c9868ed1ee75c4"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/numeric-lease"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\values.json",
+        "bytes": 1317,
+        "sha256": "da8bf25a960ae611c887e408bb86a41dfe56612c34890d361ea57d24a003c280"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-e4a2d1967871f04fd8a08848\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\render-receipt.json",
+        "bytes": 558,
+        "sha256": "958f1d87e579b908815eaf7b926c6c9da0da67ca398e53b236ec2a9f89948b8f"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-core-secretKeyKey"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\values.json",
+        "bytes": 1267,
+        "sha256": "0963d1ac6d95e6e477447539ac678cdc1bffde90f94f9a2f682a10203b006c90"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f12fe456610f412b66754637\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\render-receipt.json",
+        "bytes": 554,
+        "sha256": "1a792db38810b7b70ce5d491083ed0c6466b307a41ff4f4d6bb3c56afe858c93"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/off-partial-publisher"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\values.json",
+        "bytes": 1265,
+        "sha256": "8b642e45e28304b112a87c9610207f077ec0345e20977dff2088db51391a065f"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f4ade01b04fa94e9b823399c\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\render-receipt.json",
+        "bytes": 544,
+        "sha256": "9d1ebe74fe69dc5fd35c83b8e22c7756c1209e5d20ff16bcccc4c1be2bef9d10"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/string-true"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\values.json",
+        "bytes": 1300,
+        "sha256": "6141b4462c962baa7b8681bc2f3f518271eb4bb4d0d0adaa04d1bbbf1c5dd1ae"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-f72ef2cdabfb20c6e51651e9\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\render-receipt.json",
+        "bytes": 555,
+        "sha256": "538755a9715b644cfc6edf987d5ef933881503841e9dd43b1c5f05e56262403c"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\values.json"
+        ],
+        "success": true,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-storage-region"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\render.yaml",
+        "bytes": 13127,
+        "sha256": "6e8ce906d29a4717dd58c7c1e1951181c053bf9167b0481fe079b5d3cea15729"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\values.json",
+        "bytes": 1271,
+        "sha256": "6c813d0d1b19d06b9ba49c3efa71cb2eb20bd63ae6cc90e9793d933f736e16e6"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-fbad948a69f1656c7ac9dddd\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    },
+    {
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\render-receipt.json",
+        "bytes": 557,
+        "sha256": "7384ff2cd22836bc294896f773388e8313f808ca1de6a21149a1e8f179a94c23"
+      },
+      "invocation": {
+        "arguments": [
+          "template",
+          "collection-probe",
+          "C:\\bahadr\\serious\\aspm\\deploy\\helm\\aspm",
+          "--namespace",
+          "synthetic-collection",
+          "--kubeconfig",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\empty-kubeconfig.json",
+          "--dry-run=client",
+          "-f",
+          "C:\\bahadr\\serious\\aspm\\.artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\values.json"
+        ],
+        "success": false,
+        "test": "TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections/missing-integration-key"
+      },
+      "yaml": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\render.yaml",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\stderr.txt",
+        "bytes": 147,
+        "sha256": "9deb2ad1c3ea5ab369fc61fc835508a6b928728cebdebca98ec3867849df7fdb"
+      },
+      "values": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\values.json",
+        "bytes": 1275,
+        "sha256": "49f95b3926ae668c6da3356b7d552fd20ac81de2635854508cccb7b33c6e2d03"
+      },
+      "emptyKubeconfig": {
+        "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\helm-ffbd1a8c384c92e1a7789c0f\\empty-kubeconfig.json",
+        "bytes": 95,
+        "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+      }
+    }
+  ],
+  "earlierDraftRun": {
+    "receipt": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-01\\receipt.json",
+      "bytes": 1940,
+      "sha256": "7d147fbf4658e31e3a615cfa94beb801ae3fa681d9fc867fc856b9e35aaf40f0"
+    },
+    "events": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-01\\events.jsonl",
+      "bytes": 68823,
+      "sha256": "bc332a391233c37c9f4ae2810c956535cbfe0647a1fa33a89d2e20311b26d4c9"
+    },
+    "supersededByFinalInputRun": true
+  }
+}

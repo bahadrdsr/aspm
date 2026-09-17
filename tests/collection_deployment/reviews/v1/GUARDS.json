@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T19:45:51.066699+00:00",
+  "historicalBefore": {
+    "path": "tests\\collection_deployment\\reviews\\v1\\BEFORE.json",
+    "bytes": 38004,
+    "sha256": "afc55ca4921384cbe9afce4a93915d1d8292d6791d35ae74653af91cf35af76f"
+  },
+  "historicalHead": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "observedHead": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "headIsNotAFileByteGuard": true,
+  "comparedOriginalWitnesses": 174,
+  "originalHashArrayPointer": "BEFORE.json#/files",
+  "changedOriginalFiles": [],
+  "originalDeliveryAuthorities": [
+    {
+      "manifest": {
+        "path": ".oracles\\delivery-deployment-v1.json",
+        "bytes": 12692,
+        "sha256": "c29d2933bfea874b390d9f62da4c4e408d36679ba62ae15925c860ce97910882"
+      },
+      "signature": {
+        "path": ".oracles\\delivery-deployment-v1.json.sig",
+        "bytes": 89,
+        "sha256": "948f5b87be37cb38d1066a39e651f7a77915e7b5df3f9cde23470a9863352066"
+      },
+      "declaredFileCount": 66,
+      "rawDigestMismatches": [],
+      "signatureVerificationPerformedByAuthor": false,
+      "manifestOrSignatureChanged": false
+    },
+    {
+      "manifest": {
+        "path": ".oracles\\delivery-deployment-a1.json",
+        "bytes": 13163,
+        "sha256": "1c968421bb7422517d8612362b021b32402831101dd4e301c2b25f233c36d412"
+      },
+      "signature": {
+        "path": ".oracles\\delivery-deployment-a1.json.sig",
+        "bytes": 89,
+        "sha256": "63896cfdbb0854bedaa3150dbfa4b8c6e2021e8eb210695b9da5279eedcfeb78"
+      },
+      "declaredFileCount": 69,
+      "rawDigestMismatches": [],
+      "signatureVerificationPerformedByAuthor": false,
+      "manifestOrSignatureChanged": false
+    }
+  ],
+  "closedA6References": [
+    {
+      "path": "tests\\deployment_roles\\CURRENT_PACKET.txt",
+      "bytes": 742,
+      "sha256": "a439578e8e184609506f5ddd2f4e5746d53d61c02512055be17e733a45704532"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A6.sha256",
+      "bytes": 16827,
+      "sha256": "768ea2099be0945686b4b8e01c6c8aff0e5495473b123b191606fab9162d9678"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A6.json",
+      "bytes": 3920,
+      "sha256": "005ed29651e3ac5ad1126336538371b604dab14fdafa2cf188ff43b9973c9412"
+    }
+  ],
+  "installerHardByteControls": [
+    {
+      "path": "internal\\install\\execution\\linux.go",
+      "bytes": 6205,
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "internal\\install\\execution\\bundle.go",
+      "bytes": 6385,
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    }
+  ],
+  "newControls": [
+    {
+      "path": "tests\\collection_deployment\\artifacts_test.go",
+      "bytes": 10603,
+      "sha256": "e41257fa01571c962e8e23d555a518522676f2ad3b0453ff300386099f148eca"
+    },
+    {
+      "path": "tests\\collection_deployment\\CONTRACT.txt",
+      "bytes": 13529,
+      "sha256": "f8be81ff1adc921b59617f4389f0761b4c2fab89e62619cb6fe69f745735ea0a"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.mod",
+      "bytes": 132,
+      "sha256": "755d05290ec281161a216ec6ae81bf31c0bd19790cdb53c08d483e57af48c0cc"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\collection_deployment\\HANDOFF.txt",
+      "bytes": 2250,
+      "sha256": "7985867cc7830f89412aa6c25029a1e107a81788afe7c5a547340d222d2b04cb"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_helpers_test.go",
+      "bytes": 14482,
+      "sha256": "2205c9931f9897914c72b2283fb94fe6a60a00f72f0a0760214eb4713c4b7c50"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_test.go",
+      "bytes": 12267,
+      "sha256": "d207914ebe88c1a9841e4e4d1699f55e2b2b401d3fa9557d8a5babc5007d0312"
+    },
+    {
+      "path": "tests\\collection_deployment\\Test-CollectionDeployment.ps1",
+      "bytes": 4940,
+      "sha256": "741eb32bddfe61c6810ff50271469fa6de9f687eb2cd27f4a1c66af0e9e8c626"
+    }
+  ],
+  "productionCoreWorkerUIChanges": [],
+  "oldDeliveryA6AssertionsChanged": false,
+  "rootModuleChanges": [],
+  "archiveCopies": [],
+  "oldReviewTreesCopied": false,
+  "privateRuntimeReadOrCopied": false,
+  "privilegedOrDeploymentActions": false,
+  "nativeGenerator": {
+    "version": "4.9.3",
+    "uid": 1000,
+    "receipt": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\quadlet-ca966642f97efd51dc3a4b00\\generator-receipt.json",
+      "bytes": 167,
+      "sha256": "d2f8bdb14129e7b3b81ec1f0aac95dd6b167a4fb93d02e3822f39b083a646d7b"
+    },
+    "output": {
+      "path": ".artifacts\\collection-deployment-v1\\artifact-red-final\\quadlet-ca966642f97efd51dc3a4b00\\native-generator.txt",
+      "bytes": 1835,
+      "sha256": "a66b899e242cff68f6edfacd6a8943e273afd7b28a54bb87a2945bf5dac5e676"
+    },
+    "inputStaging": "Only selected current delivery unit and network, byte-identical to present source, in task-owned output directory."
+  }
+}

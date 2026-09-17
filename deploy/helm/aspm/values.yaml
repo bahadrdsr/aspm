@@ -8,6 +8,7 @@ publicOrigin: ""
 core:
   replicas: 1
   prepareReadiness: false
+  collectionS3Secret: {}
   s3Secret:
     name: aspm-core-storage
     accessKeyKey: core-s3-access-key
@@ -39,6 +40,16 @@ delivery:
   replicas: 1
   leaseDuration: "15s"
   slackEndpoint: "https://slack.com"
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: "1", memory: 512Mi}
+collection:
+  enabled: false
+  replicas: 1
+  leaseDuration: "15s"
+  githubEndpoint: "https://api.github.com"
+  storage: {}
+  s3Secret: {}
   resources:
     requests: {cpu: 100m, memory: 128Mi}
     limits: {cpu: "1", memory: 512Mi}

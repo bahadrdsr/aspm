@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T19:45:51.066699+00:00",
+  "result": "PASS_ON_UNCHANGED_EXISTING_ARTIFACT_SOURCE",
+  "priorSuites": [
+    {
+      "label": "prior-delivery-01",
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\prior-delivery-01\\receipt.json",
+        "bytes": 497,
+        "sha256": "d9dcd3c9401015a52a50e789999332e3c10ddd7c95d2f2796b00abe0d7f35017"
+      },
+      "events": {
+        "path": ".artifacts\\collection-deployment-v1\\prior-delivery-01\\events.jsonl",
+        "bytes": 27413,
+        "sha256": "497f415b105647eb9a59b1333988513596b8c20d7adfeeb935e911f08e243529"
+      },
+      "topLevelPassed": 4,
+      "subcasePassed": 14,
+      "skipped": 0,
+      "results": [
+        {
+          "name": "TestDeliveryDeploymentContainerSourceBuildsAndRetainsWorkerBinary",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeliveryDeploymentQuadletIsProtectedAndOptInWithNativeSyntax/existing-native-parser-control",
+          "result": "pass",
+          "elapsed": 6.61
+        },
+        {
+          "name": "TestDeliveryDeploymentQuadletIsProtectedAndOptInWithNativeSyntax/delivery-opt-in-unit",
+          "result": "pass",
+          "elapsed": 1.13
+        },
+        {
+          "name": "TestDeliveryDeploymentQuadletIsProtectedAndOptInWithNativeSyntax",
+          "result": "pass",
+          "elapsed": 7.73
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmOptInAndExactCoreDeliveryKeyReferences/default-absence-control",
+          "result": "pass",
+          "elapsed": 0.17
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmOptInAndExactCoreDeliveryKeyReferences/configure-core-before-worker-rollout",
+          "result": "pass",
+          "elapsed": 0.16
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmOptInAndExactCoreDeliveryKeyReferences/enabled-worker-defaults",
+          "result": "pass",
+          "elapsed": 0.15
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmOptInAndExactCoreDeliveryKeyReferences",
+          "result": "pass",
+          "elapsed": 0.47
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/missing-selected-key",
+          "result": "pass",
+          "elapsed": 0.19
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/missing-key-name",
+          "result": "pass",
+          "elapsed": 0.16
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/missing-key-field",
+          "result": "pass",
+          "elapsed": 0.15
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/disabled-partial-key",
+          "result": "pass",
+          "elapsed": 0.15
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/string-true",
+          "result": "pass",
+          "elapsed": 0.19
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/string-false",
+          "result": "pass",
+          "elapsed": 0.2
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/integer-enabled",
+          "result": "pass",
+          "elapsed": 0.2
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/credential-bearing-endpoint",
+          "result": "pass",
+          "elapsed": 0.18
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker/enabled-isolation-and-health",
+          "result": "pass",
+          "elapsed": 0.15
+        },
+        {
+          "name": "TestDeliveryDeploymentHelmRejectsInvalidSelectionsAndIsolatesWorker",
+          "result": "pass",
+          "elapsed": 1.58
+        }
+      ],
+      "oldCodeOrRunnerEdits": false,
+      "evidenceOutsideOldControlRoots": true
+    },
+    {
+      "label": "prior-a6-01",
+      "receipt": {
+        "path": ".artifacts\\collection-deployment-v1\\prior-a6-01\\receipt.json",
+        "bytes": 499,
+        "sha256": "c604149b6c24252b0b47d4bb3021d6f401e2d98196279dc401342e58bf62528c"
+      },
+      "events": {
+        "path": ".artifacts\\collection-deployment-v1\\prior-a6-01\\events.jsonl",
+        "bytes": 100810,
+        "sha256": "2e63122f4e63c9e5c24a180ff6e61cf4ea73d8e40a7e63ccf286205003024697"
+      },
+      "topLevelPassed": 11,
+      "subcasePassed": 83,
+      "skipped": 0,
+      "results": [
+        {
+          "name": "TestDeploymentHelmDistinctRuntimeSecretsAndScopes",
+          "result": "pass",
+          "elapsed": 0.21
+        },
+        {
+          "name": "TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv",
+          "result": "pass",
+          "elapsed": 0.22
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback/core-name",
+          "result": "pass",
+          "elapsed": 0.3
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback/core-accessKeyKey",
+          "result": "pass",
+          "elapsed": 0.37
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback/core-secretKeyKey",
+          "result": "pass",
+          "elapsed": 0.28
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback/ingestion-name",
+          "result": "pass",
+          "elapsed": 0.3
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback/ingestion-accessKeyKey",
+          "result": "pass",
+          "elapsed": 0.28
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback/ingestion-secretKeyKey",
+          "result": "pass",
+          "elapsed": 0.24
+        },
+        {
+          "name": "TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback",
+          "result": "pass",
+          "elapsed": 2.09
+        },
+        {
+          "name": "TestDeploymentQuadletLoaderBaselinePreservesSafeSettings/core",
+          "result": "pass",
+          "elapsed": 0.02
+        },
+        {
+          "name": "TestDeploymentQuadletLoaderBaselinePreservesSafeSettings/ingestion",
+          "result": "pass",
+          "elapsed": 0.02
+        },
+        {
+          "name": "TestDeploymentQuadletLoaderBaselinePreservesSafeSettings/reports",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletLoaderBaselinePreservesSafeSettings",
+          "result": "pass",
+          "elapsed": 0.04
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/module",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/global-module-selector",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/containers-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/storage-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/registries-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/aspm-access",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/aspm-secret",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/aws-access",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/aws-secret",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/bootstrap",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/pass-config-selectors",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core/pass-credential-selectors",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/core",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/module",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/global-module-selector",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/containers-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/storage-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/registries-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/aspm-access",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/aspm-secret",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/aws-access",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/aws-secret",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/bootstrap",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/pass-config-selectors",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion/pass-credential-selectors",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/ingestion",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/module",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/global-module-selector",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/containers-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/storage-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/registries-conf",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/aspm-access",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/aspm-secret",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/aws-access",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/aws-secret",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/bootstrap",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/pass-config-selectors",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports/pass-credential-selectors",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources/reports",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsAdditionalConfigurationSources",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF/core/LF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF/core/CRLF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF/ingestion/LF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF/ingestion/CRLF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF/reports/LF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF/reports/CRLF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletPreservesLFAndCRLF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/core/bare-CR-lines",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/core/embedded-service-CR",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/core/trailing-bare-CR",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/core/doubled-CR-before-LF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/core",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/ingestion/bare-CR-lines",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/ingestion/embedded-service-CR",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/ingestion/trailing-bare-CR",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/ingestion/doubled-CR-before-LF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/ingestion",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/reports/bare-CR-lines",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/reports/embedded-service-CR",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/reports/trailing-bare-CR",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/reports/doubled-CR-before-LF",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries/reports",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRejectsMalformedCRBoundaries",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRoleFilesAndNarrowScopes/shipped-core",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRoleFilesAndNarrowScopes/shipped-ingestion",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRoleFilesAndNarrowScopes/shipped-reports",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRoleFilesAndNarrowScopes/selected-production-rendering",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRoleFilesAndNarrowScopes/missing-selected-scope-never-falls-back",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentQuadletRoleFilesAndNarrowScopes",
+          "result": "pass",
+          "elapsed": 0.01
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessExplicitCoreOptIn/default-off",
+          "result": "pass",
+          "elapsed": 0.24
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessExplicitCoreOptIn/explicit-false",
+          "result": "pass",
+          "elapsed": 0.22
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessExplicitCoreOptIn/explicit-true",
+          "result": "pass",
+          "elapsed": 0.27
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessExplicitCoreOptIn",
+          "result": "pass",
+          "elapsed": 0.73
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessRejectsNonBoolean/string-true",
+          "result": "pass",
+          "elapsed": 0.26
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessRejectsNonBoolean/string-false",
+          "result": "pass",
+          "elapsed": 0.27
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessRejectsNonBoolean/integer-one",
+          "result": "pass",
+          "elapsed": 0.24
+        },
+        {
+          "name": "TestDeploymentHelmPrepareReadinessRejectsNonBoolean",
+          "result": "pass",
+          "elapsed": 1.09
+        },
+        {
+          "name": "TestDeploymentShippingUnitsDoNotOverrideReadinessOptIn/core",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentShippingUnitsDoNotOverrideReadinessOptIn/ingestion",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentShippingUnitsDoNotOverrideReadinessOptIn/reports",
+          "result": "pass",
+          "elapsed": 0
+        },
+        {
+          "name": "TestDeploymentShippingUnitsDoNotOverrideReadinessOptIn",
+          "result": "pass",
+          "elapsed": 0
+        }
+      ],
+      "oldCodeOrRunnerEdits": false,
+      "evidenceOutsideOldControlRoots": true
+    }
+  ],
+  "totalPriorTopLevelPasses": 15,
+  "skipped": 0,
+  "oldSourcesModulesAssertionsAndRunnersUnchanged": true,
+  "currentOutputShapesUnmodifiedByAuthor": true,
+  "notAnImageOrDeploymentProof": true
+}

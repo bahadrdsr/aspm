@@ -1,0 +1,39 @@
+COLLECTION DEPLOYMENT V1 - INDEPENDENT TEST-FIRST HANDOFF
+======================================================
+
+New tests/collection_deployment only. No production artifact, old A6/delivery
+assertion/manifest, installer, backend/runtime/UI or root-module edit is made.
+The isolated nested module uses the already-pinned cached YAML v3.0.1 parser.
+
+Read CONTRACT.txt for exact values:
+  collection.enabled / replicas / resources / leaseDuration / githubEndpoint
+  collection.storage {endpoint,bucket,prefix,region}
+  core.collectionS3Secret {name,accessKeyKey,secretKeyKey}
+  collection.s3Secret {name,accessKeyKey,secretKeyKey}
+  existing integrationKeySecret {name,key}, unchanged shared-key semantics
+
+Disabled complete reader preconfiguration is allowed. Any explicit partial
+selection fails; enabled collection requires both distinct reference tuples
+and shared integration key. Reference inequality is NOT proof of actual
+different key bytes or read/write rights.
+
+Actual Helm client rendering and YAML decoding verify output shape. Actual
+rootless Podman 4.9 dryrun verifies generated service syntax. Source/host
+packaging checks are deliberately not image-build or binary-existence proof.
+No cluster, image/container, installer, privilege or live GitHub activity occurs.
+
+Four artifact gates are expected RED on absent current collection artifacts.
+Default-off, existing delivery and valid old denial/parser controls remain
+separate passing evidence. Missing output blocks downstream mapping/isolation/
+new-unit assertions; see reviews\v1\RED.json for measured execution status.
+
+From the repository root with an existing Helm executable and fresh label:
+  .\tests\collection_deployment\Test-CollectionDeployment.ps1 -Helm '<existing-helm.exe>' -OutputName parent-artifact-01
+
+Runtime evidence stays outside frozen roots. Original source/A6/delivery/module
+hashes are references, not copied old histories. The private runtime and
+installer provisioning/start paths are not invoked or modified.
+
+Parent verifies/seals NEW controls before a separate artifact coder/reviewer.
+The accepted manual-runtime publication, Sources UI review, real key
+provisioning and automatic scheduling remain distinct work.

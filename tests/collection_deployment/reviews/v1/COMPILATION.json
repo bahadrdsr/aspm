@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T19:45:51.066699+00:00",
+  "nestedModule": {
+    "path": "tests\\collection_deployment\\go.mod",
+    "bytes": 132,
+    "sha256": "755d05290ec281161a216ec6ae81bf31c0bd19790cdb53c08d483e57af48c0cc"
+  },
+  "nestedChecksumFile": {
+    "path": "tests\\collection_deployment\\go.sum",
+    "bytes": 364,
+    "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+  },
+  "soleNestedDependency": {
+    "name": "gopkg.in/yaml.v3",
+    "version": "v3.0.1",
+    "existingAuthority": [
+      {
+        "path": "tests\\delivery_deployment\\go.mod",
+        "bytes": 130,
+        "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+      },
+      {
+        "path": "tests\\delivery_deployment\\go.sum",
+        "bytes": 364,
+        "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+      }
+    ],
+    "checksumSetIdentical": true,
+    "cachePreexisted": true
+  },
+  "rootModuleInputs": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "rootModuleEdits": [],
+  "newDependencyInstallsOrDownloads": false,
+  "actualCompilationResult": "PASS; the package executed all four artifact gates and failed semantic/missing-artifact assertions, not compilation.",
+  "actualResolvedGraph": {
+    "path": ".artifacts\\collection-deployment-v1\\compiler-dependencies.json",
+    "bytes": 287626,
+    "sha256": "0fb8be4552dacfc526710ec390df259d1fe7274cfa6d71a01b2fad17e432d264"
+  },
+  "actualResolvedInputHashes": {
+    "path": ".artifacts\\collection-deployment-v1\\compiler-input-hashes.json",
+    "bytes": 217199,
+    "sha256": "bfeedb8193ab63687b3bcfc50ba7beea806e7293ecfd5eafa03d7fd79b814b32"
+  },
+  "resolvedPackages": 141,
+  "resolvedInputFiles": 903,
+  "missingInputs": [],
+  "inputInterpretation": "Actual Go compilation/dependency/embed inputs, target test files and resolved module definitions. Unrelated dependency-only tests excluded; historical reviews are not compiled.",
+  "newCompiledTests": [
+    {
+      "path": "tests\\collection_deployment\\artifacts_test.go",
+      "bytes": 10603,
+      "sha256": "e41257fa01571c962e8e23d555a518522676f2ad3b0453ff300386099f148eca"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_helpers_test.go",
+      "bytes": 14482,
+      "sha256": "2205c9931f9897914c72b2283fb94fe6a60a00f72f0a0760214eb4713c4b7c50"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_test.go",
+      "bytes": 12267,
+      "sha256": "d207914ebe88c1a9841e4e4d1699f55e2b2b401d3fa9557d8a5babc5007d0312"
+    }
+  ],
+  "historyCompiled": false,
+  "tools": [
+    {
+      "path": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\tools\\helm-4.3.0\\windows-amd64\\helm.exe",
+      "sha256": "2f65add9f1d5c96fc70ad70f06f1c47b3ef21bee4a9f086d861bb138429e9c13"
+    },
+    {
+      "path": "C:\\bahadr\\serious\\aspm\\.cache\\podman-validation\\extracted\\usr\\libexec\\podman\\quadlet",
+      "sha256": "9e95fafe06ef5b630dbb59cbf3630d38931c3fc27ba7c7f9cf472f064d9798b9"
+    }
+  ]
+}

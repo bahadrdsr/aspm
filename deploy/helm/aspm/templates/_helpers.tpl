@@ -23,7 +23,7 @@
 {{- end -}}
 {{- $key = .Values.integrationKeySecret -}}
 {{- end -}}
-{{- if or $enabled (gt (len $key) 0) -}}
+{{- if or $enabled .Values.collection.enabled (gt (len $key) 0) -}}
 {{- range $field := list "name" "key" -}}
 {{- $value := get $key $field -}}
 {{- if not (kindIs "string" $value) -}}
@@ -63,7 +63,7 @@
   value: {{ $root.Values.database.schema | quote }}
 - name: ASPM_DB_MAX_CONNECTIONS
   value: {{ $root.Values.database.maxConnectionsPerReplica | quote }}
-{{- if or (eq $role "core") (eq $role "delivery") }}
+{{- if or (eq $role "core") (eq $role "delivery") (eq $role "collection") }}
 {{- $integrationKey := $root.Values.integrationKeySecret | default dict }}
 {{- if gt (len $integrationKey) 0 }}
 - name: ASPM_INTEGRATION_ENCRYPTION_KEY
@@ -89,7 +89,16 @@
 - name: ASPM_SLACK_ENDPOINT
   value: {{ $settings.slackEndpoint | quote }}
 {{- end }}
-{{- if and (ne $role "reports") (ne $role "delivery") }}
+{{- if or (eq $role "core") (eq $role "collection") }}
+{{ include "aspm.collectionEnvironment" . }}
+{{- end }}
+{{- if eq $role "collection" }}
+- name: ASPM_COLLECTION_LEASE_DURATION
+  value: {{ $settings.leaseDuration | quote }}
+- name: ASPM_GITHUB_ENDPOINT
+  value: {{ $settings.githubEndpoint | quote }}
+{{- end }}
+{{- if or (eq $role "core") (eq $role "ingestion") }}
 {{- $selected := $settings.s3Secret | default dict }}
 {{- $secretName := required (printf "%s.s3Secret.name is required" $role) $selected.name }}
 {{- $accessKey := required (printf "%s.s3Secret.accessKeyKey is required" $role) $selected.accessKeyKey }}

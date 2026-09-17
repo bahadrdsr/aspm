@@ -109,6 +109,8 @@ with an owned GitHub-protocol gateway and distinct core-reader/publisher keys.
 Complete and partial collections retained exact evidence downloads and human
 asset edits without normalizing findings. A separate real metadata-refresh check
 confirmed the displayed target and queued binding agree with received source
-revisions. Neither check used a live GitHub account. Deployment packaging and
-installer scheduling, live authority, bearer provisioning/refresh and operational
-rollout remain separate work.
+revisions. Neither check used a live GitHub account. Image and explicit opt-in
+Helm/manual Quadlet artifacts are available; their separate owned-cluster and
+native key-permission checks are recorded in docs/m02-runtime.md. Installer
+provisioning/scheduling, native systemd activation, live authority, bearer refresh
+and operational rollout remain separate work.

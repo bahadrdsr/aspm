@@ -1,0 +1,883 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-deployment-v1",
+  "capturedAt": "2026-09-17T19:29:01.0117122+00:00",
+  "head": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "headIsHistorical": true,
+  "moduleDecisionBeforeTests": "New isolated module uses only cached gopkg.in/yaml.v3 v3.0.1 and the exact existing delivery_deployment checksum set. No root module changes, upgrades, installs or downloads.",
+  "valuesDecisionBeforeTests": "collection.enabled/leaseDuration/githubEndpoint/replicas/resources; collection.storage{endpoint,bucket,prefix,region}; core.collectionS3Secret{name,accessKeyKey,secretKeyKey}; collection.s3Secret{name,accessKeyKey,secretKeyKey}; existing integrationKeySecret unchanged.",
+  "policy": "Hash-only original source/test/installer/A6/delivery authority references. No old history copied. Current stage-input copies are limited to selected unit/network for rootless generator dryrun.",
+  "fileCount": 174,
+  "files": [
+    {
+      "path": ".oracles\\delivery-deployment-a1.json",
+      "bytes": 13163,
+      "sha256": "1c968421bb7422517d8612362b021b32402831101dd4e301c2b25f233c36d412"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-a1.json.sig",
+      "bytes": 89,
+      "sha256": "63896cfdbb0854bedaa3150dbfa4b8c6e2021e8eb210695b9da5279eedcfeb78"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-v1.json",
+      "bytes": 12692,
+      "sha256": "c29d2933bfea874b390d9f62da4c4e408d36679ba62ae15925c860ce97910882"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-v1.json.sig",
+      "bytes": 89,
+      "sha256": "948f5b87be37cb38d1066a39e651f7a77915e7b5df3f9cde23470a9863352066"
+    },
+    {
+      "path": "cmd\\collection-worker\\main.go",
+      "bytes": 622,
+      "sha256": "6eda5a1204c13a41848ab2b2b44efd4718efd7d84346552295799b435ddf8f4d"
+    },
+    {
+      "path": "Containerfile",
+      "bytes": 1178,
+      "sha256": "17f06f1a025f46cae553c38c07c0027fb499c7d93d7a87094cdfbabb0f509c4e"
+    },
+    {
+      "path": "deploy\\Containerfile.runtime",
+      "bytes": 354,
+      "sha256": "fe72809ded87e851969407ab585acaab8a1d125f07571177635014c6b58325f2"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\Chart.yaml",
+      "bytes": 162,
+      "sha256": "69615360986d3b3978ee81d4798a922c11234171ab207fcba2b8166647889ed4"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\_helpers.tpl",
+      "bytes": 5220,
+      "sha256": "03ae2f6bbbb9ffe96221f2b91025473060d8e779ee9ea04ad1eadc7622c08b55"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\application.yaml",
+      "bytes": 3026,
+      "sha256": "8e43a4c9e140daac3b2940258eefbfd10e40fa18edb875ff9a0818da2a4784e9"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\ingress.yaml",
+      "bytes": 717,
+      "sha256": "0899ee65509b0c011ad1a1c115f2e1659a19007372c2d5ef6ab218be198ef0b0"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\storage.yaml",
+      "bytes": 4385,
+      "sha256": "4e702920807edc775cbfdf56b2789a967df4977406622f7201689b9e04d22657"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\values.yaml",
+      "bytes": 1651,
+      "sha256": "ce58f2e31186d2e748c6ea0815177fc52d7231ac93595b885bc0b0170b456f2d"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-core.container",
+      "bytes": 498,
+      "sha256": "6f6d5e1edeccd75d3aa25e16103a203076ff424bbcda1b2e7dc06efcb6f2130f"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-delivery.container",
+      "bytes": 434,
+      "sha256": "ab370da340719a1918ea0348cf306c61ccf1d8a69041dca4400f6f06b51ac919"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-ingestion@.container",
+      "bytes": 490,
+      "sha256": "7daaf93d1ee2294d7cd7b53a41a2d48fc5ad2481aa16b6ef8d9c61610784342b"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-postgres.container",
+      "bytes": 333,
+      "sha256": "0eb7326aa845858ff4ab01e84f4c701bec4fe9bcb38e7237f7656051dba1165e"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-postgres.volume",
+      "bytes": 36,
+      "sha256": "9c53a4fd4be9d901c814bb1f86af8132131688f05056f9ec009e0f8cc05f32c9"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-reports.container",
+      "bytes": 492,
+      "sha256": "bd4dea2673bbee2cc3d658bf74259cea100ba76f43b8c600975eb3122c18a7d4"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-storage.container",
+      "bytes": 623,
+      "sha256": "714dad236f41d8ad1ca7c08853be946005bcc4c6ba787ee9f6a9ba3406831f36"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-storage.volume",
+      "bytes": 35,
+      "sha256": "1a13faec9a161f5c0d81f1d843af4c3ac2edee9787183e108aad220c88e71d33"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm.network",
+      "bytes": 44,
+      "sha256": "cd5ab9d710e72c6cd5a9efd0c5955f2e58b66dac02e38fba6f288892aa9af231"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal\\install\\execution\\bundle.go",
+      "bytes": 6385,
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    },
+    {
+      "path": "internal\\install\\execution\\linux.go",
+      "bytes": 6205,
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "scripts\\package-image.mjs",
+      "bytes": 2601,
+      "sha256": "f433da03a2a63b3bda3dac6fe4dcb309ca5c5c21fd00c49e1533f52b7f47ca08"
+    },
+    {
+      "path": "tests\\delivery_deployment\\artifacts_test.go",
+      "bytes": 10037,
+      "sha256": "af730d272d62609e20ab1eb864c3df9f648a83db5f2839adee62c22575a5e7e5"
+    },
+    {
+      "path": "tests\\delivery_deployment\\CONTRACT.txt",
+      "bytes": 8781,
+      "sha256": "3e01f1bf61caece4b98fb30ca559260bf1d58a550f621a3b9b6d40e898044bab"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.mod",
+      "bytes": 130,
+      "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"
+    },
+    {
+      "path": "tests\\delivery_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\delivery_deployment\\HANDOFF.txt",
+      "bytes": 1759,
+      "sha256": "b1dca44f848434e5bf715e4e6782c9a9fd17570d1d9dd762374793a6a2b2274a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_helpers_test.go",
+      "bytes": 7818,
+      "sha256": "0e8aa835928da3b2763688bd76fd62f29b7e879947bd2888f06a983eb492e55a"
+    },
+    {
+      "path": "tests\\delivery_deployment\\helm_test.go",
+      "bytes": 6222,
+      "sha256": "27d7e91cf3b5de59cc403fd02bfbca2bf3c8c465eb9a368ec60a2c4a170c8774"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\BEFORE.json",
+      "bytes": 5787,
+      "sha256": "14c200912e15b1bf886a5652c15fd3e88f4537ad8a007d14930b402d258a9f39"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 13914,
+      "sha256": "d62ad4f3642a650dde995f15cf3c7de2cb9465f56f10b30d7cecad006dd9cb68"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\GUARDS.json",
+      "bytes": 8687,
+      "sha256": "e29272e385e722280f5c92fa46a73625e6336e39fb3e647539eb042df563f4c3"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3021,
+      "sha256": "7f98b3a74c07d3c349c8468d17aee21679885df77715e25a480a81d3c80aa486"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\MODULE.json",
+      "bytes": 1396,
+      "sha256": "890e4355c0234ede20cd0a3188d40fe7aac6a2e4b905ee01123dd2c8540a64e9"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\PACKET.json",
+      "bytes": 4556,
+      "sha256": "aa71e5d8175c1c86229ba4f6cf7029dfbaff92a3c6a468762d355f1dc59c213d"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "f45d6c53f1aecb1f10b2ef2f52613a80eb7a61237c0ef1db8e949e3183912da9"
+    },
+    {
+      "path": "tests\\delivery_deployment\\reviews\\v1\\RED.json",
+      "bytes": 3504,
+      "sha256": "1a971ec277dec3c86bd462cd7dfc758bd86d531ea0345fb9bc07052c90dfc052"
+    },
+    {
+      "path": "tests\\delivery_deployment\\Test-DeliveryDeployment.ps1",
+      "bytes": 4367,
+      "sha256": "6070c26d5d7d585404d950cdfb1cc888dcc2e84797d8a87552790d1c80c2c867"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-before-wiring\\CURRENT_PACKET.txt",
+      "bytes": 517,
+      "sha256": "6acf95df79af85d52741301c06db693ea36e2af43a976a843f7f7dda8caf2257"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-before-wiring\\go.mod",
+      "bytes": 120,
+      "sha256": "1be658859ddc0c6fa998a9f756b87b6870426f7f61ef27e33bd7da698c9bcaa0"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-before-wiring\\Verify-CompilationPacket.ps1",
+      "bytes": 2439,
+      "sha256": "77275548a0c07fd5aa6b6a04293976bcccf0d45e103a1f80d233395ca9fe4f99"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-red.jsonl",
+      "bytes": 18275,
+      "sha256": "c293e2f9679f77d9037dad2390c29512ba2b972b7ca75c1b1c4f7cfd918fdba1"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmDistinctRuntimeSecretsAndScopes.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmDistinctRuntimeSecretsAndScopes.yaml",
+      "bytes": 12710,
+      "sha256": "ecaa48128635d78acfc6092cb6a38d095d1479eb5e30bc11c2211e0d7b852a8c"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-accessKeyKey.stderr.txt",
+      "bytes": 151,
+      "sha256": "bebb1e8df6ddfef14a56ce229d97d5f311fd8a4fed6a7612229ce815631c1a1f"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-accessKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-name.stderr.txt",
+      "bytes": 143,
+      "sha256": "29dd09b2b693e2f0000c04315fb7b66093e3b5a948528222147536336800fc61"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-name.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-secretKeyKey.stderr.txt",
+      "bytes": 151,
+      "sha256": "25e3ffac1153c1fd2e5b881cea52a4fac376edb1582c571d3ca6f27363416b6d"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-secretKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-accessKeyKey.stderr.txt",
+      "bytes": 156,
+      "sha256": "9c47f4a946b7d69ff1eb1a42fe8bc1ec014b2bc43fd81e3517b7089781d0579d"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-accessKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-name.stderr.txt",
+      "bytes": 148,
+      "sha256": "68ec1e5c27b9410e3e36fd862889e8e02220c05824de926dd6e53fc00db256d6"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-name.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-secretKeyKey.stderr.txt",
+      "bytes": 156,
+      "sha256": "8410746242c0d407856b40ec0e9c63f020c27a2a89f339231783586b56ce5989"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-secretKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback.yaml",
+      "bytes": 12710,
+      "sha256": "ecaa48128635d78acfc6092cb6a38d095d1479eb5e30bc11c2211e0d7b852a8c"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a2-renders\\TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv.yaml",
+      "bytes": 12710,
+      "sha256": "ecaa48128635d78acfc6092cb6a38d095d1479eb5e30bc11c2211e0d7b852a8c"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a3-before-a4\\CURRENT_PACKET.txt",
+      "bytes": 747,
+      "sha256": "22b0871e270c6adcdfd458096ed299764cf1a1950e503109f5a114006c29a942"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a3-before-structural\\CURRENT_PACKET.txt",
+      "bytes": 646,
+      "sha256": "fbfed4fd8cf13485403017bf94b4a44f1dca96f13c49422527eace2d6530f614"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a3-before-structural\\Verify-CompilationPacket.ps1",
+      "bytes": 2439,
+      "sha256": "b86a143a69e5f6b5d9820c1fcb1c630b8cd8d69b48dbe538ec20233a9499ef89"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a3-precode.jsonl",
+      "bytes": 1068,
+      "sha256": "14306865e31934b2ff5433337e7e8a70f11ada3f0eefafc8de3b2f21ba7362df"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a3-structural-compilation.jsonl",
+      "bytes": 818,
+      "sha256": "517b0ff505f23f4110c89c4e037dd2bc1fee2f46b9f936843cb931ca82e961a7"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a4-before-a5\\CURRENT_PACKET.txt",
+      "bytes": 703,
+      "sha256": "a8e0eccfcd7fc88e4787be2dab936990bd87e203c40a8f2920432bc66df08589"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a4-existing-scope-control.jsonl",
+      "bytes": 6822,
+      "sha256": "49b8325262ff192c630550f33735b28d03d6cd49a6e2ac3d8160aeb2fb189703"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a4-source-red.jsonl",
+      "bytes": 64186,
+      "sha256": "9b2fcc0ad015de13ae2f13928dd3c0adfd97b09fad2d9ee74412dbbf7b2aec39"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a5-before-a6\\CURRENT_PACKET.txt",
+      "bytes": 735,
+      "sha256": "0ed598aa441c8f0dfcfd426ebfbe2663a7b77a85f58811e566598e8e339b5c9d"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a5-line-boundary-red.jsonl",
+      "bytes": 27773,
+      "sha256": "bf7c5de694c26577f903b76a1bf5ac729bdcdc09b4d0a06dd36ceccbc282b1ac"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-feature-red.jsonl",
+      "bytes": 24612,
+      "sha256": "d5f38f9dd0f18da67e323e48349da37b82552abb166498990f6f3d5f8860ea5a"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmDistinctRuntimeSecretsAndScopes.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmDistinctRuntimeSecretsAndScopes.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-accessKeyKey.stderr.txt",
+      "bytes": 151,
+      "sha256": "bebb1e8df6ddfef14a56ce229d97d5f311fd8a4fed6a7612229ce815631c1a1f"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-accessKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-name.stderr.txt",
+      "bytes": 143,
+      "sha256": "29dd09b2b693e2f0000c04315fb7b66093e3b5a948528222147536336800fc61"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-name.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-secretKeyKey.stderr.txt",
+      "bytes": 151,
+      "sha256": "25e3ffac1153c1fd2e5b881cea52a4fac376edb1582c571d3ca6f27363416b6d"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-secretKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-accessKeyKey.stderr.txt",
+      "bytes": 156,
+      "sha256": "9c47f4a946b7d69ff1eb1a42fe8bc1ec014b2bc43fd81e3517b7089781d0579d"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-accessKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-name.stderr.txt",
+      "bytes": 148,
+      "sha256": "68ec1e5c27b9410e3e36fd862889e8e02220c05824de926dd6e53fc00db256d6"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-name.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-secretKeyKey.stderr.txt",
+      "bytes": 156,
+      "sha256": "8410746242c0d407856b40ec0e9c63f020c27a2a89f339231783586b56ce5989"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-secretKeyKey.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessExplicitCoreOptIn_default-off.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessExplicitCoreOptIn_default-off.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessExplicitCoreOptIn_explicit-false.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessExplicitCoreOptIn_explicit-false.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessExplicitCoreOptIn_explicit-true.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessExplicitCoreOptIn_explicit-true.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean_integer-one.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean_integer-one.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean_string-false.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean_string-false.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean_string-true.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean_string-true.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmPrepareReadinessRejectsNonBoolean.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\a6-renders\\TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv.yaml",
+      "bytes": 12699,
+      "sha256": "e7d843bca914679fca1dfba499d26e82d70273359a84123eda4a6ddabd944982"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-red.jsonl",
+      "bytes": 28550,
+      "sha256": "f6e418a1556157edc04288a45293f6e7acb7b2943dbdd88bbaa0bfb2ec0aa20a"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmDistinctRuntimeSecretsAndScopes.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmDistinctRuntimeSecretsAndScopes.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-accessKeyKey.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-accessKeyKey.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-name.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-name.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-secretKeyKey.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_core-secretKeyKey.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-accessKeyKey.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-accessKeyKey.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-name.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-name.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-secretKeyKey.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback_ingestion-secretKeyKey.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\frozen-renders\\TestDeploymentHelmReportsHaveNoStorageOrBootstrapEnv.yaml",
+      "bytes": 13597,
+      "sha256": "79ca8ca3a4bec997aeba0a1ecfb65716cb4351277cbe8aa03bb2116b96408948"
+    },
+    {
+      "path": "tests\\deployment_roles\\.run\\quadlet-a1-red.jsonl",
+      "bytes": 8765,
+      "sha256": "1c33ab64361228b941808f71cfc763f0c85c7dd40a463acf1cee4fc53b9c5d28"
+    },
+    {
+      "path": "tests\\deployment_roles\\AMENDMENT-A1.txt",
+      "bytes": 2547,
+      "sha256": "6dc0567f0edc5e16dc9858695db2a59995494adef78634b59e4163fb8c42a368"
+    },
+    {
+      "path": "tests\\deployment_roles\\ARTIFACTS.A2.sha256",
+      "bytes": 1092,
+      "sha256": "e452104f457182ee46a324c9a4f6cf0fc4a120d25d6b5aa936f972259aa81705"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A2.json",
+      "bytes": 1707,
+      "sha256": "4d07e139bdaeb4c5b41d1c131eba63bff763c02ba98a637c6607fbca39df41ae"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A3-STRUCTURAL.json",
+      "bytes": 3052,
+      "sha256": "2245ffe5cfbb1150f0087eb454cf00c7bd71f523b3e7ba1e3cd42e7f5f1396b6"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A3.json",
+      "bytes": 2690,
+      "sha256": "e6143e9ae787681fd57a45f795cfa00bf2c78b8b307ac16fe214c537ee066b76"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A4.json",
+      "bytes": 3054,
+      "sha256": "1a559e6776d9f9ef19ee3140136f4b2974e1e3b8f387779485e5e8c78efbfc27"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A5.json",
+      "bytes": 3450,
+      "sha256": "7a85334dd10dc0d0aae763bac3998b2aa393556808fbc38db667a4954a3d57c7"
+    },
+    {
+      "path": "tests\\deployment_roles\\COMPILATION.A6.json",
+      "bytes": 3920,
+      "sha256": "005ed29651e3ac5ad1126336538371b604dab14fdafa2cf188ff43b9973c9412"
+    },
+    {
+      "path": "tests\\deployment_roles\\CONTRACT.txt",
+      "bytes": 7723,
+      "sha256": "39a50fd2689477e15fb0634c2ff8d09f95b93adb6216e8af3b8d44d2050c94fd"
+    },
+    {
+      "path": "tests\\deployment_roles\\CURRENT_PACKET.txt",
+      "bytes": 742,
+      "sha256": "a439578e8e184609506f5ddd2f4e5746d53d61c02512055be17e733a45704532"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A0.sha256",
+      "bytes": 2325,
+      "sha256": "28dc47d37ced767b74eeac89a98a5a02eaeb7617dcb096f67586cf39635f0f13"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A1.sha256",
+      "bytes": 1219,
+      "sha256": "4d66d5dce498d5b5f168fbe15d084fa7f32357fa28bb6b74e1be6d5e9fdfc962"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A2.sha256",
+      "bytes": 8130,
+      "sha256": "722e78408c79fbc61737e76b0b5e40411d0caa0f051554d348be9a42d8cf6a0a"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A3-STRUCTURAL.sha256",
+      "bytes": 9659,
+      "sha256": "a44d5b9e66e29bf515688aad9729835cdba3d2ba23452cd2ace75392b67ffaa4"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A3.sha256",
+      "bytes": 9100,
+      "sha256": "bc2105686e7652ebc5fc8d0fb38bb26dec7120ed7d8c1448f2c766aaff8b614f"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A4.sha256",
+      "bytes": 10474,
+      "sha256": "9dab0f26bb963f8a2321fa6ba94bbb32ea0190cffafee8b10f50990f8ef46b12"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A5.sha256",
+      "bytes": 11145,
+      "sha256": "faa514390cfbd66a49efb40b0a58835156d52b54004b4a1923027e7564ecfca3"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.A6.sha256",
+      "bytes": 16827,
+      "sha256": "768ea2099be0945686b4b8e01c6c8aff0e5495473b123b191606fab9162d9678"
+    },
+    {
+      "path": "tests\\deployment_roles\\FROZEN.sha256",
+      "bytes": 16827,
+      "sha256": "768ea2099be0945686b4b8e01c6c8aff0e5495473b123b191606fab9162d9678"
+    },
+    {
+      "path": "tests\\deployment_roles\\go.mod",
+      "bytes": 203,
+      "sha256": "aa041661e50048ded79b1289d0f039367271bc31aa2764eb497b4a7c1130095c"
+    },
+    {
+      "path": "tests\\deployment_roles\\go.sum",
+      "bytes": 360,
+      "sha256": "e42794fa9b56301ad073de55cac1dea683b320ed951454d8709ffc7156088dd2"
+    },
+    {
+      "path": "tests\\deployment_roles\\helm_test.go",
+      "bytes": 3057,
+      "sha256": "a3d58a123d687942b4ffad031ab75af3cf5dfb33eff367617c57f4d43a1e5099"
+    },
+    {
+      "path": "tests\\deployment_roles\\INPUTS.before.sha256",
+      "bytes": 1407,
+      "sha256": "2d198c56475cd13f6740138cc526106b02c49e61eb3f03d8efb6b78e201def5e"
+    },
+    {
+      "path": "tests\\deployment_roles\\INSTALLER-COORDINATION-A1.sha256",
+      "bytes": 333,
+      "sha256": "a276aa0fcb2633e2f62e1853aefbddb04423fc2e4eccd6bdbdd9e8f036a3411a"
+    },
+    {
+      "path": "tests\\deployment_roles\\INSTALLER-COORDINATION-A1.txt",
+      "bytes": 3459,
+      "sha256": "d281c8615f086236fd5133337797df0b7296c0f6288c60bbd40b3f99820554b0"
+    },
+    {
+      "path": "tests\\deployment_roles\\PACKET-A2.txt",
+      "bytes": 4112,
+      "sha256": "19558eb91d55c52b9bb7580f7bb40cb94b2f0ec2068e31734a17fead10c494a7"
+    },
+    {
+      "path": "tests\\deployment_roles\\PACKET-A3.txt",
+      "bytes": 3942,
+      "sha256": "fd8382d5afd0acecc56dbd43da6cd3fbc8d49ff8f4f7390b8652f27592e2ef98"
+    },
+    {
+      "path": "tests\\deployment_roles\\PACKET-A4.txt",
+      "bytes": 4021,
+      "sha256": "31f3d8def0956770ad9379268c5190b5008ee27f53f096c7cecba3174f0b71f5"
+    },
+    {
+      "path": "tests\\deployment_roles\\PACKET-A5.txt",
+      "bytes": 3498,
+      "sha256": "ec5a8e796dabab856abba6ecae958fb1a134982f7d118449309feb597007ee87"
+    },
+    {
+      "path": "tests\\deployment_roles\\PACKET-A6.txt",
+      "bytes": 3605,
+      "sha256": "5ad435c4fdfe4d11a5fc716c71b7d29efec9682ed7c5450464f06da6c52060b8"
+    },
+    {
+      "path": "tests\\deployment_roles\\PRECODE-A3.txt",
+      "bytes": 1023,
+      "sha256": "18a42c1d5c53029189a7780e194213f2823e089b2512fb4eecfa91842ba6270b"
+    },
+    {
+      "path": "tests\\deployment_roles\\production_bindings_test.go",
+      "bytes": 508,
+      "sha256": "b8f73cfd1943932d059427e85c06e7ea690491a539be9409889ff34d8edeef3b"
+    },
+    {
+      "path": "tests\\deployment_roles\\quadlet_config_loader_test.go",
+      "bytes": 4647,
+      "sha256": "63c09e453ae218409ecccf5436aa07f53646e2e69796c919144ab18afbebd671"
+    },
+    {
+      "path": "tests\\deployment_roles\\quadlet_line_endings_test.go",
+      "bytes": 3732,
+      "sha256": "4189c700d0d19f503a4f0bd0e76fcba078050ffb7037ab26a521f8c141ced707"
+    },
+    {
+      "path": "tests\\deployment_roles\\quadlet_test.go",
+      "bytes": 8378,
+      "sha256": "70d51fa79f7244c667fe625be4916a8ba6f8dcf3c3cce9cb013843f1716f8c22"
+    },
+    {
+      "path": "tests\\deployment_roles\\readiness_opt_in_test.go",
+      "bytes": 4764,
+      "sha256": "dff0582a4668ec9826486cf9e50a65e242c5f163770f7c355af6a89556971aee"
+    },
+    {
+      "path": "tests\\deployment_roles\\RED-A2.txt",
+      "bytes": 1340,
+      "sha256": "09f064a194d56a617a789ea0cc35686bc64bb38f0bbad02d5f3b825d98f94298"
+    },
+    {
+      "path": "tests\\deployment_roles\\RED.txt",
+      "bytes": 2136,
+      "sha256": "9a6e6212eaf12a0a05de826717021f2266add19beba235ad88e0df9d8f28cbec"
+    },
+    {
+      "path": "tests\\deployment_roles\\render_test.go",
+      "bytes": 7431,
+      "sha256": "f9b43ff3bcfeb4d47be47de530067177ff1e877e1003b2d5996491b7ccb5e7e0"
+    },
+    {
+      "path": "tests\\deployment_roles\\ROOT-MODULES.A3.sha256",
+      "bytes": 293,
+      "sha256": "b8801cef071d42bcbbdc82c82138ad3fa06e6ae1296467aad183af4f9bded3da"
+    },
+    {
+      "path": "tests\\deployment_roles\\STRUCTURAL-A3.txt",
+      "bytes": 3193,
+      "sha256": "8c66906804ea07a6268e78a29067ca2f47d7f107aa0fae23182afa0c8dfdb55c"
+    },
+    {
+      "path": "tests\\deployment_roles\\Test-DeploymentRoles.ps1",
+      "bytes": 1844,
+      "sha256": "3d946332cbdfa0f4e28acf8d1f63320012ea258eff8f0e118eb9b2d66aecbc1f"
+    },
+    {
+      "path": "tests\\deployment_roles\\Verify-CompilationPacket-A4.ps1",
+      "bytes": 2420,
+      "sha256": "356e4cd00874816eb5e5c3bf7bb7d4587216cdcd3722af3805ef010fd9033a78"
+    },
+    {
+      "path": "tests\\deployment_roles\\Verify-CompilationPacket-A5.ps1",
+      "bytes": 2420,
+      "sha256": "8316d7ea83a3047d8f27dd3edd6d9817da9c88c02f6515a9e30d064ba10ad38a"
+    },
+    {
+      "path": "tests\\deployment_roles\\Verify-CompilationPacket-A6.ps1",
+      "bytes": 2420,
+      "sha256": "72242b44bc3380934deb3227b3838e3dd732d1dd3ef50211c288e4d53375ab66"
+    },
+    {
+      "path": "tests\\deployment_roles\\Verify-CompilationPacket.ps1",
+      "bytes": 2549,
+      "sha256": "1641006c2d339bb2ba86ca5e6b1b56ad241614e7989883e052195cd8a126ae5b"
+    }
+  ]
+}

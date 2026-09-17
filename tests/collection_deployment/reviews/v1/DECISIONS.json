@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-deployment-v1",
+  "capturedAt": "2026-09-17T19:45:51.066699+00:00",
+  "recordedBeforeTesting": {
+    "path": "tests\\collection_deployment\\reviews\\v1\\BEFORE.json",
+    "bytes": 38004,
+    "sha256": "afc55ca4921384cbe9afce4a93915d1d8292d6791d35ae74653af91cf35af76f"
+  },
+  "newValues": {
+    "collection.enabled": "strict boolean, default false",
+    "collection.storage": "explicit nonsecret endpoint/bucket/prefix/region map, no global raw fallback",
+    "core.collectionS3Secret": "reader {name,accessKeyKey,secretKeyKey}",
+    "collection.s3Secret": "publisher {name,accessKeyKey,secretKeyKey}",
+    "collection.leaseDuration": "string default15s",
+    "collection.githubEndpoint": "trusted HTTPS base default https://api.github.com",
+    "collection.replicas": "default1, independent override",
+    "collection.resources": "current ordinary role defaults, independent override"
+  },
+  "existingSharedSelector": "integrationKeySecret{name,key}; required when collection enabled, optional when core-only preconfigured",
+  "offSemantics": "Empty selections and false/absent feature preserve old outputs; complete storage+RO preconfiguration may be supplied without publisher; any supplied publisher tuple must also be complete.",
+  "isolationRule": "Reader and publisher selector tuples must not be identical. Same Secret name with different key names is a positive control. Reference inequality does not certify different bytes or real rights.",
+  "noSecretPolicyGeneration": true,
+  "runtimeAuthoritativeForCompleteEndpointStorageTLSLeaseValidity": true,
+  "noInstallerActivationOrProvisioning": true,
+  "imageEvidence": "Source Containerfile/host command inventory and complete bin COPY only, no image build or executable-existence claim.",
+  "quadlet": "New aspm-collection.container with one protected collection.env, isolation/tmp/restart settings, no Install target. Real existing Podman4.9 unprivileged dryrun; no systemd/podman activation."
+}

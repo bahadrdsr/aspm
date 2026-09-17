@@ -92,5 +92,7 @@ The Sources UI and standalone collection-worker now consume these APIs. Their
 owned HTTPS/core/worker/storage qualification is separate from this backend's
 transaction and upgrade acceptance. There is no organization discovery, bearer
 refresh, code execution, scanning or finding normalization in this slice.
-Deployment packaging/provisioning, live GitHub authority, broader partitions,
-key rotation and capacity qualification remain separate work.
+Image and opt-in deployment artifacts consume this backend without automatically
+provisioning credentials or starting collection. Installer provisioning, live
+GitHub authority, broader partitions, key rotation and capacity qualification
+remain separate work.

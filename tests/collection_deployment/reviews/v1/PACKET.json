@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-deployment-v1",
+  "phase": "frozen-independent-opt-in-artifact-red",
+  "frozenAt": "2026-09-17T19:48:01.439205+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned inventory of NEW independent collection artifact controls only. Parent verifies/seals before separate artifact implementation and review; old manifests/signatures and manual-runtime publication remain unchanged.",
+  "payloadFileCount": 16,
+  "ownedFileCount": 18,
+  "ownedFiles": [
+    "tests\\collection_deployment\\CONTRACT.txt",
+    "tests\\collection_deployment\\HANDOFF.txt",
+    "tests\\collection_deployment\\Test-CollectionDeployment.ps1",
+    "tests\\collection_deployment\\artifacts_test.go",
+    "tests\\collection_deployment\\go.mod",
+    "tests\\collection_deployment\\go.sum",
+    "tests\\collection_deployment\\helm_helpers_test.go",
+    "tests\\collection_deployment\\helm_test.go",
+    "tests\\collection_deployment\\reviews\\v1\\BEFORE.json",
+    "tests\\collection_deployment\\reviews\\v1\\COMPATIBILITY.json",
+    "tests\\collection_deployment\\reviews\\v1\\COMPILATION.json",
+    "tests\\collection_deployment\\reviews\\v1\\DECISIONS.json",
+    "tests\\collection_deployment\\reviews\\v1\\EVIDENCE.json",
+    "tests\\collection_deployment\\reviews\\v1\\GUARDS.json",
+    "tests\\collection_deployment\\reviews\\v1\\HANDOFF.json",
+    "tests\\collection_deployment\\reviews\\v1\\PACKET.json",
+    "tests\\collection_deployment\\reviews\\v1\\PACKET.sha256",
+    "tests\\collection_deployment\\reviews\\v1\\RED.json"
+  ],
+  "files": [
+    {
+      "path": "tests\\collection_deployment\\artifacts_test.go",
+      "bytes": 10603,
+      "sha256": "e41257fa01571c962e8e23d555a518522676f2ad3b0453ff300386099f148eca"
+    },
+    {
+      "path": "tests\\collection_deployment\\CONTRACT.txt",
+      "bytes": 13529,
+      "sha256": "f8be81ff1adc921b59617f4389f0761b4c2fab89e62619cb6fe69f745735ea0a"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.mod",
+      "bytes": 132,
+      "sha256": "755d05290ec281161a216ec6ae81bf31c0bd19790cdb53c08d483e57af48c0cc"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\collection_deployment\\HANDOFF.txt",
+      "bytes": 2250,
+      "sha256": "7985867cc7830f89412aa6c25029a1e107a81788afe7c5a547340d222d2b04cb"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_helpers_test.go",
+      "bytes": 14482,
+      "sha256": "2205c9931f9897914c72b2283fb94fe6a60a00f72f0a0760214eb4713c4b7c50"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_test.go",
+      "bytes": 12267,
+      "sha256": "d207914ebe88c1a9841e4e4d1699f55e2b2b401d3fa9557d8a5babc5007d0312"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\BEFORE.json",
+      "bytes": 38004,
+      "sha256": "afc55ca4921384cbe9afce4a93915d1d8292d6791d35ae74653af91cf35af76f"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\COMPATIBILITY.json",
+      "bytes": 21032,
+      "sha256": "ee464a2608e22c06f68d4d01a77ef33ecf5f51b88b4bf39ce137f3569cf8e38c"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\COMPILATION.json",
+      "bytes": 3630,
+      "sha256": "f2e053d5f8226ccb08a8b65700f0f35b7b1921420fe7e7857dfbf64985c90a0f"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\DECISIONS.json",
+      "bytes": 2031,
+      "sha256": "72da79938fec25c3c5f5a1d8da42f50238184d8406ec0c24c7ec796cb41c981e"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 101383,
+      "sha256": "1375331e880aef6379f5967b6323311ed988ac5b4aaaf15c981f822187a85d81"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\GUARDS.json",
+      "bytes": 5242,
+      "sha256": "c3360048616e623901d651e6b18cc201742449d8577089b33436e8c342d3dde5"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3357,
+      "sha256": "96d97bee56e89f8a49d62511889449428082443ceaaa0ac375724994e7806df8"
+    },
+    {
+      "path": "tests\\collection_deployment\\reviews\\v1\\RED.json",
+      "bytes": 75140,
+      "sha256": "65a810683130acd8926d337b293552b1599f45d691852b6f5c9dfcec9cd54377"
+    },
+    {
+      "path": "tests\\collection_deployment\\Test-CollectionDeployment.ps1",
+      "bytes": 4940,
+      "sha256": "741eb32bddfe61c6810ff50271469fa6de9f687eb2cd27f4a1c66af0e9e8c626"
+    }
+  ],
+  "contract": "tests\\collection_deployment\\CONTRACT.txt",
+  "handoff": "tests\\collection_deployment\\HANDOFF.txt",
+  "decisions": "tests\\collection_deployment\\reviews\\v1\\DECISIONS.json",
+  "red": "tests\\collection_deployment\\reviews\\v1\\RED.json",
+  "oldCompatibility": "tests\\collection_deployment\\reviews\\v1\\COMPATIBILITY.json",
+  "compiler": "tests\\collection_deployment\\reviews\\v1\\COMPILATION.json",
+  "externalEvidence": "tests\\collection_deployment\\reviews\\v1\\EVIDENCE.json",
+  "selfBinding": "PACKET.sha256 binds raw PACKET.json. Only this self-digest pair is excluded from payload hashes.",
+  "existingFileAmendments": [],
+  "archives": [],
+  "sourceInventoryIsNotImageProof": true,
+  "referenceIsolationIsNotRealStorageRightsProof": true
+}

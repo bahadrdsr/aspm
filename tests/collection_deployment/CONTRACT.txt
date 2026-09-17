@@ -1,0 +1,245 @@
+COLLECTION DEPLOYMENT V1 - INDEPENDENT OPT-IN ARTIFACT CONTRACT
+============================================================
+
+Scope and isolation
+-------------------
+Only this NEW tests/collection_deployment packet is authored. Accepted source
+backend/runtime/UI, the pending manual-runtime publication, old delivery/A6
+tests/manifests, installer execution and root dependencies are not edited.
+There is no live GitHub, cluster, image/container activation or privilege change.
+
+The new isolated nested test module requires only gopkg.in/yaml.v3 v3.0.1,
+already pinned and cached by tests/delivery_deployment. Its exact existing
+checksum set is reused. The module/value decisions were recorded in
+reviews\v1\BEFORE.json before the tests were created or run. No root go.mod/
+go.sum change, dependency upgrade, install or download is allowed.
+
+The four top-level gates use actual Helm --dry-run=client, a proper YAML
+decoder, source packaging inventory checks, and the existing rootless Podman
+4.9 native generator. There is no test-side chart renderer, fake image binary,
+installer invocation or business implementation.
+
+Exact proposed chart vocabulary
+-------------------------------
+Existing raw/storage/delivery/integrationKeySecret vocabulary remains intact.
+Add only these nonsecret configuration/selection paths:
+
+  core:
+    collectionS3Secret: {}
+  collection:
+    enabled: false
+    replicas: 1
+    leaseDuration: "15s"
+    githubEndpoint: "https://api.github.com"
+    storage: {}
+    s3Secret: {}
+    resources:
+      requests: {cpu: 100m, memory: 128Mi}
+      limits: {cpu: "1", memory: 512Mi}
+
+collection.storage, when configured, has four explicit nonempty string fields:
+  endpoint, bucket, prefix, region
+It does not inherit anything from global raw storage settings or managed S3
+defaults. The tests deliberately make global bucket/prefix/region different.
+Storage endpoint may use the runtime's trusted HTTP/HTTPS storage policy; it
+must not carry credentials. The provider gateway is always trusted HTTPS.
+
+core.collectionS3Secret selects the core's collection evidence READ-ONLY key:
+  {name, accessKeyKey, secretKeyKey}
+collection.s3Secret selects the collection publisher key:
+  {name, accessKeyKey, secretKeyKey}
+Each supplied selector is a mapping of all three nonblank string fields.
+These are Secret references only, never inline credential bytes.
+
+Absent/disabled behavior and validation
+--------------------------------------
+collection.enabled is a strict boolean, default false. A string "true"/"false"
+or integer 1 fails real rendering with collection.enabled in the diagnostic.
+An absent feature or explicit false with empty selections leaves the original
+three roles, services and managed storage artifacts unchanged. Existing optional
+Slack delivery continues to render independently, with its current command,
+key and lease/gateway behavior.
+
+Empty selection maps mean not configured. Once any collection.storage field,
+core.collectionS3Secret field, or collection.s3Secret field is explicitly
+supplied, a complete nonsecret storage configuration and core reader selector
+are required. If the publisher selector is supplied while disabled, it must
+also be complete; it does not enable a worker or grant the publisher key to
+core. In particular, partial selection must not silently disappear because
+collection.enabled is false.
+
+A complete storage + core-RO preconfiguration with collection disabled and no
+publisher selector is allowed. Core receives its six collection-storage values;
+no collection Deployment appears. This permits connections/evidence setup
+before manual worker rollout. The existing integrationKeySecret can be supplied
+independently as before; the preconfiguration test coexists with Slack delivery.
+
+When collection.enabled is true, all four storage fields, both complete
+selectors and the existing integrationKeySecret{name,key} are required.
+Missing values fail with the precise path:
+  collection.storage.endpoint / .bucket / .prefix / .region
+  core.collectionS3Secret.name / .accessKeyKey / .secretKeyKey
+  collection.s3Secret.name / .accessKeyKey / .secretKeyKey
+  integrationKeySecret.name / .key
+No fallback to existingSecret, raw role keys, bootstrap, operator storage
+policy or a literal encryption key is accepted.
+
+Reject an identical (name,accessKeyKey,secretKeyKey) tuple used for reader and
+publisher, identifying collection.s3Secret in the error. Equality is reference-
+level only. The same Secret name with distinct reader/publisher key names is a
+valid positive case. DIFFERENT REFERENCES DO NOT PROVE DIFFERENT SECRET BYTES
+OR REAL READ/WRITE RIGHTS. That remains the accepted native storage-key gate,
+not a property certified by Helm rendering.
+
+Obviously wrong value types, missing/partial selection and credential-bearing
+storage/provider endpoints are chart errors with their exact paths. Numeric
+bucket/lease, explicit credential URLs and an HTTP provider gateway are covered.
+Runtime code remains authoritative for complete storage/gateway/TLS/duration
+validity; this artifact gate is not a second comprehensive URL/TLS validator.
+
+Rendered collection/core authorities
+------------------------------------
+Enabling adds exactly one separate Deployment with component/container name
+collection. Its selector and pod component labels must match that role.
+Command is ["/app/bin/collection-worker"], without a shell or inline credential
+arguments. It uses its own replicas/resources, defaulting to the values above.
+An override case uses replicas 2 and distinct resources to prove actual mapping.
+
+The collection main container has:
+  - required DB SecretKeyRef: existingSecret/database-url;
+  - required ASPM_INTEGRATION_ENCRYPTION_KEY reference, identical to the
+    explicit integrationKeySecret used by core and optional delivery;
+  - exactly six ASPM_COLLECTION_S3 variables:
+      ENDPOINT, BUCKET, PREFIX, REGION as selected YAML strings;
+      ACCESS_KEY, SECRET_KEY from collection.s3Secret, required/nonoptional;
+  - ASPM_COLLECTION_LEASE_DURATION as a string, default "15s";
+  - ASPM_GITHUB_ENDPOINT as a string, default "https://api.github.com";
+  - only ordinary DB/schema/pool/listen settings besides those inputs.
+
+Core gets the SAME selected endpoint/bucket/prefix/region but its DIFFERENT
+core.collectionS3Secret references for the two keys. Core raw storage
+credentials, readiness preparation, scope and runtime settings stay unchanged.
+Its default /app/bin/core-api command and container layout are preserved.
+No new init-container credential path is required.
+
+Ingestion/reports/delivery containers and init containers receive no collection
+storage/provider settings or reader/publisher Secret refs. Ingestion/reports
+also remain without the integration encryption key. Delivery keeps its
+existing explicit shared key configuration without gaining collection storage.
+
+No envFrom, raw ASPM_S3 variables, AWS variables, bootstrap token, UI assets,
+raw readiness preparation or unrelated Secret authority is allowed in the
+collection Deployment. Initial existing managed-S3/database/service resources
+are structurally compared after actual YAML parsing and must remain unchanged.
+Rendering must not generate a Secret, rotate keys, add managed-policy ConfigMaps
+or alter the existing managed S3 operator policy.
+
+Collection startup/readiness probes use /readyz and liveness uses /healthz,
+each referencing an actually declared container port. These paths are the
+accepted runtime health surface, NOT proof of source-account or storage rights.
+An extra collection Service/Ingress is not required. This gate neither fetches
+source payloads nor grants them routing authority.
+
+Image/host source artifact contract
+----------------------------------
+The source Containerfile must build collection-worker from ./cmd/collection-worker
+in addition to core-api, ingestion, report-worker, delivery-worker and aspmctl.
+The full backend output is retained by COPY --from=backend /out/ /app/bin/.
+The host scripts/package-image.mjs command inventory must include each of those
+six actual commands once. The runtime artifact recipe keeps COPY bin/ /app/bin/.
+Both image recipes preserve CMD ["/app/bin/core-api"].
+
+These are explicit SOURCE ARTIFACT assertions. The shared host packager and an
+image build are not run here. No test-generated executable, fake bin directory
+or existing manual command is presented as proof of the final image contents.
+A later separately authorized real image-build proof is distinct.
+
+Opt-in Quadlet contract
+----------------------
+Ship deploy\quadlet\aspm-collection.container using:
+  [Container]
+  EnvironmentFile=/etc/aspm/collection.env
+  Exec=/app/bin/collection-worker
+  Network=aspm.network
+  ReadOnly=true
+  NoNewPrivileges=true
+  DropCapability=all
+  Tmpfs=/tmp:rw,size=<bounded size>
+  [Service]
+  Restart=on-failure
+
+Use ordinary image/container/network/start-timeout settings following existing
+units. ONLY the required protected /etc/aspm/collection.env supplies runtime
+environment. No optional file prefix, core.env reuse, inline Environment,
+PodmanArgs, Secret, extra credential Volume, host EnvironmentHost import or
+service Environment/EnvironmentFile/PassEnvironment bypass is allowed.
+
+There is no Install autostart/WantedBy/RequiredBy/Alias configuration. The
+existing installer copy/start/bundle files are explicit BYTE-IDENTICAL controls
+and are never executed. Shipping a manual unit does not authorize an installer
+to copy/start it or provision its keys. Storage is an actual worker dependency,
+but no storage-service administrative credential is conferred by this artifact.
+
+Referencing /etc/aspm/collection.env does not prove that an actual protected
+file exists, contains the proper identity or has correct host permissions.
+Manual provisioning and start remain a separate operator increment.
+
+Actual native generator boundary
+-------------------------------
+The existing cached Podman 4.9.3 generator runs under the current unprivileged
+WSL user (nonzero numeric UID verified) with -user -dryrun -no-kmsg-log.
+An empty explicit native environment gives it only PATH and owned HOME/XDG/
+TMPDIR/QUADLET_UNIT_DIRS. Only the selected current unit and aspm.network are
+staged as generator inputs under a new random project artifact directory.
+
+The selected generated service is actually parsed. Its ExecStart must retain
+the worker, --env-file /etc/aspm/collection.env, read-only, no-new-privileges and
+drop-all capabilities, without an Install target. The generator only emits
+TEXT, never podman run or systemctl activation.
+The existing shipped delivery unit is independently generated as a passing
+Podman/parser/control case, not used as a fake collection unit.
+
+Four bounded gates and RED interpretation
+----------------------------------------
+1. Default/explicit off and existing delivery positive controls, core-only RO
+   preconfiguration, enabled native defaults, and coexistence/override mapping
+   with valid distinct key tuples inside one Secret.
+2. A finite 25-row validation table: required storage/reference fields, partial
+   disabled selections, boolean/type violations, identical tuples and obvious
+   unsafe endpoint values. No combinatorial or load matrix.
+3. Six-command source/host inventory, full bin copies and unchanged core CMD.
+4. Existing delivery native syntax control and new protected manual collection
+   unit plus actual Podman 4.9 generated-service assertions.
+
+The package uses 31 real Helm renders, capped at 40, bounded at 15s and 2 MiB
+per render with at most 40 decoded documents. The Go package timeout is 120s;
+native commands are bounded at 20s. No render retries or expected-failure
+suppression is used.
+
+Current absent collection Deployment/env/unit/build entries must be reported
+as actual RED. Assertions after missing collection output are BLOCKED/NOT RUN,
+not positive isolation/probe/new-unit-generation evidence. Existing default-off,
+delivery and partial integrationKeySecret denial controls are not forced RED.
+
+Reproduction and freeze
+----------------------
+From C:\bahadr\serious\aspm:
+  .\tests\collection_deployment\Test-CollectionDeployment.ps1 -Helm '<existing-helm.exe>' -OutputName parent-collection-artifacts-01
+
+The runner uses cached Go 1.27.1/modules offline with -mod=readonly and a cleared
+GOFLAGS. It strips ambient vendor/Kubernetes/Helm/proxy/container environment.
+Helm uses template --dry-run=client, an explicit empty kubeconfig, plugins off
+and owned cache/config/data paths. A real chart/YAML parser is mandatory.
+
+Use fresh output labels; existing evidence is never overwritten. Logs, input
+values, rendered YAML and native output remain in
+  .artifacts\collection-deployment-v1
+and work paths in .cache\collection-deployment-v1. Copies there are only the
+current necessary generator inputs, not recursive copies of old history.
+
+reviews\v1 records current original-source/control hashes, module decision,
+actual results, blocked checks and an unsigned frozen file inventory. Existing
+A6/delivery controls, signatures and private runtime metadata are untouched.
+Parent verifies/seals, separate artifact implementation and independent review
+follow. Manual-runtime publication and later provisioning/scheduling stay
+independent; this packet does not reset or alter them.

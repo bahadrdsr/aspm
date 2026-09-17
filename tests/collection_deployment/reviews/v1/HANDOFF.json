@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-deployment-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_ARTIFACT_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-17T19:45:51.066699+00:00",
+  "controls": [
+    {
+      "path": "tests\\collection_deployment\\artifacts_test.go",
+      "bytes": 10603,
+      "sha256": "e41257fa01571c962e8e23d555a518522676f2ad3b0453ff300386099f148eca"
+    },
+    {
+      "path": "tests\\collection_deployment\\CONTRACT.txt",
+      "bytes": 13529,
+      "sha256": "f8be81ff1adc921b59617f4389f0761b4c2fab89e62619cb6fe69f745735ea0a"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.mod",
+      "bytes": 132,
+      "sha256": "755d05290ec281161a216ec6ae81bf31c0bd19790cdb53c08d483e57af48c0cc"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\collection_deployment\\HANDOFF.txt",
+      "bytes": 2250,
+      "sha256": "7985867cc7830f89412aa6c25029a1e107a81788afe7c5a547340d222d2b04cb"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_helpers_test.go",
+      "bytes": 14482,
+      "sha256": "2205c9931f9897914c72b2283fb94fe6a60a00f72f0a0760214eb4713c4b7c50"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_test.go",
+      "bytes": 12267,
+      "sha256": "d207914ebe88c1a9841e4e4d1699f55e2b2b401d3fa9557d8a5babc5007d0312"
+    },
+    {
+      "path": "tests\\collection_deployment\\Test-CollectionDeployment.ps1",
+      "bytes": 4940,
+      "sha256": "741eb32bddfe61c6810ff50271469fa6de9f687eb2cd27f4a1c66af0e9e8c626"
+    }
+  ],
+  "contract": "tests\\collection_deployment\\CONTRACT.txt",
+  "humanHandoff": "tests\\collection_deployment\\HANDOFF.txt",
+  "decisions": "DECISIONS.json",
+  "compiler": "COMPILATION.json",
+  "guards": "GUARDS.json",
+  "red": "RED.json",
+  "compatibility": "COMPATIBILITY.json",
+  "externalEvidence": "EVIDENCE.json",
+  "outcomes": {
+    "newTopLevelArtifactRED": 4,
+    "actualHelmRenders": 31,
+    "passingNewControlSubcases": 5,
+    "priorDeliveryTopLevelPASS": 4,
+    "priorClosedA6TopLevelPASS": 11,
+    "skips": 0,
+    "originalWitnessesUnchanged": 174,
+    "rootModuleChanges": 0,
+    "nestedCachedYAMLParserOnly": true,
+    "existingFileAmendments": 0
+  },
+  "referenceLevelNotActualRightsProof": true,
+  "sourceInventoryNotImageProof": true,
+  "newQuadletGenerationBlockedByAbsentUnit": true,
+  "installerManualProvisioningAndAutoSchedulingIncluded": false,
+  "currentManualRuntimePublicationAndSourcesUIReviewIndependent": true,
+  "archives": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "liveGitHubClusterPrivilegeOrContainerActivation": 0,
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify exact explicit storage/reader/publisher/value decisions and reference-only isolation limits.",
+    "Verify genuine new artifact RED and passing old controls separately, using unchanged source and fresh output destinations.",
+    "Seal NEW collection deployment controls without rewriting earlier history/signatures.",
+    "Assign separate artifact implementation and independent review; leave backend/runtime/UI/publication and installer provisioning/scheduling separate."
+  ]
+}

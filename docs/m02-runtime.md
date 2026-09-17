@@ -179,7 +179,50 @@ bootstrap or UI credentials. The chart rejects non-string lease/gateway values
 and credential-bearing gateways; the runtime remains authoritative for full
 duration and HTTPS-base validation.
 
-On September 17, 2026, the owned Kubernetes lab explicitly enabled this role
+Source collection is a separate opt-in. `collection.enabled` defaults to the
+boolean `false`; neither it nor `delivery.enabled` enables the other role.
+`collection.storage` selects explicit `endpoint`, `bucket`, `prefix` and `region`
+strings, without managed/raw storage defaults. `core.collectionS3Secret` selects
+the reader's `name`, `accessKeyKey` and `secretKeyKey`. Complete storage and
+reader settings can preconfigure core while collection remains disabled.
+Any partial storage or selector configuration is rejected even while disabled.
+
+Enabling collection also requires a complete `collection.s3Secret` publisher
+selection and the existing `integrationKeySecret`. Core and collection get the
+same four collection-storage values but their own selected key references.
+Identical reader/publisher reference tuples are rejected; one Secret with
+distinct reader/publisher key names is allowed. Different references alone do
+not prove distinct credential bytes or permissions. The separate real
+storage-key gate establishes publisher PUT, core-reader GET and reader PUT
+denial for its explicitly selected owned fixture.
+
+The independent collection Deployment runs `/app/bin/collection-worker` with
+its own replicas/resources, DB settings, integration key, publisher storage,
+`collection.leaseDuration` (default `"15s"`) and `collection.githubEndpoint`
+(default `"https://api.github.com"`). Ingestion, reports and delivery receive
+none of the collection settings or reader/publisher keys; legacy raw storage
+and managed-service policy remain unchanged. The chart rejects non-string or
+blank fields, credential-bearing endpoints and non-HTTPS provider gateways.
+
+On September 17, 2026, the owned Kind lab enabled collection using the full
+source-built six-command image. Two new identities were manually provisioned
+for `collections/`: a core reader and a collection publisher. Existing storage
+identities and database/storage volumes were retained. The deployed environment
+values matched those selected keys, and ingestion, reporting and delivery did
+not receive collection credentials.
+
+Direct calls to the deployed S3 service proved publisher PUT and exact reader
+GET, plus seven native HTTP 403 denials: reader overwrite/delete, publisher
+outside-prefix write, both outside-prefix reads and both whole-bucket probes.
+Denied operations preserved existing bytes. The worker reported database
+readiness with `storage:configured-not-probed`; the permission proof was a
+separate operation, not inferred from that readiness label. The lab used the
+reserved `https://github.invalid` endpoint and did not run a live GitHub
+collection. Existing HTTPS login, intake and report workflows remained functional.
+Full URL/storage/duration validation remains the runtime's responsibility.
+No new Secret, policy, storage-rights grant or ingress is generated.
+
+On September 17, 2026, the owned Kubernetes lab explicitly enabled delivery
 with a separate integration-key Secret. Core and delivery read identical selected
 key bytes; ingestion and reporting had no integration key, and delivery had no
 storage/bootstrap credentials. The actual packaged worker became ready with
@@ -213,6 +256,15 @@ provision this env file or activate delivery. Protected key/file provisioning
 and an explicit operator-controlled worker start are separate from shipping
 the unit. Client rendering and rootless native-generator dryruns are not
 Kubernetes/systemd activation or proof that credentials have been provisioned.
+
+`aspm-collection.container` likewise remains manual opt-in with no `[Install]`
+configuration. Its only environment source is `/etc/aspm/collection.env`, which
+must be provisioned separately with the explicit publisher identity and other
+runtime inputs. The unit retains the read-only filesystem, bounded temporary
+filesystem and private network, without inline credentials or extra volumes.
+Existing installer bundle/copy/start behavior is unchanged and does not install,
+provision or start this new unit. Rootless Podman 4.9 generation verifies syntax
+and generated command text, not an existing protected file or service activation.
 
 The core binds loopback by default. The real Ubuntu Quadlet 4.9.3 generator was
 extracted into a project-local ignored tool directory and used without
@@ -251,19 +303,30 @@ Podman can consume the same OCI build context. This is host-compiled artifact
 assembly, not a signed-release or reproducibility certificate. The later full
 source-image build is recorded separately as `aspm:0.1.0-source`.
 
-The source and host-build command inventories include `delivery-worker` alongside
-core, ingestion, reporting and `aspmctl`. Both image recipes retain the complete
+The source and host-build command inventories include `collection-worker` and
+`delivery-worker` alongside core, ingestion, reporting and `aspmctl`. Both image
+recipes retain the complete
 binary directory and default to `/app/bin/core-api`; adding a worker does not
 change the default process. These recipe changes alone do not prove that a
 current image contains the worker. An explicit reviewed image build and binary
 check remain separate from artifact source/render validation.
 
-The September 17 delivery packaging check built the full source Containerfile,
+The earlier September 17 delivery packaging check built the source Containerfile,
 verified all five executable binaries and the non-root core default, and ran the
 delivery binary with networking disabled to confirm missing-key preflight denial.
 The actual host packaging helper also produced five ELF binaries whose hashes
 matched its generated manifest. These development checks are not a signed
-release, cross-architecture certification or systemd activation.
+release, cross-architecture certification or systemd activation. They do not
+establish that a later image includes the newly added sixth collection command;
+that requires a separate current image-build and binary check.
+
+The later `aspm:0.1.0-collection-optin` source build separately verified all six
+executables, the unchanged non-root core default, and a network-disabled
+collection binary rejecting missing configuration. The actual host packaging
+helper also produced six ELF binaries with matching manifest hashes. The
+source-built image was used for the owned collection rollout described above.
+This does not certify another architecture, a signed release or native systemd
+activation.
 
 When Docker's multi-platform image store prevents Kind loading an incomplete
 image index, export only the selected platform and load the resulting archive.
