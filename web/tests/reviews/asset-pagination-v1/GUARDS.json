@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T04:56:24.962Z",
+  "baselineHead": "cfba492d552ce97a484ed94fd2b3a0c7d0de555d",
+  "currentHead": "cfba492d552ce97a484ed94fd2b3a0c7d0de555d",
+  "headAdvancementIsNotBehaviorFailure": true,
+  "protectedBefore": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE.json",
+    "bytes": 21094,
+    "sha256": "772483d5d618e5c7fbf18a562930fd2dfc197dcf5f9e10bc4eca7edf9d04ae09"
+  },
+  "originalInputCount": 110,
+  "originalInputsAllByteIdentical": true,
+  "oldAssertionFiles": [
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "bytes": 11775,
+      "sha256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96"
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "bytes": 17775,
+      "sha256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "bytes": 7052,
+      "sha256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085"
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "bytes": 7613,
+      "sha256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67"
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "bytes": 11308,
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    },
+    {
+      "path": "web\\tests\\report-formats.spec.ts",
+      "bytes": 25258,
+      "sha256": "cd19d6294f409509b1ea6ba35da7eee7c37f31e5bef80ce5328472a8748365e6"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90"
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "bytes": 6804,
+      "sha256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1"
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "bytes": 9531,
+      "sha256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f"
+    },
+    {
+      "path": "web\\tests\\slack-delivery.spec.ts",
+      "bytes": 49215,
+      "sha256": "bf5d7ee46f6a85a33b62b1a2fb11785ba54b6e946b92903020d01b64fd5a29f7"
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "bytes": 3823,
+      "sha256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372"
+    }
+  ],
+  "priorReportFormatSliceUnchanged": true,
+  "legacyFixtureAmendments": [],
+  "archives": [],
+  "oldHistoryHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.json",
+      "bytes": 7687,
+      "sha256": "7713b524a577f126994e3f6ac72832b0538c5c3a59780f70596ca002e83ff340"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "f9b906d63f47748e7fd2f6871108c826f67ae4bc2e4fcd685dda57fa5b990857"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+      "bytes": 3649,
+      "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PACKET.json",
+      "bytes": 3682,
+      "sha256": "4d8ee5747841f8bcae5f4ec0665a9397e519289fa2b832c1bc9c2ce2c8ed7a02"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "379e475f2a1e480b9bd8a977d70fd14d4ca3debe5c7c93c15898876d58810c0e"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 3143,
+      "sha256": "8cc4e01c6d89fae28d7dd910821ca7a69570bf864c3f503c7a6a91d197cc1fa7"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "85c31282f30fb3b13c00a1b9843323777ccdb0c3e96bec7d74ac3cb7775cdaa7"
+    },
+    {
+      "path": "web\\tests\\reviews\\reports-ui-v1\\PACKET.json",
+      "bytes": 116170,
+      "sha256": "e8e5baed171d82a1da37d509080bcb05022100fabc9fb3ccbeb8b8050fcd6600"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\PACKET.json",
+      "bytes": 6521,
+      "sha256": "9b2559e8f5fd34988f7f9fd09a78db3782aa9831bf14f1a91d4ece566a879029"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "8890b8763def0d999ae5fdebebc7be2d9c2b4b92075c5e9fe7fd20b78a8636c1"
+    },
+    {
+      "path": "web\\tests\\reviews\\workflow-review-v2\\FROZEN.sha256",
+      "bytes": 42759,
+      "sha256": "f3a457e6f877da5e65e17eef5a94fb6a24a9307d3db06bb0540d17af85b21a39"
+    }
+  ],
+  "recursiveHistoryCopies": false,
+  "newCompiledFiles": [
+    {
+      "path": "web\\tests\\asset-pagination-data.ts",
+      "bytes": 5048,
+      "sha256": "2ec9995aa9f5082ffbdbef5ded765ace7f62a73f860e677f013b76a965c5bc9c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-fixture.ts",
+      "bytes": 18384,
+      "sha256": "595356703c687efd4afa9d5a19b02e6bee91ca8bb497b0890851d19be3399626"
+    },
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b"
+    }
+  ],
+  "compiler": {
+    "enumeration": {
+      "path": ".artifacts\\asset-pagination-v1-author\\compiler-inputs-02.txt",
+      "bytes": 23326,
+      "sha256": "96a3d9888c9c6479466f6f8fe763f96e6669ba369ad35fb2f23408982f609efb"
+    },
+    "activeLocalFiles": [
+      "web\\playwright.config.ts",
+      "web\\review.config.ts",
+      "web\\scripts\\review-capture.spec.ts",
+      "web\\src\\App.tsx",
+      "web\\src\\api\\authorization.ts",
+      "web\\src\\api\\client.ts",
+      "web\\src\\api\\slack-intents.ts",
+      "web\\src\\api\\slack.ts",
+      "web\\src\\api\\types.ts",
+      "web\\src\\components\\action-button.tsx",
+      "web\\src\\components\\animate\\button.tsx",
+      "web\\src\\components\\animate\\slot.tsx",
+      "web\\src\\components\\asset-editor.tsx",
+      "web\\src\\components\\finding-actions.tsx",
+      "web\\src\\components\\finding-dialog.tsx",
+      "web\\src\\components\\finding-notifications.tsx",
+      "web\\src\\components\\form-dialog.tsx",
+      "web\\src\\components\\icon.tsx",
+      "web\\src\\components\\import-status.tsx",
+      "web\\src\\components\\report-import.tsx",
+      "web\\src\\components\\report-metrics.tsx",
+      "web\\src\\components\\report-snapshot-create.tsx",
+      "web\\src\\components\\report-snapshot-detail.tsx",
+      "web\\src\\components\\slack-connection-editor.tsx",
+      "web\\src\\components\\slack-connections.tsx",
+      "web\\src\\components\\slack-delivery-detail.tsx",
+      "web\\src\\components\\slack-delivery-history.tsx",
+      "web\\src\\components\\states.tsx",
+      "web\\src\\components\\theme-menu.tsx",
+      "web\\src\\components\\ui\\button.tsx",
+      "web\\src\\lib\\application-input.ts",
+      "web\\src\\lib\\format.ts",
+      "web\\src\\lib\\preferences.tsx",
+      "web\\src\\lib\\router.ts",
+      "web\\src\\lib\\session.tsx",
+      "web\\src\\lib\\use-modal.ts",
+      "web\\src\\lib\\use-resource.ts",
+      "web\\src\\lib\\use-scoped-action.ts",
+      "web\\src\\lib\\utils.ts",
+      "web\\src\\main.tsx",
+      "web\\src\\pages\\assets.tsx",
+      "web\\src\\pages\\gallery.tsx",
+      "web\\src\\pages\\integrations.tsx",
+      "web\\src\\pages\\reports.tsx",
+      "web\\src\\pages\\work.tsx",
+      "web\\tests\\api-contract.ts",
+      "web\\tests\\application-fixture.ts",
+      "web\\tests\\application-review-regressions.spec.ts",
+      "web\\tests\\application-workflows.spec.ts",
+      "web\\tests\\asset-pagination-data.ts",
+      "web\\tests\\asset-pagination-fixture.ts",
+      "web\\tests\\asset-pagination.spec.ts",
+      "web\\tests\\finding-actions-data.ts",
+      "web\\tests\\finding-actions-fixture.ts",
+      "web\\tests\\finding-actions.spec.ts",
+      "web\\tests\\fixtures.ts",
+      "web\\tests\\foundations.spec.ts",
+      "web\\tests\\harness.spec.ts",
+      "web\\tests\\harness\\main.tsx",
+      "web\\tests\\m01-review-regressions.spec.ts",
+      "web\\tests\\network.ts",
+      "web\\tests\\report-formats-data.ts",
+      "web\\tests\\report-formats-fixture.ts",
+      "web\\tests\\report-formats.spec.ts",
+      "web\\tests\\reports-data.ts",
+      "web\\tests\\reports-fixture.ts",
+      "web\\tests\\reports-workflows.spec.ts",
+      "web\\tests\\responsive-session-controls.spec.ts",
+      "web\\tests\\shell.spec.ts",
+      "web\\tests\\slack-delivery.spec.ts",
+      "web\\tests\\slack-navigation.ts",
+      "web\\tests\\slack-ui-data.ts",
+      "web\\tests\\slack-ui-fixture.ts",
+      "web\\tests\\source-approval.ts",
+      "web\\tests\\workspace-reselection.spec.ts",
+      "web\\vite.config.ts"
+    ],
+    "onlyNewFiles": [
+      "web\\tests\\asset-pagination-data.ts",
+      "web\\tests\\asset-pagination-fixture.ts",
+      "web\\tests\\asset-pagination.spec.ts"
+    ]
+  },
+  "runner": {
+    "workers": 1,
+    "retries": 0,
+    "testTimeoutMS": 20000,
+    "expectTimeoutMS": 5000,
+    "combinedAPIRequestBudget": 60,
+    "priorCases": 72,
+    "newCases": 5
+  },
+  "sourceBoundary": {
+    "sameOriginHTTPFixturesOnly": true,
+    "ReactStateReplacement": false,
+    "sourceOnlyGreen": false,
+    "backendSchemaProductionEdits": false,
+    "realAssetDeletion": false,
+    "dependencyCompilerRunnerEdits": false,
+    "oldSignatureEdits": false,
+    "agentsOrCommits": false
+  },
+  "parentPublication": "Intentional previous report-format/source/installer/metadata publication remains outside this author scope. No reset, staging or modification is performed.",
+  "qualificationVector": {
+    "path": ".artifacts\\asset-pagination-v1-author\\red-pages-01.inputs.json",
+    "bytes": 19002,
+    "sha256": "33fa4df3d4379c51db6cfe6634b8995ff1f4b9a9608cf021337cce29015ac899"
+  }
+}

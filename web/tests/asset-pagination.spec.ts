@@ -1,0 +1,399 @@
+import type { Locator, Page } from "@playwright/test";
+import { password } from "./application-fixture";
+import { requireProductionUI } from "./network";
+import {
+  alphaCount, assetsPath, betaCount, createFields, createdID, createdName, editedName, firstAlpha,
+  importMetadata, importsPath, manualFile, pagingAlpha, pagingBeta, pagingUser,
+} from "./asset-pagination-data";
+import type { AssetPage, IntakeReceipt, PagingAsset } from "./asset-pagination-data";
+import { expect, test } from "./asset-pagination-fixture";
+import type { AssetPagingAPI, PagingCall, PagingControl } from "./asset-pagination-fixture";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+test.beforeEach(async ({ paging }) => {
+  requireProductionUI();
+  expect(paging.requests).toEqual([]);
+});
+
+const nextName = /^(?:Load more assets|Next assets|Next(?: page)?)$/i;
+const previousName = /^Previous(?: assets| page)?$/i;
+function inventory(page: Page) { return page.getByRole("region", { name: "Asset inventory", exact: true, includeHidden: true }); }
+function table(page: Page) { return inventory(page).getByRole("table", { name: "Assets", exact: true, includeHidden: true }); }
+function rows(page: Page) { return table(page).getByRole("row", { includeHidden: true }).filter({ has: page.getByRole("cell", { includeHidden: true }) }); }
+function row(page: Page, name: string) { return rows(page).filter({ hasText: name }); }
+function next(scope: Locator) { return scope.getByRole("button", { name: nextName }); }
+function previous(scope: Locator) { return scope.getByRole("button", { name: previousName }); }
+function refresh(page: Page) { return inventory(page).getByRole("button", { name: "Refresh assets", exact: true }); }
+function importDialog(page: Page) { return page.getByRole("dialog", { name: "Import report", exact: true }); }
+function importForm(page: Page) { return importDialog(page).getByRole("form", { name: "Import report", exact: true }); }
+function openImportAction(page: Page) { return page.getByRole("main").getByRole("button", { name: "Import report", exact: true }); }
+function assetSelect(page: Page) { return importForm(page).getByRole("combobox", { name: "Asset", exact: true }); }
+function latestImport(page: Page) { return page.getByRole("region", { name: "Latest report import", exact: true, includeHidden: true }); }
+async function frame(page: Page, count = 2) {
+  await page.evaluate(async (count) => {
+    for (let index = 0; index < count; index++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  }, count);
+}
+async function requested(control: PagingControl) {
+  await expect.poll(() => control.call !== null, "A paging action must use the actual declared HTTP cursor boundary.").toBe(true);
+  return control.call!;
+}
+async function release(page: Page, control: PagingControl, abort = false) {
+  control.release(); await control.delivered; await frame(page);
+  if (abort) await expect.poll(() => control.call?.failure, "Discarding an old scope also aborts its protected request.").toMatch(/abort/i);
+}
+function asPage(call: PagingCall): AssetPage {
+  expect(call.status).toBe(200);
+  const response = call.response as unknown as AssetPage;
+  expect(response.apiVersion).toBe("aspm/v1alpha1");
+  expect(response.items.length).toBeLessThanOrEqual(500);
+  return response;
+}
+function firstPage(paging: AssetPagingAPI, workspace = pagingAlpha.id) {
+  const record = paging.pages.filter((entry) => entry.call.workspace === workspace && !entry.call.query.cursor).at(-1);
+  if (!record) throw new Error("No real first-page HTTP response.");
+  return record.page;
+}
+async function visit(page: Page, paging: AssetPagingAPI, requireInventoryPaging = true) {
+  await page.goto("/#/assets");
+  await expect(table(page)).toBeVisible();
+  await expect(row(page, firstAlpha.name)).toBeVisible();
+  const first = firstPage(paging);
+  expect(first.total).toBe(alphaCount);
+  expect(first.items.length).toBeLessThanOrEqual(500);
+  expect(first.nextCursor).not.toBeNull();
+  if (requireInventoryPaging) await expect(next(inventory(page)), "Expose explicit native cursor pagination instead of the current first-page-only inventory.").toBeVisible();
+  return first;
+}
+function union(...pages: PagingAsset[][]) { return [...new Map(pages.flat().map((asset) => [asset.id, asset])).values()]; }
+function matchesRows(texts: string[], expected: PagingAsset[]) {
+  if (texts.length !== expected.length) return false;
+  const counts = new Map<string, number>();
+  for (const asset of expected) counts.set(asset.name, (counts.get(asset.name) ?? 0) + 1);
+  return [...counts].every(([name, count]) => texts.filter((text) => text.includes(name)).length === count);
+}
+async function exactDisplayed(page: Page, confirmed: PagingAsset[], current: AssetPage, preserveAll = false) {
+  await expect.poll(async () => {
+    const text = await rows(page).allTextContents();
+    return matchesRows(text, confirmed) || !preserveAll && matchesRows(text, current.items);
+  }, "Append or page-oriented views must show exact confirmed server rows, never duplicates, missing page rows or sample fallback.").toBe(true);
+  const text = await rows(page).allTextContents();
+  await expect(inventory(page)).toContainText(new RegExp(`\\b${current.total.toLocaleString("en-US").replace(",", ",?")}\\b`));
+  const counts = [...new Set([confirmed.length, current.items.length])];
+  await expect(inventory(page)).toContainText(new RegExp(`(?:\\b(?:${counts.join("|")})\\s*(?:of|/)\\s*${current.total.toLocaleString("en-US").replace(",", ",?")}|\\b${current.total.toLocaleString("en-US").replace(",", ",?")}\\s+total)`, "i"));
+  if (!matchesRows(text, confirmed)) {
+    await expect(previous(inventory(page)).or(next(inventory(page))).first(),
+      "A page-window UI must retain explicit navigation rather than silently dropping earlier context.").toBeVisible();
+  }
+}
+async function loadNext(page: Page, paging: AssetPagingAPI, current: AssetPage, workspace = pagingAlpha.id) {
+  if (!current.nextCursor) throw new Error("No native next cursor to follow.");
+  const control = paging.queuePage(current.nextCursor, 200, true, workspace);
+  await next(inventory(page)).click();
+  const call = await requested(control);
+  expect(call.query.cursor).toBe(current.nextCursor);
+  expect(call.workspace).toBe(workspace);
+  await release(page, control);
+  return asPage(call);
+}
+async function selectorIDs(page: Page) {
+  return assetSelect(page).locator("option").evaluateAll((items) => items.map((item) => (item as HTMLOptionElement).value).filter(Boolean));
+}
+async function displayedSelectorPage(page: Page, paging: AssetPagingAPI) {
+  const ids = new Set(await selectorIDs(page));
+  const candidates = paging.pages.filter((entry) => entry.call.workspace === pagingAlpha.id &&
+    entry.page.items.length > 0 && entry.page.items.every((item) => ids.has(item.id)));
+  const value = candidates.at(-1)?.page;
+  if (!value) throw new Error("The selector must be backed by a real returned asset page.");
+  return value;
+}
+async function openImport(page: Page) {
+  await openImportAction(page).click();
+  await expect(importForm(page)).toBeVisible();
+  await expect(assetSelect(page)).toBeVisible();
+  await expect(next(importForm(page)), "The import asset selector needs labelled manual access beyond its first page.").toBeVisible();
+}
+async function nextSelector(page: Page, paging: AssetPagingAPI, current: AssetPage) {
+  if (!current.nextCursor) throw new Error("The selector has no native continuation.");
+  const held = paging.queuePage(current.nextCursor, 200, true);
+  await next(importForm(page)).click();
+  const call = await requested(held);
+  expect(call.query.cursor).toBe(current.nextCursor);
+  await release(page, held);
+  const result = asPage(call);
+  await expect.poll(async () => {
+    const ids = await selectorIDs(page);
+    return result.items.every((asset) => ids.includes(asset.id));
+  }).toBe(true);
+  return result;
+}
+async function selectFirstPageIfNeeded(page: Page) {
+  for (let step = 0; step < 3 && !await row(page, firstAlpha.name).count(); step++) {
+    await previous(inventory(page)).click();
+    await frame(page);
+  }
+  await expect(row(page, firstAlpha.name)).toHaveCount(1);
+}
+async function privateScopeGone(page: Page, markers: string[], signedOut = false) {
+  for (const name of markers) await expect(page.locator("body")).not.toContainText(name);
+  await expect(importDialog(page)).toHaveCount(0);
+  await expect(latestImport(page)).toHaveCount(0);
+  if (signedOut) {
+    await expect(inventory(page)).toHaveCount(0);
+    await expect(page.getByRole("combobox", { name: "Workspace", exact: true, includeHidden: true })).toHaveCount(0);
+  }
+}
+async function signIn(page: Page) {
+  const signIn = page.getByRole("form", { name: "Sign in", exact: true });
+  await signIn.getByLabel("Email", { exact: true }).fill(pagingUser.email);
+  await signIn.getByLabel("Password", { exact: true }).fill(password);
+  await signIn.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(table(page)).toBeVisible();
+}
+
+test("AP1 Native inventory continuation preserves rows and truthful counts through failure, same-cursor retry and overlapping refresh", async ({ page, paging }) => {
+  const first = await visit(page, paging);
+  expect(first.total).toBeGreaterThan(500);
+  await exactDisplayed(page, first.items, first);
+  await frame(page, 5);
+  expect(paging.calls("GET").filter((call) => call.query.cursor), "No infinite or implicit cursor walk.").toHaveLength(0);
+  const originalRows = await rows(page).allTextContents(), denied = paging.queuePage(first.nextCursor!, 503, true);
+  await next(inventory(page)).click();
+  const failed = await requested(denied);
+  expect(failed.query.cursor).toBe(first.nextCursor);
+  await expect(inventory(page).getByRole("status").filter({ hasText: /loading|more assets|next page/i })).toBeVisible();
+  expect(await rows(page).allTextContents()).toEqual(originalRows);
+  await release(page, denied);
+  await expect(inventory(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+  expect(await rows(page).allTextContents()).toEqual(originalRows);
+  await expect(inventory(page).getByText("No assets", { exact: true })).toHaveCount(0);
+  const retry = paging.queuePage(first.nextCursor!, 200, true);
+  await inventory(page).getByRole("button", { name: /^Retry(?: (?:assets|page|loading assets))?$|^Try again$/i }).click();
+  const repeated = await requested(retry);
+  expect(repeated.query, "Continuation retry repeats the same cursor/limit, not a reset to page one.").toEqual(failed.query);
+  await release(page, retry);
+  const second = asPage(repeated), confirmed = union(first.items, second.items);
+  await exactDisplayed(page, confirmed, second);
+  const appended = matchesRows(await rows(page).allTextContents(), confirmed);
+  const reads = paging.calls("GET").length;
+  const rootRefresh = paging.queuePage("", 200, true), currentRefresh = paging.queuePage(first.nextCursor!, 200, true);
+  await refresh(page).click();
+  await expect.poll(() => rootRefresh.call !== null || currentRefresh.call !== null).toBe(true);
+  for (const control of [rootRefresh, currentRefresh]) control.release();
+  await frame(page, 4);
+  await exactDisplayed(page, confirmed, currentRefresh.call ? asPage(currentRefresh.call) : asPage(rootRefresh.call!), appended);
+  expect(paging.calls("GET").length).toBeGreaterThan(reads);
+  const calls = paging.calls("GET").length;
+  await frame(page, 5);
+  expect(paging.calls("GET")).toHaveLength(calls);
+  expect(paging.requests.every((call) => call.method === "GET")).toBe(true);
+});
+
+test("AP2 Import selection reaches a server asset beyond its initial page and preserves that exact ID through more pages and form edits", async ({ page, paging }) => {
+  await visit(page, paging, false);
+  await openImport(page);
+  let current = await displayedSelectorPage(page, paging);
+  const initialIDs = new Set(await selectorIDs(page)), initialChoice = current.items[0];
+  await assetSelect(page).selectOption(initialChoice.id);
+  current = await nextSelector(page, paging, current);
+  await expect(assetSelect(page)).toHaveValue(initialChoice.id);
+  const selected = current.items.find((asset) => !initialIDs.has(asset.id));
+  expect(selected, "Select a returned server ID that was genuinely absent from the initial selector.").toBeDefined();
+  if (!selected) throw new Error("No new selectable asset was returned.");
+  await assetSelect(page).selectOption(selected.id);
+  await importForm(page).getByLabel("Format", { exact: true }).selectOption("generic-csv");
+  await importForm(page).getByLabel("Scope ID", { exact: true }).fill("synthetic-edited-scope");
+  await expect(assetSelect(page)).toHaveValue(selected.id);
+  current = await nextSelector(page, paging, current);
+  await expect(assetSelect(page)).toHaveValue(selected.id);
+  expect(new Set(await selectorIDs(page)).size).toBe((await selectorIDs(page)).length);
+  await importForm(page).getByLabel("Format", { exact: true }).selectOption("manual");
+  const input = importMetadata(selected.id);
+  for (const [label, value] of Object.entries({
+    "Source ID": input.sourceId, "Scan ID": input.scanId, "Scope ID": input.scope.id,
+    "Scope revision": input.scope.revision, Branch: input.scope.branch, "Source scan time": "",
+  })) await importForm(page).getByLabel(label, { exact: true }).fill(value);
+  await importForm(page).getByLabel("Source status", { exact: true }).selectOption(input.sourceStatus);
+  await importForm(page).getByLabel("Scan kind", { exact: true }).selectOption(input.scanKind);
+  await importForm(page).getByLabel("Completeness", { exact: true }).selectOption(input.completeness);
+  await importForm(page).getByLabel("Report file", { exact: true }).setInputFiles({
+    name: manualFile.name, mimeType: manualFile.mimeType, buffer: manualFile.buffer,
+  });
+  await expect(assetSelect(page)).toHaveValue(selected.id);
+  paging.expectImport(input);
+  const accepted = paging.queueImport(true);
+  await importForm(page).getByRole("button", { name: "Import report", exact: true }).click();
+  const call = await requested(accepted);
+  expect(call.body).toMatchObject({ ...input, format: "manual", report: manualFile.buffer.toString("utf8") });
+  expect(call.body).not.toHaveProperty("mapping");
+  expect(call.body.assetId).not.toBe(initialChoice.id);
+  await release(page, accepted);
+  await expect(importDialog(page)).toHaveCount(0);
+  await expect(openImportAction(page)).toBeFocused();
+  const receipt = call.response?.import as IntakeReceipt;
+  await expect(latestImport(page)).toContainText(receipt.id);
+  await expect(latestImport(page).getByRole("status", { name: "Import status", exact: true })).toContainText(/queued/i);
+  await latestImport(page).getByText("Report identity and provenance", { exact: true }).click();
+  await expect(latestImport(page)).toContainText(selected.id);
+  await expect(page).toHaveURL(/#\/assets$/);
+  expect(paging.calls("POST", importsPath)).toHaveLength(1);
+});
+
+test("AP3 Viewer paging has no write authority and workspace, logout and 401 discard every old page and held continuation", async ({ page, paging }) => {
+  paging.roles.set(pagingAlpha.id, "viewer"); paging.serverRoles.set(pagingAlpha.id, "viewer");
+  const first = await visit(page, paging), second = await loadNext(page, paging, first);
+  for (const action of await page.getByRole("button", { name: /^(?:Create asset|Edit asset|Import report)$/ }).all()) await expect(action).toBeDisabled();
+  const old = paging.queuePage(second.nextCursor!, 200, true);
+  await next(inventory(page)).click(); await requested(old);
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(pagingBeta.id);
+  await expect(table(page)).toContainText("Synthetic Beta asset");
+  const beta = firstPage(paging, pagingBeta.id);
+  expect(beta.total).toBe(betaCount);
+  const alphaMarkers = [first.items[0].name, first.items.at(-1)!.name, second.items[0].name, second.items.at(-1)!.name];
+  await privateScopeGone(page, alphaMarkers);
+  await release(page, old, true);
+  await privateScopeGone(page, alphaMarkers);
+  const betaHeld = paging.queuePage(beta.nextCursor!, 200, true, pagingBeta.id);
+  await next(inventory(page)).click(); await requested(betaHeld);
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await privateScopeGone(page, [...alphaMarkers, beta.items[0].name], true);
+  await release(page, betaHeld, true);
+  await privateScopeGone(page, [...alphaMarkers, beta.items[0].name], true);
+  await signIn(page);
+  const again = firstPage(paging), againSecond = await loadNext(page, paging, again);
+  const rejected = paging.queuePage(againSecond.nextCursor!, 401);
+  await next(inventory(page)).click(); await requested(rejected); await rejected.delivered;
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await privateScopeGone(page, alphaMarkers, true);
+  await page.reload();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await privateScopeGone(page, alphaMarkers, true);
+  await paging.assertPrivate(page, true);
+  expect(paging.requests.filter((call) => call.method !== "GET").map((call) => call.path)).toEqual(["/api/v1/logout", "/api/v1/login"]);
+});
+
+test("AP4 Canonical edit/create acknowledgements survive old overlapping pages without optimistic rows or loss of loaded context", async ({ page, paging }) => {
+  const first = await visit(page, paging), second = await loadNext(page, paging, first);
+  await exactDisplayed(page, union(first.items, second.items), second);
+  const appended = matchesRows(await rows(page).allTextContents(), union(first.items, second.items));
+  await selectFirstPageIfNeeded(page);
+  const beforeEdit = paging.queuePage("", 200, true);
+  await refresh(page).click(); await requested(beforeEdit);
+  await row(page, firstAlpha.name).getByRole("button", { name: "Edit asset", exact: true }).click();
+  const edit = page.getByRole("form", { name: "Edit asset", exact: true });
+  await edit.getByLabel("Asset name", { exact: true }).fill(editedName);
+  const edited = paging.queuePatch(firstAlpha.id, true);
+  await edit.getByRole("button", { name: "Save asset", exact: true }).press("Enter");
+  expect((await requested(edited)).body).toEqual({ name: editedName });
+  await expect(row(page, firstAlpha.name)).toHaveCount(1);
+  await expect(row(page, editedName)).toHaveCount(0);
+  await release(page, edited);
+  await expect(edit).toHaveCount(0);
+  await expect(row(page, editedName)).toHaveCount(1);
+  await release(page, beforeEdit);
+  await expect(row(page, editedName)).toHaveCount(1);
+  await expect(row(page, firstAlpha.name)).toHaveCount(0);
+  expect((edited.call!.response?.asset as PagingAsset).id).toBe(firstAlpha.id);
+  const confirmed = union(first.items.map((asset) => asset.id === firstAlpha.id ? { ...asset, name: editedName } : asset), second.items);
+  await exactDisplayed(page, confirmed, { ...first, items: confirmed.slice(0, first.items.length) }, appended);
+
+  const beforeCreate = paging.queuePage("", 200, true);
+  await refresh(page).click(); await requested(beforeCreate);
+  await page.getByRole("main").getByRole("button", { name: "Create asset", exact: true }).click();
+  const create = page.getByRole("form", { name: "Create asset", exact: true });
+  await create.getByLabel("Asset name", { exact: true }).fill(createFields.name);
+  await create.getByLabel("Environment", { exact: true }).fill(createFields.environment);
+  await create.getByLabel("Criticality", { exact: true }).selectOption(createFields.criticality);
+  await create.getByLabel("Tags", { exact: true }).fill(createFields.tags.join(", "));
+  const created = paging.queueCreate(true);
+  await create.getByRole("button", { name: "Create asset", exact: true }).press("Enter");
+  expect((await requested(created)).body).toEqual(createFields);
+  await expect(row(page, createdName)).toHaveCount(0);
+  await release(page, created);
+  await expect(create).toHaveCount(0);
+  await expect(row(page, createdName)).toHaveCount(1);
+  const newAsset = created.call!.response?.asset as PagingAsset;
+  expect(newAsset.id).toBe(createdID);
+  await release(page, beforeCreate);
+  await expect(row(page, createdName)).toHaveCount(1);
+  await expect(row(page, editedName)).toHaveCount(1);
+  await exactDisplayed(page, union(confirmed, [newAsset]), firstPage(paging), appended);
+  const rendered = await rows(page).allTextContents();
+  expect(rendered.filter((text) => text.includes(createdName))).toHaveLength(1);
+  expect(rendered.filter((text) => text.includes(editedName))).toHaveLength(1);
+  expect(await inventory(page).evaluate((element) => element.contains(document.activeElement)),
+    "Keyboard saves return to meaningful inventory context, not BODY or a stale removed row.").toBe(true);
+  await expect(page.getByRole("combobox", { name: "Workspace", exact: true })).toHaveValue(pagingAlpha.id);
+  await expect(page).toHaveURL(/#\/assets$/);
+  expect(paging.calls("PATCH", `${assetsPath}/${firstAlpha.id}`)).toHaveLength(1);
+  expect(paging.calls("POST", assetsPath)).toHaveLength(1);
+});
+
+async function reducedMotion(page: Page) {
+  const moving = await page.evaluate(async () => {
+    const failures = new Set<string>();
+    for (let sample = 0; sample < 6; sample++) {
+      for (const animation of document.getAnimations()) {
+        if (animation.playState !== "running" || !(animation.effect instanceof KeyframeEffect)) continue;
+        if (animation.effect.getTiming().iterations === Infinity) failures.add("continuous");
+        const frames = animation.effect.getKeyframes() as Array<Record<string, unknown>>;
+        for (const key of ["transform", "translate", "scale", "rotate", "top", "left"]) {
+          if (new Set(frames.map((frame) => frame[key]).filter((value) => value !== undefined).map(String)).size > 1) failures.add(key);
+        }
+      }
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    }
+    return [...failures];
+  });
+  expect(moving).toEqual([]);
+}
+
+test("AP5 At 390px manual inventory/selector paging preserves selected IDs, draft caret and reduced-motion keyboard context", async ({ page, paging }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const first = await visit(page, paging);
+  const action = next(inventory(page));
+  await action.scrollIntoViewIfNeeded(); await action.focus();
+  const oldScroll = await page.evaluate(() => scrollY);
+  expect(oldScroll).toBeGreaterThan(100);
+  const loaded = paging.queuePage(first.nextCursor!, 200, true);
+  await action.press("Enter"); await requested(loaded); await release(page, loaded);
+  await exactDisplayed(page, union(first.items, asPage(loaded.call!).items), asPage(loaded.call!));
+  expect(await inventory(page).evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  await openImport(page);
+  const current = await displayedSelectorPage(page, paging), selected = current.items[0];
+  await assetSelect(page).selectOption(selected.id);
+  await importForm(page).getByLabel("Format", { exact: true }).selectOption("manual");
+  const scope = importForm(page).getByLabel("Scope revision", { exact: true });
+  await scope.fill("synthetic-literal-scope-revision");
+  const more = paging.queuePage(current.nextCursor!, 200, true);
+  await next(importForm(page)).click(); await requested(more);
+  await scope.focus(); await scope.press("Home"); await scope.press("ArrowRight");
+  const caret = await scope.evaluate((element) => ({
+    start: (element as HTMLInputElement).selectionStart, end: (element as HTMLInputElement).selectionEnd,
+  }));
+  await release(page, more);
+  await expect(scope).toBeFocused();
+  await expect(scope).toHaveValue("synthetic-literal-scope-revision");
+  expect(await scope.evaluate((element) => ({
+    start: (element as HTMLInputElement).selectionStart, end: (element as HTMLInputElement).selectionEnd,
+  }))).toEqual(caret);
+  await expect(assetSelect(page)).toHaveValue(selected.id);
+  expect(new Set(await selectorIDs(page)).size).toBe((await selectorIDs(page)).length);
+  expect(await importDialog(page).evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return rect.left >= -1 && rect.right <= innerWidth + 1 && rect.top >= -1 && rect.bottom <= innerHeight + 1;
+  })).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  await reducedMotion(page);
+  for (let index = 0; index < 8; index++) {
+    await page.keyboard.press("Tab");
+    expect(await importDialog(page).evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  }
+  await page.keyboard.press("Escape");
+  await expect(openImportAction(page)).toBeFocused();
+  await expect(page).toHaveURL(/#\/assets$/);
+  await paging.assertPrivate(page, true);
+  expect(paging.requests.every((call) => call.method === "GET")).toBe(true);
+});

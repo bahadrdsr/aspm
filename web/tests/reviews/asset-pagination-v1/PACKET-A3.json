@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "name": "asset-pagination-a3",
+  "amendment": "A3",
+  "status": "frozen unsigned independent row-identity measurement amendment",
+  "createdAt": "2026-09-17T07:48:30.039Z",
+  "files": [
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "bytes": 12242,
+      "sha256": "f03d03e6a4819c980bff149af7a653683c1d1bab040698755f2c675547878c39"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-ack.spec.ts",
+      "bytes": 11525,
+      "sha256": "b164eb3a196c6684b82c5e07d46f3f360c44a5e660ea3b3622d551938bdacc6c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-data.ts",
+      "bytes": 5048,
+      "sha256": "2ec9995aa9f5082ffbdbef5ded765ace7f62a73f860e677f013b76a965c5bc9c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-fixture.ts",
+      "bytes": 18384,
+      "sha256": "595356703c687efd4afa9d5a19b02e6bee91ca8bb497b0890851d19be3399626"
+    },
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A1.json",
+      "bytes": 1022,
+      "sha256": "69d00d09517f0cbe1563fdd818dc2b9031ccfe9f2ca81f1cac635b4fc99746e0"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A3.json",
+      "bytes": 1934,
+      "sha256": "c87c8ea74b40bd1584a94f6bd2f57920db69f3950eab4e5ca8215e0d90e22937"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A1.json",
+      "bytes": 269673,
+      "sha256": "68588ef5534e972b33feb2cc1594e284b599795013651f7d14a72c5b62b7c67f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A2.json",
+      "bytes": 145379,
+      "sha256": "04882eb1a18ef8ecd41e995cae197381fa1a8e620a3b7666fd99942ebbe36570"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A3.json",
+      "bytes": 280675,
+      "sha256": "dfa58a0d8a908748df6379e03d20c6f6b964efd0f837bbfabf01197d2f634c56"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE.json",
+      "bytes": 21094,
+      "sha256": "772483d5d618e5c7fbf18a562930fd2dfc197dcf5f9e10bc4eca7edf9d04ae09"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPATIBILITY-A2.json",
+      "bytes": 20160,
+      "sha256": "18c0e68d8cb0272f5a5aac0c4205e618eb5dc9b2b93f96e5a41ab65ca3b7911f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPATIBILITY.json",
+      "bytes": 18710,
+      "sha256": "f4650ea5a03a9b48340c00fae04b0ac9bd57c5d3951595f42933c93225b015c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPILATION-A2.json",
+      "bytes": 841,
+      "sha256": "47677a306fc0dc2927c6a7821a478da230a3ad14a1a2020c88aad71c7a0a43d6"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPILATION.json",
+      "bytes": 1536,
+      "sha256": "6b0432acf24a7466951942338645a168ad920c9be9ce1247f7fa40b87e887824"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\CONTRACT-A2.txt",
+      "bytes": 5881,
+      "sha256": "22981264a3dc2b8725202d74ba2b8c74a52f51688f63214d9bc2260ce4e8c34e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\CONTRACT.txt",
+      "bytes": 10404,
+      "sha256": "ed83bb6d195319670a8cf2594d4ea387ac2efa90684896b540fd28f1de356d68"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A1.json",
+      "bytes": 5003,
+      "sha256": "85a5fd0f171a322a85ed420db0823c280aa8a2f765b84ac57ab328e194b0569f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A2.json",
+      "bytes": 4638,
+      "sha256": "0c386dc313e46a39c1b86306964bf2dfa61a0431cbd4eee66c621e9ef8831c56"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A3.json",
+      "bytes": 7243,
+      "sha256": "8cd817e13cac11f8968453acfc6f81b0f1b9b193283f15e10910baab8ee888f9"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE.json",
+      "bytes": 7304,
+      "sha256": "43ebd025a33d7444d9b66192c8fcb64d50398e577434b14be411055fc643f64c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A1.json",
+      "bytes": 11328,
+      "sha256": "dfa76b9aeb3d45ab79cea80da61355680a2d550f6b6cb915eba0fb702b37649c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A2.json",
+      "bytes": 2460,
+      "sha256": "4a0a5cd2daa19bbc4e229ca8105e7e36aa64c123ecd3ed03591689b9b403fd03"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A3.json",
+      "bytes": 12469,
+      "sha256": "ca245754e1ffc5987de46815b4d3d70dd001f9ca1895b2da304d4c467805dd2e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS.json",
+      "bytes": 10222,
+      "sha256": "9c4b0dc4dd7c9d60b8258b9be541a9078dfebb3b2092bc141d003ce996994766"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A1.json",
+      "bytes": 4110,
+      "sha256": "b055d3bc09f896f6a0de697555918efc4c15cfecc34f5820d997bf0afbe373c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A1.txt",
+      "bytes": 4581,
+      "sha256": "0c2a83613dd9d8354b5726d3f102246fa188dca5547e57396dfeaaea02703cbc"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A2.json",
+      "bytes": 3324,
+      "sha256": "61b387f00635ac69b6d51445c16ef01a049d8742aa67b27a0ef4268a335b7a55"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A2.txt",
+      "bytes": 4753,
+      "sha256": "697d07fa9c94d17fedddb67f25311e8d4f1c5a39b7218ac3a7f57b387674ca10"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A3.json",
+      "bytes": 4281,
+      "sha256": "c4f56eb62ace4c0409c143893045ada2683ab084a60c6b9bc098297faab9fbee"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A3.txt",
+      "bytes": 4710,
+      "sha256": "775164246bb887147c19143ddffe15fb84497132731ffcc77eb4c296a0e3fe27"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF.json",
+      "bytes": 4377,
+      "sha256": "0e364e434e94af245cabfbe323ba069f7339d79ad466495ca2b6b28557a19ebd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF.txt",
+      "bytes": 5127,
+      "sha256": "674ceaa2548ef7ddddc5abe7e52c92d3a91927d220e65daa18b2d04c8c80a043"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.json",
+      "bytes": 6067,
+      "sha256": "4df9aaf0e86be0c019db56134e0ca4159fd997e8ae9a40de2441ba71701e516f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "30d633efb855c76bef7156903441fac4a87e766938c7d288e7ad46c0df436726"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.json",
+      "bytes": 8733,
+      "sha256": "ee3061dc14041b964fd3da131b1f75e7092b1bedce45eb5b1d4372ee87207818"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "755a855c2fd24d44ada6cdf4c243c50963bc9fd829da505824ded2bf45fbcdbd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 3109,
+      "sha256": "ac4a46f8f187b22b95b3ef09855795935645ae1dd707c9c2c83f3e7b65d91712"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "8aef86ae1a70ebf5da625491b9cb634bffac35b97de309e0ad5726ca37c496ca"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\RED-A2.json",
+      "bytes": 12978,
+      "sha256": "be29e36b1a7f24d589a49326666dc71192e29c94b9d15bee7414e0edc01af0b7"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\RED.json",
+      "bytes": 15578,
+      "sha256": "41e89a6a5f92745d709a3b3a01de9f7ee89a8054be6850a1d8fed757325354bf"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\VALIDATION-A1.json",
+      "bytes": 33915,
+      "sha256": "83061637869fac92deb40f92905f679d9eb97b76c69c4ab29220296346fd469c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\VALIDATION-A3.json",
+      "bytes": 42097,
+      "sha256": "2a04d7133011fea2908ef774de46719203d11d1272e020262ef243eca5c42dcd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\asset-pagination.spec.ts.before.txt",
+      "bytes": 25531,
+      "sha256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a3\\application-review-regressions.spec.ts.before.txt",
+      "bytes": 11775,
+      "sha256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96"
+    }
+  ],
+  "priorPacketReferences": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.json",
+      "bytes": 6067,
+      "sha256": "4df9aaf0e86be0c019db56134e0ca4159fd997e8ae9a40de2441ba71701e516f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "30d633efb855c76bef7156903441fac4a87e766938c7d288e7ad46c0df436726"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.json",
+      "bytes": 8733,
+      "sha256": "ee3061dc14041b964fd3da131b1f75e7092b1bedce45eb5b1d4372ee87207818"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "755a855c2fd24d44ada6cdf4c243c50963bc9fd829da505824ded2bf45fbcdbd"
+    }
+  ],
+  "exactSpecAmendment": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A3.json",
+    "bytes": 1934,
+    "sha256": "c87c8ea74b40bd1584a94f6bd2f57920db69f3950eab4e5ca8215e0d90e22937"
+  },
+  "sourceHOLD": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A3.json",
+    "bytes": 12469,
+    "sha256": "ca245754e1ffc5987de46815b4d3d70dd001f9ca1895b2da304d4c467805dd2e"
+  },
+  "qualification": {
+    "targetedFourPassed": true,
+    "full79Passed": true,
+    "typecheckPassed": true,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0
+  },
+  "parentResealRequired": true,
+  "oldSignaturesRewritten": false
+}

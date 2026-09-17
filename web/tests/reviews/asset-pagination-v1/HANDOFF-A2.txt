@@ -1,0 +1,89 @@
+ASSET PAGINATION A2 - FROZEN IMMEDIATE-ACK REGRESSION HANDOFF
+==========================================================
+
+Stop for parent hook fix, independent review and reseal. Production is not
+changed by this author. This new regression demonstrates an uncovered gap;
+the earlier 77-case happy-flow result is not evidence that the gap works.
+
+New test file only
+------------------
+  web\tests\asset-pagination-ack.spec.ts
+
+Two variants of one focused boundary use the existing unmodified HTTP fixture:
+  AP6 edit / held NEW post-save first-page GET planned to return 200
+  AP6 create / held NEW post-save first-page GET planned to return 503
+All AP1-5/A1 and prior 72 assertion bytes remain identical. No helper, fixture,
+runner, setting, dependency, source or old signature/control set is amended.
+No React/DOM replacement, timer, forced click, agent, commit, backend/API
+revision, real deletion or native cloud operation is introduced.
+
+Exact distinction from AP4
+-------------------------
+AP4 holds a read begun before the mutation; the save then triggers another,
+unheld GET. That later read settles quickly and applies the pending ACK.
+A2 instead validates and holds the mutation response first, queues a held
+cursor="" read, releases the validated ACK, and waits for the NEW save-triggered
+GET. It asserts request ordering and that the new GET has not settled.
+
+Before releasing that new GET, canonical inventory data and selector options
+must already incorporate the complete 200/201 mutation DTO. A confirmed ACK
+does not need a later successful/failed list read to become visible.
+Unacknowledged form data must still remain non-optimistic.
+
+Actual browser observations on source HOLD
+-----------------------------------------
+  Edit: PATCH 200 returned the canonical new name and server ID.
+        The modal closed and the saved notice appeared.
+        NEW first-page GET was requested, still held/unsettled.
+        Canonical-name rows: 0. Old-name rows: 1. Loaded rows: 200.
+        The immediate canonical-row assertion failed.
+
+  Create: POST 201 returned the canonical new asset and server ID.
+          The modal closed and the saved notice appeared.
+          NEW first-page GET (planned 503) was requested, still held/unsettled.
+          Canonical rows: 0. Loaded rows: 200, expected 201.
+          The immediate canonical-row assertion failed.
+
+Each case made seven actual same-origin API requests with zero fixture
+violations, browser errors or external attempts. The pre-assertion barrier JSON
+and screenshot capture these facts while the GET is still held, before fixture
+cleanup can release pending responses. This is not merely source inspection
+or a screenshot after teardown.
+
+The later assertions require the canonical ID/name in Import options before
+read release, retention of every initial/later row, selection preservation
+through GET 200/503, no duplicate/rollback and the unchanged continuation
+frontier. They are authored requirements but currently BLOCKED by the earlier
+immediate-row RED; no unexecuted selector/settlement behavior is claimed green.
+
+Qualification and integrity
+---------------------------
+  Actual typecheck: passed.
+  New A2 variants: 2 genuine expected browser RED failures.
+  Unchanged AP1-5/A1 plus all prior 72: all 77 passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+  Original one worker, 20-second case, five-second expect and 60-API-call
+  per-case limits remain unchanged.
+
+BEFORE-A2.json and GUARDS-A2.json record the current source HOLD, all unchanged
+old input/signature hashes and the single new compiled spec. The hook remains:
+  web\src\lib\use-asset-pages.ts
+  sha256:96a2bc0f3d6aa88648fe6c591a1118677e622fdeb735de24088744eb48b74025
+
+No unchanged file or old review tree is archived. Original packets, RED,
+A1 history and signatures stay in place and are referenced by raw hashes.
+All new logs, screenshots, trace JSON and results have unique frozen names:
+  .artifacts\asset-pagination-v1-a2
+Do not overwrite held-new-get-red-01 or existing-77-01 evidence.
+
+A2 packet
+---------
+CONTRACT-A2.txt defines this narrow acceptance boundary.
+RED-A2.json records the actual before-new-GET-release observations and failures.
+COMPATIBILITY-A2.json records the independent unchanged 77-case pass.
+COMPILATION-A2.json, GUARDS-A2.json and EVIDENCE-A2.json preserve input/results.
+HANDOFF-A2.json and PACKET-A2.json/PACKET-A2.sha256 freeze the unsigned handoff.
+
+Parent may now apply the surgical hook change without altering frozen tests,
+earlier read-order fencing or backend/API shape. Reviewer must run all 79 cases
+and typecheck on fresh evidence, preserve all prior assertions and reseal.

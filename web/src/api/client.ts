@@ -219,12 +219,16 @@ function asset(value: unknown, workspace: string | null): Asset {
   };
 }
 
-function parseAssets(value: unknown, workspace: string | null): AssetsResponse {
+function parseAssets(value: unknown, workspace: string | null, limit: number, cursor: string): AssetsResponse {
   const body = versioned(value);
   const items = uniqueIds(array(body.items, "asset list").map((value) => asset(value, workspace)));
   const total = count(body.total, "asset count");
-  if (total < items.length) return invalid("asset count");
-  return { apiVersion, items, total, nextCursor: nullableText(body.nextCursor, "asset cursor") };
+  const nextCursor = nullableText(body.nextCursor, "asset cursor");
+  if (total < items.length || items.length > limit) return invalid("asset count");
+  if (nextCursor !== null && (!/^[a-f0-9]{32}$/.test(nextCursor) || nextCursor !== items.at(-1)?.id)) return invalid("asset cursor");
+  if ((cursor !== "" || nextCursor !== null) && items.some((item, index) =>
+    !/^[a-f0-9]{32}$/.test(item.id) || item.id <= (index === 0 ? cursor : items[index - 1].id))) return invalid("asset page order");
+  return { apiVersion, items, total, nextCursor };
 }
 
 function parseAsset(value: unknown, workspace: string | null): AssetResponse {
@@ -500,9 +504,19 @@ export const api = {
       { method: "POST", body, signal, expectedStatus: 201 });
   },
   catalog: (signal: AbortSignal) => request("/api/v1/integrations/catalog", parseCatalog, { signal }),
-  assets: (signal: AbortSignal) => {
+  assets: (signal: AbortSignal, options?: { cursor?: string; limit?: number }) => {
     const workspace = requestAuthority().workspace;
-    return request("/api/v1/assets", (value) => parseAssets(value, workspace), { signal });
+    const cursor = options?.cursor === undefined ? "" : options.cursor;
+    const limit = options?.limit === undefined ? 100 : options.limit;
+    if (!Number.isInteger(limit) || limit < 1 || limit > 500 ||
+      typeof cursor !== "string" || (cursor !== "" && !/^[a-f0-9]{32}$/.test(cursor))) {
+      throw new APIError("Asset pages require a limit from 1 to 500 and a valid native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams();
+    if (cursor !== "") query.set("cursor", cursor);
+    if (options?.limit !== undefined) query.set("limit", String(limit));
+    const path = query.size === 0 ? "/api/v1/assets" : `/api/v1/assets?${query}`;
+    return request(path, (value) => parseAssets(value, workspace, limit, cursor), { signal, expectedStatus: 200 });
   },
   createAsset: (body: AssetFields, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

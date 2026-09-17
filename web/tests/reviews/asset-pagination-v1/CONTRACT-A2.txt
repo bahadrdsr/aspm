@@ -1,0 +1,97 @@
+ASSET PAGINATION A2 - IMMEDIATE MUTATION ACK / HELD NEW GET REGRESSION
+==================================================================
+
+Narrow gap
+----------
+The current use-asset-pages acknowledge() stores {order,asset,pending:true}
+and starts a first-page refresh. It does not merge that canonical asset into
+rows until applyAcknowledgements() runs after the read succeeds or fails.
+AssetsPage can therefore close the modal and announce the asset was saved
+while the displayed inventory and Import selector still contain old/absent data.
+
+AP4 protects an EARLIER held read. Its subsequent save starts a different,
+unheld GET that quickly applies the ACK, so that happy flow does not establish
+immediate receipt visibility. AP4 and every AP1-5/A1 assertion stay unchanged.
+The new A2 file independently gates the NEW read triggered by the save.
+
+New file and variants
+--------------------
+  web\tests\asset-pagination-ack.spec.ts
+Two variants of one focused regression:
+  AP6 edit, followed by a held first-page GET returning 200
+  AP6 create, followed by a held first-page GET returning 503
+
+The fixture/data modules are reused exactly as previously frozen:
+  asset-pagination-fixture.ts: queuePatch, queueCreate, queuePage
+  asset-pagination-data.ts: native synthetic pages, fields, IDs and types
+No fixture, original spec, helper, runner, setting, dependency or production
+file is amended. No new API/revision field, deletion, backend operation,
+agent, commit, timer, forced click, React state or DOM replacement is added.
+DOM reads and actual labelled controls remain the UI observation boundary.
+
+Required request and assertion order
+-----------------------------------
+1. Load the actual initial page and one later page through native cursor GETs.
+   Retain their complete unique confirmed rows and continuation frontier.
+2. Open the real Edit/Create form. Hold its PATCH/POST acknowledgement.
+   Assert exact intended request fields, correct workspace/status and full
+   canonical Asset DTO. Prior rows remain unchanged and the new name/record
+   must NOT appear optimistically while that ACK is held.
+3. Only after the mutation request has arrived, queue a held GET for cursor
+   "". Release the validated mutation ACK. Wait for the NEW post-save first
+   GET to arrive. Verify it is later than the mutation and that no other
+   inventory read has supplied the new state.
+4. While that new GET is STILL held, require the modal closed, saved notice,
+   and canonical edited/created inventory row already visible exactly once.
+   All initial/later rows remain, keyed by identity; an edit replaces the old
+   displayed name, and a create adds the server-generated ID without duplicates.
+5. Still before releasing the GET, open Import report normally. All confirmed
+   loaded IDs, including the canonical ACK, must be available exactly once.
+   The option for the acknowledged server ID uses its canonical name, and
+   deliberately selecting it must succeed without waiting for a refresh.
+6. Release the held GET as 200/edit or 503/create. Success/error must not roll
+   back or duplicate ACK state, drop unrelated loaded rows or reset selection.
+   A 503 remains visible as an actual service error without hiding valid ACKs.
+7. Close Import normally, retain Assets/workspace context, then load the next
+   original continuation cursor. The first-page post-save refresh must not
+   rewind it. The canonical ACK and all other loaded rows still remain.
+   There is exactly one mutation and no implicit import/deletion/native call.
+
+Each case attaches a read-only "ack-before-new-get-release" observation plus
+a screenshot before the critical assertion. It records validated mutation
+status/DTO, the held new GET, whether it settled, expected/observed canonical
+rows and preserved loaded count. This distinguishes a genuine missing ACK
+render from a fixture failure or a late screenshot taken after teardown has
+released outstanding requests.
+
+Truth and boundaries
+--------------------
+An unacknowledged form draft is not a committed row. Conversely, a complete
+validated 200/201 mutation ACK is already canonical; an unrelated subsequent
+list read is not additional permission to display it.
+The existing ordering fence against older reads must not be removed to make
+this new boundary work. Original AP4, the A1 focus ordering and all 72 prior
+assertions remain byte-identical and are separate regression authority.
+
+No browser-side asset revision, new backend field or directory/selector API
+is invented. Total remains the server's last-read count, not a fabricated
+globally current count. Row/selector checks operate on the known loaded set.
+All traffic is the existing same-origin synthetic HTTP fixture, not native API.
+The 60-request combined budget, one worker, 20-second case timeout, five-second
+expect timeout and zero retries/skips remain unchanged.
+
+Evidence and stopping point
+--------------------------
+BEFORE-A2.json hashes current source HOLD, the A1 controls and original
+history/signature references. No old tree or unchanged file is archived.
+Typecheck and actual browser RED must be observed before the parent fixes
+the hook. The expected RED is the missing canonical row at step 4 with the
+NEW GET still held, not a source-only diagnosis or a missing UI control.
+Later selector/settlement/frontier assertions blocked by that RED are authored
+requirements, not claimed executed successes.
+
+All new logs/screenshots/traces/results use distinct names outside protected
+tests in .artifacts\asset-pagination-v1-a2. Original RED/A1 packets/signatures
+are unchanged in place. A2 has a new unsigned packet and hash handoff.
+Stop after independent freeze for the parent to apply the surgical hook fix,
+validate the full 79 cases, review source integrity and reseal.

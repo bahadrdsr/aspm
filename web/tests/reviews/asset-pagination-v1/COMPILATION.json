@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "actualTypecheck": true,
+  "finalExitCode": 0,
+  "runs": [
+    {
+      "command": "npm.cmd run typecheck",
+      "startedAt": "2026-09-17T04:44:44.0146080Z",
+      "endedAt": "2026-09-17T04:44:46.1662681Z",
+      "exitCode": 0,
+      "run": {
+        "path": ".artifacts\\asset-pagination-v1-author\\typecheck-01.run.json",
+        "bytes": 156,
+        "sha256": "84fa7b7bd26dca9d17740de5164417abfcff2e2f98ae5637d8f0bbce9c9e4816"
+      },
+      "stdout": {
+        "path": ".artifacts\\asset-pagination-v1-author\\typecheck-01.stdout.txt",
+        "bytes": 49,
+        "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+      }
+    },
+    {
+      "command": "npm.cmd run typecheck",
+      "startedAt": "2026-09-17T04:48:51.0232600Z",
+      "endedAt": "2026-09-17T04:48:52.9564341Z",
+      "exitCode": 0,
+      "run": {
+        "path": ".artifacts\\asset-pagination-v1-author\\typecheck-02.run.json",
+        "bytes": 156,
+        "sha256": "2f813f2ed1f926520fb91c851340cb37f1a7db1a78cb6bce86c47827f26d2b07"
+      },
+      "stdout": {
+        "path": ".artifacts\\asset-pagination-v1-author\\typecheck-02.stdout.txt",
+        "bytes": 49,
+        "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+      }
+    }
+  ],
+  "enumerationIsNotTypecheck": true,
+  "enumeration": {
+    "path": ".artifacts\\asset-pagination-v1-author\\compiler-inputs-02.txt",
+    "bytes": 23326,
+    "sha256": "96a3d9888c9c6479466f6f8fe763f96e6669ba369ad35fb2f23408982f609efb"
+  }
+}

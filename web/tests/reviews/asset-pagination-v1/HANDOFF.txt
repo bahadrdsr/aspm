@@ -1,0 +1,95 @@
+ASSET PAGINATION V1 - FROZEN INDEPENDENT TEST-AUTHOR HANDOFF
+=========================================================
+
+Stop for parent verify/seal and a separate coder/reviewer.
+This packet contains tests only, not a pagination implementation.
+
+Measured qualification
+----------------------
+  Actual npm.cmd run typecheck: exit 0.
+  Five new cases: expected missing-pagination UI RED.
+  All prior 72 browser cases: passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+  New RED fixture violations/browser errors/external attempts: 0.
+  Four API reads per new RED case, within the unchanged combined 60-call cap.
+  Original one worker, 20-second case and five-second expect timeouts retained.
+
+AP1/AP3/AP4/AP5 reach the real Assets table and fail only because inventory
+Load more/Next is absent. AP2 reaches the real Import report form and fails
+because its asset selector has no paging action. Later continuation/retry,
+out-of-page import, scope/ACK and keyboard assertions are authored requirements,
+not claimed executed successes. No native/backend/parser qualification.
+
+Exactly three new compiled files
+-------------------------------
+  web\tests\asset-pagination-data.ts
+  web\tests\asset-pagination-fixture.ts
+  web\tests\asset-pagination.spec.ts
+
+No existing code, assertion, fixture, source approval, session/credential/
+Origin/request-budget guard, compiler/Playwright/lock/dependency file or
+signature/control set is edited. The previous report-format slice remains
+byte-identical. There are no legacy amendments and no byte archives.
+Older history is hash-referenced, never recursively copied.
+No agents, real asset deletions, backend calls, staging, commits or pushes.
+
+Contract highlights
+-------------------
+Use existing GET /api/v1/assets with native cursor/limit only:
+  default limit 100; range 1..500
+  optional native 32-lowercase-hex cursor
+  id > cursor, ORDER BY id, last returned ID as nextCursor only when more exist
+  total is the workspace count, not one-page length
+The fixture seeds 1103 Alpha and 507 Beta records. Each returned page is native;
+overlap comes from repeated/refresh reads and insertion across a prior boundary,
+not from forging IDs <= the requested cursor.
+
+Keep the existing bare first-page GET at default 100 so all earlier callers
+and frozen fixtures remain unchanged. Do not add needless default query fields
+then weaken old tests. No search/page/offset/new directory API.
+
+Explicit inventory and in-form selector Load more/Next controls are required.
+Append and page-window UX are both supported. Loaded/visible counts and totals
+must remain honest. Failed continuations retain confirmed rows; Retry repeats
+the cursor/limit. An appending view does not collapse after overlapping refresh.
+No automatic infinite fetch, new virtualization dependency or full-directory
+memory/atomicity claim.
+
+The deliberate selected asset survives more selector pages and format/scope
+edits. Import uses its exact returned later-page ID and the unchanged manual
+JSON wrapper. No source body/token/page data is placed in browser storage.
+Workspace/logout/401 clear all pages and cancel old held requests.
+Viewer paging does not grant write authority.
+
+Sparse edit/create ACKs are full server DTOs, not optimistic rows. Older held
+reads cannot roll back acknowledged names or drop newly acknowledged records.
+Asset DTO has no revision/updatedAt/precondition fields. The new tests do not
+invent them or change existing create/edit semantics.
+
+At 390px/reduced motion, native keyboard paging remains in inventory context;
+selector refresh preserves selected ID, scope draft/caret and focus. Escape
+returns sensible context without prescribing a particular DOM repair.
+
+Evidence and seal
+-----------------
+BEFORE.json records 110 original UI/asset/intake inputs and twelve hash-only
+prior packet references. GUARDS.json proves all original bytes unchanged,
+including twelve assertion files containing the 72 prior cases.
+Compiler enumeration adds only the three intended new TS files.
+
+COMPILATION.json, RED.json, COMPATIBILITY.json and EVIDENCE.json reference
+uniquely named real logs/JSON/screenshots/traces outside protected tests:
+  .artifacts\asset-pagination-v1-author
+Do not overwrite typecheck-01/02, red-pages-01 or compat-72-01 output.
+Large report bodies are not browser state; HTTP ledger reports are reduced
+to size/digest metadata. Original RED is preserved with its exact source vector.
+
+PACKET.json inventories this unsigned packet and its three new tests.
+PACKET.sha256 is its unkeyed digest. Parent publication/installer/backend/source
+metadata may advance HEAD intentionally; do not reset it or rewrite historical
+qualification head fields. The guarded current UI/API inputs remain the source
+of applicability, not an unrelated publication commit title.
+
+After parent seal, the separate coder implements only this bounded slice.
+The independent reviewer then runs actual typecheck and all 77 browser cases
+on fresh output paths, with unchanged assertions, fixtures, limits and guards.

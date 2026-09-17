@@ -1,0 +1,177 @@
+ASSET PAGINATION V1 - INDEPENDENT UI TEST-FIRST CONTRACT
+======================================================
+
+Scope and source authority
+--------------------------
+Five grouped browser cases remove the first-page-only limitation in Assets
+inventory and the existing Import report asset selector. Only new synthetic
+test data, HTTP fixture, spec and this unsigned handoff packet are authored.
+No backend/schema/parser/production/dependency/deployment changes, agents,
+real asset deletion, real-repository staging/commits or provider calls.
+
+The author read the actual internal\app\assets.go and http.go/pageParameters,
+current Asset/AssetsResponse/API client, pages\assets.tsx, report-import and
+asset-editor components, and existing application/report-format fixtures.
+The earlier seven-format report-import slice and all 72 original assertions,
+provenance, session/credential/Origin/request guards, compiler/Playwright and
+dependency bytes remain unchanged. BEFORE.json records their current hashes.
+Older review evidence is referenced by hash, not recursively copied.
+Parent-owned source/publication/installer metadata advancement is separate.
+
+There are NO legacy fixture edits in this packet. Preserve the existing bare
+GET /api/v1/assets for the default first page. Do not start appending a
+redundant ?limit=100 to old initial navigation and then weaken a frozen
+legacy fixture to accommodate it. The optional cursor/limit capability can
+be added to the production client without changing its existing default call.
+Old fixtures with nextCursor:null require no new continuation request.
+
+Actual HTTP vocabulary
+----------------------
+GET /api/v1/assets
+GET /api/v1/assets?cursor=<last returned native ID>[&limit=<bounded integer>]
+GET /api/v1/assets/{id}
+POST /api/v1/assets
+PATCH /api/v1/assets/{id}
+POST /api/v1/imports (existing manual-report wrapper only in this test)
+GET /api/v1/session; POST /api/v1/login; POST /api/v1/logout
+
+No page number, offset, server search/query, directory, bulk, deletion,
+format-discovery, import-history or new endpoint is invented.
+Query allowlisting rejects duplicate/unrelated fields. The backend may ignore
+unused query fields, but the UI is not authorized to create a new query API.
+
+pageParameters:
+  default limit 100; allowed integer 1..500
+  optional empty cursor or 32 lowercase hexadecimal characters
+listAssets:
+  selected workspace only; WHERE id > cursor ORDER BY id LIMIT limit+1
+  {apiVersion,items,total,nextCursor}
+  nextCursor is the last returned ID only if additional results exist
+  total is the actual workspace count, not the size of one page
+The real implementation reads total and rows separately, not in a guaranteed
+repeatable-read directory snapshot. This slice makes no atomic full-inventory
+or unbounded-memory claim. Fixture responses are ordinary valid native pages.
+
+The fixture seeds 1103 Alpha and 507 Beta assets, so even limit 500 cannot
+silently return a full directory on the first page. IDs, ordering and cursors
+are server-shaped, with deterministic ID gaps for a server-created asset.
+No fake overlapping response inserts IDs <= its request cursor. Overlap is
+exercised by repeat reads/refreshes of already loaded pages and a new row
+inserted before an earlier page boundary. Every response itself stays native.
+
+Asset DTO is exactly:
+  id,workspaceId,name,kind,environment,criticality,tags,ownerId
+There is no asset revision/updatedAt response or conditional-write contract.
+Asset writes use only intentional name/kind/environment/criticality/tags/
+ownerId fields, 64 KiB JSON, existing field limits and workspace membership.
+POST returns 201 {apiVersion,asset}; PATCH returns 200 with the complete DTO.
+Only admin/analyst write, while viewer may read/page. Current server roles
+remain independent from cached session-role metadata.
+
+Inventory behavior
+------------------
+An explicit labelled Load more assets / Next assets / Next page control
+follows the actual nextCursor. There is no automatic cursor drain or polling.
+The initial loaded count and workspace total remain distinct and honest.
+Confirmed rows stay visible while continuation is held/loading or returns
+503. The UI shows a scoped error, not a false empty inventory. Retry sends
+the same cursor and limit, not a reset to the first page.
+
+Appending Load more and page-oriented Next are both allowed. Rendered rows
+must equal either the accumulated unique confirmed records or the current
+actual page, with explicit page navigation and truthful loaded/shown/total
+counts. An appending view may not silently shrink to one page on an overlapping
+refresh or after a write. Repeated HTTP pages cannot duplicate their rows.
+Page-window navigation may re-read/cache previous pages; no implementation
+class names, test IDs or virtualization library are required.
+
+An ordinary refresh overlaps prior confirmed rows, so duplicate/drop handling
+must use server identity. Create/edit acknowledgements and older background
+reads must not race into optimistic rows, stale names or dropped known context.
+Old page snapshots are captured before held responses; a browser abort is
+not a server rollback. A full mutation DTO becomes authoritative only after
+the ACK, and a later completion of an older read cannot overwrite it.
+Existing sparse edit and create behavior must stay intact.
+
+Selector behavior
+-----------------
+The existing Import report form has a labelled Asset control and its own
+labelled manual Next/Load more assets action inside the selection UI.
+Inventory and selector may share already fetched pages or load independently.
+The test derives the selector cursor from a real response whose records are
+currently selectable; it does not assume a hardcoded page size or known
+out-of-page ID.
+
+The user first selects an initial-page asset, loads another page, then selects
+a returned ID that was not present initially. Loading a further page, changing
+format and editing scope fields must preserve that deliberate selection.
+Replacing an option page must retain the selected record/label rather than
+silently selecting the first option or an asset from another workspace.
+Duplicate selectable IDs are not allowed.
+
+The final import uses exactly the chosen later-page server asset ID, normal
+source/scan/scope provenance, explicit unknown source time and the original
+manual JSON report bytes in the already accepted single JSON wrapper.
+No mapping is submitted for manual. 202 is queued, not processed or verified.
+Only asset-selection reachability is new; the prior seven-format behaviors,
+byte/UTF-8 limits, worker states and parser guidance are not rewritten here.
+
+Scope and UX
+------------
+Workspace changes, logout and 401 discard all accumulated pages and pending
+cursor state. Held old-workspace responses are actually aborted and cannot
+render their rows in the new workspace or after sign-out/reload.
+Viewer pagination does not grant create/edit/import authority.
+No asset page, selected source body, user token or report progress is stored
+in browser storage. Only the existing light/dark theme preference is allowed.
+
+At 390x844/reduced motion, manual paging is keyboard reachable and remains in
+meaningful inventory context rather than jumping focus to BODY. The import
+dialog fits the viewport, owns reachable scrolling content and contains focus.
+After a held selector page arrives, a deliberately focused scope field keeps
+its text/caret and the chosen asset ID. Escape restores sensible launch
+context. No particular focus-target implementation or DOM repair is prescribed.
+
+Five coherent cases
+-------------------
+AP1: >500 native data, real continuation, accurate visible/loaded/total counts,
+     pending/error row retention, same-cursor retry, overlapping explicit
+     refresh with no duplicate/drop or automatic follow-up fetch loop.
+AP2: Selector independently reaches beyond its initial page, retains initial
+     then deliberate later selection across further pages/format/scope edits,
+     and submits the exact chosen server ID through the existing import API.
+AP3: Viewer may page but has no write actions; Alpha/Beta page isolation,
+     held continuation abort on workspace and logout, then 401 removes every
+     page and remains cleared through reload.
+AP4: Loaded inventory context survives sparse edit and create ACKs plus old
+     overlapping reads. Rows are not optimistic, IDs come from the service,
+     acknowledged names persist and keyboard saves return to inventory context.
+AP5: At 390px/reduced motion, keyboard inventory pagination and a held
+     selector continuation preserve asset identity, literal scope draft/caret,
+     focus, scrolling boundaries and cancel context.
+
+Fixtures, guards and qualification
+----------------------------------
+Real production React/native controls are exercised. Only the declared
+same-origin HTTP boundary is mocked. No source-only green assertion, React
+state replacement, fake UI renderer, backend fixture implementation, real
+asset mutation, parser/worker invocation or native cloud access is performed.
+Synthetic server state is only response data for UI acceptance.
+
+Session/credential/Origin/JSON guards and current-role checks remain explicit.
+All requests across auth, inventory, selector, mutation and import share one
+unchanged per-case budget of 60 API calls. Unknown methods/endpoints and
+external traffic are rejected. File report bodies are redacted to hashes and
+sizes in HTTP ledger attachments, not saved in browser storage.
+
+Use the unchanged runner: one worker, zero retries/skips, 20-second test
+timeout and five-second expect timeout. Missing inventory/selector paging
+produces ordinary meaningful UI assertion RED; no hanging selectOption,
+compiler replacement or test-side UI behavior is used to manufacture RED.
+
+Actual typecheck, new RED and all 72 existing cases are recorded. Original
+RED names remain immutable. Logs, traces and raw JSON belong outside tests
+under .artifacts\asset-pagination-v1-author. Downstream behaviors blocked by
+missing pagination are authored requirements, not claimed executed successes.
+Freeze the packet for parent verify/seal and separate coder/reviewer; stop
+without modifying prior slice bytes or starting an additional feature track.

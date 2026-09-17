@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A3",
+  "status": "FROZEN independent measurement-only amendment; stop for parent verification/reseal",
+  "originalIntent": "Track the same edited asset row while measuring existing keyboard focus/scroll/context invariants",
+  "source": "web\\tests\\application-review-regressions.spec.ts",
+  "beforeSHA256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96",
+  "afterSHA256": "f03d03e6a4819c980bff149af7a653683c1d1bab040698755f2c675547878c39",
+  "change": "Unique exact old/new canonical-name union with pre-edit old-name and post-ACK new-name/old-absence checks",
+  "unchangedHelpers": [
+    "tabTo",
+    "meaningfulAssetFocus",
+    "scrollContext",
+    "sameScrollContext"
+  ],
+  "allExistingAssertionsAndVariantsPreserved": true,
+  "sourceFixtureDependencySettingsChanges": 0,
+  "results": {
+    "independentOriginalFailures": "Four old-name locator timeouts after held-refresh focus check",
+    "targetedPassed": 4,
+    "fullPassed": 79,
+    "typecheckPassed": true,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "genuineFocusScrollFailureObserved": false
+  },
+  "currentControls": {
+    "original": 633,
+    "unchanged": 632,
+    "onlyDelta": "web\\tests\\application-review-regressions.spec.ts",
+    "parentResealRequired": true,
+    "oldSignaturesNotRewritten": true
+  },
+  "archives": [
+    {
+      "source": "web\\tests\\application-review-regressions.spec.ts",
+      "archive": "web\\tests\\reviews\\asset-pagination-v1\\history\\a3\\application-review-regressions.spec.ts.before.txt",
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a3\\application-review-regressions.spec.ts.before.txt",
+      "bytes": 11775,
+      "sha256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96"
+    }
+  ],
+  "previousPacketHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.json",
+      "bytes": 6067,
+      "sha256": "4df9aaf0e86be0c019db56134e0ca4159fd997e8ae9a40de2441ba71701e516f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "30d633efb855c76bef7156903441fac4a87e766938c7d288e7ad46c0df436726"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.json",
+      "bytes": 8733,
+      "sha256": "ee3061dc14041b964fd3da131b1f75e7092b1bedce45eb5b1d4372ee87207818"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "755a855c2fd24d44ada6cdf4c243c50963bc9fd829da505824ded2bf45fbcdbd"
+    }
+  ],
+  "oldA1A2REDPreserved": true,
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A3.json",
+      "bytes": 280675,
+      "sha256": "dfa58a0d8a908748df6379e03d20c6f6b964efd0f837bbfabf01197d2f634c56"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A3.json",
+      "bytes": 1934,
+      "sha256": "c87c8ea74b40bd1584a94f6bd2f57920db69f3950eab4e5ca8215e0d90e22937"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A3.json",
+      "bytes": 12469,
+      "sha256": "ca245754e1ffc5987de46815b4d3d70dd001f9ca1895b2da304d4c467805dd2e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\VALIDATION-A3.json",
+      "bytes": 42097,
+      "sha256": "2a04d7133011fea2908ef774de46719203d11d1272e020262ef243eca5c42dcd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A3.json",
+      "bytes": 7243,
+      "sha256": "8cd817e13cac11f8968453acfc6f81b0f1b9b193283f15e10910baab8ee888f9"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A3.txt",
+      "bytes": 4710,
+      "sha256": "775164246bb887147c19143ddffe15fb84497132731ffcc77eb4c296a0e3fe27"
+    }
+  ],
+  "noProductionOldNameRetentionOrDelayedACK": true,
+  "noAgentsCommitsNativeAPI": true
+}

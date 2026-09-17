@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "capturedAt": "2026-09-17T07:14:42.132Z",
+  "before": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A2.json",
+    "bytes": 145379,
+    "sha256": "04882eb1a18ef8ecd41e995cae197381fa1a8e620a3b7666fd99942ebbe36570"
+  },
+  "originalHeldInputs": 675,
+  "allExistingInputsByteIdentical": true,
+  "oldPublicOraclesAndSignatures": 67,
+  "allOldSignaturesUnchanged": true,
+  "existingAP1to5AndA1Spec": {
+    "path": "web\\tests\\asset-pagination.spec.ts",
+    "bytes": 25531,
+    "sha256": "c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e"
+  },
+  "existingFixture": {
+    "path": "web\\tests\\asset-pagination-fixture.ts",
+    "bytes": 18384,
+    "sha256": "595356703c687efd4afa9d5a19b02e6bee91ca8bb497b0890851d19be3399626"
+  },
+  "sourceHookBefore": {
+    "path": "web\\src\\lib\\use-asset-pages.ts",
+    "bytes": 4878,
+    "sha256": "96a2bc0f3d6aa88648fe6c591a1118677e622fdeb735de24088744eb48b74025"
+  },
+  "sourceHookAfter": {
+    "path": "web\\src\\lib\\use-asset-pages.ts",
+    "bytes": 4878,
+    "sha256": "96a2bc0f3d6aa88648fe6c591a1118677e622fdeb735de24088744eb48b74025"
+  },
+  "sourceOnHold": true,
+  "existingFileAmendments": [],
+  "archives": [],
+  "oldHistoryCopies": false,
+  "newSpec": {
+    "path": "web\\tests\\asset-pagination-ack.spec.ts",
+    "bytes": 11525,
+    "sha256": "b164eb3a196c6684b82c5e07d46f3f360c44a5e660ea3b3622d551938bdacc6c"
+  },
+  "compiler": {
+    "enumeration": {
+      "path": ".artifacts\\asset-pagination-v1-a2\\compiler-inputs-01.txt",
+      "bytes": 23444,
+      "sha256": "0501fe9f80482ff58c0641b5bb58c8d0f4239af258eb2efb89043b60b424a30f"
+    },
+    "onlyAdditionalInput": [
+      "web\\tests\\asset-pagination-ack.spec.ts"
+    ]
+  },
+  "caseLimits": {
+    "workers": 1,
+    "retries": 0,
+    "testTimeoutMS": 20000,
+    "expectTimeoutMS": 5000,
+    "apiRequestBudgetPerCase": 60
+  },
+  "prohibitedWorkPerformed": {
+    "productionChanges": false,
+    "fixtureChanges": false,
+    "helperChanges": false,
+    "runnerSettingsDependencyChanges": false,
+    "ReactDOMReplacement": false,
+    "forcedClicks": false,
+    "timers": false,
+    "agents": false,
+    "commits": false,
+    "backendAPIDeletionOrRevisionChanges": false
+  },
+  "redSourceVector": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.inputs.json",
+    "bytes": 131943,
+    "sha256": "9a880bd579c7113d295c00e9a2dd94a916b312f57335c5a0707be3a9ef507ee6"
+  }
+}

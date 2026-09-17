@@ -1,0 +1,87 @@
+ASSET PAGINATION A1 - ORIGINAL-AUTHOR AP2 ASSERTION-ORDER CORRECTION
+================================================================
+
+Confirmed defect and independent evidence
+----------------------------------------
+The coder's AP2 blocker was independently checked against the actual spec,
+unchanged import-status/native summary and unchanged use-modal focus helper.
+The original trace.zip was read directly without extracting/copying its tree.
+Its test.trace records:
+  line 235: click Report identity and provenance at 23051.987,
+            completing at 23141.46;
+  line 237: test launch-button focus beginning at 23180.719,
+            failing at 28214.619 with the launch button inactive.
+
+An independent fresh run of original AP2 reproduced that exact line-237
+failure against the current held source. Paging, selected-ID retention,
+exact import, queued receipt and the selected-ID disclosure assertion had
+completed. The final URL and single-POST-count assertions were still blocked
+by the misplaced focus assertion. This is an original-author test ordering
+defect, not a reason to make production steal focus after a user click.
+
+Exact authorized permutation
+----------------------------
+The existing statement, unchanged in text, target, matcher and strength:
+  await expect(openImportAction(page)).toBeFocused();
+
+moves from original line 237 to line 232, immediately after:
+  await expect(importDialog(page)).toHaveCount(0);
+
+It now tests close-restoration before the deliberate disclosure click.
+No assertion is deleted, weakened or made conditional. No new assertion,
+helper, fixture, timer, event cancellation or focus-target implementation is
+introduced. Every other statement, byte and line ending remains identical.
+The entire source file stays 25531 bytes. AMENDMENT-A1.json proves that a
+single line permutation reconstructs the complete amended file.
+
+  Old spec SHA-256:
+    0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b
+  A1 spec SHA-256:
+    c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e
+
+Measured outcome
+----------------
+  Original AP2 reproduction: one failure, original line 237.
+  Corrected targeted AP2: passed.
+  Actual npm.cmd run typecheck: passed.
+  Full browser suite: 77 passed, zero failed/skipped/flaky/retried cases.
+  Original timeouts, one worker and 60-request fixture budgets are unchanged.
+
+Both previously blocked tail assertions now execute in targeted and full
+passing AP2. All other paging, selection, import, receipt, URL and POST-count
+assertions retain their original text. No genuine production failure appeared
+in these runs. No build rerun is claimed: the coder's existing successful
+build is referenced in place and its production source remains on HOLD.
+
+Source and control preservation
+------------------------------
+BEFORE-A1.json captures the verified 663-file held input manifest and the
+605-file original immutable-control set. After the change, exactly one member
+differs in each set: web\tests\asset-pagination.spec.ts. The other 604 controls
+and all held production/helper/fixture/runner/settings/dependency bytes match.
+The real repository index and all public oracle/signature files are unchanged.
+There are no agents, commits, native API calls or production changes.
+
+history\a1 contains only these three requested noncompiled byte archives:
+  asset-pagination.spec.ts.before.txt
+  PACKET.json.before.txt
+  PACKET.sha256.before.txt
+No source/fixture/review tree or coder trace tree was archived.
+
+Original PACKET.json/PACKET.sha256, original RED receipts/evidence and old
+signatures also remain untouched in place. The original packet/signature still
+identifies the old spec hash, now available in the exact archive. It is NOT
+claimed to verify the amended active spec. No old oracle was re-signed or
+silently updated. Parent review and a NEW current seal are required.
+
+New A1 authority and stopping point
+---------------------------------
+GUARDS-A1.json and VALIDATION-A1.json record exact comparisons, source hashes,
+independent trace evidence, commands, exits and actual case/HTTP counts.
+Logs/JSON/traces use fresh names outside protected tests under:
+  .artifacts\asset-pagination-v1-a1
+Never overwrite original-ap2-01, corrected-ap2-01 or full-77-01 artifacts.
+
+HANDOFF-A1.json and PACKET-A1.json/PACKET-A1.sha256 freeze the current A1
+amendment without replacing original history. Stop for parent reseal.
+The coder/source HOLD remains; no unrelated changes are authorized here.

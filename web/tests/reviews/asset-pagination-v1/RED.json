@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "originalFrozen": true,
+  "run": {
+    "command": "npm.cmd test -- asset-pagination[.]spec[.]ts$ --output ..\\.artifacts\\asset-pagination-v1-author\\red-pages-01-traces --reporter=list,json",
+    "port": "63382",
+    "startedAt": "2026-09-17T04:49:29.4136077Z",
+    "endedAt": "2026-09-17T04:50:28.9137649Z",
+    "exitCode": 1,
+    "expected": "Five missing inventory/selector paging UI assertion failures, not compiler/fixture exceptions"
+  },
+  "runFile": {
+    "path": ".artifacts\\asset-pagination-v1-author\\red-pages-01.run.json",
+    "bytes": 406,
+    "sha256": "3f28ef825062fda1f14f26a69cde84f288f884829e10149f559deaaf62db7fbf"
+  },
+  "report": {
+    "path": ".artifacts\\asset-pagination-v1-author\\red-pages-01.results.json",
+    "bytes": 577607,
+    "sha256": "f240a9c8f2b60db8dc1da6f53a325a99b2263f38492d12e0232f2764dc837c8f"
+  },
+  "stdout": {
+    "path": ".artifacts\\asset-pagination-v1-author\\red-pages-01.stdout.txt",
+    "bytes": 19801,
+    "sha256": "216821dcd1ef21f532e535bb30fe597c4734fe14a006a0fb74723fecdb07cfc4"
+  },
+  "sourceVector": {
+    "path": ".artifacts\\asset-pagination-v1-author\\red-pages-01.inputs.json",
+    "bytes": 19002,
+    "sha256": "33fa4df3d4379c51db6cfe6634b8995ff1f4b9a9608cf021337cce29015ac899"
+  },
+  "stats": {
+    "startTime": "2026-09-17T04:49:35.111Z",
+    "duration": 53691.277,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "AP1 Native inventory continuation preserves rows and truthful counts through failure, same-cursor retry and overlapping refresh",
+      "line": 154,
+      "status": "failed",
+      "durationMS": 8861,
+      "retry": 0,
+      "blockedAt": "Missing inventory pagination",
+      "errors": [
+        {
+          "message": "Error: Expose explicit native cursor pagination instead of the current first-page-only inventory.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expose explicit native cursor pagination instead of the current first-page-only inventory. getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\n\n\n  63 |   expect(first.items.length).toBeLessThanOrEqual(500);\n  64 |   expect(first.nextCursor).not.toBeNull();\n> 65 |   if (requireInventoryPaging) await expect(next(inventory(page)), \"Expose explicit native cursor pagination instead of the current first-page-only inventory.\").toBeVisible();\n     |                                                                                                                                                                 ^\n  66 |   return first;\n  67 | }\n  68 | function union(...pages: PagingAsset[][]) { return [...new Map(pages.flat().map((asset) => [asset.id, asset])).values()]; }\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:65:161)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:155:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts",
+            "column": 161,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 4,
+      "paths": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AP2 Import selection reaches a server asset beyond its initial page and preserves that exact ID through more pages and form edits",
+      "line": 192,
+      "status": "failed",
+      "durationMS": 6672,
+      "retry": 0,
+      "blockedAt": "Missing selector pagination",
+      "errors": [
+        {
+          "message": "Error: The import asset selector needs labelled manual access beyond its first page.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - The import asset selector needs labelled manual access beyond its first page. getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Import report', exact: true }).getByRole('form', { name: 'Import report', exact: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\n\n\n  112 |   await expect(importForm(page)).toBeVisible();\n  113 |   await expect(assetSelect(page)).toBeVisible();\n> 114 |   await expect(next(importForm(page)), \"The import asset selector needs labelled manual access beyond its first page.\").toBeVisible();\n      |                                                                                                                         ^\n  115 | }\n  116 | async function nextSelector(page: Page, paging: AssetPagingAPI, current: AssetPage) {\n  117 |   if (!current.nextCursor) throw new Error(\"The selector has no native continuation.\");\n    at openImport (C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:114:121)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:194:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts",
+            "column": 121,
+            "line": 114
+          }
+        }
+      ],
+      "apiCalls": 4,
+      "paths": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AP3 Viewer paging has no write authority and workspace, logout and 401 discard every old page and held continuation",
+      "line": 242,
+      "status": "failed",
+      "durationMS": 6229,
+      "retry": 0,
+      "blockedAt": "Missing inventory pagination",
+      "errors": [
+        {
+          "message": "Error: Expose explicit native cursor pagination instead of the current first-page-only inventory.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expose explicit native cursor pagination instead of the current first-page-only inventory. getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\n\n\n  63 |   expect(first.items.length).toBeLessThanOrEqual(500);\n  64 |   expect(first.nextCursor).not.toBeNull();\n> 65 |   if (requireInventoryPaging) await expect(next(inventory(page)), \"Expose explicit native cursor pagination instead of the current first-page-only inventory.\").toBeVisible();\n     |                                                                                                                                                                 ^\n  66 |   return first;\n  67 | }\n  68 | function union(...pages: PagingAsset[][]) { return [...new Map(pages.flat().map((asset) => [asset.id, asset])).values()]; }\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:65:161)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:244:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts",
+            "column": 161,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 4,
+      "paths": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AP4 Canonical edit/create acknowledgements survive old overlapping pages without optimistic rows or loss of loaded context",
+      "line": 276,
+      "status": "failed",
+      "durationMS": 6253,
+      "retry": 0,
+      "blockedAt": "Missing inventory pagination",
+      "errors": [
+        {
+          "message": "Error: Expose explicit native cursor pagination instead of the current first-page-only inventory.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expose explicit native cursor pagination instead of the current first-page-only inventory. getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\n\n\n  63 |   expect(first.items.length).toBeLessThanOrEqual(500);\n  64 |   expect(first.nextCursor).not.toBeNull();\n> 65 |   if (requireInventoryPaging) await expect(next(inventory(page)), \"Expose explicit native cursor pagination instead of the current first-page-only inventory.\").toBeVisible();\n     |                                                                                                                                                                 ^\n  66 |   return first;\n  67 | }\n  68 | function union(...pages: PagingAsset[][]) { return [...new Map(pages.flat().map((asset) => [asset.id, asset])).values()]; }\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:65:161)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:277:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts",
+            "column": 161,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 4,
+      "paths": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AP5 At 390px manual inventory/selector paging preserves selected IDs, draft caret and reduced-motion keyboard context",
+      "line": 352,
+      "status": "failed",
+      "durationMS": 6394,
+      "retry": 0,
+      "blockedAt": "Missing inventory pagination",
+      "errors": [
+        {
+          "message": "Error: Expose explicit native cursor pagination instead of the current first-page-only inventory.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expose explicit native cursor pagination instead of the current first-page-only inventory. getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('button', { name: /^(?:Load more assets|Next assets|Next(?: page)?)$/i })\n\n\n  63 |   expect(first.items.length).toBeLessThanOrEqual(500);\n  64 |   expect(first.nextCursor).not.toBeNull();\n> 65 |   if (requireInventoryPaging) await expect(next(inventory(page)), \"Expose explicit native cursor pagination instead of the current first-page-only inventory.\").toBeVisible();\n     |                                                                                                                                                                 ^\n  66 |   return first;\n  67 | }\n  68 | function union(...pages: PagingAsset[][]) { return [...new Map(pages.flat().map((asset) => [asset.id, asset])).values()]; }\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:65:161)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts:354:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination.spec.ts",
+            "column": 161,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 4,
+      "paths": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {}
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    }
+  ],
+  "blockedSemantics": "Later cursor retries/overlap, out-of-page selector import, authorization/page cancellation, mutation ACK ordering and mobile caret assertions are authored but not claimed executed past the missing controls. No backend/native qualification is claimed."
+}

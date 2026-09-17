@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "phase": "Actual browser regression RED before parent hook fix",
+  "run": {
+    "command": "npm.cmd test -- asset-pagination-ack[.]spec[.]ts$ --output ..\\.artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces --reporter=list,json",
+    "port": "50351",
+    "startedAt": "2026-09-17T07:04:35.8850147Z",
+    "endedAt": "2026-09-17T07:05:15.6678369Z",
+    "exitCode": 1,
+    "expected": "Both variants fail the missing canonical row after validated ACK while the NEW post-save first-page GET is held"
+  },
+  "runFile": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.run.json",
+    "bytes": 431,
+    "sha256": "8248b09c60befca057c5f55ff5aa7952b36247c07047aaf8b2ff1282b8d76944"
+  },
+  "report": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.results.json",
+    "bytes": 592783,
+    "sha256": "9e01eb8c74b6ee28f911b570047a3c091c8a7802955e3c24a0b97586da119ce7"
+  },
+  "stdout": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.stdout.txt",
+    "bytes": 8911,
+    "sha256": "63ff043255589b498c6fda7e7d227ba2996f3d4b9c8b099fd45a18f7eaa6b8ed"
+  },
+  "sourceVector": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.inputs.json",
+    "bytes": 131943,
+    "sha256": "9a880bd579c7113d295c00e9a2dd94a916b312f57335c5a0707be3a9ef507ee6"
+  },
+  "stats": {
+    "startTime": "2026-09-17T07:04:41.601Z",
+    "duration": 33962.153,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "AP6 edit: canonical ACK is visible before its NEW post-save GET settles (200)",
+      "status": "failed",
+      "retry": 0,
+      "durationMS": 9683,
+      "errors": [
+        {
+          "message": "Error: The server-confirmed canonical row must be visible immediately after ACK, BEFORE releasing the NEW post-save GET.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('table', { name: 'Assets', exact: true, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ has: getByRole('cell', { includeHidden: true }) }).filter({ hasText: 'Synthetic service-acknowledged edited asset' })\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The server-confirmed canonical row must be visible immediately after ACK, BEFORE releasing the NEW post-save GET. getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('table', { name: 'Assets', exact: true, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ has: getByRole('cell', { includeHidden: true }) }).filter({ hasText: 'Synthetic service-acknowledged edited asset' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('table', { name: 'Assets', exact: true, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ has: getByRole('cell', { includeHidden: true }) }).filter({ hasText: 'Synthetic service-acknowledged edited asset' })\n    13 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  141 |     await testInfo.attach(\"inventory-with-new-get-held\", { body: await page.screenshot(), contentType: \"image/png\" });\n  142 |     await expect(row(page, expectedAsset.name),\n> 143 |       \"The server-confirmed canonical row must be visible immediately after ACK, BEFORE releasing the NEW post-save GET.\").toHaveCount(1);\n      |                                                                                                                            ^\n  144 |     await exactRows(page, canonical);\n  145 |     if (variant.kind === \"edit\") await expect(row(page, firstAlpha.name)).toHaveCount(0);\n  146 |     expect(postSaveSettled).toBe(false);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination-ack.spec.ts:143:124",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination-ack.spec.ts",
+            "column": 124,
+            "line": 143
+          }
+        }
+      ],
+      "barrier": {
+        "phase": "validated mutation ACK delivered; NEW post-save first-page GET requested but not released",
+        "kind": "edit",
+        "plannedReadStatus": 200,
+        "postSaveSettled": false,
+        "mutation": {
+          "method": "PATCH",
+          "path": "/api/v1/assets/41000000000000000000000000000010",
+          "status": 200,
+          "body": {
+            "name": "Synthetic service-acknowledged edited asset"
+          },
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "asset": {
+              "id": "41000000000000000000000000000010",
+              "workspaceId": "14000000000000000000000000000001",
+              "name": "Synthetic service-acknowledged edited asset",
+              "kind": "repository",
+              "environment": "test",
+              "criticality": "medium",
+              "tags": [
+                "synthetic"
+              ],
+              "ownerId": null
+            }
+          }
+        },
+        "nextRead": {
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 200
+        },
+        "expectedCanonicalAsset": {
+          "id": "41000000000000000000000000000010",
+          "workspaceId": "14000000000000000000000000000001",
+          "name": "Synthetic service-acknowledged edited asset",
+          "kind": "repository",
+          "environment": "test",
+          "criticality": "medium",
+          "tags": [
+            "synthetic"
+          ],
+          "ownerId": null
+        },
+        "expectedLoadedRows": 200,
+        "observedCanonicalRows": 0,
+        "observedLoadedRows": 200,
+        "observedOldEditedRows": 1
+      },
+      "apiCalls": 7,
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {
+            "cursor": "41000000000000000000000000000640"
+          },
+          "status": 200
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/assets/41000000000000000000000000000010",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 200
+        }
+      ]
+    },
+    {
+      "title": "AP6 create: canonical ACK is visible before its NEW post-save GET settles (503)",
+      "status": "failed",
+      "retry": 0,
+      "durationMS": 8803,
+      "errors": [
+        {
+          "message": "Error: The server-confirmed canonical row must be visible immediately after ACK, BEFORE releasing the NEW post-save GET.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('table', { name: 'Assets', exact: true, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ has: getByRole('cell', { includeHidden: true }) }).filter({ hasText: 'Synthetic service-acknowledged created asset' })\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - The server-confirmed canonical row must be visible immediately after ACK, BEFORE releasing the NEW post-save GET. getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('table', { name: 'Assets', exact: true, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ has: getByRole('cell', { includeHidden: true }) }).filter({ hasText: 'Synthetic service-acknowledged created asset' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Asset inventory', exact: true, includeHidden: true }).getByRole('table', { name: 'Assets', exact: true, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ has: getByRole('cell', { includeHidden: true }) }).filter({ hasText: 'Synthetic service-acknowledged created asset' })\n    13 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  141 |     await testInfo.attach(\"inventory-with-new-get-held\", { body: await page.screenshot(), contentType: \"image/png\" });\n  142 |     await expect(row(page, expectedAsset.name),\n> 143 |       \"The server-confirmed canonical row must be visible immediately after ACK, BEFORE releasing the NEW post-save GET.\").toHaveCount(1);\n      |                                                                                                                            ^\n  144 |     await exactRows(page, canonical);\n  145 |     if (variant.kind === \"edit\") await expect(row(page, firstAlpha.name)).toHaveCount(0);\n  146 |     expect(postSaveSettled).toBe(false);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination-ack.spec.ts:143:124",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\asset-pagination-ack.spec.ts",
+            "column": 124,
+            "line": 143
+          }
+        }
+      ],
+      "barrier": {
+        "phase": "validated mutation ACK delivered; NEW post-save first-page GET requested but not released",
+        "kind": "create",
+        "plannedReadStatus": 503,
+        "postSaveSettled": false,
+        "mutation": {
+          "method": "POST",
+          "path": "/api/v1/assets",
+          "status": 201,
+          "body": {
+            "name": "Synthetic service-acknowledged created asset",
+            "kind": "repository",
+            "environment": "test",
+            "criticality": "high",
+            "tags": [
+              "synthetic-created"
+            ],
+            "ownerId": null
+          },
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "asset": {
+              "id": "41000000000000000000000000000088",
+              "workspaceId": "14000000000000000000000000000001",
+              "criticality": "high",
+              "tags": [
+                "synthetic-created"
+              ],
+              "ownerId": null,
+              "name": "Synthetic service-acknowledged created asset",
+              "kind": "repository",
+              "environment": "test"
+            }
+          }
+        },
+        "nextRead": {
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 503
+        },
+        "expectedCanonicalAsset": {
+          "id": "41000000000000000000000000000088",
+          "workspaceId": "14000000000000000000000000000001",
+          "name": "Synthetic service-acknowledged created asset",
+          "kind": "repository",
+          "environment": "test",
+          "criticality": "high",
+          "tags": [
+            "synthetic-created"
+          ],
+          "ownerId": null
+        },
+        "expectedLoadedRows": 201,
+        "observedCanonicalRows": 0,
+        "observedLoadedRows": 200,
+        "observedOldEditedRows": null
+      },
+      "apiCalls": 7,
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {
+            "cursor": "41000000000000000000000000000640"
+          },
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/assets",
+          "query": {},
+          "status": 503
+        }
+      ]
+    }
+  ],
+  "actualNewGetBarrierProved": true,
+  "sourceOnlyDiagnosis": false,
+  "originalNamesFrozen": true,
+  "blockedDownstream": "Import selector availability/selection before read release, success/503 post-release persistence and continuation frontier remain authored requirements, not executed successes, because the canonical-row assertion fails first."
+}

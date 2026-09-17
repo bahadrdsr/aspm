@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "root": ".artifacts\\asset-pagination-v1-a1",
+  "files": [
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\corrected-ap2-01-traces\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\corrected-ap2-01.results.json",
+      "bytes": 218413,
+      "sha256": "d5f4706783cfeeb2466ba0a79470fc4e4ff55191c4ca9da2841ef7bb3813ead5"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\corrected-ap2-01.run.json",
+      "bytes": 371,
+      "sha256": "108959a55c2937c447a05153edb7659a3fb22f22e959cfa70fc57a69ab116b54"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\corrected-ap2-01.stdout.txt",
+      "bytes": 441,
+      "sha256": "ba0a128334a56bf6d3c2842c00de8a533dfa891f6adaf861c41e32cc0319b396"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\full-77-01-traces\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\full-77-01.results.json",
+      "bytes": 2904549,
+      "sha256": "e02c042d22ce7b3e95a3d0d7cfacb12070dc89ea76e937e6cbc1cdded742a8c8"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\full-77-01.run.json",
+      "bytes": 418,
+      "sha256": "154395c1cbe9ae96e484d061760b91ea66d92c8d6668844d806e42d0a257f265"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\full-77-01.stdout.txt",
+      "bytes": 12367,
+      "sha256": "af6e98321bb3412be023a7127adf45a0ccd3dcf4d837b4733ff2eda7fa3b3f8d"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\independent-trace-order.json",
+      "bytes": 959,
+      "sha256": "bcd817e20d85da13a7c6facc058b63b3a8cea67f809d3268d6d73d9ac87c3688"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01-traces\\.last-run.json",
+      "bytes": 96,
+      "sha256": "a5d0127acec8e3d5750c4de2c3db22a3b04e758f2d903533d3aed4577544758e"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01-traces\\asset-pagination-AP2-Impor-2578c-h-more-pages-and-form-edits\\error-context.md",
+      "bytes": 16656,
+      "sha256": "a30328040662f78c1e4f786a9a4425479ebb10cef63efba79d5628b92bac26dd"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01-traces\\asset-pagination-AP2-Impor-2578c-h-more-pages-and-form-edits\\test-failed-1.png",
+      "bytes": 72433,
+      "sha256": "f62f360c331eb6f93b62493a1ab5d45babe52707226c722e8444ee4546fb54da"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01-traces\\asset-pagination-AP2-Impor-2578c-h-more-pages-and-form-edits\\trace.zip",
+      "bytes": 1500430,
+      "sha256": "b1487e3abc684e604dde7e7d2cf307888d749afe5cb636cd268f80cc186b15bb"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01.results.json",
+      "bytes": 224985,
+      "sha256": "5c12d70cc5e9fd04dbf1f4a11af8e384a0aeeb3ee7c0e51c29a0c28e646a6055"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01.run.json",
+      "bytes": 417,
+      "sha256": "0ec040ec3dc1f385714cf9914ae38da504509ca345346c57e6e6c040e10f5825"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\original-ap2-01.stdout.txt",
+      "bytes": 4037,
+      "sha256": "581ee296e9036a363e250dfa8096e779bd2f8d33a2716146d73ae6925610c341"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\typecheck-01.run.json",
+      "bytes": 156,
+      "sha256": "66e4aec25724653d4f3df4cb8afaef7a06f9953d781778062e204878f933de7e"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a1\\typecheck-01.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  ],
+  "originalRunNamesFrozen": true,
+  "allMutableOutputsOutsideProtectedTests": true,
+  "coderEvidenceHashReferencesOnly": [
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b"
+    },
+    {
+      "path": "web\\src\\components\\import-status.tsx",
+      "bytes": 3930,
+      "sha256": "888d5f70af3f8c863d484dee79836b74561328eabb312fd812d86f36a203e1f7"
+    },
+    {
+      "path": "web\\src\\lib\\use-modal.ts",
+      "bytes": 1516,
+      "sha256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c"
+    },
+    {
+      "path": ".cache\\asset-pagination-coder\\targeted-01\\browser-artifacts\\asset-pagination-AP2-Impor-2578c-h-more-pages-and-form-edits\\trace.zip",
+      "bytes": 1492761,
+      "sha256": "eb1621edaecca171f01f0fafcf27db6712d2a53108306cb4c3bd3534f16096c5"
+    },
+    {
+      "path": ".cache\\asset-pagination-coder\\targeted-01\\browser-results.json",
+      "bytes": 1555999,
+      "sha256": "e5098508d11b3859f8855b54ac2140d4b15ac16ce10c3ebb47242ebb46f3203e"
+    }
+  ]
+}

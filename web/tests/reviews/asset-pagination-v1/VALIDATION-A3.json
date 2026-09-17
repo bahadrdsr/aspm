@@ -1,0 +1,1053 @@
+{
+  "schemaVersion": 1,
+  "classification": "Same-record measurement locator calibration after accepted immediate ACK; focus/scroll behavior and thresholds unchanged",
+  "parentEvidence": {
+    "reference": {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\asset-pagination-parent-check\\browser-results-a2.json",
+      "bytes": 3594363,
+      "sha256": "14628a2f6d5f994010188a2721af37b5bf63b050e710afb301e279d0d9eae944"
+    },
+    "stats": {
+      "startTime": "2026-09-17T07:20:20.911Z",
+      "duration": 453253.152,
+      "expected": 75,
+      "skipped": 0,
+      "unexpected": 4,
+      "flaky": 0
+    },
+    "failures": [
+      {
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "status": "timedOut",
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "status": "timedOut",
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "status": "timedOut",
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      },
+      {
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "status": "timedOut",
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "independentOriginalReproduction": {
+    "run": {
+      "command": "npm.cmd test -- application-review-regressions[.]spec[.]ts$ --grep keyboard.*asset.*Save --output ..\\.artifacts\\asset-pagination-v1-a3\\original-keyboard-01-traces --reporter=list,json",
+      "port": "64203",
+      "startedAt": "2026-09-17T07:34:41.0144913Z",
+      "endedAt": "2026-09-17T07:36:37.4834471Z",
+      "exitCode": 1,
+      "phase": "Independent reproduction of old-name measurement lookup after accepted immediate ACK, source HOLD unchanged"
+    },
+    "runFile": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\original-keyboard-01.run.json",
+      "bytes": 464,
+      "sha256": "070013aac6f291ecdd712f9dd95e0e94a66335ceb2d75b11e7b165c831a39c5f"
+    },
+    "stdout": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\original-keyboard-01.stdout.txt",
+      "bytes": 12656,
+      "sha256": "47318b0f0e7b010f42826bf69b3422a25bb404d862825366d7478672f81935f3"
+    },
+    "report": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\original-keyboard-01.results.json",
+      "bytes": 17623,
+      "sha256": "3570a0aa7a470b5b30e8d40c3bdc19a85c2979644314d0538fbe628da3aacf84"
+    },
+    "stats": {
+      "startTime": "2026-09-17T07:34:51.641Z",
+      "duration": 105723.42,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 4,
+      "flaky": 0
+    },
+    "cases": [
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "line": 148,
+        "status": "timedOut",
+        "durationMS": 20746,
+        "retry": 0,
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "line": 148,
+        "status": "timedOut",
+        "durationMS": 20665,
+        "retry": 0,
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "line": 148,
+        "status": "timedOut",
+        "durationMS": 20480,
+        "retry": 0,
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "line": 148,
+        "status": "timedOut",
+        "durationMS": 20429,
+        "retry": 0,
+        "errors": [
+          {
+            "message": "Test timeout of 20000ms exceeded."
+          },
+          {
+            "message": "Error: locator.evaluate: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('table', { name: 'Assets', exact: true }).getByRole('row').filter({ hasText: 'synthetic-new-repository' })\n\n\n  130 | async function scrollContext(page: Page, row: Locator) {\n  131 |   const window = await page.evaluate(() => ({ x: scrollX, y: scrollY }));\n> 132 |   const top = await row.evaluate((element) => element.getBoundingClientRect().top);\n      |                         ^\n  133 |   const inner = await page.getByRole(\"region\", { name: \"Asset results\", exact: true })\n  134 |     .evaluate((element) => ({ x: element.scrollLeft, y: element.scrollTop }));\n  135 |   return { window, top, inner };\n    at scrollContext (C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:132:25)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts:179:33",
+            "location": {
+              "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\application-review-regressions.spec.ts",
+              "column": 25,
+              "line": 132
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "correctedTargetedFour": {
+    "run": {
+      "command": "npm.cmd test -- application-review-regressions[.]spec[.]ts$ --grep keyboard.*asset.*Save --output ..\\.artifacts\\asset-pagination-v1-a3\\corrected-keyboard-01-traces --reporter=list,json",
+      "port": "50105",
+      "startedAt": "2026-09-17T07:38:54.1348822Z",
+      "endedAt": "2026-09-17T07:39:19.9870808Z",
+      "exitCode": 0,
+      "scope": "Same edited row across exact old/new canonical names; all focus/scroll assertions unchanged"
+    },
+    "runFile": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\corrected-keyboard-01.run.json",
+      "bytes": 449,
+      "sha256": "34d07a508abb0c60fde63a9f0cabe3221b9e6621caaa888ea8f7d2b66098de73"
+    },
+    "stdout": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\corrected-keyboard-01.stdout.txt",
+      "bytes": 891,
+      "sha256": "1ab886c699660d7a739462d6811df427cfb2ff1066d50927e061f52ab6786bcc"
+    },
+    "report": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\corrected-keyboard-01.results.json",
+      "bytes": 6861,
+      "sha256": "13ecaf2e8b123004d877148ee2ef2f4f6f2b4109f5adc819d763846651529b35"
+    },
+    "stats": {
+      "startTime": "2026-09-17T07:38:56.667Z",
+      "duration": 23229.926,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "cases": [
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 6479,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 3200,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 2475,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 3040,
+        "retry": 0,
+        "errors": []
+      }
+    ]
+  },
+  "full79": {
+    "run": {
+      "command": "npm.cmd test -- --output ..\\.artifacts\\asset-pagination-v1-a3\\full-79-01-traces --reporter=list,json",
+      "port": "61972",
+      "startedAt": "2026-09-17T07:40:23.6758241Z",
+      "endedAt": "2026-09-17T07:45:43.7448797Z",
+      "exitCode": 0,
+      "expectedCases": 79,
+      "scope": "Production/source HOLD; only A3 row measurement identity and pre/post uniqueness checks changed"
+    },
+    "runFile": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\full-79-01.run.json",
+      "bytes": 393,
+      "sha256": "5e6d16ce6e9008231a99c1a24859f24e707dfeee7d5a684b0bb7382acf672ad0"
+    },
+    "stdout": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\full-79-01.stdout.txt",
+      "bytes": 12650,
+      "sha256": "814721fd4049a0401b373fc04d18dab14cb25e1ead9764bdaf47409edef14411"
+    },
+    "report": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\full-79-01.results.json",
+      "bytes": 3582589,
+      "sha256": "cbde041dc4922121e9268ae5f18be1840966468acf309b581add5e0d407db4c9"
+    },
+    "stats": {
+      "startTime": "2026-09-17T07:40:25.690Z",
+      "duration": 317872.18,
+      "expected": 79,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "cases": [
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+        "line": 53,
+        "status": "passed",
+        "durationMS": 3091,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+        "line": 53,
+        "status": "passed",
+        "durationMS": 2205,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+        "line": 84,
+        "status": "passed",
+        "durationMS": 2413,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 2310,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 2955,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 2419,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "line": 148,
+        "status": "passed",
+        "durationMS": 3289,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+        "line": 39,
+        "status": "passed",
+        "durationMS": 2601,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+        "line": 58,
+        "status": "passed",
+        "durationMS": 2724,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+        "line": 87,
+        "status": "passed",
+        "durationMS": 1466,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+        "line": 116,
+        "status": "passed",
+        "durationMS": 1789,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M04 assets can be created and edited without leaving their selected workspace",
+        "line": 139,
+        "status": "passed",
+        "durationMS": 3116,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+        "line": 175,
+        "status": "passed",
+        "durationMS": 2964,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+        "line": 236,
+        "status": "passed",
+        "durationMS": 1758,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination-ack.spec.ts",
+        "title": "AP6 edit: canonical ACK is visible before its NEW post-save GET settles (200)",
+        "line": 71,
+        "status": "passed",
+        "durationMS": 5027,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination-ack.spec.ts",
+        "title": "AP6 create: canonical ACK is visible before its NEW post-save GET settles (503)",
+        "line": 71,
+        "status": "passed",
+        "durationMS": 4694,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "title": "AP1 Native inventory continuation preserves rows and truthful counts through failure, same-cursor retry and overlapping refresh",
+        "line": 154,
+        "status": "passed",
+        "durationMS": 2801,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "title": "AP2 Import selection reaches a server asset beyond its initial page and preserves that exact ID through more pages and form edits",
+        "line": 192,
+        "status": "passed",
+        "durationMS": 4524,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "title": "AP3 Viewer paging has no write authority and workspace, logout and 401 discard every old page and held continuation",
+        "line": 242,
+        "status": "passed",
+        "durationMS": 4056,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "title": "AP4 Canonical edit/create acknowledgements survive old overlapping pages without optimistic rows or loss of loaded context",
+        "line": 276,
+        "status": "passed",
+        "durationMS": 4659,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "title": "AP5 At 390px manual inventory/selector paging preserves selected IDs, draft caret and reduced-motion keyboard context",
+        "line": 352,
+        "status": "passed",
+        "durationMS": 5312,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership",
+        "line": 254,
+        "status": "passed",
+        "durationMS": 3109,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter",
+        "line": 309,
+        "status": "passed",
+        "durationMS": 2324,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification",
+        "line": 348,
+        "status": "passed",
+        "durationMS": 5200,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes",
+        "line": 388,
+        "status": "passed",
+        "durationMS": 2997,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities",
+        "line": 456,
+        "status": "passed",
+        "durationMS": 4510,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace",
+        "line": 541,
+        "status": "passed",
+        "durationMS": 8105,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs",
+        "line": 613,
+        "status": "passed",
+        "durationMS": 6555,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "title": "FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh",
+        "line": 674,
+        "status": "passed",
+        "durationMS": 9762,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "foundations.spec.ts",
+        "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+        "line": 51,
+        "status": "passed",
+        "durationMS": 6613,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "harness.spec.ts",
+        "title": "harness compiles React and exercises real browser keyboard events",
+        "line": 9,
+        "status": "passed",
+        "durationMS": 578,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "harness.spec.ts",
+        "title": "harness produces static assets without needing the production UI",
+        "line": 20,
+        "status": "passed",
+        "durationMS": 271,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "harness.spec.ts",
+        "title": "approval guard distinguishes reviewed license candidates from approved components",
+        "line": 33,
+        "status": "passed",
+        "durationMS": 47,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "M01 skip link focuses main without changing any destination or hash",
+        "line": 145,
+        "status": "passed",
+        "durationMS": 2486,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+        "line": 165,
+        "status": "passed",
+        "durationMS": 5704,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "line": 66,
+        "status": "passed",
+        "durationMS": 5939,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "line": 66,
+        "status": "passed",
+        "durationMS": 5432,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "line": 66,
+        "status": "passed",
+        "durationMS": 5816,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "line": 66,
+        "status": "passed",
+        "durationMS": 5639,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "title": "RF1 The import selector names exactly seven implemented profiles with honest JSON/CSV/manual guidance and literal mapping",
+        "line": 150,
+        "status": "passed",
+        "durationMS": 2045,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "title": "RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit provenance in one JSON request without mapping or local success",
+        "line": 190,
+        "status": "passed",
+        "durationMS": 4658,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "title": "RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays human-authored and plain prose is never converted",
+        "line": 219,
+        "status": "passed",
+        "durationMS": 3777,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "title": "RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8, excessive file bytes and JSON-wrapper expansion without truncation",
+        "line": 259,
+        "status": "passed",
+        "durationMS": 9719,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "title": "RF5 New profiles retain central viewer/current-role authority and surface server 403/415/413/401 without guessing another parser",
+        "line": 291,
+        "status": "passed",
+        "durationMS": 3994,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "title": "RF6 At 390px CSV file-read cancellation and held-import scope loss clear old bytes/progress while keeping keyboard asset context",
+        "line": 364,
+        "status": "passed",
+        "durationMS": 3909,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+        "line": 185,
+        "status": "passed",
+        "durationMS": 6177,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+        "line": 220,
+        "status": "passed",
+        "durationMS": 5240,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+        "line": 261,
+        "status": "passed",
+        "durationMS": 7199,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+        "line": 306,
+        "status": "passed",
+        "durationMS": 2768,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+        "line": 361,
+        "status": "passed",
+        "durationMS": 4976,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+        "line": 396,
+        "status": "passed",
+        "durationMS": 6008,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+        "line": 434,
+        "status": "passed",
+        "durationMS": 12838,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+        "line": 481,
+        "status": "passed",
+        "durationMS": 6825,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+        "line": 555,
+        "status": "passed",
+        "durationMS": 5882,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 390px by pointer",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 1472,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 390px by keyboard",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 2412,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 683px by pointer",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 1505,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 683px by keyboard",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 2904,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 850px by pointer",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 1561,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 850px by keyboard",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 2803,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 851px by pointer",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 1733,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "title": "authenticated session controls remain reachable at 851px by keyboard",
+        "line": 86,
+        "status": "passed",
+        "durationMS": 3150,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "primary navigation exposes the five focused destinations",
+        "line": 57,
+        "status": "passed",
+        "durationMS": 1952,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "theme follows the system and preserves an explicit light/dark choice",
+        "line": 70,
+        "status": "passed",
+        "durationMS": 2329,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+        "line": 87,
+        "status": "passed",
+        "durationMS": 2012,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "finding details retain filter, selection and keyboard focus (reduce)",
+        "line": 87,
+        "status": "passed",
+        "durationMS": 1971,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+        "line": 123,
+        "status": "passed",
+        "durationMS": 1823,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+        "line": 145,
+        "status": "passed",
+        "durationMS": 1538,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+        "line": 158,
+        "status": "passed",
+        "durationMS": 1410,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection",
+        "line": 283,
+        "status": "passed",
+        "durationMS": 4007,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial",
+        "line": 354,
+        "status": "passed",
+        "durationMS": 4611,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation",
+        "line": 426,
+        "status": "passed",
+        "durationMS": 4611,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts",
+        "line": 488,
+        "status": "passed",
+        "durationMS": 5645,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation",
+        "line": 540,
+        "status": "passed",
+        "durationMS": 2349,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs",
+        "line": 582,
+        "status": "passed",
+        "durationMS": 4289,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs",
+        "line": 637,
+        "status": "passed",
+        "durationMS": 6307,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "title": "SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm",
+        "line": 761,
+        "status": "passed",
+        "durationMS": 5411,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "workspace-reselection.spec.ts",
+        "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+        "line": 21,
+        "status": "passed",
+        "durationMS": 1427,
+        "retry": 0,
+        "errors": []
+      },
+      {
+        "file": "workspace-reselection.spec.ts",
+        "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+        "line": 42,
+        "status": "passed",
+        "durationMS": 1298,
+        "retry": 0,
+        "errors": []
+      }
+    ]
+  },
+  "typecheck": {
+    "command": "npm.cmd run typecheck",
+    "startedAt": "2026-09-17T07:38:53.8165166Z",
+    "endedAt": "2026-09-17T07:38:57.2731935Z",
+    "exitCode": 0,
+    "runFile": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\typecheck-01.run.json",
+      "bytes": 156,
+      "sha256": "770cff0e635acf31b13e59e90989c0108e8282b3aa05dbe780b28655462086c5"
+    },
+    "stdout": {
+      "path": ".artifacts\\asset-pagination-v1-a3\\typecheck-01.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  },
+  "all79Passed": true,
+  "actualFocusOrScrollFailureAfterCorrection": false,
+  "skips": 0,
+  "flakes": 0,
+  "retries": 0,
+  "allPreviousBehaviorAssertionsPreserved": true,
+  "sourceGuards": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A3.json",
+    "bytes": 12469,
+    "sha256": "ca245754e1ffc5987de46815b4d3d70dd001f9ca1895b2da304d4c467805dd2e"
+  }
+}

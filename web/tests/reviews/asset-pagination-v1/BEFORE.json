@@ -1,0 +1,622 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T04:35:32.963Z",
+  "head": "cfba492d552ce97a484ed94fd2b3a0c7d0de555d",
+  "scope": "All current UI, 72 assertions and existing fixture/credential/Origin/request-budget/compiler/dependency/provenance inputs plus exact asset/intake API authority. Intentional parent publication/source metadata advancement outside these files is not reverted.",
+  "files": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal\\app\\assets.go",
+      "bytes": 6199,
+      "sha256": "2b85887c4b2851e1631d3666119e0da05ff026b52ca611c0282ccebd8e50c0ac"
+    },
+    {
+      "path": "internal\\app\\auth.go",
+      "bytes": 14449,
+      "sha256": "7d425f995d8eb2145eddd07b6f69fcd52a2bc4846c608a2ffe91b296f0be8cdb"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 11801,
+      "sha256": "0e860548c812447eb12a0abb5a721461f55f43075869acbb2daf37061e730eb8"
+    },
+    {
+      "path": "internal\\app\\imports.go",
+      "bytes": 9607,
+      "sha256": "78db1963a2e64a81afc2f3d31cac70f8bd1bd025d2c6e23748e878445b985f53"
+    },
+    {
+      "path": "internal\\app\\types.go",
+      "bytes": 4768,
+      "sha256": "d37675a41a0591a8dfd762a20b68364e92c362cfb3ef32296a8a6c9deb42321f"
+    },
+    {
+      "path": "web\\.gitattributes",
+      "bytes": 25,
+      "sha256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893"
+    },
+    {
+      "path": "web\\.npmrc",
+      "bytes": 82,
+      "sha256": "e5ff309835c0699682deaec26655607558ba1a2f3f9632c1d2e93cbb965b09e3"
+    },
+    {
+      "path": "web\\index.html",
+      "bytes": 695,
+      "sha256": "bfd16da052da30515dae0c3bd6e4c6fc3bba0119a2b25eefb5335c6cace6739a"
+    },
+    {
+      "path": "web\\package-lock.json",
+      "bytes": 62150,
+      "sha256": "def182f3fbccb232bcb2411a6b387e6ac0152c9860e65f6cc2670543009e9825"
+    },
+    {
+      "path": "web\\package.json",
+      "bytes": 1588,
+      "sha256": "fd862a4bd142e0864ddeeff049c739d2485b99995acae64aa6b78ccaade19b93"
+    },
+    {
+      "path": "web\\playwright.config.ts",
+      "bytes": 1481,
+      "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+    },
+    {
+      "path": "web\\public\\favicon.svg",
+      "bytes": 192,
+      "sha256": "4cf5f42047d6b42bb797194d01367b14626caf49d1e6a3530d55765d881b00e2"
+    },
+    {
+      "path": "web\\public\\notices\\animate-ui-MIT.txt",
+      "bytes": 1091,
+      "sha256": "aeef3b9097b22b1e766a68854a50c56c151094ebd3fc47c18d1da4243a97c7b9"
+    },
+    {
+      "path": "web\\public\\notices\\radix-MIT.txt",
+      "bytes": 1084,
+      "sha256": "1b41bdf236e48c371c8b603ccf6e6d2660d6fe05d3ae34e1f7088c0ab4ddab9d"
+    },
+    {
+      "path": "web\\public\\notices\\shadcn-MIT.txt",
+      "bytes": 1084,
+      "sha256": "a14c2d6fb5ba9925cba04633226a3b93e6c5566ca6b550dbfaead7ab3fa93b24"
+    },
+    {
+      "path": "web\\review.config.ts",
+      "bytes": 354,
+      "sha256": "c2f40686c08969b38b4b94136fe2a99d2dee407a0d8308d82fd6f8834295e6cd"
+    },
+    {
+      "path": "web\\scripts\\audit-dependencies.mjs",
+      "bytes": 4822,
+      "sha256": "fad990a2f3f104274356ca69534b403b7eb066ee14c9e6292e3d4b9473a127b5"
+    },
+    {
+      "path": "web\\scripts\\live-auth-check.mjs",
+      "bytes": 4132,
+      "sha256": "6c3a3baba138e5ff715292feb983f5a0556f9131bf9c42962e4529598b2d6d7c"
+    },
+    {
+      "path": "web\\scripts\\normalize-lock.mjs",
+      "bytes": 1674,
+      "sha256": "756521335bd1e3f44b4e3f5f275da29b8a0818aa1cdee4d7e790b2df3e0ab9ae"
+    },
+    {
+      "path": "web\\scripts\\playwright.mjs",
+      "bytes": 1080,
+      "sha256": "4df69b83a466c18e625c8729d510d30d934d7b00607e868ac6d7c8da7e5e25a1"
+    },
+    {
+      "path": "web\\scripts\\review-capture.spec.ts",
+      "bytes": 3063,
+      "sha256": "d5f59cca0c25d3709d982fd838a713a255157d243baba2819db95d4da9f596fd"
+    },
+    {
+      "path": "web\\src\\App.tsx",
+      "bytes": 9492,
+      "sha256": "13a561e6da30f6d12d48430164fae751ea96786af39099b66052187e97c1e04a"
+    },
+    {
+      "path": "web\\src\\api\\authorization.ts",
+      "bytes": 761,
+      "sha256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277"
+    },
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 31500,
+      "sha256": "c612f8e9fc3655434463ea95701d565da019ef18052a59b74acfe7732c51a725"
+    },
+    {
+      "path": "web\\src\\api\\slack-intents.ts",
+      "bytes": 1620,
+      "sha256": "38662d6b19582356b1cf86206bb89266a51fe24d3033bd198bfc5200f8f18559"
+    },
+    {
+      "path": "web\\src\\api\\slack.ts",
+      "bytes": 18454,
+      "sha256": "883a02651f0076bbca945919c2a536ae688cb3d1409bf9aac3c44d07faf8d49c"
+    },
+    {
+      "path": "web\\src\\api\\types.ts",
+      "bytes": 8999,
+      "sha256": "d5c5d03f350a6add70342f21220f4f5504091441b5e03e40bb2ca028992329aa"
+    },
+    {
+      "path": "web\\src\\components\\action-button.tsx",
+      "bytes": 764,
+      "sha256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc"
+    },
+    {
+      "path": "web\\src\\components\\animate\\button.tsx",
+      "bytes": 671,
+      "sha256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794"
+    },
+    {
+      "path": "web\\src\\components\\animate\\slot.tsx",
+      "bytes": 2459,
+      "sha256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7"
+    },
+    {
+      "path": "web\\src\\components\\asset-editor.tsx",
+      "bytes": 5777,
+      "sha256": "87d209e88c2682ba8862b2adfbdb98061f6d7458efb559485aeea9160c2062c3"
+    },
+    {
+      "path": "web\\src\\components\\finding-actions.css",
+      "bytes": 2081,
+      "sha256": "c6598240565559501c1731738c7ed6a6070f3be13ad928c30db3ce74af5fff6e"
+    },
+    {
+      "path": "web\\src\\components\\finding-actions.tsx",
+      "bytes": 8614,
+      "sha256": "efe76e23ad0b59032d2db889cd8c8042c3d70c45af121bac3b1a20a23d50f046"
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "bytes": 13480,
+      "sha256": "bf0bd481903e4b5a68bccc5022bb7ec4d949375cfc6eb6587c7742f946ea0074"
+    },
+    {
+      "path": "web\\src\\components\\finding-notifications.tsx",
+      "bytes": 8953,
+      "sha256": "a75aa90a6b687e413c0067b27bf365235c6a871419191a64a709a412aa03ed0d"
+    },
+    {
+      "path": "web\\src\\components\\form-dialog.tsx",
+      "bytes": 2987,
+      "sha256": "445f09aede950c5a39ac06383f47cb5b594f0f3b705865fa6f2a0e3861d07708"
+    },
+    {
+      "path": "web\\src\\components\\icon.tsx",
+      "bytes": 2494,
+      "sha256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4"
+    },
+    {
+      "path": "web\\src\\components\\import-status.tsx",
+      "bytes": 3930,
+      "sha256": "888d5f70af3f8c863d484dee79836b74561328eabb312fd812d86f36a203e1f7"
+    },
+    {
+      "path": "web\\src\\components\\provenance.json",
+      "bytes": 2649,
+      "sha256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411"
+    },
+    {
+      "path": "web\\src\\components\\report-import.tsx",
+      "bytes": 10069,
+      "sha256": "80dbc295d6eab5a8c1c9a2e17d659bc060b8bc103433f1fcf0dce98262e88522"
+    },
+    {
+      "path": "web\\src\\components\\report-metrics.tsx",
+      "bytes": 3495,
+      "sha256": "aec62087d3b496b52815d2249a1c515aa9f7af9b88c302a43f3e513a9ecdc5a6"
+    },
+    {
+      "path": "web\\src\\components\\report-snapshot-create.tsx",
+      "bytes": 4212,
+      "sha256": "ae517b748ab2346b0c48b2cf9342d32ec26f9b63a3e41e0ee51b517f89306568"
+    },
+    {
+      "path": "web\\src\\components\\report-snapshot-detail.tsx",
+      "bytes": 4023,
+      "sha256": "d1cbf3cccfd7d0af219794bc216b46342657e5518809cd69c6b1fff35e729eca"
+    },
+    {
+      "path": "web\\src\\components\\slack-connection-editor.tsx",
+      "bytes": 6963,
+      "sha256": "e037b1a4f4cfb0d15ef62d574b98d800ae0d502f9f59c96d4ee4e8cf0f66afc7"
+    },
+    {
+      "path": "web\\src\\components\\slack-connections.tsx",
+      "bytes": 5098,
+      "sha256": "3a624fcc21240fd86c3264488655b28a44931deb883205a2b78fcbd8546414a6"
+    },
+    {
+      "path": "web\\src\\components\\slack-delivery-detail.tsx",
+      "bytes": 6454,
+      "sha256": "2e88da41ec69d959323b47c1b5d7adcf31f83e485b946ec6586269fea5fa43c2"
+    },
+    {
+      "path": "web\\src\\components\\slack-delivery-history.tsx",
+      "bytes": 4202,
+      "sha256": "96e08368bbf45f2b6a08a5db94949f4315b4d607eb93b6c59465280e8e236130"
+    },
+    {
+      "path": "web\\src\\components\\slack.css",
+      "bytes": 3631,
+      "sha256": "9a2408ec464ab49b0513475ec0922835bc5f607bdc60be80758046a3df0e378a"
+    },
+    {
+      "path": "web\\src\\components\\states.tsx",
+      "bytes": 2778,
+      "sha256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4"
+    },
+    {
+      "path": "web\\src\\components\\theme-menu.tsx",
+      "bytes": 2752,
+      "sha256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12"
+    },
+    {
+      "path": "web\\src\\components\\ui\\button.tsx",
+      "bytes": 2182,
+      "sha256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d"
+    },
+    {
+      "path": "web\\src\\lib\\application-input.ts",
+      "bytes": 3759,
+      "sha256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd"
+    },
+    {
+      "path": "web\\src\\lib\\format.ts",
+      "bytes": 722,
+      "sha256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6"
+    },
+    {
+      "path": "web\\src\\lib\\preferences.tsx",
+      "bytes": 2821,
+      "sha256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8"
+    },
+    {
+      "path": "web\\src\\lib\\router.ts",
+      "bytes": 1076,
+      "sha256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e"
+    },
+    {
+      "path": "web\\src\\lib\\session.tsx",
+      "bytes": 9378,
+      "sha256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de"
+    },
+    {
+      "path": "web\\src\\lib\\use-modal.ts",
+      "bytes": 1516,
+      "sha256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c"
+    },
+    {
+      "path": "web\\src\\lib\\use-resource.ts",
+      "bytes": 1472,
+      "sha256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23"
+    },
+    {
+      "path": "web\\src\\lib\\use-scoped-action.ts",
+      "bytes": 1847,
+      "sha256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4"
+    },
+    {
+      "path": "web\\src\\lib\\utils.ts",
+      "bytes": 207,
+      "sha256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431"
+    },
+    {
+      "path": "web\\src\\main.tsx",
+      "bytes": 386,
+      "sha256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f"
+    },
+    {
+      "path": "web\\src\\pages\\assets.tsx",
+      "bytes": 6037,
+      "sha256": "0ec94ad62fdd0599e3439279d3b9971405b69173184ec3587ee371fcd952a830"
+    },
+    {
+      "path": "web\\src\\pages\\gallery.tsx",
+      "bytes": 5054,
+      "sha256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8"
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "bytes": 4809,
+      "sha256": "df3b5a174a011ee220c7c1880b516afd429fa50d161ba516b29f88b3d827a129"
+    },
+    {
+      "path": "web\\src\\pages\\reports.css",
+      "bytes": 7807,
+      "sha256": "4f409bc04c469989507f4b73f4d62c71fabd22d78e0ad141ee85ab8b54e68d53"
+    },
+    {
+      "path": "web\\src\\pages\\reports.tsx",
+      "bytes": 10314,
+      "sha256": "dfac17e5115341fcb36e4ffba7b5c9d2875d66d27d1d2f84f1d4b3357b73ed94"
+    },
+    {
+      "path": "web\\src\\pages\\work.tsx",
+      "bytes": 11833,
+      "sha256": "25056356d5dd495c6f5a962a25c3ea04cb945319a4e5f17d0c12a542857dae2f"
+    },
+    {
+      "path": "web\\src\\styles.css",
+      "bytes": 43243,
+      "sha256": "03221c53496707613906649fc41da840e1a8e0dfebce5f7b302dd1651392e0ad"
+    },
+    {
+      "path": "web\\tests\\ACCEPTANCE.txt",
+      "bytes": 15974,
+      "sha256": "84abb85f90dc3309eab3ec308859cde81a694eb2a11e6cf1b5d5f889374cec87"
+    },
+    {
+      "path": "web\\tests\\HANDOFF.sha256",
+      "bytes": 1334,
+      "sha256": "5ed554b52530819230c67086adfbcd7a9c3a1dc08242cfb0d78d9506c91eaac3"
+    },
+    {
+      "path": "web\\tests\\HANDOFF.txt",
+      "bytes": 9423,
+      "sha256": "23f688155c62d51a5cc32ce216319c05f2f09f4ef66b8ff764182ce941c6d6bf"
+    },
+    {
+      "path": "web\\tests\\api-contract.ts",
+      "bytes": 1752,
+      "sha256": "109791bb5f4e7525662003ae12bb3c19dcfac178ada0824d0134f75c3d44b701"
+    },
+    {
+      "path": "web\\tests\\application-fixture.ts",
+      "bytes": 19485,
+      "sha256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22"
+    },
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "bytes": 11775,
+      "sha256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96"
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "bytes": 17775,
+      "sha256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470"
+    },
+    {
+      "path": "web\\tests\\approved-component-sources.json",
+      "bytes": 3652,
+      "sha256": "822b08fc926604da8c43ea6b2b7d44aab6dfd435f12100fb9909686559ca348e"
+    },
+    {
+      "path": "web\\tests\\dependency-metadata.json",
+      "bytes": 3580,
+      "sha256": "39a231b84594017429b518921e369da8af41e7739a0da06b5d9eda54912b263e"
+    },
+    {
+      "path": "web\\tests\\finding-actions-data.ts",
+      "bytes": 7431,
+      "sha256": "685b4891a2dc9f1e8236a577d9d2ccad954ae39ee64b819cfcc805818b3a6c3a"
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "bytes": 22158,
+      "sha256": "8ebcb28bc9f0f682a860b9353028fea1b72e18503f77069da1092a5f7b2d238c"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\tests\\fixtures.ts",
+      "bytes": 4294,
+      "sha256": "71d0ea42033a064513bd72a59b6083fd2881f67b7dbdc53572dd24d66b1d0297"
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "bytes": 7052,
+      "sha256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085"
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "bytes": 7613,
+      "sha256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67"
+    },
+    {
+      "path": "web\\tests\\harness\\index.html",
+      "bytes": 317,
+      "sha256": "787fa7c7ba3c617436db150f4a85bd84cfc5014be6afa08f931eb2016df07f65"
+    },
+    {
+      "path": "web\\tests\\harness\\main.tsx",
+      "bytes": 693,
+      "sha256": "05344719e1367cd853a1b8c7b21908ad0dd6481ecea322e5904b2f831b08d7bc"
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "bytes": 11308,
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    },
+    {
+      "path": "web\\tests\\network.ts",
+      "bytes": 6155,
+      "sha256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584"
+    },
+    {
+      "path": "web\\tests\\report-formats-data.ts",
+      "bytes": 7608,
+      "sha256": "9876c99d6420c2d561615509376a67f77b9c7dd099f847ee25f8b2d45395edeb"
+    },
+    {
+      "path": "web\\tests\\report-formats-fixture.ts",
+      "bytes": 19203,
+      "sha256": "7d67fc1fc3d256b26035bbc2df008460855ad628483cd45d76366fc5dd0e0cb6"
+    },
+    {
+      "path": "web\\tests\\report-formats.spec.ts",
+      "bytes": 25258,
+      "sha256": "cd19d6294f409509b1ea6ba35da7eee7c37f31e5bef80ce5328472a8748365e6"
+    },
+    {
+      "path": "web\\tests\\reports-data.ts",
+      "bytes": 7505,
+      "sha256": "94e92e286f6f6abc15fbb47a1c732037dc912392dd7bfbbcb32644ba6d4eb2c6"
+    },
+    {
+      "path": "web\\tests\\reports-fixture.ts",
+      "bytes": 20429,
+      "sha256": "57c254f93cdc79fdae103bfafc8c19fccbf5593adf773a52555bc119f03b0bd2"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90"
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "bytes": 6804,
+      "sha256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1"
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "bytes": 9531,
+      "sha256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f"
+    },
+    {
+      "path": "web\\tests\\slack-delivery.spec.ts",
+      "bytes": 49215,
+      "sha256": "bf5d7ee46f6a85a33b62b1a2fb11785ba54b6e946b92903020d01b64fd5a29f7"
+    },
+    {
+      "path": "web\\tests\\slack-navigation.ts",
+      "bytes": 795,
+      "sha256": "fc61865f9d6d0a2ff6a7247299c86152117a0507717843f2f8c9331bfb50feb0"
+    },
+    {
+      "path": "web\\tests\\slack-ui-data.ts",
+      "bytes": 12760,
+      "sha256": "d8ecc78c517274fc4c21177e6f6621e88aba2b67d3e35c818fd47063c582b315"
+    },
+    {
+      "path": "web\\tests\\slack-ui-fixture.ts",
+      "bytes": 29329,
+      "sha256": "69afa8107fed7c289ef5f06183e139c241c1df332924095d1e1cedd086fb85f5"
+    },
+    {
+      "path": "web\\tests\\source-approval.ts",
+      "bytes": 5673,
+      "sha256": "4eb90208a12373a5b3951e2d62826e054f164c1b496330868621aa9079003229"
+    },
+    {
+      "path": "web\\tests\\upstream\\animate-LICENSE.txt",
+      "bytes": 1070,
+      "sha256": "d2349753738223c0237d8b5908c4e4da825bbfc951e4fa7081ebc5563c8ceea0"
+    },
+    {
+      "path": "web\\tests\\upstream\\animate-button.tsx.txt",
+      "bytes": 639,
+      "sha256": "cd300bc42b8111f81b911b113a56607601c187038e8d16a9a44f2e288348b5de"
+    },
+    {
+      "path": "web\\tests\\upstream\\animate-slot.tsx.txt",
+      "bytes": 2363,
+      "sha256": "71ab5d88b89e0766d69bb5b4fd3918a263c14ed01f5745fc0323ed25a9cb87c8"
+    },
+    {
+      "path": "web\\tests\\upstream\\shadcn-LICENSE.txt",
+      "bytes": 1063,
+      "sha256": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    {
+      "path": "web\\tests\\upstream\\shadcn-button.tsx.txt",
+      "bytes": 2123,
+      "sha256": "82403231e33fd3d45b111e5e819df194cdfa7cef9a726770185724a60bd20932"
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "bytes": 3823,
+      "sha256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372"
+    },
+    {
+      "path": "web\\tsconfig.json",
+      "bytes": 848,
+      "sha256": "2c233d484659a18d90e6c5bcf6fd74759541a9f4dd9e5cfb24d64005c09f3a82"
+    },
+    {
+      "path": "web\\vite.config.ts",
+      "bytes": 863,
+      "sha256": "810f2fffb363f2e08fcd9f4264d028f5081ba9ed7d412f035405e4f8a221998a"
+    }
+  ],
+  "oldHistoryHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.json",
+      "bytes": 7687,
+      "sha256": "7713b524a577f126994e3f6ac72832b0538c5c3a59780f70596ca002e83ff340"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "f9b906d63f47748e7fd2f6871108c826f67ae4bc2e4fcd685dda57fa5b990857"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+      "bytes": 3649,
+      "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PACKET.json",
+      "bytes": 3682,
+      "sha256": "4d8ee5747841f8bcae5f4ec0665a9397e519289fa2b832c1bc9c2ce2c8ed7a02"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "379e475f2a1e480b9bd8a977d70fd14d4ca3debe5c7c93c15898876d58810c0e"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 3143,
+      "sha256": "8cc4e01c6d89fae28d7dd910821ca7a69570bf864c3f503c7a6a91d197cc1fa7"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "85c31282f30fb3b13c00a1b9843323777ccdb0c3e96bec7d74ac3cb7775cdaa7"
+    },
+    {
+      "path": "web\\tests\\reviews\\reports-ui-v1\\PACKET.json",
+      "bytes": 116170,
+      "sha256": "e8e5baed171d82a1da37d509080bcb05022100fabc9fb3ccbeb8b8050fcd6600"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\PACKET.json",
+      "bytes": 6521,
+      "sha256": "9b2559e8f5fd34988f7f9fd09a78db3782aa9831bf14f1a91d4ece566a879029"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "8890b8763def0d999ae5fdebebc7be2d9c2b4b92075c5e9fe7fd20b78a8636c1"
+    },
+    {
+      "path": "web\\tests\\reviews\\workflow-review-v2\\FROZEN.sha256",
+      "bytes": 42759,
+      "sha256": "f3a457e6f877da5e65e17eef5a94fb6a24a9307d3db06bb0540d17af85b21a39"
+    }
+  ],
+  "legacyAmendments": [],
+  "archives": []
+}

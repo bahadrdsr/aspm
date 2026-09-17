@@ -1,0 +1,89 @@
+ASSET PAGINATION A3 - EDITED-ROW MEASUREMENT IDENTITY
+===================================================
+
+Confirmed observation
+---------------------
+The parent's actual browser-results-a2.json was independently inspected.
+Its 75/79 result contains four 20-second timeouts in scrollContext's row
+evaluate, waiting for the old name synthetic-new-repository. It contains no
+failed focus or scroll-tolerance assertion before that stale lookup.
+
+A fresh independent run reproduced all four failures on the held immediate-
+ACK source. The first held-refresh focus check completes; the next measurement
+cannot resolve the old-name-only row at original call line 179/helper line 132.
+The A2 behavior correctly changes that name as soon as the canonical PATCH
+ACK arrives, before the post-save GET is released.
+
+Intent preserved, measurement repaired
+-------------------------------------
+The test intent remains: measure the SAME edited asset row and preserve its
+keyboard/focus/scroll/workspace context through a held post-save refresh.
+The mutable display name was not a stable measurement identity.
+
+Only the local measurement-row locator is broadened to two exact, known names:
+  createdAsset.name OR updatedAsset.name
+Both are scoped inside the existing Assets table row. This is not a generic
+row, substring, BODY, positional or hidden-old-data fallback.
+
+Explicit identity checks strengthen the boundary:
+  Before edit: exactly one matching row; the exact original name is visible.
+  After ACK/modal closure: exactly one matching row; the exact canonical new
+  name is visible and the old name is absent.
+The fixture's createdAsset/updatedAsset share the same server ID, and the
+existing exact PATCH-ID/count assertion remains unchanged.
+
+Every existing focus, visibility/enabled-context, scroll, workspace, URL and
+no-steal assertion is byte-identical. tabTo, meaningfulAssetFocus, scrollContext
+and sameScrollContext are untouched. Both motion modes and both deliberate
+user-focus-movement variants retain all original limits and checks.
+The later canonical-name/staging assertion also remains unchanged.
+
+No production data was kept stale to satisfy a locator. No new UI attribute,
+DOM/state replacement, hidden old label, delayed ACK or focus behavior was
+introduced. No helper, fixture, runner, setting or dependency was changed.
+
+Exact amendment and qualification
+--------------------------------
+AMENDMENT-A3.json records the replacement/precheck block and post-ACK identity
+checks. Removing only those additions and restoring the old locator reconstructs
+the complete original spec byte-for-byte, including every original assertion.
+
+  Original spec SHA-256:
+    9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96
+  A3 spec SHA-256:
+    f03d03e6a4819c980bff149af7a653683c1d1bab040698755f2c675547878c39
+
+  Original four-variant reproduction: four old-row lookup timeouts.
+  Corrected four targeted variants: passed.
+  Actual typecheck: passed.
+  Full browser suite: all 79 passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+No genuine focus/scroll failure appeared after correcting row identity.
+
+Source/history HOLD
+-------------------
+The parent's earlier immediate-ACK hook and README changes are identified
+separately in BEFORE-A3.json. This author made no further production change.
+Of the 633 current immutable controls, only this explicitly authorized spec
+changes; the other 632 match. The 685-file current source/input HOLD changes
+only at the same spec. All old oracle/signature files and the real index remain.
+
+Only the actually amended original spec is archived:
+  history\a3\application-review-regressions.spec.ts.before.txt
+Prior packet/hash/evidence references are stored as hashes, not copied trees.
+Original A1/A2 packets, RED and signatures remain untouched in place.
+The old A2 seal identifies the original spec hash; it is not claimed to verify
+the amended active spec. Parent review and a new current seal are required.
+
+Frozen A3 handoff
+----------------
+New logs/results/traces use unique names outside protected tests:
+  .artifacts\asset-pagination-v1-a3
+Do not overwrite original-keyboard-01, corrected-keyboard-01 or full-79-01.
+The parent's runtime result is referenced in place by exact path/hash.
+
+GUARDS-A3.json and VALIDATION-A3.json record exact source/control comparisons,
+all observed outcomes and the preserved test intent. EVIDENCE-A3.json hashes
+the new evidence. PACKET-A3.json/PACKET-A3.sha256 freeze the unsigned amendment.
+Stop for parent verification/reseal. No production/dependency/fixture/agent/
+commit/native API work is authorized by this handoff.

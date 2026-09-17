@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "status": "FROZEN - original-author one-line permutation verified; stop for parent reseal, coder/source HOLD retained",
+  "classification": "AP2 checks close-restoration before deliberate native disclosure focus movement",
+  "source": "web\\tests\\asset-pagination.spec.ts",
+  "statement": "  await expect(openImportAction(page)).toBeFocused();",
+  "oldLine": 237,
+  "newLine": 232,
+  "beforeSHA256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b",
+  "afterSHA256": "c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e",
+  "exactWholeFilePermutation": true,
+  "sourceHelpersFixturesRunnersSettingsDependenciesUnchanged": true,
+  "results": {
+    "originalAP2": "reproduced focus failure at old line 237",
+    "correctedAP2": "passed",
+    "typecheck": "passed",
+    "fullSuite": 77,
+    "passed": 77,
+    "skipped": 0,
+    "flaky": 0,
+    "retries": 0,
+    "allOtherAssertionsPreserved": true
+  },
+  "original605Controls": {
+    "unchanged": 604,
+    "onlyAuthorizedDelta": "web\\tests\\asset-pagination.spec.ts",
+    "oldManifestAndSignatureUnchanged": true,
+    "oldCurrentOraclePassNotClaimed": true,
+    "parentNewSealRequired": true
+  },
+  "archives": [
+    {
+      "source": "web\\tests\\asset-pagination.spec.ts",
+      "archive": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\asset-pagination.spec.ts.before.txt",
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\asset-pagination.spec.ts.before.txt",
+      "bytes": 25531,
+      "sha256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b"
+    },
+    {
+      "source": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+      "archive": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.json.before.txt",
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "source": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+      "archive": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.sha256.before.txt",
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    }
+  ],
+  "originalPacket": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+    "bytes": 3266,
+    "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+  },
+  "originalPacketDigest": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+    "bytes": 78,
+    "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+  },
+  "originalREDUnchanged": true,
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A1.json",
+      "bytes": 269673,
+      "sha256": "68588ef5534e972b33feb2cc1594e284b599795013651f7d14a72c5b62b7c67f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A1.json",
+      "bytes": 1022,
+      "sha256": "69d00d09517f0cbe1563fdd818dc2b9031ccfe9f2ca81f1cac635b4fc99746e0"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A1.json",
+      "bytes": 11328,
+      "sha256": "dfa76b9aeb3d45ab79cea80da61355680a2d550f6b6cb915eba0fb702b37649c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\VALIDATION-A1.json",
+      "bytes": 33915,
+      "sha256": "83061637869fac92deb40f92905f679d9eb97b76c69c4ab29220296346fd469c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A1.json",
+      "bytes": 5003,
+      "sha256": "85a5fd0f171a322a85ed420db0823c280aa8a2f765b84ac57ab328e194b0569f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A1.txt",
+      "bytes": 4581,
+      "sha256": "0c2a83613dd9d8354b5726d3f102246fa188dca5547e57396dfeaaea02703cbc"
+    }
+  ],
+  "noProductionFocusStealing": true,
+  "noAgentsCommitsNativeAPIOrPrivateSigningKey": true
+}

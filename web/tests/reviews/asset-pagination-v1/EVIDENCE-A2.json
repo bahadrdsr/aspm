@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "root": ".artifacts\\asset-pagination-v1-a2",
+  "files": [
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\compiler-inputs-01.txt",
+      "bytes": 23444,
+      "sha256": "0501fe9f80482ff58c0641b5bb58c8d0f4239af258eb2efb89043b60b424a30f"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\existing-77-01-traces\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\existing-77-01.results.json",
+      "bytes": 2904515,
+      "sha256": "a5980c2b8f7c639ade1b139abb2e35589dd2787ac485f4dd2d5e2ab70fe325c5"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\existing-77-01.run.json",
+      "bytes": 799,
+      "sha256": "46bbda75abb390dea987b242e7a11697d5b87d4146f58f422190c36ebd154681"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\existing-77-01.stdout.txt",
+      "bytes": 12774,
+      "sha256": "519fda241b514d817715d25fd8ebcdb3ba904d88ce33e6bb081da873a260fcb1"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\.last-run.json",
+      "bytes": 145,
+      "sha256": "ad801da3f14b6ecd0928fd09b5aa684f124c26fe227d5b803a831c6f92c2041c"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\asset-pagination-ack-AP6-c-ca0f8--post-save-GET-settles-503-\\error-context.md",
+      "bytes": 112383,
+      "sha256": "ce531e5f64179bafad98a0a3667246fe33b69c83084808b6843b737541895792"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\asset-pagination-ack-AP6-c-ca0f8--post-save-GET-settles-503-\\test-failed-1.png",
+      "bytes": 71990,
+      "sha256": "4d1c117966d15242830a4573e3f722708ec4094d9764b06e5d129332d19e3f28"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\asset-pagination-ack-AP6-c-ca0f8--post-save-GET-settles-503-\\trace.zip",
+      "bytes": 778231,
+      "sha256": "3b2bdd7a63500a0aca3af5daae893240a05eac32641e44a9501679aeaedfc6ee"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\asset-pagination-ack-AP6-e-dde14--post-save-GET-settles-200-\\error-context.md",
+      "bytes": 111360,
+      "sha256": "b556012615855f789b209c2745e2cf4a913063fdde34977889add6d5c17d7348"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\asset-pagination-ack-AP6-e-dde14--post-save-GET-settles-200-\\test-failed-1.png",
+      "bytes": 71814,
+      "sha256": "95a954199c0201c774730f304c9a78fd4149ae354d91966c6c00039213aa19ca"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01-traces\\asset-pagination-ack-AP6-e-dde14--post-save-GET-settles-200-\\trace.zip",
+      "bytes": 646493,
+      "sha256": "00db7bac47fd9f490afa6e95e0ccfd10a8d4b1040edf8e1e8b7a0c51c591458c"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.inputs.json",
+      "bytes": 131943,
+      "sha256": "9a880bd579c7113d295c00e9a2dd94a916b312f57335c5a0707be3a9ef507ee6"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.results.json",
+      "bytes": 592783,
+      "sha256": "9e01eb8c74b6ee28f911b570047a3c091c8a7802955e3c24a0b97586da119ce7"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.run.json",
+      "bytes": 431,
+      "sha256": "8248b09c60befca057c5f55ff5aa7952b36247c07047aaf8b2ff1282b8d76944"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\held-new-get-red-01.stdout.txt",
+      "bytes": 8911,
+      "sha256": "63ff043255589b498c6fda7e7d227ba2996f3d4b9c8b099fd45a18f7eaa6b8ed"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\typecheck-01.run.json",
+      "bytes": 156,
+      "sha256": "c92bc45a341f6be30fb6b78fb8980bd62cb4b03156e6285eb53c523e29b3da3c"
+    },
+    {
+      "path": ".artifacts\\asset-pagination-v1-a2\\typecheck-01.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  ],
+  "allOutputsOutsideProtectedTests": true,
+  "originalNamesFrozen": true,
+  "oldEvidenceHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE.json",
+      "bytes": 7304,
+      "sha256": "43ebd025a33d7444d9b66192c8fcb64d50398e577434b14be411055fc643f64c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A1.json",
+      "bytes": 5003,
+      "sha256": "85a5fd0f171a322a85ed420db0823c280aa8a2f765b84ac57ab328e194b0569f"
+    }
+  ]
+}

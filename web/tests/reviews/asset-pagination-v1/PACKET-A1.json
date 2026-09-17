@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "name": "asset-pagination-a1",
+  "amendment": "A1",
+  "status": "frozen unsigned original-author AP2 correction",
+  "createdAt": "2026-09-17T06:15:38.281Z",
+  "files": [
+    {
+      "path": "web\\tests\\asset-pagination-data.ts",
+      "bytes": 5048,
+      "sha256": "2ec9995aa9f5082ffbdbef5ded765ace7f62a73f860e677f013b76a965c5bc9c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-fixture.ts",
+      "bytes": 18384,
+      "sha256": "595356703c687efd4afa9d5a19b02e6bee91ca8bb497b0890851d19be3399626"
+    },
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A1.json",
+      "bytes": 1022,
+      "sha256": "69d00d09517f0cbe1563fdd818dc2b9031ccfe9f2ca81f1cac635b4fc99746e0"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A1.json",
+      "bytes": 269673,
+      "sha256": "68588ef5534e972b33feb2cc1594e284b599795013651f7d14a72c5b62b7c67f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE.json",
+      "bytes": 21094,
+      "sha256": "772483d5d618e5c7fbf18a562930fd2dfc197dcf5f9e10bc4eca7edf9d04ae09"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPATIBILITY.json",
+      "bytes": 18710,
+      "sha256": "f4650ea5a03a9b48340c00fae04b0ac9bd57c5d3951595f42933c93225b015c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPILATION.json",
+      "bytes": 1536,
+      "sha256": "6b0432acf24a7466951942338645a168ad920c9be9ce1247f7fa40b87e887824"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\CONTRACT.txt",
+      "bytes": 10404,
+      "sha256": "ed83bb6d195319670a8cf2594d4ea387ac2efa90684896b540fd28f1de356d68"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A1.json",
+      "bytes": 5003,
+      "sha256": "85a5fd0f171a322a85ed420db0823c280aa8a2f765b84ac57ab328e194b0569f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE.json",
+      "bytes": 7304,
+      "sha256": "43ebd025a33d7444d9b66192c8fcb64d50398e577434b14be411055fc643f64c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A1.json",
+      "bytes": 11328,
+      "sha256": "dfa76b9aeb3d45ab79cea80da61355680a2d550f6b6cb915eba0fb702b37649c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS.json",
+      "bytes": 10222,
+      "sha256": "9c4b0dc4dd7c9d60b8258b9be541a9078dfebb3b2092bc141d003ce996994766"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A1.json",
+      "bytes": 4110,
+      "sha256": "b055d3bc09f896f6a0de697555918efc4c15cfecc34f5820d997bf0afbe373c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A1.txt",
+      "bytes": 4581,
+      "sha256": "0c2a83613dd9d8354b5726d3f102246fa188dca5547e57396dfeaaea02703cbc"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF.json",
+      "bytes": 4377,
+      "sha256": "0e364e434e94af245cabfbe323ba069f7339d79ad466495ca2b6b28557a19ebd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF.txt",
+      "bytes": 5127,
+      "sha256": "674ceaa2548ef7ddddc5abe7e52c92d3a91927d220e65daa18b2d04c8c80a043"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 3109,
+      "sha256": "ac4a46f8f187b22b95b3ef09855795935645ae1dd707c9c2c83f3e7b65d91712"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "8aef86ae1a70ebf5da625491b9cb634bffac35b97de309e0ad5726ca37c496ca"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\RED.json",
+      "bytes": 15578,
+      "sha256": "41e89a6a5f92745d709a3b3a01de9f7ee89a8054be6850a1d8fed757325354bf"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\VALIDATION-A1.json",
+      "bytes": 33915,
+      "sha256": "83061637869fac92deb40f92905f679d9eb97b76c69c4ab29220296346fd469c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\history\\a1\\asset-pagination.spec.ts.before.txt",
+      "bytes": 25531,
+      "sha256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b"
+    }
+  ],
+  "originalPacketPreserved": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+    "bytes": 3266,
+    "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+  },
+  "originalPacketDigestPreserved": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+    "bytes": 78,
+    "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+  },
+  "exactSpecPermutation": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\AMENDMENT-A1.json",
+    "bytes": 1022,
+    "sha256": "69d00d09517f0cbe1563fdd818dc2b9031ccfe9f2ca81f1cac635b4fc99746e0"
+  },
+  "qualification": {
+    "targetedAP2Passed": true,
+    "full77Passed": true,
+    "typecheckPassed": true,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0
+  },
+  "parentResealRequired": true,
+  "oldSignaturesRewritten": false
+}

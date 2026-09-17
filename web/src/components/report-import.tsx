@@ -6,6 +6,7 @@ import type { Asset, ImportFormat, ImportInput, ImportMapping, ImportReceipt } f
 import { formText, inputChoice, inputText, readReportFile, sourceTimestamp, validateUploadSize } from "@/lib/application-input";
 import { useScopedAction } from "@/lib/use-scoped-action";
 import { useSession } from "@/lib/session";
+import type { AssetPagination } from "@/lib/use-asset-pages";
 import { ActionButton } from "./action-button";
 import { FormDialog, FormError } from "./form-dialog";
 import { Button } from "./ui/button";
@@ -28,8 +29,9 @@ const formatProfiles: Record<ImportFormat, { name: string; guidance: string }> =
   },
 };
 
-export function ReportImport({ assets, returnFocus, onClose, onAccepted }: {
+export function ReportImport({ assets, assetPagination, returnFocus, onClose, onAccepted }: {
   assets: Asset[]; returnFocus: HTMLElement | null; onClose: () => void; onAccepted: (receipt: ImportReceipt) => void;
+  assetPagination?: AssetPagination;
 }) {
   const { workspace } = useSession();
   const action = useScopedAction();
@@ -77,7 +79,17 @@ export function ReportImport({ assets, returnFocus, onClose, onAccepted }: {
         <legend className="sr-only">Report and scan provenance</legend>
         <div className="form-field"><label htmlFor="import-asset">Asset</label><select id="import-asset" name="assetId" required defaultValue=""><option value="" disabled>Choose an asset</option>
           {assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.name}</option>)}
-        </select></div>
+        </select>
+          {assetPagination?.visible && <>
+            <ActionButton variant="outline" aria-disabled={assetPagination.pending || !assetPagination.hasMore} onClick={assetPagination.loadMore}>Load more assets</ActionButton>
+            <p className="form-help" role={assetPagination.pending ? "status" : undefined}>
+              {assetPagination.pending ? "Loading more assets. Your selection and draft stay in place." :
+                assetPagination.hasMore ? "Only loaded assets are selectable. Load another page without changing your selection." : "No continuation remains in the last returned page."}</p>
+          </>}
+          {assetPagination?.error && <>
+            <FormError error={assetPagination.error} /><ActionButton variant="outline" onClick={assetPagination.retry}>Retry assets</ActionButton>
+          </>}
+        </div>
         <div className="form-field"><label htmlFor="import-format">Format</label><select id="import-format" name="format" value={format}
           aria-describedby="import-format-help" onChange={(event) => {
             const selected = importFormats.find((value) => value === event.currentTarget.value);

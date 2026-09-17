@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "name": "asset-pagination-v1",
+  "createdAt": "2026-09-17T04:58:06.248Z",
+  "status": "frozen unsigned independent UI acceptance packet",
+  "files": [
+    {
+      "path": "web\\tests\\asset-pagination-data.ts",
+      "bytes": 5048,
+      "sha256": "2ec9995aa9f5082ffbdbef5ded765ace7f62a73f860e677f013b76a965c5bc9c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-fixture.ts",
+      "bytes": 18384,
+      "sha256": "595356703c687efd4afa9d5a19b02e6bee91ca8bb497b0890851d19be3399626"
+    },
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "0f4356f04b46923eaed34b4bc4c8874d3cd81d87f7a3ab130af5266c31feaa5b"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE.json",
+      "bytes": 21094,
+      "sha256": "772483d5d618e5c7fbf18a562930fd2dfc197dcf5f9e10bc4eca7edf9d04ae09"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPATIBILITY.json",
+      "bytes": 18710,
+      "sha256": "f4650ea5a03a9b48340c00fae04b0ac9bd57c5d3951595f42933c93225b015c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPILATION.json",
+      "bytes": 1536,
+      "sha256": "6b0432acf24a7466951942338645a168ad920c9be9ce1247f7fa40b87e887824"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\CONTRACT.txt",
+      "bytes": 10404,
+      "sha256": "ed83bb6d195319670a8cf2594d4ea387ac2efa90684896b540fd28f1de356d68"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE.json",
+      "bytes": 7304,
+      "sha256": "43ebd025a33d7444d9b66192c8fcb64d50398e577434b14be411055fc643f64c"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS.json",
+      "bytes": 10222,
+      "sha256": "9c4b0dc4dd7c9d60b8258b9be541a9078dfebb3b2092bc141d003ce996994766"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF.json",
+      "bytes": 4377,
+      "sha256": "0e364e434e94af245cabfbe323ba069f7339d79ad466495ca2b6b28557a19ebd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF.txt",
+      "bytes": 5127,
+      "sha256": "674ceaa2548ef7ddddc5abe7e52c92d3a91927d220e65daa18b2d04c8c80a043"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\RED.json",
+      "bytes": 15578,
+      "sha256": "41e89a6a5f92745d709a3b3a01de9f7ee89a8054be6850a1d8fed757325354bf"
+    }
+  ],
+  "baseline": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE.json",
+    "bytes": 21094,
+    "sha256": "772483d5d618e5c7fbf18a562930fd2dfc197dcf5f9e10bc4eca7edf9d04ae09"
+  },
+  "qualifiedHead": "cfba492d552ce97a484ed94fd2b3a0c7d0de555d",
+  "qualification": {
+    "actualTypecheckExitCode": 0,
+    "newCases": 5,
+    "expectedMissingPaginationRED": 5,
+    "priorCasesPassed": 72,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "fixtureViolations": 0,
+    "pageErrors": 0,
+    "externalAttempts": 0,
+    "redRequestsPerCase": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "originalInputChanges": 0,
+  "parentSealRequired": true,
+  "evidence": {
+    "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE.json",
+    "bytes": 7304,
+    "sha256": "43ebd025a33d7444d9b66192c8fcb64d50398e577434b14be411055fc643f64c"
+  }
+}

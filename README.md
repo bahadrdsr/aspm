@@ -75,8 +75,22 @@ Do not share an operator S3 credential across those processes.
 In **Assets**, create an asset or edit a returned inventory row. The owner
 selector supports unassigned, yourself, or preserving its existing owner;
 the service verifies membership and write authority. Viewer controls are
-read only. Inventory and the import selector currently use the loaded API page
-and explicitly disclose when more assets exist.
+read only. **Load more assets** in inventory or the import form explicitly follows
+the service's native cursor. The default first read remains the bare assets GET;
+no server search, offset or automatic page drain is introduced. Both views share
+the accumulated, ID-deduplicated rows. A selected import asset stays selected as
+more pages arrive, including while editing report format or scope.
+
+Continuation failures retain confirmed rows, and **Retry assets** repeats the
+failed cursor. **Refresh assets** and post-save refreshes update the first page
+without discarding other loaded rows; those pages can be older. Canonical write
+acknowledgements update the visible cache immediately, before post-save reads
+finish, and take precedence over reads started before them. Later reads can
+receive newer facts. Loaded counts and the last received workspace total are
+not an atomic full-directory snapshot. Rows are kept in memory only for the current
+Assets view, not browser storage; leaving it or changing workspace/session clears
+the pages and cancels old reads. This is manual paging, not an unbounded-memory or
+virtualized inventory performance claim.
 
 **Import report** offers seven existing backend profiles: SARIF 2.1.0, Trivy JSON
 (SchemaVersion 2), ZAP JSON (@version 2.16.1), Gitleaks JSON (a v8-style array with

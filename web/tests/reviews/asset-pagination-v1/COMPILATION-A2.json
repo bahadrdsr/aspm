@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "actualTypecheck": true,
+  "run": {
+    "command": "npm.cmd run typecheck",
+    "startedAt": "2026-09-17T07:02:03.1940148Z",
+    "endedAt": "2026-09-17T07:02:06.7866387Z",
+    "exitCode": 0
+  },
+  "runFile": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\typecheck-01.run.json",
+    "bytes": 156,
+    "sha256": "c92bc45a341f6be30fb6b78fb8980bd62cb4b03156e6285eb53c523e29b3da3c"
+  },
+  "stdout": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\typecheck-01.stdout.txt",
+    "bytes": 49,
+    "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+  },
+  "enumeration": {
+    "path": ".artifacts\\asset-pagination-v1-a2\\compiler-inputs-01.txt",
+    "bytes": 23444,
+    "sha256": "0501fe9f80482ff58c0641b5bb58c8d0f4239af258eb2efb89043b60b424a30f"
+  },
+  "compilerSettingsChanged": false
+}

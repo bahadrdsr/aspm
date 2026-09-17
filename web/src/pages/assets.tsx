@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
-import { api } from "@/api/client";
 import type { Asset, ImportReceipt } from "@/api/types";
 import { label } from "@/lib/format";
-import { useResource } from "@/lib/use-resource";
+import { useAssetPages } from "@/lib/use-asset-pages";
 import { useSession } from "@/lib/session";
 import { ActionButton } from "@/components/action-button";
 import { AssetEditor } from "@/components/asset-editor";
+import { FormError } from "@/components/form-dialog";
 import { Icon } from "@/components/icon";
 import { ImportStatus } from "@/components/import-status";
 import { ReportImport } from "@/components/report-import";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 type OpenForm = { kind: "asset"; asset: Asset | null; trigger: HTMLElement } | { kind: "import"; trigger: HTMLElement };
 
 export function AssetsPage() {
-  const resource = useResource(api.assets);
+  const resource = useAssetPages();
   const inventoryResults = useRef<HTMLDivElement>(null);
   const { workspace, session } = useSession();
   const [form, setForm] = useState<OpenForm | null>(null);
@@ -29,7 +29,7 @@ export function AssetsPage() {
       <div><p className="eyebrow">Understand ownership &amp; coverage</p><h1 id="assets-heading" tabIndex={-1}>Assets</h1>
         <p className="page-description">Manage inventory and bring existing reports into {workspace.name}.</p></div>
       <div className="heading-actions">
-        {canWrite && <><ActionButton variant="outline" disabled={resource.status !== "ready" || assets.length === 0} onClick={(event) => {
+        {canWrite && <><ActionButton variant="outline" disabled={resource.data === null || assets.length === 0} onClick={(event) => {
           setForm({ kind: "import", trigger: event.currentTarget });
         }}><Icon name="file" />Import report</ActionButton>
           <ActionButton onClick={(event) => { setSaved(null); setForm({ kind: "asset", asset: null, trigger: event.currentTarget }); }}><Icon name="assets" />Create asset</ActionButton></>}
@@ -39,10 +39,13 @@ export function AssetsPage() {
     {acknowledgement && <ImportStatus key={acknowledgement.generation} initial={acknowledgement.receipt} />}
     <section className="surface queue-surface" aria-label="Asset inventory">
       <div className="queue-toolbar"><div className="queue-title"><span className="section-mark" /><h2>Inventory</h2>{!canWrite && <span className="subtle-pill">Read only</span>}</div>
-        <ActionButton variant="outline" onClick={resource.reload} disabled={resource.status === "loading"}><Icon name="refresh" />Refresh assets</ActionButton></div>
-      {resource.error && <ErrorState error={resource.error} retry={resource.reload} stale={resource.data !== null} />}
+        <ActionButton variant="outline" onClick={resource.reload} aria-disabled={resource.status === "loading"}><Icon name="refresh" />Refresh assets</ActionButton></div>
+      {resource.error && (resource.continuation ? <div className="inline-status">
+        <FormError error={resource.error} /><ActionButton variant="outline" onClick={resource.retry}>Retry assets</ActionButton>
+      </div> : <ErrorState error={resource.error} retry={resource.retry} stale={resource.data !== null} />)}
       {resource.status === "loading" && !resource.data && <LoadingState label="Loading assets" />}
-      {resource.status === "loading" && resource.data && <p className="inline-status" role="status">Refreshing inventory. Showing the last received assets.</p>}
+      {resource.status === "loading" && resource.data && <p className="inline-status" role="status">
+        {resource.continuation ? "Loading more assets." : "Refreshing inventory."} Previously confirmed rows remain available.</p>}
       {resource.data && (assets.length === 0 ? <EmptyState icon="assets" title="No assets" description={canWrite ? "Create an asset to record ownership and import an existing report." : "No assets were returned for this workspace. Your current role is read only."} /> : <>
         <div ref={inventoryResults} className="table-scroll" tabIndex={0} role="region" aria-label="Asset results">
           <table aria-label="Assets" className="finding-table asset-table">
@@ -60,15 +63,22 @@ export function AssetsPage() {
             </tr>)}</tbody>
           </table>
         </div>
-        <footer className="table-footer"><span>{assets.length.toLocaleString()} of {resource.data.total.toLocaleString()} assets loaded</span></footer>
+        <footer className="table-footer"><span>Loaded: {assets.length.toLocaleString("en-US")}
+          {assets.length <= resource.data.total ? ` of ${resource.data.total.toLocaleString("en-US")} assets` : ` assets; ${resource.data.total.toLocaleString("en-US")} total`}
+          {" "}(total at the last read)</span>
+          {resource.pagination.visible && <ActionButton variant="outline" aria-disabled={resource.pagination.pending || !resource.pagination.hasMore}
+            onClick={resource.pagination.loadMore}>Load more assets<Icon name="chevron" /></ActionButton>}
+        </footer>
       </>)}
-      {resource.data?.nextCursor && <p className="inline-status"><Icon name="info" size={15} />More assets exist on the service. This view and its import selector currently show only this loaded page.</p>}
+      {resource.pagination.visible && <p className="inline-status"><Icon name="info" size={15} />
+        {resource.pagination.hasMore ? "More assets exist on the service. Load another page explicitly. " : "The last returned page has no continuation. "}
+        Refresh updates the first page and keeps other loaded pages, which may be older. These reads are not a single inventory snapshot.</p>}
     </section>
     <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes every change. Importing a report starts no native scan and does not verify a resolution.</p>
     {canWrite && form?.kind === "asset" && <AssetEditor asset={form.asset} returnFocus={form.trigger} savedFocus={inventoryResults} onClose={() => setForm(null)} onSaved={(asset) => {
-      setForm(null); setSaved(`${asset.name} was saved by the service.`); resource.reload();
+      setForm(null); setSaved(`${asset.name} was saved by the service.`); resource.acknowledge(asset);
     }} />}
-    {canWrite && form?.kind === "import" && <ReportImport assets={assets} returnFocus={form.trigger} onClose={() => setForm(null)} onAccepted={(value) => {
+    {canWrite && form?.kind === "import" && <ReportImport assets={assets} assetPagination={resource.pagination} returnFocus={form.trigger} onClose={() => setForm(null)} onAccepted={(value) => {
       setForm(null); setAcknowledgement((previous) => ({ receipt: value, generation: (previous?.generation ?? 0) + 1 }));
     }} />}
   </>;

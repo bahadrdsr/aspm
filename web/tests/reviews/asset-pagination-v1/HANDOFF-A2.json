@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "status": "FROZEN independent immediate-ACK browser RED; stop for parent surgical hook fix/review/reseal",
+  "newSpec": {
+    "path": "web\\tests\\asset-pagination-ack.spec.ts",
+    "bytes": 11525,
+    "sha256": "b164eb3a196c6684b82c5e07d46f3f360c44a5e660ea3b3622d551938bdacc6c"
+  },
+  "existingSourceAndAllControlsUnchanged": true,
+  "fixtureAmendments": 0,
+  "archives": 0,
+  "results": {
+    "actualTypecheck": "passed",
+    "newVariants": 2,
+    "actualBrowserRED": 2,
+    "oldCasesPassed": 77,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "apiRequestsPerNewCase": [
+      7,
+      7
+    ],
+    "fixtureViolations": 0,
+    "browserErrors": 0,
+    "externalAttempts": 0
+  },
+  "observed": {
+    "edit": "Validated PATCH 200, modal closed, saved notice, NEW GET held, old name remains and canonical name absent; 200 rows.",
+    "create": "Validated POST 201, modal closed, saved notice, NEW GET held, canonical created row absent; 200 rows rather than 201."
+  },
+  "sourceHook": {
+    "path": "web\\src\\lib\\use-asset-pages.ts",
+    "bytes": 4878,
+    "sha256": "96a2bc0f3d6aa88648fe6c591a1118677e622fdeb735de24088744eb48b74025"
+  },
+  "priorHappyFlowDoesNotCoverThisGate": true,
+  "blockedSemantics": "Later selector/read-settlement/frontier assertions are not claimed executed while immediate canonical rendering is RED.",
+  "originalPacketsAndSignaturesPreserved": true,
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\BEFORE-A2.json",
+      "bytes": 145379,
+      "sha256": "04882eb1a18ef8ecd41e995cae197381fa1a8e620a3b7666fd99942ebbe36570"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\CONTRACT-A2.txt",
+      "bytes": 5881,
+      "sha256": "22981264a3dc2b8725202d74ba2b8c74a52f51688f63214d9bc2260ce4e8c34e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\GUARDS-A2.json",
+      "bytes": 2460,
+      "sha256": "4a0a5cd2daa19bbc4e229ca8105e7e36aa64c123ecd3ed03591689b9b403fd03"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPILATION-A2.json",
+      "bytes": 841,
+      "sha256": "47677a306fc0dc2927c6a7821a478da230a3ad14a1a2020c88aad71c7a0a43d6"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\RED-A2.json",
+      "bytes": 12978,
+      "sha256": "be29e36b1a7f24d589a49326666dc71192e29c94b9d15bee7414e0edc01af0b7"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\COMPATIBILITY-A2.json",
+      "bytes": 20160,
+      "sha256": "18c0e68d8cb0272f5a5aac0c4205e618eb5dc9b2b93f96e5a41ab65ca3b7911f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\EVIDENCE-A2.json",
+      "bytes": 4638,
+      "sha256": "0c386dc313e46a39c1b86306964bf2dfa61a0431cbd4eee66c621e9ef8831c56"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\HANDOFF-A2.txt",
+      "bytes": 4753,
+      "sha256": "697d07fa9c94d17fedddb67f25311e8d4f1c5a39b7218ac3a7f57b387674ca10"
+    }
+  ],
+  "next": [
+    "Parent applies the surgical source hook correction without editing tests or backend/API revision fields.",
+    "Independent reviewer runs actual typecheck and all 79 cases, preserving older-read fencing and all AP1-5/A1/prior-72 assertions.",
+    "Parent reseals the current control set after review."
+  ]
+}

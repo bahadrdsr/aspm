@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A3",
+  "classification": "Measurement identity maintenance for accepted immediate canonical ACK behavior, not weaker focus/scroll acceptance",
+  "source": "web\\tests\\application-review-regressions.spec.ts",
+  "beforeSHA256": "9c00dc6a852887a8fc4e4134f4f2e6fc390070ce9068445d5ef7f3bade43db96",
+  "afterSHA256": "f03d03e6a4819c980bff149af7a653683c1d1bab040698755f2c675547878c39",
+  "beforeBytes": 11775,
+  "afterBytes": 12242,
+  "oldLocator": "      const original = table.getByRole(\"row\").filter({ hasText: createdAsset.name });\r\n",
+  "newLocatorAndPrechecks": "      const original = table.getByRole(\"row\").filter({\r\n        has: page.getByText(createdAsset.name, { exact: true }).or(page.getByText(updatedAsset.name, { exact: true })),\r\n      });\r\n      await expect(original).toHaveCount(1);\r\n      await expect(original.getByText(createdAsset.name, { exact: true })).toBeVisible();\r\n",
+  "postACKIdentityChecks": "      await expect(original).toHaveCount(1);\r\n      await expect(original.getByText(updatedAsset.name, { exact: true })).toBeVisible();\r\n      await expect(original.getByText(createdAsset.name, { exact: true })).toHaveCount(0);\r\n",
+  "exactWholeFileDelta": true,
+  "unchangedHelpers": [
+    "tabTo",
+    "meaningfulAssetFocus",
+    "scrollContext",
+    "sameScrollContext"
+  ],
+  "allExistingFocusVisibilityEnabledScrollWorkspaceNoStealAssertionsByteIdentical": true,
+  "allFourVariantDeclarationsUnchanged": true,
+  "oldAndNewNamesExact": true,
+  "uniqueRowRequired": true,
+  "noWrongRowOrBodyFallback": true,
+  "oldNameRequiredBeforeEdit": true,
+  "newNameRequiredAfterACK": true,
+  "oldNameAbsentAfterACK": true,
+  "noUITestAttributeOrOldDataLeakIntroduced": true,
+  "currentControlCount": 633,
+  "unchangedCurrentControls": 632,
+  "onlyControlDelta": "web\\tests\\application-review-regressions.spec.ts",
+  "sourceHoldChangedOnlyByThisSpec": true
+}
