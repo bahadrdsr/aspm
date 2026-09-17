@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "actualTypecheck": true,
+  "run": {
+    "command": "npm.cmd run typecheck",
+    "startedAt": "2026-09-17T08:28:42.0770788Z",
+    "endedAt": "2026-09-17T08:28:48.9729557Z",
+    "exitCode": 0
+  },
+  "runFile": {
+    "path": ".artifacts\\finding-history-v1-author\\typecheck-01.run.json",
+    "bytes": 156,
+    "sha256": "04c7ff38d142d798ddaf4ae4aea04e5689ceab082c723bfc2c01329225306c5f"
+  },
+  "stdout": {
+    "path": ".artifacts\\finding-history-v1-author\\typecheck-01.stdout.txt",
+    "bytes": 49,
+    "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+  },
+  "enumerationIsNotTypecheck": true,
+  "enumeration": {
+    "path": ".artifacts\\finding-history-v1-author\\compiler-inputs-01.txt",
+    "bytes": 23621,
+    "sha256": "754ea02ae8504d5d1159bca7bd31d8d41315966f59f7950ea5597136d07a3155"
+  }
+}

@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "allOriginalAssertionAndFixtureBytesUnchanged": true,
+  "run": {
+    "command": "npm.cmd test -- application-review-regressions[.]spec[.]ts$ application-workflows[.]spec[.]ts$ asset-pagination-ack[.]spec[.]ts$ asset-pagination[.]spec[.]ts$ finding-actions[.]spec[.]ts$ foundations[.]spec[.]ts$ harness[.]spec[.]ts$ m01-review-regressions[.]spec[.]ts$ report-formats[.]spec[.]ts$ reports-workflows[.]spec[.]ts$ responsive-session-controls[.]spec[.]ts$ shell[.]spec[.]ts$ slack-delivery[.]spec[.]ts$ workspace-reselection[.]spec[.]ts$ --output ..\\.artifacts\\finding-history-v1-author\\prior-79-01-traces --reporter=list,json",
+    "port": "56739",
+    "startedAt": "2026-09-17T08:34:46.9430865Z",
+    "endedAt": "2026-09-17T08:41:00.1616385Z",
+    "exitCode": 0,
+    "expectedCases": 79,
+    "scope": "All unchanged current assertions including A1/A2/A3; only new finding-history cases excluded"
+  },
+  "runFile": {
+    "path": ".artifacts\\finding-history-v1-author\\prior-79-01.run.json",
+    "bytes": 830,
+    "sha256": "0a906d0ca4ab10aebe4f316897c6b17eec314f3cab623b0742365506d5901729"
+  },
+  "report": {
+    "path": ".artifacts\\finding-history-v1-author\\prior-79-01.results.json",
+    "bytes": 3584222,
+    "sha256": "d9d72144041064ad713bd3ba886a386113a5d27512d8aabdf464e13ee89c48f9"
+  },
+  "stdout": {
+    "path": ".artifacts\\finding-history-v1-author\\prior-79-01.stdout.txt",
+    "bytes": 13093,
+    "sha256": "99a5fe37315ad1adf5302b38af887b7bf10a71665dd1ec1bbe9452467553cf80"
+  },
+  "stats": {
+    "startTime": "2026-09-17T08:34:50.408Z",
+    "duration": 369531.37899999996,
+    "expected": 79,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3952
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3059
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2690
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3132
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3903
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2739
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3179
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2430
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2618
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1468
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1989
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 assets can be created and edited without leaving their selected workspace",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2176
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3349
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2200
+    },
+    {
+      "file": "asset-pagination-ack.spec.ts",
+      "title": "AP6 edit: canonical ACK is visible before its NEW post-save GET settles (200)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5515
+    },
+    {
+      "file": "asset-pagination-ack.spec.ts",
+      "title": "AP6 create: canonical ACK is visible before its NEW post-save GET settles (503)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4633
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP1 Native inventory continuation preserves rows and truthful counts through failure, same-cursor retry and overlapping refresh",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3135
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP2 Import selection reaches a server asset beyond its initial page and preserves that exact ID through more pages and form edits",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5189
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP3 Viewer paging has no write authority and workspace, logout and 401 discard every old page and held continuation",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4383
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP4 Canonical edit/create acknowledgements survive old overlapping pages without optimistic rows or loss of loaded context",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5227
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP5 At 390px manual inventory/selector paging preserves selected IDs, draft caret and reduced-motion keyboard context",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5594
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4602
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2774
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5469
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4136
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5166
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 9080
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 7883
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 12826
+    },
+    {
+      "file": "foundations.spec.ts",
+      "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3255
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "harness compiles React and exercises real browser keyboard events",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 698
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "harness produces static assets without needing the production UI",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 379
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "approval guard distinguishes reviewed license candidates from approved components",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 133
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "M01 skip link focuses main without changing any destination or hash",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3174
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 8229
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 7100
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 9008
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 9187
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 7210
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF1 The import selector names exactly seven implemented profiles with honest JSON/CSV/manual guidance and literal mapping",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2860
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit provenance in one JSON request without mapping or local success",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 6478
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays human-authored and plain prose is never converted",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5231
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8, excessive file bytes and JSON-wrapper expansion without truncation",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 11403
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF5 New profiles retain central viewer/current-role authority and surface server 403/415/413/401 without guessing another parser",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4245
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF6 At 390px CSV file-read cancellation and held-import scope loss clear old bytes/progress while keeping keyboard asset context",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4516
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 6288
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5970
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 9139
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3637
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4334
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 7048
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 14498
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 7347
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 6932
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 390px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1697
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 390px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3561
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 683px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2044
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 683px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3809
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 850px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1782
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 850px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3772
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 851px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2191
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 851px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 3227
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "primary navigation exposes the five focused destinations",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1943
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "theme follows the system and preserves an explicit light/dark choice",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2598
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2131
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "finding details retain filter, selection and keyboard focus (reduce)",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1963
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2133
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1619
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1589
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 4937
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5466
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5912
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 7226
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 2510
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 5018
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 6655
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 6136
+    },
+    {
+      "file": "workspace-reselection.spec.ts",
+      "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1312
+    },
+    {
+      "file": "workspace-reselection.spec.ts",
+      "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+      "status": "passed",
+      "retry": 0,
+      "durationMS": 1513
+    }
+  ],
+  "skips": 0,
+  "flakes": 0,
+  "retries": 0
+}

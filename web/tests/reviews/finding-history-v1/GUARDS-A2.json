@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T12:02:50.179Z",
+  "before": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE-A2.json",
+    "bytes": 301245,
+    "sha256": "d65a263d86b38494ff8cc924b4ae5184230380fd8ee0a5669b5078bf8be0b118"
+  },
+  "coverageMap": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\AMENDMENT-A2.json",
+    "bytes": 3427,
+    "sha256": "2c4f3fa7023c0f9b6930b154d8e5fd4bb1af1a97903a33ff88f3b341cba277b9"
+  },
+  "currentControls": 675,
+  "unchangedControls": 674,
+  "onlyAuthorizedDelta": "web\\tests\\finding-history.spec.ts",
+  "sourceHoldFiles": 736,
+  "sourceHelpersFixturesDependenciesSettingsUnchanged": true,
+  "currentSourceFiles": [
+    {
+      "path": "README.md",
+      "bytes": 18905,
+      "sha256": "d16861ea73ce4072976e38d95e4217703f79ca7b3c4fe45c02600366b1eaf97d"
+    },
+    {
+      "path": "web\\src\\App.tsx",
+      "bytes": 9492,
+      "sha256": "13a561e6da30f6d12d48430164fae751ea96786af39099b66052187e97c1e04a"
+    },
+    {
+      "path": "web\\src\\api\\authorization.ts",
+      "bytes": 761,
+      "sha256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277"
+    },
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 34339,
+      "sha256": "5e3bc6b7a0fe8ee5cf42966a1714cf55ab0a212c8e60cca3527296ce2b6f3565"
+    },
+    {
+      "path": "web\\src\\api\\slack-intents.ts",
+      "bytes": 1620,
+      "sha256": "38662d6b19582356b1cf86206bb89266a51fe24d3033bd198bfc5200f8f18559"
+    },
+    {
+      "path": "web\\src\\api\\slack.ts",
+      "bytes": 18454,
+      "sha256": "883a02651f0076bbca945919c2a536ae688cb3d1409bf9aac3c44d07faf8d49c"
+    },
+    {
+      "path": "web\\src\\api\\types.ts",
+      "bytes": 8999,
+      "sha256": "d5c5d03f350a6add70342f21220f4f5504091441b5e03e40bb2ca028992329aa"
+    },
+    {
+      "path": "web\\src\\components\\action-button.tsx",
+      "bytes": 764,
+      "sha256": "b3d1e7de0109edd97798860ac6eb38771be003ef1fe57520d441f29cf9aa16bc"
+    },
+    {
+      "path": "web\\src\\components\\animate\\button.tsx",
+      "bytes": 671,
+      "sha256": "4e07bf716d588fb20ba29c55a6f7699de6c975fc98dabee82b7d7c83d1783794"
+    },
+    {
+      "path": "web\\src\\components\\animate\\slot.tsx",
+      "bytes": 2459,
+      "sha256": "ac095d110259cccaac793f836d3ba2f4561d6fc49659d80257c644f7bb2558d7"
+    },
+    {
+      "path": "web\\src\\components\\asset-editor.tsx",
+      "bytes": 5777,
+      "sha256": "87d209e88c2682ba8862b2adfbdb98061f6d7458efb559485aeea9160c2062c3"
+    },
+    {
+      "path": "web\\src\\components\\finding-actions.css",
+      "bytes": 2081,
+      "sha256": "c6598240565559501c1731738c7ed6a6070f3be13ad928c30db3ce74af5fff6e"
+    },
+    {
+      "path": "web\\src\\components\\finding-actions.tsx",
+      "bytes": 8614,
+      "sha256": "efe76e23ad0b59032d2db889cd8c8042c3d70c45af121bac3b1a20a23d50f046"
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "bytes": 11895,
+      "sha256": "a3e0e31b11c1cb3ed955b9c08af586490722de9b3eeee2a3713aaf7ef9ec78c5"
+    },
+    {
+      "path": "web\\src\\components\\finding-history.css",
+      "bytes": 1379,
+      "sha256": "1568edfe8f0305e2671640a57f2e8d95f7390af52277128547931234083f7f56"
+    },
+    {
+      "path": "web\\src\\components\\finding-history.tsx",
+      "bytes": 2242,
+      "sha256": "04b988486546e03b99f720878d0208bdc28e090285ccbfcd15bff23dc7a478f0"
+    },
+    {
+      "path": "web\\src\\components\\finding-notifications.tsx",
+      "bytes": 8953,
+      "sha256": "a75aa90a6b687e413c0067b27bf365235c6a871419191a64a709a412aa03ed0d"
+    },
+    {
+      "path": "web\\src\\components\\form-dialog.tsx",
+      "bytes": 2987,
+      "sha256": "445f09aede950c5a39ac06383f47cb5b594f0f3b705865fa6f2a0e3861d07708"
+    },
+    {
+      "path": "web\\src\\components\\icon.tsx",
+      "bytes": 2494,
+      "sha256": "417f48069cdac3ebc210108362419ef6a530632e117446a97c950e70c2cd49d4"
+    },
+    {
+      "path": "web\\src\\components\\import-status.tsx",
+      "bytes": 3930,
+      "sha256": "888d5f70af3f8c863d484dee79836b74561328eabb312fd812d86f36a203e1f7"
+    },
+    {
+      "path": "web\\src\\components\\provenance.json",
+      "bytes": 2649,
+      "sha256": "0d3f44233129ab7f351438f8175256f4faf0ae345693efcf6cae4e54ed95e411"
+    },
+    {
+      "path": "web\\src\\components\\report-import.tsx",
+      "bytes": 11032,
+      "sha256": "c66281a5aa7a7ca78a581ee4fa0356c16df9fa45d53125fe1c38bb4046a46449"
+    },
+    {
+      "path": "web\\src\\components\\report-metrics.tsx",
+      "bytes": 3495,
+      "sha256": "aec62087d3b496b52815d2249a1c515aa9f7af9b88c302a43f3e513a9ecdc5a6"
+    },
+    {
+      "path": "web\\src\\components\\report-snapshot-create.tsx",
+      "bytes": 4212,
+      "sha256": "ae517b748ab2346b0c48b2cf9342d32ec26f9b63a3e41e0ee51b517f89306568"
+    },
+    {
+      "path": "web\\src\\components\\report-snapshot-detail.tsx",
+      "bytes": 4023,
+      "sha256": "d1cbf3cccfd7d0af219794bc216b46342657e5518809cd69c6b1fff35e729eca"
+    },
+    {
+      "path": "web\\src\\components\\slack-connection-editor.tsx",
+      "bytes": 6963,
+      "sha256": "e037b1a4f4cfb0d15ef62d574b98d800ae0d502f9f59c96d4ee4e8cf0f66afc7"
+    },
+    {
+      "path": "web\\src\\components\\slack-connections.tsx",
+      "bytes": 5098,
+      "sha256": "3a624fcc21240fd86c3264488655b28a44931deb883205a2b78fcbd8546414a6"
+    },
+    {
+      "path": "web\\src\\components\\slack-delivery-detail.tsx",
+      "bytes": 6454,
+      "sha256": "2e88da41ec69d959323b47c1b5d7adcf31f83e485b946ec6586269fea5fa43c2"
+    },
+    {
+      "path": "web\\src\\components\\slack-delivery-history.tsx",
+      "bytes": 4202,
+      "sha256": "96e08368bbf45f2b6a08a5db94949f4315b4d607eb93b6c59465280e8e236130"
+    },
+    {
+      "path": "web\\src\\components\\slack.css",
+      "bytes": 3631,
+      "sha256": "9a2408ec464ab49b0513475ec0922835bc5f607bdc60be80758046a3df0e378a"
+    },
+    {
+      "path": "web\\src\\components\\states.tsx",
+      "bytes": 2778,
+      "sha256": "ee9d6a739a4ded96b812e5f324fce529dc0a2d52271b77fe57ab720a5a53f9d4"
+    },
+    {
+      "path": "web\\src\\components\\theme-menu.tsx",
+      "bytes": 2752,
+      "sha256": "bf499c6d3edff0b39e66bebe49dc7720f133510f98539873d7bc72f44eb9ba12"
+    },
+    {
+      "path": "web\\src\\components\\ui\\button.tsx",
+      "bytes": 2182,
+      "sha256": "563988dcb65733c4e7c953e86265ae869e1372d8703d4db0bd70f7429a7e536d"
+    },
+    {
+      "path": "web\\src\\lib\\application-input.ts",
+      "bytes": 3759,
+      "sha256": "ba1fdc8493bdbb2c463d635ec4f12451065def18e7df244ba0cbbb627ab13cdd"
+    },
+    {
+      "path": "web\\src\\lib\\format.ts",
+      "bytes": 722,
+      "sha256": "84725c81bee8f99b62bdc3d7dd2e8bf803575c06cf81338cc2568b4ab9946db6"
+    },
+    {
+      "path": "web\\src\\lib\\preferences.tsx",
+      "bytes": 2821,
+      "sha256": "e65bebd237f3f094d642bbb766e768d67d183edac6676a4c0d1a74d761dd98e8"
+    },
+    {
+      "path": "web\\src\\lib\\router.ts",
+      "bytes": 1076,
+      "sha256": "c107c37d457e354667141d1b4ae833ae9b0829f856d373c11d7a131a8fb0930e"
+    },
+    {
+      "path": "web\\src\\lib\\session.tsx",
+      "bytes": 9378,
+      "sha256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de"
+    },
+    {
+      "path": "web\\src\\lib\\use-asset-pages.ts",
+      "bytes": 4897,
+      "sha256": "9a48a8ab3f76e559f294e156f4d1c01c8a0a319d24dab57108261e45c5421a0a"
+    },
+    {
+      "path": "web\\src\\lib\\use-finding-history.ts",
+      "bytes": 7055,
+      "sha256": "f9fc0110b1ca87dd2e88ab27df16e99d0c840a9630c8b4969bf467cb8d4be080"
+    },
+    {
+      "path": "web\\src\\lib\\use-modal.ts",
+      "bytes": 1516,
+      "sha256": "a1ad259ee01f167b127087438c875bd3fc303b00edc96498c8533938cb836d4c"
+    },
+    {
+      "path": "web\\src\\lib\\use-resource.ts",
+      "bytes": 1472,
+      "sha256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23"
+    },
+    {
+      "path": "web\\src\\lib\\use-scoped-action.ts",
+      "bytes": 1847,
+      "sha256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4"
+    },
+    {
+      "path": "web\\src\\lib\\utils.ts",
+      "bytes": 207,
+      "sha256": "0d0933784caee2142d1441d4d3f8e1cee1c9eb5db0b1e59dd9df10f7718b6431"
+    },
+    {
+      "path": "web\\src\\main.tsx",
+      "bytes": 386,
+      "sha256": "b3d296e495e0a21f1ad44d191772b0a0569400df06547a8733e1d0eb1bd5878f"
+    },
+    {
+      "path": "web\\src\\pages\\assets.tsx",
+      "bytes": 7016,
+      "sha256": "a666464141a36fe257c8c22372d88a2ade4120d6720e17f1bf5eb6c24eb1f46a"
+    },
+    {
+      "path": "web\\src\\pages\\gallery.tsx",
+      "bytes": 5054,
+      "sha256": "f2f3587d40d052e1197848b53f4ce37e749b9f047ae206fd65c60246b6117ad8"
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "bytes": 4809,
+      "sha256": "df3b5a174a011ee220c7c1880b516afd429fa50d161ba516b29f88b3d827a129"
+    },
+    {
+      "path": "web\\src\\pages\\reports.css",
+      "bytes": 7807,
+      "sha256": "4f409bc04c469989507f4b73f4d62c71fabd22d78e0ad141ee85ab8b54e68d53"
+    },
+    {
+      "path": "web\\src\\pages\\reports.tsx",
+      "bytes": 10314,
+      "sha256": "dfac17e5115341fcb36e4ffba7b5c9d2875d66d27d1d2f84f1d4b3357b73ed94"
+    },
+    {
+      "path": "web\\src\\pages\\work.tsx",
+      "bytes": 11833,
+      "sha256": "25056356d5dd495c6f5a962a25c3ea04cb945319a4e5f17d0c12a542857dae2f"
+    },
+    {
+      "path": "web\\src\\styles.css",
+      "bytes": 43243,
+      "sha256": "03221c53496707613906649fc41da840e1a8e0dfebce5f7b302dd1651392e0ad"
+    }
+  ],
+  "helperPrefixAndSuffixByteIdentical": true,
+  "allFourFH1SamplesUnchanged": [
+    0,
+    499,
+    500,
+    "observationsTotal - 1"
+  ],
+  "A1WorkflowLocatorAndAllCaseBodiesUnchanged": true,
+  "literalJSONUsesInnerText": true,
+  "nativeKnownUnknownTimeVisibilityStatementsUnchanged": true,
+  "semanticRecordIdentityLocatorUnchanged": true,
+  "exactlyOneRecordRequired": true,
+  "oldSignaturesControlsetsPacketsREDPreserved": true,
+  "archive": {
+    "source": "web\\tests\\finding-history.spec.ts",
+    "archive": "web\\tests\\reviews\\finding-history-v1\\history\\a2\\finding-history.spec.ts.before.txt",
+    "path": "web\\tests\\reviews\\finding-history-v1\\history\\a2\\finding-history.spec.ts.before.txt",
+    "bytes": 23337,
+    "sha256": "92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded"
+  },
+  "archivesOnlyActualSpec": true,
+  "originalControlManifest": {
+    "path": ".oracles\\finding-history-ui-a1.json",
+    "bytes": 136502,
+    "sha256": "bb4f04106da14e6e061b5ec44a95ade57de77c250bca5e43bf6080b8762a6b8e"
+  },
+  "originalControlSignature": {
+    "path": ".oracles\\finding-history-ui-a1.json.sig",
+    "bytes": 89,
+    "sha256": "94d60d102766bdc197b810685e8614edf87e9f7d0ec9433338f7f16b51120c1b"
+  },
+  "currentOldOraclePassNotClaimed": true,
+  "budgets": {
+    "workers": 1,
+    "retries": 0,
+    "caseMS": 20000,
+    "expectMS": 5000,
+    "requestLimit": 60,
+    "traceCapture": "retain-on-failure unchanged",
+    "animationPolicy": "unchanged"
+  },
+  "calibration": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\CALIBRATION-A2.json",
+    "bytes": 25153,
+    "sha256": "902f7968eada69c63b9b6e8514881ad2523b43db2b7cf86689db5da47e8c299f"
+  },
+  "diagnosticsNotAcceptance": true
+}

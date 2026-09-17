@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 1,
+  "originalRunFrozen": true,
+  "run": {
+    "command": "npm.cmd test -- finding-history[.]spec[.]ts$ --output ..\\.artifacts\\finding-history-v1-author\\missing-history-red-01-traces --reporter=list,json",
+    "port": "50901",
+    "startedAt": "2026-09-17T08:32:12.0828048Z",
+    "endedAt": "2026-09-17T08:33:54.6721050Z",
+    "exitCode": 1,
+    "expected": "Five meaningful missing Load more observations/notes control failures after actual 500+500 initial history responses"
+  },
+  "runFile": {
+    "path": ".artifacts\\finding-history-v1-author\\missing-history-red-01.run.json",
+    "bytes": 437,
+    "sha256": "d36d9e7b9113f804fde93b336e471c55d33d309953c07c507c6a71abf6a6c8f2"
+  },
+  "report": {
+    "path": ".artifacts\\finding-history-v1-author\\missing-history-red-01.results.json",
+    "bytes": 10761061,
+    "sha256": "d28aa0582f6d48f8b8299a7da08c526c22bfb5067ee12490156e9e3608ccd752"
+  },
+  "stdout": {
+    "path": ".artifacts\\finding-history-v1-author\\missing-history-red-01.stdout.txt",
+    "bytes": 22053,
+    "sha256": "46398cbd1cf88ffa37f54768c96fc839b71c017604d232193d8f5251063d8ea5"
+  },
+  "sourceVector": {
+    "path": ".artifacts\\finding-history-v1-author\\missing-history-red-01.inputs.json",
+    "bytes": 19866,
+    "sha256": "ce08d36bd315ddb60a5febf91fe4f82505d917a24b2168c8607df2d0c78aa9b4"
+  },
+  "stats": {
+    "startTime": "2026-09-17T08:32:19.139Z",
+    "duration": 95337.55,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream",
+      "line": 158,
+      "status": "failed",
+      "durationMS": 18300,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: The existing dialog must provide manual observation-history continuation, not only disclose truncation.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - The existing dialog must provide manual observation-history continuation, not only disclose truncation. getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\n\n\n  83 |   expect(first.notesNextCursor).toBe(first.notes[499].id);\n  84 |   expect(first.observationsNextCursor).toBe(first.observations[499].id);\n> 85 |   await expect(more(page, \"observations\"), \"The existing dialog must provide manual observation-history continuation, not only disclose truncation.\").toBeVisible();\n     |                                                                                                                                                       ^\n  86 |   await expect(more(page, \"notes\"), \"Notes need their own independent manual continuation.\").toBeVisible();\n  87 |   return first;\n  88 | }\n    at open (C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:85:151)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:159:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts",
+            "column": 151,
+            "line": 85
+          }
+        }
+      ],
+      "apiCalls": 6,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        }
+      ],
+      "initialFindingResponses": [
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        },
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "FH2 A held/503 history continuation keeps both loaded streams and retries the same native cursor without duplicate or reset",
+      "line": 183,
+      "status": "failed",
+      "durationMS": 12363,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: The existing dialog must provide manual observation-history continuation, not only disclose truncation.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - The existing dialog must provide manual observation-history continuation, not only disclose truncation. getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\n\n\n  83 |   expect(first.notesNextCursor).toBe(first.notes[499].id);\n  84 |   expect(first.observationsNextCursor).toBe(first.observations[499].id);\n> 85 |   await expect(more(page, \"observations\"), \"The existing dialog must provide manual observation-history continuation, not only disclose truncation.\").toBeVisible();\n     |                                                                                                                                                       ^\n  86 |   await expect(more(page, \"notes\"), \"Notes need their own independent manual continuation.\").toBeVisible();\n  87 |   return first;\n  88 | }\n    at open (C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:85:151)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:184:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts",
+            "column": 151,
+            "line": 85
+          }
+        }
+      ],
+      "apiCalls": 6,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        }
+      ],
+      "initialFindingResponses": [
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        },
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+      "line": 207,
+      "status": "failed",
+      "durationMS": 11273,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: The existing dialog must provide manual observation-history continuation, not only disclose truncation.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - The existing dialog must provide manual observation-history continuation, not only disclose truncation. getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\n\n\n  83 |   expect(first.notesNextCursor).toBe(first.notes[499].id);\n  84 |   expect(first.observationsNextCursor).toBe(first.observations[499].id);\n> 85 |   await expect(more(page, \"observations\"), \"The existing dialog must provide manual observation-history continuation, not only disclose truncation.\").toBeVisible();\n     |                                                                                                                                                       ^\n  86 |   await expect(more(page, \"notes\"), \"Notes need their own independent manual continuation.\").toBeVisible();\n  87 |   return first;\n  88 | }\n    at open (C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:85:151)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:208:17",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts",
+            "column": 151,
+            "line": 85
+          }
+        }
+      ],
+      "apiCalls": 6,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        }
+      ],
+      "initialFindingResponses": [
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        },
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "FH4 Viewer history is read-only; 403/404 latch protected metadata through 503 retry and 401 clears the entire finding scope",
+      "line": 247,
+      "status": "failed",
+      "durationMS": 10356,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: The existing dialog must provide manual observation-history continuation, not only disclose truncation.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - The existing dialog must provide manual observation-history continuation, not only disclose truncation. getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\n\n\n  83 |   expect(first.notesNextCursor).toBe(first.notes[499].id);\n  84 |   expect(first.observationsNextCursor).toBe(first.observations[499].id);\n> 85 |   await expect(more(page, \"observations\"), \"The existing dialog must provide manual observation-history continuation, not only disclose truncation.\").toBeVisible();\n     |                                                                                                                                                       ^\n  86 |   await expect(more(page, \"notes\"), \"Notes need their own independent manual continuation.\").toBeVisible();\n  87 |   return first;\n  88 | }\n    at open (C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:85:151)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:249:15",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts",
+            "column": 151,
+            "line": 85
+          }
+        }
+      ],
+      "apiCalls": 6,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        }
+      ],
+      "initialFindingResponses": [
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        },
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "FH5 At 390px user-moved draft focus/scroll survive a history load; workspace/logout abort and discard later held pages",
+      "line": 308,
+      "status": "failed",
+      "durationMS": 10287,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: The existing dialog must provide manual observation-history continuation, not only disclose truncation.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - The existing dialog must provide manual observation-history continuation, not only disclose truncation. getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).locator('section').filter({ has: getByRole('heading', { name: 'Observations', exact: true, includeHidden: true }) }).getByRole('button', { name: /^Load more observations(?: .*)?$/i })\n\n\n  83 |   expect(first.notesNextCursor).toBe(first.notes[499].id);\n  84 |   expect(first.observationsNextCursor).toBe(first.observations[499].id);\n> 85 |   await expect(more(page, \"observations\"), \"The existing dialog must provide manual observation-history continuation, not only disclose truncation.\").toBeVisible();\n     |                                                                                                                                                       ^\n  86 |   await expect(more(page, \"notes\"), \"Notes need their own independent manual continuation.\").toBeVisible();\n  87 |   return first;\n  88 | }\n    at open (C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:85:151)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:310:15",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts",
+            "column": 151,
+            "line": 85
+          }
+        }
+      ],
+      "apiCalls": 6,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/work",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/findings/56000000000000000000000000000001",
+          "query": {},
+          "status": 200
+        }
+      ],
+      "initialFindingResponses": [
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        },
+        {
+          "notes": 500,
+          "observations": 500,
+          "notesNextCursor": "71000000000000000000000000001f40",
+          "observationsNextCursor": "81000000000000000000000000001f40"
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    }
+  ],
+  "blockedSemantics": "All cases reach the actual production finding dialog and valid 500-note/500-observation responses, then fail at absent manual history controls. Later continuation, error/ACK/source metadata, scope/privacy and mobile focus/scroll assertions are authored requirements, not claimed executed successes.",
+  "noBackendOrNativeQualificationClaim": true
+}

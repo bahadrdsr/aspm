@@ -1,0 +1,15 @@
+.finding-history-notes, .finding-history-observations { overflow-y: auto; overscroll-behavior: contain; }
+.finding-history-notes { max-height: 28rem; }
+.finding-history-observations { max-height: 36rem; }
+.finding-history-notes > li { white-space: pre-wrap; font-size: 12px; line-height: 1.85; color: var(--muted); }
+.finding-history-observations > li { contain: content; border: 1px solid var(--line); border-radius: 9px; padding: 16px; min-width: 0; }
+.finding-history-observations h4 { font-size: 12px; margin: 0; font-weight: 650; overflow-wrap: anywhere; }
+.finding-history-observations h5 { font-size: 11px; font-weight: 550; margin: 15px 0 9px; }
+.finding-history-observations dl { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px 12px; margin: 13px 0; }
+.finding-history-observations dt { color: var(--muted); font-size: 10px; }
+.finding-history-observations dd { margin: 0; font-size: 11px; overflow-wrap: anywhere; }
+.detail-section .finding-history-observations p { margin-top: 8px; font-size: 11px; }
+.finding-history-observations pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 17px; border-radius: 8px; border: 1px solid var(--line); background: var(--canvas); font-size: 11px; line-height: 1.9; color: var(--ink); margin: 0; }
+@media (max-width: 600px) {
+  .finding-history-observations > li { padding: 12px; }
+}

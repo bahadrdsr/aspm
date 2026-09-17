@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "classification": "Read-only measurement batching justified by separately profiled selector/trace traversal cost; not timeout relaxation or diagnostic acceptance",
+  "source": "web\\tests\\finding-history.spec.ts",
+  "beforeSHA256": "92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded",
+  "afterSHA256": "a28c43c324443f21c5202afd554d76d39bafaeea88c774793d6912105626f152",
+  "beforeMeasurementSHA256": "524e484d2ccd750cf428e1f206d104ef77414766adba0be54a31e7e7e5eb97af",
+  "afterMeasurementSHA256": "dc36e5f8dc1d68af00291f04b7fd529685a03bf00da6e891b189ee1c56694394",
+  "onlyObservationFieldsBodyChanged": true,
+  "prefixBytesUnchanged": true,
+  "suffixBytesUnchanged": true,
+  "originalSemanticIdentityLocatorUnchanged": true,
+  "sampleIndicesUnchanged": [
+    0,
+    499,
+    500,
+    "observationsTotal - 1"
+  ],
+  "coverage": [
+    {
+      "original": "Seven toContainText values",
+      "after": "The same seven expected values, DOM text collection excluding script/style/noscript/head plus original whitespace normalization, one bool per value"
+    },
+    {
+      "original": "Scope dt/first following-sibling dd exact text",
+      "after": "Exactly one matching native/explicit term and its first following DD, normalized exact value"
+    },
+    {
+      "original": "Revision / branch dt/dd exact text",
+      "after": "Same association and full revision + separator + branch expected string"
+    },
+    {
+      "original": "Source severity dt/dd exact text",
+      "after": "Same association and normalized exact source severity"
+    },
+    {
+      "original": "Normalized severity dt/dd case-insensitive pattern",
+      "after": "Same association and identical RegExp pattern semantics"
+    },
+    {
+      "original": "Known datetime locator visible / unknown exact label visible",
+      "after": "Original conditional native Playwright toBeVisible statements retained verbatim"
+    },
+    {
+      "original": "Strict one pre.innerText parsed JSON equals all unmapped fields",
+      "after": "Exactly one HTMLElement PRE innerText is parsed and compared with the same full object; never replaced with textContent"
+    },
+    {
+      "original": "No script/iframe/img/b descendants",
+      "after": "Identical selector count zero in the same sampled record"
+    },
+    {
+      "original": "Semantic list/listitem/exact heading identity",
+      "after": "Original semantic locator retained; evaluateAll result must contain exactly one record, with no nth/body fallback"
+    },
+    {
+      "original": "Auto-wait assertions",
+      "after": "All batched fields use expect.poll timeout 5000; original native time visibility retains normal five-second assertion retry"
+    },
+    {
+      "original": "FH1 four sample indices and all other flow/order checks",
+      "after": "Entire prefix/suffix unchanged, including [0,499,500,observationsTotal-1] and all FH1-5/A1 assertions"
+    }
+  ],
+  "currentControlCount": 675,
+  "unchangedControls": 674,
+  "originalSourceHelpersFixturesSettingsDependenciesUnchanged": true,
+  "calibration": "Separate isolated DOM diagnostics, not application business state or product acceptance",
+  "headroomPolicy": {
+    "caseBudgetMS": 20000,
+    "focusedMaximumMSBeforeFullSuite": 18000,
+    "notes": "A 2-second minimum margin is a proceed-to-full-run criterion only, not a changed pass/fail timeout."
+  },
+  "full84Claim": false
+}

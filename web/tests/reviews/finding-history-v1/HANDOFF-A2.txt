@@ -1,0 +1,122 @@
+FINDING HISTORY A2 - READ-ONLY OBSERVATION MEASUREMENT BATCHING
+============================================================
+
+Status
+------
+Actual focused FH1/FH3, all five history cases, typecheck and the full 84-case
+browser suite passed under the original budgets and trace capture.
+Stop for parent independent review/reseal. No production change is made here.
+The coder's diagnostic measurements are not substituted for these gate runs.
+
+Independent assessment
+----------------------
+The supplied performance-a1 HANDOFF.json SHA-256 was verified:
+  bdc1fc3ce83ebd3aecbedc0eb01c4b457393cd7d7eed27f60d43243f998a7b4d
+Actual measurement-04 phases and the installed selector/text implementation
+were inspected read-only. The same-run settled measurement recorded no React,
+layout or style recalculation, with substantial selector/snapshot traversal.
+The 1.25s serial-one-record and 0.58s all-record batched measurements remain
+diagnostics, not acceptance and not proof every source optimization is exhausted.
+
+An independent original FH1 run still exceeded its unchanged 20-second case
+budget (21.755s including timeout/finalization). That result is retained.
+
+Only observationFields changes
+------------------------------
+Only the read-only observationFields function in finding-history.spec.ts is
+amended. The whole prefix and suffix are byte-identical. Thus all FH1-5 flow,
+cursor, ACK, role, focus, ordering, literal-note and source-fact assertions,
+including A1's Workflow combobox locator, remain unchanged.
+The exact four FH1 indices stay [0,499,500,observationsTotal-1].
+
+The original semantic list/listitem/exact-heading locator remains. Each poll
+must resolve exactly one observation, never nth position, another row or BODY.
+One browser extraction per sampled record gathers its text, term/definition
+associations, literal PRE innerText and forbidden markup count. Normal settled
+records need one extraction; genuine not-ready data is retried within five
+seconds rather than accepted from a stale or partial sample.
+
+All original checks remain:
+  - The same seven run/source/native IDs, impact, remediation, digest and
+    complete URI:line values, with the original whitespace normalization.
+  - Exactly associated Scope, Revision / branch and Source severity values;
+    Normalized severity uses the same case-insensitive pattern semantics.
+  - Term association follows the first following sibling DD, not an arbitrary
+    similarly named value or a generic container.
+  - Exactly one PRE, read through innerText and parsed as literal JSON, equals
+    the entire original unmapped object. It is NOT replaced by textContent.
+  - The original script/iframe/img/b selector count remains zero.
+  - The original known-time / unknown-time native Playwright toBeVisible
+    statements are retained verbatim, including their five-second retry and
+    visibility/uniqueness semantics.
+
+Text collection follows the original text-assertion behavior: descendants
+contribute text, script/style/noscript/head are excluded, button/submit input
+values and shadow text are retained, and whitespace/zero-width normalization
+matches the installed matcher. No application state is read as a substitute
+for DOM evidence. No diagnostic all-record result replaces the four samples.
+The full before/after map is in AMENDMENT-A2.json.
+
+Negative calibration is not product acceptance
+---------------------------------------------
+A separate isolated native about:blank DOM calibration runs the extracted
+original and amended functions, not a rewritten simulation of their logic.
+It never changes production source or the real application's DOM/state.
+Tracing is enabled, there are no external requests, and original five-second
+expectations are retained.
+
+All 15 paired variants / 30 helper executions behaved as required:
+  Three accepted variants: visible known time, visible unknown time and
+  normalized-whitespace values.
+  Twelve rejected variants: missing run ID, wrong Scope DD, unassociated DD,
+  wrong identity, duplicate identity, hidden known time, hidden unknown label,
+  a hidden JSON fragment, wrong parsed JSON, missing PRE, forbidden hidden
+  markup and a stylesheet decoy for a missing value.
+
+The hidden-JSON fixture explicitly has the correct textContent but different
+innerText; both original and amended functions reject it. This guards against
+the weaker extraction used only in the coder's diagnostic proposal.
+These calibration records are not counted as browser product cases or used
+to claim UI performance success.
+
+Actual staged qualification
+--------------------------
+All runs use unchanged one worker, zero retries, 20-second case timeout,
+five-second expects, 60 combined API calls and reduced-motion settings.
+The original retain-on-failure trace capture remains enabled during execution;
+passing traces are discarded by that unchanged retention policy.
+
+  Original FH1: timed out at 21.755s.
+  Amended focused FH1/FH3: passed at 12.686s / 10.158s.
+  All five history cases: passed; FH1 10.722s, FH3 9.817s.
+  Full 84-case suite: 84 passed, zero skips/flakes/retries.
+    Full-suite FH1 7.885s; FH3 12.853s.
+  Actual typecheck: passed.
+
+A recorded maximum of 18s per focused case (at least two seconds below the
+unchanged 20s budget) was the prerequisite for the full run, not a new test
+threshold. Both focused stages satisfied it before full84 began.
+Host timings vary; no universal speedup, exhausted-optimization or future
+performance-reliability claim is made.
+
+Integrity/history and parent handoff
+-----------------------------------
+675 original controls and 736 held inputs were verified before amendment.
+Only the permitted new-spec helper changes; the other 674 controls and all
+production/fixture/helper/runner/settings/dependency bytes remain exact.
+No old tests, signatures, trace/animation/retry budgets or source files change.
+No agents, commits or native API work occurs.
+
+Only the actually amended spec is byte-archived:
+  history\a2\finding-history.spec.ts.before.txt
+Original RED, A1 packet/signatures and coder profiling evidence are preserved
+in place and referenced by hashes, not recursively copied.
+The old A1 seal still identifies the archived original spec; it is not claimed
+to verify the amended active file. Parent review/new current seal is required.
+
+Fresh acceptance, calibration scripts/generated modules and trace artifacts:
+  .artifacts\finding-history-v1-a2
+Never reuse original-fh1-01, focused-fh1-fh3-01, all-history-01, full-84-01 or
+calibration-01 output names. GUARDS-A2.json, VALIDATION-A2.json, EVIDENCE-A2.json
+and HANDOFF-A2.json link the exact inputs, coverage and results.
+PACKET-A2.json/PACKET-A2.sha256 freeze this unsigned A2 packet.

@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "scope": "FH3 one semantic locator only; not full finding-history acceptance",
+  "sourceHOLD": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\GUARDS-A1.json",
+    "bytes": 11089,
+    "sha256": "85b10cf62c9c4b5b7052e6b5a0e41cafc004c7d5967c9e5d43114d2cd7b776a6"
+  },
+  "coderHandoffVerifiedSHA256": "38c5a968eeaec34bd2574b8f07c5af64e7ed8c7b255be5d2a3d8c1780469cb23",
+  "coderReportedFullSuite": {
+    "executedCases": 84,
+    "passed": 82,
+    "failed": 2,
+    "priorPassed": 79,
+    "newPassed": 3,
+    "newFailed": 2,
+    "skips": 0,
+    "playwrightFlakyClassification": 0,
+    "retries": 0,
+    "attempts": 84,
+    "browserGuardExit": 1,
+    "browserAcceptancePassed": false,
+    "typecheckExit": 0,
+    "buildExit": 0,
+    "treeDigest": "sha256:37bd492706c1194ac969ae55cba1850710d7e28d0bc3a9ceec9e5486138d2dd7",
+    "oracleDigest": "sha256:37ddb9093febe55ffda4ab295582e3e3f90e7cc47bf9cb900bfb961a007350a3",
+    "guardedInputs": 722,
+    "actualCompilerInputs": 326,
+    "currentControlCount": 663,
+    "currentSeal": "sha256:8440e0b4ea516f8b82bae3a15dccc1f521649e67a4f22ac3a0152a31880aac43",
+    "packetSHA256": "5c64e7400bae90f301eac7c32acf14734818f76b110a75edb26a3ec5a8d061b1",
+    "all12PacketMembersUnchanged": true,
+    "guardedReceipt": {
+      "path": ".cache\\finding-history-coder\\full-02\\receipt.json",
+      "bytes": 17112,
+      "sha256": "3d0a602b58052e9b52fc72ecee864a0c2c02293e66a37efc8b961971bfdbbd17"
+    },
+    "compilerClosure": {
+      "path": ".cache\\finding-history-coder\\full-02\\actual-typecheck-closure.json",
+      "bytes": 56339,
+      "sha256": "5798a74a85c52134b3e46429d852bab480aed6f17d5e982ab92ffff79d93f6f2"
+    },
+    "historyCaseRequests": [
+      {
+        "case": "FH1",
+        "status": "timedOut",
+        "requests": 8,
+        "violations": 0,
+        "browserErrors": 0,
+        "externalAttempts": 0
+      },
+      {
+        "case": "FH2",
+        "status": "passed",
+        "requests": 9,
+        "violations": 0,
+        "browserErrors": 0,
+        "externalAttempts": 0
+      },
+      {
+        "case": "FH3",
+        "status": "timedOut",
+        "requests": 8,
+        "violations": 0,
+        "browserErrors": 0,
+        "externalAttempts": 0
+      },
+      {
+        "case": "FH4",
+        "status": "passed",
+        "requests": 20,
+        "violations": 0,
+        "browserErrors": 0,
+        "externalAttempts": 0
+      },
+      {
+        "case": "FH5",
+        "status": "passed",
+        "requests": 16,
+        "violations": 0,
+        "browserErrors": 0,
+        "externalAttempts": 0
+      }
+    ]
+  },
+  "traceSourceReferences": [
+    {
+      "path": "web\\tests\\finding-history.spec.ts",
+      "bytes": 23320,
+      "sha256": "5370ed0bacf761641eecc5acaac40720ae1ec2a27243aa3574b7bd614a6301ff"
+    },
+    {
+      "path": "web\\src\\components\\finding-actions.tsx",
+      "bytes": 8614,
+      "sha256": "efe76e23ad0b59032d2db889cd8c8042c3d70c45af121bac3b1a20a23d50f046"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\lib\\coreBundle.js",
+      "bytes": 3477183,
+      "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+    },
+    {
+      "path": ".cache\\finding-history-coder\\targeted-04\\browser-artifacts\\finding-history-FH3-New-no-7e339-a-is-not-permanently-frozen\\trace.zip",
+      "bytes": 1023655,
+      "sha256": "eae0189d631b8bec75cac8fb1d48c99a2b6c4b09d24c717d85360b0f39937344"
+    }
+  ],
+  "independentTraceObserved": {
+    "labelText": "WorkflowOpenIn progressResolved",
+    "unresolvedSelector": "internal:label=\"Workflow\"s",
+    "selectOptionValue": "in-progress",
+    "callId": "call@508",
+    "startTime": 48456.895,
+    "archiveReadWithoutExtraction": true
+  },
+  "originalReproduction": {
+    "run": {
+      "command": "npm.cmd test -- finding-history[.]spec[.]ts$ --grep FH3 --output ..\\.artifacts\\finding-history-v1-a1\\original-fh3-01-traces --reporter=list,json",
+      "port": "52962",
+      "startedAt": "2026-09-17T10:23:56.3123067Z",
+      "endedAt": "2026-09-17T10:24:28.9965311Z",
+      "exitCode": 1,
+      "scope": "FH3 original semantic locator reproduction only; FH1 not run or modified"
+    },
+    "runFile": {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01.run.json",
+      "bytes": 390,
+      "sha256": "5e42d48b6a4006c4c48676eac92b96f3f7436718a5fc6b61338fd7fd562da0b4"
+    },
+    "stdout": {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01.stdout.txt",
+      "bytes": 3522,
+      "sha256": "967697240a17776d6b177f87f92727f168f0d46cac750ac839516c5d26637023"
+    },
+    "report": {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01.results.json",
+      "bytes": 2268406,
+      "sha256": "76b12b15a8ae62f6efc36f1e9cec86651c25cdf5e0382e4caabc91dae8d3ef6e"
+    },
+    "stats": {
+      "startTime": "2026-09-17T10:23:58.502Z",
+      "duration": 30288.191,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+    "status": "timedOut",
+    "retry": 0,
+    "durationMS": 21776,
+    "errors": [
+      {
+        "message": "Test timeout of 20000ms exceeded."
+      },
+      {
+        "message": "Error: locator.selectOption: Test timeout of 20000ms exceeded.\nCall log:\n  - waiting for getByRole('dialog', { name: 'Synthetic finding with independent history streams', exact: true, includeHidden: true }).getByRole('form', { name: 'Change finding workflow', exact: true }).getByLabel('Workflow', { exact: true })\n\n\n  223 |   const workflow = historyAPI.queueWorkflow(true);\n  224 |   const workflowForm = panel(page).getByRole(\"form\", { name: \"Change finding workflow\", exact: true });\n> 225 |   await workflowForm.getByLabel(\"Workflow\", { exact: true }).selectOption(\"in-progress\");\n      |                                                              ^\n  226 |   await workflowForm.getByRole(\"button\", { name: \"Save workflow\", exact: true }).click();\n  227 |   expect((await requested(workflow)).body).toEqual({ workflowState: \"in-progress\" });\n  228 |   await expect(fact(panel(page), \"Human workflow\")).toContainText(/^Open$/i);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts:225:62",
+        "location": {
+          "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\finding-history.spec.ts",
+          "column": 62,
+          "line": 225
+        }
+      }
+    ],
+    "apiCalls": 8,
+    "operations": [
+      {
+        "method": "GET",
+        "path": "/api/v1/session",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/session",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/work",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/work",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {
+          "observationsCursor": "81000000000000000000000000001f40"
+        },
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/findings/56000000000000000000000000000001/notes",
+        "query": {},
+        "status": 201
+      }
+    ],
+    "fixtureViolations": [],
+    "pageErrors": [],
+    "externalAttempts": 0
+  },
+  "correctedTargeted": {
+    "run": {
+      "command": "npm.cmd test -- finding-history[.]spec[.]ts$ --grep FH3 --output ..\\.artifacts\\finding-history-v1-a1\\corrected-fh3-01-traces --reporter=list,json",
+      "port": "61025",
+      "startedAt": "2026-09-17T10:25:50.1428493Z",
+      "endedAt": "2026-09-17T10:26:20.4302888Z",
+      "exitCode": 0,
+      "scope": "One semantic FH3 locator correction; FH1 is unresolved and not run"
+    },
+    "runFile": {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01.run.json",
+      "bytes": 385,
+      "sha256": "90a611467b26645ef10e0b0a6aa0456b601222df66717a75b1ba901669c11edb"
+    },
+    "stdout": {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01.stdout.txt",
+      "bytes": 434,
+      "sha256": "86f782db1d77b4d5d17b97fc7597aabfd066f1c1ef3c30fa54cdc8939c84f28d"
+    },
+    "report": {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01.results.json",
+      "bytes": 3351803,
+      "sha256": "861501bcda1dc54023eea3123cd677f397468e8b4668ad347940589d27349483"
+    },
+    "stats": {
+      "startTime": "2026-09-17T10:25:53.221Z",
+      "duration": 27018.675000000003,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+    "status": "passed",
+    "retry": 0,
+    "durationMS": 19628,
+    "errors": [],
+    "apiCalls": 10,
+    "operations": [
+      {
+        "method": "GET",
+        "path": "/api/v1/session",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/session",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/work",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/work",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {
+          "observationsCursor": "81000000000000000000000000001f40"
+        },
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/findings/56000000000000000000000000000001/notes",
+        "query": {},
+        "status": 201
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {},
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/findings/56000000000000000000000000000001",
+        "query": {
+          "notesCursor": "71000000000000000000000000001f40",
+          "observationsCursor": "81000000000000000000000000001f40"
+        },
+        "status": 200
+      }
+    ],
+    "fixtureViolations": [],
+    "pageErrors": [],
+    "externalAttempts": 0
+  },
+  "typecheck": {
+    "command": "npm.cmd run typecheck",
+    "startedAt": "2026-09-17T10:25:49.6755286Z",
+    "endedAt": "2026-09-17T10:25:53.0791263Z",
+    "exitCode": 0,
+    "runFile": {
+      "path": ".artifacts\\finding-history-v1-a1\\typecheck-01.run.json",
+      "bytes": 156,
+      "sha256": "dde949e9d10f8f06a25eace999914a72523c35ac406fc6dd777bb6a3d667f450"
+    },
+    "stdout": {
+      "path": ".artifacts\\finding-history-v1-a1\\typecheck-01.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  },
+  "allOriginalFH3AssertionsExecutedInTargetedPass": true,
+  "fh3NearTwentySecondBudget": true,
+  "fullSuiteRerun": false,
+  "full84AcceptanceClaim": false,
+  "fh1": {
+    "status": "Unresolved coder performance issue",
+    "notAnOracleDefect": true,
+    "notRunByThisAuthor": true,
+    "unchangedCaseAndHelpers": true,
+    "evidence": {
+      "path": ".cache\\finding-history-coder\\FH1-PERFORMANCE-LIMIT.json",
+      "bytes": 5707,
+      "sha256": "0ef6baa76e7b13e7700dc018d01f30da01889b0e782b24bc3c1aa39950eb77b9"
+    },
+    "evidenceReferences": [
+      {
+        "path": ".cache\\finding-history-coder\\full-02\\browser-artifacts\\finding-history-FH1-Native-0cf2f--resetting-the-other-stream\\trace.zip",
+        "bytes": 1299563,
+        "sha256": "c8df8ebb068647fe5ab0c24eb9b65b86e91d5b6b3ba19b83cf7ca1ac886a791f"
+      },
+      {
+        "path": ".cache\\finding-history-coder\\full-02\\browser-results.json",
+        "bytes": 23329674,
+        "sha256": "a8c8b2c1fe78bd10c93b3bd130b6bc5683dc1c7a98f791a21b1ffce524f12074"
+      },
+      {
+        "path": ".cache\\finding-history-coder\\fh1-performance-01\\browser-results.json",
+        "bytes": 2281683,
+        "sha256": "b9140caaa9488d0d283a1d0a6ec20297a1082efef53c682f42929fa1d5782d4e"
+      }
+    ]
+  },
+  "noPerformanceReliabilityClaimFromTargetedPass": true
+}

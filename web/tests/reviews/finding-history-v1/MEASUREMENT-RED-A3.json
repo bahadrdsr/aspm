@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "classification": "Real A2 measurement-equivalence RED, NOT production XSS or application business-state failure",
+  "script": {
+    "path": ".artifacts\\finding-history-v1-a3\\calibrate-shadow-structure.cjs",
+    "bytes": 11985,
+    "sha256": "a5c9a973d795cfc7b06686cda0acf5f704c481a13e400e82b05d71c23772ced2"
+  },
+  "receipt": {
+    "path": ".artifacts\\finding-history-v1-a3\\measurement-red-01\\receipt.json",
+    "bytes": 6455,
+    "sha256": "e61c5de2d82d794f71db54d0e39219b6fb830475956fa38495cf61c206382aff"
+  },
+  "trace": {
+    "path": ".artifacts\\finding-history-v1-a3\\measurement-red-01\\trace.zip",
+    "bytes": 243732,
+    "sha256": "a028a4f87e0e8cadb0928ed635abe1131ae7da556c53043e91e6f11548480cbb"
+  },
+  "exactOriginalA1AndA2HelpersVerified": true,
+  "variants": [
+    {
+      "variant": "known-visible",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 234.3683000000001,
+          "structural": null
+        },
+        {
+          "helper": "a2",
+          "accepted": true,
+          "durationMS": 80.05749999999989,
+          "structural": null
+        }
+      ]
+    },
+    {
+      "variant": "shadow-forbidden",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5133.584100000001,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 1,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        },
+        {
+          "helper": "a2",
+          "accepted": true,
+          "durationMS": 19.921299999999974,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 1,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant": "shadow-extra-pre",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 121.41609999999855,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 2
+          },
+          "error": "locator.innerText: Error: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre') resolved to 2 elements:\n    1) <pre>{↵  \"literal\": \"<b>not markup</b>\",↵  \"nested\": {…</pre> aka getByText('{ \"literal\": \"<b>not markup</').first()\n    2) <pre>{↵  \"literal\": \"<b>not markup</b>\",↵  \"nested\": {…</pre> aka locator('span').getByText('{ \"literal\": \"<b>not markup</')\n\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre')\u001b[22m\n"
+        },
+        {
+          "helper": "a2",
+          "accepted": true,
+          "durationMS": 25.210700000001452,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "variant": "shadow-duplicate-term",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 84.3106000000007,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nError: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') resolved to 2 elements:\n    1) <dd>scope-unique-404</dd> aka getByText('scope-unique-"
+        },
+        {
+          "helper": "a2",
+          "accepted": true,
+          "durationMS": 17.942199999999502,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    }
+  ],
+  "zeroHTTP": true,
+  "applicationSourceOrDOMTouched": false,
+  "originalA2EvidencePreserved": true
+}

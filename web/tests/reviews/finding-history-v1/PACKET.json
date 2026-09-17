@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "name": "finding-history-v1",
+  "status": "frozen unsigned independent test-author packet",
+  "createdAt": "2026-09-17T08:45:30.091Z",
+  "files": [
+    {
+      "path": "web\\tests\\finding-history-data.ts",
+      "bytes": 6478,
+      "sha256": "d1cfc9dd7076cef7036c718164327185c8357d1c4d3b9cc02b7723e2cada3956"
+    },
+    {
+      "path": "web\\tests\\finding-history-fixture.ts",
+      "bytes": 18437,
+      "sha256": "3f8e202c82715088178b2c6394dff56551b353f9221df0ad955fc121653ecd6f"
+    },
+    {
+      "path": "web\\tests\\finding-history.spec.ts",
+      "bytes": 23320,
+      "sha256": "5370ed0bacf761641eecc5acaac40720ae1ec2a27243aa3574b7bd614a6301ff"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE.json",
+      "bytes": 23817,
+      "sha256": "c32f1e5f92dd9a7c6ec4f3dbdf4310b1d36979bf064e57e85871f1f1ab6b7bc1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\COMPATIBILITY.json",
+      "bytes": 20674,
+      "sha256": "e8e0e69295e9b0c612c6da642376e490b818d4f737f7717205b27df22d9ed757"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\COMPILATION.json",
+      "bytes": 851,
+      "sha256": "df0ac9c6a4a206e5f06444100d45b104c14a0002960168c17acbc35d08fa1641"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\CONTRACT.txt",
+      "bytes": 9973,
+      "sha256": "22fb5a87ac9c46f95c3590125ad48bb18f817adfdcb41d1dac5129c661cf9a42"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\EVIDENCE.json",
+      "bytes": 6893,
+      "sha256": "709356f582aaca635bb4d35b99ebfc0f7e467534f384882d07194df643eb981f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\GUARDS.json",
+      "bytes": 12624,
+      "sha256": "fba18f7f8dba7269eb63801181eb0ff4b5993171d2cb97ebe2cb16ce6a3fcbcf"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF.json",
+      "bytes": 4378,
+      "sha256": "3e7bc9e5fa06c171fcba895e635a3ed4d4e247a1928414671f06fba31372bfd4"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF.txt",
+      "bytes": 5515,
+      "sha256": "12ca764ee624a63fe8e3ef6e143e58e298b81acae29acda15c2bdecb33c2c073"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\RED.json",
+      "bytes": 22099,
+      "sha256": "58b3d2f3a8e518302b0957e61ccacff04cb2bd14686025aeb47cef1d30354079"
+    }
+  ],
+  "qualifiedHead": "f050d238d1da56b9d4304deec37783d82f998665",
+  "qualification": {
+    "actualTypecheckPassed": true,
+    "newCases": 5,
+    "expectedMissingHistoryControlsRED": 5,
+    "priorCasesPassed": 79,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "fixtureViolations": 0,
+    "pageErrors": 0,
+    "externalAttempts": 0,
+    "redRequestsPerCase": [
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "actualInitialNotesPerResponse": 500,
+    "actualInitialObservationsPerResponse": 500
+  },
+  "originalInputs": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE.json",
+    "bytes": 23817,
+    "sha256": "c32f1e5f92dd9a7c6ec4f3dbdf4310b1d36979bf064e57e85871f1f1ab6b7bc1"
+  },
+  "evidence": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\EVIDENCE.json",
+    "bytes": 6893,
+    "sha256": "709356f582aaca635bb4d35b99ebfc0f7e467534f384882d07194df643eb981f"
+  },
+  "existingInputChanges": 0,
+  "parentSealRequired": true,
+  "productionCompletionClaim": false
+}

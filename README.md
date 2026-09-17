@@ -149,10 +149,26 @@ action. Closing cancels pending browser actions but cannot roll back a request
 already committed by the service. Finding-action source review and real HTTPS
 qualification remain separate from the synthetic browser checks.
 
-Observation and analyst-note pagination is not yet wired; a returned next-page cursor is disclosed
-rather than presenting the loaded page as the complete history. Workspace
-changes, logout and session rejection clear these scoped views and cancel their
-browser requests. No report or authentication data is stored in browser storage.
+In the finding dialog, **Load more observations** and **Load more notes** follow
+their separate native cursors through the existing finding GET. The default
+initial read stays bare, and only the chosen stream advances; the other may
+repeat its previously requested page. Both returned pages merge by server ID,
+preserving loaded tails and distinct notes with identical text. Counts describe
+loaded records, not an invented total or an atomic full-history snapshot.
+
+Pending or unavailable continuation reads retain source facts and both histories;
+**Retry** repeats the exact failed query. Permission/missing-detail denials withhold
+cached source/history until an authorized read succeeds. Validated note and workflow
+ACKs merge immediately, without a follow-up GET as a success proxy. Capped mutation
+responses do not replace loaded history or rewind either continuation. Local
+request/ACK ordering prevents older reads from rolling back confirmed facts;
+a genuinely later requested read can supply newer canonical metadata.
+
+These are manual reads, not automatic polling, source URL fetching or proof.
+The native dialog, note drafts and Work context remain in place during paging.
+Closing, workspace changes, logout and session rejection clear the scoped history
+and cancel old requests. No history, note, report or authentication data is stored
+in browser storage.
 
 In **Integrations**, **Connections** lists workspace Slack destinations separately
 from the eight catalog families. Admins can create and edit a name, C/G channel ID,

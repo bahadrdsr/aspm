@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "status": "FROZEN independently assessed measurement-only optimization; actual full84 passed; stop for parent review/reseal",
+  "source": "web\\tests\\finding-history.spec.ts",
+  "beforeSHA256": "92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded",
+  "afterSHA256": "a28c43c324443f21c5202afd554d76d39bafaeea88c774793d6912105626f152",
+  "onlyObservationFieldsChanged": true,
+  "unchangedCaseBodiesHelpersAndSamples": true,
+  "sourceFixtureDependencySettingsChanges": 0,
+  "semanticCoverage": [
+    {
+      "original": "Seven toContainText values",
+      "after": "The same seven expected values, DOM text collection excluding script/style/noscript/head plus original whitespace normalization, one bool per value"
+    },
+    {
+      "original": "Scope dt/first following-sibling dd exact text",
+      "after": "Exactly one matching native/explicit term and its first following DD, normalized exact value"
+    },
+    {
+      "original": "Revision / branch dt/dd exact text",
+      "after": "Same association and full revision + separator + branch expected string"
+    },
+    {
+      "original": "Source severity dt/dd exact text",
+      "after": "Same association and normalized exact source severity"
+    },
+    {
+      "original": "Normalized severity dt/dd case-insensitive pattern",
+      "after": "Same association and identical RegExp pattern semantics"
+    },
+    {
+      "original": "Known datetime locator visible / unknown exact label visible",
+      "after": "Original conditional native Playwright toBeVisible statements retained verbatim"
+    },
+    {
+      "original": "Strict one pre.innerText parsed JSON equals all unmapped fields",
+      "after": "Exactly one HTMLElement PRE innerText is parsed and compared with the same full object; never replaced with textContent"
+    },
+    {
+      "original": "No script/iframe/img/b descendants",
+      "after": "Identical selector count zero in the same sampled record"
+    },
+    {
+      "original": "Semantic list/listitem/exact heading identity",
+      "after": "Original semantic locator retained; evaluateAll result must contain exactly one record, with no nth/body fallback"
+    },
+    {
+      "original": "Auto-wait assertions",
+      "after": "All batched fields use expect.poll timeout 5000; original native time visibility retains normal five-second assertion retry"
+    },
+    {
+      "original": "FH1 four sample indices and all other flow/order checks",
+      "after": "Entire prefix/suffix unchanged, including [0,499,500,observationsTotal-1] and all FH1-5/A1 assertions"
+    }
+  ],
+  "negativeCalibration": {
+    "pairedVariants": 15,
+    "executions": 30,
+    "allExpectedOutcomesMatched": true,
+    "notProductAcceptance": true
+  },
+  "results": {
+    "originalFH1MS": 21755,
+    "focused": [
+      {
+        "title": "FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream",
+        "durationMS": 12686
+      },
+      {
+        "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+        "durationMS": 10158
+      }
+    ],
+    "allHistory": [
+      {
+        "title": "FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream",
+        "durationMS": 10722
+      },
+      {
+        "title": "FH2 A held/503 history continuation keeps both loaded streams and retries the same native cursor without duplicate or reset",
+        "durationMS": 7854
+      },
+      {
+        "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+        "durationMS": 9817
+      },
+      {
+        "title": "FH4 Viewer history is read-only; 403/404 latch protected metadata through 503 retry and 401 clears the entire finding scope",
+        "durationMS": 9995
+      },
+      {
+        "title": "FH5 At 390px user-moved draft focus/scroll survive a history load; workspace/logout abort and discard later held pages",
+        "durationMS": 7681
+      }
+    ],
+    "full84Passed": true,
+    "fullHistory": [
+      {
+        "title": "FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream",
+        "durationMS": 7885
+      },
+      {
+        "title": "FH2 A held/503 history continuation keeps both loaded streams and retries the same native cursor without duplicate or reset",
+        "durationMS": 9839
+      },
+      {
+        "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+        "durationMS": 12853
+      },
+      {
+        "title": "FH4 Viewer history is read-only; 403/404 latch protected metadata through 503 retry and 401 clears the entire finding scope",
+        "durationMS": 11152
+      },
+      {
+        "title": "FH5 At 390px user-moved draft focus/scroll survive a history load; workspace/logout abort and discard later held pages",
+        "durationMS": 7666
+      }
+    ],
+    "typecheckPassed": true,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0
+  },
+  "headroomRequiredBeforeFullRunMS": 18000,
+  "caseBudgetStillMS": 20000,
+  "traceAnimationAndRequestBudgetsUnchanged": true,
+  "diagnosticsNotUsedAsGateReplacement": true,
+  "original675Controls": {
+    "unchanged": 674,
+    "onlyDelta": "web\\tests\\finding-history.spec.ts",
+    "oldSignaturesUnchanged": true,
+    "newParentSealRequired": true
+  },
+  "archive": {
+    "source": "web\\tests\\finding-history.spec.ts",
+    "archive": "web\\tests\\reviews\\finding-history-v1\\history\\a2\\finding-history.spec.ts.before.txt",
+    "path": "web\\tests\\reviews\\finding-history-v1\\history\\a2\\finding-history.spec.ts.before.txt",
+    "bytes": 23337,
+    "sha256": "92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded"
+  },
+  "oldPacketHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.json",
+      "bytes": 3388,
+      "sha256": "5c64e7400bae90f301eac7c32acf14734818f76b110a75edb26a3ec5a8d061b1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "a9bd7d1b331378cce356edb08111e834f3d476970e8c5db65ec043e3f3c9aa5a"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.json",
+      "bytes": 5445,
+      "sha256": "9d9941eeff7e2db0da561c0691f9f2f08a7a1bfec9e6434207822a8efc094815"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "323fe0c68756cdb670bd1b03ad43ed2a2ad93cd4b6d46269a1e9c02dd22aba76"
+    }
+  ],
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE-A2.json",
+      "bytes": 301245,
+      "sha256": "d65a263d86b38494ff8cc924b4ae5184230380fd8ee0a5669b5078bf8be0b118"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\AMENDMENT-A2.json",
+      "bytes": 3427,
+      "sha256": "2c4f3fa7023c0f9b6930b154d8e5fd4bb1af1a97903a33ff88f3b341cba277b9"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\CALIBRATION-A2.json",
+      "bytes": 25153,
+      "sha256": "902f7968eada69c63b9b6e8514881ad2523b43db2b7cf86689db5da47e8c299f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\GUARDS-A2.json",
+      "bytes": 11174,
+      "sha256": "18395a159ba1ce25406d44807cf11500a74735e50fbfce2e46e9dbced8521c1d"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\VALIDATION-A2.json",
+      "bytes": 37401,
+      "sha256": "53e2e879e5de5c1c41da469e3f0334543685244f0d5d4e810f3c6f424c01c11c"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\EVIDENCE-A2.json",
+      "bytes": 9103,
+      "sha256": "54abe2c386ac3c8fabc16a7e0595a796635c165a45f91c1475cce9b1fd756e9e"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF-A2.txt",
+      "bytes": 6826,
+      "sha256": "d761849fdab407deb6012e240a36d647aa49e0353faa371ca673f2ecc90d3364"
+    }
+  ],
+  "agentsCommitsNativeAPI": false,
+  "noFuturePerformanceOrExhaustedOptimizationGuarantee": true
+}

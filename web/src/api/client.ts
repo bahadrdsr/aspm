@@ -200,6 +200,22 @@ function parseFindingNote(value: unknown, submittedText: string): FindingNoteRes
   return { apiVersion, note: { id, text: noteText } };
 }
 
+function findingCursor(value: string | undefined): string {
+  if (value === undefined) return "";
+  if (typeof value !== "string" || (value !== "" && !/^[a-f0-9]{32}$/.test(value))) {
+    throw new APIError("Finding history requires a native 32-character lowercase hexadecimal cursor.", "invalid-input", false);
+  }
+  return value;
+}
+
+function validateFindingHistoryPage(items: readonly { id: string }[] | undefined, next: string | null | undefined, cursor: string, field: string) {
+  if ((items !== undefined && items.length > 500) ||
+    (cursor !== "" && (items === undefined || next === undefined)) ||
+    (next != null && (!/^[a-f0-9]{32}$/.test(next) || next !== items?.at(-1)?.id))) return invalid(`${field} history page`);
+  if ((cursor !== "" || next != null) && items?.some((item, index) =>
+    !/^[a-f0-9]{32}$/.test(item.id) || item.id <= (index === 0 ? cursor : items[index - 1].id))) return invalid(`${field} history order`);
+}
+
 function findingBodyLimit(body: FindingPatch | { text: string }, bytes: number): void {
   if (new TextEncoder().encode(JSON.stringify(body)).byteLength > bytes) {
     throw new APIError("The encoded finding action exceeds the service's request size limit. Shorten the input and retry.", "invalid-input", false);
@@ -473,13 +489,20 @@ async function reportRead<T>(path: string, parse: (value: unknown) => T, signal:
 
 export const api = {
   work: (signal: AbortSignal) => request("/api/v1/work", parseWork, { signal }),
-  finding: (id: string, signal: AbortSignal) => {
+  finding: (id: string, signal: AbortSignal, cursors?: { notesCursor?: string; observationsCursor?: string }) => {
     const workspace = requestAuthority().workspace;
-    return request(`/api/v1/findings/${encodeURIComponent(id)}`, (value) => {
+    const notesCursor = findingCursor(cursors?.notesCursor), observationsCursor = findingCursor(cursors?.observationsCursor);
+    const query = new URLSearchParams();
+    if (notesCursor !== "") query.set("notesCursor", notesCursor);
+    if (observationsCursor !== "") query.set("observationsCursor", observationsCursor);
+    const path = `/api/v1/findings/${encodeURIComponent(id)}`;
+    return request(query.size === 0 ? path : `${path}?${query}`, (value) => {
       const result = parseFinding(value);
       if (result.finding.id !== id || (result.finding.workspaceId !== undefined && result.finding.workspaceId !== workspace)) {
         return invalid("selected finding");
       }
+      validateFindingHistoryPage(result.finding.notes, result.finding.notesNextCursor, notesCursor, "notes");
+      validateFindingHistoryPage(result.finding.observations, result.finding.observationsNextCursor, observationsCursor, "observations");
       return result;
     }, { signal, expectedStatus: 200 });
   },

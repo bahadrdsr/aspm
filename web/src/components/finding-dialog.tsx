@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
-import { api } from "@/api/client";
-import type { FindingNote, FindingResponse, Observation, WorkItem } from "@/api/types";
-import { useResource } from "@/lib/use-resource";
+import type { FindingNote, FindingResponse, WorkItem } from "@/api/types";
+import { useFindingHistory } from "@/lib/use-finding-history";
+import type { FindingHistoryStream } from "@/lib/use-finding-history";
 import { usePreferences } from "@/lib/preferences";
 import { label, timestampLabel } from "@/lib/format";
 import { useModal } from "@/lib/use-modal";
@@ -12,6 +12,9 @@ import { useSession } from "@/lib/session";
 import { matchesWorkQuery } from "@/pages/work";
 import { FindingActions, FindingNoteForm } from "./finding-actions";
 import { FindingNotifications } from "./finding-notifications";
+import { FindingNoteHistory, FindingObservationHistory } from "./finding-history";
+import { ActionButton } from "./action-button";
+import { FormError } from "./form-dialog";
 import { Button } from "./ui/button";
 import { DataNotice, ErrorState, LoadingState, SeverityBadge, WorkflowBadge } from "./states";
 import { Icon } from "./icon";
@@ -22,27 +25,19 @@ function DetailTime({ value }: { value: string | null | undefined }) {
   return value === null ? <>Unknown source time</> : <time dateTime={value}>{timestampLabel(value)}</time>;
 }
 
-function ObservationEntry({ observation }: { observation: Observation }) {
-  const location = observation.sourceLocation;
-  return <li className="observation-entry">
-    <div className="section-heading"><h4>{observation.scanId}</h4><span className="subtle-pill">Source observation</span></div>
-    <dl className="observation-facts">
-      <div><dt>Source ID</dt><dd><code>{observation.sourceId}</code></dd></div>
-      <div><dt>Run ID</dt><dd><code>{observation.runId}</code></dd></div>
-      <div><dt>Source finding ID</dt><dd><code>{observation.sourceFindingId}</code></dd></div>
-      <div><dt>Location</dt><dd><code>{location.uri ? `${location.uri}${location.line > 0 ? `:${location.line}` : ""}` : "Not supplied"}</code></dd></div>
-      <div><dt>Source severity</dt><dd>{observation.sourceSeverity || "Not supplied"}</dd></div>
-      <div><dt>Normalized severity</dt><dd><SeverityBadge severity={observation.normalizedSeverity} /></dd></div>
-      <div><dt>Source scan</dt><dd><DetailTime value={observation.sourceScanAt} /></dd></div>
-      <div><dt>Scope</dt><dd>{observation.scope.id}</dd></div>
-      <div><dt>Revision / branch</dt><dd>{observation.scope.revision} / {observation.scope.branch}</dd></div>
-      <div><dt>Evidence digest</dt><dd><code>{observation.evidenceDigest}</code></dd></div>
-    </dl>
-    <p><strong>Impact: </strong>{observation.impact || "Not supplied"}</p>
-    <p><strong>Remediation: </strong>{observation.remediation || "Not supplied"}</p>
-    <h5>Unmapped source context</h5>
-    {Object.keys(observation.unmapped).length > 0 ? <pre className="evidence-text">{JSON.stringify(observation.unmapped, null, 2)}</pre> : <p>No unmapped fields were supplied.</p>}
-  </li>;
+function HistoryControls({ stream, resource }: { stream: FindingHistoryStream; resource: ReturnType<typeof useFindingHistory> }) {
+  const page = resource.pages[stream];
+  const active = resource.target === stream;
+  if (!page.visible && !active) return null;
+  return <>
+    <div className="finding-owner-actions"><ActionButton variant="outline"
+      aria-disabled={resource.pending || page.next == null} onClick={() => resource.loadMore(stream)}>Load more {stream}</ActionButton></div>
+    {active && resource.pending && <p role="status" className="section-note">Loading {stream}. Confirmed source facts and both histories remain available.</p>}
+    {active && resource.error && <div className="finding-action-feedback"><FormError error={resource.error} />
+      <ActionButton variant="outline" onClick={resource.retry}>Retry {stream}</ActionButton></div>}
+    <p className="section-note">{page.next ? "More records are available. " : "No continuation in the last returned page. "}
+      Counts describe loaded records, not a total or a single history snapshot.</p>
+  </>;
 }
 
 export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirmed, onClose }: {
@@ -51,24 +46,9 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
-  const mutationRevision = useRef(0);
-  const [confirmed, setConfirmed] = useState<{ response: FindingResponse; revision: number } | null>(null);
-  const [addedNotes, setAddedNotes] = useState<ReadonlyMap<string, FindingNote>>(new Map());
   const [message, setMessage] = useState<{ target: "decision" | "note"; text: string } | null>(null);
-  const load = useCallback(async (signal: AbortSignal) => {
-    const revision = mutationRevision.current;
-    return { response: await api.finding(id, signal), revision };
-  }, [id]);
-  const resource = useResource(load);
-  const response = resource.data === null ? null :
-    confirmed && confirmed.revision > resource.data.revision ? confirmed.response : resource.data.response;
-  const notes = useMemo(() => {
-    const supplied = response?.finding.notes;
-    if (supplied === undefined && addedNotes.size === 0) return undefined;
-    // Confirmed 201 receipts survive an overlapping canonical page, keyed by ID, not text.
-    return [...new Map([...(supplied ?? []).map((note) => [note.id, note] as const), ...addedNotes]).values()]
-      .sort((a, b) => a.id.localeCompare(b.id));
-  }, [response, addedNotes]);
+  const resource = useFindingHistory(id);
+  const response = resource.data;
   const { workspace } = useSession();
   const canWrite = workspace.role !== "viewer";
   const { reducedMotion } = usePreferences();
@@ -78,13 +58,12 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
     onClose();
   };
   function acceptPatch(result: FindingResponse, text: string) {
-    mutationRevision.current += 1;
-    setConfirmed({ response: result, revision: mutationRevision.current });
+    resource.acceptPatch(result);
     setMessage({ target: "decision", text });
     onConfirmed(result.finding);
   }
   function addNote(note: FindingNote) {
-    setAddedNotes((previous) => new Map(previous).set(note.id, note));
+    resource.addNote(note);
     setMessage({ target: "note", text: "Note added." });
   }
   function trapTab(event: KeyboardEvent<HTMLDialogElement>) {
@@ -98,7 +77,7 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
       (event.shiftKey ? last : first).focus();
     }
   }
-  const finding = response ? { ...response.finding, notes } : undefined;
+  const finding = response?.finding;
   const title = finding?.title ?? initialTitle;
   return createPortal(<dialog ref={dialog} className="finding-dialog" aria-labelledby="finding-dialog-title" aria-describedby="finding-dialog-purpose"
     onKeyDown={trapTab} onCancel={(event) => { event.preventDefault(); close(); }}>
@@ -106,13 +85,16 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
       <header className="dialog-topbar"><span><Icon name="file" size={17} />Finding evidence</span><Button ref={closeButton} type="button" variant="ghost" size="icon" aria-label="Close finding details" onClick={close}><Icon name="close" /></Button></header>
       <div className="dialog-heading"><p id="finding-dialog-purpose" className="eyebrow">{canWrite ? "Source context & analyst actions" : "Read-only source context"}</p><h2 id="finding-dialog-title">{title}</h2>{response && <DataNotice origin={response.dataOrigin} />}</div>
       <div className="dialog-content">
-        {resource.error && <ErrorState error={resource.error} retry={resource.reload} stale={finding !== undefined} />}
+        {resource.error && (resource.target === null
+          ? <ErrorState error={resource.error} retry={resource.retry} stale={finding !== undefined} />
+          : !finding && <div className="finding-action-feedback"><FormError error={resource.error} />
+            <ActionButton variant="outline" onClick={resource.retry}>Retry finding history</ActionButton></div>)}
         {resource.status === "loading" && !finding && <LoadingState label="Loading finding evidence" />}
         {finding && <>
           <div className="finding-status-line"><SeverityBadge severity={finding.severity} /><WorkflowBadge value={finding.workflowState} /><span className="badge neutral"><Icon name="shield" size={13} />{finding.evidence.verificationState === "verified" && response?.dataOrigin === "live" ? "Source reports verified" : finding.evidence.verificationState === "blocked" ? "Verification blocked" : "Not verified"}</span></div>
           <dl className="detail-facts"><div><dt>Asset</dt><dd><Icon name="code" size={15} />{finding.assetName}</dd></div><div><dt>Owner</dt><dd><Icon name="user" size={15} />{finding.ownerName ?? "Unassigned"}</dd></div><div className="full-width"><dt>Scope</dt><dd>{finding.scopeLabel}</dd></div></dl>
           {canWrite && <FindingActions finding={finding} message={message?.target === "decision" ? message.text : null}
-            outsideFilter={confirmed !== null && !matchesWorkQuery(finding, query)}
+            outsideFilter={resource.hasPatched && !matchesWorkQuery(finding, query)}
             onBegin={() => setMessage(null)} onConfirmed={acceptPatch} />}
           {response && <FindingNotifications finding={finding} origin={response.dataOrigin} />}
           <section className="detail-section"><h3>What the source observed</h3><p>{finding.description || "The source did not supply a description."}</p></section>
@@ -137,15 +119,16 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
             {finding.sourceState === "inferred-resolved" && <p className="section-note">Source absence supports an inferred resolution only. It does not change the analyst's workflow, risk acceptance or verification.</p>}
             <p className="section-note">{finding.verifiedResolution === true ? "The service records an independently verified resolution." : finding.verifiedResolution === false ? "No independently verified resolution is recorded." : "Independent resolution verification was not supplied."}</p>
           </section>
-          <section className="detail-section"><h3>Analyst notes</h3>
+          <section className="detail-section"><div className="section-heading"><h3>Analyst notes</h3>{" "}
+            {finding.notes && <span className="subtle-pill">{finding.notes.length} loaded</span>}</div>
             {canWrite && <FindingNoteForm id={id} message={message?.target === "note" ? message.text : null}
               onBegin={() => setMessage(null)} onAdded={addNote} />}
-            {finding.notes && finding.notes.length > 0 ? <ul className="analyst-notes" aria-label="Analyst notes">{finding.notes.map((note) => <li key={note.id}><p>{note.text}</p></li>)}</ul> : <p>{finding.notes === undefined ? "Analyst notes were not supplied." : "No analyst notes in this response."}</p>}
-            {finding.notesNextCursor && <p className="section-note">More notes exist on the service. This view shows the returned page only.</p>}
+            {finding.notes && finding.notes.length > 0 ? <FindingNoteHistory notes={finding.notes} /> : <p>{finding.notes === undefined ? "Analyst notes were not supplied." : "No analyst notes in this response."}</p>}
+            <HistoryControls stream="notes" resource={resource} />
           </section>
-          <section className="detail-section"><div className="section-heading"><h3>Observations</h3>{finding.observations && <span className="subtle-pill">{finding.observations.length} supplied</span>}</div>
-            {finding.observations && finding.observations.length > 0 ? <ol className="observations-list" aria-label="Observations">{finding.observations.map((observation) => <ObservationEntry key={observation.id} observation={observation} />)}</ol> : <p>{finding.observations === undefined ? "Observation history was not supplied." : "No observations in this response."}</p>}
-            {finding.observationsNextCursor && <p className="section-note">More observations exist on the service. This view shows the returned page only, not the full history.</p>}
+          <section className="detail-section"><div className="section-heading"><h3>Observations</h3>{" "}{finding.observations && <span className="subtle-pill">{finding.observations.length} loaded</span>}</div>
+            {finding.observations && finding.observations.length > 0 ? <FindingObservationHistory observations={finding.observations} /> : <p>{finding.observations === undefined ? "Observation history was not supplied." : "No observations in this response."}</p>}
+            <HistoryControls stream="observations" resource={resource} />
           </section>
         </>}
       </div>

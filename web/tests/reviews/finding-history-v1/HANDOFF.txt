@@ -1,0 +1,99 @@
+FINDING HISTORY V1 - FROZEN INDEPENDENT TEST-FIRST HANDOFF
+=======================================================
+
+Stop for parent verify/seal and separate coder/reviewer.
+This is a test-only packet, not a finding-history UI implementation.
+
+Measured results
+----------------
+  Actual npm.cmd run typecheck: passed.
+  Five new cases: expected missing manual-history-controls browser RED.
+  All prior 79 browser cases: passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+  Fixture violations/browser errors/external HTTP attempts in RED: 0.
+  Six API reads per new RED case, within the original combined 60-call budget.
+  One worker, 20-second case timeout and five-second expect timeout unchanged.
+
+Every new case reaches the real Work/finding UI and real decoded HTTP responses
+containing 500 notes, 500 observations and two genuine continuation cursors.
+The current dialog only discloses truncation; it has no Load more observations/
+Load more notes actions. All later cursor, ACK, denial, scope and mobile checks
+remain authored requirements, not claimed executed successes.
+
+New files and preservation
+-------------------------
+  web\tests\finding-history-data.ts
+  web\tests\finding-history-fixture.ts
+  web\tests\finding-history.spec.ts
+
+All 115 original UI/API/helper/fixture/provenance/compiler/dependency inputs
+remain byte-identical, including 14 existing assertion files containing the
+79 cases and the accepted A3 measurement correction.
+No earlier assertion, helper, fixture, session/credential/Origin guard, source
+approval, request budget, compiler/runner/lock, signature/control set or
+production/backend/schema/dependency file was edited. No agents, commits,
+native API writes, source scans, proof or provider calls occurred.
+
+There are no amendments or byte archives. Twenty-two older packet references
+are hash-only; no old review/source tree was copied. Parent publication/HEAD
+advancement is recorded as history, not treated as a finding behavior change.
+
+Five bounded cases
+------------------
+FH1: Independent actual native cursors and 500-per-stream caps, retained other
+     stream when its first page/tail repeats, truthful loaded counts, literal
+     same-text/different-ID notes, full observation provenance/unmapped JSON.
+FH2: Held/503 observation continuation after notes were loaded, retained
+     histories/source facts and exact-query manual retry without duplicates.
+FH3: New-note and canonical workflow ACKs while an older history page is held;
+     no note loss/triplication or human/source rollback. A later authorized
+     read can update canonical metadata instead of being frozen by an old ACK.
+FH4: Viewer reads but cannot write; 403/404 detail data stays withheld through
+     503 retries until authorized recovery; 401 clears scope through reload.
+FH5: 390px/reduced-motion scrolled manual loading, user-moved note draft focus/
+     caret retained, and old page results aborted/discarded after workspace/
+     logout. No forced focus after a later deliberate user interaction.
+
+Important exact API facts
+------------------------
+The existing GET /api/v1/findings/{id} supports notesCursor and
+observationsCursor only. There is no new history endpoint, limit parameter,
+offset/search API, total count, timestamp or server revision.
+Each response includes canonical finding metadata and both capped arrays.
+Each stream is ordered by native ID and has its own nullable next cursor.
+Default api.finding(id,signal) must remain the existing bare GET so all older
+callers/fixtures stay compatible.
+
+The fixture has 503 notes and 507 observations. The other stream's repeated
+head must not erase loaded records or rewind an exhausted continuation.
+New note IDs can sort into an earlier page; canonical PATCH responses remain
+capped. Key by ID, not text or array replacement. Every source variant,
+literal markup/URL and nested JSON stays inert.
+
+Use request-start/local ACK ordering without inventing server revisions.
+Older page metadata cannot undo a confirmed workflow/note. A GET begun later
+may legitimately carry newer canonical workflow/source metadata. These reads
+are not an atomic full-history snapshot. Source inference and verified
+resolution remain distinct from human workflow and note creation.
+
+HTTP fixture only
+-----------------
+Production React, native controls and source/session components are used.
+Only declared same-origin HTTP responses are supplied. No React/DOM/client API
+state replacement, backend/parser/worker implementation or native operation is
+used. Node fixture records merely supply synthetic HTTP DTOs and held replies.
+No note/finding/cursor/credential browser storage is allowed beyond theme.
+
+Evidence and packet
+-------------------
+BEFORE.json and GUARDS.json preserve exact current source/control hashes.
+COMPILATION.json, RED.json and COMPATIBILITY.json contain actual commands,
+exits, case counts, native page bounds and honest blocked-semantics statements.
+EVIDENCE.json references unique logs/results/screenshots/traces in place:
+  .artifacts\finding-history-v1-author
+Never overwrite typecheck-01, missing-history-red-01 or prior-79-01 evidence.
+
+PACKET.json inventories this unsigned packet and its three new tests.
+PACKET.sha256 is its unkeyed digest; no old oracle was re-signed.
+After parent seal and separate implementation, the reviewer runs actual
+typecheck and all 84 cases using fresh evidence names and unchanged limits.

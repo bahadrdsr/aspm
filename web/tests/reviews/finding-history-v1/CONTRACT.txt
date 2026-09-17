@@ -1,0 +1,167 @@
+FINDING HISTORY V1 - INDEPENDENT CURSOR UI TEST-FIRST CONTRACT
+===========================================================
+
+Scope
+-----
+Five grouped Playwright cases make the existing finding dialog's observation
+and analyst-note history reachable. No new endpoint, parser, schema, revision,
+timestamp, search, offset, retention/merge/split, proof or provider behavior.
+Only new synthetic test data, HTTP fixture, spec and this unsigned packet.
+
+All 79 original assertions, including accepted asset-paging A1/A2/A3 controls,
+remain byte-identical, as do existing helpers/fixtures, session/credential/
+Origin/60-call guards, source approvals, compiler/Playwright and dependencies.
+Default api.finding(id,signal) must remain a bare GET for old callers. Optional
+cursor capability must not require weakening any existing fixture.
+
+Source authority inspected
+--------------------------
+internal\app\findings.go, http.go, types.go, work.go, auth.go
+web\src\api\client.ts and types.ts; finding-dialog.tsx, finding-actions.tsx
+and finding-notifications.tsx; existing finding-actions fixture/data and
+accepted prior review/control references.
+BEFORE.json records 115 current original hashes and 22 hash-only prior packet
+references. No prior review tree or unchanged source file is byte-copied.
+The parent's previous-slice publication/HEAD advancement remains independent.
+
+Exact native API
+----------------
+GET /api/v1/findings/{id}
+GET /api/v1/findings/{id}?notesCursor=<id>
+GET /api/v1/findings/{id}?observationsCursor=<id>
+Both cursor keys may appear in the same existing GET. There is no limit,
+page/offset, history endpoint, server revision, timestamp or query API.
+Nonempty cursors are 32 lowercase hexadecimal characters; empty/omitted
+selects the first page. Unknown/duplicate query keys are rejected by this
+explicit UI fixture route allowlist.
+
+The real handler reads canonical finding metadata, then separate observation
+and note queries. Each is id > its own cursor, ORDER BY id, LIMIT 501.
+The public DTO contains up to 500 records per stream plus:
+  notesNextCursor: null | last returned note ID
+  observationsNextCursor: null | last returned observation ID
+The nonnull cursor means a further record exists. There is no total count and
+no atomic history/finding snapshot guarantee. JSON returns the full canonical
+finding, both stream pages, apiVersion and dataOrigin each time.
+
+Note shape remains {id,text}, with no invented author/timestamp/revision field.
+Observation shape remains id/runId/sourceId/scanId/scope/sourceScanAt/
+sourceFindingId/sourceSeverity/normalizedSeverity/sourceLocation/impact/
+remediation/unmapped/evidenceDigest. Nested literal JSON and original source
+variants must survive; unknown source time remains null. Source date,
+collection/import time and human workflow/inference are distinct.
+
+POST /api/v1/findings/{id}/notes remains {text} only and returns 201 {note}.
+Text is nonblank/NUL-free, at most 8192 UTF-8 bytes; encoded body is 32 KiB.
+PATCH /api/v1/findings/{id} retains existing intentional finding fields and
+the 16 KiB body limit. This narrative only changes workflowState. Its complete
+canonical response has normal first-page note/observation arrays, not all
+previously loaded history. Neither mutation supplies a server revision.
+
+Synthetic data and two independent frontiers
+-------------------------------------------
+503 notes and 507 observations use server-native IDs/order. Initial GET thus
+really truncates both streams at 500. Two distinct note IDs have identical
+multiline text, including literal markup/URL and multibyte characters.
+Observations carry varied scopes/branches/revisions, severities, known/unknown
+source times, locations, nested arrays/objects/booleans/null in unmapped JSON.
+No customer data or real credentials occur.
+
+Add separately labelled Load more observations and Load more notes controls
+inside the current dialog. Each advances its own actual returned cursor.
+For the tested manual UX, the inactive query cursor may be omitted/empty or
+repeat that stream's previously requested cursor, but must not silently advance
+an as-yet-unrequested inactive frontier. Every native response is still merged
+by ID, even when it repeats another stream's first page or returned tail.
+
+Loading one cursor never replaces the other stream's loaded records. Its
+repeated first-page nextCursor must not rewind the other's exhausted frontier.
+Different note IDs with the same text remain separate. Returned pages and
+acknowledged notes cannot be duplicated by overlapping canonical responses.
+Show actual loaded/supplied counts, not an invented total or full-directory/
+atomic-snapshot claim. No automatic cursor draining or polling.
+
+Errors and authority
+--------------------
+A pending/503 continuation keeps both confirmed loaded histories and original
+source facts. Its scoped error/retry preserves the exact failed query.
+It is not an empty page, permission denial or successful completion.
+
+403/404 detail denial withholds protected source/history metadata, including
+hidden cached lists, through subsequent 503 retries until a new authorized
+read succeeds. A title already supplied by the separately authorized Work
+row is not treated as fresh denied-detail data. Error recovery may reread the
+failed cursor or reset explicitly; it cannot reveal old source records before
+successful authorization.
+
+Viewer can read/load history but not add notes or change workflow. Current
+server roles are independent from cached session-role metadata. Workspace,
+logout and 401 clear the dialog/history/drafts and discard old responses.
+Held pages must be aborted on close/scope loss; releasing a late old response
+must not expose Alpha source/notes in Beta or after sign-out.
+Only the unchanged theme preference may be browser-persisted.
+
+ACK/read ordering, not fabricated revision guarantees
+----------------------------------------------------
+An old observation continuation is captured before a new note and workflow
+mutation. The note's 201 ACK adds its actual returned ID immediately. The
+workflow ACK supplies canonical metadata and default capped arrays, including
+an echo of that new note. Neither it nor the older page may remove loaded
+records, duplicate the note, roll back human workflow or relabel source state.
+
+The new synthetic note ID falls in a valid existing ID gap. A returned first
+page may therefore shift its boundary. The prior continuation frontier and
+loaded records are not replaced by this bounded PATCH response.
+The two pre-existing same-text notes plus the acknowledged third note must
+remain three distinct records once both pages have been read.
+
+After those ACKs, another explicitly requested history GET has newer canonical
+metadata: a human workflow update and source description/freshness snapshot.
+The UI must accept that later authorized snapshot rather than permanently pin
+all metadata to a prior local ACK. The tests provide HTTP response data only;
+they add no client/API-state replacement or fake server revision. A separately
+loaded Work row need not masquerade as a globally atomic copy of later detail.
+
+UX and five cases
+-----------------
+Keep the existing finding dialog, original evidence, source remediation,
+analyst/source-state/verification distinctions and Work context. Note text and
+unmapped fields stay inert: no generated links, markup, scripts or image loads.
+The existing semantic list/heading/form labels and shared components remain;
+no test IDs, new UI state model or third-party history library are required.
+
+FH1: Bare initial GET, real independent cursors, 500-row limits, correct
+     loaded counts, inactive-stream retention, literal duplicate-text notes,
+     all observation provenance/variant fields and no automatic drain.
+FH2: Notes already continued, observation page held/503, retained histories,
+     exact-query manual retry, no duplicate/reset or false empty completion.
+FH3: Note and workflow ACKs while an older observation page is held; stable
+     history and human/source facts through overlapping capped responses;
+     a later read may truthfully update canonical metadata.
+FH4: Viewer reads pages but cannot write; 403 and 404 detail denial each stay
+     withheld through 503 until 200; 401 clears all protected context/reload.
+FH5: 390px/reduced-motion manual paging, genuinely scrolled dialog, user-moved
+     note draft focus/caret/scroll preserved on response, and held-note/
+     observation pages discarded across workspace and logout.
+
+Focus measurements are captured AFTER the user deliberately moves from a
+history button to the draft. Completion must not force focus back to a button
+after that interaction. Work filter/selection/trigger context survives ordinary
+close; scope changes clear it. This is not a repeat of unrelated asset/Slack
+security matrices. All new tests use actual React/native controls and only
+declared same-origin HTTP response interception, not DOM/React/API replacement.
+
+Execution and freeze
+--------------------
+Run actual typecheck, meaningful missing-controls RED and all prior 79 browser
+cases. Preserve one worker, zero skips/flakes/retries, 20-second case timeout,
+five-second expect timeout and the combined 60-API-request budget per case.
+No production/backend/schema/dependency/native API mutation, new agent or
+commit is authorized. All new observations and history are explicitly synthetic.
+
+Mutable logs, snapshots/traces and result JSON use unique names outside tests:
+  .artifacts\finding-history-v1-author
+Freeze original RED/source vector and all packet/contract/guard/handoff hashes.
+Assertions blocked by the missing controls are not claimed executed green.
+Do not amend old signatures or previous slices. Stop for parent verification,
+seal and separate coder/reviewer; no larger feature track is included.

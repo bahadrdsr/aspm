@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "name": "finding-history-a2",
+  "amendment": "A2",
+  "status": "frozen unsigned independently calibrated observation DOM measurement optimization",
+  "createdAt": "2026-09-17T12:02:50.805Z",
+  "files": [
+    {
+      "path": "web\\tests\\finding-history-data.ts",
+      "bytes": 6478,
+      "sha256": "d1cfc9dd7076cef7036c718164327185c8357d1c4d3b9cc02b7723e2cada3956"
+    },
+    {
+      "path": "web\\tests\\finding-history-fixture.ts",
+      "bytes": 18437,
+      "sha256": "3f8e202c82715088178b2c6394dff56551b353f9221df0ad955fc121653ecd6f"
+    },
+    {
+      "path": "web\\tests\\finding-history.spec.ts",
+      "bytes": 26341,
+      "sha256": "a28c43c324443f21c5202afd554d76d39bafaeea88c774793d6912105626f152"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\AMENDMENT-A1.json",
+      "bytes": 1103,
+      "sha256": "d710e613ee12d952e53dc6d41398eccb8fa61eb81d3ba4d0197ee4dbaad4c56a"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\AMENDMENT-A2.json",
+      "bytes": 3427,
+      "sha256": "2c4f3fa7023c0f9b6930b154d8e5fd4bb1af1a97903a33ff88f3b341cba277b9"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE-A1.json",
+      "bytes": 295112,
+      "sha256": "f70a9a2b6d8fb9b9e633d94fd05670cf7ae3453701eb4a24f5822c5ed3531bfd"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE-A2.json",
+      "bytes": 301245,
+      "sha256": "d65a263d86b38494ff8cc924b4ae5184230380fd8ee0a5669b5078bf8be0b118"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\BEFORE.json",
+      "bytes": 23817,
+      "sha256": "c32f1e5f92dd9a7c6ec4f3dbdf4310b1d36979bf064e57e85871f1f1ab6b7bc1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\CALIBRATION-A2.json",
+      "bytes": 25153,
+      "sha256": "902f7968eada69c63b9b6e8514881ad2523b43db2b7cf86689db5da47e8c299f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\COMPATIBILITY.json",
+      "bytes": 20674,
+      "sha256": "e8e0e69295e9b0c612c6da642376e490b818d4f737f7717205b27df22d9ed757"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\COMPILATION.json",
+      "bytes": 851,
+      "sha256": "df0ac9c6a4a206e5f06444100d45b104c14a0002960168c17acbc35d08fa1641"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\CONTRACT.txt",
+      "bytes": 9973,
+      "sha256": "22fb5a87ac9c46f95c3590125ad48bb18f817adfdcb41d1dac5129c661cf9a42"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\EVIDENCE-A1.json",
+      "bytes": 4688,
+      "sha256": "ba94ab5e945ba44abad22a1388c05baa00183565b4bf81508fb0837e2633f8e0"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\EVIDENCE-A2.json",
+      "bytes": 9103,
+      "sha256": "54abe2c386ac3c8fabc16a7e0595a796635c165a45f91c1475cce9b1fd756e9e"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\EVIDENCE.json",
+      "bytes": 6893,
+      "sha256": "709356f582aaca635bb4d35b99ebfc0f7e467534f384882d07194df643eb981f"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\GUARDS-A1.json",
+      "bytes": 11089,
+      "sha256": "85b10cf62c9c4b5b7052e6b5a0e41cafc004c7d5967c9e5d43114d2cd7b776a6"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\GUARDS-A2.json",
+      "bytes": 11174,
+      "sha256": "18395a159ba1ce25406d44807cf11500a74735e50fbfce2e46e9dbced8521c1d"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\GUARDS.json",
+      "bytes": 12624,
+      "sha256": "fba18f7f8dba7269eb63801181eb0ff4b5993171d2cb97ebe2cb16ce6a3fcbcf"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF-A1.json",
+      "bytes": 3622,
+      "sha256": "a6f71c6d1269850e0bc58e0220109a3f555a1e6fe060b5aedb994d9a6a844dcd"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF-A1.txt",
+      "bytes": 4300,
+      "sha256": "c904f8b3be124c2b9399aaa7f19e97dab890307684e697167d1adb26469bb4be"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF-A2.json",
+      "bytes": 8233,
+      "sha256": "622845c713f8c2c9e37d8754c3e83b5c3921fe616b0b8c24ba6db71d00c1bbcf"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF-A2.txt",
+      "bytes": 6826,
+      "sha256": "d761849fdab407deb6012e240a36d647aa49e0353faa371ca673f2ecc90d3364"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF.json",
+      "bytes": 4378,
+      "sha256": "3e7bc9e5fa06c171fcba895e635a3ed4d4e247a1928414671f06fba31372bfd4"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\HANDOFF.txt",
+      "bytes": 5515,
+      "sha256": "12ca764ee624a63fe8e3ef6e143e58e298b81acae29acda15c2bdecb33c2c073"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.json",
+      "bytes": 5445,
+      "sha256": "9d9941eeff7e2db0da561c0691f9f2f08a7a1bfec9e6434207822a8efc094815"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "323fe0c68756cdb670bd1b03ad43ed2a2ad93cd4b6d46269a1e9c02dd22aba76"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.json",
+      "bytes": 3388,
+      "sha256": "5c64e7400bae90f301eac7c32acf14734818f76b110a75edb26a3ec5a8d061b1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "a9bd7d1b331378cce356edb08111e834f3d476970e8c5db65ec043e3f3c9aa5a"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 5686,
+      "sha256": "54c2a45e1aaa07da110dd0ca33bbb47475b320dd2af3f9cb73b7dd796d9bc976"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "9c0b430507f8d135aec23beca53e83173993472e3592e8bd67cbe6cceac1403c"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\RED.json",
+      "bytes": 22099,
+      "sha256": "58b3d2f3a8e518302b0957e61ccacff04cb2bd14686025aeb47cef1d30354079"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\VALIDATION-A1.json",
+      "bytes": 13121,
+      "sha256": "9ecf45ba7d3be829698b9d2661e9a6aa0550e6cbc2be589faa8d059881a965f4"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\VALIDATION-A2.json",
+      "bytes": 37401,
+      "sha256": "53e2e879e5de5c1c41da469e3f0334543685244f0d5d4e810f3c6f424c01c11c"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\history\\a1\\finding-history.spec.ts.before.txt",
+      "bytes": 23320,
+      "sha256": "5370ed0bacf761641eecc5acaac40720ae1ec2a27243aa3574b7bd614a6301ff"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\history\\a2\\finding-history.spec.ts.before.txt",
+      "bytes": 23337,
+      "sha256": "92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded"
+    }
+  ],
+  "originalPacketReferences": [
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.json",
+      "bytes": 3388,
+      "sha256": "5c64e7400bae90f301eac7c32acf14734818f76b110a75edb26a3ec5a8d061b1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "a9bd7d1b331378cce356edb08111e834f3d476970e8c5db65ec043e3f3c9aa5a"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.json",
+      "bytes": 5445,
+      "sha256": "9d9941eeff7e2db0da561c0691f9f2f08a7a1bfec9e6434207822a8efc094815"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "323fe0c68756cdb670bd1b03ad43ed2a2ad93cd4b6d46269a1e9c02dd22aba76"
+    }
+  ],
+  "coverage": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\AMENDMENT-A2.json",
+    "bytes": 3427,
+    "sha256": "2c4f3fa7023c0f9b6930b154d8e5fd4bb1af1a97903a33ff88f3b341cba277b9"
+  },
+  "calibration": {
+    "path": "web\\tests\\reviews\\finding-history-v1\\CALIBRATION-A2.json",
+    "bytes": 25153,
+    "sha256": "902f7968eada69c63b9b6e8514881ad2523b43db2b7cf86689db5da47e8c299f"
+  },
+  "qualification": {
+    "focusedFH1FH3Passed": true,
+    "allFiveHistoryPassedWithHeadroom": true,
+    "full84ActuallyPassed": true,
+    "typecheckPassed": true,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0
+  },
+  "sourceUnchanged": true,
+  "parentResealRequired": true
+}

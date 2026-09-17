@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A3",
+  "classification": "Real A2 measurement-equivalence correction, NOT production XSS",
+  "source": "web\\tests\\finding-history.spec.ts",
+  "beforeSHA256": "a28c43c324443f21c5202afd554d76d39bafaeea88c774793d6912105626f152",
+  "afterSHA256": "1d6b1cc67ae46a04e48d315ced800f390a5723ea86931eb6d56133bd52085aaa",
+  "beforeMeasurementSHA256": "dc36e5f8dc1d68af00291f04b7fd529685a03bf00da6e891b189ee1c56694394",
+  "afterMeasurementSHA256": "00fe5a5081d0967bb91f9af84a15b1ae8b6f5410b1d804298e6fe2c0490f033c",
+  "originalA1MeasurementSHA256": "524e484d2ccd750cf428e1f206d104ef77414766adba0be54a31e7e7e5eb97af",
+  "onlyObservationFieldsChanged": true,
+  "prefixAndSuffixByteIdentical": true,
+  "originalStructuralTailVerbatim": true,
+  "noNativeQuerySelectorAllStructuralSubstitute": true,
+  "sevenTextBatchRetained": true,
+  "semanticUniqueRecordLocatorUnchanged": true,
+  "dtDDRoleScopeAndXPathRestored": true,
+  "strictShadowPiercingPRELocatorAndInnerTextRestored": true,
+  "shadowPiercingForbiddenDescendantSelectorRestored": true,
+  "originalTimeVisibilityAssertionsRestored": true,
+  "allExpectedDataAndSampleIndicesPreserved": [
+    0,
+    499,
+    500,
+    "observationsTotal - 1"
+  ],
+  "originalCaseTraceExpectAnimationRetryRequestBudgetsUnchanged": true,
+  "currentControlCount": 688,
+  "unchangedControls": 687,
+  "sourceHOLDUnchanged": true,
+  "pairedShadowCalibrationRequired": true,
+  "full84Claim": false
+}

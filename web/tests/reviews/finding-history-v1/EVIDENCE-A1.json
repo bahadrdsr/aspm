@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "root": ".artifacts\\finding-history-v1-a1",
+  "files": [
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01-traces\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01.results.json",
+      "bytes": 3351803,
+      "sha256": "861501bcda1dc54023eea3123cd677f397468e8b4668ad347940589d27349483"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01.run.json",
+      "bytes": 385,
+      "sha256": "90a611467b26645ef10e0b0a6aa0456b601222df66717a75b1ba901669c11edb"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\corrected-fh3-01.stdout.txt",
+      "bytes": 434,
+      "sha256": "86f782db1d77b4d5d17b97fc7597aabfd066f1c1ef3c30fa54cdc8939c84f28d"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01-traces\\.last-run.json",
+      "bytes": 96,
+      "sha256": "be272583973f8dc4e9cd58d72f0db81934ac50c942707898a2c5807ed9f8cf8b"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01-traces\\finding-history-FH3-New-no-7e339-a-is-not-permanently-frozen\\error-context.md",
+      "bytes": 785431,
+      "sha256": "3dfb7f8df9c992b11134e919d36f61c363ee9723dce776e9a8d40ba204084c6a"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01-traces\\finding-history-FH3-New-no-7e339-a-is-not-permanently-frozen\\test-failed-1.png",
+      "bytes": 88098,
+      "sha256": "2fe13be25f525c1b85744835650044d53cd8a53e3109e2cadc5078f380d57698"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01-traces\\finding-history-FH3-New-no-7e339-a-is-not-permanently-frozen\\trace.zip",
+      "bytes": 1048636,
+      "sha256": "2e0a0818dffdfdb747efacddc68c3e647179f084df30e5ff4e15edb426ddc375"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01.results.json",
+      "bytes": 2268406,
+      "sha256": "76b12b15a8ae62f6efc36f1e9cec86651c25cdf5e0382e4caabc91dae8d3ef6e"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01.run.json",
+      "bytes": 390,
+      "sha256": "5e42d48b6a4006c4c48676eac92b96f3f7436718a5fc6b61338fd7fd562da0b4"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\original-fh3-01.stdout.txt",
+      "bytes": 3522,
+      "sha256": "967697240a17776d6b177f87f92727f168f0d46cac750ac839516c5d26637023"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\typecheck-01.run.json",
+      "bytes": 156,
+      "sha256": "dde949e9d10f8f06a25eace999914a72523c35ac406fc6dd777bb6a3d667f450"
+    },
+    {
+      "path": ".artifacts\\finding-history-v1-a1\\typecheck-01.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  ],
+  "originalNamesFrozen": true,
+  "mutableLogsOutsideProtectedTests": true,
+  "oldCoderTraceAndPerformanceReferencesOnly": [
+    {
+      "path": "web\\src\\components\\finding-actions.tsx",
+      "bytes": 8614,
+      "sha256": "efe76e23ad0b59032d2db889cd8c8042c3d70c45af121bac3b1a20a23d50f046"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\lib\\coreBundle.js",
+      "bytes": 3477183,
+      "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+    },
+    {
+      "path": ".cache\\finding-history-coder\\targeted-04\\browser-artifacts\\finding-history-FH3-New-no-7e339-a-is-not-permanently-frozen\\trace.zip",
+      "bytes": 1023655,
+      "sha256": "eae0189d631b8bec75cac8fb1d48c99a2b6c4b09d24c717d85360b0f39937344"
+    },
+    {
+      "path": ".cache\\finding-history-coder\\FH1-PERFORMANCE-LIMIT.json",
+      "bytes": 5707,
+      "sha256": "0ef6baa76e7b13e7700dc018d01f30da01889b0e782b24bc3c1aa39950eb77b9"
+    },
+    {
+      "path": ".cache\\finding-history-coder\\full-02\\browser-artifacts\\finding-history-FH1-Native-0cf2f--resetting-the-other-stream\\trace.zip",
+      "bytes": 1299563,
+      "sha256": "c8df8ebb068647fe5ab0c24eb9b65b86e91d5b6b3ba19b83cf7ca1ac886a791f"
+    },
+    {
+      "path": ".cache\\finding-history-coder\\full-02\\browser-results.json",
+      "bytes": 23329674,
+      "sha256": "a8c8b2c1fe78bd10c93b3bd130b6bc5683dc1c7a98f791a21b1ffce524f12074"
+    },
+    {
+      "path": ".cache\\finding-history-coder\\fh1-performance-01\\browser-results.json",
+      "bytes": 2281683,
+      "sha256": "b9140caaa9488d0d283a1d0a6ec20297a1082efef53c682f42929fa1d5782d4e"
+    }
+  ]
+}

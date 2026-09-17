@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "classification": "Separate isolated DOM measurement equivalence calibration, not product acceptance",
+  "script": {
+    "path": ".artifacts\\finding-history-v1-a2\\calibrate-observations.cjs",
+    "bytes": 9471,
+    "sha256": "c3c35d46079665dfc90070a280d3485b7b42ae74d2d7604781b073e4852d00c4"
+  },
+  "receipt": {
+    "path": ".artifacts\\finding-history-v1-a2\\calibration-01\\receipt.json",
+    "bytes": 25009,
+    "sha256": "5c15a2290f7e81aa0444272a6f2a6c457001084788e056e84e43ad2e76396783"
+  },
+  "trace": {
+    "path": ".artifacts\\finding-history-v1-a2\\calibration-01\\trace.zip",
+    "bytes": 514505,
+    "sha256": "fbd74d1fd7d8851364185ecfae0ffe85d36e591edd5bae5c8c4a2e95088b65cb"
+  },
+  "exactOldAndNewHelperHashesVerified": true,
+  "variants": [
+    {
+      "variant": "known-visible",
+      "expectedPass": true,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": true,
+          "durationMS": 336.09760000000006
+        },
+        {
+          "helper": "batched",
+          "accepted": true,
+          "durationMS": 66.57089999999971
+        }
+      ]
+    },
+    {
+      "variant": "unknown-visible",
+      "expectedPass": true,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": true,
+          "durationMS": 193.47559999999976
+        },
+        {
+          "helper": "batched",
+          "accepted": true,
+          "durationMS": 29.611799999999675
+        }
+      ]
+    },
+    {
+      "variant": "normalized-whitespace",
+      "expectedPass": true,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": true,
+          "durationMS": 160.6225999999997
+        },
+        {
+          "helper": "batched",
+          "accepted": true,
+          "durationMS": 23.679399999999987
+        }
+      ]
+    },
+    {
+      "variant": "missing-run-id",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5018.547500000001,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) })\nTimeout: 5000ms\n- Expected substring  -  1\n+ Received string     + 24\n\n- run-unique-101\n+ Synthetic measurement calibration\n+     different-run\n+ source-unique-202\n+ native-unique-303\n+ Distinct retained impact.\n+ Distinct retained guidance.\n+ sha256:8888888888888888888888888888888888888888888888888888888888888888\n+ src/calibration.ts:47\n+     Scopescope-unique-404Revision / branchrevision-505 / mainSource severitywarningNormalized severityMediumKnown source time\n+     {\n+   \"literal\": \"<b>not markup</b>\",\n+   \"nested\": {\n+     \"count\": 7,\n+     \"flag\""
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 5000.884599999999,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -28,11 +28,11 @@\n        \"one\",\n        \"two\",\n      ],\n    },\n    \"values\": Array [\n-     true,\n+     false,\n      true,\n      true,\n      true,\n      true,\n      true,\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "wrong-scope",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5078.715799999998,
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nReceived: \"wrong scope\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ h"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4978.3351,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -9,11 +9,11 @@\n      \"matches\": 1,\n      \"value\": \"revision-505 / main\",\n    },\n    \"scope\": Object {\n      \"matches\": 1,\n-     \"value\": \"scope-unique-404\",\n+     \"value\": \"wrong scope\",\n    },\n    \"severity\": Object {\n      \"matches\": 1,\n      \"value\": \"warning\",\n    },\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "unassociated-scope",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5060.34,
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4985.5406,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -9,11 +9,11 @@\n      \"matches\": 1,\n      \"value\": \"revision-505 / main\",\n    },\n    \"scope\": Object {\n      \"matches\": 1,\n-     \"value\": \"scope-unique-404\",\n+     \"value\": null,\n    },\n    \"severity\": Object {\n      \"matches\": 1,\n      \"value\": \"warning\",\n    },\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "wrong-identity",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5013.323799999998,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) })\nExpected substring: \"run-unique-101\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toContainText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Obse"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4969.719499999999,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 39\n+ Received  +  1\n\n  Object {\n-   \"activeMarkup\": 0,\n-   \"normalizedSeverity\": Object {\n-     \"matches\": 1,\n-     \"matchesPattern\": true,\n-   },\n-   \"recordCount\": 1,\n-   \"revision\": Object {\n-     \"matches\": 1,\n-     \"value\": \"revision-505 / main\",\n-   },\n-   \"scope\": Object {\n-     \"matches\": 1,\n-     \"value\": \"scope-unique-404\",\n-   },\n-   \"severity\": Object {\n-     \"matches\": 1,\n-     \"value\": \"warning\",\n-   },\n-   \"unmapped\": Object {\n-     \"literal\": \"<b>not markup</b>\",\n-     \"nested\": Object {\n-       \"count\": 7,\n-       \"flag\": true,\n-       \"nullable\": null,\n-     },\n-     \"values\": Array [\n-       \"one\",\n-       \"two\",\n-     ],\n"
+        }
+      ]
+    },
+    {
+      "variant": "duplicate-identity",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 18.730100000000675,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) })\nExpected substring: \"run-unique-101\"\nError: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }) resolved to 2 elements:\n    1) <li>…</li> aka getByText('Synthetic measurement calibration run-unique-101 source-unique-202 native-').first()\n    2) <li>…</li> aka getByText('Synthetic measurement calibrati"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4982.9136,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 39\n+ Received  +  1\n\n  Object {\n-   \"activeMarkup\": 0,\n-   \"normalizedSeverity\": Object {\n-     \"matches\": 1,\n-     \"matchesPattern\": true,\n-   },\n-   \"recordCount\": 1,\n-   \"revision\": Object {\n-     \"matches\": 1,\n-     \"value\": \"revision-505 / main\",\n-   },\n-   \"scope\": Object {\n-     \"matches\": 1,\n-     \"value\": \"scope-unique-404\",\n-   },\n-   \"severity\": Object {\n-     \"matches\": 1,\n-     \"value\": \"warning\",\n-   },\n-   \"unmapped\": Object {\n-     \"literal\": \"<b>not markup</b>\",\n-     \"nested\": Object {\n-       \"count\": 7,\n-       \"flag\": true,\n-       \"nullable\": null,\n-     },\n-     \"values\": Array [\n-       \"one\",\n-       \"two\",\n-     ],\n"
+        }
+      ]
+    },
+    {
+      "variant": "hidden-known-time",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5076.059000000001,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration findi"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 5025.8879000000015,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration findi"
+        }
+      ]
+    },
+    {
+      "variant": "hidden-unknown-time",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5108.0314,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByText('Unknown source time', { exact: true })\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByText('Unknown source time', { exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: "
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 5026.23030000001,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByText('Unknown source time', { exact: true })\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).getByText('Unknown source time', { exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: "
+        }
+      ]
+    },
+    {
+      "variant": "hidden-json-fragment",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 117.67999999999302,
+          "error": "Unexpected token ',', ...\" \"count\": ,\n    \"fla\"... is not valid JSON"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4996.010800000004,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 38\n+ Received  +  2\n\n  Object {\n-   \"activeMarkup\": 0,\n-   \"normalizedSeverity\": Object {\n-     \"matches\": 1,\n-     \"matchesPattern\": true,\n-   },\n+   \"invalidLiteralJSON\": \"Unexpected token ',', ...\\\" \\\"count\\\": ,\n+     \\\"fla\\\"... is not valid JSON\",\n    \"recordCount\": 1,\n-   \"revision\": Object {\n-     \"matches\": 1,\n-     \"value\": \"revision-505 / main\",\n-   },\n-   \"scope\": Object {\n-     \"matches\": 1,\n-     \"value\": \"scope-unique-404\",\n-   },\n-   \"severity\": Object {\n-     \"matches\": 1,\n-     \"value\": \"warning\",\n-   },\n-   \"unmapped\": Object {\n-     \"literal\": \"<b>not markup</b>\",\n-     \"nested\": Object {\n-       \"count\": 7,\n-       \"flag\":"
+        }
+      ]
+    },
+    {
+      "variant": "wrong-json",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 104.27679999999236,
+          "error": "expect(received).toEqual(expected) // deep equality\n\n- Expected  - 0\n+ Received  + 1\n\n@@ -3,10 +3,11 @@\n    \"nested\": Object {\n      \"count\": 7,\n      \"flag\": true,\n      \"nullable\": null,\n    },\n+   \"unexpected\": true,\n    \"values\": Array [\n      \"one\",\n      \"two\",\n    ],\n  }"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4967.857600000003,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 0\n+ Received  + 1\n\n@@ -22,10 +22,11 @@\n      \"nested\": Object {\n        \"count\": 7,\n        \"flag\": true,\n        \"nullable\": null,\n      },\n+     \"unexpected\": true,\n      \"values\": Array [\n        \"one\",\n        \"two\",\n      ],\n    },\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "missing-json",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5103.738299999997,
+          "error": "locator.innerText: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('pre')\u001b[22m\n"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4991.968999999997,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 38\n+ Received  +  1\n\n  Object {\n-   \"activeMarkup\": 0,\n-   \"normalizedSeverity\": Object {\n-     \"matches\": 1,\n-     \"matchesPattern\": true,\n-   },\n+   \"jsonElements\": 0,\n    \"recordCount\": 1,\n-   \"revision\": Object {\n-     \"matches\": 1,\n-     \"value\": \"revision-505 / main\",\n-   },\n-   \"scope\": Object {\n-     \"matches\": 1,\n-     \"value\": \"scope-unique-404\",\n-   },\n-   \"severity\": Object {\n-     \"matches\": 1,\n-     \"value\": \"warning\",\n-   },\n-   \"unmapped\": Object {\n-     \"literal\": \"<b>not markup</b>\",\n-     \"nested\": Object {\n-       \"count\": 7,\n-       \"flag\": true,\n-       \"nullable\": null,\n-     },\n-     \"values\": Array [\n-       \"one\",\n-"
+        }
+      ]
+    },
+    {
+      "variant": "active-hidden-markup",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5112.706099999996,
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByR"
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4978.6628000000055,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -1,7 +1,7 @@\n  Object {\n-   \"activeMarkup\": 0,\n+   \"activeMarkup\": 1,\n    \"normalizedSeverity\": Object {\n      \"matches\": 1,\n      \"matchesPattern\": true,\n    },\n    \"recordCount\": 1,\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "style-decoy",
+      "expectedPass": false,
+      "pair": [
+        {
+          "helper": "original",
+          "accepted": false,
+          "durationMS": 5007.3447000000015,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic measurement calibration', exact: true }) })\nTimeout: 5000ms\n- Expected substring  -  1\n+ Received string     + 24\n\n- run-unique-101\n+ Synthetic measurement calibration\n+     different-run\n+ source-unique-202\n+ native-unique-303\n+ Distinct retained impact.\n+ Distinct retained guidance.\n+ sha256:8888888888888888888888888888888888888888888888888888888888888888\n+ src/calibration.ts:47\n+     Scopescope-unique-404Revision / branchrevision-505 / mainSource severitywarningNormalized severityMediumKnown source time\n+     {\n+   \"literal\": \"<b>not markup</b>\",\n+   \"nested\": {\n+     \"count\": 7,\n+     \"flag\""
+        },
+        {
+          "helper": "batched",
+          "accepted": false,
+          "durationMS": 4976.347900000008,
+          "error": "All original DOM field checks for the unique observation Synthetic measurement calibration\n\nAll original DOM field checks for the unique observation Synthetic measurement calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -28,11 +28,11 @@\n        \"one\",\n        \"two\",\n      ],\n    },\n    \"values\": Array [\n-     true,\n+     false,\n      true,\n      true,\n      true,\n      true,\n      true,\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    }
+  ],
+  "positiveVariants": 3,
+  "negativeVariants": 12,
+  "helperExecutions": 30,
+  "allExpectedOutcomesMatched": true,
+  "externalRequests": 0,
+  "productionSourceDOMBusinessStateTouched": false,
+  "innerTextVisibilityTrapProved": true,
+  "expectTimeoutMS": 5000
+}

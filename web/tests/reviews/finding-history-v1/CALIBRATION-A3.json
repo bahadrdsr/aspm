@@ -1,0 +1,611 @@
+{
+  "schemaVersion": 1,
+  "classification": "Paired native-DOM structural calibration, NOT replacement product acceptance",
+  "receipt": {
+    "path": ".artifacts\\finding-history-v1-a3\\calibration-01\\receipt.json",
+    "bytes": 43050,
+    "sha256": "c5ec80b9ad7c6217ebd15c74898e6625b573251886e3fb7cd9a67e1f988fe810"
+  },
+  "trace": {
+    "path": ".artifacts\\finding-history-v1-a3\\calibration-01\\trace.zip",
+    "bytes": 1074766,
+    "sha256": "b6780cef629e0ce2a8397475dfd9b3732e77c47b431252108b6cdef529aa2977"
+  },
+  "exactOriginalA1AndA3HelpersVerified": true,
+  "variants": [
+    {
+      "variant": "known-visible",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 163.96240000000012,
+          "structural": null
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 97.51929999999993,
+          "structural": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown-visible",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 121.45049999999992,
+          "structural": null
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 73.65329999999994,
+          "structural": null
+        }
+      ]
+    },
+    {
+      "variant": "normalized-whitespace",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 93.78559999999993,
+          "structural": null
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 52.70550000000003,
+          "structural": null
+        }
+      ]
+    },
+    {
+      "variant": "shadow-only-pre",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 137.1491000000001,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 0,
+            "playwrightPreCount": 1
+          }
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 69.04109999999991,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 0,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant": "shadow-only-scope",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 152.45150000000012,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 73.60890000000018,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant": "shadow-only-explicit-term",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 98.64539999999988,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 72.36959999999999,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant": "shadow-provenance",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 100.20209999999997,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 60.79210000000012,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant": "shadow-time",
+      "originalExpectedPass": true,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": true,
+          "durationMS": 164.7743999999998,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        },
+        {
+          "helper": "candidate",
+          "accepted": true,
+          "durationMS": 52.79959999999983,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant": "missing-run-id",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5028.142900000001,
+          "structural": null,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) })\nTimeout: 5000ms\n- Expected substring  -  1\n+ Received string     + 24\n\n- run-unique-101\n+ Synthetic structural calibration\n+     different-run\n+ source-unique-202\n+ native-unique-303\n+ Distinct retained impact.\n+ Distinct retained guidance.\n+ sha256:8888888888888888888888888888888888888888888888888888888888888888\n+ src/calibration.ts:47Scopescope-unique-404Revision / branchrevision-505 / mainSource severitywarningNormalized severityMedium\n+     Known source time\n+     {\n+   \"literal\": \"<b>not markup</b>\",\n+   \"nested\": {\n+     \"count\": 7,\n+     \"flag\": true,\n+     \"nullable\": null\n+   },\n+   \"values\": [\n+     \"one\",\n+     \"two\"\n+   ]\n+ }\n+     \n+     "
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 4981.314900000001,
+          "structural": null,
+          "error": "Seven original text values for the unique observation Synthetic structural calibration\n\nSeven original text values for the unique observation Synthetic structural calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -1,9 +1,9 @@\n  Object {\n    \"recordCount\": 1,\n    \"values\": Array [\n-     true,\n+     false,\n      true,\n      true,\n      true,\n      true,\n      true,\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "wrong-scope",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5071.985500000001,
+          "structural": null,
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nReceived: \"wrong scope\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') with timeout 5000ms\n  - waiting for ge"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5020.966500000002,
+          "structural": null,
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nReceived: \"wrong scope\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') with timeout 5000ms\n  - waiting for ge"
+        }
+      ]
+    },
+    {
+      "variant": "unassociated-scope",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5062.9653,
+          "structural": null,
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') with timeout 5000ms\n  - waiting for "
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5013.010600000001,
+          "structural": null,
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') with timeout 5000ms\n  - waiting for "
+        }
+      ]
+    },
+    {
+      "variant": "wrong-identity",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5017.313100000007,
+          "structural": null,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) })\nExpected substring: \"run-unique-101\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toContainText\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading'"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 4978.469599999997,
+          "structural": null,
+          "error": "Seven original text values for the unique observation Synthetic structural calibration\n\nSeven original text values for the unique observation Synthetic structural calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 10\n+ Received  +  2\n\n  Object {\n-   \"recordCount\": 1,\n-   \"values\": Array [\n-     true,\n-     true,\n-     true,\n-     true,\n-     true,\n-     true,\n-     true,\n-   ],\n+   \"recordCount\": 0,\n+   \"values\": Array [],\n  }\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "duplicate-identity",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 12.928200000002107,
+          "structural": null,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) })\nExpected substring: \"run-unique-101\"\nError: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }) resolved to 2 elements:\n    1) <li>…</li> aka getByText('Synthetic structural calibration run-unique-101 source-unique-202 native-unique').first()\n    2) <li>…</li> aka getByText('Synthetic structural calibration run-unique-101 source-unique-202 native-unique').nth(1)\n\nCall log:\n  - Expect \"toContainText\" g"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 4996.626700000001,
+          "structural": null,
+          "error": "Seven original text values for the unique observation Synthetic structural calibration\n\nSeven original text values for the unique observation Synthetic structural calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 10\n+ Received  +  2\n\n  Object {\n-   \"recordCount\": 1,\n-   \"values\": Array [\n-     true,\n-     true,\n-     true,\n-     true,\n-     true,\n-     true,\n-     true,\n-   ],\n+   \"recordCount\": 2,\n+   \"values\": Array [],\n  }\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "hidden-known-time",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5088.969299999997,
+          "structural": null,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includ"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5060.074699999997,
+          "structural": null,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includ"
+        }
+      ]
+    },
+    {
+      "variant": "hidden-unknown-time",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5085.959900000002,
+          "structural": null,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByText('Unknown source time', { exact: true })\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByText('Unknown source time', { exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: tru"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5044.7576000000045,
+          "structural": null,
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByText('Unknown source time', { exact: true })\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByText('Unknown source time', { exact: true }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: tru"
+        }
+      ]
+    },
+    {
+      "variant": "hidden-json-fragment",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 87.70410000000265,
+          "structural": null,
+          "error": "Unexpected token ',', ...\" \"count\": ,\n    \"fla\"... is not valid JSON"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 45.880199999999604,
+          "structural": null,
+          "error": "Unexpected token ',', ...\" \"count\": ,\n    \"fla\"... is not valid JSON"
+        }
+      ]
+    },
+    {
+      "variant": "wrong-json",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 81.24379999999655,
+          "structural": null,
+          "error": "expect(received).toEqual(expected) // deep equality\n\n- Expected  - 0\n+ Received  + 1\n\n@@ -7,6 +7,7 @@\n    },\n    \"values\": Array [\n      \"one\",\n      \"two\",\n    ],\n+   \"wrong\": true,\n  }"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 57.249299999995856,
+          "structural": null,
+          "error": "expect(received).toEqual(expected) // deep equality\n\n- Expected  - 0\n+ Received  + 1\n\n@@ -7,6 +7,7 @@\n    },\n    \"values\": Array [\n      \"one\",\n      \"two\",\n    ],\n+   \"wrong\": true,\n  }"
+        }
+      ]
+    },
+    {
+      "variant": "missing-json",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5124.279699999999,
+          "structural": null,
+          "error": "locator.innerText: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre')\u001b[22m\n"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5068.904500000004,
+          "structural": null,
+          "error": "locator.innerText: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre')\u001b[22m\n"
+        }
+      ]
+    },
+    {
+      "variant": "active-hidden-markup",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5138.262399999992,
+          "structural": null,
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5079.5476999999955,
+          "structural": null,
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        }
+      ]
+    },
+    {
+      "variant": "style-decoy",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5013.523799999995,
+          "structural": null,
+          "error": "expect(locator).toContainText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) })\nTimeout: 5000ms\n- Expected substring  -  1\n+ Received string     + 24\n\n- run-unique-101\n+ Synthetic structural calibration\n+     different-run\n+ source-unique-202\n+ native-unique-303\n+ Distinct retained impact.\n+ Distinct retained guidance.\n+ sha256:8888888888888888888888888888888888888888888888888888888888888888\n+ src/calibration.ts:47Scopescope-unique-404Revision / branchrevision-505 / mainSource severitywarningNormalized severityMedium\n+     Known source time\n+     {\n+   \"literal\": \"<b>not markup</b>\",\n+   \"nested\": {\n+     \"count\": 7,\n+     \"flag\": true,\n+     \"nullable\": null\n+   },\n+   \"values\": [\n+     \"one\",\n+     \"two\"\n+   ]\n+ }\n+     \n+     "
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 4983.607000000004,
+          "structural": null,
+          "error": "Seven original text values for the unique observation Synthetic structural calibration\n\nSeven original text values for the unique observation Synthetic structural calibration\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -1,9 +1,9 @@\n  Object {\n    \"recordCount\": 1,\n    \"values\": Array [\n-     true,\n+     false,\n      true,\n      true,\n      true,\n      true,\n      true,\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+        }
+      ]
+    },
+    {
+      "variant": "shadow-forbidden",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5100.787199999992,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 1,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5061.9811000000045,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 1,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        }
+      ]
+    },
+    {
+      "variant": "shadow-extra-pre",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 147.6033000000025,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 2
+          },
+          "error": "locator.innerText: Error: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre') resolved to 2 elements:\n    1) <pre>{↵  \"literal\": \"<b>not markup</b>\",↵  \"nested\": {…</pre> aka getByText('{ \"literal\": \"<b>not markup</').first()\n    2) <pre>{↵  \"literal\": \"<b>not markup</b>\",↵  \"nested\": {…</pre> aka locator('span').getByText('{ \"literal\": \"<b>not markup</')\n\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre')\u001b[22m\n"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 61.345100000005914,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 2
+          },
+          "error": "locator.innerText: Error: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre') resolved to 2 elements:\n    1) <pre>{↵  \"literal\": \"<b>not markup</b>\",↵  \"nested\": {…</pre> aka getByText('{ \"literal\": \"<b>not markup</').first()\n    2) <pre>{↵  \"literal\": \"<b>not markup</b>\",↵  \"nested\": {…</pre> aka locator('span').getByText('{ \"literal\": \"<b>not markup</')\n\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('pre')\u001b[22m\n"
+        }
+      ]
+    },
+    {
+      "variant": "shadow-duplicate-term",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 81.61699999999837,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nError: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') resolved to 2 elements:\n    1) <dd>scope-unique-404</dd> aka getByText('scope-unique-"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 28.437300000005052,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]')\nExpected: \"scope-unique-404\"\nError: strict mode violation: getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).getByRole('term', { includeHidden: true }).filter({ hasText: /^Scope$/i }).locator('xpath=following-sibling::dd[1]') resolved to 2 elements:\n    1) <dd>scope-unique-404</dd> aka getByText('scope-unique-"
+        }
+      ]
+    },
+    {
+      "variant": "nested-shadow-forbidden",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5112.655899999998,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 1,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5075.515400000004,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 1,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b')\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('script, iframe, img, b') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({"
+        }
+      ]
+    },
+    {
+      "variant": "shadow-hidden-time",
+      "originalExpectedPass": false,
+      "pair": [
+        {
+          "helper": "originalA1",
+          "accepted": false,
+          "durationMS": 5104.255499999999,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includ"
+        },
+        {
+          "helper": "candidate",
+          "accepted": false,
+          "durationMS": 5046.174400000018,
+          "structural": {
+            "nativeForbiddenCount": 0,
+            "playwrightForbiddenCount": 0,
+            "nativePreCount": 1,
+            "playwrightPreCount": 1
+          },
+          "error": "expect(locator).toBeVisible() failed\n\nLocator:  getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]')\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includeHidden: true }).getByRole('listitem').filter({ has: getByRole('heading', { name: 'Synthetic structural calibration', exact: true }) }).locator('time[datetime=\"2026-09-04T05:06:07.123456Z\"]') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Calibration finding', exact: true, includeHidden: true }).getByRole('list', { name: 'Observations', exact: true, includ"
+        }
+      ]
+    }
+  ],
+  "pairedCases": 25,
+  "helperExecutions": 50,
+  "allExpectedResultsMatched": true,
+  "openAndNestedShadowCoverage": true,
+  "shadowPREAndNativeExplicitTermCoverage": true,
+  "literalInnerTextTrapPreserved": true,
+  "httpRequests": 0,
+  "traceEnabled": true,
+  "expectTimeoutMS": 5000,
+  "applicationStateOrSourceTouched": false
+}

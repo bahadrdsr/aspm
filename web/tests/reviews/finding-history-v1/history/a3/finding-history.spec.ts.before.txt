@@ -1,0 +1,402 @@
+import type { Locator, Page } from "@playwright/test";
+import { requireProductionUI } from "./network";
+import {
+  betaHistoryFinding, findingPath, historyAlpha, historyBeta, historyFinding, historyOwner,
+  notesPath, notesTotal, observationsTotal, refreshedDescription, sameNoteText,
+} from "./finding-history-data";
+import type { HistoryFinding, HistoryObservation, HistoryResponse, HistoryStream } from "./finding-history-data";
+import { expect, test } from "./finding-history-fixture";
+import type { FindingHistoryAPI, HistoryCall, HistoryControl } from "./finding-history-fixture";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+test.beforeEach(async ({ historyAPI }) => {
+  requireProductionUI();
+  expect(historyAPI.requests).toEqual([]);
+});
+
+function panel(page: Page) { return page.getByRole("dialog", { name: historyFinding.title, exact: true, includeHidden: true }); }
+function queue(page: Page) { return page.getByRole("table", { name: "Findings", exact: true, includeHidden: true }); }
+function findingRow(page: Page) { return queue(page).getByRole("row", { includeHidden: true }).filter({ hasText: historyFinding.title }); }
+function trigger(page: Page) {
+  return findingRow(page).getByRole("button", { name: historyFinding.title, exact: true, includeHidden: true })
+    .or(findingRow(page).getByRole("link", { name: historyFinding.title, exact: true, includeHidden: true }));
+}
+function filter(page: Page) { return page.getByRole("textbox", { name: "Filter findings", exact: true, includeHidden: true }); }
+function selected(page: Page) { return findingRow(page).getByRole("checkbox", { name: `Select ${historyFinding.title}`, exact: true, includeHidden: true }); }
+function section(page: Page, stream: HistoryStream) {
+  return panel(page).locator("section").filter({ has: page.getByRole("heading", { name: stream === "notes" ? "Analyst notes" : "Observations", exact: true, includeHidden: true }) });
+}
+function list(page: Page, stream: HistoryStream) {
+  return panel(page).getByRole("list", { name: stream === "notes" ? "Analyst notes" : "Observations", exact: true, includeHidden: true });
+}
+function more(page: Page, stream: HistoryStream) {
+  return section(page, stream).getByRole("button", { name: new RegExp(`^Load more ${stream}(?: .*)?$`, "i") });
+}
+function retry(page: Page, stream?: HistoryStream) {
+  return (stream ? section(page, stream) : panel(page)).getByRole("button", { name: /^(?:Retry(?: (?:notes|observations|history|finding|finding history))?|Try again)$/i });
+}
+function noteField(page: Page) { return panel(page).getByRole("textbox", { name: "New note", exact: true }); }
+function literal(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+function fact(scope: Locator, name: string) {
+  return scope.getByRole("term", { includeHidden: true }).filter({ hasText: new RegExp(`^${literal(name)}$`, "i") })
+    .locator("xpath=following-sibling::dd[1]");
+}
+function response(call: HistoryCall): HistoryResponse {
+  expect(call.status).toBe(200);
+  const value = call.response as unknown as HistoryResponse;
+  expect(value.apiVersion).toBe("aspm/v1alpha1");
+  expect(value.finding.notes.length).toBeLessThanOrEqual(500);
+  expect(value.finding.observations.length).toBeLessThanOrEqual(500);
+  return value;
+}
+function initial(historyAPI: FindingHistoryAPI) {
+  const entry = historyAPI.pages.filter((entry) => entry.call.path === findingPath && Object.keys(entry.call.query).length === 0).at(-1);
+  if (!entry) throw new Error("No actual bare initial finding response.");
+  return entry.response.finding;
+}
+async function requested(control: HistoryControl) {
+  await expect.poll(() => control.call !== null, "The real finding dialog must request the selected native history cursor.").toBe(true);
+  return control.call!;
+}
+async function render(page: Page) {
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+}
+async function release(page: Page, control: HistoryControl, aborted = false) {
+  control.release(); await control.delivered; await render(page);
+  if (aborted) await expect.poll(() => control.call?.failure, "Scope/session loss must abort the old history request.").toMatch(/abort/i);
+}
+async function open(page: Page, historyAPI: FindingHistoryAPI, keepWork = false) {
+  if (!keepWork) {
+    await page.goto("/#/work");
+    await expect(queue(page)).toBeVisible();
+    const workspace = page.getByRole("combobox", { name: "Workspace", exact: true });
+    await workspace.selectOption(historyAlpha.id);
+    await expect(workspace).toHaveValue(historyAlpha.id);
+    await filter(page).fill(historyFinding.assetName);
+    await selected(page).check();
+  }
+  await trigger(page).click();
+  await expect(panel(page)).toBeVisible();
+  await expect(list(page, "notes").getByRole("listitem", { includeHidden: true })).toHaveCount(500);
+  await expect(list(page, "observations").getByRole("listitem", { includeHidden: true })).toHaveCount(500);
+  const first = initial(historyAPI);
+  expect(first.notesNextCursor).toBe(first.notes[499].id);
+  expect(first.observationsNextCursor).toBe(first.observations[499].id);
+  await expect(more(page, "observations"), "The existing dialog must provide manual observation-history continuation, not only disclose truncation.").toBeVisible();
+  await expect(more(page, "notes"), "Notes need their own independent manual continuation.").toBeVisible();
+  return first;
+}
+async function histories(page: Page, notes: number, observations: number) {
+  await expect(list(page, "notes").getByRole("listitem", { includeHidden: true })).toHaveCount(notes);
+  await expect(list(page, "observations").getByRole("listitem", { includeHidden: true })).toHaveCount(observations);
+  await expect(section(page, "notes")).toContainText(new RegExp(`\\b${notes}\\s+(?:loaded|supplied|notes)|\\b(?:loaded|notes)\\s*:?\\s*${notes}\\b`, "i"));
+  await expect(section(page, "observations")).toContainText(new RegExp(`\\b${observations}\\s+(?:loaded|supplied|observations)|\\b(?:loaded|observations)\\s*:?\\s*${observations}\\b`, "i"));
+}
+async function noMore(page: Page, stream: HistoryStream) {
+  for (const button of await more(page, stream).all()) await expect(button).toBeDisabled();
+}
+async function load(page: Page, api: FindingHistoryAPI, stream: HistoryStream, cursor: string, inactiveCursor = "") {
+  const key = stream === "notes" ? "notesCursor" : "observationsCursor";
+  const other = stream === "notes" ? "observationsCursor" : "notesCursor";
+  const control = api.queueRead(200, true, { [key]: cursor });
+  await more(page, stream).click();
+  const call = await requested(control);
+  expect(call.query[key]).toBe(cursor);
+  expect(["", inactiveCursor], "Loading one stream must not silently advance the other's never-requested continuation.").toContain(call.query[other] ?? "");
+  await release(page, control);
+  return response(call).finding;
+}
+async function sourceFacts(page: Page, finding: HistoryFinding = historyFinding) {
+  const dialog = panel(page);
+  for (const text of [finding.description, finding.remediation, finding.evidence.text, finding.evidence.sourceLabel,
+    finding.scopeLabel, "No independently verified resolution is recorded."]) {
+    await expect(dialog.getByText(text, { exact: true }).first()).toBeVisible();
+  }
+  await expect(fact(dialog, "Owner")).toContainText(historyOwner.name);
+  await expect(fact(dialog, "Scanner-inferred state")).toContainText(/inferred resolved/i);
+  await expect(fact(dialog, "Disposition")).toContainText(/accepted risk/i);
+  await expect(dialog.getByText("Not verified", { exact: true }).first()).toBeVisible();
+  await expect(dialog.locator(`time[datetime="${finding.sourceFreshnessAt}"]`).first()).toBeVisible();
+}
+async function observationFields(page: Page, observation: HistoryObservation) {
+  const item = list(page, "observations").getByRole("listitem").filter({ has: page.getByRole("heading", { name: observation.scanId, exact: true }) });
+  const values = [observation.runId, observation.sourceId, observation.sourceFindingId, observation.impact,
+    observation.remediation, observation.evidenceDigest, `${observation.sourceLocation.uri}:${observation.sourceLocation.line}`];
+  const normalize = (value: string) => value.replace(/[\u200b\u00ad]/g, "").trim().replace(/\s+/g, " ");
+  await expect.poll(async () => {
+    const records = await item.evaluateAll((items) => items.map((item) => {
+      // Match the original text assertions; literal JSON still uses innerText below.
+      function text(node: Node): string {
+        if (node.nodeType === Node.TEXT_NODE) return node.nodeValue ?? "";
+        if (node instanceof Element && (["SCRIPT", "STYLE", "NOSCRIPT"].includes(node.tagName.toUpperCase()) || node.ownerDocument.head?.contains(node))) return "";
+        if (node instanceof HTMLInputElement && ["button", "submit"].includes(node.type)) return node.value;
+        return [...node.childNodes].map(text).join("") + (node instanceof Element && node.shadowRoot ? text(node.shadowRoot) : "");
+      }
+      const definitions = [...item.querySelectorAll('dt:not([role]), [role="term"]')].map((term) => {
+        let definition = term.nextElementSibling;
+        while (definition && definition.tagName !== "DD") definition = definition.nextElementSibling;
+        return { label: text(term), value: definition ? text(definition) : null };
+      });
+      return {
+        text: text(item), definitions,
+        json: [...item.querySelectorAll("pre")].map((node) => node instanceof HTMLElement ? node.innerText : null),
+        activeMarkup: item.querySelectorAll("script, iframe, img, b").length,
+      };
+    }));
+    if (records.length !== 1) return { recordCount: records.length };
+    const record = records[0];
+    const definition = (name: string) => {
+      const matches = record.definitions.filter((entry) => entry.label.toLowerCase() === name.toLowerCase());
+      return { matches: matches.length, value: matches.length === 1 ? matches[0].value : null };
+    };
+    const scope = definition("Scope"), revision = definition("Revision / branch");
+    const severity = definition("Source severity"), normalized = definition("Normalized severity");
+    if (record.json.length !== 1 || record.json[0] === null) return { recordCount: 1, jsonElements: record.json.length };
+    let unmapped: unknown;
+    try { unmapped = JSON.parse(record.json[0]); } catch (error) {
+      if (!(error instanceof SyntaxError)) throw error;
+      return { recordCount: 1, invalidLiteralJSON: error.message };
+    }
+    return {
+      recordCount: 1,
+      values: values.map((value) => normalize(record.text).includes(normalize(value))),
+      scope: { matches: scope.matches, value: scope.value === null ? null : normalize(scope.value) },
+      revision: { matches: revision.matches, value: revision.value === null ? null : normalize(revision.value) },
+      severity: { matches: severity.matches, value: severity.value === null ? null : normalize(severity.value) },
+      normalizedSeverity: { matches: normalized.matches, matchesPattern: normalized.value !== null && new RegExp(observation.normalizedSeverity, "i").test(normalized.value) },
+      unmapped, activeMarkup: record.activeMarkup,
+    };
+  }, { timeout: 5000, message: `All original DOM field checks for the unique observation ${observation.scanId}` }).toEqual({
+    recordCount: 1, values: values.map(() => true),
+    scope: { matches: 1, value: normalize(observation.scope.id) },
+    revision: { matches: 1, value: normalize(`${observation.scope.revision} / ${observation.scope.branch}`) },
+    severity: { matches: 1, value: normalize(observation.sourceSeverity) },
+    normalizedSeverity: { matches: 1, matchesPattern: true },
+    unmapped: observation.unmapped, activeMarkup: 0,
+  });
+  if (observation.sourceScanAt) await expect(item.locator(`time[datetime="${observation.sourceScanAt}"]`)).toBeVisible();
+  else await expect(item.getByText("Unknown source time", { exact: true })).toBeVisible();
+}
+async function literalNotes(page: Page, expectedCopies: number) {
+  expect((await list(page, "notes").getByRole("listitem").allTextContents()).filter((text) => text === sameNoteText)).toHaveLength(expectedCopies);
+  await expect(list(page, "notes").locator("a, script, iframe, img, svg, em, b")).toHaveCount(0);
+}
+async function withheld(page: Page) {
+  for (const stream of ["notes", "observations"] as const) await expect(list(page, stream)).toHaveCount(0);
+  for (const text of [historyFinding.description, historyFinding.evidence.text, historyFinding.evidence.sourceLabel, historyFinding.scopeLabel, sameNoteText]) {
+    await expect(panel(page).getByText(text, { exact: true })).toHaveCount(0);
+  }
+  await expect(panel(page).locator(`time[datetime="${historyFinding.sourceFreshnessAt}"]`)).toHaveCount(0);
+}
+async function noAlpha(page: Page, signedOut = false) {
+  await expect(panel(page)).toHaveCount(0);
+  for (const text of [historyFinding.title, historyFinding.description, historyFinding.evidence.text, sameNoteText]) {
+    await expect(page.locator("body")).not.toContainText(text);
+  }
+  if (signedOut) {
+    await expect(queue(page)).toHaveCount(0);
+    await expect(page.getByRole("combobox", { name: "Workspace", exact: true, includeHidden: true })).toHaveCount(0);
+  }
+}
+
+test("FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream", async ({ page, historyAPI }) => {
+  const first = await open(page, historyAPI);
+  expect(first.notes).toHaveLength(500); expect(first.observations).toHaveLength(500);
+  await histories(page, 500, 500);
+  await render(page);
+  expect(historyAPI.calls().every((call) => Object.keys(call.query).length === 0)).toBe(true);
+  const observations = await load(page, historyAPI, "observations", first.observationsNextCursor!);
+  expect(observations.observations.length).toBe(observationsTotal - 500);
+  expect(observations.observationsNextCursor).toBeNull();
+  await histories(page, 500, observationsTotal);
+  await noMore(page, "observations");
+  const notes = await load(page, historyAPI, "notes", first.notesNextCursor!, first.observationsNextCursor!);
+  expect(notes.notes.length).toBe(notesTotal - 500);
+  expect(notes.notesNextCursor).toBeNull();
+  await histories(page, notesTotal, observationsTotal);
+  await noMore(page, "notes"); await noMore(page, "observations");
+  await literalNotes(page, 2);
+  for (const index of [0, 499, 500, observationsTotal - 1]) await observationFields(page, historyFinding.observations[index]);
+  await sourceFacts(page);
+  await expect(filter(page)).toHaveValue(historyFinding.assetName); await expect(selected(page)).toBeChecked();
+  const count = historyAPI.requests.length; await render(page);
+  expect(historyAPI.requests).toHaveLength(count);
+  expect(historyAPI.requests.every((call) => call.method === "GET")).toBe(true);
+});
+
+test("FH2 A held/503 history continuation keeps both loaded streams and retries the same native cursor without duplicate or reset", async ({ page, historyAPI }) => {
+  const first = await open(page, historyAPI);
+  await load(page, historyAPI, "notes", first.notesNextCursor!);
+  await histories(page, notesTotal, 500);
+  const held = historyAPI.queueRead(503, true, { observationsCursor: first.observationsNextCursor! });
+  await more(page, "observations").click();
+  const failed = await requested(held);
+  await expect(section(page, "observations").getByRole("status").filter({ hasText: /loading|observations/i })).toBeVisible();
+  await histories(page, notesTotal, 500);
+  await release(page, held);
+  await expect(section(page, "observations").getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+  await histories(page, notesTotal, 500);
+  await literalNotes(page, 2);
+  const recovered = historyAPI.queueRead(200, true, failed.query);
+  await retry(page, "observations").click();
+  expect((await requested(recovered)).query).toEqual(failed.query);
+  await histories(page, notesTotal, 500);
+  await release(page, recovered);
+  await histories(page, notesTotal, observationsTotal);
+  await noMore(page, "notes"); await noMore(page, "observations");
+  await sourceFacts(page);
+  expect(historyAPI.requests.every((call) => call.method === "GET")).toBe(true);
+});
+
+test("FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen", async ({ page, historyAPI }) => {
+  const first = await open(page, historyAPI);
+  const old = historyAPI.queueRead(200, true, { observationsCursor: first.observationsNextCursor! });
+  await more(page, "observations").click();
+  const oldCall = await requested(old);
+  expect(response(oldCall).finding.workflowState).toBe("open");
+  const note = historyAPI.queueNote(true);
+  await noteField(page).fill(sameNoteText);
+  await panel(page).getByRole("button", { name: "Add note", exact: true }).click();
+  expect((await requested(note)).body).toEqual({ text: sameNoteText });
+  await histories(page, 500, 500);
+  await release(page, note);
+  expect(note.call!.status).toBe(201);
+  const acceptedNote = note.call!.response?.note as { id: string; text: string };
+  expect(acceptedNote.text).toBe(sameNoteText);
+  await histories(page, 501, 500); await literalNotes(page, 2);
+  const workflow = historyAPI.queueWorkflow(true);
+  const workflowForm = panel(page).getByRole("form", { name: "Change finding workflow", exact: true });
+  await workflowForm.getByRole("combobox", { name: "Workflow", exact: true }).selectOption("in-progress");
+  await workflowForm.getByRole("button", { name: "Save workflow", exact: true }).click();
+  expect((await requested(workflow)).body).toEqual({ workflowState: "in-progress" });
+  await expect(fact(panel(page), "Human workflow")).toContainText(/^Open$/i);
+  await release(page, workflow);
+  expect(response(workflow.call!).finding.notes.filter((item) => item.id === acceptedNote.id)).toHaveLength(1);
+  await expect(fact(panel(page), "Human workflow")).toContainText(/In progress/i);
+  await histories(page, 501, 500);
+  await release(page, old);
+  await histories(page, 501, observationsTotal); await literalNotes(page, 2);
+  await expect(fact(panel(page), "Human workflow")).toContainText(/In progress/i);
+  await expect(findingRow(page)).toContainText(/In progress/i);
+  await sourceFacts(page);
+  historyAPI.publishMetadata({ workflowState: "resolved", description: refreshedDescription, sourceFreshnessAt: "2026-09-16T02:03:04Z" });
+  await load(page, historyAPI, "notes", first.notesNextCursor!, first.observationsNextCursor!);
+  await histories(page, notesTotal + 1, observationsTotal); await literalNotes(page, 3);
+  await expect(fact(panel(page), "Human workflow")).toContainText(/^Resolved$/i);
+  await sourceFacts(page, historyAPI.findings.get(historyFinding.id)!);
+  expect(historyAPI.calls("POST", notesPath)).toHaveLength(1);
+  expect(historyAPI.calls("PATCH", findingPath)).toHaveLength(1);
+});
+
+test("FH4 Viewer history is read-only; 403/404 latch protected metadata through 503 retry and 401 clears the entire finding scope", async ({ page, historyAPI }) => {
+  historyAPI.roles.set(historyAlpha.id, "viewer"); historyAPI.serverRoles.set(historyAlpha.id, "viewer");
+  let first = await open(page, historyAPI);
+  await expect(noteField(page)).toHaveCount(0);
+  await expect(panel(page).getByRole("button", { name: /^(?:Add note|Assign to me|Save workflow|Save risk acceptance)$/ })).toHaveCount(0);
+  await load(page, historyAPI, "observations", first.observationsNextCursor!);
+  await histories(page, 500, observationsTotal);
+  for (const code of [403, 404] as const) {
+    if (code === 404) {
+      await page.keyboard.press("Escape");
+      first = await open(page, historyAPI, true);
+    }
+    const denied = historyAPI.queueRead(code, false, { notesCursor: first.notesNextCursor! });
+    await more(page, "notes").click(); await requested(denied); await denied.delivered;
+    await expect(panel(page).getByRole("alert")).toContainText(code === 403 ? /not permitted|forbidden|permission/i : /not found/i);
+    await withheld(page);
+    const unavailable = historyAPI.queueRead(503);
+    await retry(page).click(); await requested(unavailable); await unavailable.delivered;
+    await expect(panel(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+    await withheld(page);
+    const restored = historyAPI.queueRead();
+    await retry(page).click(); await requested(restored); await restored.delivered;
+    await sourceFacts(page);
+  }
+  await page.keyboard.press("Escape");
+  first = await open(page, historyAPI, true);
+  const expired = historyAPI.queueRead(401, false, { observationsCursor: first.observationsNextCursor! });
+  await more(page, "observations").click(); await requested(expired); await expired.delivered;
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await noAlpha(page, true);
+  await page.reload();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await noAlpha(page, true);
+  expect(historyAPI.requests.every((call) => call.method === "GET")).toBe(true);
+});
+
+async function scrollState(page: Page) {
+  return panel(page).evaluate((element) => ({
+    windowX: scrollX, windowY: scrollY,
+    innerY: [element, ...element.querySelectorAll("*")].reduce((value, node) => value + node.scrollTop, 0),
+  }));
+}
+async function reducedMotion(page: Page) {
+  const moving = await page.evaluate(async () => {
+    const keys = new Set<string>();
+    for (let sample = 0; sample < 6; sample++) {
+      for (const animation of document.getAnimations()) {
+        if (animation.playState !== "running" || !(animation.effect instanceof KeyframeEffect)) continue;
+        if (animation.effect.getTiming().iterations === Infinity) keys.add("continuous");
+        const frames = animation.effect.getKeyframes() as Array<Record<string, unknown>>;
+        for (const key of ["transform", "translate", "scale", "rotate", "top", "left"]) {
+          if (new Set(frames.map((frame) => frame[key]).filter((value) => value !== undefined).map(String)).size > 1) keys.add(key);
+        }
+      }
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    }
+    return [...keys];
+  });
+  expect(moving).toEqual([]);
+}
+
+test("FH5 At 390px user-moved draft focus/scroll survive a history load; workspace/logout abort and discard later held pages", async ({ page, historyAPI }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let first = await open(page, historyAPI);
+  const action = more(page, "observations");
+  await action.scrollIntoViewIfNeeded(); await action.focus();
+  expect((await scrollState(page)).innerY).toBeGreaterThan(100);
+  const loaded = historyAPI.queueRead(200, true, { observationsCursor: first.observationsNextCursor! });
+  await action.press("Enter"); await requested(loaded);
+  const field = noteField(page), draft = "Synthetic unsubmitted café history draft.\nKeep its caret.";
+  await field.fill(draft); await field.press("Home"); await field.press("ArrowRight");
+  const caret = await field.evaluate((node) => ({ start: (node as HTMLTextAreaElement).selectionStart, end: (node as HTMLTextAreaElement).selectionEnd }));
+  const position = await scrollState(page);
+  await release(page, loaded);
+  await histories(page, 500, observationsTotal);
+  await expect(field, "History completion must not steal focus after the user moved to an editable draft.").toBeFocused();
+  await expect(field).toHaveValue(draft);
+  expect(await field.evaluate((node) => ({ start: (node as HTMLTextAreaElement).selectionStart, end: (node as HTMLTextAreaElement).selectionEnd }))).toEqual(caret);
+  const after = await scrollState(page);
+  expect(Math.abs(after.windowX - position.windowX)).toBeLessThanOrEqual(1);
+  expect(Math.abs(after.windowY - position.windowY)).toBeLessThanOrEqual(1);
+  expect(Math.abs(after.innerY - position.innerY)).toBeLessThanOrEqual(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  expect(await panel(page).evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return rect.left >= -1 && rect.right <= innerWidth + 1 && rect.top >= -1 && rect.bottom <= innerHeight + 1;
+  })).toBe(true);
+  await reducedMotion(page);
+  const oldNotes = historyAPI.queueRead(200, true, { notesCursor: first.notesNextCursor! });
+  await more(page, "notes").click(); await requested(oldNotes);
+  await page.keyboard.press("Escape");
+  await expect(trigger(page)).toBeFocused();
+  await expect(filter(page)).toHaveValue(historyFinding.assetName); await expect(selected(page)).toBeChecked();
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(historyBeta.id);
+  await expect(queue(page)).toContainText(betaHistoryFinding.title);
+  await noAlpha(page);
+  await release(page, oldNotes, true); await noAlpha(page);
+  await expect(page.locator("body")).not.toContainText(draft);
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(historyAlpha.id);
+  await expect(queue(page)).toContainText(historyFinding.title);
+  first = await open(page, historyAPI, true);
+  await expect(noteField(page)).toHaveValue("");
+  const oldObservations = historyAPI.queueRead(200, true, { observationsCursor: first.observationsNextCursor! });
+  await more(page, "observations").click(); await requested(oldObservations);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await noAlpha(page, true);
+  await release(page, oldObservations, true); await noAlpha(page, true);
+  await historyAPI.assertPrivate(page);
+  expect(historyAPI.requests.filter((call) => call.method !== "GET").map((call) => call.path)).toEqual(["/api/v1/logout"]);
+});

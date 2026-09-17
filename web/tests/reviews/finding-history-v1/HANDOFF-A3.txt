@@ -1,0 +1,99 @@
+FINDING HISTORY A3 - RESTORING SHADOW-AWARE STRUCTURAL MEASUREMENT
+===============================================================
+
+Confirmed measurement RED, not product XSS
+----------------------------------------
+The reported A2 gap was independently reproduced with the exact original
+A1 and archived A2 observationFields functions on an isolated native DOM.
+A valid record passes both. Three open-shadow variations are rejected by
+original Playwright structural queries but incorrectly pass A2's light-DOM
+querySelectorAll measurements:
+  - Harmless <b>: native count 0, Playwright forbidden-descendant count 1.
+  - Extra PRE: native count 1, Playwright strict PRE locator count 2.
+  - Duplicate Scope term: original role/DD association is ambiguous, while
+    the A2 light-DOM term collection overlooks the shadow term.
+
+The reproduction made zero HTTP requests and touched no application state
+or production DOM/source. It is real measurement-equivalence RED, not a
+production XSS finding. The earlier A2 evidence is preserved, not rewritten
+to hide this gap.
+
+Only measurement helper corrected
+---------------------------------
+Only observationFields in finding-history.spec.ts changes. The entire prefix
+and suffix remain byte-identical, including all five case bodies, A1 selector,
+the four sample indices, history/cursor/ACK/role/focus/order assertions and
+all other helpers.
+
+The original A1 structural assertion tail is restored VERBATIM:
+  - Scoped getByRole(term) plus following-sibling DD associations.
+  - Original exact Scope, Revision / branch and Source severity expectations.
+  - Original case-insensitive Normalized severity expectation.
+  - Original known-time/unknown-time native visibility assertions.
+  - Original strict locator("pre").innerText(), parsed JSON equality.
+  - Original locator("script, iframe, img, b").toHaveCount(0).
+
+Playwright therefore owns structural selection, strictness, open-shadow
+traversal, role semantics and visibility again. No partial native selector
+substitute remains for PRE/term/forbidden-descendant checks.
+Only the bounded seven-text-value read batch is retained. Its original
+semantic record locator, explicit uniqueness, expected values, normalization
+and five-second polling remain. No record/field is omitted or sampled less.
+
+Expanded paired calibration
+---------------------------
+The exact original A1 and corrected functions were run against 25 paired
+native-DOM variants, 50 helper executions, with tracing and zero HTTP.
+Every expected acceptance/rejection matched.
+
+In addition to valid known/unknown time and normalized whitespace, positive
+cases include shadow-only PRE, shadow-only native/explicit Scope term,
+shadow provenance text and a shadow source time.
+Negative cases include missing/wrong values, missing DD association, wrong/
+duplicate record identity, hidden known/unknown time, hidden JSON fragment,
+wrong/missing JSON, hidden forbidden markup, stylesheet decoy, open-shadow
+forbidden markup/extra PRE/duplicate term, nested-shadow markup and hidden
+shadow time. The hidden-JSON trap still has correct textContent but different
+innerText and is rejected. No textContent substitution is used for JSON.
+
+This is calibration of the measuring instrument, not an application gate or
+business-state simulation. It does not replace the real traced tests below.
+
+Actual unchanged-budget qualification
+-------------------------------------
+  Typecheck: passed.
+  Focused FH1/FH3: passed at 16.748s / 7.252s.
+  All five history cases: passed; FH1 14.086s, FH3 12.260s.
+  Full 84 cases: 84 passed, zero skips/flakes/retries.
+    Full-suite FH1 13.137s; FH3 9.656s.
+
+The focused stages satisfied the recorded 18-second maximum prerequisite
+before the full run. That is only an escalation criterion, not a changed
+20-second case pass/fail budget. Original five-second expects, one worker,
+trace capture/retention, animations, zero retries and 60-request budget are
+unchanged. Passing trace files are discarded by the original retention policy.
+No further source or test-budget changes were needed after structural
+restoration. Timings vary by run; no universal performance guarantee is made.
+
+HOLD/history and freeze
+----------------------
+Current source HOLD and all old controls are recorded in BEFORE-A3.json.
+Only the allowed spec helper changes. Production, fixtures, dependencies,
+settings, old tests, A1/A2/V1 packets, RED and signatures remain unchanged.
+No agents, commits, native API or production operations were performed.
+
+Only the actually amended A2 spec is archived:
+  history\a3\finding-history.spec.ts.before.txt
+Prior packets, original A1 helper and evidence are hash references, not copied
+trees. No old oracle is re-signed; it continues to identify its historical
+spec bytes. Parent review and a new current seal remain necessary.
+
+Fresh scripts/generated measurement modules, native-DOM calibration and actual
+acceptance logs/traces use unique names outside protected tests:
+  .artifacts\finding-history-v1-a3
+Do not overwrite measurement-red-01, calibration-01, focused-fh1-fh3-01,
+all-history-01 or full-84-01.
+MEASUREMENT-RED-A3.json, CALIBRATION-A3.json, GUARDS-A3.json and
+VALIDATION-A3.json record exact sources, differences, semantics and outcomes.
+PACKET-A3.json/PACKET-A3.sha256 freeze the unsigned A3 correction.
+Stop for parent verification/reseal.

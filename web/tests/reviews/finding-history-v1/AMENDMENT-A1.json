@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "scope": "FH3 one semantic Workflow combobox locator",
+  "source": "web\\tests\\finding-history.spec.ts",
+  "line": 225,
+  "oldLocator": "workflowForm.getByLabel(\"Workflow\", { exact: true })",
+  "newLocator": "workflowForm.getByRole(\"combobox\", { name: \"Workflow\", exact: true })",
+  "beforeSHA256": "5370ed0bacf761641eecc5acaac40720ae1ec2a27243aa3574b7bd614a6301ff",
+  "afterSHA256": "92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded",
+  "beforeBytes": 23320,
+  "afterBytes": 23337,
+  "exactWholeFileSingleReplacement": true,
+  "optionValueAndAllFollowingAssertionsUnchanged": true,
+  "otherCaseAndHelperBytesUnchanged": true,
+  "fh1Segment": {
+    "bytes": 1618,
+    "sha256": "2edc62a7cef43116ed5abe2a2cce2c839b90895d8eaf2187c251abe718db77bc"
+  },
+  "fh1ByteIdentical": true,
+  "fh1PerformanceStillUnresolved": true,
+  "fh1BudgetMS": 20000,
+  "traceAndRunnerBudgetsChanged": false,
+  "productionFixtureDependencySettingsChanges": false,
+  "originalControlCount": 663,
+  "unchangedControls": 662,
+  "full84AcceptanceClaim": false
+}

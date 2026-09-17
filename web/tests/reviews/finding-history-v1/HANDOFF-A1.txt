@@ -1,0 +1,86 @@
+FINDING HISTORY A1 - ONE FH3 SEMANTIC LOCATOR CORRECTION
+======================================================
+
+Status
+------
+FH3's semantic locator is corrected and its focused run passes.
+The finding-history slice remains INCOMPLETE: FH1 has an unresolved runtime
+performance qualification at the unchanged 20-second case budget.
+This packet makes NO 84/84, full-suite green or FH1 acceptance claim.
+Stop for parent reseal before the coder resumes performance work.
+
+Independent verification
+------------------------
+The supplied coder HANDOFF.json was verified against:
+  38c5a968eeaec34bd2574b8f07c5af64e7ed8c7b255be5d2a3d8c1780469cb23
+The actual targeted-04 trace archive was read without extracting/copying its
+tree. Its workflow LABEL text is WorkflowOpenIn progressResolved. Its Frame
+selectOption call uses internal:label="Workflow"s and never resolves.
+
+The unchanged native finding-actions component and existing accepted
+finding-actions tests were also inspected. The control has the semantic
+combobox name Workflow, and the older tests locate it by that role/name.
+An independent fresh original FH3 run reproduced the line-225 exact-label
+lookup timeout before any workflow PATCH was sent.
+
+Exact one-line change
+---------------------
+Only this locator expression changes at FH3 line 225:
+  workflowForm.getByLabel("Workflow", { exact: true })
+becomes:
+  workflowForm.getByRole("combobox", { name: "Workflow", exact: true })
+
+The workflow form scope, exact name, selected in-progress value and every
+write/ACK/history/source/newer-metadata assertion remain unchanged. This is
+not a fallback, broad label match, forced interaction or production fix.
+Replacing just that expression reconstructs the complete original spec bytes.
+
+  Original spec SHA-256:
+    5370ed0bacf761641eecc5acaac40720ae1ec2a27243aa3574b7bd614a6301ff
+  A1 spec SHA-256:
+    92ed95db0afbb03bacf41d082bfddc801d9acc41c5916659615bcd348eb10ded
+
+Focused qualification
+---------------------
+  Original FH3: reproduced selector timeout, no workflow PATCH.
+  Corrected FH3: passed at the existing budget, approximately 19.6 seconds.
+  Actual typecheck: passed.
+  No skipped or retried cases in these targeted runs.
+The successful targeted result is close to the 20-second budget and is not
+proof of full-suite performance reliability. No full 84-case rerun or build
+rerun is claimed by this author amendment.
+
+FH1 stays separate and unresolved
+--------------------------------
+FH1 was not run, amended, bypassed or reclassified here. Its 1618-byte case
+segment remains SHA-256:
+  2edc62a7cef43116ed5abe2a2cce2c839b90895d8eaf2187c251abe718db77bc
+All FH1 helpers, assertions, timeouts, trace policy and request budget are
+unchanged. The coder's FH1-PERFORMANCE-LIMIT.json and full-suite 82/84 result
+remain exact referenced evidence. FH1 is coder performance work, not an
+oracle defect or an excuse to increase limits or suppress verification.
+
+HOLD and history
+----------------
+Of 663 original controls, only the explicit FH3 spec locator differs; the
+other 662 remain exact. The 722-file held source/input inventory changes only
+at that spec. Production, older tests, fixtures, helpers, settings,
+dependencies, credentials/Origin guards and old signatures are untouched.
+No agents, commits or native API operations were used.
+
+Only the actually amended new FH spec is byte-archived:
+  history\a1\finding-history.spec.ts.before.txt
+Original packet/digest and RED remain unchanged in place and are referenced
+by hash. No original packet/source/review or coder trace tree is copied.
+Old signatures identify the archived original spec, not the amended active
+file; no current-old-oracle pass is claimed and no old oracle is re-signed.
+
+Frozen A1 metadata
+------------------
+AMENDMENT-A1.json proves the exact single replacement and FH1 preservation.
+GUARDS-A1.json / VALIDATION-A1.json record source HOLD and focused outcomes.
+EVIDENCE-A1.json hashes fresh logs/results/traces outside protected tests:
+  .artifacts\finding-history-v1-a1
+Do not overwrite original-fh3-01 or corrected-fh3-01 evidence.
+HANDOFF-A1.json and PACKET-A1.json/PACKET-A1.sha256 freeze the unsigned
+amendment for parent review/reseal. FH1 remains unresolved afterward.
