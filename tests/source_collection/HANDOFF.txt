@@ -1,0 +1,50 @@
+SOURCE COLLECTION V1 - INDEPENDENT TEST-FIRST HANDOFF
+===================================================
+
+This packet adds only tests/source_collection. Read CONTRACT.txt for the exact
+selected GitHub source APIs, encrypted credential domain, immutable job, record
+evidence/asset decisions and independently pooled worker surface.
+
+Required production surfaces:
+  app.Config.CollectionStorage *app.StorageConfig
+  app.CollectionWorkerConfig
+  app.OpenCollectionWorker(ctx, config) (*app.CollectionWorker, error)
+  worker.ProcessNext(ctx) (bool,error), Ping(ctx), Close()
+
+The typed binding forwards only and normalizes nil concrete worker pointers.
+It has no fake handler, database success, outbox, source parser or retry logic.
+Full-binding missing-constructor compile RED is allowed evidence, not executed
+source semantics. Seven orchestration narratives remain blocked until production
+exists. The separate real PG/local-S3 preflight proves only the owned fixture
+and existing Reader behavior; helper compilation is not acceptance.
+
+Important parent decision before coding:
+evidence.Open performs HeadBucket. Do not use that broad probe for this worker.
+Reuse/factor the existing no-probe app bounded publication/integrity-reader
+path, or add a narrowly reviewed no-probe writer constructor around existing
+internals. No test-side storage shim or generic plugin framework is supplied.
+Keep existing Slack AAD and bytes unchanged while adding the source profile/
+workspace/connection domain.
+
+From C:\bahadr\serious\aspm:
+  .\tests\source_collection\Test-SourceCollection.ps1 -RuntimeConfig '<private-aspm-runtime.json>' -Mode Contract -OutputName parent-source-01
+
+Use fresh labels. The runner reads only the selected private loopback runtime,
+redacts before storing logs, strips ambient provider/proxy credentials and uses
+the existing cached Go 1.27.1/modules offline with -mod=readonly.
+HarnessCompile and Preflight intentionally omit only the missing production
+binding for compiler/fixture diagnostics. They must not replace full Contract
+mode after implementation. ExistingAdapters is the unchanged owned-TLS native
+suite, not a real-account certification.
+
+All source state is created by actual core APIs; worker data goes through the
+existing native collector, real local PG and selected S3 evidence paths.
+No fake business SQL is used. The declared S3 integrity-negative overwrite is
+restricted to a test-owned object; lease/actor state is never SQL-edited.
+No organization enumeration, token refresh, normalized findings, scanner run,
+closure, UI/runtime/deployment wiring or cloud/vendor activity is included.
+
+reviews/v1 contains source/module/fixture hashes, actual RED and frozen current
+packet metadata. Logs, TLS/PG/S3 evidence diagnostics and helper binaries remain
+outside protected roots. No previous history was copied or old control edited.
+Parent verifies/seals, then assigns separate implementation and review.

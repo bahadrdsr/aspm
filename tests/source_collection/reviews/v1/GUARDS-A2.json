@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T16:48:22.014Z",
+  "before": {
+    "path": ".artifacts\\source-collection-upgrade-a2\\BEFORE-A2.json",
+    "bytes": 27179,
+    "sha256": "051c8ed011a6cea3b1810fda5916125559063623b5b8c8893dbd93e9056748b5"
+  },
+  "currentHeldFilesUnchanged": [
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 9460,
+      "sha256": "127468932c8c085756f86aa55bfda2207bd706425b918b89552004dcdcaabffc"
+    },
+    {
+      "path": "internal\\app\\source_schema.go",
+      "bytes": 3293,
+      "sha256": "92ad50350f92101a3df59e5808d23154f045dcb980af89b3fce0b7ae0acb26d7"
+    },
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 5897,
+      "sha256": "71c10d298fdb561c2c17ba97f5bf391f23f2efc2e157efd1f33e70e705443147"
+    },
+    {
+      "path": "internal\\app\\source_worker.go",
+      "bytes": 13657,
+      "sha256": "5e23e05647845b766ca6e260c06f01ec5727172e571da4ebffbaa0ab724b0260"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 23504,
+      "sha256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    },
+    {
+      "path": "tests\\source_collection\\fixture_calibration_test.go",
+      "bytes": 11498,
+      "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+    },
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\contract_test.go",
+      "bytes": 3298,
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests\\source_collection\\Test-SourceCollection.ps1",
+      "bytes": 6342,
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A1.json",
+      "bytes": 9063,
+      "sha256": "e196e27f5dfb595e3e513dd823b74b08191db072056b84f7564d11faf396fcbe"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "fa0428c5dcbea4883eade49a41be89bd6ae77b697b0f7443b55fbbcee2b237a3"
+    },
+    {
+      "path": ".oracles\\source-collection-a1.json",
+      "bytes": 22921,
+      "sha256": "40af060e0b13ac681345a1b2b5784486a804c0c57d7bb7c046ed2b950138cc1a"
+    },
+    {
+      "path": ".oracles\\source-collection-a1.json.sig",
+      "bytes": 89,
+      "sha256": "c53707249b5377362cc428aa98f98c9f5f8e6bcf1cbb3cfacf60f1c0c240fbe9"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "changedExistingFiles": [],
+  "originalA1Authority": {
+    "manifest": {
+      "path": ".oracles\\source-collection-a1.json",
+      "bytes": 22921,
+      "sha256": "40af060e0b13ac681345a1b2b5784486a804c0c57d7bb7c046ed2b950138cc1a"
+    },
+    "signature": {
+      "path": ".oracles\\source-collection-a1.json.sig",
+      "bytes": 89,
+      "sha256": "c53707249b5377362cc428aa98f98c9f5f8e6bcf1cbb3cfacf60f1c0c240fbe9"
+    },
+    "originalHashArrayPointer": "/files",
+    "requiredControls": 121,
+    "allOriginalHashesUnchanged": true,
+    "resigned": false
+  },
+  "newCodeAndDDL": [
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    {
+      "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+      "bytes": 14328,
+      "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+    }
+  ],
+  "originalA1CancellationFixtureAndCalibrationUnchanged": true,
+  "originalNarrativesBindingsModulesUnchanged": true,
+  "archivedExistingFiles": [],
+  "historicalMaterialCopied": "Only the necessary exact published v1-v5 DDL values with per-source/blob hashes.",
+  "productionChanges": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "privilegedDatabaseChanges": false
+}

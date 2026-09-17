@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-runtime-v1",
+  "capturedAt": "2026-09-17T17:37:16.727394+00:00",
+  "surfaces": {
+    "command": "cmd/collection-worker",
+    "environment": "service.Environment(\"collection\")",
+    "run": "service.Run(ctx,\"collection\",Config)",
+    "configFields": {
+      "CollectionStorage": "*app.StorageConfig",
+      "CollectionLeaseDuration": "time.Duration",
+      "GitHubEndpoint": "string",
+      "CollectionClient": "*http.Client",
+      "CollectionCAFile": "string",
+      "CollectionLimits": "connectors.Limits"
+    }
+  },
+  "environment": {
+    "storageNames": [
+      "ASPM_COLLECTION_S3_ENDPOINT",
+      "ASPM_COLLECTION_S3_BUCKET",
+      "ASPM_COLLECTION_S3_PREFIX",
+      "ASPM_COLLECTION_S3_REGION",
+      "ASPM_COLLECTION_S3_ACCESS_KEY",
+      "ASPM_COLLECTION_S3_SECRET_KEY"
+    ],
+    "coreOptional": "all absent -> nil; any supplied -> complete explicit validated read-only capability",
+    "collectionRequired": "own six storage fields, DB, canonical base64 32-byte ASPM_INTEGRATION_ENCRYPTION_KEY; no raw/operator fallback",
+    "lease": "ASPM_COLLECTION_LEASE_DURATION default15s, 250ms..1m",
+    "gateway": "ASPM_GITHUB_ENDPOINT default https://api.github.com; approved HTTPS only",
+    "ca": "ASPM_COLLECTION_CA_FILE optional bounded PEM, normal TLS, no trust-store changes",
+    "defaultLimits": {
+      "Requests": 32,
+      "Pages": 8,
+      "PageSize": 50,
+      "Bytes": 8388608
+    }
+  },
+  "readiness": {
+    "service": "collection",
+    "database": "reachable",
+    "storage": "configured-not-probed",
+    "notS3WriteOrProviderVerification": true
+  },
+  "primitiveDecision": "Narrowly reuse/factor accepted delivery normal-TLS/origin client builder and accepted pure collection worker validation for fail-before-I/O service preflight; no new outbox or test-side validation shim.",
+  "explicitPrivateFixtureArgument": "StorageConfig is required in addition to RuntimeConfig, following existing runtime_roles pattern, selecting already-provisioned local scoped-policy keys without ambient discovery.",
+  "storageIdentityRoles": {
+    "coreCollectionReadOnly": "existing private fixture ai key",
+    "collectionPublisher": "existing private fixture core key",
+    "cleanupOnly": "existing fixture admin key",
+    "prefix": "approved/team-a/grant-1/collection-runtime-<random>/",
+    "endpoint": "owned local 127.0.0.1:18335/aspm-isolation"
+  },
+  "rightsSeparation": "Real direct S3 key tests establish reader GET/publisher PUT success and reader PUT 403 AccessDenied. Taps add random-suffix/signer/method and no-bucket-probe guards; those guards are not represented as IAM denial.",
+  "scopeExclusions": [
+    "backend DDL/normalization",
+    "UI",
+    "runtime deployment/cron",
+    "Helm/Quadlet/installer",
+    "OAuth/app installation",
+    "live GitHub/cloud accounts",
+    "OS-signal graceful command shutdown proof"
+  ]
+}

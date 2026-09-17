@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "scope": "github-source-collection-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_CONSTRUCTOR_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-17T14:36:13.294655+00:00",
+  "sourceHead": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "controls": [
+    {
+      "path": "tests\\source_collection\\commit_trace_test.go",
+      "bytes": 1516,
+      "sha256": "3dfed44d0ebc17b231b28320970218b2ec37e4e24acce21185d7dd2119880554"
+    },
+    {
+      "path": "tests\\source_collection\\contract_test.go",
+      "bytes": 3298,
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 22714,
+      "sha256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818"
+    },
+    {
+      "path": "tests\\source_collection\\github_fixture_test.go",
+      "bytes": 5991,
+      "sha256": "bab80aa3ae842c6c9ac6ad3f51dd7790b6180f468ba05c2a1e017f28fb548b45"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\Test-SourceCollection.ps1",
+      "bytes": 6342,
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    },
+    {
+      "path": "tests\\source_collection\\CONTRACT.txt",
+      "bytes": 18020,
+      "sha256": "df78884eb39444f2eb20ccc913abe70ec9938ef99c35f96cccb836b2034e97e3"
+    },
+    {
+      "path": "tests\\source_collection\\HANDOFF.txt",
+      "bytes": 2988,
+      "sha256": "4cce2a6066f9705f1fbc098802f0fe30bb185114b92727971e3cf3b8757bbff1"
+    }
+  ],
+  "contract": "tests\\source_collection\\CONTRACT.txt",
+  "humanHandoff": "tests\\source_collection\\HANDOFF.txt",
+  "decisions": "DECISIONS.json",
+  "red": "RED.json",
+  "guards": "GUARDS.json",
+  "compiler": "COMPILATION.json",
+  "externalEvidence": "EVIDENCE.json",
+  "outcomes": {
+    "authoredTopLevel": 8,
+    "sourceNarrativesBlockedNotRun": 7,
+    "fullContract": "actual missing-constructor/configuration compile RED",
+    "helperCompile": "PASS_NOT_ACCEPTANCE",
+    "ownedPGS3ReaderPreflight": "PASS",
+    "unchangedNativeAdapterTopLevelPasses": 26,
+    "skips": 0,
+    "existingFilesEdited": 0,
+    "newDependencies": 0,
+    "agentsSpawned": 0,
+    "commitsCreated": 0,
+    "liveGitHubCloudActivity": 0
+  },
+  "narrowParentDecisionRequired": "No-bucket-probe publication reuse/factoring; no test-side storage shim was supplied.",
+  "oldControlsSourceModulesOrHistoryChanged": false,
+  "archives": [],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Review the exact source API/storage/AAD/asset/fence decisions before coding.",
+    "Verify the actual constructor RED and distinguish helper/preflight passes from blocked source semantics.",
+    "Seal NEW source-collection controls only.",
+    "Assign separate production implementation and independent review; runtime/deployment/UI/normalization follow later accepted backend behavior."
+  ]
+}

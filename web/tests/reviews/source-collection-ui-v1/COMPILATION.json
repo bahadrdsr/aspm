@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "actualTypecheck": true,
+  "finalExitCode": 0,
+  "runs": [
+    {
+      "command": "npm.cmd run typecheck",
+      "startedAt": "2026-09-17T17:29:40.3053672Z",
+      "endedAt": "2026-09-17T17:29:46.3241740Z",
+      "exitCode": 0,
+      "run": {
+        "path": ".artifacts\\source-collection-ui-v1-author\\typecheck-01.run.json",
+        "bytes": 156,
+        "sha256": "caf1877b66e9dd1788aa71386bd871605b50c9334fa7b2d4ba211d64201ff20b"
+      },
+      "stdout": {
+        "path": ".artifacts\\source-collection-ui-v1-author\\typecheck-01.stdout.txt",
+        "bytes": 49,
+        "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+      }
+    },
+    {
+      "command": "npm.cmd run typecheck",
+      "startedAt": "2026-09-17T17:35:13.5058981Z",
+      "endedAt": "2026-09-17T17:35:18.0299181Z",
+      "exitCode": 0,
+      "run": {
+        "path": ".artifacts\\source-collection-ui-v1-author\\typecheck-02.run.json",
+        "bytes": 156,
+        "sha256": "9cedb2aced835579371e31645f5f069ea0c2d46f89999ce54901cd473f66c8bb"
+      },
+      "stdout": {
+        "path": ".artifacts\\source-collection-ui-v1-author\\typecheck-02.stdout.txt",
+        "bytes": 49,
+        "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+      }
+    }
+  ],
+  "enumerationIsNotTypecheck": true,
+  "enumeration": {
+    "path": ".artifacts\\source-collection-ui-v1-author\\compiler-inputs-01.txt",
+    "bytes": 23968,
+    "sha256": "47be7a9d112ad036b5c6981f0ee2b2fbd81d836ef3d3a307dc9abd62d35acc96"
+  }
+}

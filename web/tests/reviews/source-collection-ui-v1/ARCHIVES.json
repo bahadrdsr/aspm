@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "reason": "Only these two existing HTTP fixtures navigate Integrations and require a minimal validated empty GET /api/v1/sources response. All original guards/assertions remain.",
+  "archives": [
+    {
+      "source": "web\\tests\\network.ts",
+      "archive": "web\\tests\\reviews\\source-collection-ui-v1\\history\\before\\network.ts.before.txt",
+      "path": "web\\tests\\network.ts",
+      "bytes": 6155,
+      "sha256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584"
+    },
+    {
+      "source": "web\\tests\\slack-ui-fixture.ts",
+      "archive": "web\\tests\\reviews\\source-collection-ui-v1\\history\\before\\slack-ui-fixture.ts.before.txt",
+      "path": "web\\tests\\slack-ui-fixture.ts",
+      "bytes": 29329,
+      "sha256": "69afa8107fed7c289ef5f06183e139c241c1df332924095d1e1cedd086fb85f5"
+    }
+  ]
+}

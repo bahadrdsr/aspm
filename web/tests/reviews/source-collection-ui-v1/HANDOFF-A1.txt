@@ -1,0 +1,82 @@
+SOURCES UI A1 - ONE RETRY-AFTER REGEX ESCAPE CORRECTION
+====================================================
+
+Confirmed original-author defect
+--------------------------------
+The coder blocker, actual spec, production collection detail and archived
+trace were independently inspected. The trace contains the valid literal UI:
+  Retry-After: 7 seconds. Retryable: false. No automatic retries.
+
+An independent original SU4 run reproduced the line-142 mismatch against
+that same valid text. The old regex incorrectly required a literal backslash
+after its optional colon rather than optional whitespace before the value.
+This is a test-pattern escape defect, not a production formatting requirement.
+No backslash-display workaround is introduced.
+
+Only one byte changes
+--------------------
+The old regex:
+  /retry.after\s*:?\\s*7\s*(?:s\b|seconds?)/i
+becomes:
+  /retry.after\s*:?\s*7\s*(?:s\b|seconds?)/i
+
+Exactly one backslash is removed. The label, numeric 7, whitespace handling
+elsewhere, unit alternatives, case-insensitivity and original assertion
+remain. Every other byte in the complete spec is identical, including all
+collection/raw-evidence/partial/no-retry/role/epoch assertions and budgets.
+
+  Original spec SHA-256:
+    5abac796e14f5de5379e570c9e613cc2acb113675ec934c9f7a1acae52a31505
+  A1 spec SHA-256:
+    2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108
+
+Pattern calibration, not application acceptance
+-----------------------------------------------
+Six valid examples cover the actual display, varied spaces/newline/tab,
+omitted colon, singular unit, short s unit and case-insensitivity.
+Ten invalid examples cover other values including 17/70, missing number,
+missing unit/label, wrong unit and a literal-backslash value. All corrected
+pattern outcomes match the expected classification.
+
+A one-off author calibration initially put an extra space before the
+deliberately invalid backslash used to demonstrate the old bug. The old regex
+does not permit that space after its colon; only that diagnostic positive
+control was corrected. No second spec/source change occurred. This diagnostic
+note and all exact inputs/results are retained in pattern-calibration.json.
+
+Actual gate outcomes
+--------------------
+  Original SU4: reproduced the regex mismatch.
+  Corrected focused SU4: passed.
+  All seven focused Sources cases: passed.
+  Full 91-case browser suite: passed.
+  Actual typecheck: passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+
+Full91 and typecheck ran only after focused SU4/all-seven were green.
+No new real product failure appeared and no other assertion was altered to
+obtain these results. Calibration is not a substitute for these browser runs.
+
+Source/control HOLD and history
+--------------------------------
+The 797-file source/input HOLD changes only at the amended spec. Of the 724
+current controls, the other 723 remain identical. Production, existing tests,
+fixtures/helpers, settings/dependencies and all old signatures are untouched.
+No agents, commits or native API changes were used.
+
+Only the actual old spec is archived:
+  history\a1\source-collection-ui.spec.ts.before.txt
+Original packet/digest and RED stay unchanged in place and are hash-referenced,
+not copied as old trees. Old signatures still identify their original bytes;
+no old-current-seal pass is claimed for the newly amended spec.
+
+Frozen A1 handoff
+-----------------
+BEFORE-A1.json, AMENDMENT-A1.json and GUARDS-A1.json record the exact one-byte
+correction and source/control preservation. VALIDATION-A1.json records real
+focused/full91/typecheck outcomes and the independent original reproduction.
+EVIDENCE-A1.json hashes unique outputs outside protected tests:
+  .artifacts\source-collection-ui-v1-a1
+Do not overwrite original-su4-01, corrected-su4-01, all-sources-01 or full-91-01.
+HANDOFF-A1.json and PACKET-A1.json/PACKET-A1.sha256 freeze the unsigned packet.
+Stop for parent verification and reseal; source/UI HOLD remains intact.

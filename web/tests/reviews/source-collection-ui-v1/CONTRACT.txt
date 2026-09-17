@@ -1,0 +1,198 @@
+SOURCE COLLECTION UI V1 - INDEPENDENT SELECTED-GITHUB TEST CONTRACT
+=================================================================
+
+Author scope and authority
+-------------------------
+Seven bounded Playwright cases add Sources within Integrations, not another
+primary navigation destination or a new collection backend/runtime/deployment.
+All data is synthetic. Production React/native controls run normally; only
+declared same-origin HTTP responses are supplied. No real GitHub/core/worker,
+scanner, parser, normalization, proof, API mutation, credential or agent runs.
+The separate worker/core-environment author scope is not touched.
+
+Source authority actually inspected:
+  internal\app\source_types.go, source_connections.go, source_collections.go,
+  source_storage.go, source_finalize.go, source_schema.go, source_process.go,
+  source_worker.go settlement metadata, http.go, remediation_credentials.go
+  internal\connectors\github.go and collect.go
+  tests\source_collection\CONTRACT.txt
+  Current Integrations/Slack connections, shared UI patterns and old fixtures.
+Actual Go JSON tags, limits and routes take precedence over prose shorthand.
+In particular rawURL is capitalized as shown; evidence has no separate
+record-detail JSON endpoint.
+
+Existing 84 assertions/provenance/compiler/dependency controls are not edited.
+Only network.ts and slack-ui-fixture.ts require additive Sources GET navigation
+because their existing cases visit Integrations. Each receives one import and
+one minimal dispatch after its existing guards; exact byte reconstruction is
+recorded in AMENDMENT.json. No old guard statement is removed or weakened.
+The helper accepts only GET /api/v1/sources, a known selected workspace and
+valid native limit/cursor, returning a true empty {items:[],total:0,nextCursor:null}.
+No source, credential, collection, verification or write capability is forged.
+Only those two actually amended files are archived; older review trees are
+hash references, not recursively copied. No old signature/controlset is changed.
+
+Actual connection API and credential boundary
+--------------------------------------------
+GET/POST /api/v1/sources
+GET/PATCH /api/v1/sources/{sourceID}
+
+POST exactly:
+  {profile:"github-cloud-app",name,repository:"owner/repo",token,enabled:boolean}
+Only admin creates/updates. Members read workspace metadata. IDs are native
+32-character lowercase hex. Name is nonblank/NUL-free, <=256 UTF-8 bytes.
+Repository is <=256 bytes and matches:
+  ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,254}/[A-Za-z0-9_][A-Za-z0-9_.-]{0,254}$
+It is one selected repository, not a URL, organization search or discovery.
+Token is a bounded opaque installation bearer: nonempty, <=16384 UTF-8 bytes,
+no leading/trailing Go whitespace or Unicode controls. Request JSON <=32 KiB.
+Enabled must be deliberately represented as a boolean.
+
+PATCH includes only intentional name/repository/token/enabled fields.
+A blank token input means omit token, not send an empty replacement. Identity,
+workspace/profile are immutable. Meaningful change increments server revision.
+No optimistic Connected, healthy or live-verified label follows credential
+presence. Metadata is:
+  id,workspaceId,profile,name,repository,enabled,credentialConfigured,
+  revision,createdAt,updatedAt
+It never contains bearer, key, ciphertext, endpoint, headers or approval data.
+POST returns 201 {source}; PATCH/detail return 200 {source}, with apiVersion.
+
+No browser encryption-key prompt, native token refresh, OAuth installation,
+header editor, public approval/requester or implicit test/verification send.
+Missing operator key ->503/unavailable; 403 remains authoritative. Appropriate
+nonsecret draft values and actionable configuration/permission feedback remain,
+without secret echo. Close/success/scope/session invalidation clears token drafts.
+Tokens cannot appear in DOM text, URL, readable cookies, console or storage.
+
+Exact collection/evidence vocabulary
+-----------------------------------
+POST /api/v1/sources/{sourceID}/collections  {idempotencyKey}
+GET  /api/v1/sources/{sourceID}/collections
+GET  /api/v1/sources/collections/{collectionID}
+GET  /api/v1/sources/collections/{collectionID}/records
+GET  /api/v1/sources/collections/{collectionID}/records/{recordID}/evidence
+
+Admin/analyst explicitly confirm collection; viewer reads only. Opening a
+dialog, creating a source, choosing a repository or refreshing metadata does
+not enqueue or contact a provider. The body contains ONLY idempotencyKey,
+nonblank/NUL-free <=256 UTF-8 bytes, in <=16 KiB JSON. No actor, source ID,
+repository, endpoint, headers or approval is submitted in that body.
+Disabled source ->409; foreign/missing resource ->404; missing collection
+evidence storage capability ->503. Current server roles are independent of
+cached session role and can deny a stale visible writer with 403.
+
+New enqueue ->202 queued. Same workspace/key and immutable source/revision/
+repository/profile/actor binding ->200 with the same complete result.
+Changed binding ->409, not a rewrite. Lost network ACK must either retain the
+same intent key for explicit user-confirmed replay, or block another attempt
+until authorized history reconciliation. It never automatically creates a job.
+Browser cancellation is not represented as a server rollback.
+
+Collection DTO:
+  id,workspaceId,sourceId,profile,connectionRevision,repository,requestedBy,
+  state,complete,assetId:null|id,repositoryId:null|string,recordCount,gaps:[],
+  createdAt,collectedAt:null|time,completedAt:null|time,failure:null|...
+States: queued, collecting, succeeded, partial, blocked, failed.
+Failure:
+  {code,nativeCode,httpStatus,retryAfterSeconds,retryable:false}
+Partial fixtures preserve repository/prior alert records and
+gaps:["alerts:rate_limited"], failure code rate_limited, HTTP 429 and
+retryAfterSeconds:7. Failed early collection settlement has zero records and
+gaps:[], as the actual settleSource path does. Blocked uses connection-disabled.
+No retry/sleep/collect timer or source auto-poll follows these data.
+
+Complete means exhausted selected feeds, not scanner success, vulnerability
+normalization, independent verification, safe absence or finding closure.
+Raw "finding" records are not app normalized findings. Never invent a Work
+finding, source scan, owner/workflow/risk mutation or verification result.
+
+Record DTO:
+  id,collectionId,ordinal,kind,externalId,parentId,nativeRunId,state,severity,
+  location,rawURL,sourceScanAt,sourceUpdatedAt,evidence:{sha256,sizeBytes}
+Kinds: repository or finding. Stable native IDs are decimal strings. Every
+fixture nativeRunId is empty and sourceScanAt is null, exactly as this GitHub
+profile supplies. Alert updated_at becomes sourceUpdatedAt, not a scan time.
+Repository raw URL and alert-page rawURL are provenance, never fetched.
+Ordinal and API ID order are different; pagination follows native ID, not ordinal.
+
+Evidence responses are application/octet-stream and exact stored bytes, not
+another JSON envelope. Preserve raw spaces, CRLF, trailing newlines and UTF-8.
+The visible PRE is literal text, with original Playwright structural checks
+against active markup/links, including shadow-root descendants. No innerHTML,
+JSON reserialization or remote-URL fetch. A display may normalize CRLF only if
+an explicit download still provides exact original bytes; no trimming or JSON
+reformatting is allowed. Digest/size metadata matches the actual HTTP bytes.
+Server integrity/storage failure is 503/unavailable, not a corrupt partial 200.
+
+Evidence 403/404 clears the previously loaded PRE/body. A subsequent retry 503
+must not expose it again before authorized 200. Independently authorized record
+metadata from a list need not disappear merely because raw evidence is denied.
+No invented GET /records/{recordID} metadata route is permitted.
+
+Returned assetId/repositoryId may be displayed as service references. Optional
+asset navigation uses the existing #/assets view only, not a fabricated direct
+asset-detail route or automatic filter. Human asset preservation and raw-to-
+normalized behavior are backend gates, not proof manufactured by this UI test.
+
+Pagination and bounded UI
+-------------------------
+Source, collection and record lists all use native pageParameters:
+  default 100, allowed 1..500, optional valid-ID cursor
+  id > cursor ORDER BY id; total for the collection; nullable nextCursor
+No page/offset/search/role/enabled query API. Default first reads remain bare
+for old callers. This packet uses at most 102 sources, 101 collection-history
+rows and 102 records to exercise default continuation without colossal DOMs.
+Manual page error retains prior confirmed rows and retry uses the same cursor.
+Append and page-window controls are allowed; no automatic full-directory drain.
+
+Keep five primary destinations, all eight catalog families with independent
+unverified labels and existing Slack Connections. Sources is a separate named
+region/table. Source/collection/record controls use role+accessible-name locators,
+especially native wrapped selects. Use existing shared shadcn/Animate/route/
+resource/scoped-action/session patterns; no new form/chart/virtualization package.
+Fields, region/table/form names in the spec have deliberate bounded aliases.
+
+Read scenarios persist per path/workspace until explicitly changed, so an
+aborted StrictMode subscription cannot consume a one-shot error/held response.
+Mutations remain one-shot. Every real request is still counted; none is deduped
+or hidden in the ledger. Held replies capture their DTO/raw bytes before release.
+Workspace/logout/401 invalidates all source draft/collection/evidence state and
+aborts old responses/ACKs before old data can reappear in another scope.
+At 390px/reduced motion, fields/long names fit, dialogs scroll and contain
+keyboard focus, and cancel restores context before any later user action.
+
+Seven grouped cases
+-------------------
+SU1: Preserved navigation/catalog/Slack, distinct loading/error/empty/source
+     paging, masked explicit source creation, keyless 503/nonsecret draft,
+     authoritative revision/disabled result, secret clearing and no collection.
+SU2: Sparse name/disable/token+repository edits, returned revision, no optimistic
+     metadata, disabled history, stale-role 403 and viewer read-only metadata.
+SU3: Explicit selected-source confirmation, storage 503, queued-only semantics,
+     lost-ACK same-key replay OR read reconciliation, no blind duplicate, stale
+     server-role 403 overriding visible analyst controls.
+SU4: Manual queued/collecting/succeeded/partial/failed/blocked response data,
+     selected-feed complete meaning, exact raw repository/finding records and
+     inert evidence, unknown source times, native updated time and no 429 timer.
+SU5: Real history/record cursors, held/error continuation and exact retry,
+     evidence denial through 503 until authorized bytes return.
+SU6: Viewer may inspect records/evidence; source draft closure and old evidence/
+     collection/ACK requests are aborted/withheld across workspace/logout.
+SU7: 390px/reduced-motion keyboard source/confirmation context, long name
+     wrapping/scroll, secret clearing and active-token-form 401 session loss.
+
+Qualification and stop
+----------------------
+Use actual typecheck, new missing-Sources UI RED and all prior 84 cases.
+Keep one worker, 20-second case/five-second expect, standard trace/animation
+settings, zero skips/flakes/retries and one combined 60-API-call budget per case.
+No test-side React/parser/worker replacement or diagnostic-as-gate success.
+Opening/read UI calls only the declared guarded same-origin fixture.
+
+Mutable logs/results/screenshots/traces belong outside tests under
+.artifacts\source-collection-ui-v1-author with unique original RED names.
+Blocked downstream semantics must be recorded honestly, not claimed green.
+Freeze packet/contract/guards/handoff for parent verification/seal and a separate
+coder/reviewer; do not implement UI, backend, runtime or deployment in this task.
+Old signatures are neither updated nor re-signed by this author.

@@ -1,0 +1,872 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-runtime-v1",
+  "phase": "pre-code-red",
+  "author": "independent-collection-runtime-test-author",
+  "capturedAt": "2026-09-17T17:50:40.111Z",
+  "redEvidence": {
+    "sha256": "90a9393bddf072d57642bbc201e601b3409e763c2b2bb304de8461b9140c25ae",
+    "exitCode": 1
+  },
+  "protectedRoots": [
+    "tests/collection_runtime"
+  ],
+  "bindingPaths": [],
+  "files": [
+    {
+      "path": ".oracles/source-collection-a1.json",
+      "normalization": "none",
+      "sha256": "40af060e0b13ac681345a1b2b5784486a804c0c57d7bb7c046ed2b950138cc1a"
+    },
+    {
+      "path": ".oracles/source-collection-a1.json.sig",
+      "normalization": "none",
+      "sha256": "c53707249b5377362cc428aa98f98c9f5f8e6bcf1cbb3cfacf60f1c0c240fbe9"
+    },
+    {
+      "path": ".oracles/source-collection-a2.json",
+      "normalization": "none",
+      "sha256": "188dba631e280c58f79dacbaaefbeb62f9dad728122aaeb87e9c8e10544880bc"
+    },
+    {
+      "path": ".oracles/source-collection-a2.json.sig",
+      "normalization": "none",
+      "sha256": "93d41aa452c788bf5248e72f6dd5b8019e7f1e83c924c79f110f25ae1f1b061f"
+    },
+    {
+      "path": ".oracles/source-collection-v1.json",
+      "normalization": "none",
+      "sha256": "464ee22033fc1b55d31d000c8981c4a98af198d4872a0772e8f82d03bd8d7e50"
+    },
+    {
+      "path": ".oracles/source-collection-v1.json.sig",
+      "normalization": "none",
+      "sha256": "15ab06bd0b873c00efdeca56d79ac982db8715876ce4c31653d746939ca62498"
+    },
+    {
+      "path": "go.mod",
+      "normalization": "none",
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "normalization": "none",
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal/app/auth_test.go",
+      "normalization": "none",
+      "sha256": "7f2937983197a96fc555b879a2273c3e6da9913076cfa71b9f445ea9413c27a9"
+    },
+    {
+      "path": "internal/connectors/collection_guardrails_test.go",
+      "normalization": "none",
+      "sha256": "2341c7c267ef8b40a735f3572af2a6a6add98caa6c0f18c4f93b97ba13766618"
+    },
+    {
+      "path": "internal/connectors/guardrails_test.go",
+      "normalization": "none",
+      "sha256": "9d6ca42297da00fb52dd3e55229dca2066a2323312e1b0957b32ab489f6225d9"
+    },
+    {
+      "path": "tests/acceptance/api_test.go",
+      "normalization": "none",
+      "sha256": "cedd4a1aa6fb662a4e28a27e102a30b7689201b09d7eb7f789b79ab9d351a57f"
+    },
+    {
+      "path": "tests/acceptance/application_bindings_test.go",
+      "normalization": "none",
+      "sha256": "be223a9a5122b7c33efcf3c11dc1ce25dd1605e9de11de7f0f9b82f2f6094144"
+    },
+    {
+      "path": "tests/acceptance/contract_test.go",
+      "normalization": "none",
+      "sha256": "b89d01a43d2c5493a4113ab1b7f285f7b3ff8c28c6d2abc21345bb71646be80f"
+    },
+    {
+      "path": "tests/acceptance/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "1cb200de3d63682e9a25ae67f9128231f2d41b0afd1852a1f02709303ddca51f"
+    },
+    {
+      "path": "tests/acceptance/m03_test.go",
+      "normalization": "none",
+      "sha256": "67861502185ef16eb9b69b052705cedfc44c0e8de6568cbee3219e77da73aa8a"
+    },
+    {
+      "path": "tests/acceptance/m04_oidc_test.go",
+      "normalization": "none",
+      "sha256": "84f8e4396f2aee48b1ecde5fa91088328f386c16bf819bd63e86d9c818236842"
+    },
+    {
+      "path": "tests/acceptance/m04_test.go",
+      "normalization": "none",
+      "sha256": "75ae0a4c38c3e54f97a47ff1f3c496db5b2ee7adde2ff1889d4756d853b71646"
+    },
+    {
+      "path": "tests/acceptance/m05_test.go",
+      "normalization": "none",
+      "sha256": "345a0f464f204d818dfef1668f71dd5eddc14c0a947f721762522ff6e2fedd3f"
+    },
+    {
+      "path": "tests/acceptance/m06_test.go",
+      "normalization": "none",
+      "sha256": "908e65dd4d4c8aff36d767d303d23a3a27cc8bfd353f57e996bd4643bf03c358"
+    },
+    {
+      "path": "tests/acceptance/m07_test.go",
+      "normalization": "none",
+      "sha256": "dda7f151116ff158ae763fcfbb5841a2022b13f67a9af00640d5e3f5d98b0b90"
+    },
+    {
+      "path": "tests/acceptance/m10_test.go",
+      "normalization": "none",
+      "sha256": "aa5c82530093c3ba75f7dbd15e288fb66c887033154efee9ae2b67f9a37021fa"
+    },
+    {
+      "path": "tests/acceptance/plan_bindings_test.go",
+      "normalization": "none",
+      "sha256": "4fe67e558a327f9f71b3ab7bd69ae57de248c68d0848d82138b854813cd340ba"
+    },
+    {
+      "path": "tests/acceptance/RED.txt",
+      "normalization": "none",
+      "sha256": "01eb0d5edb2cc83ec164bd799225cbdd15b789c195bc7e3d3dc5c2eda9ceeede"
+    },
+    {
+      "path": "tests/acceptance/security_behavior_test.go",
+      "normalization": "none",
+      "sha256": "63c47d31ad07594848899d9a7967bfe2a314d657b6762889882a8e579492b975"
+    },
+    {
+      "path": "tests/acceptance/security_concurrency_test.go",
+      "normalization": "none",
+      "sha256": "ce2b0eaee643ca60ca2da54da6d33c78eaf19e40a1e42223af94b61636d63054"
+    },
+    {
+      "path": "tests/acceptance/security_io_test.go",
+      "normalization": "none",
+      "sha256": "6a2be390f06cd26655fd71267dae994235145ddfcae77f5cfdd8a4b4ccaf93a9"
+    },
+    {
+      "path": "tests/acceptance/security-behavior.handoff.json",
+      "normalization": "none",
+      "sha256": "33147709159c89334d0cd1ed33cae2e6eb7effeca399505f50d6ce1b0d887c2d"
+    },
+    {
+      "path": "tests/acceptance/security-CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "f6e528cc466702a57f6cbb89eaf40807dd2fa56e9a294b3f7cbaaa224255a6ae"
+    },
+    {
+      "path": "tests/acceptance/security-hashes.after.json",
+      "normalization": "none",
+      "sha256": "050bc7167ab82771a265be9b2ce05b7e5937ff56efabcac1a002558789c93dcb"
+    },
+    {
+      "path": "tests/acceptance/security-hashes.before.json",
+      "normalization": "none",
+      "sha256": "0929117c9cf76bfdd9c4b7696304f7d732274b32c7aea4805801128f15f98a95"
+    },
+    {
+      "path": "tests/acceptance/security-RED.txt",
+      "normalization": "none",
+      "sha256": "ffd77f321d804d78146d8bf144a4be39d4f1b6db2738f8ee9080570d27390ee2"
+    },
+    {
+      "path": "tests/acceptance/services_test.go",
+      "normalization": "none",
+      "sha256": "9b47472ae7c488e96932626698466a0492850cd88f522750bc949ce136b093b6"
+    },
+    {
+      "path": "tests/acceptance/Test-Acceptance.ps1",
+      "normalization": "none",
+      "sha256": "2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6"
+    },
+    {
+      "path": "tests/acceptance/testdata/generic-json.json",
+      "normalization": "none",
+      "sha256": "25554cd1ca77c599c9675b26a4f36b41205ae86e16446781242fb5715dd029ac"
+    },
+    {
+      "path": "tests/acceptance/testdata/generic.csv",
+      "normalization": "none",
+      "sha256": "62a2cf93cfd1214fd994e549dde82798b822db8b87fb164adb2af13bc15a9e10"
+    },
+    {
+      "path": "tests/acceptance/testdata/gitleaks.json",
+      "normalization": "none",
+      "sha256": "73ed1e05c05e5a2a35db0af9513ca33ee49d9fc33f4577eb5b03f00981ca7354"
+    },
+    {
+      "path": "tests/acceptance/testdata/manual.json",
+      "normalization": "none",
+      "sha256": "7dae0087d90091d4a46c6986810fae58f4f3f7f628f1b6440970c12400f1d249"
+    },
+    {
+      "path": "tests/acceptance/testdata/sarif.json",
+      "normalization": "none",
+      "sha256": "76a29fde1673ccfc08a860d576c8a300fd9238ede49bfae4408db4e58b64e15a"
+    },
+    {
+      "path": "tests/acceptance/testdata/trivy.json",
+      "normalization": "none",
+      "sha256": "18c489e6b61fd2525dbb759f5d42bede76d60fd49111b7b3a2e1bfeb718ded66"
+    },
+    {
+      "path": "tests/acceptance/testdata/zap.json",
+      "normalization": "none",
+      "sha256": "cf2a3bfc002670d2c79f05133b9d63a8067c6d1d29754764f1b4ae314ca967c8"
+    },
+    {
+      "path": "tests/collection_runtime/contract_test.go",
+      "normalization": "none",
+      "sha256": "7cb729f73f8adaacb7bdc451d445a1df1797b4225689a99855a8077e9872edbf"
+    },
+    {
+      "path": "tests/collection_runtime/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "0374269448cb623eaac25a3a1d89fa4044ca318e2dd96d8c2863fa4048c798db"
+    },
+    {
+      "path": "tests/collection_runtime/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "b77370299237c1f889ea88f8ee11fc4ab36e1a816f18a3f3c52370f4bd95099e"
+    },
+    {
+      "path": "tests/collection_runtime/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "44584fc1dfd467650b25baeee33ebadaf2d6370b0859bb63a4c4fff39425ddb6"
+    },
+    {
+      "path": "tests/collection_runtime/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "9d711cb8145c562958a299824bbcc92b2f4e5c6df5fb617491600a1756a38ffc"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "51c6cdea596bbc10714ba4b538ee1c060a6aede3819546ec83b75d8526f9b7e2"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/DECISIONS.json",
+      "normalization": "none",
+      "sha256": "4afa83a074f42e5f6b89345489a19343cb1cc49885ac09e2031ca2141d2cf1ae"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "c4baba8c533d43b439c65312b26b448271e28481be44696215bdf878f8f90c3d"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "12fc1da8403abf4897e278477658233bef72372f4b17d6979c62b0ff9bdc7421"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "ece8595b164a9596fae71a1c7e42459925a1b173ef16945f3711b77c7339cc91"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "80792c33bd13c30a14d219667b0bc0c9994d0c133b89b5fdf1830a8afbaf2dfc"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "5c31f9e94a5ac53e8b0ad60a25619f767d10851cf8ed52dc63bc5e8f2872d7d0"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "ff37577ae5055e4242b76978d58f7bf90198cf36fec36c0b42c6390acf92878e"
+    },
+    {
+      "path": "tests/collection_runtime/rights_calibration_test.go",
+      "normalization": "none",
+      "sha256": "00e03fafd9f28d5184df33d00f1a33e89e02fe052d7ca740e31a046ab3bec1d6"
+    },
+    {
+      "path": "tests/collection_runtime/roles_test.go",
+      "normalization": "none",
+      "sha256": "efec6cd742ddcbba5c1055967ed203798852dc3724e18c0fbc21aaa104ef189f"
+    },
+    {
+      "path": "tests/collection_runtime/Test-CollectionRuntime.ps1",
+      "normalization": "none",
+      "sha256": "e7546dff6417c13eb891029b7051dadddc92a45de77e32f188f002142834b1ad"
+    },
+    {
+      "path": "tests/connectors/cloud_test.go",
+      "normalization": "none",
+      "sha256": "695bd31e54639f2d5690f1011888462a921671a21386da331ba044caf6a37ae8"
+    },
+    {
+      "path": "tests/connectors/contract_test.go",
+      "normalization": "none",
+      "sha256": "9c162c0ec401eb88876fe7be5f862278fb4b6a114a0288593338eb0db9c20c2e"
+    },
+    {
+      "path": "tests/connectors/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "d8fc51ec4a1dd259988acc1997d69a8ac214dcc84def9856498181000a38bc56"
+    },
+    {
+      "path": "tests/connectors/credential_boundary_test.go",
+      "normalization": "none",
+      "sha256": "b2ba5c15ed3e68637f9748f429f98f682b2009805fc2805f58a55448db40fdc0"
+    },
+    {
+      "path": "tests/connectors/delivery_test.go",
+      "normalization": "none",
+      "sha256": "adc0ea52472faa392817e01ae22305a9c2389c1076d73cfd06faec04242c19ad"
+    },
+    {
+      "path": "tests/connectors/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "8c0480d305a6427cd8a66516823f1327d64b0a14002a2a32536997b3193f7756"
+    },
+    {
+      "path": "tests/connectors/repositories_test.go",
+      "normalization": "none",
+      "sha256": "cf5523a2ebeff849c784ecfdeff5a07c4a32e1e991a2e22aab4e283a2937bc3b"
+    },
+    {
+      "path": "tests/connectors/review_boundaries_test.go",
+      "normalization": "none",
+      "sha256": "34d4321db539746f090b0b5806b3edd7ed21c01606a5aac3b175183afb91d66e"
+    },
+    {
+      "path": "tests/delivery_runtime/contract_test.go",
+      "normalization": "none",
+      "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"
+    },
+    {
+      "path": "tests/delivery_runtime/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "fdcef55a75e24400db4dceb3d355aeaa49c320a9c160fb3b433bc08928f00029"
+    },
+    {
+      "path": "tests/delivery_runtime/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"
+    },
+    {
+      "path": "tests/delivery_runtime/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "5b9571f97e8c81a2cb30d14e8feeae85c03714dfaa818b3f2a6f929544c146f6"
+    },
+    {
+      "path": "tests/delivery_runtime/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "f3bef3f55ea21280bc591c133e666d51f7de87a850d88eee4ea666e2fecd7a7c"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "636c447278eb6fc4bd6e2a3a3a18ff726704c97ae88f7a7a41ebde52f8f158fa"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/GUARDS-A1.json",
+      "normalization": "none",
+      "sha256": "525cd924fa404ab9ea216239f25029ffca145ac62fddc3048fe2cd27cb343638"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "973a327fce537d56c4ad9f3401a3cf4a3b261fd6ce2e0ee8742081d788d58e25"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/HANDOFF-A1.json",
+      "normalization": "none",
+      "sha256": "44fd8929c13b168b0f000a4569c927430fd0e11f21525066c6853923660a98cb"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/HANDOFF-A1.txt",
+      "normalization": "none",
+      "sha256": "4cbd1f4c9caa026bd7b226c5dec8c9ddb54e2d66eb1313310379aeee069e8f6f"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "6ab157d8a045800fc5e48979ce1843de9503f3ccd17cf4916d163022a72bc102"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET-A1.json",
+      "normalization": "none",
+      "sha256": "8059d53a9e8a264e30a2d49e8c6bbd98516daf583ec433abdc63b7d376c7faed"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET-A1.sha256",
+      "normalization": "none",
+      "sha256": "04d00c1413d0b40955758155db3a5ae3ac738e9bfe879dc5c675a81b2a4d3542"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "1c06494b330c64103478c0cd4b65eb6cdd17322f54cde5ca2f9abb300644fa69"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "6f2a25922855161c501da88e241a85c110d7589d2476de52259235bff851a5ba"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/RED-A1.json",
+      "normalization": "none",
+      "sha256": "ba114795c1791c6d54d88e4e6cbc82bc2abfe0ff75893d9451ff810d969d5b18"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "6077f5b4b34974bf667e13b6c8df722ae90fdcce6bab7c348a885402a61dc2ea"
+    },
+    {
+      "path": "tests/delivery_runtime/roles_test.go",
+      "normalization": "none",
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests/delivery_runtime/Test-DeliveryRuntime.ps1",
+      "normalization": "none",
+      "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"
+    },
+    {
+      "path": "tests/delivery_runtime/tls_range_test.go",
+      "normalization": "none",
+      "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"
+    },
+    {
+      "path": "tests/remediation/contract_test.go",
+      "normalization": "none",
+      "sha256": "c9b7ce392dfebf5a688b1c523b9f27230a153dbcf0faab74bf1474958e427850"
+    },
+    {
+      "path": "tests/remediation/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "ccf8a74afe74cc0c394dd58dd151c1ae0de6763258b51630aa17eaaed2d7c3ba"
+    },
+    {
+      "path": "tests/remediation/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+    },
+    {
+      "path": "tests/remediation/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "f3ef8a1233343841872aa965bde0c0dd111e04a97f074c39ec57b5b088c62703"
+    },
+    {
+      "path": "tests/remediation/lock_order_test.go",
+      "normalization": "none",
+      "sha256": "b2162517e513c1782ae78d5a2c6ea353ca4f9074273cb1674532a83784fe6d92"
+    },
+    {
+      "path": "tests/remediation/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "b6a879674c162e8d2e73210b2611229d15ac146e7586769857a071d200baff23"
+    },
+    {
+      "path": "tests/remediation/remediation_test.go",
+      "normalization": "none",
+      "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/AMENDMENT-A1.json",
+      "normalization": "none",
+      "sha256": "8d47af47605f0c3639e242fc343e45145ac6517aecb2c6bd6e780176331f0c5c"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/AMENDMENT-A2.json",
+      "normalization": "none",
+      "sha256": "16a29a3bc0bbeb68ffa2d83c84591dd3108d78cab55c7eb6d3858be92cdd3aa2"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "bde46139e7e626280b65e83b1cb9099557b4db6b8df06b0a338dc23ef728a543"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/COMPILATION.json",
+      "normalization": "none",
+      "sha256": "decd2e88fc2b9d962fb36196d884fb8ee62fe2ed52e31c9d42628a2d014aea5f"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "22757ec4cf6fb951ccfca28fc136a5e12b6614e2846dd90290cee63e24d1eb1c"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/GUARDS-A1.json",
+      "normalization": "none",
+      "sha256": "3d767b093e4364f741db3c6b4fc90cf0d750161fcebde753ae1062a6fe0cf87d"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/GUARDS-A2.json",
+      "normalization": "none",
+      "sha256": "b5b4631624541bf0dc78e0c42ac8132d140a416eca1ccb5696597caab3e4c754"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "41ad95c5aebfed08fd5cd9a30d8bfdcd4af733f8c09539186a44a3319cc2c25b"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/HANDOFF-A1.json",
+      "normalization": "none",
+      "sha256": "a62f31e213c5538be60ad17c39d92fdd85ec5cde14c581452118d93f87814b00"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/HANDOFF-A1.txt",
+      "normalization": "none",
+      "sha256": "8b9938d731ac5afaa476c3f2cc9de737fbed1c044908b87d2567c373601c6368"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/HANDOFF-A2.json",
+      "normalization": "none",
+      "sha256": "5ba8dbce9185708676d32e8048048af348394162c5e5dff6c4e185f68a17d797"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/HANDOFF-A2.txt",
+      "normalization": "none",
+      "sha256": "b94f96a0950d11b4e297057bd77227ff7dc893f63e55fbdb8a3e0aa52c67a82f"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "c0a4e3810022a2fb16bb8649110368eae91521b897fb0833650359a960fad1e1"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a1/PACKET.json.before.txt",
+      "normalization": "none",
+      "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a1/PACKET.sha256.before.txt",
+      "normalization": "none",
+      "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a1/production_bindings_test.go.before.txt",
+      "normalization": "none",
+      "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a2/contract_test.go.before.txt",
+      "normalization": "none",
+      "sha256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a2/PACKET-A1.json.before.txt",
+      "normalization": "none",
+      "sha256": "34d7734935e05676930b50d6a611a0582657ad3241c8f36575ed3dbfa6bc7cc2"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a2/PACKET-A1.sha256.before.txt",
+      "normalization": "none",
+      "sha256": "b627b6db7dcc7c49287d6b15a8b1042121ae4270862640461d9f5a7399813157"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/history/a2/production_bindings_test.go.before.txt",
+      "normalization": "none",
+      "sha256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/PACKET-A1.json",
+      "normalization": "none",
+      "sha256": "34d7734935e05676930b50d6a611a0582657ad3241c8f36575ed3dbfa6bc7cc2"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/PACKET-A1.sha256",
+      "normalization": "none",
+      "sha256": "b627b6db7dcc7c49287d6b15a8b1042121ae4270862640461d9f5a7399813157"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/PACKET-A2.json",
+      "normalization": "none",
+      "sha256": "2ec143eb5047007fed5045852b0c7cdd05594ef483a2e706109dade8d708f42c"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/PACKET-A2.sha256",
+      "normalization": "none",
+      "sha256": "f7edd2179d262c93aaf011fafb842070283c2f9725a3cc9e5091fb52d48e2df2"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/RED-A2.json",
+      "normalization": "none",
+      "sha256": "2c8b14b7342b341efe74114ba569d9b771865d90f1a3b259058405af8f365900"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "9eace3fd93f96491354816a41168be748ae50cfabf5faa531c073cbaeae45b13"
+    },
+    {
+      "path": "tests/remediation/reviews/v1/VALIDATION-A1.json",
+      "normalization": "none",
+      "sha256": "f73f6ec8b4106b252d40c925cbf5487bcac63add6f4ccb4d7694f70700fa97d8"
+    },
+    {
+      "path": "tests/remediation/slack_fixture_test.go",
+      "normalization": "none",
+      "sha256": "19d744d2c8d63151ce7cfb0c24b18be41dcf1679180017eed0e59e299731e66d"
+    },
+    {
+      "path": "tests/remediation/Test-Remediation.ps1",
+      "normalization": "none",
+      "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+    },
+    {
+      "path": "tests/remediation/worker_process_test.go",
+      "normalization": "none",
+      "sha256": "2a4b578ac31f73b2bd9a62a5814e0fbfc61021fa9a26209ddfb8559d76e87eb4"
+    },
+    {
+      "path": "tests/runtime_roles/bindings_test.go",
+      "normalization": "none",
+      "sha256": "ec5e14d31a26d0ae29a1bf74e3a198123e86ff078e322ad9c8a7df3aa2f18c55"
+    },
+    {
+      "path": "tests/runtime_roles/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "76d190e54ca3cdc66b9376fed14b27318fb219402d2164dd442f7b32039032ee"
+    },
+    {
+      "path": "tests/runtime_roles/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "8255591dca603b9a1da9eabd2ce76c8aeaf200d2bda39d828cfe3dc3e8a610cf"
+    },
+    {
+      "path": "tests/runtime_roles/FROZEN.sha256",
+      "normalization": "none",
+      "sha256": "bcc63e95af0cc3686fb5d99f85dc75c72246e46c734df8de926c049d765d38d5"
+    },
+    {
+      "path": "tests/runtime_roles/roles_test.go",
+      "normalization": "none",
+      "sha256": "ad7a1972c99d74fb91a8c5efbf796bece828d5842f2d529386213c87f9052bf1"
+    },
+    {
+      "path": "tests/runtime_roles/Test-RuntimeRoles.ps1",
+      "normalization": "none",
+      "sha256": "69cb370026c78b22262e278311914560e70426993a0429ed891f89d49efdcf54"
+    },
+    {
+      "path": "tests/scopedreader/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "0747c20e115b0a530f01108e706c731532af6f6df49873e04f1500769721a760"
+    },
+    {
+      "path": "tests/scopedreader/reader_test.go",
+      "normalization": "none",
+      "sha256": "d8668feeecfc4aa38ec174d95497992217675efbdf6831a92c37d6f5adc2d7ce"
+    },
+    {
+      "path": "tests/source_collection/commit_trace_test.go",
+      "normalization": "none",
+      "sha256": "3dfed44d0ebc17b231b28320970218b2ec37e4e24acce21185d7dd2119880554"
+    },
+    {
+      "path": "tests/source_collection/contract_test.go",
+      "normalization": "none",
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests/source_collection/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "df78884eb39444f2eb20ccc913abe70ec9938ef99c35f96cccb836b2034e97e3"
+    },
+    {
+      "path": "tests/source_collection/fixture_calibration_test.go",
+      "normalization": "none",
+      "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+    },
+    {
+      "path": "tests/source_collection/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    },
+    {
+      "path": "tests/source_collection/github_fixture_test.go",
+      "normalization": "none",
+      "sha256": "bab80aa3ae842c6c9ac6ad3f51dd7790b6180f468ba05c2a1e017f28fb548b45"
+    },
+    {
+      "path": "tests/source_collection/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "4cce2a6066f9705f1fbc098802f0fe30bb185114b92727971e3cf3b8757bbff1"
+    },
+    {
+      "path": "tests/source_collection/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/AMENDMENT-A1.json",
+      "normalization": "none",
+      "sha256": "f9ed634045dea38c500653bdf2c6d32eaafa9a253b3fed1c4c65067385148bd2"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "2b7c12c2841a81f87ac92336d5a08ac6231c51f1b175451472826316f52395d9"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/COMPILATION.json",
+      "normalization": "none",
+      "sha256": "615db25764de711dfe241b62d64dd149cef3a0c990328480a96d6f976e800d18"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/DECISIONS.json",
+      "normalization": "none",
+      "sha256": "483c060efd704fde914a512c1e1b9a2242cfc66c546a1f1d942c94cc482cdfe6"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "83b0b6805f9d2359c29affbe384f46b56c0a1f87bfa479ec229b8d307832d276"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/GUARDS-A1.json",
+      "normalization": "none",
+      "sha256": "766ce0277c6300af072ce55843b5dffa10229fbce803de2d8a4e79e5af54a43d"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/GUARDS-A2.json",
+      "normalization": "none",
+      "sha256": "19e9525262a3030ce8e7d394f5c1760bf4dd645d2aca781caa112d771e5c1e3b"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "4c3b2b1e1e0c821cf82a058a5045241754dbf9ef933961c52506af0776e29bb4"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/HANDOFF-A1.json",
+      "normalization": "none",
+      "sha256": "9bad480c4f637e3033fa924277e7571d2006814e56d1ccb092fd03095ea05f0c"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/HANDOFF-A1.txt",
+      "normalization": "none",
+      "sha256": "75c74f80031e73cb85b2ab67209b8f025d61703dfdd16d61390f19c6e1b12e0a"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/HANDOFF-A2.json",
+      "normalization": "none",
+      "sha256": "9275e5dfa10fa3268a586e310c84c91ac208e5e597ad9a817042c7785e48aec8"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/HANDOFF-A2.txt",
+      "normalization": "none",
+      "sha256": "5746c4b3219de351c3286eaa24fc5cd9163a2d05edbd588242fd4a2ef615ea06"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "bc44b3e9503acc5b18d12462df5e82c60116166f2e6e09d0bebed3682a591502"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/history/a1/fixtures_test.go.before.txt",
+      "normalization": "none",
+      "sha256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/history/a1/PACKET.json.before.txt",
+      "normalization": "none",
+      "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/history/a1/PACKET.sha256.before.txt",
+      "normalization": "none",
+      "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/ORIGIN-A2.json",
+      "normalization": "none",
+      "sha256": "15a889611dc616510bcdf79da811984c8f2b95c58cbdd14d6d1be7f79b1fb1c2"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/PACKET-A1.json",
+      "normalization": "none",
+      "sha256": "e196e27f5dfb595e3e513dd823b74b08191db072056b84f7564d11faf396fcbe"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/PACKET-A1.sha256",
+      "normalization": "none",
+      "sha256": "fa0428c5dcbea4883eade49a41be89bd6ae77b697b0f7443b55fbbcee2b237a3"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/PACKET-A2.json",
+      "normalization": "none",
+      "sha256": "4c4202b2a5f5239535065496d5f28754a64afb5945c41ae7f6ad6048811150ca"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/PACKET-A2.sha256",
+      "normalization": "none",
+      "sha256": "382a9beb5cd0d90a566d00afc9060f4dafdd36e7e0e20746d8e0bc8c84bb4038"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/RED-A2.json",
+      "normalization": "none",
+      "sha256": "dfab0c03811064d19c5c321940f3ac025d479361992f6548aeb40c524e8aaf6e"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "ba06880fd6cd0072ebf878863226852e0cf91fd1e701f0f324d1e560ce9e3e25"
+    },
+    {
+      "path": "tests/source_collection/reviews/v1/VALIDATION-A1.json",
+      "normalization": "none",
+      "sha256": "cc557fb26f0a068a36b96d16148f81bedff2c7aef69d72ebe717227b0aac55f1"
+    },
+    {
+      "path": "tests/source_collection/source_collection_test.go",
+      "normalization": "none",
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests/source_collection/Test-SourceCollection.ps1",
+      "normalization": "none",
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    },
+    {
+      "path": "tests/source_collection/testdata/published-7281-schema-v5.json",
+      "normalization": "none",
+      "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+    },
+    {
+      "path": "tests/source_collection/upgrade_test.go",
+      "normalization": "none",
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    }
+  ]
+}

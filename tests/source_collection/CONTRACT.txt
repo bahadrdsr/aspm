@@ -1,0 +1,304 @@
+SOURCE COLLECTION V1 - SELECTED GITHUB INVENTORY AND EXACT EVIDENCE
+===============================================================
+
+Scope and author ownership
+--------------------------
+This new tests/source_collection package is backend/API/independent-worker
+test authorship only. No production, dependency, UI, existing test/helper,
+runtime/deployment control, signature or history is amended. No agent, commit,
+live GitHub/cloud account or credential discovery is used.
+
+Eight top-level narratives are authored: one isolated real local-I/O preflight
+and seven source-orchestration narratives. Missing production constructors/
+configuration cause actual full-binding compile RED. Helper-only compilation
+and preflight are explicitly not source-orchestration acceptance.
+
+GitHubCloudApp is the first orchestration profile. Existing OpenCollector is
+the native implementation, not a replacement API client written in tests or
+another scanner. Keep all eight roadmap families; other profiles remain library
+capabilities. This slice does NOT enumerate organizations, install/OAuth Apps,
+refresh installation bearers, execute code, scan networks, normalize findings,
+infer closure or alter workflow/risk/verification. Alert polling is not a scan.
+
+Source authority read before defining this packet
+------------------------------------------------
+internal/connectors/types.go, collect.go, github.go, http.go, README.txt
+internal/app/app.go, database.go, schema.go, auth.go, membership.go, assets.go,
+  http.go, remediation_credentials.go, remediation_schema.go,
+  remediation_deliveries.go, storage.go, import_authorization.go
+internal/evidence/store.go, reader.go
+internal/jobs/types.go, store.go
+Existing accepted acceptance/runtime/remediation/native adapter fixture and
+binding patterns. All are hash references, not copied historical snapshots.
+
+Minimal exact production surface
+-------------------------------
+  app.Config.CollectionStorage *app.StorageConfig
+
+  app.CollectionWorkerConfig {
+    Database app.DatabaseConfig
+    Storage app.StorageConfig
+    EncryptionKey []byte
+    WorkerID string
+    LeaseDuration time.Duration
+    GitHubEndpoint string
+    Client *http.Client
+    Limits connectors.Limits
+  }
+  app.OpenCollectionWorker(context.Context, app.CollectionWorkerConfig)
+    (*app.CollectionWorker, error)
+  (*app.CollectionWorker).ProcessNext(context.Context) (bool, error)
+  (*app.CollectionWorker).Ping(context.Context) error
+  (*app.CollectionWorker).Close() error
+
+production_bindings_test.go forwards fields/methods only. It explicitly
+normalizes a nil concrete worker pointer to a nil interface, preserving the
+original error and nonnil worker. No fake handler, SQL state/result, queue,
+receipt or business logic is supplied there.
+
+CollectionStorage is an explicit optional core read capability for collection
+evidence, separate from existing raw intake Storage. Nil must not break unrelated
+core startup; source enqueue without its required evidence capability is
+503/unavailable. Source connection creation requires the existing optional
+IntegrationEncryptionKey. There is no DB/bootstrap/S3 key derivation.
+
+The independently opened worker requires a valid 32-byte key, explicit static
+Storage identity/bucket/prefix, explicit approved normal-TLS client, bounded
+worker identity and lease. Missing key/storage identity/client or an unsigned
+gateway fails before provider I/O. No S3/AWS/GitHub credential chain or proxy
+fallback is allowed. GitHubEndpoint defaults to https://api.github.com only in
+trusted process configuration; an approved HTTPS gateway/client may be supplied.
+No endpoint/headers/actor/approval values are taken from source/API JSON.
+
+ProcessNext handles at most one eligible queued or expired collection. false,
+nil means no eligible work now, including a different live owner. true includes
+durably finalized success, partial, blocked, failed or expired work. Native
+failures become safe durable data; errors represent infrastructure/cancellation.
+This first slice uses terminal failed/partial/blocked outcomes and a new manual
+request, not hidden read retries or retry-after sleeps. Existing adapter reads
+are already bounded. Worker lease duration is 250ms..1 minute; tests use 750ms
+and 3s. A stale owner/fence/expired lease cannot finalize an asset or snapshot.
+
+NARROW STORAGE PRIMITIVE DECISION FOR PARENT
+-------------------------------------------
+evidence.Open currently performs HeadBucket, which is NOT an acceptable source
+worker startup requirement. evidence.OpenReader already constructs without
+I/O and verifies identity/size/SHA256 on reads. The app's existing
+openReportStore/put/read path also constructs without a bucket probe and uses
+bounded hashed object publication plus the integrity reader.
+
+Parent must choose a narrow production reuse: use/factor that existing bounded
+app storage path, or expose a small no-bucket-probe writer constructor around
+the existing evidence writer internals. Do not call evidence.Open/Ping to gain
+whole-bucket authority, change old evidence behavior, or add a test-side writer
+shim. The tests enforce object-scoped source traffic and existing Reader
+integrity semantics, not a fabricated S3 success. No generic plugin/storage
+framework is required. This decision is explicit before implementation.
+
+Credential domain
+-----------------
+Reuse standard AES-256-GCM with the existing version-1 byte envelope:
+  byte(1) || random 12-byte nonce || ciphertext/tag
+Source AAD is exactly:
+  "aspm/source-credential/v1\0github-cloud-app\0" + workspaceID + "\0" + sourceID
+It binds profile domain, workspace and source connection.
+The existing Slack AAD/key/envelope remains:
+  "aspm/slack-credential/v1\0" + workspaceID + "\0" + connectionID
+Tests independently decrypt both domains with generated keys and reject wrong
+source profile/workspace/identity AAD. No token/ciphertext/key/credential URL is
+returned in source metadata or errors/logs. Token replacement is explicit.
+
+Exact API vocabulary and DTOs
+----------------------------
+All responses use existing apiVersion aspm/v1alpha1, real session cookies,
+Origin and selected X-ASPM-Workspace-ID checks.
+
+GET/POST /api/v1/sources
+GET/PATCH /api/v1/sources/{sourceID}
+  POST {profile:"github-cloud-app", name:string, repository:"owner/repo",
+        token:string, enabled:boolean}
+  enabled is explicitly required. Selected repository is one bounded native
+  owner/repo, not an organization query, URL or installation discovery.
+  Name is nonblank/NUL-free and bounded to 256 UTF-8 bytes. Token follows the
+  existing bounded opaque installation-bearer validation, not a new token type.
+  PATCH selects name/repository/token/enabled; identity/profile/workspace are
+  immutable. A meaningful change advances revision.
+
+Only admin writes source connections. Members read nonsecret workspace data.
+Create returns 201 {apiVersion,source}; detail/PATCH return 200. Source DTO:
+  id, workspaceId, profile, name, repository, enabled, credentialConfigured,
+  revision, createdAt, updatedAt
+List returns {apiVersion,items,total,nextCursor}, real ID-ordered pagination.
+Foreign workspace/source access is 404. Unknown routing/approval fields are 400.
+
+POST /api/v1/sources/{sourceID}/collections
+  {idempotencyKey:string}
+GET /api/v1/sources/{sourceID}/collections
+GET /api/v1/sources/collections/{collectionID}
+GET /api/v1/sources/collections/{collectionID}/records
+GET /api/v1/sources/collections/{collectionID}/records/{recordID}/evidence
+
+Current admin/analyst can request collection; viewer cannot. Metadata/evidence
+reads require workspace membership and the same scoped source/collection/record.
+The job binds workspace, source ID, revision, repository/profile and actual
+requesting actor. New requests return 202 queued; identical same-workspace keys
+return the same job/result with 200. Changed actor/source/revision/repository
+binding returns 409 without rewriting the original. No handler-side collection.
+
+Collection DTO:
+  id, workspaceId, sourceId, profile, connectionRevision, repository, requestedBy,
+  state, complete, assetId:null|id, repositoryId:null|string, recordCount,
+  gaps:[], createdAt, collectedAt:null|time, completedAt:null|time, failure:null|...
+States: queued, collecting, succeeded, partial, blocked, failed.
+failure: {code,nativeCode,httpStatus,retryAfterSeconds,retryable:false}.
+Native auth/quota/limit/scope/protocol classification remains the existing
+adapter classification. Cancellation is failed/canceled; revocation is
+blocked/authorization-revoked; expired ownership is failed/lease-expired or
+failed/lease-lost. Repository identity conflict is failed/identity-conflict.
+
+Record metadata:
+  id, collectionId, ordinal, kind, externalId, parentId, nativeRunId,
+  state, severity, location, rawURL, sourceScanAt:null|time,
+  sourceUpdatedAt:null|time, evidence:{sha256,sizeBytes}
+Native kind "finding" denotes a raw code-scanning alert record, NOT an app
+normalized finding. The record API contains no Raw JSON/body. Evidence endpoint
+returns only the exact bounded stored bytes after scope and digest verification.
+Corrupt stored bytes fail visibly with 503, not 200/partial corrupt output.
+
+Source/collection/record lists use existing limit default/range and ID cursor
+semantics. Tests use limit=1 to exercise genuine continuation and no duplicates.
+Source and delivery/retry authority are never accepted from JSON payloads.
+
+Persistence and asset decisions
+-------------------------------
+Application migrations own new tables in the explicitly selected existing
+schema. Minimal read-only inspection names:
+  app_source_connections: id, workspace_id, credential_ciphertext
+  app_source_collections: id, workspace_id, state, worker_id, fence, lease_until
+  app_source_collection_records: id, evidence jsonb containing evidence.Ref
+  app_source_repository_assets: stable scoped upstream-repository linkage
+Other bounded metadata columns/constraints implement the DTO/immutable binding.
+
+Raw repository response bytes and each native alert RawMessage's object bytes
+are stored separately under the selected workspace S3 prefix. The entire repo
+HTTP body preserves whitespace; alert records preserve the exact object bytes
+returned by the existing native adapter, not the enclosing list separators.
+PG stores metadata, digests/refs/counts/gaps/time only, never raw record content.
+
+First validated repository discovery creates one linked asset:
+  kind repository; name initial upstream full_name; criticality medium;
+  ownerId null; environment ""; tags [].
+The mapping is unique by workspace/profile/stable upstream repository ID.
+Repeated runs/reopens and another connection selecting the same upstream ID
+reuse that asset. Later collection preserves human name, owner, tags,
+environment and criticality. Current source full_name/raw metadata lives in
+collection evidence, not as an overwrite of the human asset.
+
+A source connection that has pinned an upstream repository ID must not silently
+rebind to a different ID later returned at its selected path. A selected rename
+with the same stable ID may retain the linked asset. Conflicting identity/scope
+never repoints another asset or fabricates success.
+
+Asset/link creation/update and accepted collection record finalization are one
+fenced PG transaction. Tests hold a real asset-insert TraceQueryEnd callback,
+observe that a separate API/PG connection cannot see provisional asset/snapshot
+data, then release. The tracer observes actual successful SQL/transaction state;
+it neither fabricates results nor mutates business state.
+
+Worker authority, cancellation and leases
+----------------------------------------
+Before provider I/O AND again before final commit, verify current actor write
+membership, connection enabled/revision/repository and live owner/fence/lease.
+Use the accepted workspace-before-membership locking order in insertion and
+finalization transactions; do not reintroduce an inverse lock-order race.
+Network reads and object publication must not retain SQL transactions/slots.
+
+Held GitHub reads and held real S3 publication are paired with a one-connection
+worker Ping and normal API operations to prove pool availability. Cancellation/
+revocation must reach context-honoring dependencies, with no asset or accepted
+snapshot published for the old actor. Safe terminal failure metadata is allowed;
+orphan unreferenced object bytes are not a committed collection.
+
+An expired finalization test holds only a real SQL trace callback after a
+provisional asset insertion, waits for actual PG clock lease expiry, then
+releases. It never UPDATEs a lease/queue/actor/receipt row. The old transaction
+must roll back its asset/records, and a fresh worker may only settle the old job
+terminally, not silently restart provider reads. Longer-term retry/reconciliation
+policy is a separate explicit increment.
+
+Native protocol and preservation
+-------------------------------
+The owned TLS fixture serves only GET /repos/owner/repo and that repository's
+bounded code-scanning/alerts pages. It checks actual bearer, Accept and
+X-GitHub-Api-Version:2026-03-10 headers, per_page/page and same-origin next links.
+It does not rewrite the actual native request or implement app/queue logic.
+The approved client validates the owned certificate and dials only that endpoint.
+No api.github.com, cloud account, real installation credential or proxy is used.
+
+Complete means the selected feeds were exhausted, not scanner success,
+verification, safe absence or finding resolution. GitHub does not provide a
+source scan time here: sourceScanAt remains null and nativeRunId remains empty.
+Alert updated_at, raw state, source severity, location, analysis_key/ref/tool
+remain native context. No normalized finding is created or closed by a poll.
+
+Partial alert failure retains authorized repository/prior alert bytes, gaps,
+safe native failure and partial status, not complete=true or fabricated zeros.
+Ordinary 403 auth differs from quota 403/429; retry-after is bounded data only.
+Oversize, redirect, protocol and foreign-repository responses fail safely.
+
+Fixtures, SQL and the explicit integrity fault
+---------------------------------------------
+Only private RUNTIME/runtime.json through Test-SourceCollection.ps1 supplies
+the selected authenticated loopback PG/local S3 fixture. Each narrative owns a
+random source_collection_<24 hex> schema, separate raw-intake/evidence prefixes,
+and bounded cleanup. Existing schemas, DB roles/policies and buckets are not
+changed. Fixture admin prefix listing/deletion is not shipped worker authority.
+
+Core source evidence uses a forwarding-only read endpoint; worker evidence uses
+its separately explicit write endpoint. Actual S3 signatures/method/Host/path/
+body are forwarded unchanged. These endpoints reject whole-bucket probes/listing,
+outside-prefix requests and ungranted core writes. Existing Reader preflight is
+executed against real S3 without a HeadBucket requirement.
+
+All source connections, actors, jobs and human edits are produced by real APIs.
+There are NO business SQL inserts/updates in tests. SQL probes inspect bounded
+metadata/refs or actual trace/lease state. The only SQL writes are creation/
+cleanup of the random fixture schema and its isolated preflight probe.
+
+One explicit raw-storage integrity fault overwrites only a test-owned published
+object through the real fixture S3 API, keeping its trusted PG digest unchanged.
+This tests evidence-read digest enforcement, not a fabricated DB/ref/receipt.
+No other source/business state is synthesized by the fixture.
+
+Eight narratives and current RED
+-------------------------------
+1. Owned-I/O preflight: actual PG commit/reopen and real selected S3 bytes read
+   through the existing digest-verifying no-bucket-probe Reader.
+2. Connection RBAC/scoping/redaction/AAD/token replacement, unchanged Slack AAD,
+   optional core key and missing worker key/storage/client/TLS capabilities.
+3. Scoped immutable enqueue, actor/revision binding, forged fields rejected,
+   idempotency replay/conflict, actual source/collection metadata pagination.
+4. Independent collector -> exact native evidence + atomic default asset;
+   source dates/native state/URLs retained; no normalized findings; foreign
+   evidence denied and controlled S3 corruption rejected.
+5. Repeated/reopened/same-ID/renamed repository collection preserves all human
+   asset edits; conflicting upstream ID cannot rebind or duplicate the asset.
+6. Partial preservation and native auth/quota/429/scope/size/redirect/protocol
+   failure data without hidden retries or normalized finding mutation.
+7. Held TLS/S3 context cancellation/revocation and available interactive SQL;
+   no old-actor asset/snapshot commit or resurrection.
+8. Real expired finalization lease cannot commit provisional asset/records;
+   fresh worker settles terminal failure without additional provider reads.
+
+Full contract compilation currently fails at the missing app CollectionStorage
+configuration and CollectionWorker constructor/type. Seven semantic narratives
+are BLOCKED/NOT RUN. A separate helper-only preflight and compiler check do not
+pretend those APIs/worker semantics passed. Existing adapter regressions are
+also separate, and do not constitute live GitHub certification.
+
+Runtime logs and helper binaries stay outside frozen roots in
+.artifacts/source-collection-v1, with project-local work/cache paths.
+Existing modules, related source/fixtures and old controls are hash references;
+no older review tree is copied. Parent reviews the storage-primitive decision,
+verifies actual RED, seals NEW controls and assigns a separate coder/reviewer.
+Core UI, worker runtime/command and deployment wiring are later increments.

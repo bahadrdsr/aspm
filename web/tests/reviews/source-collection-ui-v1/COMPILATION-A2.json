@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "actualTypecheck": true,
+  "run": {
+    "command": "npm.cmd run typecheck",
+    "startedAt": "2026-09-17T19:45:08.0038181Z",
+    "endedAt": "2026-09-17T19:45:10.7826402Z",
+    "exitCode": 0
+  },
+  "runFile": {
+    "path": ".artifacts\\source-collection-ui-v1-a2\\typecheck-01.run.json",
+    "bytes": 156,
+    "sha256": "d88601e7dc3655b0ae491031ab57b13f0ea677801cf1e21c1a21fb8720c7d7c9"
+  },
+  "stdout": {
+    "path": ".artifacts\\source-collection-ui-v1-a2\\typecheck-01.stdout.txt",
+    "bytes": 49,
+    "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+  },
+  "enumeration": {
+    "path": ".artifacts\\source-collection-ui-v1-a2\\compiler-inputs-01.txt",
+    "bytes": 24739,
+    "sha256": "58e3be55295cb2c660ed94b79f7f7866480665699010940492c1f0f6ef8df710"
+  },
+  "enumerationIsNotTypecheck": true,
+  "noOriginalCompilerSettingsChanged": true
+}

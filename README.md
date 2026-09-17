@@ -16,7 +16,8 @@ and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, and Slack connections with explicit
-finding-notification previews and delivery history. Other integration setup remains
+finding-notification previews and delivery history, plus selected GitHub source
+configuration, explicit collection intents and raw record/evidence views. Other integration setup remains
 unfinished. Reports and finding triage have independent source acceptance and
 owned HTTPS workflow qualification.
 
@@ -27,8 +28,10 @@ deployment, recovery and capacity gates remain open. PostgreSQL role separation
 and production network isolation are not yet qualified.
 
 Eight native integration families and four configurable AI provider adapters
-exist as libraries. Beyond the Slack notification slice, persistent integration/assessment jobs, configuration UI
-and live vendor/model qualification remain incomplete. Verification supports
+exist as libraries. Slack notifications and selected GitHub repository collection
+have durable application workflows; orchestration for the other native families,
+persistent AI assessment jobs and live vendor/model qualification remain incomplete.
+Verification supports
 approved deterministic synthetic evidence only, not exploit execution or
 autonomous offensive tools.
 
@@ -169,6 +172,69 @@ The native dialog, note drafts and Work context remain in place during paging.
 Closing, workspace changes, logout and session rejection clear the scoped history
 and cancel old requests. No history, note, report or authentication data is stored
 in browser storage.
+
+In **Integrations**, **Sources** manages one selected GitHub `owner/repo` per
+`github-cloud-app` source, separately from the catalog and Slack destinations.
+Admins supply a name, masked existing installation bearer and explicit enabled
+state. Edits send only changed fields; a blank replacement bearer is omitted.
+Credential presence and returned revisions are metadata, not connected or
+live-verified status. Missing encryption configuration is an operator issue;
+the browser never requests an operator key, endpoint, headers or OAuth flow.
+
+Admins and analysts can open **Collections**, review the selected repository and
+explicitly confirm **Collect source**. Only an idempotency key is submitted.
+A 202 means queued, not completed. Lost acknowledgements retain the same intent
+in scoped memory for user-confirmed replay, including across dialog closes; no
+automatic retry or fresh-key duplicate is attempted. Collection evidence storage
+must be configured by the operator. Current server permissions remain authoritative.
+
+An authorized Sources refresh updates the selected source summary and any open
+collection confirmation with the newest received revision for that source ID.
+Later pages that omit the selected ID retain its last authorized metadata,
+including a disabled state. Older revisions do not replace newer selected facts.
+These updates preserve read-only collection history and its immutable original
+binding; they neither enqueue work nor resolve a lost acknowledgement. Explicit
+replay still uses the same unresolved key and can return a binding conflict.
+This reflects received metadata, not an atomic browser/server snapshot guarantee.
+
+Collection status, history and records are manual reads with native cursor pages.
+`complete` means selected feeds were exhausted, not scanner success, normalized
+findings, closure or independent verification. Partial results retain their raw
+records, gaps and native failure data; Retry-After is display data only. Record
+`rawURL` values are provenance and are never fetched. Native update time is not
+source scan time, and missing scan/run identifiers stay unknown.
+
+**View evidence** reads the stored octet-stream, checks its byte size and digest,
+and displays UTF-8 literally or provides an exact-byte download when text decoding
+is unavailable. No trimming, JSON reserialization or active markup is performed.
+Denied evidence stays withheld through later unavailable retries until an
+authorized read succeeds. Workspace/session changes clear forms, collections and
+evidence and abort old requests. The complete UI/core/collection-worker/PG/S3 path
+has been exercised through real HTTPS and an owned certificate-validated
+GitHub-protocol fixture. Complete and partial collections retained exact evidence
+bytes and human asset edits without creating normalized findings. This is not
+live GitHub installation or repository-access certification.
+
+To run this initial source profile, configure core and the collection worker
+with the same protected `ASPM_INTEGRATION_ENCRYPTION_KEY`, encoded as canonical
+standard base64 for an independently generated 32-byte key. Supply the selected
+database URL/schema and all six `ASPM_COLLECTION_S3_*` settings documented in
+`internal\service\README.txt`. Core needs a read-only collection-evidence identity;
+the worker needs its own publisher identity for the same selected bucket/prefix.
+Never substitute the raw-intake or operator storage credentials.
+
+After provisioning the worker's protected process environment, run:
+
+```powershell
+go run .\cmd\collection-worker
+```
+
+The default source endpoint is `https://api.github.com`; only trusted process
+configuration can choose an approved HTTPS gateway and CA file. Readiness reports
+database availability and `storage:configured-not-probed`, not provider authority
+or verified S3 permissions. Collection image/Helm/Quadlet packaging, installer
+provisioning and installation-bearer refresh remain separate unfinished work.
+Opening the Sources UI does not start a worker or schedule collection.
 
 In **Integrations**, **Connections** lists workspace Slack destinations separately
 from the eight catalog families. Admins can create and edit a name, C/G channel ID,

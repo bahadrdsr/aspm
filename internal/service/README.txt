@@ -51,3 +51,64 @@ certificate-validated Slack-protocol fixture, including a confirmed receipt and
 a dropped acknowledgement retained as uncertainty. No real Slack account was
 used. Deployment/installer scheduling, live Slack authority, production key
 rotation and operational rollout remain separate qualifications.
+
+Collection runtime and core evidence reads
+==========================================
+
+cmd/collection-worker runs the collection service with standard context and
+interrupt/SIGTERM cancellation. It owns one accepted CollectionWorker DB pool,
+not an integrity queue, core handler or raw-intake storage capability. The
+shared idle-only processing loop never requeues terminal native outcomes.
+
+Core and collection use these six explicit process-local storage settings:
+  ASPM_COLLECTION_S3_ENDPOINT
+  ASPM_COLLECTION_S3_BUCKET
+  ASPM_COLLECTION_S3_PREFIX
+  ASPM_COLLECTION_S3_REGION
+  ASPM_COLLECTION_S3_ACCESS_KEY
+  ASPM_COLLECTION_S3_SECRET_KEY
+
+For core, all six absent means no optional collection capability. If any is
+present, all six must be valid and nonblank. No raw ASPM_S3 value is borrowed.
+The actual core service forwards this separate read-only pointer into app.Open;
+raw intake configuration and readiness behavior are unchanged.
+
+Collection requires all six fields with its separate publisher identity, the
+explicit DB configuration, and the same canonical 32-byte base64 integration
+key format. MaxConnections defaults to 1. Unrelated raw storage, AWS/bootstrap,
+assets and readiness environment settings are not inherited.
+
+ASPM_COLLECTION_LEASE_DURATION defaults to 15s, bounded to 250ms..1m.
+ASPM_GITHUB_ENDPOINT defaults to https://api.github.com and is trusted process
+configuration only. ASPM_COLLECTION_CA_FILE uses the same reviewed bounded PEM,
+normal hostname/TLS verification and explicit-root replacement policy as the
+delivery role. The shared client builder rejects proxies/redirects/cookies,
+restricts its dial origin and owns copies rather than mutating caller clients.
+The stricter accepted source-client rules, including no ServerName override
+and effective TLS range checks, remain authoritative before startup.
+
+Default native limits are 32 requests, 8 pages, 50 records/page and 8 MiB.
+Programmatic limits are forwarded to the accepted worker; no new environment
+limit matrix, polling authority or scanner behavior is introduced.
+
+All configuration is validated before EnsureSchema, resource opens or listener
+binding. Source storage still performs no HeadBucket/ListBucket startup probe.
+/healthz identifies collection; /readyz reports actual DB readiness and
+storage:configured-not-probed. That label does not certify write permission or
+provider access. /api/session, /api/v1/session and / return 404.
+
+Owned runtime tests prove distinct real storage keys, core-RO GET and PUT
+denial, publisher PUT, actual core-service evidence reads, context cancellation
+and a separately built command processing a new intent without resurrecting an
+old failed job. Test taps add only a narrower owned-prefix guard, not synthetic
+storage authorization. Specific-PID command cleanup is not OS-signal graceful
+shutdown evidence.
+
+The Sources UI/core/standalone-worker path was also exercised through real HTTPS
+with an owned GitHub-protocol gateway and distinct core-reader/publisher keys.
+Complete and partial collections retained exact evidence downloads and human
+asset edits without normalizing findings. A separate real metadata-refresh check
+confirmed the displayed target and queued binding agree with received source
+revisions. Neither check used a live GitHub account. Deployment packaging and
+installer scheduling, live authority, bearer provisioning/refresh and operational
+rollout remain separate work.

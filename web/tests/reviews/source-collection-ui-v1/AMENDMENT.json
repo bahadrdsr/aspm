@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "scope": "Only additive validated GET /api/v1/sources empty navigation in the two existing fixtures that visit Integrations. No guard/role/auth/write/JSON/Origin statement removed or weakened.",
+  "changes": [
+    {
+      "path": "web\\tests\\network.ts",
+      "beforeBytes": 6155,
+      "afterBytes": 6655,
+      "beforeSHA256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584",
+      "afterSHA256": "1f76ce4080351f62ca83e63c2150bc938947824faae6321748303af3eaf6a657",
+      "insertions": [
+        "import { emptySourceNavigation } from \"./source-navigation\";\r\n",
+        "      try {\r\n        const empty = emptySourceNavigation(url, request.method(), request.headers()[\"x-aspm-workspace-id\"],\r\n          syntheticSession().workspaces.map((workspace) => workspace.id));\r\n        if (empty) { await route.fulfill({ json: empty }); return; }\r\n      } catch (error) {\r\n        this.violations.push(`Invalid additive Sources navigation: ${String(error)}`);\r\n        await route.abort();\r\n        return;\r\n      }\r\n"
+      ],
+      "allOtherBytesReconstructExactly": true
+    },
+    {
+      "path": "web\\tests\\slack-ui-fixture.ts",
+      "beforeBytes": 29329,
+      "afterBytes": 29562,
+      "beforeSHA256": "69afa8107fed7c289ef5f06183e139c241c1df332924095d1e1cedd086fb85f5",
+      "afterSHA256": "a9b5e9d0c7805e86f8ba5c07f9e57ba72a1a1997328a074df4c41587cc66228a",
+      "insertions": [
+        "import { emptySourceNavigation } from \"./source-navigation\";\r\n",
+        "        const empty = emptySourceNavigation(url, method, workspace, [...this.roles.keys()]);\r\n        if (empty) { await this.deliver(route, call, 200, empty); return; }\r\n"
+      ],
+      "allOtherBytesReconstructExactly": true
+    }
+  ]
+}

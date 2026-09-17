@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "createdAt": "2026-09-17T19:49:34.328Z",
+  "status": "FROZEN independent selected-source target regression; stop for parent seal and separate coder correction",
+  "newSpec": {
+    "path": "web\\tests\\source-selection.spec.ts",
+    "bytes": 15243,
+    "sha256": "42d415f47b416c933558d21f15e655acf67069c90299f8e554d543c0c5d2c5e4"
+  },
+  "originalFilesChanged": 0,
+  "fixtureChanges": 0,
+  "sourceUIBackendDependenciesSettingsChanges": 0,
+  "originalSU1to7AndA1RegexUnchanged": true,
+  "results": {
+    "actualTypecheckPassed": true,
+    "newVariants": 2,
+    "actualStaleTargetBrowserRED": 2,
+    "caseResults": [
+      {
+        "title": "ST1 Authorized source refresh updates the selected target before consent; later-page absence and disable do not revive old facts",
+        "status": "failed",
+        "durationMS": 8654,
+        "apiCalls": 8,
+        "collectionPOSTs": 0
+      },
+      {
+        "title": "ST2 A held authorized refresh updates or invalidates open consent without posting or forgetting a lost-ACK intent",
+        "status": "failed",
+        "durationMS": 7334,
+        "apiCalls": 8,
+        "collectionPOSTs": 0
+      }
+    ],
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "fixtureViolations": 0,
+    "browserErrors": 0,
+    "externalRequests": 0,
+    "prior91Rerun": false,
+    "full93NotRun": true
+  },
+  "observed": {
+    "selectedSummary": "Authorized revision-5 GET/table metadata, selected history remains the old same-ID revision-4 name/repository.",
+    "openConsent": "Authorized revision-5 GET completes while consent is open; still-enabled confirmation presents revision 4 and the old repository."
+  },
+  "qualificationLimits": {
+    "workers": 1,
+    "retries": 0,
+    "caseMS": 20000,
+    "expectMS": 5000,
+    "combinedAPIRequestsPerCase": 60,
+    "sourceListDefaultLimit": 100,
+    "sourceListMaxLimit": 500,
+    "fixtureSourceCountAtMost": 102,
+    "traceAndAnimations": "unchanged"
+  },
+  "downstreamAssertionsBlocked": true,
+  "blockedCoverage": [
+    "Current consent followed by exact key-only enqueue",
+    "Later source page without selected ID retains authorized target, not stale copy",
+    "Disabled authorized source prevents further collection while immutable historical collection stays readable",
+    "Held-open consent must update or invalidate without automatic POST",
+    "Unresolved lost-ACK key survives metadata changes or further attempts remain blocked pending authorized reconciliation"
+  ],
+  "nonClaims": [
+    "Not a server authorization bypass",
+    "No client-side atomic source snapshot guarantee",
+    "No new If-Match/revision/source binding body fields",
+    "No live vendor/core/worker/API qualification",
+    "Old full91 evidence is historical, not rerun or replaced by the new RED"
+  ],
+  "sourceHold": {
+    "inputsUnchanged": 810,
+    "currentControlsUnchanged": 737,
+    "UIAndDocPathsUnchanged": 15,
+    "oldAssertionFilesUnchanged": 16
+  },
+  "originalPacketsAndSignaturesPreserved": true,
+  "oldPacketHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.json",
+      "bytes": 5073,
+      "sha256": "225a0f450fadfa2fc531dab970c8e27c1fcd78c175415a2223a3d181b266fe03"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2c0b70bfa234e78f7296e8a9dafc4378ee314093e6a386bc6887b5f46f1b9ce5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.json",
+      "bytes": 6880,
+      "sha256": "b4cbf690c73876bceb61cbf52ad9eb505ae97903bca659f3348bffe2e671411d"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "c236f6d5584ef7ae33aa5990e55e6b0589f812d92adc195cccf4072bca900aa9"
+    }
+  ],
+  "archives": [],
+  "agentsCommitsNativeAPIOperations": 0,
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE-A2.json",
+      "bytes": 331189,
+      "sha256": "f53de37c469b479f1694d5045b5777a87df1b30cac17f720ece51c4492f9099f"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\CONTRACT-A2.txt",
+      "bytes": 8060,
+      "sha256": "58c468cf836ad0bb1482367aef36894bdadc79bae6e2bfd25ab10d47d3d5bcb3"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS-A2.json",
+      "bytes": 25920,
+      "sha256": "e8a8bead6ee3b9b33e54d6f65e5e373f1ca22c8272c534d0df6ae43e3607c6cd"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\COMPILATION-A2.json",
+      "bytes": 899,
+      "sha256": "b844aea18a6da36b998b7c648afc86e3f4217f792662605b5912c3cbd6f963f7"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\RED-A2.json",
+      "bytes": 65948,
+      "sha256": "9b77fe475c452fb77d7d8c37523d4d26c71b0dbad677dfe5114fa9dc42e17055"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PRIOR-COMPATIBILITY-A2.json",
+      "bytes": 3740,
+      "sha256": "6d0b6d0f37dab86222e197aabdf09691368b162ae5b41cccd52b845e114d7971"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\EVIDENCE-A2.json",
+      "bytes": 4712,
+      "sha256": "b3c4856731f739a98945e456d93731cc09e3ed399d57978e27cb9aea7f3770ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF-A2.txt",
+      "bytes": 5227,
+      "sha256": "4bbe6bd1ae20502b88074a5f48ae6cb1751411e5924c9592c17967168d78b929"
+    }
+  ],
+  "next": [
+    "Parent independently verifies/seals this new test spec and source-HOLD evidence.",
+    "Separate coder fixes selected-target synchronization without altering existing contracts or unresolved intent semantics.",
+    "Reviewer runs actual typecheck and all 93 cases on fresh artifacts before parent reseal/publication."
+  ]
+}

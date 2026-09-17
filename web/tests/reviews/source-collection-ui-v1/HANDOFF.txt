@@ -1,0 +1,122 @@
+SOURCE COLLECTION UI V1 - FROZEN INDEPENDENT TEST-AUTHOR HANDOFF
+=============================================================
+
+Stop for parent verification/seal and a separate UI coder/reviewer.
+This author implements no Sources UI, backend, worker runtime or deployment.
+The separate collection-runtime/core-environment task remains untouched.
+
+Actual qualification
+--------------------
+  Actual npm.cmd run typecheck: passed.
+  Seven new browser cases: expected missing-Sources UI assertion RED.
+  All prior 84 browser cases: passed.
+  Skips: 0. Flakes: 0. Playwright retries: 0.
+  New RED fixture violations/browser errors/external requests: 0.
+  Five API reads per RED case; original combined per-case limit remains 60.
+  One worker, 20-second case/five-second expect and trace/animation policy
+  remain unchanged.
+
+The real current Integrations page renders its existing catalog and Slack
+Connections, but has no Sources region. The new cases stop there. All later
+source forms, collection/idempotency/record/evidence/error/scope/mobile checks
+are authored requirements, not claimed executed successes. This mocked UI
+packet does not qualify native GitHub, core, worker, storage or parser behavior.
+
+New files and the only old-file amendment
+----------------------------------------
+  web\tests\source-ui-data.ts
+  web\tests\source-ui-fixture.ts
+  web\tests\source-navigation.ts
+  web\tests\source-collection-ui.spec.ts
+
+Only two original fixtures are amended:
+  web\tests\network.ts
+  web\tests\slack-ui-fixture.ts
+Their existing cases visit Integrations, so the new region requires a validated
+empty GET /api/v1/sources response. Each addition follows the old auth/method/
+Origin/credential/request-budget checks; no old guard statement is changed.
+The helper checks the known selected workspace and native limit/cursor.
+It grants no write/detail/verification/provider capability.
+
+ARCHIVES.json contains only those two actually amended original files.
+AMENDMENT.json proves the complete raw-byte delta by reconstructing each
+original after removing only the new import/dispatch text. No assertion file,
+helper policy, source approval, compiler/Playwright/dependency/lock or old
+signature/controlset is edited. No old review tree is copied. Other history is
+referenced by hash. No production changes, agents, commits or native API calls.
+
+Authoritative API facts for the coder
+------------------------------------
+Source profile is only github-cloud-app, selecting one bounded owner/repo.
+POST /api/v1/sources has profile/name/repository/token/enabled only.
+PATCH selects only intentional name/repository/token/enabled fields. Blank
+replacement input is omission, not an empty token PATCH. Revision comes from
+the server. Stored credentials never imply Connected or live verification.
+There is no browser operator-key/endpoint/header/approval/requester editor,
+OAuth installation or native bearer refresh.
+
+POST /api/v1/sources/{id}/collections accepts only idempotencyKey.
+202 means queued, not collected/scanned/verified. Identical replay is 200 with
+the same complete immutable binding/result. Lost ACK cannot silently create a
+new job. Only an explicit user confirmation may collect.
+
+Collection/history/record paths and JSON names are exact in CONTRACT.txt.
+In particular:
+  - rawURL uses that exact capitalization.
+  - Evidence path is /sources/collections/{collectionID}/records/{recordID}/evidence.
+  - There is no separate GET /records/{recordID} metadata endpoint.
+  - Evidence is raw application/octet-stream, not a JSON response envelope.
+  - Failed early settlement has gaps:[] and recordCount:0.
+  - Partial can retain valid repository/alert records with alerts:rate_limited.
+  - retryAfterSeconds is data only, never a timer that collects or polls.
+  - GitHub nativeRunId is empty; sourceScanAt is null. sourceUpdatedAt is
+    native update provenance, never a source scan time.
+  - kind:finding is a raw alert record, not an application normalized finding.
+  - complete means exhausted selected feeds, not scanner/verification success.
+
+All three lists use bare default 100 and native 1..500 limit / ID cursor.
+Fixtures are bounded to 102 sources, 101 collection-history rows and 102 raw
+records, with ID ordering separate from ordinal. No auto-drain/search/offset.
+
+Literal evidence preserves original byte whitespace, UTF-8 and JSON formatting.
+Visible PRE content is inert; original Playwright structural queries check
+active descendants, including shadow roots. If presentation normalizes CRLF,
+an explicit exact-byte download must still match the supplied raw digest/size.
+Denied evidence remains withheld through a later 503 until authorized recovery.
+No rawURL is fetched and no browser storage retains source credentials/data.
+
+The seven cases cover
+---------------------
+SU1: Existing five destinations/eight families/Slack preserved; Sources
+     loading/error/empty/paging, masked explicit creation, keyless 503 and
+     nonsecret draft/action feedback, returned metadata and secret clearing.
+SU2: Sparse edits/disable/explicit token replacement, authoritative revision,
+     disabled history, stale-server-role 403 and viewer read-only metadata.
+SU3: Explicit selected collection, missing storage 503, queued DTO, lost-ACK
+     same-key replay OR history reconciliation, no duplicate and server 403.
+SU4: Manual queued/collecting/complete/partial/failed/blocked data, exact record/
+     evidence display, source-time distinctions and no 429 timer or auto-poll.
+SU5: History/record cursor paging, retained rows through error, same-cursor
+     retry and evidence 403/404 through 503 until authorized exact bytes.
+SU6: Viewer inspection, draft clearing and old evidence/status/ACK requests
+     aborted/withheld across workspace/logout.
+SU7: 390px/reduced-motion native keyboard/dialog context, long name wrapping
+     and active-secret-form 401 scope/session clearing.
+
+Frozen evidence and continuity
+-----------------------------
+BEFORE.json records 128 original UI/API inputs and 32 hash-only history
+references. GUARDS.json distinguishes the two approved fixture deltas from
+all untouched original assertions and production inputs.
+SOURCE-AUTHORITY.json records the additional read-only settlement metadata
+used to avoid inventing failure/gap fields. Parent backend/runtime/HEAD
+evolution is recorded separately, never reset or silently adopted as UI proof.
+
+COMPILATION.json, RED.json, COMPATIBILITY.json and EVIDENCE.json reference
+unique real logs/JSON/screenshots/traces outside protected tests:
+  .artifacts\source-collection-ui-v1-author
+Never overwrite missing-sources-red-01 or prior-84-01 evidence.
+PACKET.json/PACKET.sha256 freeze the unsigned new packet. Old signatures were
+not edited/re-signed; parent review and a new current seal are required.
+After separate UI implementation, review actual typecheck and all 91 browser
+cases on fresh evidence paths without changing the original budgets or guards.

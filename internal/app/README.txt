@@ -45,3 +45,52 @@ Connection/send UI and the standalone delivery command now consume this API.
 Their owned HTTPS/TLS qualification is separate from this backend's PG/API
 acceptance. Deployed worker scheduling, live Slack authority, production key
 rotation and broader partition/recovery qualification remain separate work.
+
+Selected GitHub source collection
+================================
+
+Sources support one explicitly selected owner/repository through the existing
+github-cloud-app connector and a supplied installation bearer. Admin connection
+writes use the same optional independent encryption key, but source credentials
+have the separate aspm/source-credential/v1 + profile + workspace + source AAD.
+Slack's credential domain is unchanged. Metadata reads never return secrets.
+
+An explicit writer request creates an immutable source/revision/repository/actor
+binding. Replays with the same binding return the durable job; changed bindings
+conflict. Core CollectionStorage is an optional, separate read-only evidence
+capability, not an upload or bucket-probe capability. Missing collection storage
+prevents enqueue without breaking existing core startup.
+
+CollectionWorker has its own DB pool, explicit scoped storage publisher, key,
+bounded lease and approved normal-TLS client. Source transports are direct and
+origin-bound; they do not inherit ambient proxy/credential configuration.
+Publication reuses the existing bounded app put path. Reads reuse evidence.Reader
+with an explicitly owned transport and verify size/digest before any successful
+evidence response. Existing evidence.Open and default reader behavior are unchanged.
+
+Each exact native repository body and alert RawMessage is published separately.
+PG stores bounded metadata and evidence.Ref only. A collection is bounded to the
+native configured request/page/record limits and at most 32 MiB accepted raw bytes.
+Completion means feed exhaustion, never a scan, normalized finding or verification.
+Record ordinals preserve zero-based native arrival order; pagination uses real IDs.
+
+The worker watches current role/source/revision/lease during native and storage
+I/O without retaining a SQL slot. Finalization rechecks authority and ownership,
+locks workspace before membership, serializes the stable repository identity,
+and commits the asset/link/record metadata in one transaction. The final update
+uses the actual PG clock after inserts; expired provisional writes roll back.
+Expired work is settled terminally, not sent through hidden collection retries.
+Unreferenced objects from interrupted publication are not committed evidence.
+
+The first asset is repository/full_name/medium/unassigned with empty environment
+and tags. Later collections preserve all human asset fields. A stable upstream
+ID reuses the scoped asset across sources and reopens; a pinned source cannot
+silently rebind to a different repository ID. Partial collections preserve only
+valid authorized repository/alert records, gaps and safe native failure metadata.
+
+The Sources UI and standalone collection-worker now consume these APIs. Their
+owned HTTPS/core/worker/storage qualification is separate from this backend's
+transaction and upgrade acceptance. There is no organization discovery, bearer
+refresh, code execution, scanning or finding normalization in this slice.
+Deployment packaging/provisioning, live GitHub authority, broader partitions,
+key rotation and capacity qualification remain separate work.

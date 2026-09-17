@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "prior91RerunForA2": false,
+  "allPrior91AssertionBytesAndHeldSourceUnchanged": true,
+  "reason": "This bounded request adds a new independent spec and requires focused regression RED before a source fix. Existing91 evidence is referenced as history, not reclassified as a fresh full-suite run.",
+  "priorA1Validation": {
+    "path": "web\\tests\\reviews\\source-collection-ui-v1\\VALIDATION-A1.json",
+    "bytes": 40339,
+    "sha256": "84b0543997b0825459a393c9370f3c129b10ec12cddd9601f2ecdb12bd5aeef8"
+  },
+  "prior91Report": {
+    "path": ".artifacts\\source-collection-ui-v1-a1\\full-91-01.results.json",
+    "bytes": 25094450,
+    "sha256": "0129ee8b102a112462afceff18d5c16a2c118438d56a2cc0f9d542a6721d271a"
+  },
+  "prior91Stats": {
+    "startTime": "2026-09-17T18:57:30.003Z",
+    "duration": 330035.204,
+    "expected": 91,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "originalAssertionFiles": [
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "bytes": 12242,
+      "sha256": "f03d03e6a4819c980bff149af7a653683c1d1bab040698755f2c675547878c39"
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "bytes": 17775,
+      "sha256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-ack.spec.ts",
+      "bytes": 11525,
+      "sha256": "b164eb3a196c6684b82c5e07d46f3f360c44a5e660ea3b3622d551938bdacc6c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\tests\\finding-history.spec.ts",
+      "bytes": 24526,
+      "sha256": "1d6b1cc67ae46a04e48d315ced800f390a5723ea86931eb6d56133bd52085aaa"
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "bytes": 7052,
+      "sha256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085"
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "bytes": 7613,
+      "sha256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67"
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "bytes": 11308,
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    },
+    {
+      "path": "web\\tests\\report-formats.spec.ts",
+      "bytes": 25258,
+      "sha256": "cd19d6294f409509b1ea6ba35da7eee7c37f31e5bef80ce5328472a8748365e6"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90"
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "bytes": 6804,
+      "sha256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1"
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "bytes": 9531,
+      "sha256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f"
+    },
+    {
+      "path": "web\\tests\\slack-delivery.spec.ts",
+      "bytes": 49215,
+      "sha256": "bf5d7ee46f6a85a33b62b1a2fb11785ba54b6e946b92903020d01b64fd5a29f7"
+    },
+    {
+      "path": "web\\tests\\source-collection-ui.spec.ts",
+      "bytes": 38545,
+      "sha256": "2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108"
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "bytes": 3823,
+      "sha256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372"
+    }
+  ],
+  "full93NotRun": true
+}

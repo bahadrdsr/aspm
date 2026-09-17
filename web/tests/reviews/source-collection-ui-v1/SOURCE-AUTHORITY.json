@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "scope": "Additional read-only native settlement metadata inspected to keep fixture gaps/failures exact; runtime/deployment behavior is not authored or called.",
+  "files": [
+    {
+      "path": "internal\\app\\source_worker.go",
+      "bytes": 13657,
+      "sha256": "5e23e05647845b766ca6e260c06f01ec5727172e571da4ebffbaa0ab724b0260"
+    },
+    {
+      "path": "internal\\app\\source_process.go",
+      "bytes": 3617,
+      "sha256": "975bc8d9e3a19e2ac84507d202eb8488e350a015ad46977a0511fdd6dbcb568a"
+    },
+    {
+      "path": "internal\\app\\source_schema.go",
+      "bytes": 3293,
+      "sha256": "92ad50350f92101a3df59e5808d23154f045dcb980af89b3fce0b7ae0acb26d7"
+    }
+  ],
+  "failedSettlementGaps": [],
+  "partialGap": "alerts:rate_limited",
+  "rawEvidenceContentType": "application/octet-stream",
+  "recordRawURLTag": "rawURL",
+  "recordNativeRunIdForGitHub": "",
+  "recordSourceScanAtForGitHub": null
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "scope": "github-source-collection-v1",
+  "capturedAt": "2026-09-17T14:36:13.294655+00:00",
+  "minimalProductionSurfaces": {
+    "core": "app.Config.CollectionStorage *app.StorageConfig (optional, explicit, separate evidence-read capability)",
+    "constructor": "app.OpenCollectionWorker(context.Context, app.CollectionWorkerConfig) (*app.CollectionWorker,error)",
+    "workerMethods": [
+      "ProcessNext(context.Context) (bool,error)",
+      "Ping(context.Context) error",
+      "Close() error"
+    ],
+    "workerConfig": {
+      "Database": "app.DatabaseConfig",
+      "Storage": "app.StorageConfig",
+      "EncryptionKey": "[]byte",
+      "WorkerID": "string",
+      "LeaseDuration": "time.Duration",
+      "GitHubEndpoint": "string",
+      "Client": "*http.Client",
+      "Limits": "connectors.Limits"
+    }
+  },
+  "storagePrimitiveDecision": {
+    "existingGap": "evidence.Open probes HeadBucket and cannot be used as shipped source-worker startup authority.",
+    "existingSafeRead": "evidence.OpenReader performs no construction I/O and verifies scope/size/SHA256.",
+    "existingNoProbePublicationPath": "app.openReportStore/put/read uses explicit configuration, bounded hashed publication and the existing evidence reader without a bucket probe.",
+    "parentChoice": "Reuse/factor the existing safe app path, or expose a narrow no-probe writer constructor around existing evidence internals. No test-side writer shim or broad-permission fallback.",
+    "testRestriction": "Core evidence tap is read-only; worker tap allows only selected-prefix object operations. Neither accepts HeadBucket/ListBucket."
+  },
+  "credentialDomain": {
+    "envelope": "version byte 1 || fresh 12-byte nonce || AES-256-GCM ciphertext/tag",
+    "sourceAAD": "aspm/source-credential/v1\\0github-cloud-app\\0<workspace>\\0<source-id>",
+    "slackAADUnchanged": "aspm/slack-credential/v1\\0<workspace>\\0<connection-id>"
+  },
+  "assetPolicy": {
+    "initialKind": "repository",
+    "initialCriticality": "medium",
+    "initialName": "upstream full_name",
+    "initialOwner": null,
+    "initialEnvironment": "",
+    "initialTags": [],
+    "stableIdentity": "workspace + github-cloud-app + upstream repository ID",
+    "manualFieldsNeverOverwritten": [
+      "name",
+      "ownerId",
+      "tags",
+      "environment",
+      "criticality"
+    ],
+    "changedPinnedUpstreamID": "terminal failed/identity-conflict; no rebind"
+  },
+  "collectionSemantics": {
+    "completeMeans": "selected feed exhaustion only",
+    "nativeAlertSourceScanAt": null,
+    "nativeRunID": "",
+    "normalizedFindingsImportsCoverageCreated": false,
+    "rawRecordStorage": "exact S3 bytes; bounded PG metadata/ref/digest only",
+    "retries": "terminal partial/failed/blocked; new explicit manual request, no hidden retry/backoff"
+  },
+  "ownedIntegrityNegative": "A test-created S3 object alone is overwritten via real local S3 to verify trusted digest rejection; no PG business/ref/lease/actor row is mutated.",
+  "futureWorkNotRequired": [
+    "finding normalization",
+    "UI",
+    "service command/runtime deployment",
+    "organization enumeration",
+    "OAuth/install/private-key token refresh",
+    "full cloud inventory",
+    "live vendor certification"
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "scope": "github-source-collection-v1",
+  "phase": "frozen-independent-constructor-red",
+  "frozenAt": "2026-09-17T14:38:18.801401+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned NEW test-author inventory. Parent verifies interface/storage decisions and actual RED before sealing; no prior controls or source are amended.",
+  "payloadFileCount": 16,
+  "ownedFileCount": 18,
+  "ownedFiles": [
+    "tests\\source_collection\\CONTRACT.txt",
+    "tests\\source_collection\\HANDOFF.txt",
+    "tests\\source_collection\\Test-SourceCollection.ps1",
+    "tests\\source_collection\\commit_trace_test.go",
+    "tests\\source_collection\\contract_test.go",
+    "tests\\source_collection\\fixtures_test.go",
+    "tests\\source_collection\\github_fixture_test.go",
+    "tests\\source_collection\\production_bindings_test.go",
+    "tests\\source_collection\\reviews\\v1\\BEFORE.json",
+    "tests\\source_collection\\reviews\\v1\\COMPILATION.json",
+    "tests\\source_collection\\reviews\\v1\\DECISIONS.json",
+    "tests\\source_collection\\reviews\\v1\\EVIDENCE.json",
+    "tests\\source_collection\\reviews\\v1\\GUARDS.json",
+    "tests\\source_collection\\reviews\\v1\\HANDOFF.json",
+    "tests\\source_collection\\reviews\\v1\\PACKET.json",
+    "tests\\source_collection\\reviews\\v1\\PACKET.sha256",
+    "tests\\source_collection\\reviews\\v1\\RED.json",
+    "tests\\source_collection\\source_collection_test.go"
+  ],
+  "files": [
+    {
+      "path": "tests\\source_collection\\commit_trace_test.go",
+      "bytes": 1516,
+      "sha256": "3dfed44d0ebc17b231b28320970218b2ec37e4e24acce21185d7dd2119880554"
+    },
+    {
+      "path": "tests\\source_collection\\CONTRACT.txt",
+      "bytes": 18020,
+      "sha256": "df78884eb39444f2eb20ccc913abe70ec9938ef99c35f96cccb836b2034e97e3"
+    },
+    {
+      "path": "tests\\source_collection\\contract_test.go",
+      "bytes": 3298,
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 22714,
+      "sha256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818"
+    },
+    {
+      "path": "tests\\source_collection\\github_fixture_test.go",
+      "bytes": 5991,
+      "sha256": "bab80aa3ae842c6c9ac6ad3f51dd7790b6180f468ba05c2a1e017f28fb548b45"
+    },
+    {
+      "path": "tests\\source_collection\\HANDOFF.txt",
+      "bytes": 2988,
+      "sha256": "4cce2a6066f9705f1fbc098802f0fe30bb185114b92727971e3cf3b8757bbff1"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\BEFORE.json",
+      "bytes": 5275,
+      "sha256": "2b7c12c2841a81f87ac92336d5a08ac6231c51f1b175451472826316f52395d9"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\COMPILATION.json",
+      "bytes": 2154,
+      "sha256": "615db25764de711dfe241b62d64dd149cef3a0c990328480a96d6f976e800d18"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3328,
+      "sha256": "483c060efd704fde914a512c1e1b9a2242cfc66c546a1f1d942c94cc482cdfe6"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 5491,
+      "sha256": "83b0b6805f9d2359c29affbe384f46b56c0a1f87bfa479ec229b8d307832d276"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS.json",
+      "bytes": 7583,
+      "sha256": "4c3b2b1e1e0c821cf82a058a5045241754dbf9ef933961c52506af0776e29bb4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3377,
+      "sha256": "bc44b3e9503acc5b18d12462df5e82c60116166f2e6e09d0bebed3682a591502"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED.json",
+      "bytes": 8764,
+      "sha256": "ba06880fd6cd0072ebf878863226852e0cf91fd1e701f0f324d1e560ce9e3e25"
+    },
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\Test-SourceCollection.ps1",
+      "bytes": 6342,
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    }
+  ],
+  "contract": "tests\\source_collection\\CONTRACT.txt",
+  "handoff": "tests\\source_collection\\HANDOFF.txt",
+  "decisions": "tests\\source_collection\\reviews\\v1\\DECISIONS.json",
+  "red": "tests\\source_collection\\reviews\\v1\\RED.json",
+  "externalEvidence": "tests\\source_collection\\reviews\\v1\\EVIDENCE.json",
+  "selfBinding": "PACKET.sha256 binds raw PACKET.json. Only this self-digest pair is excluded from payload hashes.",
+  "fullProductionBindingRequiredForAcceptance": true,
+  "noTestSideBusinessImplementation": true,
+  "archives": [],
+  "existingFileEdits": []
+}

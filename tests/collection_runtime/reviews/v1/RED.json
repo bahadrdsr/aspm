@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T17:37:16.727394+00:00",
+  "status": "FROZEN_COMMAND_AND_SERVICE_CONFIGURATION_PREREQUISITE_RED",
+  "actualCommandBuild": {
+    "receipt": {
+      "path": ".artifacts\\collection-runtime-v1\\command-red-final.receipt.json",
+      "bytes": 1328,
+      "sha256": "30d49bc5718944c2dd3c8100004d7127ae22d5e7f2fca1c67998ed7b98cfc5ef"
+    },
+    "log": {
+      "path": ".artifacts\\collection-runtime-v1\\command-red-final-command-build.log",
+      "bytes": 72,
+      "sha256": "3db16bea916b2efb325939adb46bbab37c1d7d791ac80185edc6b115457124f4"
+    },
+    "exitCode": 1,
+    "reason": "cmd/collection-worker is missing",
+    "runtimeCasesExecuted": 0
+  },
+  "actualFullServiceBinding": {
+    "receipt": {
+      "path": ".artifacts\\collection-runtime-v1\\service-red-final.receipt.json",
+      "bytes": 1301,
+      "sha256": "bdbfa4c28f53ab277deff964fbbeb0b3021c91dcc1d8f1f0e8979af7c9e56cc0"
+    },
+    "events": {
+      "path": ".artifacts\\collection-runtime-v1\\service-red-final-service-contract.jsonl",
+      "bytes": 4412,
+      "sha256": "ad3b4c084bcd278d26d8a8fdf857b3808dba73f8b4e16ca2cdc0ff9e3c385f91"
+    },
+    "log": {
+      "path": ".artifacts\\collection-runtime-v1\\service-red-final-service-contract.log",
+      "bytes": 1750,
+      "sha256": "753c824b2e767168c41178ce2c52a1c68e4370fc354f5f655d5e7536053a44b2"
+    },
+    "exitCode": 1,
+    "missingConfigFields": [
+      "CollectionStorage",
+      "CollectionLeaseDuration",
+      "GitHubEndpoint",
+      "CollectionClient",
+      "CollectionCAFile",
+      "CollectionLimits"
+    ],
+    "bindingConstructsForwardsOnly": true,
+    "runtimeCasesExecuted": 0
+  },
+  "helperCompilation": {
+    "receipt": {
+      "path": ".artifacts\\collection-runtime-v1\\helpers-final.receipt.json",
+      "bytes": 1649,
+      "sha256": "a2ffe99ec7f977b8756088a9fc96eda0facae0f9de8221c1d071d94c4d77959a"
+    },
+    "result": "PASS_NOT_ACCEPTANCE",
+    "executesRuntimeTests": false
+  },
+  "actualStorageRightsCalibration": {
+    "receipt": {
+      "path": ".artifacts\\collection-runtime-v1\\rights-final.receipt.json",
+      "bytes": 1678,
+      "sha256": "a5688b778763dfb93ad573e4a4261422e86ef2c5ae5fc9a03d739d183767ac35"
+    },
+    "events": {
+      "path": ".artifacts\\collection-runtime-v1\\rights-final-rights-preflight.jsonl",
+      "bytes": 2036,
+      "sha256": "66f15f174f9655125145bb497fb397b523a08c30584723b9a029a13395ff6555"
+    },
+    "log": {
+      "path": ".artifacts\\collection-runtime-v1\\rights-final-rights-preflight.log",
+      "bytes": 535,
+      "sha256": "90ab89bce1bd044e63a527d253481ae05c5ea88c91e608fd41b429ed9c5f53bd"
+    },
+    "result": "PASS",
+    "realPublisherPutSucceeded": true,
+    "realCoreROGetSucceeded": true,
+    "realCoreROPutDenied": {
+      "httpStatus": 403,
+      "nativeCode": "AccessDenied"
+    },
+    "noFixtureFakeDenial": true,
+    "runtimeBusinessAcceptanceClaimed": false,
+    "schemaPrefixCleanupCompleted": true
+  },
+  "cases": [
+    {
+      "name": "TestCollectionRuntimeCoreEnvironmentRoleEvidenceAndRealReadOnlyRights",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestCollectionRuntimeInvalidAndPartialCapabilitiesFailBeforeIO",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestCollectionRuntimeCancellationFreshCommandAndNoResurrection",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestCollectionRuntimeEnvironmentDefaultsAndLegacyRoleIsolation",
+      "status": "BLOCKED_NOT_RUN"
+    }
+  ],
+  "blockedAssertions": [
+    "Actual core Environment/Run RO collection evidence forwarding",
+    "Independent collection role health/processing/exact evidence/stable asset",
+    "Invalid/partial configuration fail-before-DB/storage/provider/listener",
+    "TLS/S3 service cancellation and fresh actual command no-resurrection/new valid job",
+    "Collection defaults/capability isolation and legacy role parsing"
+  ],
+  "skips": 0,
+  "retrySuppressionAdded": false,
+  "oldRuntimeOrUIBaselineNewPassClaimed": false,
+  "noLiveGitHubOrCloudAccountActivity": true
+}

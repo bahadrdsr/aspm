@@ -50,6 +50,18 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			runtime = nil
 		}
 	}()
+	if role == "collection" {
+		worker, openErr := app.OpenCollectionWorker(ctx, collectionWorkerConfig(config))
+		if openErr != nil {
+			return runtime, openErr
+		}
+		runtime.closers = append(runtime.closers, worker.Close)
+		runtime.checks = append(runtime.checks, worker.Ping)
+		runtime.workers = append(runtime.workers, func(ctx context.Context) error {
+			return runQueuedWork(ctx, "collection", worker.ProcessNext)
+		})
+		return runtime, nil
+	}
 	if role == "delivery" {
 		worker, openErr := app.OpenDeliveryWorker(ctx, deliveryWorkerConfig(config))
 		if openErr != nil {
@@ -88,7 +100,8 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 		application, openErr := app.Open(ctx, app.Config{
 			DatabaseURL: db.DatabaseURL, Schema: db.Schema, ApplicationName: db.ApplicationName,
 			MaxConnections: db.MaxConnections, Storage: storageConfig(config.Evidence),
-			BootstrapToken: config.BootstrapToken, PublicOrigin: config.PublicOrigin,
+			CollectionStorage: config.CollectionStorage,
+			BootstrapToken:    config.BootstrapToken, PublicOrigin: config.PublicOrigin,
 			IntegrationEncryptionKey: config.IntegrationEncryptionKey,
 			Now:                      db.Now, LogOutput: db.LogOutput, SessionTTL: 8 * time.Hour, MaxUploadBytes: 8 << 20,
 			ManualProcessing: true,
@@ -121,7 +134,11 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 }
 
 func Run(ctx context.Context, role string, config Config) (err error) {
-	if role == "delivery" {
+	if (role == "core" || role == "collection") && config.CollectionStorage != nil {
+		storage := *config.CollectionStorage
+		config.CollectionStorage = &storage
+	}
+	if role == "delivery" || role == "collection" {
 		config.IntegrationEncryptionKey = bytes.Clone(config.IntegrationEncryptionKey)
 		defer clear(config.IntegrationEncryptionKey)
 	}
@@ -134,6 +151,17 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			return err
 		}
 		defer config.DeliveryClient.CloseIdleConnections()
+	}
+	if role == "collection" {
+		config.GitHubEndpoint, err = app.ValidateCollectionGateway(config.GitHubEndpoint)
+		if err != nil {
+			return err
+		}
+		config.CollectionClient, err = ownProviderClient(config.CollectionClient, config.GitHubEndpoint, config.CollectionCAFile)
+		if err != nil {
+			return err
+		}
+		defer config.CollectionClient.CloseIdleConnections()
 	}
 	startup, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
@@ -162,7 +190,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			}
 		}
 	}
-	if role != "reports" && role != "delivery" && config.ReadinessKey != "" {
+	if role != "reports" && role != "delivery" && role != "collection" && config.ReadinessKey != "" {
 		if config.PrepareReadiness {
 			if err := evidence.PrepareReadiness(startup, config.Evidence, config.ReadinessKey); err != nil {
 				return err
@@ -195,7 +223,10 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			}
 		}
 		storage := "not-required"
-		if role != "reports" && role != "delivery" {
+		if role == "collection" {
+			storage = "configured-not-probed"
+		}
+		if role != "reports" && role != "delivery" && role != "collection" {
 			storage = "not-probed"
 			if config.ReadinessKey != "" {
 				if err := app.ProbeStorage(check, storageConfig(config.Evidence), config.ReadinessKey); err != nil {

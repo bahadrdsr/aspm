@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "scope": "collection-runtime-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_PREREQUISITE_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-17T17:37:16.727394+00:00",
+  "controls": [
+    {
+      "path": "tests\\collection_runtime\\CONTRACT.txt",
+      "bytes": 12173,
+      "sha256": "0374269448cb623eaac25a3a1d89fa4044ca318e2dd96d8c2863fa4048c798db"
+    },
+    {
+      "path": "tests\\collection_runtime\\contract_test.go",
+      "bytes": 1415,
+      "sha256": "7cb729f73f8adaacb7bdc451d445a1df1797b4225689a99855a8077e9872edbf"
+    },
+    {
+      "path": "tests\\collection_runtime\\fixtures_test.go",
+      "bytes": 27124,
+      "sha256": "b77370299237c1f889ea88f8ee11fc4ab36e1a816f18a3f3c52370f4bd95099e"
+    },
+    {
+      "path": "tests\\collection_runtime\\HANDOFF.txt",
+      "bytes": 2011,
+      "sha256": "44584fc1dfd467650b25baeee33ebadaf2d6370b0859bb63a4c4fff39425ddb6"
+    },
+    {
+      "path": "tests\\collection_runtime\\production_bindings_test.go",
+      "bytes": 2127,
+      "sha256": "9d711cb8145c562958a299824bbcc92b2f4e5c6df5fb617491600a1756a38ffc"
+    },
+    {
+      "path": "tests\\collection_runtime\\rights_calibration_test.go",
+      "bytes": 377,
+      "sha256": "00e03fafd9f28d5184df33d00f1a33e89e02fe052d7ca740e31a046ab3bec1d6"
+    },
+    {
+      "path": "tests\\collection_runtime\\roles_test.go",
+      "bytes": 17745,
+      "sha256": "efec6cd742ddcbba5c1055967ed203798852dc3724e18c0fbc21aaa104ef189f"
+    },
+    {
+      "path": "tests\\collection_runtime\\Test-CollectionRuntime.ps1",
+      "bytes": 7868,
+      "sha256": "e7546dff6417c13eb891029b7051dadddc92a45de77e32f188f002142834b1ad"
+    }
+  ],
+  "contract": "tests\\collection_runtime\\CONTRACT.txt",
+  "humanHandoff": "tests\\collection_runtime\\HANDOFF.txt",
+  "decisions": "DECISIONS.json",
+  "red": "RED.json",
+  "guards": "GUARDS.json",
+  "externalEvidence": "EVIDENCE.json",
+  "outcomes": {
+    "authoredRuntimeNarratives": 4,
+    "executedRuntimeNarratives": 0,
+    "command": "missing-directory build RED",
+    "serviceBinding": "missing-configuration-fields compile RED",
+    "helperCompile": "PASS_NOT_ACCEPTANCE",
+    "realSelectedStorageRights": "PASS: publisher PUT, reader GET, reader PUT actual403/AccessDenied",
+    "skips": 0,
+    "existingAcceptedA2ControlDigestsUnchanged": 132,
+    "existingFilesEdited": 0,
+    "newDependencies": 0,
+    "agentsSpawned": 0,
+    "commitsCreated": 0,
+    "liveGitHubCloudActivity": 0
+  },
+  "rightsClaimsSeparatedFromFixtureTaps": true,
+  "sourceBackendPublicationStillSeparate": true,
+  "archives": [],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify exact optional core versus required publisher configuration and pure validator/transport reuse decisions.",
+    "Verify actual command/configuration RED and distinguish real storage-key calibration from unexecuted runtime semantics.",
+    "Seal NEW collection runtime controls only, preserving all accepted backend/A2/old runtime/UI/deployment history.",
+    "Assign separate coding/review; full Contract must build and launch actual command before runtime acceptance."
+  ]
+}

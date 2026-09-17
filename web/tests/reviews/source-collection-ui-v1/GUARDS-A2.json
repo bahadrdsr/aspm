@@ -1,0 +1,747 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "capturedAt": "2026-09-17T19:47:52.356Z",
+  "before": {
+    "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE-A2.json",
+    "bytes": 331189,
+    "sha256": "f53de37c469b479f1694d5045b5777a87df1b30cac17f720ece51c4492f9099f"
+  },
+  "allSourceHoldInputsUnchanged": 810,
+  "currentControlsUnchanged": 737,
+  "currentControlManifest": {
+    "path": ".oracles\\source-collection-ui-a1.json",
+    "bytes": 148803,
+    "sha256": "f6da52bc7b3210ef1091270f8c29998cab5341ab2f63625adee9b7ab8b01ca59"
+  },
+  "currentControlSignature": {
+    "path": ".oracles\\source-collection-ui-a1.json.sig",
+    "bytes": 89,
+    "sha256": "299b79b19ac768731fe16f25cd48b3cf49ebc3cb485b9b346417d92e8b9e76a2"
+  },
+  "all15UIAndDocPathsUnchanged": [
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 34716,
+      "sha256": "840e28de7544dc4986eb800efe67468e10eff369404b4909b4c6140c2fecc60f"
+    },
+    {
+      "path": "web\\src\\api\\source-intents.ts",
+      "bytes": 1138,
+      "sha256": "368ab8f3ad3039e975ebdc6365dda8ebc9f70cdce588476595ebb3f0a78fc52d"
+    },
+    {
+      "path": "web\\src\\api\\source-types.ts",
+      "bytes": 2123,
+      "sha256": "f2ca7414fff4640666d040071f6d66b35867cd948bf1b420406f487037dec9dd"
+    },
+    {
+      "path": "web\\src\\api\\sources.ts",
+      "bytes": 20982,
+      "sha256": "717b355c3b1400d5cefbe753929a242f872a06628d41f2fc1229f64d171bb976"
+    },
+    {
+      "path": "web\\src\\components\\sources\\collection-detail.tsx",
+      "bytes": 5586,
+      "sha256": "92602e16d81eb25ba9b6b4fbe144e617425270ae9eb286a157a5dd7de8ff0c0f"
+    },
+    {
+      "path": "web\\src\\components\\sources\\collection-records.tsx",
+      "bytes": 2754,
+      "sha256": "c4937a82406b8fd7938c3715d0cfe421aa4497786e45d94446123fed892df37f"
+    },
+    {
+      "path": "web\\src\\components\\sources\\source-collections.tsx",
+      "bytes": 7014,
+      "sha256": "6dff35cfe1b4abfd3cb3e7e341e0fcbf6315c9fe48485f57caabbd5d1d107c87"
+    },
+    {
+      "path": "web\\src\\components\\sources\\source-editor.tsx",
+      "bytes": 6704,
+      "sha256": "4d236a4ae8fb9f8233fdf0f30473a1c273b5417a3c0d72ca3c533f4dff3c6e4a"
+    },
+    {
+      "path": "web\\src\\components\\sources\\source-evidence.tsx",
+      "bytes": 3781,
+      "sha256": "9abbee8b4846d35d1fc9ea53f3d5bb3d361afdeb0e9d0c1ea4b2c72e6518a7c0"
+    },
+    {
+      "path": "web\\src\\components\\sources\\source-ui.tsx",
+      "bytes": 927,
+      "sha256": "0346ee55717cf1af9fb18cd7a76e7ed7c2948aea8a4965e8e09b3ee0d7749df4"
+    },
+    {
+      "path": "web\\src\\components\\sources\\sources.css",
+      "bytes": 3170,
+      "sha256": "42edd2606431199847dc34df2bb9400547bd8aa48d17e8edb5abe110a230ac5b"
+    },
+    {
+      "path": "web\\src\\components\\sources\\sources.tsx",
+      "bytes": 4139,
+      "sha256": "e1fd36b1a795ceeeb102e679566018e5a28a96252c7d4d265c6885c4d68ec860"
+    },
+    {
+      "path": "web\\src\\components\\sources\\use-source-page.ts",
+      "bytes": 3108,
+      "sha256": "973264f49a479fb990172b8da5cbea3c00a2d6738b3dbf258eac48768efbbc01"
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "bytes": 4955,
+      "sha256": "5f18f7901d1d757b21caec85ec0a6819bd8a691317c0155b7356390aa3f32ddc"
+    },
+    {
+      "path": "README.md",
+      "bytes": 21094,
+      "sha256": "5ec26f0c01d50c62bff78e1ed0fcf4eeceb82ac8f6922a769da1bd1f4a9c8216"
+    }
+  ],
+  "prior91AssertionFilesUnchanged": [
+    {
+      "path": "web\\tests\\application-review-regressions.spec.ts",
+      "bytes": 12242,
+      "sha256": "f03d03e6a4819c980bff149af7a653683c1d1bab040698755f2c675547878c39"
+    },
+    {
+      "path": "web\\tests\\application-workflows.spec.ts",
+      "bytes": 17775,
+      "sha256": "7ac932a2f86a7fb4f64097d1f5df9067f66e27bdb94fba1202eaae8625fa0470"
+    },
+    {
+      "path": "web\\tests\\asset-pagination-ack.spec.ts",
+      "bytes": 11525,
+      "sha256": "b164eb3a196c6684b82c5e07d46f3f360c44a5e660ea3b3622d551938bdacc6c"
+    },
+    {
+      "path": "web\\tests\\asset-pagination.spec.ts",
+      "bytes": 25531,
+      "sha256": "c24889a379ccb9bf20590ab702b069248b7ef029d7d6600558bb40fce9195b9e"
+    },
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\tests\\finding-history.spec.ts",
+      "bytes": 24526,
+      "sha256": "1d6b1cc67ae46a04e48d315ced800f390a5723ea86931eb6d56133bd52085aaa"
+    },
+    {
+      "path": "web\\tests\\foundations.spec.ts",
+      "bytes": 7052,
+      "sha256": "cd687867f0f4a208572bbdec7b9ef6ab01bb9b1fe93ff5494090eed0e0b89085"
+    },
+    {
+      "path": "web\\tests\\harness.spec.ts",
+      "bytes": 7613,
+      "sha256": "20e7a9136393c9246ee6361d22fa38f627f722491f06f40350d59181931e7c67"
+    },
+    {
+      "path": "web\\tests\\m01-review-regressions.spec.ts",
+      "bytes": 11308,
+      "sha256": "62f49e24b6db845e180c0e5eb0600d797705885bb729035ab21ee5148e43e9df"
+    },
+    {
+      "path": "web\\tests\\report-formats.spec.ts",
+      "bytes": 25258,
+      "sha256": "cd19d6294f409509b1ea6ba35da7eee7c37f31e5bef80ce5328472a8748365e6"
+    },
+    {
+      "path": "web\\tests\\reports-workflows.spec.ts",
+      "bytes": 37273,
+      "sha256": "0b2e9b0d54a5c552b5cc0eec70fe80cbbe2a3ee3c5084d009acc1f5fb0ef5e90"
+    },
+    {
+      "path": "web\\tests\\responsive-session-controls.spec.ts",
+      "bytes": 6804,
+      "sha256": "dabfc95286157a25f9a19a351796f16170812da4aca1598fc8c7dea0afa64ed1"
+    },
+    {
+      "path": "web\\tests\\shell.spec.ts",
+      "bytes": 9531,
+      "sha256": "947e8029bae190fd493bacdeed8c351ae3cc884a2f1e870f5c1aee7f96cf205f"
+    },
+    {
+      "path": "web\\tests\\slack-delivery.spec.ts",
+      "bytes": 49215,
+      "sha256": "bf5d7ee46f6a85a33b62b1a2fb11785ba54b6e946b92903020d01b64fd5a29f7"
+    },
+    {
+      "path": "web\\tests\\source-collection-ui.spec.ts",
+      "bytes": 38545,
+      "sha256": "2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108"
+    },
+    {
+      "path": "web\\tests\\workspace-reselection.spec.ts",
+      "bytes": 3823,
+      "sha256": "0d486a1bef84fa730df3a9649c989da2ad44a8964f3f974858a1623d83191372"
+    }
+  ],
+  "SU1to7AndA1RegexByteIdentical": {
+    "path": "web\\tests\\source-collection-ui.spec.ts",
+    "bytes": 38545,
+    "sha256": "2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108"
+  },
+  "unchangedFixture": {
+    "path": "web\\tests\\source-ui-fixture.ts",
+    "bytes": 25891,
+    "sha256": "e73b7fe4046615ac25fb0cb9169ae6faedfa653ff0a0102c3c2ea3f82fe81dda"
+  },
+  "unchangedData": {
+    "path": "web\\tests\\source-ui-data.ts",
+    "bytes": 9374,
+    "sha256": "a0e356bb6f23a09e24aaf43a932197b3b8f7a0a31770b528880890149216fef0"
+  },
+  "newCompiledSpec": {
+    "path": "web\\tests\\source-selection.spec.ts",
+    "bytes": 15243,
+    "sha256": "42d415f47b416c933558d21f15e655acf67069c90299f8e554d543c0c5d2c5e4"
+  },
+  "compiler": {
+    "enumeration": {
+      "path": ".artifacts\\source-collection-ui-v1-a2\\compiler-inputs-01.txt",
+      "bytes": 24739,
+      "sha256": "58e3be55295cb2c660ed94b79f7f7866480665699010940492c1f0f6ef8df710"
+    },
+    "activeInputCount": 343,
+    "onlyAddedInput": [
+      "web\\tests\\source-selection.spec.ts"
+    ]
+  },
+  "existingFileAmendments": [],
+  "archives": [],
+  "oldPacketHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.json",
+      "bytes": 5073,
+      "sha256": "225a0f450fadfa2fc531dab970c8e27c1fcd78c175415a2223a3d181b266fe03"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2c0b70bfa234e78f7296e8a9dafc4378ee314093e6a386bc6887b5f46f1b9ce5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.json",
+      "bytes": 6880,
+      "sha256": "b4cbf690c73876bceb61cbf52ad9eb505ae97903bca659f3348bffe2e671411d"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "c236f6d5584ef7ae33aa5990e55e6b0589f812d92adc195cccf4072bca900aa9"
+    }
+  ],
+  "oldREDAndA1EvidenceUnchanged": true,
+  "oldPublicOraclesAndSignaturesUnchanged": [
+    {
+      "path": ".oracles\\asset-pagination-ui-a1.json",
+      "bytes": 125547,
+      "sha256": "455d07c856aa7f6c625faf493563b1e2ed7efa71daa63d59e69309efdc61d7bb"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-a1.json.sig",
+      "bytes": 89,
+      "sha256": "3be0a4137fc7e2767a94aa76ef3254fd544bc58dbbe0fb6f063f8dffa3cbe382"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-a2.json",
+      "bytes": 128374,
+      "sha256": "1842407b32971d40cdce20f623770729970fdc16dfb80042049b755ab991f8bd"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-a2.json.sig",
+      "bytes": 89,
+      "sha256": "7f08ae896a8b0aa93eb81238be7524d348155f4c486044a8026643f41f7a89f7"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-a3.json",
+      "bytes": 130683,
+      "sha256": "50ce8483d6281949a158cabe0de4a5b325d32e20d1056e3dc6cde4b094324a5e"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-a3.json.sig",
+      "bytes": 89,
+      "sha256": "2ec9fb0d4e07b9c971158d71daf61fb85decdddd6ae78db33dbc022baaef4006"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-v1.json",
+      "bytes": 122816,
+      "sha256": "97dc35ec8ab02f0323e6957587090713cac92393a24dea09812b05c945c27ff9"
+    },
+    {
+      "path": ".oracles\\asset-pagination-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "b85bea8bc069d001062bad856c6354ec67e99652b3c3924fb1bb9340f96872d8"
+    },
+    {
+      "path": ".oracles\\backend-security-v1.json",
+      "bytes": 6493,
+      "sha256": "02d825324796f04ac963e98d7ce9fe129a31c81ecccf0b5b41d1805f32fc42a0"
+    },
+    {
+      "path": ".oracles\\backend-security-v1.json.sig",
+      "bytes": 89,
+      "sha256": "8ce9ac915a6aa076b0b8265a084d0383b22b4aae21a00e052a715f77ed85f701"
+    },
+    {
+      "path": ".oracles\\cli-existing-controls-v1.json",
+      "bytes": 3720,
+      "sha256": "efc49ba3eb105f689639bc52019573f37b3310a454711d4042c03843e280a41c"
+    },
+    {
+      "path": ".oracles\\cli-existing-controls-v1.json.sig",
+      "bytes": 89,
+      "sha256": "b85564ee68339effa44dee2cfab88f190a7b4044fbb20c8f39fcb35c70baddec"
+    },
+    {
+      "path": ".oracles\\collection-runtime-v1.json",
+      "bytes": 32496,
+      "sha256": "7b5d2f2af5e675666b7bf23e585b675f7a38ee345509946dfe779a6e8d8ac73c"
+    },
+    {
+      "path": ".oracles\\collection-runtime-v1.json.sig",
+      "bytes": 89,
+      "sha256": "d50fdab09b0bce429216f32891b2df176fb671b8271ea34385517a71f113e246"
+    },
+    {
+      "path": ".oracles\\connector-browser-links-v1.json",
+      "bytes": 3844,
+      "sha256": "e310ef0eebf875819f026d93fd0143ae0f92e2976e0c19074f6da57b671bf9ad"
+    },
+    {
+      "path": ".oracles\\connector-browser-links-v1.json.sig",
+      "bytes": 89,
+      "sha256": "09801b6282d63d393b6bc64e8d2fb6e22b42492744037bd4c7d28db495b82613"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-a1.json",
+      "bytes": 13163,
+      "sha256": "1c968421bb7422517d8612362b021b32402831101dd4e301c2b25f233c36d412"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-a1.json.sig",
+      "bytes": 89,
+      "sha256": "63896cfdbb0854bedaa3150dbfa4b8c6e2021e8eb210695b9da5279eedcfeb78"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-v1.json",
+      "bytes": 12692,
+      "sha256": "c29d2933bfea874b390d9f62da4c4e408d36679ba62ae15925c860ce97910882"
+    },
+    {
+      "path": ".oracles\\delivery-deployment-v1.json.sig",
+      "bytes": 89,
+      "sha256": "948f5b87be37cb38d1066a39e651f7a77915e7b5df3f9cde23470a9863352066"
+    },
+    {
+      "path": ".oracles\\delivery-runtime-a1.json",
+      "bytes": 22230,
+      "sha256": "8f0432004f9999706bf1a6dfeb2fc0f520b0274ead90ed2ba1b9d5ec581067f2"
+    },
+    {
+      "path": ".oracles\\delivery-runtime-a1.json.sig",
+      "bytes": 89,
+      "sha256": "30501dddb8912dfc1f4af8d99484f58dd91b626a6263959e4ee9121cb98ff4ef"
+    },
+    {
+      "path": ".oracles\\delivery-runtime-v1.json",
+      "bytes": 20524,
+      "sha256": "e9ae420d7deb877c850369367350d435599ac0e737e90e7004f251b79c7cfe17"
+    },
+    {
+      "path": ".oracles\\delivery-runtime-v1.json.sig",
+      "bytes": 89,
+      "sha256": "fc54ef21c49d94c124e724b8320ab621fae21608b5dec703555d141effdbd73a"
+    },
+    {
+      "path": ".oracles\\finding-actions-a1.json",
+      "bytes": 109835,
+      "sha256": "6a7da2b9048563f02a3180dc7af5860a64a1c57b3757748b8eaedbad6fa07efa"
+    },
+    {
+      "path": ".oracles\\finding-actions-a1.json.sig",
+      "bytes": 89,
+      "sha256": "468c331f2e713b23c70b17a17fa7e661dc25128296b2ff6dafa9658a9c8228b3"
+    },
+    {
+      "path": ".oracles\\finding-actions-v1.json",
+      "bytes": 107513,
+      "sha256": "6dc927236de4aa10933e5ac1394b4049bed22b17d3f22f33d34952b598fc21f6"
+    },
+    {
+      "path": ".oracles\\finding-actions-v1.json.sig",
+      "bytes": 89,
+      "sha256": "5a54b6c3bb991d45341d80f9128f0f81fcd156783072fad732f86834c6c30402"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-a1.json",
+      "bytes": 136502,
+      "sha256": "bb4f04106da14e6e061b5ec44a95ade57de77c250bca5e43bf6080b8762a6b8e"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-a1.json.sig",
+      "bytes": 89,
+      "sha256": "94d60d102766bdc197b810685e8614edf87e9f7d0ec9433338f7f16b51120c1b"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-a2.json",
+      "bytes": 139060,
+      "sha256": "0e05aebfcf8ac1636262b8afd0cb3162cae1a1c94460706a555a37ba13068f7a"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-a2.json.sig",
+      "bytes": 89,
+      "sha256": "996797d8b9f37936281d5fff817f9278f6233a4ad077396d22618c3a01752d41"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-a3.json",
+      "bytes": 141841,
+      "sha256": "e8ccb136b242d613483683e9635ac85c176afdc5fe10680ceaf39c5ec3567a94"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-a3.json.sig",
+      "bytes": 89,
+      "sha256": "c8289c06184cefa779fa87f0cec16700873b70ad8b7a4e81d2139b696fd5f6e9"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-v1.json",
+      "bytes": 134214,
+      "sha256": "8440e0b4ea516f8b82bae3a15dccc1f521649e67a4f22ac3a0152a31880aac43"
+    },
+    {
+      "path": ".oracles\\finding-history-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c32a314c1013aee55429ad039c4111967a6eb8ad57b1d610459f40ef3caea6e7"
+    },
+    {
+      "path": ".oracles\\installer-execution-v1.json",
+      "bytes": 3628,
+      "sha256": "563a89e164dcb459b4b37c850c60a5d27aa915ea2b5af0032ab872f9b1ac54e0"
+    },
+    {
+      "path": ".oracles\\installer-execution-v1.json.sig",
+      "bytes": 89,
+      "sha256": "d8d7315c7523694370192b2f087bb18e5396e2e5d5f2a551487b86df2b6eeafd"
+    },
+    {
+      "path": ".oracles\\installer-readiness-wiring-v3.json",
+      "bytes": 10392,
+      "sha256": "e703d7db10c9d26d906668158df2076a3b6b13bdff53072c39d0068d064a77fd"
+    },
+    {
+      "path": ".oracles\\installer-readiness-wiring-v3.json.sig",
+      "bytes": 89,
+      "sha256": "b67153a77772f4903c8c4621c145e90b674858f05e94b7b3471bd91120e6a6ce"
+    },
+    {
+      "path": ".oracles\\installer-review-corrections-v2.json",
+      "bytes": 8549,
+      "sha256": "d854016b9e9f839ba44508bfdfbf2d80313ab2acdc1614a80149141191a1b7f7"
+    },
+    {
+      "path": ".oracles\\installer-review-corrections-v2.json.sig",
+      "bytes": 89,
+      "sha256": "dba71c34902518853a8978c89f58b3445af9f057fc4fce9594ba92211d38b9c0"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v1.json",
+      "bytes": 29531,
+      "sha256": "1a1268e05319ea07e2bcda310af1b1a7b193e420c41cb19844d83b15f1736dc6"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v2.json",
+      "bytes": 41894,
+      "sha256": "65e45ac243b9c929ec151f3f332f6a0fd95164fda44240f0792ee7834e38c0bb"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v3.json",
+      "bytes": 43595,
+      "sha256": "0a7918b525486586993426503b2fa63e26bb816e689fbc4f19f121721df5dcd0"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v4.json",
+      "bytes": 49629,
+      "sha256": "d9fa8259ee4d481d42d80d6c41539d616cd50469e2401190febaabf8e9391e23"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v4a1.json",
+      "bytes": 50338,
+      "sha256": "acc60f5e673c1671b842308f45a12312a61c62e32acdd95c3951c5e58c7b5fc7"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v5.json",
+      "bytes": 51585,
+      "sha256": "cb450ee6c4d73a15e40f3b9b641f01ca168ae7c938bc22c31224858930516399"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v6.json",
+      "bytes": 52894,
+      "sha256": "bd59ca9ebe97b9cc3aeb91df78d286ef346fa301497553943018c528a5599607"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v7.json",
+      "bytes": 56579,
+      "sha256": "59f17f1ae1165a91c49953471eacaadc4edae92c82c7f829163aa8f6b5a629c3"
+    },
+    {
+      "path": ".oracles\\preview-control-set-v8.json",
+      "bytes": 60149,
+      "sha256": "27e747b9f16242c0d6511ea2970fa87cef6f921538211ac91fb3bc9d30f63f10"
+    },
+    {
+      "path": ".oracles\\publication-asset-pagination-v7.json",
+      "bytes": 177230,
+      "sha256": "9b418b04283b8f920950b1cf6210b4ddc378c8cfd5f9c9f7ce5b3500c692d0dd"
+    },
+    {
+      "path": ".oracles\\publication-asset-pagination-v7.json.sig",
+      "bytes": 89,
+      "sha256": "c381a47b5325964a09874ee78895014c56fe82efb68ed6143010cab96a8ef28a"
+    },
+    {
+      "path": ".oracles\\publication-delivery-artifacts-v5.json",
+      "bytes": 160810,
+      "sha256": "b87f5474fbcc6022abf1e72bbbf29c0cf02f6be40a75e236fc5f8bbe2a1c1e51"
+    },
+    {
+      "path": ".oracles\\publication-delivery-artifacts-v5.json.sig",
+      "bytes": 89,
+      "sha256": "cf85fc1593a34dddfcb78ce9322d8cd95711bff489a3d6455092ec8d6f0772de"
+    },
+    {
+      "path": ".oracles\\publication-finding-history-v8.json",
+      "bytes": 188961,
+      "sha256": "3d65cd1e52e850e0a3a2cb5b004c1cb9c7f1c490e1fd4150fdd6b84ca683c8c8"
+    },
+    {
+      "path": ".oracles\\publication-finding-history-v8.json.sig",
+      "bytes": 89,
+      "sha256": "940679bfd932d07485b62918d6f3e4cc8e9d8725d705082f536874b55cdfee7f"
+    },
+    {
+      "path": ".oracles\\publication-findings-v3.json",
+      "bytes": 132585,
+      "sha256": "daebe2301e3186592c2445694bde098a3c30fb066f5793d0c85e6dea0f0b4cdc"
+    },
+    {
+      "path": ".oracles\\publication-findings-v3.json.sig",
+      "bytes": 89,
+      "sha256": "f153d1bcd4ffd78b9bc63d690ca10ebcc7561f67b492dbf7e3e30780b6b06f3c"
+    },
+    {
+      "path": ".oracles\\publication-preview-v1.json",
+      "bytes": 94051,
+      "sha256": "6787b8b532f8d8431cbcbf1eb4977bdf4c2b3a13ee0d6ee6c18ee3e64f9e5707"
+    },
+    {
+      "path": ".oracles\\publication-preview-v1.json.sig",
+      "bytes": 89,
+      "sha256": "db689f3311613809703b25506194ceb1c2e1f5552519610b11784bb8254dc588"
+    },
+    {
+      "path": ".oracles\\publication-report-formats-v6.json",
+      "bytes": 165251,
+      "sha256": "c3822c1521c85857bf395f90c45a9a2f929d4283b4f693f9be7abdf936bd2f1a"
+    },
+    {
+      "path": ".oracles\\publication-report-formats-v6.json.sig",
+      "bytes": 89,
+      "sha256": "178d4e27cdfedc0f726410ff5889b23eba0311cbf8b0e61a2c05093c26998867"
+    },
+    {
+      "path": ".oracles\\publication-reports-v2.json",
+      "bytes": 126805,
+      "sha256": "73eafe9840e108448f6abd25256406152edf7cf44760d94698a575371483bc34"
+    },
+    {
+      "path": ".oracles\\publication-reports-v2.json.sig",
+      "bytes": 89,
+      "sha256": "d4a7054a21fad4db5ebcf1fc240be7b6c72eff9e02923009958b32ce9207f684"
+    },
+    {
+      "path": ".oracles\\publication-slack-v4.json",
+      "bytes": 153666,
+      "sha256": "a681cb110e7ed024701981c4f183659036cebc9c4ff018cd96e1e8250ac343b0"
+    },
+    {
+      "path": ".oracles\\publication-slack-v4.json.sig",
+      "bytes": 89,
+      "sha256": "24df329e2dc032a648b49dd0759690e95268a03ca0c6682030f2fb39d61f6806"
+    },
+    {
+      "path": ".oracles\\publication-slack-v4a1.json",
+      "bytes": 156278,
+      "sha256": "986420a8c20808ff601e1ac098478f3c610651a4b9eb2d08e40123e286c215f6"
+    },
+    {
+      "path": ".oracles\\publication-slack-v4a1.json.sig",
+      "bytes": 89,
+      "sha256": "c5aad5107f7d0873608f6eb42e3f5776d78cc96a3b7d162d130fc54841cabeeb"
+    },
+    {
+      "path": ".oracles\\readiness-bootstrap-v1.json",
+      "bytes": 3776,
+      "sha256": "5a89ee132c0fc303421eb07dc26d6b9e488d4ff4c08506bee2f1b7bbfc52c6c2"
+    },
+    {
+      "path": ".oracles\\readiness-bootstrap-v1.json.sig",
+      "bytes": 89,
+      "sha256": "96df22a5e6314a4fde300fdde50ceffb34a859564c6b629d4345dd3a544621ed"
+    },
+    {
+      "path": ".oracles\\remediation-slack-a1.json",
+      "bytes": 14736,
+      "sha256": "0220ef9f93fd6db40a068a4b897b27d49832d4cea126434c6a2ee2a3ad4d055c"
+    },
+    {
+      "path": ".oracles\\remediation-slack-a1.json.sig",
+      "bytes": 89,
+      "sha256": "752b6f90ceacca6bce9cd0ae8af5663f70e0dab262bcd387a66e9dfaf162f7b6"
+    },
+    {
+      "path": ".oracles\\remediation-slack-a2.json",
+      "bytes": 17558,
+      "sha256": "74dd43bbdbac7bdbccd6610d3eca4b331c6b944b2ba9e11784cff12af61ca1f3"
+    },
+    {
+      "path": ".oracles\\remediation-slack-a2.json.sig",
+      "bytes": 89,
+      "sha256": "2714bc9e5d20a471482ddcd4d13bb8ef412e9e7d405006527c91615166c878e5"
+    },
+    {
+      "path": ".oracles\\remediation-slack-v1.json",
+      "bytes": 12488,
+      "sha256": "83306cae4ab2edfc7a1e34fdfdf282f2a29d9bc2d7e9f47fbee1628181bc3bd1"
+    },
+    {
+      "path": ".oracles\\remediation-slack-v1.json.sig",
+      "bytes": 89,
+      "sha256": "01325ba32e8362835ff0f937858fee885ff8dbc4e0294cc17e6d858aa90e0ac3"
+    },
+    {
+      "path": ".oracles\\report-formats-ui-v1.json",
+      "bytes": 119346,
+      "sha256": "c1a4bb9b948949e7e7c038a4d65bda0ec67a9f8e7fee97e1b56faf5edbfddf13"
+    },
+    {
+      "path": ".oracles\\report-formats-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "620a7ac0a82d03516e9bbe088210779c577caeaa91676e51cd88c9267062ebff"
+    },
+    {
+      "path": ".oracles\\reports-ui-v1.json",
+      "bytes": 104706,
+      "sha256": "5bba4583f58b07be1715046ebbf44b16299c3464ee575490ea7a4abcdd060e61"
+    },
+    {
+      "path": ".oracles\\reports-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "55e37548abc7249255f3880fb685bd6e4eed8b3b35e9b593ede429b2b5fb33a7"
+    },
+    {
+      "path": ".oracles\\slack-delivery-ui-v1.json",
+      "bytes": 115457,
+      "sha256": "8b281d396a7bedfbf0bf8fef9811f02451ba51718f4add94b19ebd9201b5d27d"
+    },
+    {
+      "path": ".oracles\\slack-delivery-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "24dc0902f7ab2ea1724b967003ead4a2c47b24f7f47cfcd02d889be58afb44d1"
+    },
+    {
+      "path": ".oracles\\source-collection-a1.json",
+      "bytes": 22921,
+      "sha256": "40af060e0b13ac681345a1b2b5784486a804c0c57d7bb7c046ed2b950138cc1a"
+    },
+    {
+      "path": ".oracles\\source-collection-a1.json.sig",
+      "bytes": 89,
+      "sha256": "c53707249b5377362cc428aa98f98c9f5f8e6bcf1cbb3cfacf60f1c0c240fbe9"
+    },
+    {
+      "path": ".oracles\\source-collection-a2.json",
+      "bytes": 25131,
+      "sha256": "188dba631e280c58f79dacbaaefbeb62f9dad728122aaeb87e9c8e10544880bc"
+    },
+    {
+      "path": ".oracles\\source-collection-a2.json.sig",
+      "bytes": 89,
+      "sha256": "93d41aa452c788bf5248e72f6dd5b8019e7f1e83c924c79f110f25ae1f1b061f"
+    },
+    {
+      "path": ".oracles\\source-collection-ui-a1.json",
+      "bytes": 148803,
+      "sha256": "f6da52bc7b3210ef1091270f8c29998cab5341ab2f63625adee9b7ab8b01ca59"
+    },
+    {
+      "path": ".oracles\\source-collection-ui-a1.json.sig",
+      "bytes": 89,
+      "sha256": "299b79b19ac768731fe16f25cd48b3cf49ebc3cb485b9b346417d92e8b9e76a2"
+    },
+    {
+      "path": ".oracles\\source-collection-ui-v1.json",
+      "bytes": 146261,
+      "sha256": "28b4f8efd0ec3a3d33745df0c577644e92efc27cbcf7477b5cc92e27fe6a70d4"
+    },
+    {
+      "path": ".oracles\\source-collection-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "71368ce76e64fe97fcd5e67463a54edb9ebf30d4a9380d44067d295c1e104db0"
+    },
+    {
+      "path": ".oracles\\source-collection-v1.json",
+      "bytes": 20444,
+      "sha256": "464ee22033fc1b55d31d000c8981c4a98af198d4872a0772e8f82d03bd8d7e50"
+    },
+    {
+      "path": ".oracles\\source-collection-v1.json.sig",
+      "bytes": 89,
+      "sha256": "15ab06bd0b873c00efdeca56d79ac982db8715876ce4c31653d746939ca62498"
+    },
+    {
+      "path": ".oracles\\ui-controls-v1.json",
+      "bytes": 9753,
+      "sha256": "5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9"
+    },
+    {
+      "path": ".oracles\\ui-controls-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c238750c4ec9920f71d57513e4f733becfa1dd7622476f6bd15425901cee6d72"
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json",
+      "bytes": 71222,
+      "sha256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615"
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json.sig",
+      "bytes": 89,
+      "sha256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a"
+    }
+  ],
+  "sourceMetadataChangesAreSyntheticHTTPResponseDataOnly": true,
+  "ReactDOMOrClientStateReplacement": false,
+  "noServerRevisionHeaderOrBodyInvented": true,
+  "noClientAtomicSourceSnapshotClaim": true,
+  "noUnresolvedKeyResetOnMetadataChangePermitted": true,
+  "limits": {
+    "workers": 1,
+    "retries": 0,
+    "caseMS": 20000,
+    "expectMS": 5000,
+    "combinedAPIRequestsPerCase": 60,
+    "sourceListDefaultLimit": 100,
+    "sourceListMaxLimit": 500,
+    "fixtureSourceCountAtMost": 102,
+    "traceAndAnimations": "unchanged"
+  },
+  "productionBackendDependenciesSettingsChanges": 0,
+  "agentsCommitsNativeAPIVendorCalls": 0,
+  "qualificationVector": {
+    "path": ".artifacts\\source-collection-ui-v1-a2\\stale-target-red-01.inputs.json",
+    "bytes": 157576,
+    "sha256": "c81d83ced36352bf796aff13bef58599627e713606ff9ec96cbbc0fe141e512e"
+  }
+}

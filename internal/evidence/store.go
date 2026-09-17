@@ -68,6 +68,10 @@ func Open(ctx context.Context, config Config) (*Store, error) {
 }
 
 func newStore(config Config) (*Store, error) {
+	return newStoreWithTransport(config, nil)
+}
+
+func newStoreWithTransport(config Config, supplied *http.Transport) (*Store, error) {
 	endpoint, err := url.Parse(config.Endpoint)
 	if err != nil || endpoint.Host == "" || (endpoint.Scheme != "http" && endpoint.Scheme != "https") ||
 		endpoint.User != nil || endpoint.RawQuery != "" || endpoint.Fragment != "" ||
@@ -76,7 +80,12 @@ func newStore(config Config) (*Store, error) {
 		config.Timeout <= 0 || !validPrefix(config.Prefix) {
 		return nil, ErrInvalid
 	}
-	transport := http.DefaultTransport.(*http.Transport).Clone()
+	var transport *http.Transport
+	if supplied == nil {
+		transport = http.DefaultTransport.(*http.Transport).Clone()
+	} else {
+		transport = supplied.Clone()
+	}
 	client := &http.Client{
 		Transport: transport, Timeout: config.Timeout,
 		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {

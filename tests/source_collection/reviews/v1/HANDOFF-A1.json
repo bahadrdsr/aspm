@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "scope": "github-source-collection-v1",
+  "amendment": "A1",
+  "role": "independent-original-fixture-author",
+  "status": "FROZEN_FIXTURE_CORRECTION_PENDING_PARENT_VERIFICATION_AND_RESEAL",
+  "capturedAt": "2026-09-17T15:52:56.916Z",
+  "onlyExistingFileEdited": "tests\\source_collection\\fixtures_test.go",
+  "oldFixtureSHA256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818",
+  "newFixtureSHA256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569",
+  "allOtherFixtureBytesIdentical": true,
+  "oldCapabilityChecksBeforeBodyRead": true,
+  "bodyReadMaximumBytes": 33554432,
+  "noHeaderHostPathQueryContentLengthSignatureRewrites": true,
+  "results": {
+    "independentOldNewHTTP1ObservationConfirmed": true,
+    "actualFixtureCalibration": "PASS_NOT_PRODUCT_ACCEPTANCE",
+    "fullContractTopLevelPasses": 8,
+    "requiredStorageAssertionTailsPassed": 2,
+    "skips": 0,
+    "retriesAdded": 0
+  },
+  "productionHoldDigest": "sha256:2070df70f95b049ee24b61644ec5775e4e825a61c11a5c1683d6e2cefcf6d310",
+  "productionFileCount": 77,
+  "currentOriginalControls": 108,
+  "otherOriginalControlHashesUnchanged": 107,
+  "originalREDPacketsAndSignaturesUnchanged": true,
+  "archives": 3,
+  "recursiveHistoryCopies": 0,
+  "actualSourceCodeOrBindingChanges": [],
+  "newDependencies": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "liveVendorCalls": 0,
+  "amendmentEvidence": "AMENDMENT-A1.json",
+  "guards": "GUARDS-A1.json",
+  "validation": "VALIDATION-A1.json",
+  "humanHandoff": "HANDOFF-A1.txt",
+  "currentPacket": "PACKET-A1.json",
+  "currentDigest": "PACKET-A1.sha256",
+  "externalEvidence": [
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\archive-receipt.json",
+      "bytes": 1048,
+      "sha256": "b4194f648cc404b146330a27f41297a1d7bfbcca22eee3cf4760c454823be325"
+    },
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\BEFORE-A1.json",
+      "bytes": 540672,
+      "sha256": "69ffd2c1bfb6f061d4170153ac335f311bd39b75f115faca303dfe3ae15e8ae0"
+    },
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\calibration-01.jsonl",
+      "bytes": 14078,
+      "sha256": "2119d16aa8ef0c9c603823333b339d65ae05e1c6f2e8b928cdefab66636571f5"
+    },
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\calibration-01.log",
+      "bytes": 2793,
+      "sha256": "7404b9fd477ffb7fe8c0f2ad4dc34a42fe5d337a894df93c7f490658da76e783"
+    },
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\calibration-01.receipt.json",
+      "bytes": 653,
+      "sha256": "07285fb07bb1d386da69d62b9529648383d35588b2f1edde948ce087972d744b"
+    },
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\DELTA-A1.json",
+      "bytes": 1536,
+      "sha256": "7529b4da7cc82b1f8dee65a6103d45a6010585377fa4875179f0536fbc87ecc4"
+    },
+    {
+      "path": ".artifacts\\source-collection-fixture-a1\\independent-http1-probe.log",
+      "bytes": 350,
+      "sha256": "d15c8a50c4b4d985280607b75cf8f9692238a77826e16562f8c2494e7d3381f5"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\fixture-a1-full-contract.receipt.json",
+      "bytes": 735,
+      "sha256": "49a907763b6c4d6c2f5f20a656cd184cc3226513fbcda12b0fe1f1ee7a122be3"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\fixture-a1-full-contract.jsonl",
+      "bytes": 13598,
+      "sha256": "039853d73291dce05d86e9cc378e5d9d092e5810c82cff73ebd8d289b48cbd82"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\fixture-a1-full-contract.log",
+      "bytes": 2238,
+      "sha256": "1c59dc00869b78eef84df5d227ed7973dc433f6582c163363f91fd0d8587cec7"
+    }
+  ],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify the exact authorized body-preserving gate insertion and paired HTTP1/forwarding/denial calibration.",
+    "Verify the actual full eight-case Contract, including both previously blocked storage assertion tails.",
+    "Re-seal NEW current controls while preserving old RED/signature/packet history.",
+    "Keep acceptance/review separate; no production or assertion weakening is included."
+  ]
+}

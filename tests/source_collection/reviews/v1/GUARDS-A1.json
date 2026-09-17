@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T15:52:56.916Z",
+  "before": {
+    "path": ".artifacts\\source-collection-fixture-a1\\BEFORE-A1.json",
+    "bytes": 540672,
+    "sha256": "69ffd2c1bfb6f061d4170153ac335f311bd39b75f115faca303dfe3ae15e8ae0"
+  },
+  "heldInputReference": {
+    "path": ".cache\\source-collection-coder\\contract-01-inputs-1.json",
+    "bytes": 507143,
+    "sha256": "a15a0ab6f32e9378b44d70416889164fcfe718a98edf971cf460576236b5e836"
+  },
+  "heldInputCount": 2308,
+  "beforeHeldDigest": "sha256:12267f5d3b01a1a98c3b62362ab5644fadbbeedb9245ba5efdf209e1770a2c93",
+  "afterSameInputSetDigest": "sha256:6ededa112525f23e11c191e9abb76ee022aa169b2f4601ea7b21a20c6760debe",
+  "authorizedHeldInputChanges": [
+    {
+      "path": "tests/source_collection/fixtures_test.go",
+      "oldSHA256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818",
+      "newSHA256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    }
+  ],
+  "production": {
+    "fileCount": 77,
+    "beforeDigest": "sha256:2070df70f95b049ee24b61644ec5775e4e825a61c11a5c1683d6e2cefcf6d310",
+    "afterDigest": "sha256:2070df70f95b049ee24b61644ec5775e4e825a61c11a5c1683d6e2cefcf6d310",
+    "allBytesUnchanged": true,
+    "originalHashReference": {
+      "path": ".artifacts\\source-collection-fixture-a1\\BEFORE-A1.json",
+      "sha256": "69ffd2c1bfb6f061d4170153ac335f311bd39b75f115faca303dfe3ae15e8ae0",
+      "pointer": "/productionFiles"
+    }
+  },
+  "originalAuthority": {
+    "manifest": {
+      "path": ".oracles\\source-collection-v1.json",
+      "bytes": 20444,
+      "sha256": "464ee22033fc1b55d31d000c8981c4a98af198d4872a0772e8f82d03bd8d7e50"
+    },
+    "signature": {
+      "path": ".oracles\\source-collection-v1.json.sig",
+      "bytes": 89,
+      "sha256": "15ab06bd0b873c00efdeca56d79ac982db8715876ce4c31653d746939ca62498"
+    },
+    "originalHashArrayPointer": "/files",
+    "requiredControls": 108,
+    "otherControlDigestsUnchanged": 107,
+    "authorizedChangedControl": "tests/source_collection/fixtures_test.go",
+    "oldOraclePassClaimedAfterFixtureAmendment": false,
+    "resigned": false
+  },
+  "unchangedAssertionsBindingsRunner": [
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\contract_test.go",
+      "bytes": 3298,
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests\\source_collection\\github_fixture_test.go",
+      "bytes": 5991,
+      "sha256": "bab80aa3ae842c6c9ac6ad3f51dd7790b6180f468ba05c2a1e017f28fb548b45"
+    },
+    {
+      "path": "tests\\source_collection\\commit_trace_test.go",
+      "bytes": 1516,
+      "sha256": "3dfed44d0ebc17b231b28320970218b2ec37e4e24acce21185d7dd2119880554"
+    },
+    {
+      "path": "tests\\source_collection\\Test-SourceCollection.ps1",
+      "bytes": 6342,
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "priorPacket": {
+    "path": "tests\\source_collection\\reviews\\v1\\PACKET.json",
+    "bytes": 5130,
+    "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+  },
+  "priorDigest": {
+    "path": "tests\\source_collection\\reviews\\v1\\PACKET.sha256",
+    "bytes": 79,
+    "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+  },
+  "onlyOldFileAmended": "tests\\source_collection\\fixtures_test.go",
+  "noRuntimeHTTPOrProductionChanges": true,
+  "archives": 3,
+  "newDependencies": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0
+}

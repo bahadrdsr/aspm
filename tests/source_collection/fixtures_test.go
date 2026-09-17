@@ -1,0 +1,620 @@
+//go:build integration
+
+package source_collection
+
+import (
+	"bytes"
+	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"io"
+	"log"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"net/http/httputil"
+	"net/url"
+	"os"
+	"regexp"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/bahadrdsr/aspm/internal/connectors"
+	"github.com/bahadrdsr/aspm/internal/evidence"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+func must(t *testing.T, label string, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("%s failed (%T; private details withheld)", label, err)
+	}
+}
+func require(t *testing.T, ok bool, label string) {
+	t.Helper()
+	if !ok {
+		t.Fatal(label)
+	}
+}
+func random(t *testing.T, n int) []byte {
+	t.Helper()
+	value := make([]byte, n)
+	_, err := rand.Read(value)
+	must(t, "generate synthetic private input", err)
+	return value
+}
+func nonce(t *testing.T) string { return hex.EncodeToString(random(t, 12)) }
+func secret(t *testing.T) string {
+	return "synthetic-source-" + base64.RawURLEncoding.EncodeToString(random(t, 24))
+}
+func encode(t *testing.T, value any) []byte {
+	t.Helper()
+	data, err := json.Marshal(value)
+	must(t, "encode owned input", err)
+	return data
+}
+func convert[T any](t *testing.T, value any) T {
+	t.Helper()
+	var result T
+	must(t, "decode returned metadata", json.Unmarshal(encode(t, value), &result))
+	return result
+}
+func required(t *testing.T, name string) string {
+	t.Helper()
+	value := os.Getenv(name)
+	require(t, value != "", "BLOCKED: required private fixture variable "+name+" missing")
+	return value
+}
+func digest(data []byte) string {
+	sum := sha256.Sum256(data)
+	return "sha256:" + hex.EncodeToString(sum[:])
+}
+
+type logBuffer struct {
+	mu sync.Mutex
+	b  bytes.Buffer
+}
+
+func (b *logBuffer) Write(data []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.b.Write(data)
+}
+func (b *logBuffer) data() []byte {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return bytes.Clone(b.b.Bytes())
+}
+
+type storageGate struct {
+	arrived chan struct{}
+	release chan struct{}
+	done    chan struct{}
+	once    sync.Once
+}
+
+func (g *storageGate) allow() { g.once.Do(func() { close(g.release) }) }
+
+type storageTap struct {
+	server   *httptest.Server
+	readOnly bool
+	puts     atomic.Int32
+	mu       sync.Mutex
+	next     *storageGate
+}
+
+func (s *storageTap) holdPut() *storageGate {
+	g := &storageGate{arrived: make(chan struct{}), release: make(chan struct{}), done: make(chan struct{})}
+	s.mu.Lock()
+	s.next = g
+	s.mu.Unlock()
+	return g
+}
+
+type fixture struct {
+	t              *testing.T
+	ctx            context.Context
+	database       app.DatabaseConfig
+	raw, selected  app.StorageConfig
+	key            []byte
+	bootstrap      string
+	db             *pgxpool.Pool
+	adminS3        *s3.Client
+	reader, writer *storageTap
+	log            logBuffer
+	mu             sync.Mutex
+	secrets        []string
+	allowed        map[string]bool
+	violations     []string
+}
+
+func (f *fixture) remember(value string) {
+	if value == "" {
+		return
+	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.secrets = append(f.secrets, value, url.QueryEscape(value), base64.StdEncoding.EncodeToString([]byte(value)))
+}
+func (f *fixture) noSecrets(data []byte) {
+	f.t.Helper()
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	for _, value := range f.secrets {
+		require(f.t, !bytes.Contains(data, []byte(value)), "private credential/key escaped API, storage metadata or logs")
+	}
+}
+func (f *fixture) violation(text string) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.violations = append(f.violations, text)
+}
+func (f *fixture) table(name string) string {
+	return pgx.Identifier{f.database.Schema, "app_" + name}.Sanitize()
+}
+
+func localURL(t *testing.T, value string, scheme ...string) *url.URL {
+	t.Helper()
+	u, err := url.Parse(value)
+	must(t, "parse explicitly selected fixture URL", err)
+	ok := false
+	for _, value := range scheme {
+		ok = ok || value == u.Scheme
+	}
+	require(t, ok && u.Hostname() == "127.0.0.1" && u.Port() != "", "only selected authenticated loopback fixtures are permitted")
+	return u
+}
+
+func newFixture(t *testing.T) *fixture {
+	t.Helper()
+	id := nonce(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 70*time.Second)
+	t.Cleanup(cancel)
+	f := &fixture{t: t, ctx: ctx, key: random(t, 32), bootstrap: secret(t), allowed: map[string]bool{}}
+	f.database = app.DatabaseConfig{DatabaseURL: required(t, "ASPM_COLLECTION_DATABASE_URL"), Schema: "source_collection_" + id,
+		ApplicationName: "source-collection-" + id, MaxConnections: 2, LogOutput: &f.log}
+	f.raw = app.StorageConfig{Endpoint: required(t, "ASPM_COLLECTION_S3_ENDPOINT"), Bucket: required(t, "ASPM_COLLECTION_S3_BUCKET"),
+		AccessKey: required(t, "ASPM_COLLECTION_S3_ACCESS_KEY"), SecretKey: required(t, "ASPM_COLLECTION_S3_SECRET_KEY"),
+		Region: "us-east-1", Prefix: "source-core/" + id + "/", Timeout: 4 * time.Second}
+	f.selected = f.raw
+	f.selected.Prefix = "source-evidence/" + id + "/"
+	dbURL := localURL(t, f.database.DatabaseURL, "postgres", "postgresql")
+	require(t, dbURL.User != nil, "private PG identity required")
+	password, present := dbURL.User.Password()
+	require(t, present && password != "", "private PG password required")
+	storage := localURL(t, f.raw.Endpoint, "http", "https")
+	require(t, storage.User == nil && storage.RawQuery == "" && storage.Fragment == "" &&
+		!strings.ContainsAny(f.raw.Bucket, "/\\:"), "invalid selected local storage identity")
+	for _, value := range []string{f.database.DatabaseURL, password, f.raw.AccessKey, f.raw.SecretKey, f.bootstrap,
+		string(f.key), hex.EncodeToString(f.key), base64.StdEncoding.EncodeToString(f.key)} {
+		f.remember(value)
+	}
+	f.allowed[storage.Host] = true
+	original := http.DefaultTransport
+	guard := original.(*http.Transport).Clone()
+	guard.Proxy = nil
+	guard.DialContext = func(ctx context.Context, network, target string) (net.Conn, error) {
+		f.mu.Lock()
+		allowed := f.allowed[target]
+		f.mu.Unlock()
+		if !allowed {
+			f.violation("ambient HTTP or credential-discovery destination blocked")
+			return nil, errors.New("fixture ambient HTTP boundary")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, target)
+	}
+	http.DefaultTransport = guard
+	t.Cleanup(func() {
+		http.DefaultTransport = original
+		guard.CloseIdleConnections()
+		f.noSecrets(f.log.data())
+		f.mu.Lock()
+		violations := append([]string(nil), f.violations...)
+		f.mu.Unlock()
+		require(t, len(violations) == 0, "unapproved native/storage/ambient operation was attempted")
+	})
+	pc, err := pgxpool.ParseConfig(f.database.DatabaseURL)
+	must(t, "parse real fixture PG pool", err)
+	pc.MaxConns, pc.MinConns, pc.ConnConfig.ConnectTimeout = 2, 0, 3*time.Second
+	pc.ConnConfig.RuntimeParams["application_name"] = f.database.ApplicationName + "-fixture"
+	f.db, err = pgxpool.NewWithConfig(ctx, pc)
+	must(t, "open real fixture PG", err)
+	t.Cleanup(f.db.Close)
+	must(t, "authenticate real PG", f.db.Ping(ctx))
+	_, err = f.db.Exec(ctx, "CREATE SCHEMA "+pgx.Identifier{f.database.Schema}.Sanitize())
+	must(t, "create only the random owned source schema", err)
+	client := &http.Client{Transport: guard.Clone(), Timeout: 4 * time.Second,
+		CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("storage redirects denied") }}
+	t.Cleanup(client.CloseIdleConnections)
+	f.adminS3 = s3.New(s3.Options{Region: f.raw.Region, BaseEndpoint: aws.String(f.raw.Endpoint), UsePathStyle: true,
+		Credentials: credentials.NewStaticCredentialsProvider(f.raw.AccessKey, f.raw.SecretKey, ""), HTTPClient: client,
+		RetryMaxAttempts: 1, RequestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+		ResponseChecksumValidation: aws.ResponseChecksumValidationWhenRequired})
+	t.Cleanup(f.cleanup)
+	f.reader = f.tap(true)
+	f.writer = f.tap(false)
+	return f
+}
+
+func (f *fixture) tap(readOnly bool) *storageTap {
+	target, err := url.Parse(f.selected.Endpoint)
+	must(f.t, "parse owned forwarding-only storage destination", err)
+	tap := &storageTap{readOnly: readOnly}
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	proxy.ErrorLog = log.New(io.Discard, "", 0)
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.Proxy = nil
+	proxy.Transport = transport
+	f.t.Cleanup(transport.CloseIdleConnections)
+	tap.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		key := strings.TrimPrefix(r.URL.Path, "/"+f.selected.Bucket+"/")
+		query := r.URL.Query()
+		operation := map[string]string{"GET": "GetObject", "HEAD": "HeadObject", "PUT": "PutObject"}[r.Method]
+		queryAllowed := r.URL.RawQuery == "" || len(query) == 1 && len(query["x-id"]) == 1 && query.Get("x-id") == operation
+		allowed := strings.HasPrefix(key, f.selected.Prefix) &&
+			(r.Method == "GET" || r.Method == "HEAD" || !readOnly && r.Method == "PUT") && queryAllowed
+		if !allowed {
+			f.violation("source evidence capability attempted a bucket probe/list, wrong prefix or ungranted write")
+			http.Error(w, "owned source evidence boundary", 403)
+			return
+		}
+		if r.Method == "PUT" {
+			tap.puts.Add(1)
+			tap.mu.Lock()
+			gate := tap.next
+			tap.next = nil
+			tap.mu.Unlock()
+			if gate != nil {
+				defer close(gate.done)
+				const maxHeldBody = 32 << 20
+				if r.ContentLength > maxHeldBody {
+					f.violation("authorized held source PUT body exceeded the existing maximum record bound")
+					http.Error(w, "owned source body limit", http.StatusRequestEntityTooLarge)
+					return
+				}
+				body, err := io.ReadAll(io.LimitReader(r.Body, maxHeldBody+1))
+				if err != nil {
+					f.violation("authorized held source PUT body could not be read")
+					http.Error(w, "owned source body read failed", http.StatusBadRequest)
+					return
+				}
+				if len(body) > maxHeldBody {
+					f.violation("authorized held source PUT body exceeded the existing maximum record bound")
+					http.Error(w, "owned source body limit", http.StatusRequestEntityTooLarge)
+					return
+				}
+				r.Body = io.NopCloser(bytes.NewReader(body))
+				close(gate.arrived)
+				select {
+				case <-r.Context().Done():
+					return
+				case <-gate.release:
+				}
+			}
+		}
+		// The native signed method/Host/path/body is forwarded unchanged to the real local S3 service.
+		proxy.ServeHTTP(w, r)
+	}))
+	address := tap.server.Listener.Addr().String()
+	f.mu.Lock()
+	f.allowed[address] = true
+	f.mu.Unlock()
+	f.t.Cleanup(tap.server.Close)
+	return tap
+}
+
+func (f *fixture) cleanup() {
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
+	defer cancel()
+	if !regexp.MustCompile(`^source_collection_[a-f0-9]{24}$`).MatchString(f.database.Schema) {
+		f.t.Error("refusing cleanup outside a task-owned source schema")
+		return
+	}
+	for _, prefix := range []string{f.raw.Prefix, f.selected.Prefix} {
+		pages := s3.NewListObjectsV2Paginator(f.adminS3, &s3.ListObjectsV2Input{
+			Bucket: aws.String(f.selected.Bucket), Prefix: aws.String(prefix), MaxKeys: aws.Int32(100),
+		})
+		for n := 0; pages.HasMorePages() && n < 4; n++ {
+			page, err := pages.NextPage(ctx)
+			if err != nil {
+				f.t.Errorf("owned prefix cleanup failed (%T)", err)
+				break
+			}
+			for _, item := range page.Contents {
+				if !strings.HasPrefix(aws.ToString(item.Key), prefix) {
+					f.t.Error("refusing object cleanup outside owned prefix")
+					continue
+				}
+				_, err = f.adminS3.DeleteObject(ctx, &s3.DeleteObjectInput{Bucket: aws.String(f.selected.Bucket), Key: item.Key})
+				if err != nil {
+					f.t.Errorf("owned object cleanup failed (%T)", err)
+				}
+			}
+		}
+		if pages.HasMorePages() {
+			f.t.Error("owned cleanup exceeded four pages")
+		}
+	}
+	_, err := f.db.Exec(ctx, "DROP SCHEMA "+pgx.Identifier{f.database.Schema}.Sanitize()+" CASCADE")
+	if err != nil {
+		f.t.Errorf("owned schema cleanup failed (%T)", err)
+	}
+}
+
+type harness struct {
+	*fixture
+	core     core
+	config   coreConfig
+	admin    actor
+	apiCalls atomic.Int32
+}
+
+func newHarness(t *testing.T) *harness {
+	t.Helper()
+	require(t, Production.OpenCore != nil && Production.OpenWorker != nil, "real source collection constructors/binding are missing")
+	f := newFixture(t)
+	storage := f.selected
+	storage.Endpoint = f.reader.server.URL
+	h := &harness{fixture: f, config: coreConfig{Database: f.database, Storage: f.raw,
+		CollectionStorage: &storage, Key: f.key, Bootstrap: f.bootstrap, Log: &f.log}}
+	h.open()
+	t.Cleanup(func() {
+		if h.core.Close != nil {
+			must(t, "close core before owned cleanup", h.core.Close())
+		}
+	})
+	password := secret(t)
+	h.remember(password)
+	created := h.json(actor{}, "POST", "/api/v1/bootstrap", map[string]any{
+		"workspaceName": "Owned native source workspace", "name": "Synthetic source admin",
+		"email": "admin@source.invalid", "password": password,
+	}, 201, "X-ASPM-Bootstrap-Token", f.bootstrap)
+	h.admin = h.login("admin@source.invalid", password, created.Workspace.ID)
+	return h
+}
+func (h *harness) open() {
+	var err error
+	h.core, err = Production.OpenCore(h.ctx, h.config)
+	must(h.t, "open real source-capable core", err)
+	require(h.t, h.core.Handler != nil && h.core.Close != nil, "real core binding is incomplete")
+}
+func (h *harness) reopen() {
+	must(h.t, "close core for durable reopen", h.core.Close())
+	h.open()
+}
+func (h *harness) request(ctx context.Context, who actor, method, route string, body any, status int, headers ...string) *httptest.ResponseRecorder {
+	h.t.Helper()
+	require(h.t, h.apiCalls.Add(1) <= 240, "bounded source API budget exceeded")
+	var encoded []byte
+	if body != nil {
+		encoded = encode(h.t, body)
+	}
+	req := httptest.NewRequest(method, "https://source-collection.synthetic.invalid"+route, bytes.NewReader(encoded)).WithContext(ctx)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Origin", "https://source-collection.synthetic.invalid")
+	if who.Workspace != "" {
+		req.Header.Set("X-ASPM-Workspace-ID", who.Workspace)
+	}
+	if who.Cookie != nil {
+		req.AddCookie(who.Cookie)
+	}
+	for i := 0; i < len(headers); i += 2 {
+		req.Header.Set(headers[i], headers[i+1])
+	}
+	response := httptest.NewRecorder()
+	h.core.Handler.ServeHTTP(response, req)
+	if response.Code != status {
+		h.t.Fatalf("actual core %s %s returned %d, want %d; body withheld", method, route, response.Code, status)
+	}
+	h.noSecrets(response.Body.Bytes())
+	if strings.HasPrefix(route, sourcesPath) && !strings.HasSuffix(route, "/evidence") {
+		var envelope map[string]any
+		must(h.t, "inspect real nonsecret source metadata shape", json.Unmarshal(response.Body.Bytes(), &envelope))
+		var inspect func(any)
+		inspect = func(value any) {
+			switch item := value.(type) {
+			case map[string]any:
+				for key, child := range item {
+					switch strings.ToLower(key) {
+					case "token", "ciphertext", "credentialciphertext", "encryptionkey", "credentialurl", "headers", "raw":
+						h.t.Fatal("source metadata returned a secret/raw payload field")
+					}
+					inspect(child)
+				}
+			case []any:
+				for _, child := range item {
+					inspect(child)
+				}
+			}
+		}
+		inspect(envelope)
+	}
+	return response
+}
+func (h *harness) json(who actor, method, route string, body any, status int, headers ...string) apiReply {
+	h.t.Helper()
+	var response apiReply
+	must(h.t, "decode actual source API response", json.Unmarshal(h.request(h.ctx, who, method, route, body, status, headers...).Body.Bytes(), &response))
+	require(h.t, response.APIVersion == apiVersion, "source API version mismatch")
+	if status >= 400 {
+		require(h.t, response.Error != nil && response.Error.Code != "" && response.Error.Message != "" &&
+			response.Error.RequestID != "" && !response.Error.Retryable, "source API failure must be explicit and safely identified")
+	}
+	return response
+}
+func (h *harness) login(email, password, workspace string) actor {
+	response := h.request(h.ctx, actor{}, "POST", "/api/v1/login", map[string]any{"email": email, "password": password}, 200)
+	var identity apiReply
+	must(h.t, "decode actual session identity", json.Unmarshal(response.Body.Bytes(), &identity))
+	for _, cookie := range response.Result().Cookies() {
+		if cookie.Name == "aspm_session" {
+			require(h.t, cookie.HttpOnly && cookie.Secure, "protected real session cookie required")
+			h.remember(cookie.Value)
+			return actor{ID: identity.User.ID, Workspace: workspace, Cookie: cookie}
+		}
+	}
+	h.t.Fatal("real core login omitted its cookie")
+	return actor{}
+}
+func (h *harness) addUser(role string) actor {
+	password, email := secret(h.t), nonce(h.t)+"@source.invalid"
+	h.remember(password)
+	h.json(h.admin, "POST", "/api/v1/users", map[string]any{"name": "Synthetic " + role, "email": email, "password": password, "role": role}, 201)
+	return h.login(email, password, h.admin.Workspace)
+}
+func (h *harness) otherWorkspace() actor {
+	created := h.json(h.admin, "POST", "/api/v1/workspaces", map[string]any{"name": "Owned other source workspace"}, 201)
+	who := h.admin
+	who.Workspace = created.Workspace.ID
+	return who
+}
+func (h *harness) source(who actor, repository, token string) sourceConnection {
+	h.remember(token)
+	value := h.json(who, "POST", sourcesPath, map[string]any{
+		"profile": sourceProfile, "name": "Owned selected GitHub source", "repository": repository, "token": token, "enabled": true,
+	}, 201).Source
+	require(h.t, value.ID != "" && value.WorkspaceID == who.Workspace && value.Profile == sourceProfile &&
+		value.Repository == repository && value.Enabled && value.CredentialConfigured && value.Revision == 1, "incorrect nonsecret source connection metadata")
+	return value
+}
+func collectionPath(id string) string { return sourcesPath + "/collections/" + id }
+func recordsPath(id string) string    { return collectionPath(id) + "/records" }
+func evidencePath(collectionID, recordID string) string {
+	return recordsPath(collectionID) + "/" + recordID + "/evidence"
+}
+func (h *harness) enqueue(who actor, sourceID, key string, status int) collection {
+	return h.json(who, "POST", sourcesPath+"/"+sourceID+"/collections", map[string]string{"idempotencyKey": key}, status).Collection
+}
+func (h *harness) collection(who actor, id string) collection {
+	return h.json(who, "GET", collectionPath(id), nil, 200).Collection
+}
+func (h *harness) records(who actor, id string) []record {
+	var result []record
+	cursor := ""
+	seen := map[string]bool{}
+	for page := 0; page < 8; page++ {
+		query := "?limit=1"
+		if cursor != "" {
+			query += "&cursor=" + url.QueryEscape(cursor)
+		}
+		reply := h.json(who, "GET", recordsPath(id)+query, nil, 200)
+		for _, value := range reply.Items {
+			item := convert[record](h.t, value)
+			require(h.t, !seen[item.ID] && item.CollectionID == id, "paged record identity duplicated or crossed a collection")
+			seen[item.ID] = true
+			result = append(result, item)
+		}
+		if reply.NextCursor == nil {
+			require(h.t, reply.Total == len(result), "paged record total is not the actual metadata count")
+			return result
+		}
+		require(h.t, *reply.NextCursor != cursor && len(reply.Items) == 1, "invalid real record continuation")
+		cursor = *reply.NextCursor
+	}
+	h.t.Fatal("small record fixture exceeded pagination bound")
+	return nil
+}
+func (h *harness) assets(who actor) []asset {
+	reply := h.json(who, "GET", "/api/v1/assets", nil, 200)
+	result := make([]asset, 0, len(reply.Items))
+	for _, value := range reply.Items {
+		result = append(result, convert[asset](h.t, value))
+	}
+	return result
+}
+func (h *harness) workerConfig(native *githubServer, name string) workerConfig {
+	db := h.database
+	db.MaxConnections = 1
+	db.ApplicationName = "collection-worker-" + name + "-" + nonce(h.t)[:8]
+	storage := h.selected
+	storage.Endpoint = h.writer.server.URL
+	return workerConfig{Database: db, Storage: storage, Key: h.key, WorkerID: name + "-" + nonce(h.t),
+		LeaseDuration: 3 * time.Second, Endpoint: native.server.URL, Client: native.client,
+		Limits: connectors.Limits{Requests: 3, Pages: 2, PageSize: 1, Bytes: 32768}}
+}
+func (h *harness) openWorker(config workerConfig) collectionWorker {
+	h.t.Helper()
+	worker, err := Production.OpenWorker(h.ctx, config)
+	must(h.t, "open independently pooled source worker", err)
+	require(h.t, worker != nil, "worker constructor returned nil")
+	h.t.Cleanup(func() { must(h.t, "close source worker", worker.Close()) })
+	return worker
+}
+func process(t *testing.T, ctx context.Context, worker collectionWorker, expected bool) {
+	t.Helper()
+	got, err := worker.ProcessNext(ctx)
+	must(t, "process one actual collection step", err)
+	require(t, got == expected, "incorrect eligible collection result")
+}
+
+func (h *harness) storedRef(recordID string) evidence.Ref {
+	var raw []byte
+	must(h.t, "read only the trusted PG evidence reference", h.db.QueryRow(h.ctx,
+		"SELECT evidence FROM "+h.table("source_collection_records")+" WHERE id=$1", recordID).Scan(&raw))
+	var ref evidence.Ref
+	must(h.t, "decode bounded PG evidence ref", json.Unmarshal(raw, &ref))
+	require(h.t, ref.Bucket == h.selected.Bucket && strings.HasPrefix(ref.Key, h.selected.Prefix+ref.WorkspaceID+"/"), "record left selected evidence authority")
+	return ref
+}
+func (h *harness) noRawDatabaseOrSecrets(rawCanaries ...string) {
+	for _, table := range []string{"source_connections", "source_collections", "source_collection_records", "source_repository_assets"} {
+		rows, err := h.db.Query(h.ctx, "SELECT to_jsonb(item)::text FROM "+h.table(table)+" item")
+		must(h.t, "inspect bounded real source metadata", err)
+		defer rows.Close()
+		for rows.Next() {
+			var data string
+			must(h.t, "read source metadata privately", rows.Scan(&data))
+			h.noSecrets([]byte(data))
+			for _, canary := range rawCanaries {
+				require(h.t, !strings.Contains(data, canary), "raw provider record bytes were stored in PG metadata")
+			}
+		}
+		must(h.t, "finish source metadata inspection", rows.Err())
+		rows.Close()
+	}
+}
+func (h *harness) assertCredential(table, workspace, id, token, domain string) {
+	var envelope []byte
+	must(h.t, "read selected encrypted credential privately", h.db.QueryRow(h.ctx,
+		"SELECT credential_ciphertext FROM "+h.table(table)+" WHERE id=$1", id).Scan(&envelope))
+	block, err := aes.NewCipher(h.key)
+	must(h.t, "open independent standard AES assertion", err)
+	aead, err := cipher.NewGCM(block)
+	must(h.t, "open independent standard GCM assertion", err)
+	require(h.t, len(envelope) > 1+aead.NonceSize()+aead.Overhead() && envelope[0] == 1, "invalid authenticated credential envelope")
+	end := 1 + aead.NonceSize()
+	aad := []byte(domain + "\x00" + workspace + "\x00" + id)
+	plain, err := aead.Open(nil, envelope[1:end], envelope[end:], aad)
+	must(h.t, "authenticate exact credential domain/workspace/connection", err)
+	require(h.t, string(plain) == token, "encrypted credential does not match explicit token")
+	for _, wrong := range [][]byte{[]byte(domain + "\x00other-workspace\x00" + id), []byte(domain + "\x00" + workspace + "\x00other-id"), []byte("aspm/wrong-profile/v1\x00" + workspace + "\x00" + id)} {
+		_, err := aead.Open(nil, envelope[1:end], envelope[end:], wrong)
+		require(h.t, err != nil, "credential is not authenticated to its profile/workspace/connection")
+	}
+	for _, representation := range []string{string(envelope), base64.StdEncoding.EncodeToString(envelope), hex.EncodeToString(envelope)} {
+		require(h.t, !bytes.Contains(h.log.data(), []byte(representation)), "ciphertext appeared in logs")
+	}
+}
+
+func await(t *testing.T, signal <-chan struct{}, label string) {
+	t.Helper()
+	select {
+	case <-signal:
+	case <-time.After(5 * time.Second):
+		t.Fatal(label + " exceeded its owned bound")
+	}
+}

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T15:52:56.916Z",
+  "result": "CALIBRATION_AND_REAL_EIGHT_CASE_CONTRACT_PASS_PENDING_PARENT_RESEAL",
+  "independentHTTP1Diagnostic": {
+    "source": {
+      "path": ".cache\\source-collection-coder\\unread-body-cancel-probe.go",
+      "bytes": 2494,
+      "sha256": "9cb1edea2dbff2b46e2ce4d7b2cd55e76fdf95bab4b8e36aaf6d74485d1a6799"
+    },
+    "output": {
+      "path": ".artifacts\\source-collection-fixture-a1\\independent-http1-probe.log",
+      "bytes": 350,
+      "sha256": "d15c8a50c4b4d985280607b75cf8f9692238a77826e16562f8c2494e7d3381f5"
+    },
+    "kind": "fixture transport diagnostic, not acceptance",
+    "oldUnreadHoldObservesCancellation": false,
+    "consumedBodyHoldObservesCancellation": true,
+    "bothClientsActuallyCanceled": true,
+    "forcedDiagnosticExitCode": 1
+  },
+  "fixtureCalibration": {
+    "receipt": {
+      "path": ".artifacts\\source-collection-fixture-a1\\calibration-01.receipt.json",
+      "bytes": 653,
+      "sha256": "07285fb07bb1d386da69d62b9529648383d35588b2f1edde948ce087972d744b"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-fixture-a1\\calibration-01.jsonl",
+      "bytes": 14078,
+      "sha256": "2119d16aa8ef0c9c603823333b339d65ae05e1c6f2e8b928cdefab66636571f5"
+    },
+    "log": {
+      "path": ".artifacts\\source-collection-fixture-a1\\calibration-01.log",
+      "bytes": 2793,
+      "sha256": "7404b9fd477ffb7fe8c0f2ad4dc34a42fe5d337a894df93c7f490658da76e783"
+    },
+    "results": [
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/old-unread-HTTP1-hold-is-not-cancellation-observation",
+        "status": "pass",
+        "elapsed": 0.21
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/amended-actual-gate-observes-HTTP1-cancellation",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/released-signed-PUT-forwards-exact-body-and-original-headers",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/denied-capability-does-not-consume-body-or-forward/read-only-PUT",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/denied-capability-does-not-consume-body-or-forward/foreign-prefix",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/denied-capability-does-not-consume-body-or-forward/unapproved-query",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/denied-capability-does-not-consume-body-or-forward/unapproved-method",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/denied-capability-does-not-consume-body-or-forward",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1/read-error-and-oversize-are-explicit-fixture-failures",
+        "status": "pass",
+        "elapsed": 0
+      },
+      {
+        "test": "TestSourceCollectionPUTFixtureCalibrationA1",
+        "status": "pass",
+        "elapsed": 0.21
+      }
+    ],
+    "actualAmendedGateInvoked": true,
+    "releasedGeneratedSigV4RequestPreserved": true,
+    "originalHeadersHostPathQueryBodyContentLengthPreserved": true,
+    "deniedCapabilityReadsAndForwards": 0,
+    "readErrorAndOversizeExplicitFailure": true,
+    "ownedExactReceiverNotS3AuthorizationClaim": true,
+    "notProductAcceptance": true
+  },
+  "actualFullContract": {
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\fixture-a1-full-contract.receipt.json",
+      "bytes": 735,
+      "sha256": "49a907763b6c4d6c2f5f20a656cd184cc3226513fbcda12b0fe1f1ee7a122be3"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-v1\\fixture-a1-full-contract.jsonl",
+      "bytes": 13598,
+      "sha256": "039853d73291dce05d86e9cc378e5d9d092e5810c82cff73ebd8d289b48cbd82"
+    },
+    "log": {
+      "path": ".artifacts\\source-collection-v1\\fixture-a1-full-contract.log",
+      "bytes": 2238,
+      "sha256": "1c59dc00869b78eef84df5d227ed7973dc433f6582c163363f91fd0d8587cec7"
+    },
+    "fullBindingIncluded": true,
+    "calibrationTagExcluded": true,
+    "topLevelPassed": 8,
+    "topLevelFailed": 0,
+    "skips": 0,
+    "results": [
+      {
+        "test": "TestSourceCollectionOwnedIOPreflight",
+        "status": "pass",
+        "elapsed": 0.05
+      },
+      {
+        "test": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+        "status": "pass",
+        "elapsed": 1.32
+      },
+      {
+        "test": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+        "status": "pass",
+        "elapsed": 1.1
+      },
+      {
+        "test": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+        "status": "pass",
+        "elapsed": 1.41
+      },
+      {
+        "test": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+        "status": "pass",
+        "elapsed": 1.49
+      },
+      {
+        "test": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+        "status": "pass",
+        "elapsed": 1.03
+      },
+      {
+        "test": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-cancel",
+        "status": "pass",
+        "elapsed": 0.91
+      },
+      {
+        "test": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-revoke",
+        "status": "pass",
+        "elapsed": 1.15
+      },
+      {
+        "test": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-revoke",
+        "status": "pass",
+        "elapsed": 1.02
+      },
+      {
+        "test": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-source-revision",
+        "status": "pass",
+        "elapsed": 0.98
+      },
+      {
+        "test": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+        "status": "pass",
+        "elapsed": 4.05
+      },
+      {
+        "test": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+        "status": "pass",
+        "elapsed": 2.4
+      }
+    ],
+    "storageRevokeTailExecuted": true,
+    "storageSourceRevisionTailExecuted": true,
+    "contextBlockedStateNoAssetNoResurrectionAssertionsUnchanged": true
+  },
+  "priorCoderHandoff": {
+    "path": ".cache\\source-collection-coder\\HANDOFF.json",
+    "bytes": 550915,
+    "sha256": "b8988257353d442087c3072ffd4778f6caed696444d447df94ae5eb2faeb2afc"
+  },
+  "priorCompatibilitySuitesRerunByAuthor": false,
+  "productionHoldPreserved": true,
+  "liveVendorCalls": 0,
+  "retryOrExpectedFailureSuppressionAdded": false
+}

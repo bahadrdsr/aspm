@@ -29,7 +29,7 @@ func (a *database) migrate(ctx context.Context) error {
 	if err = tx.QueryRow(ctx, `SELECT COALESCE(max(version),0) FROM `+a.table("schema_versions")).Scan(&version); err != nil {
 		return err
 	}
-	if version > 5 {
+	if version > 6 {
 		return errors.New("application schema is newer than this binary")
 	}
 	if version == 0 {
@@ -89,6 +89,18 @@ func (a *database) migrate(ctx context.Context) error {
 			return err
 		}
 		if _, err = tx.Exec(ctx, `INSERT INTO `+a.table("schema_versions")+` (version) VALUES (5)`); err != nil {
+			return err
+		}
+	}
+	if version < 6 {
+		ddl := schemaV6
+		for _, name := range []string{"source_connections", "source_collections", "source_collection_records", "source_repository_assets", "workspaces", "users", "assets"} {
+			ddl = strings.ReplaceAll(ddl, "{{"+name+"}}", a.table(name))
+		}
+		if _, err = tx.Exec(ctx, ddl); err != nil {
+			return err
+		}
+		if _, err = tx.Exec(ctx, `INSERT INTO `+a.table("schema_versions")+` (version) VALUES (6)`); err != nil {
 			return err
 		}
 	}

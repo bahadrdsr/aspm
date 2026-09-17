@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/bahadrdsr/aspm/internal/connectors"
 	"github.com/bahadrdsr/aspm/internal/evidence"
 	"github.com/bahadrdsr/aspm/internal/jobs"
 	"github.com/jackc/pgx/v5"
@@ -31,9 +32,15 @@ type Config struct {
 	BootstrapToken           string `json:"-"`
 	IntegrationEncryptionKey []byte `json:"-"`
 	DeliveryLeaseDuration    time.Duration
-	SlackEndpoint            string       `json:"-"`
-	DeliveryClient           *http.Client `json:"-"`
-	DeliveryCAFile           string       `json:"-"`
+	SlackEndpoint            string             `json:"-"`
+	DeliveryClient           *http.Client       `json:"-"`
+	DeliveryCAFile           string             `json:"-"`
+	CollectionStorage        *app.StorageConfig `json:"-"`
+	CollectionLeaseDuration  time.Duration
+	GitHubEndpoint           string       `json:"-"`
+	CollectionClient         *http.Client `json:"-"`
+	CollectionCAFile         string       `json:"-"`
+	CollectionLimits         connectors.Limits
 	ReadinessKey             string
 	PrepareReadiness         bool
 	NormalizedPrefix         string
@@ -42,11 +49,11 @@ type Config struct {
 }
 
 func Environment(role string) (Config, error) {
-	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" {
+	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" && role != "collection" {
 		return Config{}, errors.New("unsupported service role")
 	}
 	prepare := false
-	if value := os.Getenv("ASPM_S3_PREPARE_READINESS"); role != "delivery" && value != "" {
+	if value := os.Getenv("ASPM_S3_PREPARE_READINESS"); role != "delivery" && role != "collection" && value != "" {
 		var err error
 		prepare, err = strconv.ParseBool(value)
 		if err != nil {
@@ -62,10 +69,10 @@ func Environment(role string) (Config, error) {
 	}
 	connections := int64(5)
 	minimum := int64(2)
-	if role == "reports" || role == "delivery" {
+	if role == "reports" || role == "delivery" || role == "collection" {
 		minimum = 1
 	}
-	if role == "delivery" {
+	if role == "delivery" || role == "collection" {
 		connections = 1
 	}
 	if value := os.Getenv("ASPM_DB_MAX_CONNECTIONS"); value != "" {
@@ -85,7 +92,7 @@ func Environment(role string) (Config, error) {
 			MaxLease: time.Minute, MaxAttempts: 3, RetryDelay: time.Second, MaxRetryDelay: 30 * time.Second,
 		},
 	}
-	if role != "reports" && role != "delivery" {
+	if role != "reports" && role != "delivery" && role != "collection" {
 		config.Evidence = evidence.Config{
 			Endpoint: os.Getenv("ASPM_S3_ENDPOINT"), Bucket: env("ASPM_S3_BUCKET", "aspm-evidence"),
 			AccessKey: os.Getenv("ASPM_S3_ACCESS_KEY"), SecretKey: os.Getenv("ASPM_S3_SECRET_KEY"),
@@ -102,6 +109,10 @@ func Environment(role string) (Config, error) {
 		if err != nil {
 			return Config{}, err
 		}
+		config.CollectionStorage, err = collectionStorageEnvironment(false)
+		if err != nil {
+			return Config{}, err
+		}
 	}
 	if role == "ingestion" {
 		config.NormalizedPrefix = env("ASPM_S3_NORMALIZED_PREFIX", "normalized/")
@@ -112,9 +123,18 @@ func Environment(role string) (Config, error) {
 			return Config{}, err
 		}
 	}
+	if role == "collection" {
+		config.WorkerID = "collection-" + jobs.NewID()
+		if err := collectionEnvironment(&config); err != nil {
+			return Config{}, err
+		}
+	}
 	if err := validateConfig(role, config); err != nil {
 		if role == "delivery" && config.DeliveryClient != nil {
 			config.DeliveryClient.CloseIdleConnections()
+		}
+		if role == "collection" && config.CollectionClient != nil {
+			config.CollectionClient.CloseIdleConnections()
 		}
 		return Config{}, err
 	}
@@ -134,7 +154,7 @@ func databaseConfig(config jobs.Config) app.DatabaseConfig {
 // Validate the complete caller configuration before EnsureSchema, pool opens,
 // storage probes, listeners, or worker goroutines can perform I/O.
 func validateConfig(role string, config Config) error {
-	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" {
+	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" && role != "collection" {
 		return errors.New("unsupported service role")
 	}
 	if role == "delivery" {
@@ -142,10 +162,20 @@ func validateConfig(role string, config Config) error {
 			return err
 		}
 	}
-	if role != "delivery" && config.PrepareReadiness && (role != "core" || config.ReadinessKey == "") {
+	if role == "collection" {
+		if err := validateCollectionConfig(config); err != nil {
+			return err
+		}
+	}
+	if role == "core" && config.CollectionStorage != nil {
+		if err := app.ValidateStorageConfig(*config.CollectionStorage); err != nil {
+			return err
+		}
+	}
+	if role != "delivery" && role != "collection" && config.PrepareReadiness && (role != "core" || config.ReadinessKey == "") {
 		return errors.New("readiness preparation requires core and an explicit scoped readiness key")
 	}
-	if role != "reports" && role != "delivery" {
+	if role != "reports" && role != "delivery" && role != "collection" {
 		if err := app.ValidateStorageConfig(storageConfig(config.Evidence)); err != nil {
 			return err
 		}

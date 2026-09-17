@@ -45,6 +45,10 @@ func integrationCredentialAAD(workspace, connection string) []byte {
 }
 
 func sealIntegrationToken(aead cipher.AEAD, workspace, connection, token string) ([]byte, error) {
+	return sealCredential(aead, integrationCredentialAAD(workspace, connection), token)
+}
+
+func sealCredential(aead cipher.AEAD, aad []byte, token string) ([]byte, error) {
 	if aead == nil {
 		return nil, errUnavailable
 	}
@@ -55,16 +59,20 @@ func sealIntegrationToken(aead cipher.AEAD, workspace, connection, token string)
 	}
 	plain := []byte(token)
 	defer clear(plain)
-	return aead.Seal(envelope, envelope[1:], plain, integrationCredentialAAD(workspace, connection)), nil
+	return aead.Seal(envelope, envelope[1:], plain, aad), nil
 }
 
 func openIntegrationToken(aead cipher.AEAD, workspace, connection string, envelope []byte) ([]byte, error) {
+	return openCredential(aead, integrationCredentialAAD(workspace, connection), envelope)
+}
+
+func openCredential(aead cipher.AEAD, aad []byte, envelope []byte) ([]byte, error) {
 	if aead == nil || len(envelope) < 1+aead.NonceSize()+aead.Overhead()+1 ||
 		len(envelope) > 1+aead.NonceSize()+aead.Overhead()+integrationTokenLimit || envelope[0] != 1 {
 		return nil, errUnavailable
 	}
 	end := 1 + aead.NonceSize()
-	plain, err := aead.Open(nil, envelope[1:end], envelope[end:], integrationCredentialAAD(workspace, connection))
+	plain, err := aead.Open(nil, envelope[1:end], envelope[end:], aad)
 	if err != nil {
 		return nil, errUnavailable
 	}

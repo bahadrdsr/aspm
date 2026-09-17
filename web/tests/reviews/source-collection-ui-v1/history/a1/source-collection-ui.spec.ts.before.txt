@@ -1,0 +1,534 @@
+import type { Locator, Page } from "@playwright/test";
+import { catalogResponse } from "./fixtures";
+import { requireProductionUI } from "./network";
+import {
+  betaSource, collectionPath, collectionResult, collectionsPath, disabledSource, evidencePath, githubSource,
+  longSourceName, nativeID, queuedCollection, recordsPath, replacementSourceToken,
+  sourceAlpha, sourceBeta, sourceInput, sourcePath, sourceSeries, sourceToken, sourcesPath, validText,
+} from "./source-ui-data";
+import type { SourcePage, UICollection, UIRecord, UISource } from "./source-ui-data";
+import { expect, test } from "./source-ui-fixture";
+import type { SourceControl, SourcesUIAPI } from "./source-ui-fixture";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+test.beforeEach(async ({ sources }) => { requireProductionUI(); expect(sources.requests).toEqual([]); });
+
+const addName = /^(?:Add|Create|New)(?: GitHub)? source$/i;
+const editorName = /^(?:Add|Create|New|Edit)(?: GitHub)? source$/i;
+const saveName = /^(?:Save|Add|Create)(?: (?:GitHub )?source| changes)?$/i;
+const tokenLabel = /^(?:(?:New |Replacement )?(?:GitHub(?: App)? )?(?:installation )?(?:bearer|token|bearer token))(?: \(.*\))?$/i;
+const repositoryLabel = /^(?:Selected )?Repository(?: \(owner\/repo\))?$/i;
+const retryName = /^(?:Retry(?: (?:sources|source|collection|collections|records|evidence))?|Try again)$/i;
+function region(page: Page) { return page.getByRole("region", { name: /^(?:Workspace )?Sources$/i, includeHidden: true }); }
+function sourceTable(page: Page) { return region(page).getByRole("table", { name: /^(?:Workspace )?Sources$/i, includeHidden: true }); }
+function sourceRow(page: Page, source = githubSource) { return sourceTable(page).getByRole("row", { includeHidden: true }).filter({ hasText: source.name }); }
+function add(page: Page) { return region(page).getByRole("button", { name: addName }); }
+function editor(page: Page) { return page.getByRole("dialog", { name: editorName }); }
+function sourceForm(page: Page) { return editor(page).getByRole("form", { name: /source/i }); }
+function refreshSources(page: Page) { return region(page).getByRole("button", { name: /^Refresh sources$/i }); }
+function history(page: Page) { return page.getByRole("region", { name: /^Source collections$|^Collection history$|^Collections$/i, includeHidden: true }); }
+function collectionDetails(page: Page) { return page.getByRole("region", { name: /^Selected collection$|^Collection details$/i, includeHidden: true }); }
+function collectionStatus(page: Page) {
+  return collectionDetails(page).getByRole("status", { name: /^Collection status$/i })
+    .or(collectionDetails(page).getByRole("alert", { name: /^Collection status$/i }));
+}
+function records(page: Page) { return page.getByRole("region", { name: /^(?:Collected |Source )?Records$/i, includeHidden: true }); }
+function recordTable(page: Page) { return records(page).getByRole("table", { name: /^(?:Collected |Source )?Records$/i, includeHidden: true }); }
+function evidence(page: Page) {
+  return page.getByRole("region", { name: /^Raw source evidence$|^Record evidence$|^Raw evidence$/i, includeHidden: true })
+    .or(page.getByRole("dialog", { name: /^Raw source evidence$|^Record evidence$|^Raw evidence$/i }));
+}
+function confirmation(page: Page) { return page.getByRole("dialog", { name: /^Collect(?: GitHub)? source$|^Confirm collection$/i }); }
+function confirm(page: Page) { return confirmation(page).getByRole("button", { name: /^Collect source$|^Queue collection$|^Confirm collection$/i }); }
+function literal(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+function recordRow(page: Page, id: string) {
+  const rows = recordTable(page).getByRole("row", { includeHidden: true });
+  return rows.filter({ hasText: id }).or(rows.filter({ has: page.getByRole("button", { name: new RegExp(literal(id)), includeHidden: true }) }));
+}
+function collectionRow(page: Page, id: string) {
+  const rows = history(page).getByRole("table", { name: /collections/i, includeHidden: true }).getByRole("row", { includeHidden: true });
+  return rows.filter({ hasText: id }).or(rows.filter({ has: page.getByRole("button", { name: new RegExp(literal(id)), includeHidden: true }) }));
+}
+async function frame(page: Page) {
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+}
+async function requested(control: SourceControl) {
+  await expect.poll(() => control.call !== null, "The real UI must use the declared source HTTP operation.").toBe(true);
+  return control.call!;
+}
+async function release(page: Page, control: SourceControl, aborted = false) {
+  control.release(); await control.delivered; await frame(page);
+  if (aborted) for (const call of control.calls) await expect.poll(() => call.failure, "Old scope requests must be aborted, not just hidden.").toMatch(/abort/i);
+}
+async function visit(page: Page) {
+  await page.goto("/#/integrations");
+  await expect(region(page), "Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.").toBeVisible();
+}
+async function libraryUnverified(page: Page) {
+  const nav = page.getByRole("navigation", { name: "Primary", exact: true });
+  await expect(nav.getByRole("link")).toHaveCount(5);
+  const catalog = page.getByRole("list", { name: "Native integrations", exact: true });
+  await expect(catalog.getByRole("listitem")).toHaveCount(8);
+  for (const entry of catalogResponse.items) {
+    const card = catalog.getByRole("listitem").filter({ has: page.getByRole("heading", { name: entry.name, exact: true }) });
+    await expect(card.getByText(/Not verified|Unverified|Not run/i)).toBeVisible();
+    await expect(card.getByText(/^Connected$|^Live verified$|^Verified$/i)).toHaveCount(0);
+  }
+  await expect(page.getByRole("region", { name: /^(?:Workspace )?Connections$/i })).toBeVisible();
+  await expect(region(page).getByText(/^Connected$|^Live verified$|^Verified$/i)).toHaveCount(0);
+}
+async function enabled(form: Locator, value: boolean) {
+  const choice = form.getByRole("checkbox", { name: /^Enabled$|^Enable source$|^Enabled for collection$/i })
+    .or(form.getByRole("switch", { name: /^Enabled$|^Enable source$|^Enabled for collection$/i }));
+  const select = form.getByRole("combobox", { name: /^Enabled$|^Collection enabled$/i });
+  if (await choice.count()) {
+    if (await choice.evaluate((node) => node instanceof HTMLInputElement)) await choice.setChecked(value);
+    else if ((await choice.getAttribute("aria-checked") === "true") !== value) await choice.click();
+  } else {
+    await expect(select, "Enabled is an explicit labelled boolean choice, not a Connected checkbox.").toBeVisible();
+    await select.selectOption({ label: value ? "Enabled" : "Disabled" });
+  }
+  await expect(form.getByRole("checkbox", { name: /connected|verified/i })).toHaveCount(0);
+}
+async function openAdd(page: Page) {
+  await add(page).click(); await expect(sourceForm(page)).toBeVisible();
+  await expect(sourceForm(page).getByLabel(tokenLabel)).toHaveAttribute("type", "password");
+  await expect(sourceForm(page).getByLabel(tokenLabel)).toHaveValue("");
+}
+async function fillSource(page: Page, input = sourceInput) {
+  await sourceForm(page).getByRole("textbox", { name: /^(?:Source )?Name$/i }).fill(input.name);
+  await sourceForm(page).getByRole("textbox", { name: repositoryLabel }).fill(input.repository);
+  await sourceForm(page).getByLabel(tokenLabel).fill(input.token);
+  await enabled(sourceForm(page), input.enabled);
+}
+async function edit(page: Page, source = githubSource) {
+  await sourceRow(page, source).getByRole("button", { name: /^Edit(?: (?:GitHub )?source)?(?: .*)?$/i }).click();
+  await expect(sourceForm(page)).toBeVisible();
+  await expect(sourceForm(page).getByLabel(tokenLabel)).toHaveValue("");
+}
+async function openHistory(page: Page, source = githubSource) {
+  const action = sourceRow(page, source).getByRole("button", { name: /^Open source$|^View source$|^(?:View )?Collections$|^Collection history$/i })
+    .or(sourceRow(page, source).getByRole("link", { name: /^Open source$|^View source$|^(?:View )?Collections$|^Collection history$/i }));
+  await action.click(); await expect(history(page)).toBeVisible();
+  await expect(history(page)).toContainText(source.repository);
+}
+async function openConfirmation(page: Page, source = githubSource) {
+  await history(page).getByRole("button", { name: /^Collect source$/i }).click();
+  await expect(confirmation(page)).toBeVisible();
+  await expect(confirmation(page)).toContainText(source.name);
+  await expect(confirmation(page)).toContainText(source.repository);
+  await expect(confirmation(page)).toContainText(/selected|repository/i);
+}
+async function openCollection(page: Page, collection: UICollection) {
+  await collectionRow(page, collection.id).getByRole("button", { name: /^Open collection(?: .*)?$|^View collection(?: .*)?$/i }).click();
+  await expect(collectionDetails(page)).toBeVisible();
+  await expect(collectionDetails(page)).toContainText(collection.id);
+}
+async function exactCollection(page: Page, value: UICollection) {
+  const panel = collectionDetails(page);
+  await expect(collectionStatus(page)).toContainText(new RegExp(`\\b${value.state}\\b`, "i"));
+  for (const text of [value.id, value.repository]) await expect(panel).toContainText(text);
+  await expect(panel).toContainText(new RegExp(`\\b${value.recordCount}\\s+records?\\b|record count\\s*:?\\s*${value.recordCount}\\b`, "i"));
+  for (const time of [value.createdAt, value.collectedAt, value.completedAt].filter((stamp): stamp is string => stamp !== null)) {
+    await expect(panel.locator(`time[datetime="${time}"]`).first()).toBeVisible();
+  }
+  if (value.complete) await expect(panel).toContainText(/selected (?:feeds|feed).*exhaust|selected.*complete|complete.*selected/i);
+  else await expect(panel).toContainText(/incomplete|not complete|complete\s*:\s*false|not (?:yet )?(?:collected|finished)|queued|collecting|blocked|failed|partial/i);
+  for (const gap of value.gaps) await expect(panel).toContainText(gap);
+  if (value.failure) {
+    await expect(panel).toContainText(value.failure.code);
+    if (value.failure.nativeCode) await expect(panel).toContainText(value.failure.nativeCode);
+    await expect(panel).toContainText(new RegExp(`HTTP(?: status)?\\s*:?\\s*${value.failure.httpStatus}\\b`, "i"));
+    if (value.failure.retryAfterSeconds) await expect(panel).toContainText(/retry.after\s*:?\\s*7\s*(?:s\b|seconds?)/i);
+    await expect(panel).toContainText(/no automatic retr|not (?:automatically )?retried|retryable\s*:\s*false/i);
+  }
+  if (value.assetId) {
+    await expect(panel).toContainText(value.assetId);
+    for (const link of await panel.getByRole("link", { name: /asset/i })
+      .or(panel.getByRole("link", { name: value.assetId, exact: true })).all()) {
+      const target = new URL(await link.getAttribute("href") ?? "", page.url());
+      expect(target.hash, "An asset reference is not permission to invent a direct-detail/filter UI route.").toBe("#/assets");
+    }
+  }
+  await expect(panel.getByText(/^Scan passed$|^Verified$|^Resolved$|^Normalized finding$/i)).toHaveCount(0);
+}
+async function openEvidence(page: Page, value: UIRecord) {
+  const action = recordRow(page, value.id).getByRole("button", { name: /^View evidence(?: .*)?$|^Open evidence(?: .*)?$|^View raw record(?: .*)?$/i });
+  await action.click(); await expect(evidence(page)).toBeVisible();
+}
+async function rawEvidence(page: Page, sources: SourcesUIAPI, value: UIRecord) {
+  const raw = sources.records.get(value.id)!.raw, text = raw.toString("utf8"), viewer = evidence(page);
+  const pre = viewer.locator("pre");
+  await expect(pre).toHaveCount(1); await expect(pre).toBeVisible();
+  const dom = await pre.textContent();
+  expect(dom === text || dom === text.replaceAll("\r\n", "\n"), "Raw bytes must not be JSON-reserialized, trimmed or interpreted as markup.").toBe(true);
+  await expect(pre.locator("a, script, iframe, img, svg, b, em")).toHaveCount(0);
+  if (dom !== text) {
+    const download = page.waitForEvent("download");
+    await viewer.getByRole("button", { name: /^Download(?: raw)? evidence$|^Download raw record$/i })
+      .or(viewer.getByRole("link", { name: /^Download(?: raw)? evidence$|^Download raw record$/i })).click();
+    const stream = await (await download).createReadStream();
+    if (!stream) throw new Error("No exact-byte evidence download.");
+    const chunks: Buffer[] = []; for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+    expect(Buffer.concat(chunks).equals(raw), "A line-normalized display still needs an exact raw-byte download.").toBe(true);
+  }
+  const call = sources.calls("GET", evidencePath(value.collectionId, value.id)).at(-1)!;
+  expect(call.rawSHA256).toBe(value.evidence.sha256);
+  expect(call.rawBytes).toBe(value.evidence.sizeBytes);
+}
+async function rawMetadata(page: Page, value: UIRecord) {
+  const panel = evidence(page);
+  for (const text of [value.id, value.externalId, value.kind, value.rawURL, value.evidence.sha256]) await expect(panel).toContainText(text);
+  if (value.parentId) await expect(panel).toContainText(value.parentId);
+  if (value.location) await expect(panel).toContainText(value.location);
+  if (value.state) await expect(panel).toContainText(value.state);
+  if (value.severity) await expect(panel).toContainText(value.severity);
+  await expect(panel).toContainText(/unknown source (?:scan )?time|source scan(?: time)?\s*:?\s*(?:unknown|not supplied)/i);
+  await expect(panel).toContainText(/native run(?: ID)?\s*:?\s*(?:unknown|not supplied|none)|no native run/i);
+  if (value.sourceUpdatedAt) {
+    await expect(panel.locator(`time[datetime="${value.sourceUpdatedAt}"]`)).toBeVisible();
+    await expect(panel).toContainText(/native updated|source updated/i);
+  }
+}
+async function closeEvidence(page: Page) {
+  if (await evidence(page).getAttribute("role") === "dialog" || await page.getByRole("dialog", { name: /^Raw source evidence$|^Record evidence$|^Raw evidence$/i }).count()) {
+    await page.keyboard.press("Escape");
+  } else {
+    const close = evidence(page).getByRole("button", { name: /^Close(?: evidence| raw evidence| record evidence)?$/i });
+    if (await close.count()) await close.click();
+  }
+}
+async function noAlpha(page: Page, extra: string[] = [], signedOut = false) {
+  await expect(editor(page)).toHaveCount(0); await expect(confirmation(page)).toHaveCount(0); await expect(evidence(page)).toHaveCount(0);
+  for (const text of [githubSource.name, githubSource.repository, disabledSource.name, sourceInput.name, ...extra]) {
+    await expect(page.locator("body")).not.toContainText(text);
+  }
+  if (signedOut) {
+    await expect(region(page)).toHaveCount(0);
+    await expect(page.getByRole("combobox", { name: "Workspace", exact: true, includeHidden: true })).toHaveCount(0);
+  }
+}
+async function noDecorativeMovement(page: Page) {
+  const moving = await page.evaluate(async () => {
+    const found = new Set<string>();
+    for (let sample = 0; sample < 6; sample++) {
+      for (const animation of document.getAnimations()) {
+        if (animation.playState !== "running" || !(animation.effect instanceof KeyframeEffect)) continue;
+        if (animation.effect.getTiming().iterations === Infinity) found.add("continuous");
+        const frames = animation.effect.getKeyframes() as Array<Record<string, unknown>>;
+        for (const key of ["transform", "translate", "scale", "rotate", "top", "left"]) {
+          if (new Set(frames.map((frame) => frame[key]).filter((value) => value !== undefined).map(String)).size > 1) found.add(key);
+        }
+      }
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    }
+    return [...found];
+  });
+  expect(moving).toEqual([]);
+}
+
+test("SU1 Sources retain the five-nav/eight-family/Slack surface and distinguish loading, failure, empty, native pages and explicit masked creation", async ({ page, sources }) => {
+  sources.seedSources(sourceAlpha.id, []);
+  const pending = sources.queueRead(sourcesPath, 503, true);
+  await visit(page); await libraryUnverified(page); await requested(pending);
+  await expect(region(page).getByRole("status").filter({ hasText: /loading.*sources/i })).toBeVisible();
+  await expect(region(page).getByText(/^No sources(?: yet)?$/i)).toHaveCount(0);
+  await release(page, pending);
+  await expect(region(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+  sources.queueRead(sourcesPath);
+  await region(page).getByRole("button", { name: retryName }).click();
+  await expect(region(page).getByText(/^No (?:configured )?sources(?: yet)?$/i)).toBeVisible();
+  await openAdd(page); await fillSource(page);
+  await expect(editor(page)).toContainText(/installation|bearer/i);
+  await expect(editor(page).getByLabel(/encryption key|endpoint|headers|requester|approval/i)).toHaveCount(0);
+  await expect(editor(page).getByRole("button", { name: /test connection|verify|OAuth|refresh token/i })).toHaveCount(0);
+  expect(sources.requests.filter((call) => call.method !== "GET")).toEqual([]);
+  await sources.assertPrivate(page);
+  sources.encryptionAvailable = false;
+  const unavailable = sources.queueWrite("POST", sourcesPath, 201, true);
+  await sourceForm(page).getByRole("button", { name: saveName }).click();
+  expect((await requested(unavailable)).body).toEqual(sourceInput);
+  await release(page, unavailable);
+  expect(unavailable.call!.status).toBe(503);
+  await expect(editor(page).getByRole("alert")).toContainText(/operator|administrator|configuration|unavailable/i);
+  await expect(sourceForm(page).getByRole("textbox", { name: /^(?:Source )?Name$/i })).toHaveValue(sourceInput.name);
+  await expect(sourceForm(page).getByRole("textbox", { name: repositoryLabel })).toHaveValue(sourceInput.repository);
+  await sources.assertPrivate(page);
+  sources.encryptionAvailable = true;
+  await sourceForm(page).getByLabel(tokenLabel).fill(sourceToken);
+  const created = sources.queueWrite("POST", sourcesPath, 201, true);
+  await sourceForm(page).getByRole("button", { name: saveName }).click();
+  const call = await requested(created); expect(call.body).toEqual(sourceInput);
+  await expect(sourceTable(page).getByRole("row").filter({ hasText: sourceInput.name })).toHaveCount(0);
+  await release(page, created);
+  await expect(editor(page)).toHaveCount(0);
+  const returned = call.response?.source as UISource;
+  await expect(sourceRow(page, returned)).toContainText(/disabled/i);
+  expect(returned.revision).toBe(1);
+  await sources.assertPrivate(page, true);
+  await openAdd(page); await page.keyboard.press("Escape"); await sources.assertPrivate(page, true);
+  sources.seedSources(sourceAlpha.id, sourceSeries(102));
+  await refreshSources(page).click(); await expect(sourceRow(page)).toBeVisible();
+  const first = sources.pages.filter((page) => page.call.path === sourcesPath).at(-1)!;
+  expect(first.items.length).toBe(100); expect(first.total).toBe(102); expect(first.nextCursor).not.toBeNull();
+  const next = sources.queueRead(sourcesPath, 200, true, sourceAlpha.id, first.nextCursor!);
+  await region(page).getByRole("button", { name: /^Load more sources$|^Next sources$/i }).click();
+  expect((await requested(next)).query.cursor).toBe(first.nextCursor);
+  await release(page, next);
+  const pageData = next.call!.response as unknown as SourcePage<UISource>;
+  for (const source of pageData.items) await expect(sourceRow(page, source)).toHaveCount(1);
+  expect(sources.collections.size).toBe(0);
+  await libraryUnverified(page);
+});
+
+test("SU2 Admin source edits are sparse and server-confirmed, blank token preserves it and current role overrides stale controls", async ({ page, sources }) => {
+  await visit(page); await expect(sourceRow(page)).toBeVisible();
+  await edit(page);
+  await expect(editor(page)).toContainText(/revision\s*:?\s*4\b/i);
+  const renamed = { ...githubSource, name: "Synthetic renamed selected source" };
+  await sourceForm(page).getByRole("textbox", { name: /^(?:Source )?Name$/i }).fill(renamed.name);
+  const name = sources.queueWrite("PATCH", sourcePath(githubSource.id), 200, true);
+  await sourceForm(page).getByRole("button", { name: saveName }).click();
+  expect((await requested(name)).body).toEqual({ name: renamed.name });
+  await expect(sourceRow(page)).toHaveCount(1); await expect(sourceRow(page, renamed)).toHaveCount(0);
+  await release(page, name); await expect(editor(page)).toHaveCount(0);
+  expect((name.call!.response?.source as UISource).revision).toBe(5);
+  await edit(page, renamed); await expect(editor(page)).toContainText(/revision\s*:?\s*5\b/i);
+  await enabled(sourceForm(page), false);
+  const disable = sources.queueWrite("PATCH", sourcePath(githubSource.id), 200, true);
+  await sourceForm(page).getByRole("button", { name: saveName }).click();
+  expect((await requested(disable)).body).toEqual({ enabled: false });
+  await release(page, disable); await expect(editor(page)).toHaveCount(0);
+  await expect(sourceRow(page, renamed)).toContainText(/disabled/i);
+  await openHistory(page, renamed);
+  for (const action of await history(page).getByRole("button", { name: /^Collect source$/i }).all()) await expect(action).toBeDisabled();
+  await edit(page, renamed);
+  await sourceForm(page).getByRole("textbox", { name: repositoryLabel }).fill("synthetic-owner/reselected-repo");
+  await sourceForm(page).getByLabel(tokenLabel).fill(replacementSourceToken);
+  const replaced = sources.queueWrite("PATCH", sourcePath(githubSource.id), 200);
+  await sourceForm(page).getByRole("button", { name: saveName }).click();
+  expect((await requested(replaced)).body).toEqual({ repository: "synthetic-owner/reselected-repo", token: replacementSourceToken });
+  await replaced.delivered; await expect(editor(page)).toHaveCount(0);
+  expect((replaced.call!.response?.source as UISource).revision).toBe(7);
+  await sources.assertPrivate(page, true);
+  await edit(page, renamed);
+  sources.serverRoles.set(sourceAlpha.id, "viewer");
+  await sourceForm(page).getByRole("textbox", { name: /^(?:Source )?Name$/i }).fill("Synthetic denied draft");
+  const denied = sources.queueWrite("PATCH", sourcePath(githubSource.id), 200);
+  await sourceForm(page).getByRole("button", { name: saveName }).click(); await requested(denied); await denied.delivered;
+  expect(denied.call!.status).toBe(403);
+  await expect(editor(page).getByRole("alert")).toContainText(/not permitted|forbidden|permission/i);
+  await expect(sourceForm(page).getByRole("textbox", { name: /^(?:Source )?Name$/i })).toHaveValue("Synthetic denied draft");
+  await page.keyboard.press("Escape");
+  sources.roles.set(sourceAlpha.id, "viewer");
+  await page.reload(); await expect(sourceRow(page, renamed)).toBeVisible();
+  for (const button of await add(page).all()) await expect(button).toBeDisabled();
+  for (const button of await sourceTable(page).getByRole("button", { name: /^Edit(?: source)?(?: .*)?$/i }).all()) await expect(button).toBeDisabled();
+  await libraryUnverified(page);
+  expect(sources.collections.size).toBe(0);
+});
+
+test("SU3 Explicit collection queues only idempotencyKey; unavailable storage is not success and a lost ACK cannot create a blind new job", async ({ page, sources }) => {
+  sources.roles.set(sourceAlpha.id, "analyst"); sources.serverRoles.set(sourceAlpha.id, "analyst");
+  await visit(page); await openHistory(page);
+  const path = collectionsPath(githubSource.id);
+  await openConfirmation(page);
+  expect(sources.calls("POST", path)).toHaveLength(0);
+  await page.keyboard.press("Escape"); expect(sources.calls("POST", path)).toHaveLength(0);
+  await openConfirmation(page);
+  sources.storageAvailable = false;
+  const unavailable = sources.queueWrite("POST", path, 202, true);
+  await confirm(page).click();
+  const first = await requested(unavailable);
+  expect(Object.keys(first.body)).toEqual(["idempotencyKey"]); expect(validText(first.body.idempotencyKey, 256)).toBe(true);
+  await release(page, unavailable); expect(first.status).toBe(503);
+  await expect(confirmation(page).getByRole("alert")).toContainText(/unavailable|configuration|operator|administrator/i);
+  expect(sources.collections.size).toBe(0);
+  sources.storageAvailable = true;
+  const lost = sources.queueWrite("POST", path, "drop-ack");
+  await confirm(page).click(); const call = await requested(lost); await lost.delivered;
+  await expect.poll(() => call.failure).toMatch(/failed/i);
+  const queued = call.response?.collection as UICollection;
+  expect(queued.state).toBe("queued"); expect(queued.complete).toBe(false); expect(queued.recordCount).toBe(0);
+  expect(sources.collections.size).toBe(1);
+  await expect(confirmation(page).getByRole("alert").or(history(page).getByRole("alert")).first()).toContainText(/confirm|acknowledg|network|could not|may have/i);
+  const before = sources.calls("POST", path).length; await frame(page);
+  expect(sources.calls("POST", path)).toHaveLength(before);
+  const again = confirm(page).or(confirmation(page).getByRole("button", { name: /^Confirm same collection$|^Retry enqueue$/i }));
+  if (await again.count() && await again.first().isEnabled()) {
+    const replay = sources.queueWrite("POST", path, 200, true);
+    await again.first().click();
+    const repeated = await requested(replay);
+    expect(repeated.body).toEqual(call.body);
+    await release(page, replay); expect(repeated.status).toBe(200); expect(repeated.response?.collection).toEqual(queued);
+    if (await confirmation(page).isVisible()) await page.keyboard.press("Escape");
+  } else {
+    if (await confirmation(page).isVisible()) await page.keyboard.press("Escape");
+    const read = sources.queueRead(path);
+    await history(page).getByRole("button", { name: /^Refresh (?:collections|collection history)$/i }).click();
+    await requested(read); await read.delivered;
+    expect(sources.calls("POST", path)).toHaveLength(before);
+    await openCollection(page, queued);
+  }
+  await exactCollection(page, queued);
+  expect(sources.collections.size).toBe(1);
+  expect(new Set(sources.calls("POST", path).slice(1).map((call) => call.body.idempotencyKey)).size).toBe(1);
+  sources.serverRoles.set(sourceAlpha.id, "viewer");
+  await openConfirmation(page);
+  const revoked = sources.queueWrite("POST", path, 202);
+  await confirm(page).click(); await requested(revoked); await revoked.delivered;
+  expect(revoked.call!.status).toBe(403);
+  await expect(confirmation(page).getByRole("alert")).toContainText(/not permitted|forbidden|permission/i);
+  expect(sources.collections.size).toBe(1);
+});
+
+test("SU4 Manual collection status preserves complete/partial/native failure meaning and displays exact raw records/evidence without normalization or execution", async ({ page, sources }) => {
+  await page.clock.install();
+  const queued = queuedCollection();
+  const partial = collectionResult(queuedCollection(githubSource, 2), "partial", 2);
+  const failed = collectionResult(queuedCollection(githubSource, 3), "failed");
+  const blocked = collectionResult(queuedCollection(disabledSource, 4), "blocked");
+  for (const value of [queued, partial, failed, blocked]) sources.seedCollection(value);
+  await visit(page); await openHistory(page); await openCollection(page, queued); await exactCollection(page, queued);
+  let result = sources.publish(queued.id, "collecting");
+  await collectionDetails(page).getByRole("button", { name: /^Refresh collection$/i }).click(); await exactCollection(page, result);
+  result = sources.publish(queued.id, "succeeded", 3);
+  await collectionDetails(page).getByRole("button", { name: /^Refresh collection$/i }).click(); await exactCollection(page, result);
+  await expect(records(page)).toBeVisible();
+  const current = [...sources.records.values()].filter((record) => record.row.collectionId === result.id);
+  for (const record of [current.find((record) => record.row.kind === "repository")!, current.find((record) => record.row.kind === "finding")!]) {
+    await openEvidence(page, record.row); await rawMetadata(page, record.row); await rawEvidence(page, sources, record.row);
+    await expect(evidence(page)).toContainText(/raw|not normalized|not.*scan/i);
+    await closeEvidence(page);
+  }
+  await openCollection(page, partial); await exactCollection(page, partial);
+  await expect(recordTable(page).getByRole("row").filter({ has: page.getByRole("cell") })).toHaveCount(2);
+  const reads = sources.requests.length;
+  await page.clock.fastForward(8000); await frame(page);
+  expect(sources.requests.filter((call) => call.method !== "GET")).toEqual([]);
+  expect(sources.requests, "A terminal Retry-After value does not start collection or source polling.").toHaveLength(reads);
+  await exactCollection(page, partial);
+  await openCollection(page, failed); await exactCollection(page, failed);
+  await openHistory(page, disabledSource); await openCollection(page, blocked); await exactCollection(page, blocked);
+  await expect(collectionDetails(page).getByRole("button", { name: /retry collect|collect again|dispatch/i })).toHaveCount(0);
+});
+
+test("SU5 Native history/record pagination retries the same cursor and evidence denial stays withheld through unavailable/digest errors", async ({ page, sources }) => {
+  sources.seedHistory(githubSource, 101);
+  const large = collectionResult(queuedCollection(githubSource, 1), "succeeded", 102);
+  sources.seedCollection(large);
+  await visit(page); await openHistory(page);
+  const firstHistory = sources.pages.filter((entry) => entry.call.path === collectionsPath(githubSource.id)).at(-1)!;
+  expect(firstHistory.items).toHaveLength(100); expect(firstHistory.total).toBe(101);
+  const nextHistory = sources.queueRead(collectionsPath(githubSource.id), 200, true, sourceAlpha.id, firstHistory.nextCursor!);
+  await history(page).getByRole("button", { name: /^Load more collections$|^Next collections$/i }).click();
+  expect((await requested(nextHistory)).query.cursor).toBe(firstHistory.nextCursor); await release(page, nextHistory);
+  await expect(collectionRow(page, nativeID("d1", 101))).toHaveCount(1);
+  await page.reload(); await expect(sourceRow(page)).toBeVisible(); await openHistory(page); await openCollection(page, large);
+  const firstRecords = sources.pages.filter((entry) => entry.call.path === recordsPath(large.id)).at(-1)!;
+  expect(firstRecords.items).toHaveLength(100); expect(firstRecords.total).toBe(102);
+  const prior = await recordTable(page).allTextContents();
+  const failedPage = sources.queueRead(recordsPath(large.id), 503, true, sourceAlpha.id, firstRecords.nextCursor!);
+  await records(page).getByRole("button", { name: /^Load more records$|^Next records$/i }).click();
+  await requested(failedPage); expect(await recordTable(page).allTextContents()).toEqual(prior);
+  await release(page, failedPage);
+  await expect(records(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+  expect(await recordTable(page).allTextContents()).toEqual(prior);
+  const retried = sources.queueRead(recordsPath(large.id), 200, true, sourceAlpha.id, firstRecords.nextCursor!);
+  await records(page).getByRole("button", { name: retryName }).click();
+  expect((await requested(retried)).query).toEqual(failedPage.call!.query); await release(page, retried);
+  const pageData = retried.call!.response as unknown as SourcePage<UIRecord>;
+  for (const record of pageData.items) await expect(recordRow(page, record.id)).toHaveCount(1);
+  const selected = pageData.items.at(-1)!;
+  await openEvidence(page, selected); await rawEvidence(page, sources, selected);
+  const path = evidencePath(large.id, selected.id), raw = sources.records.get(selected.id)!.raw.toString("utf8");
+  for (const status of [403, 404] as const) {
+    const denied = sources.queueRead(path, status);
+    await evidence(page).getByRole("button", { name: /^Refresh evidence$/i }).click(); await requested(denied); await denied.delivered;
+    await expect(evidence(page).getByRole("alert")).toBeVisible();
+    await expect(evidence(page).locator("pre")).toHaveCount(0);
+    await expect(evidence(page)).not.toContainText(raw);
+    const corrupt = sources.queueRead(path, 503);
+    await evidence(page).getByRole("button", { name: retryName }).click(); await requested(corrupt); await corrupt.delivered;
+    await expect(evidence(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+    await expect(evidence(page).locator("pre")).toHaveCount(0);
+    const authorized = sources.queueRead(path);
+    await evidence(page).getByRole("button", { name: retryName }).click(); await requested(authorized); await authorized.delivered;
+    await rawEvidence(page, sources, selected);
+  }
+  expect(sources.requests.every((call) => call.method === "GET")).toBe(true);
+});
+
+test("SU6 Workspace/logout/401 clear source drafts and abort late collection/evidence/ACK data; viewer reads do not gain write authority", async ({ page, sources }) => {
+  const completed = collectionResult(queuedCollection(), "succeeded");
+  sources.seedCollection(completed);
+  sources.roles.set(sourceAlpha.id, "viewer"); sources.serverRoles.set(sourceAlpha.id, "viewer");
+  await visit(page); await openHistory(page); await openCollection(page, completed);
+  for (const action of await history(page).getByRole("button", { name: /^Collect source$/i }).all()) await expect(action).toBeDisabled();
+  const record = [...sources.records.values()].find((value) => value.row.collectionId === completed.id)!;
+  await openEvidence(page, record.row); await rawEvidence(page, sources, record.row); await closeEvidence(page);
+  sources.roles.set(sourceAlpha.id, "admin"); sources.serverRoles.set(sourceAlpha.id, "admin");
+  await page.reload(); await expect(sourceRow(page)).toBeVisible();
+  await openAdd(page); await fillSource(page); await page.keyboard.press("Escape"); await sources.assertPrivate(page, true);
+  await openHistory(page); await openCollection(page, completed);
+  const heldEvidence = sources.queueRead(evidencePath(completed.id, record.row.id), 200, true);
+  await openEvidence(page, record.row); await requested(heldEvidence);
+  await closeEvidence(page);
+  const heldStatus = sources.queueRead(collectionPath(completed.id), 200, true);
+  await collectionDetails(page).getByRole("button", { name: /^Refresh collection$/i }).click(); await requested(heldStatus);
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(sourceBeta.id);
+  await expect(sourceRow(page, betaSource)).toBeVisible();
+  await release(page, heldEvidence, true); await release(page, heldStatus, true);
+  await noAlpha(page, [completed.id, record.row.id, record.row.evidence.sha256]);
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(sourceAlpha.id);
+  await expect(sourceRow(page)).toBeVisible();
+  await openHistory(page); await openConfirmation(page);
+  const heldACK = sources.queueWrite("POST", collectionsPath(githubSource.id), 202, true);
+  await confirm(page).click(); const ack = await requested(heldACK);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await release(page, heldACK, true);
+  await noAlpha(page, [(ack.response?.collection as UICollection).id, completed.id], true);
+  await sources.assertPrivate(page, true);
+  await page.reload();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await noAlpha(page, [completed.id], true);
+});
+
+test("SU7 At 390px reduced-motion native source/collection controls preserve keyboard context and 401 clears an active token form", async ({ page, sources }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const long = { ...githubSource, name: longSourceName };
+  sources.seedSource(long);
+  await visit(page); await expect(sourceRow(page, long)).toBeVisible();
+  await add(page).focus(); await add(page).press("Enter");
+  await expect(sourceForm(page)).toBeVisible();
+  await fillSource(page, { ...sourceInput, name: longSourceName });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  expect(await editor(page).evaluate((node) => {
+    const rect = node.getBoundingClientRect(); return rect.left >= -1 && rect.right <= innerWidth + 1 && rect.top >= -1 && rect.bottom <= innerHeight + 1;
+  })).toBe(true);
+  await noDecorativeMovement(page);
+  for (let index = 0; index < 10; index++) {
+    await page.keyboard.press("Tab");
+    expect(await editor(page).evaluate((node) => node.contains(document.activeElement))).toBe(true);
+  }
+  await sources.assertPrivate(page);
+  await page.keyboard.press("Escape"); await expect(add(page)).toBeFocused(); await sources.assertPrivate(page, true);
+  await openHistory(page, long); await openConfirmation(page, long);
+  await expect(confirmation(page)).toContainText(long.name);
+  expect(await confirmation(page).evaluate((node) => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+  await noDecorativeMovement(page);
+  await page.keyboard.press("Escape");
+  await expect(history(page).getByRole("button", { name: /^Collect source$/i })).toBeFocused();
+  const writes = sources.requests.filter((call) => call.method !== "GET").length;
+  await openAdd(page); await fillSource(page);
+  const ended = sources.queueWrite("POST", sourcesPath, 401, true);
+  await sourceForm(page).getByRole("button", { name: saveName }).click(); await requested(ended); await release(page, ended);
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await noAlpha(page, [longSourceName], true); await sources.assertPrivate(page, true);
+  expect(sources.requests.filter((call) => call.method !== "GET")).toHaveLength(writes + 1);
+  expect(sources.collections.size).toBe(0);
+  await page.reload(); await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await noAlpha(page, [longSourceName], true);
+});

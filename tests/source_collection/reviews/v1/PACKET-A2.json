@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "scope": "github-source-collection-v1",
+  "amendment": "A2",
+  "phase": "frozen-real-published-v5-upgrade-red",
+  "frozenAt": "2026-09-17T16:49:48.304Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned NEW upgrade regression inventory; parent verifies/seals before its surgical production migration fix. Original A1 controls/signatures stay intact.",
+  "payloadFileCount": 36,
+  "ownedFileCount": 38,
+  "ownedFiles": [
+    "tests\\source_collection\\CONTRACT.txt",
+    "tests\\source_collection\\HANDOFF.txt",
+    "tests\\source_collection\\Test-SourceCollection.ps1",
+    "tests\\source_collection\\commit_trace_test.go",
+    "tests\\source_collection\\contract_test.go",
+    "tests\\source_collection\\fixture_calibration_test.go",
+    "tests\\source_collection\\fixtures_test.go",
+    "tests\\source_collection\\github_fixture_test.go",
+    "tests\\source_collection\\production_bindings_test.go",
+    "tests\\source_collection\\reviews\\v1\\AMENDMENT-A1.json",
+    "tests\\source_collection\\reviews\\v1\\BEFORE.json",
+    "tests\\source_collection\\reviews\\v1\\COMPILATION.json",
+    "tests\\source_collection\\reviews\\v1\\DECISIONS.json",
+    "tests\\source_collection\\reviews\\v1\\EVIDENCE.json",
+    "tests\\source_collection\\reviews\\v1\\GUARDS-A1.json",
+    "tests\\source_collection\\reviews\\v1\\GUARDS-A2.json",
+    "tests\\source_collection\\reviews\\v1\\GUARDS.json",
+    "tests\\source_collection\\reviews\\v1\\HANDOFF-A1.json",
+    "tests\\source_collection\\reviews\\v1\\HANDOFF-A1.txt",
+    "tests\\source_collection\\reviews\\v1\\HANDOFF-A2.json",
+    "tests\\source_collection\\reviews\\v1\\HANDOFF-A2.txt",
+    "tests\\source_collection\\reviews\\v1\\HANDOFF.json",
+    "tests\\source_collection\\reviews\\v1\\ORIGIN-A2.json",
+    "tests\\source_collection\\reviews\\v1\\PACKET-A1.json",
+    "tests\\source_collection\\reviews\\v1\\PACKET-A1.sha256",
+    "tests\\source_collection\\reviews\\v1\\PACKET-A2.json",
+    "tests\\source_collection\\reviews\\v1\\PACKET-A2.sha256",
+    "tests\\source_collection\\reviews\\v1\\PACKET.json",
+    "tests\\source_collection\\reviews\\v1\\PACKET.sha256",
+    "tests\\source_collection\\reviews\\v1\\RED-A2.json",
+    "tests\\source_collection\\reviews\\v1\\RED.json",
+    "tests\\source_collection\\reviews\\v1\\VALIDATION-A1.json",
+    "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+    "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+    "tests\\source_collection\\reviews\\v1\\history\\a1\\fixtures_test.go.before.txt",
+    "tests\\source_collection\\source_collection_test.go",
+    "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+    "tests\\source_collection\\upgrade_test.go"
+  ],
+  "files": [
+    {
+      "path": "tests\\source_collection\\commit_trace_test.go",
+      "bytes": 1516,
+      "sha256": "3dfed44d0ebc17b231b28320970218b2ec37e4e24acce21185d7dd2119880554"
+    },
+    {
+      "path": "tests\\source_collection\\contract_test.go",
+      "bytes": 3298,
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests\\source_collection\\CONTRACT.txt",
+      "bytes": 18020,
+      "sha256": "df78884eb39444f2eb20ccc913abe70ec9938ef99c35f96cccb836b2034e97e3"
+    },
+    {
+      "path": "tests\\source_collection\\fixture_calibration_test.go",
+      "bytes": 11498,
+      "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 23504,
+      "sha256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    },
+    {
+      "path": "tests\\source_collection\\github_fixture_test.go",
+      "bytes": 5991,
+      "sha256": "bab80aa3ae842c6c9ac6ad3f51dd7790b6180f468ba05c2a1e017f28fb548b45"
+    },
+    {
+      "path": "tests\\source_collection\\HANDOFF.txt",
+      "bytes": 2988,
+      "sha256": "4cce2a6066f9705f1fbc098802f0fe30bb185114b92727971e3cf3b8757bbff1"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\AMENDMENT-A1.json",
+      "bytes": 3845,
+      "sha256": "f9ed634045dea38c500653bdf2c6d32eaafa9a253b3fed1c4c65067385148bd2"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\BEFORE.json",
+      "bytes": 5275,
+      "sha256": "2b7c12c2841a81f87ac92336d5a08ac6231c51f1b175451472826316f52395d9"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\COMPILATION.json",
+      "bytes": 2154,
+      "sha256": "615db25764de711dfe241b62d64dd149cef3a0c990328480a96d6f976e800d18"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3328,
+      "sha256": "483c060efd704fde914a512c1e1b9a2242cfc66c546a1f1d942c94cc482cdfe6"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 5491,
+      "sha256": "83b0b6805f9d2359c29affbe384f46b56c0a1f87bfa479ec229b8d307832d276"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 4147,
+      "sha256": "766ce0277c6300af072ce55843b5dffa10229fbce803de2d8a4e79e5af54a43d"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS-A2.json",
+      "bytes": 4391,
+      "sha256": "19e9525262a3030ce8e7d394f5c1760bf4dd645d2aca781caa112d771e5c1e3b"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS.json",
+      "bytes": 7583,
+      "sha256": "4c3b2b1e1e0c821cf82a058a5045241754dbf9ef933961c52506af0776e29bb4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A1.json",
+      "bytes": 4088,
+      "sha256": "9bad480c4f637e3033fa924277e7571d2006814e56d1ccb092fd03095ea05f0c"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 5825,
+      "sha256": "75c74f80031e73cb85b2ab67209b8f025d61703dfdd16d61390f19c6e1b12e0a"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A2.json",
+      "bytes": 3177,
+      "sha256": "9275e5dfa10fa3268a586e310c84c91ac208e5e597ad9a817042c7785e48aec8"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A2.txt",
+      "bytes": 4622,
+      "sha256": "5746c4b3219de351c3286eaa24fc5cd9163a2d05edbd588242fd4a2ef615ea06"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3377,
+      "sha256": "bc44b3e9503acc5b18d12462df5e82c60116166f2e6e09d0bebed3682a591502"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\fixtures_test.go.before.txt",
+      "bytes": 22714,
+      "sha256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 5130,
+      "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 79,
+      "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\ORIGIN-A2.json",
+      "bytes": 3201,
+      "sha256": "15a889611dc616510bcdf79da811984c8f2b95c58cbdd14d6d1be7f79b1fb1c2"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A1.json",
+      "bytes": 9063,
+      "sha256": "e196e27f5dfb595e3e513dd823b74b08191db072056b84f7564d11faf396fcbe"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "fa0428c5dcbea4883eade49a41be89bd6ae77b697b0f7443b55fbbcee2b237a3"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET.json",
+      "bytes": 5130,
+      "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED-A2.json",
+      "bytes": 7118,
+      "sha256": "dfab0c03811064d19c5c321940f3ac025d479361992f6548aeb40c524e8aaf6e"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED.json",
+      "bytes": 8764,
+      "sha256": "ba06880fd6cd0072ebf878863226852e0cf91fd1e701f0f324d1e560ce9e3e25"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\VALIDATION-A1.json",
+      "bytes": 6848,
+      "sha256": "cc557fb26f0a068a36b96d16148f81bedff2c7aef69d72ebe717227b0aac55f1"
+    },
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\Test-SourceCollection.ps1",
+      "bytes": 6342,
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    },
+    {
+      "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+      "bytes": 14328,
+      "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    }
+  ],
+  "newUpgradeTest": {
+    "path": "tests\\source_collection\\upgrade_test.go",
+    "bytes": 10714,
+    "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+  },
+  "historicalDDL": {
+    "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+    "bytes": 14328,
+    "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+  },
+  "publishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "legacyBusinessDataMigrationClaimed": false,
+  "oldA1Authority": {
+    "manifest": {
+      "path": ".oracles\\source-collection-a1.json",
+      "bytes": 22921,
+      "sha256": "40af060e0b13ac681345a1b2b5784486a804c0c57d7bb7c046ed2b950138cc1a"
+    },
+    "signature": {
+      "path": ".oracles\\source-collection-a1.json.sig",
+      "bytes": 89,
+      "sha256": "c53707249b5377362cc428aa98f98c9f5f8e6bcf1cbb3cfacf60f1c0c240fbe9"
+    },
+    "originalHashArrayPointer": "/files",
+    "requiredControls": 121,
+    "allOriginalHashesUnchanged": true
+  },
+  "origin": "ORIGIN-A2.json",
+  "handoff": "HANDOFF-A2.json",
+  "red": "RED-A2.json",
+  "guards": "GUARDS-A2.json",
+  "selfBinding": "PACKET-A2.sha256 binds raw PACKET-A2.json; only this self-digest pair is excluded from payload hashes.",
+  "existingFileAmendments": []
+}

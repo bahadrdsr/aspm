@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "status": "FROZEN original-author one-byte regex correction; all91/typecheck passed; stop for parent verify/reseal",
+  "source": "web\\tests\\source-collection-ui.spec.ts",
+  "line": 142,
+  "beforeSHA256": "5abac796e14f5de5379e570c9e613cc2acb113675ec934c9f7a1acae52a31505",
+  "afterSHA256": "2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108",
+  "oldExpression": "/retry.after\\s*:?\\\\s*7\\s*(?:s\\b|seconds?)/i",
+  "newExpression": "/retry.after\\s*:?\\s*7\\s*(?:s\\b|seconds?)/i",
+  "exactOneByteDeletion": true,
+  "labelNumberUnitAndEveryOtherAssertionPreserved": true,
+  "sourceFixtureHelperSettingsDependenciesChanges": 0,
+  "results": {
+    "originalSU4Reproduced": true,
+    "correctedSU4Passed": true,
+    "allSevenPassed": true,
+    "full91ActuallyPassed": true,
+    "typecheckPassed": true,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0
+  },
+  "calibration": {
+    "valid": 6,
+    "invalid": 10,
+    "allExpectedMatched": true,
+    "notAcceptanceSubstitute": true
+  },
+  "currentControls": 724,
+  "unchangedControls": 723,
+  "archive": {
+    "source": "web\\tests\\source-collection-ui.spec.ts",
+    "archive": "web\\tests\\reviews\\source-collection-ui-v1\\history\\a1\\source-collection-ui.spec.ts.before.txt",
+    "path": "web\\tests\\reviews\\source-collection-ui-v1\\history\\a1\\source-collection-ui.spec.ts.before.txt",
+    "bytes": 38546,
+    "sha256": "5abac796e14f5de5379e570c9e613cc2acb113675ec934c9f7a1acae52a31505"
+  },
+  "oldPacketHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.json",
+      "bytes": 5073,
+      "sha256": "225a0f450fadfa2fc531dab970c8e27c1fcd78c175415a2223a3d181b266fe03"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2c0b70bfa234e78f7296e8a9dafc4378ee314093e6a386bc6887b5f46f1b9ce5"
+    }
+  ],
+  "oldREDAndSignaturesPreserved": true,
+  "sourceUIHOLDStillUnchanged": true,
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE-A1.json",
+      "bytes": 323068,
+      "sha256": "961acba21825a02e2899b43ce72a991411b7317ab34f0549cc4b1fc57b89e583"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\AMENDMENT-A1.json",
+      "bytes": 914,
+      "sha256": "f3120889a01a31bfc388544e2707282410ccd4505cd79ea4d19d871295584313"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\CALIBRATION-A1.json",
+      "bytes": 2816,
+      "sha256": "1e291351f4480dc28eb5902120c74920359c61ba3e8708a66613d49fab94e7d1"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS-A1.json",
+      "bytes": 13285,
+      "sha256": "600302ae2f9c8df3028fb6d7bb333f1c592c2b20be26355664a6e723f86aa3d0"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\VALIDATION-A1.json",
+      "bytes": 40339,
+      "sha256": "84b0543997b0825459a393c9370f3c129b10ec12cddd9601f2ecdb12bd5aeef8"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\EVIDENCE-A1.json",
+      "bytes": 5693,
+      "sha256": "a4f9eece75cfd95c162f6ec0c6567d02b6ff7339f0dcaf0056ab8b8c732cbcbe"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF-A1.txt",
+      "bytes": 4053,
+      "sha256": "9e97993424eab0f31548031d113c8f2a181520474f9c611b2f589fda4cc201ce"
+    }
+  ],
+  "parentNewSealRequired": true
+}

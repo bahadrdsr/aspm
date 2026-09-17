@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "classification": "Original-author regex escape correction, not a production formatting workaround",
+  "source": "web\\tests\\source-collection-ui.spec.ts",
+  "line": 142,
+  "beforeSHA256": "5abac796e14f5de5379e570c9e613cc2acb113675ec934c9f7a1acae52a31505",
+  "afterSHA256": "2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108",
+  "beforeBytes": 38546,
+  "afterBytes": 38545,
+  "oldExpression": "/retry.after\\s*:?\\\\s*7\\s*(?:s\\b|seconds?)/i",
+  "newExpression": "/retry.after\\s*:?\\s*7\\s*(?:s\\b|seconds?)/i",
+  "exactOneByteDeletion": true,
+  "allOtherFileBytesAndAssertionsUnchanged": true,
+  "numericSevenAndUnitLabelPreserved": true,
+  "noSourceFixtureHelperSettingsDependencyChanges": true,
+  "currentControlCount": 724,
+  "unchangedControls": 723,
+  "patternCalibration": ".artifacts\\source-collection-ui-v1-a1\\pattern-calibration.json"
+}

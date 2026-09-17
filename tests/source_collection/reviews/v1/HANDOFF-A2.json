@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "scope": "github-source-collection-v1",
+  "amendment": "A2",
+  "role": "independent-test-author",
+  "status": "FROZEN_PUBLISHED_V5_UPGRADE_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-17T16:48:22.014Z",
+  "newTest": "tests\\source_collection\\upgrade_test.go",
+  "legacyFixture": {
+    "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+    "bytes": 14328,
+    "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+  },
+  "publishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "baselineChoice": "Full pinned published v1-v5 DDL in random owned PG schemas, not historical binary/source-tree copying or current-schema deletion.",
+  "results": {
+    "existingFreshSchemaNarrativesPassed": 8,
+    "realUpgradeVariantsRed": 2,
+    "constructorsReturnedSuccess": true,
+    "maxVersionAfterCurrentOpen": 5,
+    "missingV6": true,
+    "skips": 0,
+    "legacyBusinessDataMigrationClaimed": false
+  },
+  "originalA1ControlCount": 121,
+  "originalA1ControlsUnchanged": true,
+  "existingFilesAmended": [],
+  "productionChanges": [],
+  "moduleChanges": [],
+  "oldSignaturesChanged": false,
+  "origin": "ORIGIN-A2.json",
+  "guards": "GUARDS-A2.json",
+  "red": "RED-A2.json",
+  "humanHandoff": "HANDOFF-A2.txt",
+  "currentPacket": "PACKET-A2.json",
+  "currentDigest": "PACKET-A2.sha256",
+  "externalEvidence": [
+    {
+      "path": ".artifacts\\source-collection-upgrade-a2\\BEFORE-A2.json",
+      "bytes": 27179,
+      "sha256": "051c8ed011a6cea3b1810fda5916125559063623b5b8c8893dbd93e9056748b5"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\upgrade-a2-baseline-01.receipt.json",
+      "bytes": 735,
+      "sha256": "dbf81714d8f7b1314d39cbc8376ee9c955003400a673ad8f5d7efaf106e9c289"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\upgrade-a2-baseline-01.jsonl",
+      "bytes": 17896,
+      "sha256": "c730cf9f12a872420d058944acfde262cc5e92fbe1c080890ff2274ab8b48f4d"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\upgrade-a2-baseline-01.log",
+      "bytes": 3232,
+      "sha256": "7af52cdc466facf792748cf6820c4f09e7ec32fce454cedfce6f8f4b0e5532b0"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-33973b521a6da014d56fd6e7.json",
+      "bytes": 704,
+      "sha256": "8eb0f45c18e2ede6a8b669481d1daf31fae0449539bc65fc082095fa18faad07"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-8ebab113241ddda2e6bdc1aa.json",
+      "bytes": 706,
+      "sha256": "f548bb82a746ad248ac77eb1846034169dea3ddba54ad6ed9716661890a8ebad"
+    }
+  ],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify the exact published DDL origin and real v5 baseline, not just a ledger value.",
+    "Verify current core/worker startup success still fails the actual version6/table requirement.",
+    "Seal NEW A2 controls while retaining all A1 cancellation/source assertions and signature history.",
+    "Make the parent-owned surgical migration-order fix, then execute the blocked upgrade/API/idempotency tail."
+  ],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "liveGitHubCalls": 0
+}

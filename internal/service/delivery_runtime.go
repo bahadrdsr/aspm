@@ -27,7 +27,7 @@ func deliveryEnvironment(config *Config) error {
 		return err
 	}
 	config.DeliveryCAFile = os.Getenv("ASPM_DELIVERY_CA_FILE")
-	config.DeliveryClient, err = newDeliveryClient(config.SlackEndpoint, config.DeliveryCAFile)
+	config.DeliveryClient, err = newProviderClient(config.SlackEndpoint, config.DeliveryCAFile)
 	return err
 }
 
@@ -51,16 +51,20 @@ func validateDeliveryConfig(config Config) error {
 }
 
 func runDelivery(ctx context.Context, worker *app.DeliveryWorker) error {
+	return runQueuedWork(ctx, "delivery", worker.ProcessNext)
+}
+
+func runQueuedWork(ctx context.Context, role string, process func(context.Context) (bool, error)) error {
 	for {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
-		processed, err := worker.ProcessNext(ctx)
+		processed, err := process(ctx)
 		if err != nil {
 			if ctx.Err() != nil {
 				return ctx.Err()
 			}
-			return errors.New("delivery processing stopped after an infrastructure failure")
+			return errors.New(role + " processing stopped after an infrastructure failure")
 		}
 		if processed {
 			continue

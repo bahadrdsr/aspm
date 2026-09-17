@@ -1,0 +1,85 @@
+SOURCE COLLECTION A2 - REAL PUBLISHED V5 UPGRADE REGRESSION
+========================================================
+
+Scope: new upgrade_test.go and the minimal exact historical DDL fixture only.
+Current production/schema, original source-collection assertions/helpers/
+bindings/modules, A1 cancellation fixture/calibration and all old signatures
+remain unchanged. No source tree or historical binary is copied.
+
+Pinned legacy origin
+--------------------
+The baseline is the published commit:
+  7281edf4466c2b940eea7aa95c377d25e7f4c2b0
+
+testdata\published-7281-schema-v5.json contains only the actual schemaV1 through
+schemaV5 raw-string SQL values extracted from these exact committed files:
+  internal/app/schema.go
+  internal/app/reports_schema.go
+  internal/app/oidc_schema.go
+  internal/app/import_security_schema.go
+  internal/app/remediation_schema.go
+
+Each fragment records its version, Git blob ID, complete source SHA-256 and SQL
+SHA-256. CR removal matches Go raw-string literal semantics. The published
+schema_versions relation definition and migration-ledger insertion order are
+also explicit. The Go test binds the entire historical fixture SHA-256:
+  fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77
+
+No current v6 table is deleted, current source rewritten or version ledger
+relabelled to fabricate v5. Every case starts in a newly owned empty PG schema,
+executes all five complete historical DDL fragments, and records a version only
+after that fragment actually succeeds. It verifies the actual 18 legacy table
+relations, version ledger [1,2,3,4,5], and empty business tables.
+
+This is a schema-only legacy baseline. No old business rows were seeded, so
+the packet claims no pre-existing customer/application-data migration proof.
+The version ledger and real table/column/default/constraint/index definitions
+are observed directly from PG. Later API-created data is explicitly post-upgrade.
+
+One bounded test, two entrypoint variants
+---------------------------------------
+TestSourceCollectionPublishedV5UpgradeA2 independently opens:
+  - CURRENT core on actual published v5;
+  - CURRENT CollectionWorker on actual published v5, before any current core.
+
+Successful startup is not acceptance. Each constructor must apply and record
+v6 exactly once, create all four real source relations, and preserve every
+legacy table definition. Then current real API bootstrap/source create/detail/
+patch/list, queued collection, actual owned TLS collection/evidence, linked
+asset and repeated core/worker v6 reopen must work. The version ledger remains
+exactly [1,2,3,4,5,6]; API-created post-upgrade data must survive reopen.
+
+Baseline result on held source
+------------------------------
+Both CURRENT constructors returned success over the verified v5 baseline.
+Both left max schema version 5 and the v6 source tables absent.
+Each variant therefore failed the real version-6 requirement before the
+source/API/evidence/repeated-v6 tail. These tails are BLOCKED/NOT RUN, not a
+claimed migration or data-preservation success.
+
+The unchanged eight fresh-schema source-collection narratives all ran and
+passed in the same full-binding Contract invocation. This specifically shows
+why the new historical upgrade path is separate from fresh-schema acceptance.
+The A1 context-cancellation fixture and both storage assertion tails remain
+intact and passed in that run.
+
+Safety, evidence and next owner
+------------------------------
+Only random owned PG schemas and the existing local S3/owned TLS fixtures are
+used, with original bounded cleanup. No shared schema, role/policy, live GitHub,
+UI/runtime/deployment, dependency, agent or commit change is involved.
+
+Historical DDL/source hashes and before witnesses are in
+  .artifacts\source-collection-upgrade-a2
+Actual runner results and per-entrypoint PG observations are in
+  .artifacts\source-collection-v1\upgrade-a2-baseline-01.*
+  .artifacts\source-collection-v1\a2-v5-upgrade-*.json
+
+From C:\bahadr\serious\aspm with a fresh output label:
+  .\tests\source_collection\Test-SourceCollection.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName parent-upgrade-a2-01
+
+No new caller argument, legacy executable portability assumption or hidden
+fallback was required. The historical SQL baseline choice is explicit.
+PACKET-A2.json / PACKET-A2.sha256 are the new current frozen inventory; all old
+packet/signature history remains unchanged. Parent verifies/seals the actual
+upgrade RED, then makes the separate surgical production migration-order fix.

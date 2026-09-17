@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T14:36:13.294655+00:00",
+  "fullContract": "MISSING_CONSTRUCTOR_CONFIGURATION_COMPILE_RED",
+  "helperOnlyCompilerDiagnostic": {
+    "result": "PASS_NOT_ACCEPTANCE",
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\helpers-final.receipt.json",
+      "bytes": 1183,
+      "sha256": "1ae425f9b2da800acbeabef4704403cbc8a852514db13d53549745d2e2b411be"
+    },
+    "testsExecuted": 0,
+    "missingProductionBindingExcludedOnlyInThisDiagnostic": true
+  },
+  "resolvedGraph": {
+    "path": ".artifacts\\source-collection-v1\\compiler-dependencies.json",
+    "bytes": 1079166,
+    "sha256": "1a34df7d1793b28f5f70c864a0b2d5ecdf4b6ebecb2912ed6a9d5162dae44da2"
+  },
+  "resolvedInputHashes": {
+    "path": ".artifacts\\source-collection-v1\\compiler-input-hashes.json",
+    "bytes": 484206,
+    "sha256": "94a82d4feb29e3030c65e641eed70c16a928503f8998cf13d68df412ab4a8e9b"
+  },
+  "resolvedInputCount": 2064,
+  "resolvedPackageCount": 348,
+  "inputScope": "Resolved production/helper/target-test compilation inputs; full target compilation is blocked by absent source constructors, not a successful full typecheck. Unrelated dependency test files excluded.",
+  "generatedOrMissing": [],
+  "fullBinding": {
+    "path": "tests\\source_collection\\production_bindings_test.go",
+    "bytes": 1378,
+    "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+  },
+  "moduleControls": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "toolchain": {
+    "version": "go1.27.1 windows/amd64",
+    "binary": {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    "offlineExistingModulesOnly": true
+  },
+  "newDependencies": []
+}

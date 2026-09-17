@@ -1,0 +1,129 @@
+SOURCES UI A2 - AUTHORIZED SELECTED-TARGET METADATA
+=================================================
+
+Scope and cause
+---------------
+This is a new focused UI regression, not a backend authorization bypass,
+collection worker issue or a production implementation by this author.
+The current Sources component retains a copy of a selected SourceConnection.
+Its save callback updates that copy, but an authorized list refresh can update
+the same ID in the table without updating the selected history/consent props.
+The worker/API may then bind a different repository/revision than the UI
+presented for explicit consent.
+
+Read source authority: sources.tsx, source-collections.tsx, use-source-page.ts,
+api/source-intents.ts, api/sources.ts and the unchanged source-ui fixture/data.
+The accepted API still supplies full source metadata, server-owned revision,
+key-only collection POST and immutable collection bindings. No If-Match,
+revision/actor/repository body field or endpoint is added.
+
+Only new compiled file:
+  web\tests\source-selection.spec.ts
+It imports the existing fixture and data unchanged. No SU1-7/A1 assertion,
+helper, source, backend, setting, dependency, secret or signature is modified.
+No existing file needs an archive. Old packets and raw evidence are referenced
+by hashes only. Production's 15 UI/doc paths remain on HOLD.
+
+Two bounded variants
+--------------------
+ST1: Authorized list refresh, absent selected ID on a later page, disable
+  1. Load native Sources page 1 (100 of 102), select the existing source/history
+     and retain a historical collection with immutable revision-4 binding.
+  2. Change only fixture response data to valid same-ID name/repository/
+     revision-5 metadata. Hold the actual GET triggered by Refresh sources.
+     The original summary is still legitimate while that response is held.
+  3. Release the authorized GET and prove the TABLE shows its new repository,
+     name and revision. Record the selected-summary observation and zero POSTs.
+     Require the selected summary to use the new name/repository, and the next
+     explicit collection consent to show that repository and revision 5.
+  4. Cancel without sending. Manually request the returned nextCursor, whose
+     native page excludes the selected ID. This is NOT deletion or revocation.
+     The selected summary/history and next explicit consent remain current.
+     No previously selected revision-4 copy may be revived by page navigation.
+  5. Explicitly confirm once. POST contains only a valid idempotencyKey.
+     The 202 DTO binds the same selected ID to the repository/revision the user
+     just saw. No client binding/conditional-write fields are sent.
+  6. An authorized same-ID revision-6 update disables the source. Fresh
+     selected metadata disables/removes any collection action/confirmation.
+     Existing read-only history remains usable. Its older immutable repository
+     and connectionRevision remain the historical collection's real values.
+     Another native source page without the selected ID cannot revive stale
+     enabled consent. There is still exactly one collection mutation.
+
+ST2: Held authorized refresh during consent; lost-ACK key continuity
+  1. Begin the real Refresh sources GET and hold its revision-5 response.
+     If collection remains available, open revision-4 consent normally before
+     the new read completes. A design that disables collection while refreshing
+     is also valid; it must show new consent once the read is authorized.
+  2. Release the read and record current table/consent/summary plus zero POSTs.
+     An open enabled confirmation must update to the new facts. Alternatively
+     it must be closed or disabled until the user explicitly reviews the current
+     target. A stale enabled confirmation is not valid consent.
+     No source mutation, automatic queue or focus workaround is invoked.
+  3. Explicit confirmation of the current target gets a deliberately lost ACK.
+     The fixture persists one revision-5 job, but aborts its browser response.
+  4. Authorized metadata then advances to another enabled same-ID repository/
+     revision. That refresh must update the selected target without treating
+     metadata arrival as resolution of the lost enqueue intent.
+     Reconciliation-history reads are held, so they cannot have authorized a
+     new job merely because the source fields changed.
+  5. If another explicit attempt remains enabled, its body must retain the
+     unresolved idempotencyKey. The existing fixture correctly returns 409 for
+     the changed immutable binding, while preserving the original collection.
+     Alternatively another attempt may remain unavailable until history is
+     reconciled. Releasing a reconciliation response must not auto-enqueue.
+
+This second variant tests UI intent continuity only. It does not change the
+backend's actor/source/revision/repository binding, invent a recovery endpoint,
+or require an automatic retry. It reuses the previously accepted same-key or
+authorized-reconciliation policy.
+
+Limits and semantic boundaries
+------------------------------
+Source data changes occur in the existing synthetic response maps before a
+real browser GET; no React, DOM or production client-state replacement occurs.
+The collection/history source remains selected by immutable server ID.
+Fresh name/repository/enabled values come from authorized HTTP responses, not
+from an assumed local global cache, timestamps or guessed source identity.
+
+The tests require correctness relative to received authorized metadata.
+They do NOT claim a browser snapshot can atomically prevent a subsequent server
+change between rendering, user confirmation and POST/worker processing.
+No server revision guard or source matching fields are added to a key-only
+body. Old collection snapshots must not be rewritten as current source state.
+
+The page-window response proves the selected ID is absent from that page,
+but both appending and page-window inventory UX remain allowed. Keeping a
+known valid selection is distinct from claiming a full inventory snapshot.
+No new global cache framework is prescribed.
+
+Exact role/name locators and existing shared controls are used. The background
+Sources region is observed with includeHidden while the real native dialog
+makes it inert; the new target still must be visibly rendered. No force-click,
+test-only attribute, timer, generated UI, hidden stale copy or altered fixture
+guard is permitted.
+
+Preserve all 91 existing acceptance assertion bytes, old A1 regex correction,
+source-intent/epoch/current-role checks, credentials/Origin restrictions and
+all ordinary 20-second case/five-second expect/one-worker/zero-retry/60-request
+budgets. No live vendor/core/backend/runtime or native API requests, agents,
+commits or deployment work are authorized.
+
+Evidence and stopping point
+---------------------------
+Actual targeted browser RED must occur before the parent fixes selected
+target synchronization. The expected evidence is: authorized GET and refreshed
+table are current, but selected summary or still-enabled open consent is old.
+The test never intentionally submits stale consent merely to demonstrate an
+API mismatch. A pre-assertion read-only attachment records the decisive state.
+Later disabled/history/paging/enqueue/key checks blocked by the first failure
+remain authored requirements, not claimed executed successes.
+
+New log/result/trace names are unique under:
+  .artifacts\source-collection-ui-v1-a2
+Original V1/A1 packets, RED, signatures and the prior full91 acceptance remain
+untouched in place. BEFORE-A2.json records current raw hashes, including the
+15 held UI/doc sources and current A1 controls. No old tree is copied.
+Freeze A2 contract/RED/guards/handoff/packet and stop for parent seal and a
+separate surgical coder correction. After that fix, qualify all 93 cases on
+fresh evidence without amending existing assertions or budgets.

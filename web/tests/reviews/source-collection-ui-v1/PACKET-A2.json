@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "name": "source-collection-ui-a2",
+  "amendment": "A2",
+  "status": "frozen unsigned selected-source target-correctness regression",
+  "createdAt": "2026-09-17T19:49:34.398Z",
+  "files": [
+    {
+      "path": "web\\tests\\network.ts",
+      "bytes": 6655,
+      "sha256": "1f76ce4080351f62ca83e63c2150bc938947824faae6321748303af3eaf6a657"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\AMENDMENT-A1.json",
+      "bytes": 914,
+      "sha256": "f3120889a01a31bfc388544e2707282410ccd4505cd79ea4d19d871295584313"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\AMENDMENT.json",
+      "bytes": 1787,
+      "sha256": "6f067915acf464da9d640677434c08508c41e8f00e8847dc3ad36c745182b6cd"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\ARCHIVES.json",
+      "bytes": 863,
+      "sha256": "0086fe421f30be36dafd64a268f439d2ba3d2b66f039b9fe9d811ada25c84e8f"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE-A1.json",
+      "bytes": 323068,
+      "sha256": "961acba21825a02e2899b43ce72a991411b7317ab34f0549cc4b1fc57b89e583"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE-A2.json",
+      "bytes": 331189,
+      "sha256": "f53de37c469b479f1694d5045b5777a87df1b30cac17f720ece51c4492f9099f"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE.json",
+      "bytes": 28080,
+      "sha256": "084d0cfe63a3ba86b2dcb4cc9327d290c38f896a000845a54388c117d5bcb914"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\CALIBRATION-A1.json",
+      "bytes": 2816,
+      "sha256": "1e291351f4480dc28eb5902120c74920359c61ba3e8708a66613d49fab94e7d1"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\COMPATIBILITY.json",
+      "bytes": 22086,
+      "sha256": "d2bdd13a832a94e4c3cf3629654904599df6dde3d12a96131f376b17b23dd12f"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\COMPILATION-A2.json",
+      "bytes": 899,
+      "sha256": "b844aea18a6da36b998b7c648afc86e3f4217f792662605b5912c3cbd6f963f7"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\COMPILATION.json",
+      "bytes": 1556,
+      "sha256": "212ecb5be15b18f1e164c8495c57e81953b5f897519698f9681a20e614df4b92"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\CONTRACT-A2.txt",
+      "bytes": 8060,
+      "sha256": "58c468cf836ad0bb1482367aef36894bdadc79bae6e2bfd25ab10d47d3d5bcb3"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\CONTRACT.txt",
+      "bytes": 12264,
+      "sha256": "4a096b69d3203b744107012d5806842de61f9f21a3234aeb6f84560dd9b46cbe"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\EVIDENCE-A1.json",
+      "bytes": 5693,
+      "sha256": "a4f9eece75cfd95c162f6ec0c6567d02b6ff7339f0dcaf0056ab8b8c732cbcbe"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\EVIDENCE-A2.json",
+      "bytes": 4712,
+      "sha256": "b3c4856731f739a98945e456d93731cc09e3ed399d57978e27cb9aea7f3770ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\EVIDENCE.json",
+      "bytes": 9150,
+      "sha256": "414b7d0f3584b67498c6124e9e4815640a557b29b0aa2f20400bc80c7ff302b0"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS-A1.json",
+      "bytes": 13285,
+      "sha256": "600302ae2f9c8df3028fb6d7bb333f1c592c2b20be26355664a6e723f86aa3d0"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS-A2.json",
+      "bytes": 25920,
+      "sha256": "e8a8bead6ee3b9b33e54d6f65e5e373f1ca22c8272c534d0df6ae43e3607c6cd"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS.json",
+      "bytes": 16328,
+      "sha256": "e1bd409b8b632cd24cfd326f2d63b3a898e9cac1a92822c776fc52c067ad87c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF-A1.json",
+      "bytes": 3445,
+      "sha256": "af53771753f01d69d7dc3735bdca1be59d37fc482c7d3fd3213221fade24cedb"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF-A1.txt",
+      "bytes": 4053,
+      "sha256": "9e97993424eab0f31548031d113c8f2a181520474f9c611b2f589fda4cc201ce"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF-A2.json",
+      "bytes": 5838,
+      "sha256": "652021f66a6b924d3241dee1047f30ab87131e4039b08c8ff555eb54c8604e8e"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF-A2.txt",
+      "bytes": 5227,
+      "sha256": "4bbe6bd1ae20502b88074a5f48ae6cb1751411e5924c9592c17967168d78b929"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF.json",
+      "bytes": 12742,
+      "sha256": "eea5dd244586d99ee548bda3010e9a80f51e07579631fcbce2d1b4f671f0cf9c"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF.txt",
+      "bytes": 7074,
+      "sha256": "234740742aeec09d9f699611ffd30a6d72247a2241a22301147263235426ed3b"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.json",
+      "bytes": 6880,
+      "sha256": "b4cbf690c73876bceb61cbf52ad9eb505ae97903bca659f3348bffe2e671411d"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "c236f6d5584ef7ae33aa5990e55e6b0589f812d92adc195cccf4072bca900aa9"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.json",
+      "bytes": 5073,
+      "sha256": "225a0f450fadfa2fc531dab970c8e27c1fcd78c175415a2223a3d181b266fe03"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2c0b70bfa234e78f7296e8a9dafc4378ee314093e6a386bc6887b5f46f1b9ce5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PRIOR-COMPATIBILITY-A2.json",
+      "bytes": 3740,
+      "sha256": "6d0b6d0f37dab86222e197aabdf09691368b162ae5b41cccd52b845e114d7971"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\RED-A2.json",
+      "bytes": 65948,
+      "sha256": "9b77fe475c452fb77d7d8c37523d4d26c71b0dbad677dfe5114fa9dc42e17055"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\RED.json",
+      "bytes": 21256,
+      "sha256": "873262e1921c5bf18d0a78c37974183773ff884f6ac2c0a59ca68533285459b5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\SOURCE-AUTHORITY.json",
+      "bytes": 937,
+      "sha256": "78ea6ec51b4ae78db8aacf9c7129bb76e73ca7196e8bd72175fb247c87965c16"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\VALIDATION-A1.json",
+      "bytes": 40339,
+      "sha256": "84b0543997b0825459a393c9370f3c129b10ec12cddd9601f2ecdb12bd5aeef8"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\history\\a1\\source-collection-ui.spec.ts.before.txt",
+      "bytes": 38546,
+      "sha256": "5abac796e14f5de5379e570c9e613cc2acb113675ec934c9f7a1acae52a31505"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\history\\before\\network.ts.before.txt",
+      "bytes": 6155,
+      "sha256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\history\\before\\slack-ui-fixture.ts.before.txt",
+      "bytes": 29329,
+      "sha256": "69afa8107fed7c289ef5f06183e139c241c1df332924095d1e1cedd086fb85f5"
+    },
+    {
+      "path": "web\\tests\\slack-ui-fixture.ts",
+      "bytes": 29562,
+      "sha256": "a9b5e9d0c7805e86f8ba5c07f9e57ba72a1a1997328a074df4c41587cc66228a"
+    },
+    {
+      "path": "web\\tests\\source-collection-ui.spec.ts",
+      "bytes": 38545,
+      "sha256": "2bb7eb6fd7d4d71207cceccb564640a8cea412197998274d5b191b3f4558f108"
+    },
+    {
+      "path": "web\\tests\\source-navigation.ts",
+      "bytes": 591,
+      "sha256": "5b2119731b628c1217f6a468764d7e9229b00a23eccab9ff08c9dc7be1be1b8f"
+    },
+    {
+      "path": "web\\tests\\source-selection.spec.ts",
+      "bytes": 15243,
+      "sha256": "42d415f47b416c933558d21f15e655acf67069c90299f8e554d543c0c5d2c5e4"
+    },
+    {
+      "path": "web\\tests\\source-ui-data.ts",
+      "bytes": 9374,
+      "sha256": "a0e356bb6f23a09e24aaf43a932197b3b8f7a0a31770b528880890149216fef0"
+    },
+    {
+      "path": "web\\tests\\source-ui-fixture.ts",
+      "bytes": 25891,
+      "sha256": "e73b7fe4046615ac25fb0cb9169ae6faedfa653ff0a0102c3c2ea3f82fe81dda"
+    }
+  ],
+  "originalPacketHashReferences": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.json",
+      "bytes": 5073,
+      "sha256": "225a0f450fadfa2fc531dab970c8e27c1fcd78c175415a2223a3d181b266fe03"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2c0b70bfa234e78f7296e8a9dafc4378ee314093e6a386bc6887b5f46f1b9ce5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.json",
+      "bytes": 6880,
+      "sha256": "b4cbf690c73876bceb61cbf52ad9eb505ae97903bca659f3348bffe2e671411d"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "c236f6d5584ef7ae33aa5990e55e6b0589f812d92adc195cccf4072bca900aa9"
+    }
+  ],
+  "sourceHOLD": {
+    "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS-A2.json",
+    "bytes": 25920,
+    "sha256": "e8a8bead6ee3b9b33e54d6f65e5e373f1ca22c8272c534d0df6ae43e3607c6cd"
+  },
+  "qualification": {
+    "actualTypecheckPassed": true,
+    "staleTargetBrowserRED": 2,
+    "collectionPOSTsDuringRED": 0,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "prior91Rerun": false,
+    "full93NotRun": true
+  },
+  "sourceAndOldControlsUnchanged": true,
+  "parentSealAndCoderFixRequired": true,
+  "oldSignaturesRewritten": false
+}

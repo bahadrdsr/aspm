@@ -1,0 +1,93 @@
+SOURCES UI A2 - FROZEN SELECTED-TARGET FRESHNESS REGRESSION
+=======================================================
+
+Stop for parent verification/seal and a separate surgical source correction.
+This author added tests only. The stale selected target remains a production
+UI correctness bug, not a server-authorization bypass.
+
+New file only
+-------------
+  web\tests\source-selection.spec.ts
+Two bounded variants use the existing SourcesUIAPI HTTP fixture, source metadata
+maps, native cursor pages and collection binding behavior without modifying them.
+No existing SU1-7/A1 assertion, helper, fixture, source, backend, setting,
+dependency or signature/control set is edited. No archives are needed.
+No agents, commits, native API calls or vendor operations were used.
+
+Independent actual browser RED
+-----------------------------
+ST1:
+  Real selected source/history initially uses revision 4 and selected-repo.
+  A new authorized GET returns the SAME source ID with revision 5, new name
+  and repository synthetic-owner/authorized-new-target.
+  The table renders those new facts, but the selected history summary retains
+  the old name/repository. The new-target summary assertion fails.
+
+ST2:
+  The same revision-5 GET is held while revision-4 collection consent opens
+  normally. After that authorized response is released, the Sources table
+  displays the new repository but the still-enabled confirmation continues to
+  show the old repository and Source revision: 4.
+  The current-consent repository assertion fails.
+
+Each variant made eight guarded HTTP GETs, zero collection POSTs and zero
+external requests. No fixture violations or unhandled browser errors occurred.
+ST1 ran for 8.654 seconds; ST2 for 7.334 seconds, including their expected
+five-second failed assertions. The original 20-second case, five-second expect,
+one-worker/zero-retry, trace/animation and 60-request budgets are unchanged.
+Actual typecheck passed.
+
+Read-only pre-assertion attachments retain both the authorized revision-5 DTO
+and the stale summary/open consent. The test never intentionally submits
+stale consent to demonstrate the backend binding mismatch. No test-side React,
+DOM or production API state is substituted; fixture seeding supplies only
+the data subsequently returned through real browser HTTP requests.
+
+Required but currently blocked downstream behavior
+-------------------------------------------------
+ST1 also requires current selection/consent to survive a native later page
+that does not contain the selected ID. Page absence is not source deletion.
+Its explicit key-only enqueue must bind the just-presented target; an
+authorized disabled update must prevent further confirmation/queue while
+immutable old collection history remains readable.
+
+ST2 allows open consent either to update, close, or become disabled until
+reviewed again. No automatic POST is allowed. A deliberate later lost ACK
+must retain its unresolved idempotency key across another authorized metadata
+change, or block new attempts until history reconciliation. The original job
+must not be silently replaced. These later checks are authored requirements,
+not executed successes: both variants stop at the earlier stale-target failure.
+
+No client snapshot is claimed to prevent a later server-side change atomically.
+The existing body stays {idempotencyKey}; no If-Match, revision/repository/actor
+body fields or new endpoint is introduced. The backend keeps enforcing its
+own current authority and immutable collection binding.
+
+Source/control integrity and prior qualification
+-----------------------------------------------
+BEFORE-A2.json and GUARDS-A2.json record 810 unchanged current inputs,
+737 unchanged A1 controls and the 15 held UI/doc paths. All 16 previous
+assertion files covering 91 cases, the A1 one-byte regex correction and the
+existing fixtures remain exact. The compiler adds only the new spec.
+
+The prior A1 full91 pass is referenced by its existing raw hashes. It was not
+rerun as part of this focused RED request and is not presented as new full-suite
+acceptance. A combined 93-case run is for the parent/coder/reviewer after the
+source fix. The reported reviewer tree prefix is recorded as supplied context,
+not fabricated as an independently verified full digest.
+
+Original V1/A1 packets, RED and signatures are unchanged in place. No old
+review tree or unchanged source is copied. All history is hash-referenced.
+Parent owns resealing the new current test set.
+
+Frozen A2 artifacts
+------------------
+CONTRACT-A2.txt defines the exact bounded consent/selection/key semantics.
+RED-A2.json records executed and blocked assertions separately.
+COMPILATION-A2.json and GUARDS-A2.json preserve actual typecheck and byte proofs.
+PRIOR-COMPATIBILITY-A2.json identifies historical prior91 evidence honestly.
+EVIDENCE-A2.json hashes unique original outputs outside protected tests:
+  .artifacts\source-collection-ui-v1-a2
+Do not overwrite stale-target-red-01 or typecheck-01 artifacts.
+HANDOFF-A2.json and PACKET-A2.json/PACKET-A2.sha256 freeze the unsigned packet.
+Stop for parent seal/coder correction; no larger cache or feature scope.

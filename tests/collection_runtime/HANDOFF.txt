@@ -1,0 +1,40 @@
+COLLECTION RUNTIME V1 - INDEPENDENT TEST-FIRST HANDOFF
+===================================================
+
+New tests/collection_runtime only. Accepted source backend/A2 assertions,
+bindings, old service/runtime/UI/deployment controls and modules are untouched.
+
+Required real surfaces:
+  cmd/collection-worker
+  service.Environment("collection")
+  service.Run(ctx,"collection",Config)
+  CollectionStorage *app.StorageConfig
+  CollectionLeaseDuration time.Duration
+  GitHubEndpoint string
+  CollectionClient *http.Client
+  CollectionCAFile string
+  CollectionLimits connectors.Limits
+
+Core environment and service.Run forwarding of the optional explicit RO
+CollectionStorage are part of this contract, not an unused test-only field.
+Read CONTRACT.txt for exact names/defaults/isolation and the pure-validator/
+accepted transport reuse decision.
+
+The actual local store-key calibration proves reader GET and publisher PUT,
+and real S3 403/AccessDenied for reader PUT. Fixture taps add per-test prefix/
+method/signing-identity restrictions; they are not substitutes for that real
+key-level denial. No storage policy or key provisioning was changed.
+
+The runner requires BOTH explicit private RuntimeConfig and StorageConfig:
+the latter is the already-provisioned aspm-runtime/storage-isolation.json,
+using ai as core RO, core as publisher and admin only for exact owned cleanup.
+No implicit fallback to raw credentials is allowed.
+
+Missing command/configuration compile RED is not runtime acceptance. Helper
+compilation and tagged RightsPreflight are separate fixture diagnostics.
+After implementation, full Contract must build the actual command and execute
+all four service/health/processing/cancellation/configuration narratives.
+
+Logs, binaries and synthetic public CA artifacts stay outside protected roots.
+No old history was copied or existing file amended. Parent verifies/seals, then
+assigns separate coder and independent review; UI/deployment remain later work.

@@ -1,0 +1,217 @@
+COLLECTION RUNTIME V1 - CORE EVIDENCE CONFIGURATION AND INDEPENDENT I/O ROLE
+========================================================================
+
+Scope
+-----
+This NEW tests/collection_runtime package authors four real runtime narratives.
+It does not modify the accepted source backend/A2 tests/bindings, old runtime,
+UI/deployment, module dependencies or oracle history. The role reuses
+app.OpenCollectionWorker/ProcessNext, not a second outbox or collector.
+No command/runtime behavior is claimed from helper compilation.
+
+Exact production surface
+------------------------
+  cmd/collection-worker
+  service.Environment("collection")
+  service.Run(ctx, "collection", service.Config)
+
+New service.Config fields:
+  CollectionStorage *app.StorageConfig
+  CollectionLeaseDuration time.Duration
+  GitHubEndpoint string
+  CollectionClient *http.Client
+  CollectionCAFile string
+  CollectionLimits connectors.Limits
+
+Existing core Config fields, IntegrationEncryptionKey and Jobs database fields
+remain the ordinary service inputs. The binding constructs and forwards only;
+errors are preserved. No test-side runtime, handler, SQL success, credential
+lookup or queue business logic stands in for production.
+
+Core collection-storage environment
+-----------------------------------
+Six explicit production environment names:
+  ASPM_COLLECTION_S3_ENDPOINT
+  ASPM_COLLECTION_S3_BUCKET
+  ASPM_COLLECTION_S3_PREFIX
+  ASPM_COLLECTION_S3_REGION
+  ASPM_COLLECTION_S3_ACCESS_KEY
+  ASPM_COLLECTION_S3_SECRET_KEY
+
+For core, ALL absent means CollectionStorage:nil and preserves unrelated old
+startup. Once any is supplied, all six nonblank fields must validate. A partial
+selection fails before DB/HTTP/listener work even when complete raw ASPM_S3
+credentials are available. Never derive or borrow collection endpoint, region,
+bucket, prefix or keys from raw Evidence/operator defaults.
+
+Core uses a read-only collection-storage identity. service.Run(...,"core",...)
+MUST forward this actual selected pointer into app.Open so real source enqueue
+and authorized evidence reads work through the core SERVICE, not just through
+an app-only constructor. The role's existing raw Evidence configuration remains
+separate and unchanged.
+
+Collection environment and role isolation
+-----------------------------------------
+Collection requires all six of its own storage fields, DB configuration and
+canonical standard-base64 ASPM_INTEGRATION_ENCRYPTION_KEY for exactly 32 bytes.
+The variable names are the same as core, but the separately launched process
+receives its explicit publisher identity. Missing own fields fail; raw S3/AWS/
+bootstrap or ambient provider credentials are not fallback authority.
+
+The role owns one CollectionWorker DB pool; MaxConnections=1 is valid.
+CollectionLeaseDuration defaults to exactly 15s; optional
+ASPM_COLLECTION_LEASE_DURATION must be 250ms..1 minute without silent clamping.
+ASPM_GITHUB_ENDPOINT defaults to https://api.github.com and is trusted process
+configuration only: validated HTTPS base, no credential/query/fragment/unsafe
+path/control values. API or source JSON cannot choose it.
+
+ASPM_COLLECTION_CA_FILE is optional, explicit, bounded PEM for a trusted source
+gateway. Normal certificate/hostname verification remains enabled. Only a
+synthetic public fixture certificate is written by tests, never a private key
+or system trust-store change.
+
+Environment builds a bounded explicit client: normal TLS (including valid
+effective TLS ranges), Proxy:nil, no cookie jar, no redirect following, and
+configured-origin-bound transport. Programmatic tests supply their exact owned
+certificate-validating TLS client. The implementation may reuse/factor the
+accepted delivery transport builder rather than creating insecure alternatives.
+
+Default CollectionLimits are the accepted native bounds:
+  Requests:32, Pages:8, PageSize:50, Bytes:8 MiB.
+Programmatic selected bounds are forwarded; this increment adds no unrelated
+generic configuration framework or new environment knob matrix.
+
+Collection role returns zero raw Evidence, empty BootstrapToken/Assets/
+ReadinessKey and false PrepareReadiness. It may ignore unrelated malformed raw
+readiness settings but must validate its OWN inputs. No core/auth handler is
+exposed. Existing core/reports/ingestion/delivery environment behavior remains.
+
+Pure validation decision
+-----------------------
+The accepted app.CollectionWorker constructor validates before opening its own
+pool, but its validation is currently constructor-local. service.Run must
+validate the full role before EnsureSchema or listener/provider/storage I/O.
+The parent may narrowly factor/export that pure validation and reuse accepted
+transport validation without changing backend behavior. No test shim or
+constructor call that opens a DB is accepted as a fake no-I/O validator.
+
+Health, readiness and scheduling
+--------------------------------
+GET /healthz reports service:collection and status:alive.
+GET /readyz reports service:collection, status:ready, database:reachable and
+storage:configured-not-probed after a real DB readiness check. That label is
+configuration truth, NOT proof of S3 write permission or provider authority.
+No HeadBucket/ListBucket startup probe is permitted.
+GET /api/session, /api/v1/session and / return 404 for the collection role.
+
+The runtime loops the accepted ProcessNext. Only an idle false,nil result may
+use a short context-aware wait. Native failure/blocked records are terminal
+under the accepted backend policy; the runtime must not requeue/retry them.
+Cancellation stops TLS/S3 reads/writes, listener and resources within bounds.
+It does not claim to undo an already accepted remote operation.
+
+Actual core/service/command evidence
+-----------------------------------
+The core test starts real service.Run("core") from service.Environment("core")
+with a separately selected RO collection capability. A real protected TLS
+forwarder passes unchanged HTTP to the owned core listener. Actual core APIs
+create workspace, users, source connection and queued collection.
+
+The independent collection SERVICE reads the real owned TLS GitHub repository/
+alert responses, writes real selected S3 evidence, commits the stable asset,
+and exposes exact evidence through the core service's RO key. It does not
+normalize findings. Repeated collections must retain the one linked asset.
+
+Held native TLS and held S3 publication are each canceled by the actual service
+context. The failed collection cannot commit an accepted asset/snapshot. A
+fresh ACTUAL cmd/collection-worker process must preserve prior failed/blocked
+state, then process a separately authorized new valid collection.
+
+The runner builds the real command binary from cmd/collection-worker; no
+substitute test binary or handler is allowed. Private config travels in its
+process environment, not command arguments. Only the correct publisher storage
+identity and DB/key/gateway/CA settings are passed; raw storage, S3/AWS chains,
+bootstrap, core assets and unrelated credentials are stripped.
+
+Windows graceful cancellation is exercised through real service.Run context
+while dependencies honor it. Later command cleanup kills only its exact owned
+PID after terminal/new-job assertions. That bounded cleanup is not a claim
+of OS-signal graceful command shutdown.
+
+Real storage-key proof versus fixture taps
+------------------------------------------
+An EXPLICIT second private runner argument, StorageConfig, selects the existing
+aspm-runtime/storage-isolation.json fixture. This is not ambient discovery or
+an operator fallback. RuntimeConfig still supplies the existing owned PG/raw
+S3 fixture for the core's unrelated raw configuration.
+
+Existing provisioned local roles are reused without policy changes:
+  fixture role ai -> core collection RO identity
+  fixture role core -> collection publisher identity
+  fixture role admin -> owned fixture cleanup only
+Both process identities use the same six production variable names in their
+separate process environments. They are distinct actual keys.
+
+The owned evidence prefix is:
+  approved/team-a/grant-1/collection-runtime-<random>/
+under the existing local aspm-isolation bucket at 127.0.0.1:18335.
+
+An independent REAL S3 probe, bypassing taps, proves publisher PutObject and
+core-RO GetObject succeed while core-RO PutObject receives actual HTTP 403 /
+AccessDenied. If the selected existing fixture policy is unavailable or wrong,
+the test fails; it does not replace denial with a synthetic proxy status.
+
+The existing store policy grants broader parent-prefix rights to these fixture
+roles. Forwarding taps enforce only the additional per-test random suffix,
+expected signing identity, object methods and no whole-bucket probes. Core tap
+never grants a write; publisher tap forwards only authorized scoped operations.
+The taps preserve method/Host/path/query/credentials/body/signatures and do not
+simulate S3 success. Their narrower path denial is a fixture guard, distinct
+from the directly verified real key-level read-only denial.
+
+Tagged collection_runtime_rights calibration executes only real owned fixture
+PG/storage-rights setup/cleanup, without service bindings or runtime business
+logic. It is explicit fixture proof, not runtime acceptance.
+
+Four main narratives
+--------------------
+1. Real core environment + core SERVICE uses its selected RO evidence identity;
+   independent collection role collects exact TLS records -> S3/stable asset;
+   core authorized evidence reads preserve bytes/digests and no findings appear.
+2. Invalid/partial DB/key/storage/client/gateway/lease/limit/TLS/proxy config,
+   including partial core collection storage, fails before owned DB/provider/
+   storage tripwires or listen conflict. No source business data is simulated.
+3. Native TLS and actual S3 held cancellation; failed/blocked state survives a
+   fresh actual command process, which then processes one newly authorized job.
+4. Core optional/all-or-nothing storage, collection required own fields,
+   defaults and client policy, no raw capability inheritance, legacy role parse
+   compatibility and explicit CA/key/gateway/lease invalid-input rejection.
+
+Isolation, RED and next ownership
+--------------------------------
+Each real-service case uses a fresh random collection_runtime_<24 hex> schema
+and selected local evidence suffix with bounded cleanup. No existing schema,
+DB role/policy, storage policy, cluster, installer, UI or deployment is changed.
+No api.github.com, cloud account, OAuth installation or real GitHub token is
+used. Fixture bearer/key/CA values are synthetic; private existing store inputs
+are redacted before run logs are persisted.
+
+Source code/configuration fields and cmd/collection-worker are currently
+missing. Full real binding/command build RED is distinct from helper compile
+and successful store-rights calibration. The four runtime narratives remain
+BLOCKED/NOT RUN until production exists; no health/processing pass is claimed.
+
+Run from C:\bahadr\serious\aspm with explicit private fixture paths:
+  .\tests\collection_runtime\Test-CollectionRuntime.ps1 -RuntimeConfig '<private-runtime.json>' -StorageConfig '<private-storage-isolation.json>' -Mode Contract -OutputName parent-runtime-01
+
+Use fresh output names. Contract builds the actual command then runs all four
+tests. ServiceContract and CommandBuild isolate compile prerequisites.
+HarnessCompile and RightsPreflight are explicit non-acceptance diagnostics.
+All logs, binaries and synthetic CA files are outside frozen roots in
+.artifacts/collection-runtime-v1; work/cache paths stay inside project .cache.
+Only hash references to accepted source/A2/old tests/modules are retained.
+
+Parent verifies config/transport decisions and exact RED/rights evidence,
+seals NEW controls and assigns separate implementation/review. Backend DDL,
+normalization, UI, worker deployment/cron/Helm/Quadlet/installer are not hidden
+requirements or certified outcomes of this runtime packet.

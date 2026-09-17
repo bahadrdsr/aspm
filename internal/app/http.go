@@ -115,6 +115,17 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	switch path {
+	case "/api/v1/sources":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+			return err
+		}
+		if r.Method == http.MethodGet {
+			return a.listSources(w, r, membership.ID)
+		}
+		if membership.Role != "admin" {
+			return errForbidden
+		}
+		return a.createSource(w, r, membership.ID, session)
 	case "/api/v1/workspaces":
 		if err = requireMethod(w, r, http.MethodPost); err != nil {
 			return err
@@ -194,6 +205,21 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		return a.createReportSnapshot(w, r, membership.ID, session.User.ID)
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) >= 3 && parts[0] == "sources" && parts[1] == "collections" && validID(parts[2]) {
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		if len(parts) == 3 {
+			return a.getSourceCollection(w, r, membership.ID, parts[2])
+		}
+		if len(parts) == 4 && parts[3] == "records" {
+			return a.listSourceRecords(w, r, membership.ID, parts[2])
+		}
+		if len(parts) == 6 && parts[3] == "records" && validID(parts[4]) && parts[5] == "evidence" {
+			return a.sourceRecordEvidence(w, r, membership.ID, parts[2], parts[4])
+		}
+		return errNotFound
+	}
 	if len(parts) == 3 && parts[0] == "integrations" && validID(parts[2]) {
 		if parts[1] == "connections" {
 			if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
@@ -224,6 +250,32 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		return errNotFound
 	}
 	switch parts[0] {
+	case "sources":
+		if len(parts) == 3 && parts[2] == "collections" {
+			if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+				return err
+			}
+			if r.Method == http.MethodGet {
+				return a.listSourceCollections(w, r, membership.ID, parts[1])
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.enqueueSourceCollection(w, r, membership.ID, session, parts[1])
+		}
+		if len(parts) != 2 {
+			return errNotFound
+		}
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
+			return err
+		}
+		if r.Method == http.MethodGet {
+			return a.getSource(w, r, membership.ID, parts[1])
+		}
+		if membership.Role != "admin" {
+			return errForbidden
+		}
+		return a.updateSource(w, r, membership.ID, session, parts[1])
 	case "users":
 		if len(parts) != 2 {
 			return errNotFound

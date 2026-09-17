@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "classification": "Positive/negative regex calibration, not app acceptance",
+  "reference": {
+    "path": ".artifacts\\source-collection-ui-v1-a1\\pattern-calibration.json",
+    "bytes": 2647,
+    "sha256": "dd4e60e05389a803d346f3444c482cdd3cd190ea1b6cddf3cd1b81b3b61ea96a"
+  },
+  "cases": [
+    {
+      "value": "Retry-After: 7 seconds. Retryable: false. No automatic retries.",
+      "expected": true,
+      "original": false,
+      "corrected": true
+    },
+    {
+      "value": "Retry-After:   7 seconds",
+      "expected": true,
+      "original": false,
+      "corrected": true
+    },
+    {
+      "value": "Retry-After:\n\t7 seconds",
+      "expected": true,
+      "original": false,
+      "corrected": true
+    },
+    {
+      "value": "Retry-After 7s",
+      "expected": true,
+      "original": false,
+      "corrected": true
+    },
+    {
+      "value": "Retry-After:7 second",
+      "expected": true,
+      "original": false,
+      "corrected": true
+    },
+    {
+      "value": "RETRY-AFTER: 7 SECONDS",
+      "expected": true,
+      "original": false,
+      "corrected": true
+    },
+    {
+      "value": "Retry-After: 6 seconds",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After: 8 seconds",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After: 17 seconds",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After: 70 seconds",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After: seconds",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After:",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After: 7",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After: 7 minutes",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "7 seconds",
+      "expected": false,
+      "original": false,
+      "corrected": false
+    },
+    {
+      "value": "Retry-After:\\7 seconds",
+      "expected": false,
+      "original": true,
+      "corrected": false
+    }
+  ],
+  "validCases": 6,
+  "invalidCases": 10,
+  "allExpectedClassificationsMatched": true,
+  "labelNumericSevenAndUnitRequirementPreserved": true,
+  "diagnosticSetupNote": "One-off author calibration first placed a space before the deliberately invalid literal backslash. The original bug does not permit that space after a colon. Its positive control was corrected to an adjacent literal backslash; no spec or product code changed again."
+}

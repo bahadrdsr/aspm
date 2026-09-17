@@ -2,6 +2,7 @@ import { expect, test as base } from "@playwright/test";
 import type { Page, Request, Route } from "@playwright/test";
 import { bootstrapToken, password, sessionCookie, wrongPassword } from "./application-fixture";
 import { catalogResponse } from "./fixtures";
+import { emptySourceNavigation } from "./source-navigation";
 import { emptyReport, overviewDays, overviewPath, snapshotParameters, snapshotsPath, withFreshness } from "./reports-data";
 import {
   alphaConnection, apiVersion, backendID, betaConnection, betaSlackFinding, changedAt, connectionPath, connectionsPath,
@@ -337,6 +338,8 @@ export class SlackUIAPI {
       const scheduled = method === "GET" ? this.readReplies.get(key) : this.replies.get(key)?.shift();
       if (!this.serverRoles.has(workspace)) { await this.deliver(route, call, 403, this.error(403), scheduled); return; }
       try {
+        const empty = emptySourceNavigation(url, method, workspace, [...this.roles.keys()]);
+        if (empty) { await this.deliver(route, call, 200, empty); return; }
         if (method === "GET" && path === connectionsPath) {
           const response = paginated([...this.connections.values()].filter((value) => value.workspaceId === workspace), url);
           if (!scheduled || scheduled.status === 200) this.pages.push({ call, response: structuredClone(response) });

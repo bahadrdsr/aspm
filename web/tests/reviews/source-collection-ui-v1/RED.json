@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 1,
+  "originalFrozen": true,
+  "run": {
+    "command": "npm.cmd test -- source-collection-ui[.]spec[.]ts$ --output ..\\.artifacts\\source-collection-ui-v1-author\\missing-sources-red-01-traces --reporter=list,json",
+    "port": "52970",
+    "startedAt": "2026-09-17T17:36:17.8619190Z",
+    "endedAt": "2026-09-17T17:38:10.4452514Z",
+    "exitCode": 1,
+    "expected": "Seven missing Sources UI assertion failures, not fixture/compiler/native errors"
+  },
+  "runFile": {
+    "path": ".artifacts\\source-collection-ui-v1-author\\missing-sources-red-01.run.json",
+    "bytes": 410,
+    "sha256": "8872201223485f6f1fb0bf8a46be1b9ea371cf42790b75a7c57566caab95de85"
+  },
+  "report": {
+    "path": ".artifacts\\source-collection-ui-v1-author\\missing-sources-red-01.results.json",
+    "bytes": 160207,
+    "sha256": "44a67f3e724fc45e659d57eb5713250794be6310a767565c4f7c20a004871615"
+  },
+  "stdout": {
+    "path": ".artifacts\\source-collection-ui-v1-author\\missing-sources-red-01.stdout.txt",
+    "bytes": 26325,
+    "sha256": "6df64a631ba8143dcaae07f354f1107bc0152a544c2c6194b399cb18499ec875"
+  },
+  "stats": {
+    "startTime": "2026-09-17T17:36:28.087Z",
+    "duration": 102170.69799999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "SU1 Sources retain the five-nav/eight-family/Slack surface and distinguish loading, failure, empty, native pages and explicit masked creation",
+      "line": 230,
+      "status": "failed",
+      "durationMS": 14498,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:233:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "SU2 Admin source edits are sparse and server-confirmed, blank token preserves it and current role overrides stale controls",
+      "line": 284,
+      "status": "failed",
+      "durationMS": 7631,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:285:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "SU3 Explicit collection queues only idempotencyKey; unavailable storage is not success and a lost ACK cannot create a blind new job",
+      "line": 331,
+      "status": "failed",
+      "durationMS": 7042,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:333:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "SU4 Manual collection status preserves complete/partial/native failure meaning and displays exact raw records/evidence without normalization or execution",
+      "line": 385,
+      "status": "failed",
+      "durationMS": 6855,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:392:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "SU5 Native history/record pagination retries the same cursor and evidence denial stays withheld through unavailable/digest errors",
+      "line": 416,
+      "status": "failed",
+      "durationMS": 6905,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:420:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "SU6 Workspace/logout/401 clear source drafts and abort late collection/evidence/ACK data; viewer reads do not gain write authority",
+      "line": 462,
+      "status": "failed",
+      "durationMS": 7125,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:466:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "SU7 At 390px reduced-motion native source/collection controls preserve keyboard context and 401 clears an active token form",
+      "line": 499,
+      "status": "failed",
+      "durationMS": 6809,
+      "retry": 0,
+      "errors": [
+        {
+          "message": "Error: Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog. getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Sources$/i, includeHidden: true })\n\n\n  63 | async function visit(page: Page) {\n  64 |   await page.goto(\"/#/integrations\");\n> 65 |   await expect(region(page), \"Add a bounded Sources region to Integrations, not a sixth primary destination or a fabricated connected catalog.\").toBeVisible();\n     |                                                                                                                                                  ^\n  66 | }\n  67 | async function libraryUnverified(page: Page) {\n  68 |   const nav = page.getByRole(\"navigation\", { name: \"Primary\", exact: true });\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:65:146)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts:503:3",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\source-collection-ui.spec.ts",
+            "column": 146,
+            "line": 65
+          }
+        }
+      ],
+      "apiCalls": 5,
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "query": {},
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "query": {
+            "limit": "100"
+          },
+          "status": 200
+        }
+      ],
+      "fixtureViolations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    }
+  ],
+  "sourceVector": {
+    "path": ".artifacts\\source-collection-ui-v1-author\\missing-sources-red-01.inputs.json",
+    "bytes": 22618,
+    "sha256": "55169c31b392f6569f0193d14ebb5ed58647c20204205feb023fadd40e3f5f92"
+  },
+  "blockedSemantics": "All seven cases reach existing Integrations/catalog/Slack and stop at the absent Sources region. Source CRUD, collection, idempotency, status/records/evidence, permission and mobile downstream assertions are authored requirements, not claimed executed successes.",
+  "noBackendRuntimeOrNativeQualificationClaim": true
+}

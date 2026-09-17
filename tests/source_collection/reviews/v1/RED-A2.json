@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T16:48:22.014Z",
+  "status": "FROZEN_REAL_PUBLISHED_V5_UPGRADE_RED_PENDING_PARENT_FIX",
+  "actualFullContract": {
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\upgrade-a2-baseline-01.receipt.json",
+      "bytes": 735,
+      "sha256": "dbf81714d8f7b1314d39cbc8376ee9c955003400a673ad8f5d7efaf106e9c289"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-v1\\upgrade-a2-baseline-01.jsonl",
+      "bytes": 17896,
+      "sha256": "c730cf9f12a872420d058944acfde262cc5e92fbe1c080890ff2274ab8b48f4d"
+    },
+    "log": {
+      "path": ".artifacts\\source-collection-v1\\upgrade-a2-baseline-01.log",
+      "bytes": 3232,
+      "sha256": "7af52cdc466facf792748cf6820c4f09e7ec32fce454cedfce6f8f4b0e5532b0"
+    },
+    "exitCode": 1,
+    "topLevelCases": 9,
+    "unchangedFreshSchemaTopLevelPassed": 8,
+    "newUpgradeTopLevelFailed": 1,
+    "executedUpgradeEntrypointVariants": 2,
+    "skips": 0,
+    "retriesAdded": 0,
+    "results": [
+      {
+        "name": "TestSourceCollectionOwnedIOPreflight",
+        "result": "pass",
+        "elapsed": 0.09
+      },
+      {
+        "name": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+        "result": "pass",
+        "elapsed": 1.19
+      },
+      {
+        "name": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+        "result": "pass",
+        "elapsed": 1.02
+      },
+      {
+        "name": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+        "result": "pass",
+        "elapsed": 1.16
+      },
+      {
+        "name": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+        "result": "pass",
+        "elapsed": 1.46
+      },
+      {
+        "name": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+        "result": "pass",
+        "elapsed": 1.11
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-cancel",
+        "result": "pass",
+        "elapsed": 0.97
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-revoke",
+        "result": "pass",
+        "elapsed": 1.08
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-revoke",
+        "result": "pass",
+        "elapsed": 0.97
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-source-revision",
+        "result": "pass",
+        "elapsed": 1.04
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+        "result": "pass",
+        "elapsed": 4.06
+      },
+      {
+        "name": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+        "result": "pass",
+        "elapsed": 2.43
+      },
+      {
+        "name": "TestSourceCollectionPublishedV5UpgradeA2/current-core",
+        "result": "fail",
+        "elapsed": 0.57
+      },
+      {
+        "name": "TestSourceCollectionPublishedV5UpgradeA2/current-worker",
+        "result": "fail",
+        "elapsed": 0.4
+      },
+      {
+        "name": "TestSourceCollectionPublishedV5UpgradeA2",
+        "result": "fail",
+        "elapsed": 0.96
+      }
+    ]
+  },
+  "observations": [
+    {
+      "file": {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-33973b521a6da014d56fd6e7.json",
+        "bytes": 704,
+        "sha256": "8eb0f45c18e2ede6a8b669481d1daf31fae0449539bc65fc082095fa18faad07"
+      },
+      "observation": {
+        "Entrypoint": "current-core",
+        "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+        "OwnedSchema": "source_collection_d600501f38fb16bb08e72b97",
+        "LegacyRelations": 18,
+        "VerifiedStartingMaxVersion": 5,
+        "CurrentConstructorSucceeded": true,
+        "AfterOpenVersions": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "AfterOpenTables": [
+          "app_assets",
+          "app_auth_throttle",
+          "app_bootstrap",
+          "app_coverage",
+          "app_finding_deliveries",
+          "app_findings",
+          "app_imports",
+          "app_integration_connections",
+          "app_memberships",
+          "app_notes",
+          "app_observations",
+          "app_oidc_flows",
+          "app_oidc_identities",
+          "app_report_snapshots",
+          "app_schema_versions",
+          "app_sessions",
+          "app_users",
+          "app_workspaces"
+        ],
+        "PostUpgradeAPITailExecuted": false,
+        "LegacyBusinessDataPreservationClaimed": false
+      }
+    },
+    {
+      "file": {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-8ebab113241ddda2e6bdc1aa.json",
+        "bytes": 706,
+        "sha256": "f548bb82a746ad248ac77eb1846034169dea3ddba54ad6ed9716661890a8ebad"
+      },
+      "observation": {
+        "Entrypoint": "current-worker",
+        "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+        "OwnedSchema": "source_collection_55c1e8d30fe4032463c7cbc3",
+        "LegacyRelations": 18,
+        "VerifiedStartingMaxVersion": 5,
+        "CurrentConstructorSucceeded": true,
+        "AfterOpenVersions": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "AfterOpenTables": [
+          "app_assets",
+          "app_auth_throttle",
+          "app_bootstrap",
+          "app_coverage",
+          "app_finding_deliveries",
+          "app_findings",
+          "app_imports",
+          "app_integration_connections",
+          "app_memberships",
+          "app_notes",
+          "app_observations",
+          "app_oidc_flows",
+          "app_oidc_identities",
+          "app_report_snapshots",
+          "app_schema_versions",
+          "app_sessions",
+          "app_users",
+          "app_workspaces"
+        ],
+        "PostUpgradeAPITailExecuted": false,
+        "LegacyBusinessDataPreservationClaimed": false
+      }
+    }
+  ],
+  "interpretation": {
+    "verifiedBaseline": "Actual complete 18-relation published v1-v5 PostgreSQL schema and exact version ledger [1,2,3,4,5], built in each fresh random owned schema.",
+    "actualRed": "CURRENT core and CURRENT CollectionWorker each return startup success but leave version 5 and omit all v6 source tables.",
+    "notASourceTextOnlyAssertion": true,
+    "notALedgerOnlyFakeBaseline": true,
+    "notStartupSuccessAcceptance": true,
+    "legacyBusinessRowsSeeded": false,
+    "legacyCustomerDataMigrationProved": false,
+    "blockedDownstreamNotRun": [
+      "Successful v6 relation/once-only ledger requirement",
+      "Legacy definition preservation after successful upgrade",
+      "Actual post-upgrade source create/detail/patch/list and queued collection",
+      "Owned TLS collection/evidence and linked asset after upgrade",
+      "Idempotent v6 reopen and post-upgrade API-data durability"
+    ]
+  },
+  "sourceDiagnosis": "Current schemaV6 block is nested within version<5; published version5 does not enter that branch. Production repair remains parent-owned."
+}

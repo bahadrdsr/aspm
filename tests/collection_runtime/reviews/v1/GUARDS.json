@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T17:37:16.727394+00:00",
+  "before": {
+    "path": "tests\\collection_runtime\\reviews\\v1\\BEFORE.json",
+    "bytes": 5695,
+    "sha256": "51c6cdea596bbc10714ba4b538ee1c060a6aede3819546ec83b75d8526f9b7e2"
+  },
+  "historicalHead": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "currentHead": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "narrowExistingInputCount": 29,
+  "unchangedExistingReferences": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 8935,
+      "sha256": "70be1ed4bde5a29cc81d3dae34348836e4e768690984f88596a6159eef851c66"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 10867,
+      "sha256": "7f23b5ed2099287c5a7020c68db4187c87a8abd9ea2337decf4800bc2349b3f3"
+    },
+    {
+      "path": "internal\\service\\delivery_client.go",
+      "bytes": 7013,
+      "sha256": "7cca212d0eb5386fd96451b9e04541951e5b17225aba84065210c675d16a50a1"
+    },
+    {
+      "path": "internal\\service\\delivery_runtime.go",
+      "bytes": 2066,
+      "sha256": "e236716a2ec591cb6b91a01709f4fd3a11a137272006fcf5403317324a358ed1"
+    },
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 5897,
+      "sha256": "71c10d298fdb561c2c17ba97f5bf391f23f2efc2e157efd1f33e70e705443147"
+    },
+    {
+      "path": "internal\\app\\source_worker.go",
+      "bytes": 13657,
+      "sha256": "5e23e05647845b766ca6e260c06f01ec5727172e571da4ebffbaa0ab724b0260"
+    },
+    {
+      "path": "internal\\app\\source_storage.go",
+      "bytes": 2551,
+      "sha256": "31c84e0cf73df6d618e638778ac9306fb410ba92bc39a042e84b17fdfd58779b"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 9448,
+      "sha256": "c2291d9ac0a009cd5f88cd224698fe5ad6fdfe8593fc1f6fb1af5d8710be0817"
+    },
+    {
+      "path": "internal\\evidence\\reader.go",
+      "bytes": 1299,
+      "sha256": "3e721948e110a26b2d3ad8a78c01827ca824cd336839672a1a9eaf0d5e2f5d62"
+    },
+    {
+      "path": "internal\\evidence\\store.go",
+      "bytes": 8455,
+      "sha256": "821a8d8d7b445afe4af7388d16b9b5492a0ba5f0d3e18334e22e85e5a5a9b60d"
+    },
+    {
+      "path": "cmd\\core-api\\main.go",
+      "bytes": 433,
+      "sha256": "d7b3b1a3aabb31ba0b37d4f5b920b1033143bff1566917341a5a10694758f4b1"
+    },
+    {
+      "path": "cmd\\delivery-worker\\main.go",
+      "bytes": 614,
+      "sha256": "edd04403a575417aa2d9cc167399177e40d394301cbeba08fd76dd5f5ac82f36"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 23504,
+      "sha256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    },
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    {
+      "path": "tests\\source_collection\\fixture_calibration_test.go",
+      "bytes": 11498,
+      "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 10859,
+      "sha256": "4c4202b2a5f5239535065496d5f28754a64afb5945c41ae7f6ad6048811150ca"
+    },
+    {
+      "path": ".oracles\\source-collection-a2.json",
+      "bytes": 25131,
+      "sha256": "188dba631e280c58f79dacbaaefbeb62f9dad728122aaeb87e9c8e10544880bc"
+    },
+    {
+      "path": ".oracles\\source-collection-a2.json.sig",
+      "bytes": 89,
+      "sha256": "93d41aa452c788bf5248e72f6dd5b8019e7f1e83c924c79f110f25ae1f1b061f"
+    },
+    {
+      "path": "tests\\runtime_roles\\bindings_test.go",
+      "bytes": 2781,
+      "sha256": "ec5e14d31a26d0ae29a1bf74e3a198123e86ff078e322ad9c8a7df3aa2f18c55"
+    },
+    {
+      "path": "tests\\runtime_roles\\fixtures_test.go",
+      "bytes": 13927,
+      "sha256": "8255591dca603b9a1da9eabd2ce76c8aeaf200d2bda39d828cfe3dc3e8a610cf"
+    },
+    {
+      "path": "tests\\runtime_roles\\roles_test.go",
+      "bytes": 13339,
+      "sha256": "ad7a1972c99d74fb91a8c5efbf796bece828d5842f2d529386213c87f9052bf1"
+    },
+    {
+      "path": "tests\\delivery_runtime\\roles_test.go",
+      "bytes": 17423,
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests\\delivery_runtime\\tls_range_test.go",
+      "bytes": 4337,
+      "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"
+    },
+    {
+      "path": "tests\\storage_security\\credentials_test.go",
+      "bytes": 7387,
+      "sha256": "607ef4683fd5d239002338120478a2e27dac03c99ccd80b130c8069d92518194"
+    },
+    {
+      "path": "tests\\storage_security\\Test-StorageSecurity.ps1",
+      "bytes": 3990,
+      "sha256": "64c2a62a8503fae6997abf484fd8b61645d508d42a972cdb7e5b8c2289eb62a7"
+    }
+  ],
+  "existingFileEdits": [],
+  "acceptedSourceA2Authority": {
+    "manifest": {
+      "path": ".oracles\\source-collection-a2.json",
+      "bytes": 25131,
+      "sha256": "188dba631e280c58f79dacbaaefbeb62f9dad728122aaeb87e9c8e10544880bc"
+    },
+    "signature": {
+      "path": ".oracles\\source-collection-a2.json.sig",
+      "bytes": 89,
+      "sha256": "93d41aa452c788bf5248e72f6dd5b8019e7f1e83c924c79f110f25ae1f1b061f"
+    },
+    "controlCount": 132,
+    "originalHashArrayPointer": "/files",
+    "allOriginalDigestsUnchanged": true,
+    "signatureOrOracleRewritten": false
+  },
+  "newControls": [
+    {
+      "path": "tests\\collection_runtime\\CONTRACT.txt",
+      "bytes": 12173,
+      "sha256": "0374269448cb623eaac25a3a1d89fa4044ca318e2dd96d8c2863fa4048c798db"
+    },
+    {
+      "path": "tests\\collection_runtime\\contract_test.go",
+      "bytes": 1415,
+      "sha256": "7cb729f73f8adaacb7bdc451d445a1df1797b4225689a99855a8077e9872edbf"
+    },
+    {
+      "path": "tests\\collection_runtime\\fixtures_test.go",
+      "bytes": 27124,
+      "sha256": "b77370299237c1f889ea88f8ee11fc4ab36e1a816f18a3f3c52370f4bd95099e"
+    },
+    {
+      "path": "tests\\collection_runtime\\HANDOFF.txt",
+      "bytes": 2011,
+      "sha256": "44584fc1dfd467650b25baeee33ebadaf2d6370b0859bb63a4c4fff39425ddb6"
+    },
+    {
+      "path": "tests\\collection_runtime\\production_bindings_test.go",
+      "bytes": 2127,
+      "sha256": "9d711cb8145c562958a299824bbcc92b2f4e5c6df5fb617491600a1756a38ffc"
+    },
+    {
+      "path": "tests\\collection_runtime\\rights_calibration_test.go",
+      "bytes": 377,
+      "sha256": "00e03fafd9f28d5184df33d00f1a33e89e02fe052d7ca740e31a046ab3bec1d6"
+    },
+    {
+      "path": "tests\\collection_runtime\\roles_test.go",
+      "bytes": 17745,
+      "sha256": "efec6cd742ddcbba5c1055967ed203798852dc3724e18c0fbc21aaa104ef189f"
+    },
+    {
+      "path": "tests\\collection_runtime\\Test-CollectionRuntime.ps1",
+      "bytes": 7868,
+      "sha256": "e7546dff6417c13eb891029b7051dadddc92a45de77e32f188f002142834b1ad"
+    }
+  ],
+  "moduleControls": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "toolchain": {
+    "version": "go1.27.1 windows/amd64",
+    "go": {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    "gofmt": {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\gofmt.exe",
+      "bytes": 3392000,
+      "sha256": "ab730b8446c0c2369be901f263fb7433ea0d2d053d3a3584ca543aaff3b667cc"
+    },
+    "offlineModules": true
+  },
+  "archives": [],
+  "oldReviewTreesCopied": false,
+  "newDependencies": [],
+  "storagePolicyChanges": false,
+  "agentsSpawned": 0,
+  "commitsCreated": 0
+}

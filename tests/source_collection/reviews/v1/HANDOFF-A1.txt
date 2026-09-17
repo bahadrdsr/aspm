@@ -1,0 +1,102 @@
+SOURCE COLLECTION V1 - ORIGINAL-AUTHOR HTTP/1 PUT GATE CORRECTION
+=============================================================
+
+Scope: only the already-authorized, held PUT branch in fixtures_test.go.
+Production, production bindings, runtime HTTP, request authorization/capability
+checks, original eight narratives/assertions, timeouts and worker limits remain
+unchanged. A separately tagged calibration file proves fixture behavior and
+does not enter the normal eight-case Contract run.
+
+Independently verified observation
+---------------------------------
+The supplied coder handoff hash was verified. Its owned HTTP/1 diagnostic was
+executed independently: both clients really canceled; an unread-body server
+hold did not observe cancellation, while consuming the body through EOF before
+holding allowed the server to observe it.
+
+This is fixture transport observation, not proof that production cancellation
+or source finalization is correct. The full Contract was run afterward.
+
+Exact authorized change
+-----------------------
+All existing method/path/query/capability checks remain byte-identical and occur
+before body access. Only after the request passes them and an actual PUT hold
+gate exists, the fixture:
+  - rejects a declared body above the existing native maximum 32 MiB bound;
+  - reads at most that bound plus one byte and explicitly fails read/overflow;
+  - preserves the exact bytes in an io.NopCloser(bytes.NewReader(body));
+  - signals arrived and waits for the same context cancellation or release.
+
+The 32 MiB ceiling is the existing native maximum, not an increased worker
+request bound. The current 32 KiB source fixture limits and all HTTP/request/
+test timeouts are unchanged. No header, Host, path, query, ContentLength,
+signature, credential or request permission is assigned/rewritten by the
+insertion. Ungated PUTs and other methods retain their original behavior.
+There is no invalid-body success default or fabricated S3 response.
+
+The change is an exact 18-line insertion inside the gate. The rest of the old
+fixture bytes, including checks and ReverseProxy forwarding, are identical.
+AMENDMENT-A1.json records the exact insertion and full old/new hashes.
+
+Actual fixture calibration
+--------------------------
+fixture_calibration_test.go requires BOTH integration and
+source_collection_fixture_calibration tags. Its bounded calibration passed:
+  - old unread HTTP/1 hold: client canceled, server observation absent before
+    explicit release;
+  - actual amended gate: consumed body, client cancellation observed at server,
+    no upstream forwarding;
+  - actual released signed PUT: generated SigV4 authorization and original
+    request headers, Host/path/query/ContentLength and opaque body bytes arrived
+    unchanged at an owned exact HTTP receiver; its 204 was relayed;
+  - actual denied read-only/prefix/query/method capabilities: direct handler
+    instrumentation observed zero body reads and zero forwarding;
+  - body read error / oversized ContentLength: explicit fixture violations and
+    400/413, no arrived signal or forwarding.
+
+The original signed/request header set is compared. Existing standard
+ReverseProxy bookkeeping, such as X-Forwarded-For, is not introduced by this
+patch. The exact receiver is not a claim of S3 authorization. Real S3 forwarding
+and signature acceptance are separately exercised by the full Contract.
+Direct denied-handler body counters deliberately exclude net/http's own
+post-handler connection/body cleanup from the fixture-read claim.
+
+Actual product validation
+-------------------------
+The unchanged full-binding normal Contract ran all eight top-level narratives
+and passed. Both previously blocked storage-revoke and storage-source-revision
+subcases passed their actual context, blocked-state, no-asset/no-record and
+no-resurrection assertion tails. Native cancellation/revocation, exact evidence,
+stable assets, failure handling and lease fencing also executed in that run.
+No calibration result substitutes for those product assertions.
+
+This author did not rerun the coder's separate earlier compatibility suites or
+claim their receipts as new amendment results. Independent acceptance/reseal
+still belongs to the parent.
+
+HOLD, history and evidence
+-------------------------
+Original 2308-file held tree:
+  sha256:12267f5d3b01a1a98c3b62362ab5644fadbbeedb9245ba5efdf209e1770a2c93
+The 77-file production/module subset remains byte-identical:
+  sha256:2070df70f95b049ee24b61644ec5775e4e825a61c11a5c1683d6e2cefcf6d310
+Of 108 original controls, 107 are unchanged; only the authorized old fixture
+has a new hash. Original RED, packet and signatures remain unchanged history.
+Only the old fixture and old packet/digest references were byte-copied into
+history\a1 as noncompiled .txt files. No other history was copied.
+
+New diagnostic/calibration/byte receipts:
+  .artifacts\source-collection-fixture-a1
+Actual full Contract outputs:
+  .artifacts\source-collection-v1\fixture-a1-full-contract.*
+
+Normal full acceptance, from the repository root with a fresh label:
+  .\tests\source_collection\Test-SourceCollection.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName parent-source-fixture-a1-01
+
+Calibration is separate and credential-free:
+  go test -json -mod=readonly -tags=integration,source_collection_fixture_calibration -count=1 -timeout=30s -run=^TestSourceCollectionPUTFixtureCalibrationA1$ .\tests\source_collection
+
+Use existing cached Go/modules offline and project-owned output/work paths.
+PACKET-A1.json / PACKET-A1.sha256 are the new frozen current inventory. Parent
+verifies this bounded correction and re-seals new current controls; no
+production or assertion follow-up is included in this amendment.

@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T14:36:13.294655+00:00",
+  "status": "FROZEN_CONSTRUCTOR_RED_PENDING_PARENT_INTERFACE_REVIEW_AND_SEAL",
+  "actualFullContract": {
+    "exitCode": 1,
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\constructor-red-final.receipt.json",
+      "bytes": 735,
+      "sha256": "7799afc61ece794108bcb5f9b8e37c4fb2c22cc5d4faa4ec1d5b405bbd43e843"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-v1\\constructor-red-final.jsonl",
+      "bytes": 1839,
+      "sha256": "84f862c9db41fcb5f86cd97b679aabc1a0eeb67e1092568211d87f9db78d5fa1"
+    },
+    "log": {
+      "path": ".artifacts\\source-collection-v1\\constructor-red-final.log",
+      "bytes": 504,
+      "sha256": "49cb7ae54f61efb716c58a8967c8de09c84568958d8ca2178f9b2e2a31c16ac4"
+    },
+    "diagnostic": "# github.com/bahadrdsr/aspm/tests/source_collection [github.com/bahadrdsr/aspm/tests/source_collection.test]\ntests\\source_collection\\production_bindings_test.go:16:29: unknown field CollectionStorage in struct literal of type app.Config\ntests\\source_collection\\production_bindings_test.go:28:22: undefined: app.OpenCollectionWorker\ntests\\source_collection\\production_bindings_test.go:28:52: undefined: app.CollectionWorkerConfig\nFAIL\tgithub.com/bahadrdsr/aspm/tests/source_collection [build failed]\n",
+    "missing": [
+      "app.Config.CollectionStorage",
+      "app.OpenCollectionWorker",
+      "app.CollectionWorkerConfig"
+    ],
+    "fullProductionBindingIncluded": true,
+    "topLevelAuthored": 8,
+    "topLevelExecuted": 0,
+    "sourceOrchestrationNarrativesExecuted": 0
+  },
+  "cases": [
+    {
+      "name": "TestSourceCollectionOwnedIOPreflight",
+      "fullContract": "BLOCKED_BY_PACKAGE_BUILD",
+      "separateOwnedIOPreflight": "PASS_NOT_SOURCE_ACCEPTANCE"
+    },
+    {
+      "name": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+      "status": "BLOCKED_NOT_RUN"
+    }
+  ],
+  "separatePreflight": {
+    "result": "PASS",
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\io-preflight-final.receipt.json",
+      "bytes": 1160,
+      "sha256": "82954883745d96812c848ff77260d711b8845af86b2abc241d9d588dd1be8458"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-v1\\io-preflight-final.jsonl",
+      "bytes": 1580,
+      "sha256": "6f337a8b48dc729b1452d9cf26c23fa419be499d3dd765d9a1f1821ecc4471e6"
+    },
+    "claim": "Actual owned PG commit/independent read and real local S3 bytes through existing digest-verifying no-bucket-probe Reader, with bounded cleanup. No new source API/worker semantics executed."
+  },
+  "existingNativeAdapterRegression": {
+    "result": "PASS",
+    "topLevelPassed": 26,
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\existing-adapters-01.receipt.json",
+      "bytes": 742,
+      "sha256": "7c7db1fd1788de5059ea781e031b7849df9c84f50de0cf5f59bfe4b3f7068bb4"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-v1\\existing-adapters-01.jsonl",
+      "bytes": 90801,
+      "sha256": "381bd9e1a9a43914270309bdaeb5765457c6c11a576e0490ad29ad0ff86c49cc"
+    },
+    "cases": [
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestGitLabLinkageAndRedirectFailClosed"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestContinuationOriginPathAndQueryScope"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestEC2RawBytesAndAccountScope"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestZIPExactFileAndBounds"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestCloudRecordsDoNotWidenSelectedScope"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestFactoriesDoNoIOOrCredentialDiscovery"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestConfigurationAndResourceValidation"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestDurableSnapshotsReplayAcrossFreshAdapters"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestAmbiguousAcknowledgementsStayUncertain"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestJiraMetadataPagingAndCaps"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestErrorCodesBoundsAndRedaction"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestCancellationBeforeIOKeepsCollectionIdentity"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09AWSSignedInventoryAndFindings"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09AzureResourceGraphAndAssessments"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestNativeCredentialBoundaryRejectsMissingTokensBeforeRequests"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestNativeSigningBoundaryRejectsUnavailableAWSIdentity"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestNativeDeliveryBoundaryRejectsMissingCredentialBeforePreviewOrSend"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM08JiraNativeFieldsCreateAndStatus"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM08TeamsAndSlackNativePayloads"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM08DeliveryFailuresAndRetrySafety"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09GitHubRepositoriesAndAlerts"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09GitLabPipelineArtifact"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09AzureDevOpsBuildArtifact"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09CollectionBoundsAndFailures"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09ReviewGitHub403QuotaAndPermissionRemainDistinct"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09ReviewAzureAssessmentParentScopes"
+      }
+    ],
+    "liveAccountCertification": false
+  },
+  "skips": 0,
+  "retryOrExpectedFailureSuppression": false,
+  "positiveBusinessResultClaimed": false,
+  "authorDiagnostics": {
+    "firstHelperCompile": {
+      "path": ".artifacts\\source-collection-v1\\helpers-01.receipt.json",
+      "bytes": 1180,
+      "sha256": "38494bcb7ee52040dc6578ffe3f125af4ad60351233d3feda27a6816a0ce6e0e"
+    },
+    "kind": "Unused imports corrected only in new test files before final compiler validation"
+  },
+  "unexecutedSemantics": [
+    "source RBAC/encryption/current capabilities",
+    "immutable scoped job/idempotency/paging",
+    "actual selected GitHub -> exact evidence and atomic asset finalization",
+    "stable ID/human edit preservation/conflict",
+    "partial/error/provenance/permission handling",
+    "TLS/S3 cancellation, revocation and SQL pool availability",
+    "expired finalization/fence and no stale commit"
+  ]
+}

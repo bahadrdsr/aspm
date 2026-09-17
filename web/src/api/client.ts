@@ -427,6 +427,7 @@ interface RequestOptions {
   scoped?: boolean;
   headers?: Record<string, string>;
   expectedStatus?: 200 | 201 | 202 | readonly (200 | 201 | 202)[];
+  decodeBody?: (response: Response) => Promise<unknown>;
 }
 
 export async function request<T>(path: string, parse: (value: unknown, status: number) => T, options: RequestOptions = {}): Promise<T> {
@@ -458,6 +459,13 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
     if (!accepted.some((status) => status === response.status)) return invalid("HTTP response status");
   }
   if (response.status === 204) return parse(null, response.status);
+  if (response.ok && options.decodeBody) {
+    const payload = await options.decodeBody(response);
+    if (signal.aborted || (scoped && authority.revision !== requestAuthority().revision)) {
+      throw new DOMException("Request scope ended", "AbortError");
+    }
+    return parse(payload, response.status);
+  }
   let payload: unknown;
   try {
     payload = await response.json();

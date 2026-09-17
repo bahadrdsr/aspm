@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "scope": "source-collection-fixture-http1-a1",
+  "capturedAt": "2026-09-17T15:52:56.916Z",
+  "authorization": "Only the already-authorized held PUT gate may consume/preserve bounded signed body bytes before arrived/cancellation wait. No source, binding, assertion, credential, request-permission or timeout changes.",
+  "classification": "HTTP1_UNREAD_BODY_CANCELLATION_OBSERVATION_FIXTURE_DEFECT",
+  "delta": {
+    "path": "tests\\source_collection\\fixtures_test.go",
+    "oldSHA256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818",
+    "newSHA256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569",
+    "insertionOffset": 9348,
+    "insertedText": "\t\t\t\tconst maxHeldBody = 32 << 20\n\t\t\t\tif r.ContentLength > maxHeldBody {\n\t\t\t\t\tf.violation(\"authorized held source PUT body exceeded the existing maximum record bound\")\n\t\t\t\t\thttp.Error(w, \"owned source body limit\", http.StatusRequestEntityTooLarge)\n\t\t\t\t\treturn\n\t\t\t\t}\n\t\t\t\tbody, err := io.ReadAll(io.LimitReader(r.Body, maxHeldBody+1))\n\t\t\t\tif err != nil {\n\t\t\t\t\tf.violation(\"authorized held source PUT body could not be read\")\n\t\t\t\t\thttp.Error(w, \"owned source body read failed\", http.StatusBadRequest)\n\t\t\t\t\treturn\n\t\t\t\t}\n\t\t\t\tif len(body) > maxHeldBody {\n\t\t\t\t\tf.violation(\"authorized held source PUT body exceeded the existing maximum record bound\")\n\t\t\t\t\thttp.Error(w, \"owned source body limit\", http.StatusRequestEntityTooLarge)\n\t\t\t\t\treturn\n\t\t\t\t}\n\t\t\t\tr.Body = io.NopCloser(bytes.NewReader(body))\n",
+    "allOtherBytesIdentical": true,
+    "originalChecksAndOrderingUntouched": true,
+    "headersHostPathQueryContentLengthSignaturesNotAssigned": true,
+    "bodyMaximumBytes": 33554432,
+    "maximumSource": "existing native collector maximum response/record byte bound; no existing request/operation timeout changed",
+    "originalAssertionAndProductionBindingChanges": 0
+  },
+  "mechanism": "Consume the accepted body through EOF within the existing 32 MiB native maximum, reject read/size failures explicitly, restore the exact body stream, then signal arrived and use the same cancellation/release gate. The existing capability checks remain before body access.",
+  "doesNotRewrite": [
+    "method",
+    "Host",
+    "path",
+    "query",
+    "headers",
+    "ContentLength",
+    "signatures",
+    "credentials"
+  ],
+  "calibration": {
+    "path": "tests\\source_collection\\fixture_calibration_test.go",
+    "bytes": 11498,
+    "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+  },
+  "calibrationBuildTags": [
+    "integration",
+    "source_collection_fixture_calibration"
+  ],
+  "normalEightCaseContractUnchanged": true,
+  "archives": [
+    {
+      "source": "tests\\source_collection\\fixtures_test.go",
+      "archive": {
+        "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\fixtures_test.go.before.txt",
+        "bytes": 22714,
+        "sha256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818"
+      }
+    },
+    {
+      "source": "tests\\source_collection\\reviews\\v1\\PACKET.json",
+      "archive": {
+        "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+        "bytes": 5130,
+        "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+      }
+    },
+    {
+      "source": "tests\\source_collection\\reviews\\v1\\PACKET.sha256",
+      "archive": {
+        "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+        "bytes": 79,
+        "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+      }
+    }
+  ],
+  "originalREDAndSignaturesPreserved": true,
+  "newCurrentPacket": "PACKET-A1.json",
+  "parentResealRequired": true
+}

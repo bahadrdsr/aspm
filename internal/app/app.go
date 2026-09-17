@@ -29,6 +29,7 @@ type Config struct {
 	Schema, ApplicationName  string
 	MaxConnections           int32
 	Storage                  StorageConfig
+	CollectionStorage        *StorageConfig   `json:"-"`
 	BootstrapToken           string           `json:"-"`
 	IntegrationEncryptionKey []byte           `json:"-"`
 	Now                      func() time.Time `json:"-"`
@@ -51,6 +52,7 @@ type Application struct {
 	oidc                   *oidcAuth
 	imports                *ImportWorker
 	integrationCredentials cipher.AEAD
+	collectionEvidence     *sourceEvidenceReader
 
 	bootstrapEnabled bool
 	bootstrapHash    [32]byte
@@ -121,8 +123,17 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		hashSlots:              make(chan struct{}, 2),
 	}
 	a.config.BootstrapToken = ""
+	if config.CollectionStorage != nil {
+		a.collectionEvidence, err = openSourceEvidenceReader(ctx, *config.CollectionStorage)
+		a.config.CollectionStorage = nil
+		if err != nil {
+			a.storage.close()
+			return nil, err
+		}
+	}
 	a.database, err = openDatabase(ctx, dbConfig)
 	if err != nil {
+		a.collectionEvidence.close()
 		a.storage.close()
 		return nil, err
 	}
@@ -130,6 +141,7 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		storage: a.storage.config, maxUploadBytes: config.MaxUploadBytes}
 	a.dummyPassword, err = a.hashPassword(ctx, randomToken())
 	if err != nil {
+		a.collectionEvidence.close()
 		a.storage.close()
 		a.pool.Close()
 		return nil, errors.New("initialize local authentication failed")
@@ -157,6 +169,7 @@ func (a *Application) Close() error {
 			a.oidc.close()
 		}
 		a.storage.close()
+		a.collectionEvidence.close()
 		_ = a.database.close()
 	})
 	return nil

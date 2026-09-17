@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-17T17:56:36.448Z",
+  "status": "FROZEN unsigned independent Sources UI test-first packet; stop for parent verify/seal and separate coder/reviewer",
+  "head": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "newCompiledFiles": [
+    {
+      "path": "web\\tests\\source-ui-data.ts",
+      "bytes": 9374,
+      "sha256": "a0e356bb6f23a09e24aaf43a932197b3b8f7a0a31770b528880890149216fef0"
+    },
+    {
+      "path": "web\\tests\\source-ui-fixture.ts",
+      "bytes": 25891,
+      "sha256": "e73b7fe4046615ac25fb0cb9169ae6faedfa653ff0a0102c3c2ea3f82fe81dda"
+    },
+    {
+      "path": "web\\tests\\source-navigation.ts",
+      "bytes": 591,
+      "sha256": "5b2119731b628c1217f6a468764d7e9229b00a23eccab9ff08c9dc7be1be1b8f"
+    },
+    {
+      "path": "web\\tests\\source-collection-ui.spec.ts",
+      "bytes": 38546,
+      "sha256": "5abac796e14f5de5379e570c9e613cc2acb113675ec934c9f7a1acae52a31505"
+    }
+  ],
+  "onlyAmendedOriginalFiles": [
+    {
+      "path": "web\\tests\\network.ts",
+      "bytes": 6655,
+      "sha256": "1f76ce4080351f62ca83e63c2150bc938947824faae6321748303af3eaf6a657"
+    },
+    {
+      "path": "web\\tests\\slack-ui-fixture.ts",
+      "bytes": 29562,
+      "sha256": "a9b5e9d0c7805e86f8ba5c07f9e57ba72a1a1997328a074df4c41587cc66228a"
+    }
+  ],
+  "results": {
+    "actualTypecheckPassed": true,
+    "newCases": 7,
+    "expectedMissingSourcesRED": 7,
+    "priorCasesPassed": 84,
+    "skips": 0,
+    "flakes": 0,
+    "retries": 0,
+    "fixtureViolations": 0,
+    "browserErrors": 0,
+    "externalRequests": 0,
+    "apiCallsPerREDCase": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ]
+  },
+  "preservation": {
+    "originalInputs": 128,
+    "unchangedOriginals": 126,
+    "originalAssertionsChanged": 0,
+    "priorAssertionFiles": 15,
+    "onlyValidatedEmptySourcesGETNavigationAdded": true,
+    "existingAuthOriginJSONCredentialAndBudgetStatementsUnchanged": true,
+    "productionBackendRuntimeDeploymentDependencyChanges": 0,
+    "oldSignatureOrControlSetChanges": 0,
+    "agentsCommitsNativeAPICalls": 0,
+    "oldHistoryTreeCopies": 0
+  },
+  "exactAPIFacts": [
+    "Only github-cloud-app selected repository source profile.",
+    "Collect POST contains only idempotencyKey; 202 queued is not collection/scanner completion.",
+    "Record JSON uses rawURL; nativeRunId remains empty and sourceScanAt null.",
+    "Evidence path includes /records/{recordID}/evidence and returns raw application/octet-stream.",
+    "Partial keeps authorized records; failed early settlement has gaps:[] and zero records.",
+    "Retry-After is terminal data, not an automatic collection/poll timer."
+  ],
+  "limits": {
+    "workers": 1,
+    "retries": 0,
+    "caseMS": 20000,
+    "expectMS": 5000,
+    "combinedAPIRequestsPerCase": 60,
+    "defaultPageLimit": 100,
+    "maxPageLimit": 500
+  },
+  "historyReferences": [
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.json",
+      "bytes": 6067,
+      "sha256": "4df9aaf0e86be0c019db56134e0ca4159fd997e8ae9a40de2441ba71701e516f"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "30d633efb855c76bef7156903441fac4a87e766938c7d288e7ad46c0df436726"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.json",
+      "bytes": 8733,
+      "sha256": "ee3061dc14041b964fd3da131b1f75e7092b1bedce45eb5b1d4372ee87207818"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "755a855c2fd24d44ada6cdf4c243c50963bc9fd829da505824ded2bf45fbcdbd"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A3.json",
+      "bytes": 11487,
+      "sha256": "f942087b909acd93ea19e687864f554eca364ef34f6b9bb90ba6e51e04ceb2db"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET-A3.sha256",
+      "bytes": 81,
+      "sha256": "655bd20537d6d1f0c2494478dab42af3b2e26b6892023cda472dc9d1e3e2a2b9"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.json",
+      "bytes": 3266,
+      "sha256": "be4ee7c7b4cd1f4442a71ea3ac7b690f28eb8b72925ca01f4c78b855577c35ab"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "d3ed04152cd8a0834f6630ef5b3c83e651866fe7f100421826425517f2807d6e"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 3109,
+      "sha256": "ac4a46f8f187b22b95b3ef09855795935645ae1dd707c9c2c83f3e7b65d91712"
+    },
+    {
+      "path": "web\\tests\\reviews\\asset-pagination-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "8aef86ae1a70ebf5da625491b9cb634bffac35b97de309e0ad5726ca37c496ca"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.json",
+      "bytes": 7687,
+      "sha256": "7713b524a577f126994e3f6ac72832b0538c5c3a59780f70596ca002e83ff340"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "f9b906d63f47748e7fd2f6871108c826f67ae4bc2e4fcd685dda57fa5b990857"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.json",
+      "bytes": 3649,
+      "sha256": "dacd63fee156270296706808ada56eeeba5a8dfd398075429dc12490770ceeac"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-actions-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "2cd2081a3887074f5d1dc801f20fe71005ff4cb65d557ad17348d1049ee35343"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.json",
+      "bytes": 5445,
+      "sha256": "9d9941eeff7e2db0da561c0691f9f2f08a7a1bfec9e6434207822a8efc094815"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "323fe0c68756cdb670bd1b03ad43ed2a2ad93cd4b6d46269a1e9c02dd22aba76"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A2.json",
+      "bytes": 8404,
+      "sha256": "93c7777b7a2056727cf88483d33a4e22576794e9045619b82226ba0b13ad28b1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "87adc452cc19f4d4df2dee22d6fe5b968b317230728241f985d9f1b8236ad51b"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A3.json",
+      "bytes": 10792,
+      "sha256": "f789c874efc19007f11e260c1c3fe6a292a92ade28041b806e2d4dbd329e4c04"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET-A3.sha256",
+      "bytes": 81,
+      "sha256": "04f9c39c4a3148b27e62b9741b2f866d5044dab9ed7a668f4e774992215ff751"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.json",
+      "bytes": 3388,
+      "sha256": "5c64e7400bae90f301eac7c32acf14734818f76b110a75edb26a3ec5a8d061b1"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "a9bd7d1b331378cce356edb08111e834f3d476970e8c5db65ec043e3f3c9aa5a"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 5686,
+      "sha256": "54c2a45e1aaa07da110dd0ca33bbb47475b320dd2af3f9cb73b7dd796d9bc976"
+    },
+    {
+      "path": "web\\tests\\reviews\\finding-history-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "9c0b430507f8d135aec23beca53e83173993472e3592e8bd67cbe6cceac1403c"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PACKET.json",
+      "bytes": 3682,
+      "sha256": "4d8ee5747841f8bcae5f4ec0665a9397e519289fa2b832c1bc9c2ce2c8ed7a02"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "379e475f2a1e480b9bd8a977d70fd14d4ca3debe5c7c93c15898876d58810c0e"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PUBLICATION-CONTINUITY.json",
+      "bytes": 3143,
+      "sha256": "8cc4e01c6d89fae28d7dd910821ca7a69570bf864c3f503c7a6a91d197cc1fa7"
+    },
+    {
+      "path": "web\\tests\\reviews\\report-formats-v1\\PUBLICATION-CONTINUITY.sha256",
+      "bytes": 94,
+      "sha256": "85c31282f30fb3b13c00a1b9843323777ccdb0c3e96bec7d74ac3cb7775cdaa7"
+    },
+    {
+      "path": "web\\tests\\reviews\\reports-ui-v1\\PACKET.json",
+      "bytes": 116170,
+      "sha256": "e8e5baed171d82a1da37d509080bcb05022100fabc9fb3ccbeb8b8050fcd6600"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\PACKET.json",
+      "bytes": 6521,
+      "sha256": "9b2559e8f5fd34988f7f9fd09a78db3782aa9831bf14f1a91d4ece566a879029"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "8890b8763def0d999ae5fdebebc7be2d9c2b4b92075c5e9fe7fd20b78a8636c1"
+    },
+    {
+      "path": "web\\tests\\reviews\\workflow-review-v2\\FROZEN.sha256",
+      "bytes": 42759,
+      "sha256": "f3a457e6f877da5e65e17eef5a94fb6a24a9307d3db06bb0540d17af85b21a39"
+    }
+  ],
+  "archives": [
+    {
+      "source": "web\\tests\\network.ts",
+      "archive": "web\\tests\\reviews\\source-collection-ui-v1\\history\\before\\network.ts.before.txt",
+      "path": "web\\tests\\network.ts",
+      "bytes": 6155,
+      "sha256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584"
+    },
+    {
+      "source": "web\\tests\\slack-ui-fixture.ts",
+      "archive": "web\\tests\\reviews\\source-collection-ui-v1\\history\\before\\slack-ui-fixture.ts.before.txt",
+      "path": "web\\tests\\slack-ui-fixture.ts",
+      "bytes": 29329,
+      "sha256": "69afa8107fed7c289ef5f06183e139c241c1df332924095d1e1cedd086fb85f5"
+    }
+  ],
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\BEFORE.json",
+      "bytes": 28080,
+      "sha256": "084d0cfe63a3ba86b2dcb4cc9327d290c38f896a000845a54388c117d5bcb914"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\ARCHIVES.json",
+      "bytes": 863,
+      "sha256": "0086fe421f30be36dafd64a268f439d2ba3d2b66f039b9fe9d811ada25c84e8f"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\AMENDMENT.json",
+      "bytes": 1787,
+      "sha256": "6f067915acf464da9d640677434c08508c41e8f00e8847dc3ad36c745182b6cd"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\CONTRACT.txt",
+      "bytes": 12264,
+      "sha256": "4a096b69d3203b744107012d5806842de61f9f21a3234aeb6f84560dd9b46cbe"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\SOURCE-AUTHORITY.json",
+      "bytes": 937,
+      "sha256": "78ea6ec51b4ae78db8aacf9c7129bb76e73ca7196e8bd72175fb247c87965c16"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\GUARDS.json",
+      "bytes": 16328,
+      "sha256": "e1bd409b8b632cd24cfd326f2d63b3a898e9cac1a92822c776fc52c067ad87c5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\COMPILATION.json",
+      "bytes": 1556,
+      "sha256": "212ecb5be15b18f1e164c8495c57e81953b5f897519698f9681a20e614df4b92"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\RED.json",
+      "bytes": 21256,
+      "sha256": "873262e1921c5bf18d0a78c37974183773ff884f6ac2c0a59ca68533285459b5"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\COMPATIBILITY.json",
+      "bytes": 22086,
+      "sha256": "d2bdd13a832a94e4c3cf3629654904599df6dde3d12a96131f376b17b23dd12f"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\EVIDENCE.json",
+      "bytes": 9150,
+      "sha256": "414b7d0f3584b67498c6124e9e4815640a557b29b0aa2f20400bc80c7ff302b0"
+    },
+    {
+      "path": "web\\tests\\reviews\\source-collection-ui-v1\\HANDOFF.txt",
+      "bytes": 7074,
+      "sha256": "234740742aeec09d9f699611ffd30a6d72247a2241a22301147263235426ed3b"
+    }
+  ],
+  "limitations": [
+    "The current production UI lacks Sources. Downstream forms/collection/idempotency/status/records/evidence/role/scope/mobile assertions are authored requirements, not claimed executed successes.",
+    "HTTP fixtures are synthetic. No native GitHub/core/worker/parser/storage/deployment behavior or human asset preservation is qualified.",
+    "Parent owns concurrent backend/runtime/source publication evolution; no reset or alteration is authorized."
+  ],
+  "next": [
+    "Parent verifies exact two-fixture GET-only delta, source contract and frozen packet.",
+    "Parent seals a new current test-control set; old signatures are not overwritten by this author.",
+    "Separate coder implements bounded Sources UI using actual APIs and shared components.",
+    "Independent reviewer runs typecheck and all 91 browser cases with original budgets and fresh output paths."
+  ]
+}

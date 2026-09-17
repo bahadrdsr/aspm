@@ -87,7 +87,11 @@ func evidenceConfig(config StorageConfig) evidence.Config {
 }
 
 func newReportClient(config StorageConfig) (*s3.Client, *http.Transport) {
-	transport := http.DefaultTransport.(*http.Transport).Clone()
+	return reportClientWithTransport(config, http.DefaultTransport.(*http.Transport))
+}
+
+func reportClientWithTransport(config StorageConfig, supplied *http.Transport) (*s3.Client, *http.Transport) {
+	transport := supplied.Clone()
 	client := s3.New(s3.Options{
 		Region: config.Region, BaseEndpoint: aws.String(config.Endpoint), UsePathStyle: true,
 		Credentials: credentials.NewStaticCredentialsProvider(config.AccessKey, config.SecretKey, ""),
@@ -103,16 +107,31 @@ func newReportClient(config StorageConfig) (*s3.Client, *http.Transport) {
 }
 
 func openReportStore(ctx context.Context, config StorageConfig, limit int64) (*reportStore, error) {
+	return openReportStoreWithTransport(ctx, config, limit, nil)
+}
+
+func openReportStoreWithTransport(ctx context.Context, config StorageConfig, limit int64, transport *http.Transport) (*reportStore, error) {
 	config, err := normalizedStorageConfig(config)
 	if err != nil {
 		return nil, err
 	}
-	reader, err := evidence.OpenReader(ctx, evidenceConfig(config))
+	var reader *evidence.Reader
+	if transport == nil {
+		reader, err = evidence.OpenReader(ctx, evidenceConfig(config))
+	} else {
+		reader, err = evidence.OpenReaderWithTransport(ctx, evidenceConfig(config), transport)
+	}
 	if err != nil {
 		return nil, err
 	}
-	client, transport := newReportClient(config)
-	s := &reportStore{config: config, limit: limit, reader: reader, client: client, transport: transport}
+	var client *s3.Client
+	var owned *http.Transport
+	if transport == nil {
+		client, owned = newReportClient(config)
+	} else {
+		client, owned = reportClientWithTransport(config, transport)
+	}
+	s := &reportStore{config: config, limit: limit, reader: reader, client: client, transport: owned}
 	s.config.AccessKey, s.config.SecretKey = "", ""
 	return s, nil
 }

@@ -104,7 +104,7 @@ func deliveryOriginDial(origin string, dial deliveryDial) deliveryDial {
 	}
 }
 
-func newDeliveryClient(endpoint, caFile string) (*http.Client, error) {
+func newProviderClient(endpoint, caFile string) (*http.Client, error) {
 	origin, err := deliveryOrigin(endpoint)
 	if err != nil {
 		return nil, err
@@ -168,18 +168,22 @@ func validateDeliveryClient(client *http.Client, endpoint string) error {
 }
 
 func ownDeliveryClient(config Config) (*http.Client, error) {
-	endpoint, err := app.ValidateDeliveryGateway(config.SlackEndpoint)
+	return ownProviderClient(config.DeliveryClient, config.SlackEndpoint, config.DeliveryCAFile)
+}
+
+func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Client, error) {
+	endpoint, err := app.ValidateDeliveryGateway(gateway)
 	if err != nil {
 		return nil, err
 	}
-	if err = validateDeliveryClient(config.DeliveryClient, endpoint); err != nil {
+	if err = validateDeliveryClient(supplied, endpoint); err != nil {
 		return nil, err
 	}
 	origin, err := deliveryOrigin(endpoint)
 	if err != nil {
 		return nil, err
 	}
-	transport := config.DeliveryClient.Transport.(*http.Transport).Clone()
+	transport := supplied.Transport.(*http.Transport).Clone()
 	if transport.TLSClientConfig == nil {
 		transport.TLSClientConfig = &tls.Config{MinVersion: tls.VersionTLS12}
 	} else {
@@ -191,8 +195,8 @@ func ownDeliveryClient(config Config) (*http.Client, error) {
 			transport.TLSClientConfig.RootCAs = transport.TLSClientConfig.RootCAs.Clone()
 		}
 	}
-	if config.DeliveryCAFile != "" {
-		roots, err := deliveryRoots(config.DeliveryCAFile)
+	if caFile != "" {
+		roots, err := deliveryRoots(caFile)
 		if err != nil {
 			return nil, err
 		}
@@ -203,7 +207,7 @@ func ownDeliveryClient(config Config) (*http.Client, error) {
 		dial = (&net.Dialer{Timeout: 5 * time.Second, KeepAlive: 30 * time.Second}).DialContext
 	}
 	transport.DialContext = deliveryOriginDial(origin, dial)
-	client := *config.DeliveryClient
+	client := *supplied
 	client.Transport = transport
 	client.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
 	client.Jar = nil
