@@ -1,6 +1,7 @@
 import { expect, test as base } from "@playwright/test";
 import type { Page, Request, Route } from "@playwright/test";
 import { bootstrapToken, password, sessionCookie, wrongPassword } from "./application-fixture";
+import { emptySlackNavigation } from "./slack-navigation";
 import {
   actionAlpha, actionBeta, actionCookie, actionUser, apiVersion, backendID, betaFinding, companionFinding,
   currentOwner, findingPath, notesPath, primaryFinding, serverNow, validExpiry, validNoteText, workItem, workPath,
@@ -330,6 +331,16 @@ export class FindingActionsAPI {
           this.violations.push(String(error));
           throw error;
         }
+        return;
+      }
+      try {
+        const empty = emptySlackNavigation(url, method, workspace, new Map([...this.roles.keys()].map((id) => [
+          id, [...this.findings.values()].filter((item) => item.workspaceId === id).map((item) => item.id),
+        ])));
+        if (empty) { await this.deliver(route, call, 200, empty); return; }
+      } catch (error) {
+        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);
+        await route.abort();
         return;
       }
       const id = path.split("/")[4];

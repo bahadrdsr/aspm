@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "scope": "connector-browser-links-v1",
+  "capturedAt": "2026-09-16T19:38:54.535477+00:00",
+  "status": "FROZEN_SEMANTIC_RED_PENDING_PARENT_SOURCE_FIX",
+  "actualRun": {
+    "receipt": {
+      "path": ".artifacts\\connector-links-v1\\semantic-red-01.receipt.json",
+      "bytes": 826,
+      "sha256": "8472091d4edeba2637aeeca4cc2010cef2ce293316f955400d00865761f519da"
+    },
+    "events": {
+      "path": ".artifacts\\connector-links-v1\\semantic-red-01.jsonl",
+      "bytes": 21528,
+      "sha256": "859439bb0616b775081f819a54eac3c70f2dda9ee5128afc3037d6bb2a4d8a94"
+    },
+    "log": {
+      "path": ".artifacts\\connector-links-v1\\semantic-red-01.log",
+      "bytes": 3600,
+      "sha256": "f905e3519c2235df7e966c0b8801f8332e770766d6e75a0d8a9c42684204ae7c"
+    },
+    "exitCode": 1,
+    "topLevelCount": 3,
+    "topLevelPassed": 2,
+    "topLevelFailed": 1,
+    "skips": 0,
+    "retries": 0,
+    "compileFailure": false,
+    "topLevelResults": [
+      {
+        "name": "TestCanonicalFindingBrowserFragmentIsPreserved",
+        "result": "fail"
+      },
+      {
+        "name": "TestFragmentFreeHTTPSBrowserLinksRemainValid",
+        "result": "pass"
+      },
+      {
+        "name": "TestEndpointFragmentsAndUnsafeBrowserLinksStayRejected",
+        "result": "pass"
+      }
+    ],
+    "failedAssertions": [
+      "TestCanonicalFindingBrowserFragmentIsPreserved/PreviewIsValidAndHasNoIO",
+      "TestCanonicalFindingBrowserFragmentIsPreserved/SendPreservesExactBrowserRouteWithoutChangingRequestPath",
+      "TestCanonicalFindingBrowserFragmentIsPreserved"
+    ]
+  },
+  "interpretation": {
+    "canonicalFragmentPreview": "EXECUTED_RED: current native action validation rejects the valid HTTPS finding hash route",
+    "canonicalFragmentSend": "EXECUTED_RED: Send rejects before native POST",
+    "canonicalFragmentWireAssertions": "BLOCKED_NOT_RUN because Send rejects the link first; not a passing byte-preservation claim",
+    "fragmentFreeCompatibility": "PASS: two actual owned TLS sends preserve the exact legacy HTTPS path/query link in fallback text/button",
+    "forbiddenEndpointsAndInvalidLinks": "PASS: delivery and collector request fragments plus all bounded invalid-browser-link cases fail before native I/O",
+    "rootCauseSource": "deliveryBase.validateAction calls HTTP-destination tlsURL; tlsURL rejects every nonempty Fragment",
+    "canonicalRemediationContractChanged": false
+  },
+  "newControls": [
+    {
+      "path": "tests\\connector_links\\links_test.go",
+      "bytes": 10670,
+      "sha256": "e48c91110c620a108f7f5f859f379287a4c170b4cf6504ed41d001d62c986c2a"
+    },
+    {
+      "path": "tests\\connector_links\\Test-ConnectorLinks.ps1",
+      "bytes": 3603,
+      "sha256": "833ee682d7f71dfad3d25bd1b70b4814846d4738d5e98455869f0f89b08a4f95"
+    },
+    {
+      "path": "tests\\connector_links\\CONTRACT.txt",
+      "bytes": 4364,
+      "sha256": "e25c1c23df1166aee47b7d402ec9f4d23d760108e30fb028876ac2c7c6472471"
+    }
+  ],
+  "narrowUnchangedWitnesses": [
+    {
+      "path": "internal\\connectors\\delivery.go",
+      "bytes": 5063,
+      "sha256": "973af817b699b76e317d539bc03065d027e2dba0cb77fc3f3a003f5684da827b"
+    },
+    {
+      "path": "internal\\connectors\\http.go",
+      "bytes": 10292,
+      "sha256": "6db2eeaf5c5e1dc4efa4f0b9ef0a95b35baf20611ba44505194c8a0ca4d201b5"
+    },
+    {
+      "path": "internal\\connectors\\notifications.go",
+      "bytes": 5684,
+      "sha256": "42157e1f07a28c8a6089c6ecee5e24dcf295a4caaa6a07de1b59e45ab37c85d1"
+    },
+    {
+      "path": "internal\\connectors\\collect.go",
+      "bytes": 4242,
+      "sha256": "93bfbfed6b3cf7cdca6a2fa57db96c1d997676521ac83944de07d43943611ab2"
+    },
+    {
+      "path": "internal\\connectors\\types.go",
+      "bytes": 4176,
+      "sha256": "0aa06eab951f22794eb767ee3ffe428560ebea5dbc0ee387827b796ffd4836d8"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\PACKET.json",
+      "bytes": 4740,
+      "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+    },
+    {
+      "path": ".oracles\\remediation-slack-v1.json",
+      "bytes": 12488,
+      "sha256": "83306cae4ab2edfc7a1e34fdfdf282f2a29d9bc2d7e9f47fbee1628181bc3bd1"
+    },
+    {
+      "path": ".oracles\\remediation-slack-v1.json.sig",
+      "bytes": 89,
+      "sha256": "01325ba32e8362835ff0f937858fee885ff8dbc4e0294cc17e6d858aa90e0ac3"
+    }
+  ],
+  "beforeReference": {
+    "path": "tests\\connector_links\\reviews\\v1\\BEFORE.json",
+    "bytes": 2027,
+    "sha256": "506252215a8b167747f7bf9d084aa2f50efaf7c024353a0bd292c84ea09fd4f4"
+  },
+  "sourceHead": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "ownership": {
+    "parentOwnsConnectorSourceException": true,
+    "remediationCoderMayAmendItsOracle": false,
+    "productionEdits": [],
+    "oldTestsEdited": [],
+    "moduleOrDependencyChanges": [],
+    "oldOracleOrSignatureChanges": [],
+    "archives": [],
+    "agentsSpawned": 0,
+    "commitsCreated": 0,
+    "realVendorCredentialsLoaded": false,
+    "thirdPartyRequestsAuthorized": false
+  },
+  "next": "Parent verifies and seals only these NEW link controls, then implements the dedicated DeepLink validator without weakening actual endpoint tlsURL validation or rewriting the outbound browser URL."
+}

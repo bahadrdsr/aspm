@@ -1,0 +1,88 @@
+REMEDIATION V1 - ORIGINAL-AUTHOR BINDING AMENDMENT A1
+=================================================
+
+This amendment changes only Production.OpenWorker's pointer-to-interface
+forwarding in production_bindings_test.go. Production, constructor signatures,
+test assertions, fixtures, credentials, request permissions, runner, modules
+and existing signatures are unchanged.
+
+Independently confirmed original defect
+--------------------------------------
+The actual app.OpenDeliveryWorker constructor was called with generated
+0/31/33-byte invalid keys through the coder's already-recorded diagnostic.
+Each call returned a nil *app.DeliveryWorker plus an error. Returning that
+pointer directly as deliveryWorker created an interface with a nonnil dynamic
+type and nil pointer value. The forwarded interface therefore compared unequal
+to nil, despite correct production validation.
+
+The original full-binding configuration gate was also reproduced. It failed
+at the unchanged worker == nil && err != nil assertion at line 374.
+That was a structural forwarding defect, not acceptance of an invalid key.
+
+Exact forwarding correction
+---------------------------
+Capture worker, err from the same actual production constructor call.
+If the concrete worker pointer is nil, return nil, err explicitly.
+Otherwise return worker, err unchanged.
+
+The branch is based only on pointer nilness, not on err != nil. A nonnil worker
+with an error remains a nonnil worker with that same error. No result is
+discarded merely because an error exists. No reflection, error suppression,
+business logic, constructor signature change or assertion weakening is added.
+AMENDMENT-A1.json records the exact old/new fragment and whole-file hashes;
+all other binding bytes are identical.
+
+Actual amended validation
+-------------------------
+Focused full-binding configuration gate: PASS, including the previously
+blocked environment/core-role forwarding and minimal-worker checks.
+Full unfiltered Contract: all nine top-level gates PASS; all eight native
+failure-table subcases PASS. No skips, expected-failure suppression or retries.
+
+Both runs used the unchanged Test-Remediation.ps1 in Contract mode, with fresh
+OutputName labels. The focused run used process-local
+  GOFLAGS=-run=^TestRemediationExplicitOptionalKeyAndMinimalWorkerRole$
+because the frozen runner has no selector argument. The effective selector is
+recorded separately in external invocation receipts. Production binding remained
+included. The full run explicitly removed GOFLAGS and executed all nine gates.
+
+The coder's earlier 30 API/security, 3 runtime-role and 26 adapter passes are
+referenced by their existing compatibility-HANDOFF.json hash. This author did
+not rerun those suites and does not relabel them as a new amendment baseline.
+Only the focused configuration and full nine-gate results are new run claims.
+
+HOLD and historical authority
+----------------------------
+Starting held 2182-file input tree:
+  sha256:e413fe9dec4924f18da15c90d2a619e7159630c3388432f626ce813831118900
+The 67-file production/module subset is unchanged before/after:
+  sha256:1d4d6e52cabbf63061f883c315ae102dced86ef25e3086c6bf28249d4a82e1f9
+
+The input-tree digest changes only for the authorized binding correction.
+Of the original 67 signed controls, 66 retain their original bytes and the
+binding has exactly the authorized new hash. Original manifests/signatures
+remain unchanged history; no old-oracle pass is claimed for modified bytes.
+Parent must verify A1 and re-seal NEW current controls before acceptance.
+
+Only three originals were byte-copied into noncompiled history\a1:
+  production_bindings_test.go.before.txt
+  PACKET.json.before.txt
+  PACKET.sha256.before.txt
+No other source, assertion, fixture, signature or old review tree was copied.
+The original packet/digest also remain untouched in place as historical
+records. Their binding hash resolves to the exact archived original.
+PACKET-A1.json / PACKET-A1.sha256 are the new current amendment inventory.
+
+Evidence and next step
+----------------------
+Current assertions and the original redacting runner are unchanged.
+New invocation/byte/structural receipts are in
+  .artifacts\remediation-binding-a1
+Actual runner logs and JSONL, with unique labels, are in
+  .artifacts\remediation-v1\binding-a1-*
+No vendor credentials or real vendor endpoints were used. The Contract uses
+the existing owned loopback PG/local intake and task-owned TLS protocol fixtures.
+
+Read VALIDATION-A1.json and GUARDS-A1.json, verify the exact nil-only forwarding
+delta and HOLD hashes, then let the parent re-seal current controls. This
+original-author amendment is frozen; no production follow-up is included.

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-effective-tls-range",
+  "amendment": "A1",
+  "phase": "frozen-independent-semantic-preflight-red",
+  "frozenAt": "2026-09-16T23:34:26.063827+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned NEW regression inventory only. Parent verifies/seals and owns the effective TLS-range source fix.",
+  "payloadFileCount": 19,
+  "ownedFileCount": 21,
+  "ownedFiles": [
+    "tests\\delivery_runtime\\CONTRACT.txt",
+    "tests\\delivery_runtime\\HANDOFF.txt",
+    "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1",
+    "tests\\delivery_runtime\\contract_test.go",
+    "tests\\delivery_runtime\\fixtures_test.go",
+    "tests\\delivery_runtime\\production_bindings_test.go",
+    "tests\\delivery_runtime\\reviews\\v1\\BEFORE.json",
+    "tests\\delivery_runtime\\reviews\\v1\\EVIDENCE.json",
+    "tests\\delivery_runtime\\reviews\\v1\\GUARDS-A1.json",
+    "tests\\delivery_runtime\\reviews\\v1\\GUARDS.json",
+    "tests\\delivery_runtime\\reviews\\v1\\HANDOFF-A1.json",
+    "tests\\delivery_runtime\\reviews\\v1\\HANDOFF-A1.txt",
+    "tests\\delivery_runtime\\reviews\\v1\\HANDOFF.json",
+    "tests\\delivery_runtime\\reviews\\v1\\PACKET-A1.json",
+    "tests\\delivery_runtime\\reviews\\v1\\PACKET-A1.sha256",
+    "tests\\delivery_runtime\\reviews\\v1\\PACKET.json",
+    "tests\\delivery_runtime\\reviews\\v1\\PACKET.sha256",
+    "tests\\delivery_runtime\\reviews\\v1\\RED-A1.json",
+    "tests\\delivery_runtime\\reviews\\v1\\RED.json",
+    "tests\\delivery_runtime\\roles_test.go",
+    "tests\\delivery_runtime\\tls_range_test.go"
+  ],
+  "files": [
+    {
+      "path": "tests\\delivery_runtime\\CONTRACT.txt",
+      "bytes": 10514,
+      "sha256": "fdcef55a75e24400db4dceb3d355aeaa49c320a9c160fb3b433bc08928f00029"
+    },
+    {
+      "path": "tests\\delivery_runtime\\contract_test.go",
+      "bytes": 654,
+      "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\fixtures_test.go",
+      "bytes": 16270,
+      "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"
+    },
+    {
+      "path": "tests\\delivery_runtime\\HANDOFF.txt",
+      "bytes": 1965,
+      "sha256": "5b9571f97e8c81a2cb30d14e8feeae85c03714dfaa818b3f2a6f929544c146f6"
+    },
+    {
+      "path": "tests\\delivery_runtime\\production_bindings_test.go",
+      "bytes": 1485,
+      "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\BEFORE.json",
+      "bytes": 3913,
+      "sha256": "f3bef3f55ea21280bc591c133e666d51f7de87a850d88eee4ea666e2fecd7a7c"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 6066,
+      "sha256": "636c447278eb6fc4bd6e2a3a3a18ff726704c97ae88f7a7a41ebde52f8f158fa"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 4171,
+      "sha256": "525cd924fa404ab9ea216239f25029ffca145ac62fddc3048fe2cd27cb343638"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\GUARDS.json",
+      "bytes": 7100,
+      "sha256": "973a327fce537d56c4ad9f3401a3cf4a3b261fd6ce2e0ee8742081d788d58e25"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\HANDOFF-A1.json",
+      "bytes": 2179,
+      "sha256": "44fd8929c13b168b0f000a4569c927430fd0e11f21525066c6853923660a98cb"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 4506,
+      "sha256": "4cbd1f4c9caa026bd7b226c5dec8c9ddb54e2d66eb1313310379aeee069e8f6f"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3627,
+      "sha256": "6ab157d8a045800fc5e48979ce1843de9503f3ccd17cf4916d163022a72bc102"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\PACKET.json",
+      "bytes": 3913,
+      "sha256": "1c06494b330c64103478c0cd4b65eb6cdd17322f54cde5ca2f9abb300644fa69"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "6f2a25922855161c501da88e241a85c110d7589d2476de52259235bff851a5ba"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\RED-A1.json",
+      "bytes": 4960,
+      "sha256": "ba114795c1791c6d54d88e4e6cbc82bc2abfe0ff75893d9451ff810d969d5b18"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\RED.json",
+      "bytes": 3543,
+      "sha256": "6077f5b4b34974bf667e13b6c8df722ae90fdcce6bab7c348a885402a61dc2ea"
+    },
+    {
+      "path": "tests\\delivery_runtime\\roles_test.go",
+      "bytes": 17423,
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1",
+      "bytes": 7421,
+      "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"
+    },
+    {
+      "path": "tests\\delivery_runtime\\tls_range_test.go",
+      "bytes": 4337,
+      "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"
+    }
+  ],
+  "newTest": "tests\\delivery_runtime\\tls_range_test.go",
+  "previousPacketHistorical": {
+    "path": "tests\\delivery_runtime\\reviews\\v1\\PACKET.json",
+    "bytes": 3913,
+    "sha256": "1c06494b330c64103478c0cd4b65eb6cdd17322f54cde5ca2f9abb300644fa69"
+  },
+  "previousDigestHistorical": {
+    "path": "tests\\delivery_runtime\\reviews\\v1\\PACKET.sha256",
+    "bytes": 79,
+    "sha256": "6f2a25922855161c501da88e241a85c110d7589d2476de52259235bff851a5ba"
+  },
+  "handoff": "HANDOFF-A1.json",
+  "red": "RED-A1.json",
+  "guards": "GUARDS-A1.json",
+  "selfBinding": "PACKET-A1.sha256 binds raw PACKET-A1.json. Only this self-digest pair is excluded from payload hashes.",
+  "oldFilesAmended": [],
+  "archives": []
+}

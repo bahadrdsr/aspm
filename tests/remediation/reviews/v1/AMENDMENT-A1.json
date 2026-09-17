@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "scope": "remediation-original-author-nil-forwarding",
+  "capturedAt": "2026-09-16T20:22:00.222Z",
+  "authorization": "Only Production.OpenWorker concrete-pointer to interface forwarding; no production, assertion, fixture, credential, permission, constructor signature or runner changes.",
+  "classification": "CONFIRMED_TYPED_NIL_FORWARDING_DEFECT",
+  "delta": {
+    "path": "tests\\remediation\\production_bindings_test.go",
+    "oldSHA256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e",
+    "newSHA256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180",
+    "oldBytes": 2879,
+    "newBytes": 2952,
+    "oldFragment": "\t\treturn app.OpenDeliveryWorker(ctx, app.DeliveryWorkerConfig{\n\t\t\tDatabase: database, EncryptionKey: config.EncryptionKey, WorkerID: config.WorkerID,\n\t\t\tLeaseDuration: config.LeaseDuration, SlackEndpoint: config.SlackEndpoint, Client: config.Client,\n\t\t})",
+    "newFragment": "\t\tworker, err := app.OpenDeliveryWorker(ctx, app.DeliveryWorkerConfig{\n\t\t\tDatabase: database, EncryptionKey: config.EncryptionKey, WorkerID: config.WorkerID,\n\t\t\tLeaseDuration: config.LeaseDuration, SlackEndpoint: config.SlackEndpoint, Client: config.Client,\n\t\t})\n\t\tif worker == nil {\n\t\t\treturn nil, err\n\t\t}\n\t\treturn worker, err",
+    "allOtherBytesIdentical": true,
+    "noAssertionRunnerFixtureChanges": true,
+    "normalizesOnlyConcreteNil": true,
+    "preservesNonNilWorkerWithError": true,
+    "preservesOriginalError": true,
+    "lineEndings": "LF"
+  },
+  "explanation": "The required nil *app.DeliveryWorker pointer acquires a nonnil dynamic type when directly converted to deliveryWorker. Explicitly returning nil when the concrete pointer is nil preserves caller-visible nilness. The nonnil pointer and original error are otherwise returned unchanged, including a nonnil pointer with an error.",
+  "errorConditionDoesNotDiscardResults": true,
+  "noReflectionOrBusinessLogic": true,
+  "diagnostic": {
+    "source": {
+      "path": ".cache\\remediation-coder\\constructor-nil-probe.go",
+      "bytes": 1078,
+      "sha256": "1d00fb2048f8ad56684d40963ef26bbde3d42ca24427aab1d850cbfdaeef33dc"
+    },
+    "actualIndependentRun": {
+      "path": ".artifacts\\remediation-binding-a1\\structural-probe.log",
+      "bytes": 413,
+      "sha256": "891df20d95e8ee833f354715b0e91cfd12f2b59ce8ac91f14937e213485c8cc3"
+    },
+    "invalidKeySizes": [
+      0,
+      31,
+      33
+    ],
+    "concreteNilAndErrorForAll": true,
+    "originalForwardedInterfaceNilForAll": false,
+    "forcedDiagnosticExitCode": 1,
+    "notAcceptance": true
+  },
+  "archives": [
+    {
+      "source": "tests\\remediation\\production_bindings_test.go",
+      "archive": "tests\\remediation\\reviews\\v1\\history\\a1\\production_bindings_test.go.before.txt",
+      "bytes": 2879,
+      "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+    },
+    {
+      "source": "tests\\remediation\\reviews\\v1\\PACKET.json",
+      "archive": "tests\\remediation\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 4740,
+      "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+    },
+    {
+      "source": "tests\\remediation\\reviews\\v1\\PACKET.sha256",
+      "archive": "tests\\remediation\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 79,
+      "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+    }
+  ],
+  "archivePolicy": "Only old binding and old packet/digest were copied as noncompiled text. Original packet and signatures remain unchanged historical files.",
+  "newCurrentPacket": "PACKET-A1.json",
+  "parentMustResealNewCurrentControls": true
+}

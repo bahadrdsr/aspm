@@ -1,0 +1,43 @@
+UNSEALED AUTHOR CORRECTION - RESTARTED HTTP READ SUBSCRIPTIONS
+===========================================================
+
+The first actual missing-UI RED executed eight cases with no fixture violation,
+unhandled browser error, external HTTP attempt, skip or retry. It stopped only
+at missing Connections/Notify/Delivery history controls. No assertion beyond
+those missing controls was claimed to have executed.
+
+The same real-browser ledgers exposed a test-fixture issue for future UI work:
+the unchanged application uses StrictMode and useResource starts a GET for
+each subscription. The first Work/catalog/finding read is aborted; the new
+subscription issues a second read. A one-shot queued 403 or held response can
+therefore be consumed by the aborted subscriber rather than the active UI.
+The unchanged use-resource.ts and the first RED's actual request failure
+records demonstrate this. Disabling StrictMode or changing production to make
+a one-shot synthetic scenario work would be the wrong correction.
+
+The new isolated fixture now treats queueRead as an explicit HTTP response
+state for that method/path/workspace until the test selects the next state.
+Every request still receives a fresh independently captured HTTP response;
+every request is counted against the original combined 60-request budget.
+All read subscribers share the scenario's held gate, including restarts after
+an abort. Current session/membership authorization still precedes response
+selection. Mutation controls remain one-shot and never replay a write.
+
+Controls retain all real requests that subscribed to them. Scope/logout
+assertions require each such old request to have an actual aborted failure,
+not merely the latest request or a hidden UI. SD1 and SD4 explicitly select the
+next successful HTTP read state before activating manual Retry.
+No timeout, assertion family, auth/JSON/credential/Origin/provenance guard,
+backend behavior or production React state is relaxed or substituted.
+
+Only the actually amended slack-ui-fixture.ts and slack-delivery.spec.ts are
+byte-archived under history\red-01. RED-01-SOURCES.json preserves their exact
+original hashes and unchanged dependency-input references. The original
+red-ui-01.* log/JSON/trace files stay untouched under the author's artifact
+directory. Later validation uses new names. This is an author correction
+before parent seal, not permission for a coder to amend acceptance controls.
+
+The first compatibility invocation was a Windows cmd.exe alternation quoting
+diagnostic: it ran no Playwright cases. Using ten separate selector arguments
+instead ran all 58 original cases successfully, with zero skips/flakes/retries.
+Both invocation logs and the actual passing result are retained separately.

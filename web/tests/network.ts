@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { expect, test as base } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import { apiError, catalogResponse, findingResponse, syntheticSession, workResponse } from "./fixtures";
+import { emptySlackNavigation } from "./slack-navigation";
 import { emptyReport, overviewDays, overviewPath, snapshotParameters, snapshotsPath, withFreshness } from "./reports-data";
 
 export function requireProductionUI(): void {
@@ -54,6 +55,15 @@ export class MockAPI {
       }
       if (url.pathname === "/api/v1/assets") {
         await route.fulfill({ json: { apiVersion: "aspm/v1alpha1", items: [], total: 0, nextCursor: null } });
+        return;
+      }
+      try {
+        const empty = emptySlackNavigation(url, request.method(), request.headers()["x-aspm-workspace-id"],
+          new Map(syntheticSession().workspaces.map((workspace) => [workspace.id, [findingResponse.finding.id]])));
+        if (empty) { await route.fulfill({ json: empty }); return; }
+      } catch (error) {
+        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);
+        await route.abort();
         return;
       }
       if (url.pathname === overviewPath || url.pathname === snapshotsPath) {

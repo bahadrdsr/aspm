@@ -1,0 +1,85 @@
+DELIVERY RUNTIME A1 - EFFECTIVE TLS VERSION RANGE PREFLIGHT
+========================================================
+
+Scope: one NEW tls_range_test.go. Existing four cases, fixtures, contract types,
+production binding, runner, modules, original packet and signatures stay
+byte-identical. No helper extraction or production change is included.
+
+This is preflight correctness, not a certificate-verification bypass claim.
+The parent owns the fix in service/delivery_client.go.
+
+Required effective-range rule
+-----------------------------
+Preserve the existing TLS 1.2 security floor. Resolve a zero minimum to the
+effective delivery default TLS 1.2 and a zero maximum to the currently supported
+maximum TLS 1.3. Reject inverted effective bounds and any range without overlap
+with supported versions TLS 1.2 / TLS 1.3. A future upper bound alone is not
+invalid if the range still includes a supported version.
+
+Do not predict the configured server's certificates, cipher suites or actual
+handshake availability. Those are separate from this version-range check.
+Do not clamp, rewrite or silently replace an invalid explicit lower bound.
+
+One focused top-level test has twelve bounded table rows:
+  New denials:
+    TLS 1.3 minimum / TLS 1.2 maximum
+    future minimum above TLS 1.3 / default maximum
+    future-only explicit lower/upper range
+  Existing denial controls:
+    explicit minimum below TLS 1.2
+    default minimum / explicit maximum below TLS 1.2
+  Positive preflight controls:
+    both effective default bounds
+    TLS 1.2 only
+    TLS 1.3 only
+    TLS 1.2 through TLS 1.3
+    default minimum / TLS 1.2 maximum
+    TLS 1.3 minimum / default maximum
+    TLS 1.2 minimum / future upper bound with supported overlap
+
+Actual owned tripwires and safety
+--------------------------------
+Each row uses the existing native TLS fixture/client plus a generated key and
+new owned DB/listen TCP tripwires. It calls the unchanged full service.Run
+forwarding binding. No real PostgreSQL or application queue is used.
+
+The DB listener accepts and immediately closes an attempted connection.
+For invalid ranges, a TLS-specific safe error must occur before that I/O.
+For positive ranges, reaching the owned DB tripwire and returning its non-TLS
+startup failure proves legitimate client-preflight progression. It is NOT
+runtime startup, a successful PG connection or a TLS handshake claim.
+
+The separately reserved listen address remains owned/occupied, and no worker
+listener or job can start after the DB tripwire stops startup. Provider HTTP
+count must remain zero. There are no bad-TLS jobs, fault-injected queue rows,
+DoS/load loops, real vendor credentials or third-party endpoints.
+
+Observed held-source baseline
+-----------------------------
+All three new invalid-range rows reached the owned DB tripwire once and
+returned a non-TLS startup error. They are genuine semantic RED.
+Both older floor-denial controls passed with zero DB/provider I/O.
+All seven supported-range controls passed legitimate preflight progression,
+each with one owned DB tripwire connection and zero provider requests.
+
+No TLS handshake, real DB/schema change, listener startup, queue operation or
+certificate bypass was executed or claimed. One top-level test failed, with
+three RED subcases and nine passing controls; no skipped/retried cases.
+
+Evidence and reproduction
+-------------------------
+Current logs, invocation receipt and narrow before hashes are outside frozen
+roots in .artifacts\delivery-runtime-tls-a1. The existing runner was not edited:
+this credential-free test was invoked directly with the same cached Go/module
+policy and an explicit single-test selector:
+  go test -json -tags=integration -mod=readonly -count=1 -timeout=30s -run=^TestDeliveryRuntimeEffectiveTLSVersionRangePreflightA1$ .\tests\delivery_runtime
+
+Use the existing cached Go 1.27.1, offline modules, project-local work/cache
+directories and a fresh external output label. Do not load private runtime
+metadata for this preflight-only test. Strip ambient integration/vendor/proxy
+environment settings from the test process, as the recorded invocation did.
+
+PACKET-A1.json / PACKET-A1.sha256 inventory the new current controls and retain
+unchanged v1 history. No original file was amended or archived. Parent verifies
+this exact semantic RED, seals the new control set and fixes effective range
+validation without weakening prior TLS/client/credential checks.

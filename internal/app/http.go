@@ -165,6 +165,17 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		return a.catalog(w)
+	case "/api/v1/integrations/connections":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+			return err
+		}
+		if r.Method == http.MethodGet {
+			return a.listIntegrationConnections(w, r, membership.ID)
+		}
+		if membership.Role != "admin" {
+			return errForbidden
+		}
+		return a.createIntegrationConnection(w, r, membership.ID, session)
 	case "/api/v1/reports/overview":
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
@@ -183,6 +194,26 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		return a.createReportSnapshot(w, r, membership.ID, session.User.ID)
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 3 && parts[0] == "integrations" && validID(parts[2]) {
+		if parts[1] == "connections" {
+			if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
+				return err
+			}
+			if r.Method == http.MethodGet {
+				return a.getIntegrationConnection(w, r, membership.ID, parts[2])
+			}
+			if membership.Role != "admin" {
+				return errForbidden
+			}
+			return a.updateIntegrationConnection(w, r, membership.ID, session, parts[2])
+		}
+		if parts[1] == "deliveries" {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
+			return a.getFindingDelivery(w, r, membership.ID, parts[2])
+		}
+	}
 	if len(parts) == 3 && parts[0] == "reports" && parts[1] == "snapshots" && validID(parts[2]) {
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
@@ -224,6 +255,18 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return a.importResource(w, r, membership.ID, parts[1], len(parts) == 3)
 	case "findings":
+		if len(parts) == 3 && parts[2] == "deliveries" {
+			if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+				return err
+			}
+			if r.Method == http.MethodGet {
+				return a.listFindingDeliveries(w, r, membership.ID, parts[1])
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.enqueueFindingDelivery(w, r, membership.ID, session, parts[1])
+		}
 		if len(parts) == 3 && parts[2] == "notes" {
 			if err = requireMethod(w, r, http.MethodPost); err != nil {
 				return err

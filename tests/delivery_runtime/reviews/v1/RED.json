@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-v1",
+  "capturedAt": "2026-09-16T22:16:30.094530+00:00",
+  "status": "FROZEN_COMMAND_AND_CONFIGURATION_PREREQUISITE_RED",
+  "actualCommandBuild": {
+    "result": "RED_MISSING_CMD_DELIVERY_WORKER",
+    "exitCode": 1,
+    "receipt": {
+      "path": ".artifacts\\delivery-runtime-v1\\command-red-frozen.receipt.json",
+      "bytes": 1222,
+      "sha256": "990dbc06c85313384a1b16fff1dd932db30eba8dff388e9a719e6a92eb85d18c"
+    },
+    "log": {
+      "path": ".artifacts\\delivery-runtime-v1\\command-red-frozen-command-build.log",
+      "bytes": 70,
+      "sha256": "2a89d566c91aac97373f09bf166bef75cb54c0d1e1cb3333720a05b8f4fc6bb1"
+    },
+    "diagnostic": "stat C:\\bahadr\\serious\\aspm\\cmd\\delivery-worker: directory not found\n",
+    "testExecutionStarted": false
+  },
+  "actualServiceContract": {
+    "result": "RED_MISSING_SERVICE_CONFIG_FIELDS",
+    "exitCode": 1,
+    "receipt": {
+      "path": ".artifacts\\delivery-runtime-v1\\service-red-frozen.receipt.json",
+      "bytes": 1198,
+      "sha256": "96528aaca35059f6743ce0193934a8daaa8d0b9c08c29d603c832bd050e97126"
+    },
+    "log": {
+      "path": ".artifacts\\delivery-runtime-v1\\service-red-frozen-service-contract.log",
+      "bytes": 1314,
+      "sha256": "10cfbcf3da7e5539a4f437f16633a2adb4bdf5bd413d913d8a61644b497a3c6e"
+    },
+    "events": {
+      "path": ".artifacts\\delivery-runtime-v1\\service-red-frozen-service-contract.jsonl",
+      "bytes": 3438,
+      "sha256": "95cce8d9b2d75ab6df16dbbe9fe47bf162368b3c9ec4b3b5351703ca453b23a8"
+    },
+    "missingFields": [
+      "DeliveryLeaseDuration",
+      "SlackEndpoint",
+      "DeliveryClient",
+      "DeliveryCAFile"
+    ],
+    "realForwardingBindingIncluded": true,
+    "testExecutionStarted": false,
+    "topLevelAuthored": 4,
+    "topLevelExecuted": 0
+  },
+  "helperOnlyCompile": {
+    "result": "PASS_NOT_ACCEPTANCE",
+    "receipt": {
+      "path": ".artifacts\\delivery-runtime-v1\\helpers-frozen.receipt.json",
+      "bytes": 1448,
+      "sha256": "1f68371bfad10310eee8ebba7ca9ed57b9927565520573903c15536fa4b9f6ad"
+    },
+    "testsExecuted": 0,
+    "productionBindingIntentionallyExcludedOnlyForCompilerDiagnostic": true
+  },
+  "cases": [
+    {
+      "name": "TestDeliveryRuntimeServiceDrainsActualCoreIntentAndServesOnlyHealth",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestDeliveryRuntimeInvalidInputsFailBeforeDBProviderOrListener",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestDeliveryRuntimeCancellationThenFreshCommandPreservesUncertainty",
+      "status": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestDeliveryRuntimeEnvironmentDefaultsIsolationAndLegacyRoles",
+      "status": "BLOCKED_NOT_RUN"
+    }
+  ],
+  "blockedBehaviorClaims": [
+    "Actual role health/readiness and no core/auth handler",
+    "Real core actor/canonical finding enqueue and role-driven native delivery/receipt",
+    "Preflight ordering before DB/provider/listener for invalid configuration",
+    "Service cancellation, terminal uncertainty and no resend in a fresh actual command",
+    "Actual command TLS CA and selected-origin transport policy",
+    "Explicit delivery environment defaults/isolation and unchanged legacy role parsing"
+  ],
+  "skips": 0,
+  "retryOrExpectedFailureSuppressionAdded": false,
+  "oldRuntimeOrBackendAcceptanceClaimedAsNewEvidence": false,
+  "liveVendorOrCloudRequests": 0,
+  "newProductionImplementation": false
+}

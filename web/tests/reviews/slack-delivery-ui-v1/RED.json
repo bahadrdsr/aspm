@@ -1,0 +1,858 @@
+{
+  "schemaVersion": 1,
+  "authorExpectedOutcome": "Eight missing-UI assertion failures, not compilation, mock routing or browser exceptions.",
+  "finalRun": 2,
+  "originalRunPreserved": true,
+  "originalSources": {
+    "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\RED-01-SOURCES.json",
+    "bytes": 1801,
+    "sha256": "c3733206c91efa9ed74e19100537199ea45e233bc9838953057ae50c251ffc29"
+  },
+  "correction": {
+    "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\AUTHOR-CORRECTION.txt",
+    "bytes": 2786,
+    "sha256": "f952e6d2fcf6528aab2f75f8e2014236e0809a06c49f28cb5bccee77d4ccdb4c"
+  },
+  "finalSourceVector": {
+    "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.inputs.json",
+    "bytes": 159832,
+    "sha256": "39b0737a6f8da27056a0cfa082f55e467225ce0cf286e12684e54d12c189246e"
+  },
+  "runs": [
+    {
+      "run": {
+        "command": "npm.cmd test -- slack-delivery[.]spec[.]ts$ --output ..\\.artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces --reporter=list,json",
+        "port": "52770",
+        "startedAt": "2026-09-16T22:13:18.9798792Z",
+        "endedAt": "2026-09-16T22:14:53.9891240Z",
+        "exitCode": 1,
+        "expected": "Missing UI RED, not compilation or fixture errors"
+      },
+      "runFile": {
+        "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01.run.json",
+        "bytes": 358,
+        "sha256": "ef659c464df4ce120da586c19d8bf95b0979abe2a20773918be5627b5b011f32"
+      },
+      "report": {
+        "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01.results.json",
+        "bytes": 187308,
+        "sha256": "1cd71a8a7b1195d1dbec3fa5e9f01e70639c32d3b65d36bb805c952cc39fd1fb"
+      },
+      "stdout": {
+        "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01.stdout.txt",
+        "bytes": 30207,
+        "sha256": "d46d40c54482852218307f4f7ef3aab1ec1f6bcc129102ac7240a8f364fa6ea1"
+      },
+      "stats": {
+        "startTime": "2026-09-16T22:13:24.816Z",
+        "duration": 89062.215,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 8,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection",
+          "file": "slack-delivery.spec.ts",
+          "line": 281,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 7471,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: Add a named workspace Connections region without replacing the eight catalog families.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a named workspace Connections region without replacing the eight catalog families. getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true })\n\n\n  284 |   await page.goto(\"/#/integrations\");\n  285 |   await catalogUnverified(page);\n> 286 |   await expect(connections(page), \"Add a named workspace Connections region without replacing the eight catalog families.\").toBeVisible();\n      |                                                                                                                             ^\n  287 |   await requested(unavailable);\n  288 |   await expect(connections(page).getByRole(\"status\").filter({ hasText: /loading.*connections/i })).toBeVisible();\n  289 |   await expect(connections(page).getByText(emptyConnections)).toHaveCount(0);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:286:125",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 125,
+                "line": 286
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\error-context.md",
+              "bytes": 20395,
+              "sha256": "598889027bf4fcf6b2da3543504985b8c5d2efcbb978501681feb3b683994418"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\trace.zip",
+              "bytes": 205457,
+              "sha256": "d9fb32a2b142e72069c7ec7dbe9e908726c2737115437043780e52e436ef2830"
+            }
+          ]
+        },
+        {
+          "title": "SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial",
+          "file": "slack-delivery.spec.ts",
+          "line": 351,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6245,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\n\n\n  351 | test(\"SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial\", async ({ page, slack }) => {\n  352 |   await page.goto(\"/#/integrations\");\n> 353 |   await expect(connectionRow(page, alphaConnection.name)).toBeVisible();\n      |                                                           ^\n  354 |   const initialRead = slack.queueRead(connectionPath(alphaConnection.id), slackAlpha.id, 200, true);\n  355 |   await editConnection(page);\n  356 |   await requested(initialRead);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:353:59",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 59,
+                "line": 353
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\error-context.md",
+              "bytes": 20147,
+              "sha256": "d7fc208b65576d3a5da99ade146bc83c6600c76b1c2601861277480c91470fe2"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\trace.zip",
+              "bytes": 226177,
+              "sha256": "f406c538495530f6c18720379af7d7e4abb01a901cdd8e3507abdadfde435327"
+            }
+          ]
+        },
+        {
+          "title": "SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation",
+          "file": "slack-delivery.spec.ts",
+          "line": 423,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 7834,
+          "retry": 0,
+          "blockedAt": "Missing contextual Notify action",
+          "errors": [
+            {
+              "message": "Error: One contextual notification action belongs in the existing finding dialog.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - One contextual notification action belongs in the existing finding dialog. getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\n    13 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  162 | async function openPreview(page: Page, value = alphaConnection) {\n  163 |   const action = findingDialog(page).getByRole(\"button\", { name: notifyName });\n> 164 |   await expect(action, \"One contextual notification action belongs in the existing finding dialog.\").toHaveCount(1);\n      |                                                                                                      ^\n  165 |   await action.click();\n  166 |   await expect(preview(page)).toBeVisible();\n  167 |   await expect(previewForm(page)).toBeVisible();\n    at openPreview (C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:164:102)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:428:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 102,
+                "line": 164
+              }
+            }
+          ],
+          "apiCalls": 6,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/work",
+            "GET /api/v1/work",
+            "GET /api/v1/findings/52000000000000000000000000000001",
+            "GET /api/v1/findings/52000000000000000000000000000001"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\test-failed-1.png",
+              "bytes": 92825,
+              "sha256": "a5c31993603a715d7e4de462dd22f49eb3a291087c50c6b9a4dc024a29948f67"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\error-context.md",
+              "bytes": 32417,
+              "sha256": "658d0d0fffdd7e07845799ffa49ca6eaca5f014c9eac508b14eeb9acd0cf35f5"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\trace.zip",
+              "bytes": 443861,
+              "sha256": "24676e79106a85873668af785861cce2ff93a1fcf23521e4b1cef40bb5ed97d3"
+            }
+          ]
+        },
+        {
+          "title": "SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts",
+          "file": "slack-delivery.spec.ts",
+          "line": 485,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 7085,
+          "retry": 0,
+          "blockedAt": "Missing Delivery history region",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Slack )?Delivery history$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Slack )?Delivery history$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Slack )?Delivery history$/i, includeHidden: true })\n\n\n  171 |   const toggle = findingDialog(page).getByRole(\"button\", { name: /^(?:Show |View )?(?:delivery history|deliveries)$/i });\n  172 |   if (!await history(page).isVisible() && await toggle.isVisible()) await toggle.click();\n> 173 |   await expect(history(page)).toBeVisible();\n      |                               ^\n  174 | }\n  175 | async function openDelivery(page: Page, value: SlackDelivery) {\n  176 |   await openHistory(page);\n    at openHistory (C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:173:31)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:495:3",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 31,
+                "line": 173
+              }
+            }
+          ],
+          "apiCalls": 6,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/work",
+            "GET /api/v1/work",
+            "GET /api/v1/findings/52000000000000000000000000000001",
+            "GET /api/v1/findings/52000000000000000000000000000001"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\test-failed-1.png",
+              "bytes": 92721,
+              "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\error-context.md",
+              "bytes": 24194,
+              "sha256": "85f7550aa3574a980a8f1c3d9068040a367e5f25d575175c5774a4ce16b83c2c"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\trace.zip",
+              "bytes": 437110,
+              "sha256": "cea6a02c16ab18e849d30a377467702eeafbd3e5439475e6f4729552e7e78472"
+            }
+          ]
+        },
+        {
+          "title": "SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation",
+          "file": "slack-delivery.spec.ts",
+          "line": 536,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6917,
+          "retry": 0,
+          "blockedAt": "Missing contextual Notify action",
+          "errors": [
+            {
+              "message": "Error: One contextual notification action belongs in the existing finding dialog.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - One contextual notification action belongs in the existing finding dialog. getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  162 | async function openPreview(page: Page, value = alphaConnection) {\n  163 |   const action = findingDialog(page).getByRole(\"button\", { name: notifyName });\n> 164 |   await expect(action, \"One contextual notification action belongs in the existing finding dialog.\").toHaveCount(1);\n      |                                                                                                      ^\n  165 |   await action.click();\n  166 |   await expect(preview(page)).toBeVisible();\n  167 |   await expect(previewForm(page)).toBeVisible();\n    at openPreview (C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:164:102)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:538:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 102,
+                "line": 164
+              }
+            }
+          ],
+          "apiCalls": 6,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/work",
+            "GET /api/v1/work",
+            "GET /api/v1/findings/52000000000000000000000000000001",
+            "GET /api/v1/findings/52000000000000000000000000000001"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\test-failed-1.png",
+              "bytes": 92721,
+              "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\error-context.md",
+              "bytes": 32415,
+              "sha256": "cb74d0372e231b981f3691b21972293888ee184699521d1770acd8022e13b289"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\trace.zip",
+              "bytes": 436281,
+              "sha256": "d25dd010032c500485f9d04fdf39d957f7c3d2ec5ae54eebd8e2cf722b7943e6"
+            }
+          ]
+        },
+        {
+          "title": "SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs",
+          "file": "slack-delivery.spec.ts",
+          "line": 578,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6083,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\n\n\n  580 |   slack.seedDelivery(historical);\n  581 |   await page.goto(\"/#/integrations\");\n> 582 |   await expect(connectionRow(page, alphaConnection.name)).toBeVisible();\n      |                                                           ^\n  583 |   const oldList = slack.queueRead(connectionsPath, slackAlpha.id, 200, true);\n  584 |   await refreshConnections(page).click();\n  585 |   await requested(oldList);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:582:59",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 59,
+                "line": 582
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\error-context.md",
+              "bytes": 18658,
+              "sha256": "80ae602a6cdb031811a9d40f3866046e84e37db48946a54aa26c6d815df00649"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\trace.zip",
+              "bytes": 226014,
+              "sha256": "3805204f896f066218066577317db4535c205b670a0f80be9917ce749e93d36e"
+            }
+          ]
+        },
+        {
+          "title": "SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs",
+          "file": "slack-delivery.spec.ts",
+          "line": 633,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6138,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\n\n\n  635 |   slack.seedDelivery(receipt);\n  636 |   await page.goto(\"/#/integrations\");\n> 637 |   await expect(connectionRow(page, alphaConnection.name)).toBeVisible();\n      |                                                           ^\n  638 |   await editConnection(page);\n  639 |   await expect(connectionForm(page).getByLabel(connectionNameLabel)).toHaveValue(alphaConnection.name);\n  640 |   await page.keyboard.press(\"Escape\");\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:637:59",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 59,
+                "line": 637
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\error-context.md",
+              "bytes": 18455,
+              "sha256": "bd80dda02e588e9b8709220abd6f9f16fe531e52830741133c4685ae4ac9bf03"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\trace.zip",
+              "bytes": 223788,
+              "sha256": "4f594f66a91ca0ec5a3bf7617463877254ce5b9a8494bea433e80c887fe20f8d"
+            }
+          ]
+        },
+        {
+          "title": "SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm",
+          "file": "slack-delivery.spec.ts",
+          "line": 757,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6278,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic workspace WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic workspace WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic workspace WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' })\n\n\n  764 |   });\n  765 |   await page.goto(\"/#/integrations\");\n> 766 |   await expect(connectionRow(page, longConnection.name)).toBeVisible();\n      |                                                          ^\n  767 |   await addConnection(page).focus();\n  768 |   await addConnection(page).press(\"Enter\");\n  769 |   await expect(connectionEditor(page)).toBeVisible();\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:766:58",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 58,
+                "line": 766
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\test-failed-1.png",
+              "bytes": 36667,
+              "sha256": "8f8fd0d0e6a83943de4a854dad9c00045b8ca831521a6184592b27130d55b95c"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\error-context.md",
+              "bytes": 16240,
+              "sha256": "b6c2d4ad24d4bb5ff548cc17ee88d57a60330c154f88bc092b556c11fea69356"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\trace.zip",
+              "bytes": 145522,
+              "sha256": "ac01245c75d4bbd270fdc24ba76c67e5243fca41a3285c61e24b6424292f4f82"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": {
+        "command": "npm.cmd test -- slack-delivery[.]spec[.]ts$ --output ..\\.artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces --reporter=list,json",
+        "port": "55206",
+        "startedAt": "2026-09-16T22:26:27.3470428Z",
+        "endedAt": "2026-09-16T22:27:49.9502394Z",
+        "exitCode": 1,
+        "expected": "Final missing-UI RED after isolated read-scenario correction; original RED-01 remains archived"
+      },
+      "runFile": {
+        "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.run.json",
+        "bytes": 403,
+        "sha256": "d2c8c4e1d5d7ee8149f1b739f85a86e52545f851b67c3ecdf73a8414e7af0a1e"
+      },
+      "report": {
+        "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.results.json",
+        "bytes": 181096,
+        "sha256": "bc039dd7611f6fc236b77e0bbed6aaa6d0571f942e1f86091adb2e7bb0a5f4f6"
+      },
+      "stdout": {
+        "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.stdout.txt",
+        "bytes": 30207,
+        "sha256": "9aa88a5a9bbbbb831a32330c18db60fc7ec524432584f3b06e8ab33d8bca5151"
+      },
+      "stats": {
+        "startTime": "2026-09-16T22:26:29.439Z",
+        "duration": 80396.127,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 8,
+        "flaky": 0
+      },
+      "cases": [
+        {
+          "title": "SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection",
+          "file": "slack-delivery.spec.ts",
+          "line": 283,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 7040,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: Add a named workspace Connections region without replacing the eight catalog families.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Add a named workspace Connections region without replacing the eight catalog families. getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true })\n\n\n  286 |   await page.goto(\"/#/integrations\");\n  287 |   await catalogUnverified(page);\n> 288 |   await expect(connections(page), \"Add a named workspace Connections region without replacing the eight catalog families.\").toBeVisible();\n      |                                                                                                                             ^\n  289 |   await requested(unavailable);\n  290 |   await expect(connections(page).getByRole(\"status\").filter({ hasText: /loading.*connections/i })).toBeVisible();\n  291 |   await expect(connections(page).getByText(emptyConnections)).toHaveCount(0);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:288:125",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 125,
+                "line": 288
+              }
+            }
+          ],
+          "apiCalls": 3,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\error-context.md",
+              "bytes": 20392,
+              "sha256": "54aa2901a8d71817deee11ea3cbd9562f778e8e70c5f9aac06e2790602384f0a"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\trace.zip",
+              "bytes": 205257,
+              "sha256": "a30b083e7996f5e8c587ca8b8191504b7562aa07baf7db1000c50dedc59f4a9e"
+            }
+          ]
+        },
+        {
+          "title": "SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial",
+          "file": "slack-delivery.spec.ts",
+          "line": 354,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6126,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\n\n\n  354 | test(\"SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial\", async ({ page, slack }) => {\n  355 |   await page.goto(\"/#/integrations\");\n> 356 |   await expect(connectionRow(page, alphaConnection.name)).toBeVisible();\n      |                                                           ^\n  357 |   const initialRead = slack.queueRead(connectionPath(alphaConnection.id), slackAlpha.id, 200, true);\n  358 |   await editConnection(page);\n  359 |   await requested(initialRead);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:356:59",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 59,
+                "line": 356
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\error-context.md",
+              "bytes": 20181,
+              "sha256": "63cc1ebc51ab30ef6878f890a92f7c9418668351dd43cbd4ef88f9192ed19e09"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\trace.zip",
+              "bytes": 226204,
+              "sha256": "8a91378907078259862fe5a1eec393c24a00c8b00ba8485508fc01ebcfaa7b86"
+            }
+          ]
+        },
+        {
+          "title": "SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation",
+          "file": "slack-delivery.spec.ts",
+          "line": 426,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 7118,
+          "retry": 0,
+          "blockedAt": "Missing contextual Notify action",
+          "errors": [
+            {
+              "message": "Error: One contextual notification action belongs in the existing finding dialog.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - One contextual notification action belongs in the existing finding dialog. getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  164 | async function openPreview(page: Page, value = alphaConnection) {\n  165 |   const action = findingDialog(page).getByRole(\"button\", { name: notifyName });\n> 166 |   await expect(action, \"One contextual notification action belongs in the existing finding dialog.\").toHaveCount(1);\n      |                                                                                                      ^\n  167 |   await action.click();\n  168 |   await expect(preview(page)).toBeVisible();\n  169 |   await expect(previewForm(page)).toBeVisible();\n    at openPreview (C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:166:102)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:431:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 102,
+                "line": 166
+              }
+            }
+          ],
+          "apiCalls": 6,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/work",
+            "GET /api/v1/work",
+            "GET /api/v1/findings/52000000000000000000000000000001",
+            "GET /api/v1/findings/52000000000000000000000000000001"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\test-failed-1.png",
+              "bytes": 92825,
+              "sha256": "a5c31993603a715d7e4de462dd22f49eb3a291087c50c6b9a4dc024a29948f67"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\error-context.md",
+              "bytes": 32329,
+              "sha256": "6fe95e82e82c59155cca62fcbd9650427cf39d4aaf89acefa5c6a49e45404abf"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\trace.zip",
+              "bytes": 413966,
+              "sha256": "ab226b85d7c7122d23da8a1095e3c25d769e2d79ad013ebca7c2bdadd22c1cf7"
+            }
+          ]
+        },
+        {
+          "title": "SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts",
+          "file": "slack-delivery.spec.ts",
+          "line": 488,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6783,
+          "retry": 0,
+          "blockedAt": "Missing Delivery history region",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Slack )?Delivery history$/i, includeHidden: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Slack )?Delivery history$/i, includeHidden: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Slack )?Delivery history$/i, includeHidden: true })\n\n\n  173 |   const toggle = findingDialog(page).getByRole(\"button\", { name: /^(?:Show |View )?(?:delivery history|deliveries)$/i });\n  174 |   if (!await history(page).isVisible() && await toggle.isVisible()) await toggle.click();\n> 175 |   await expect(history(page)).toBeVisible();\n      |                               ^\n  176 | }\n  177 | async function openDelivery(page: Page, value: SlackDelivery) {\n  178 |   await openHistory(page);\n    at openHistory (C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:175:31)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:498:3",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 31,
+                "line": 175
+              }
+            }
+          ],
+          "apiCalls": 6,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/work",
+            "GET /api/v1/work",
+            "GET /api/v1/findings/52000000000000000000000000000001",
+            "GET /api/v1/findings/52000000000000000000000000000001"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\test-failed-1.png",
+              "bytes": 92721,
+              "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\error-context.md",
+              "bytes": 24068,
+              "sha256": "cf0238139dd1c9702abc1657bfd7ade0c77bb0f3ab6bc4cff46e34f3fdb62946"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\trace.zip",
+              "bytes": 434990,
+              "sha256": "d6e4c7e1fb0092e8ce4c5e1dab25ed73ce199f43109bdbbb9d79e6573fcfe2c3"
+            }
+          ]
+        },
+        {
+          "title": "SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation",
+          "file": "slack-delivery.spec.ts",
+          "line": 540,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 7060,
+          "retry": 0,
+          "blockedAt": "Missing contextual Notify action",
+          "errors": [
+            {
+              "message": "Error: One contextual notification action belongs in the existing finding dialog.\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - One contextual notification action belongs in the existing finding dialog. getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i }) with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Synthetic Slack finding review', exact: true }).getByRole('button', { name: /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i })\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n\n\n  164 | async function openPreview(page: Page, value = alphaConnection) {\n  165 |   const action = findingDialog(page).getByRole(\"button\", { name: notifyName });\n> 166 |   await expect(action, \"One contextual notification action belongs in the existing finding dialog.\").toHaveCount(1);\n      |                                                                                                      ^\n  167 |   await action.click();\n  168 |   await expect(preview(page)).toBeVisible();\n  169 |   await expect(previewForm(page)).toBeVisible();\n    at openPreview (C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:166:102)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:542:9",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 102,
+                "line": 166
+              }
+            }
+          ],
+          "apiCalls": 6,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/work",
+            "GET /api/v1/work",
+            "GET /api/v1/findings/52000000000000000000000000000001",
+            "GET /api/v1/findings/52000000000000000000000000000001"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\test-failed-1.png",
+              "bytes": 92721,
+              "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\error-context.md",
+              "bytes": 32327,
+              "sha256": "44cf5ae39d4295cce51ec3aa12e09ff2151099e73e118d3f02a144603d438a99"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\trace.zip",
+              "bytes": 438560,
+              "sha256": "98acb7b0b98d3a0312ebec019dfa651647d958791a8ffaf7275dd19ff608f7e3"
+            }
+          ]
+        },
+        {
+          "title": "SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs",
+          "file": "slack-delivery.spec.ts",
+          "line": 582,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6231,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\n\n\n  584 |   slack.seedDelivery(historical);\n  585 |   await page.goto(\"/#/integrations\");\n> 586 |   await expect(connectionRow(page, alphaConnection.name)).toBeVisible();\n      |                                                           ^\n  587 |   const oldList = slack.queueRead(connectionsPath, slackAlpha.id, 200, true);\n  588 |   await refreshConnections(page).click();\n  589 |   await requested(oldList);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:586:59",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 59,
+                "line": 586
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\error-context.md",
+              "bytes": 18629,
+              "sha256": "06f0ba4e19f9a0ac5434cea701e0746d93d0967fd42d304de62ffba6e1290af8"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\trace.zip",
+              "bytes": 226650,
+              "sha256": "8efaa4041979d2a5cbab27e896442cc63a1d39b0d3bcda1a2acb0caa4ce7ae8e"
+            }
+          ]
+        },
+        {
+          "title": "SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs",
+          "file": "slack-delivery.spec.ts",
+          "line": 637,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6390,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic Alpha on-call' })\n\n\n  639 |   slack.seedDelivery(receipt);\n  640 |   await page.goto(\"/#/integrations\");\n> 641 |   await expect(connectionRow(page, alphaConnection.name)).toBeVisible();\n      |                                                           ^\n  642 |   await editConnection(page);\n  643 |   await expect(connectionForm(page).getByLabel(connectionNameLabel)).toHaveValue(alphaConnection.name);\n  644 |   await page.keyboard.press(\"Escape\");\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:641:59",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 59,
+                "line": 641
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\test-failed-1.png",
+              "bytes": 68654,
+              "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\error-context.md",
+              "bytes": 18455,
+              "sha256": "fc97e85f59455d7286d72b858a00d8562f165ad07db1697b5ada8c97fd21e03f"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\trace.zip",
+              "bytes": 226226,
+              "sha256": "fd13cfa72dc4cbaaad562bd22e000251bd0cf4b4918c2f63164ca22cb03246ee"
+            }
+          ]
+        },
+        {
+          "title": "SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm",
+          "file": "slack-delivery.spec.ts",
+          "line": 761,
+          "actualStatus": "failed",
+          "expectedStatus": "passed",
+          "durationMS": 6532,
+          "retry": 0,
+          "blockedAt": "Missing Connections region/table",
+          "errors": [
+            {
+              "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic workspace WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic workspace WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' }) with timeout 5000ms\n  - waiting for getByRole('region', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('table', { name: /^(?:Workspace )?Connections$/i, includeHidden: true }).getByRole('row', { includeHidden: true }).filter({ hasText: 'Synthetic workspace WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' })\n\n\n  768 |   });\n  769 |   await page.goto(\"/#/integrations\");\n> 770 |   await expect(connectionRow(page, longConnection.name)).toBeVisible();\n      |                                                          ^\n  771 |   await addConnection(page).focus();\n  772 |   await addConnection(page).press(\"Enter\");\n  773 |   await expect(connectionEditor(page)).toBeVisible();\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts:770:58",
+              "location": {
+                "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\slack-delivery.spec.ts",
+                "column": 58,
+                "line": 770
+              }
+            }
+          ],
+          "apiCalls": 4,
+          "apiPaths": [
+            "GET /api/v1/session",
+            "GET /api/v1/session",
+            "GET /api/v1/integrations/catalog",
+            "GET /api/v1/integrations/catalog"
+          ],
+          "fixtureViolations": [],
+          "pageErrors": [],
+          "externalHTTPAttempts": 0,
+          "artifactFiles": [
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\test-failed-1.png",
+              "bytes": 36667,
+              "sha256": "8f8fd0d0e6a83943de4a854dad9c00045b8ca831521a6184592b27130d55b95c"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\error-context.md",
+              "bytes": 16240,
+              "sha256": "17ba34efce4b7881433614cad120aa0744969cb5d83bdaf8deae80050b86b4ad"
+            },
+            {
+              "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\trace.zip",
+              "bytes": 146582,
+              "sha256": "d9809fc968486230a4f9fb63d44312089040cf9edb8816e43e1e6caccde73081"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unexecuted": "Connection forms, enqueue/status/idempotency/scope/mobile downstream assertions are blocked by the missing UI. They are authored requirements, not claimed executed successes.",
+  "noBackendOrNativeQualificationClaim": true
+}

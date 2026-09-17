@@ -1,0 +1,37 @@
+DELIVERY RUNTIME V1 - FROZEN TEST-FIRST HANDOFF
+============================================
+
+Four real service/command narratives are in roles_test.go. Existing accepted
+backend/A2 tests, bindings, old runtime/service tests and modules are untouched.
+
+The exact production binding expects:
+  service.Config.DeliveryLeaseDuration time.Duration
+  service.Config.SlackEndpoint string
+  service.Config.DeliveryClient *http.Client
+  service.Config.DeliveryCAFile string
+  service.Environment("delivery")
+  service.Run(ctx, "delivery", config)
+  cmd/delivery-worker
+
+The current command directory and configuration fields are missing. Actual
+build/compile prerequisite RED is recorded separately from helper compilation.
+No service-health, PG delivery, shutdown, command or environment assertion may
+be described as passing until full Contract mode actually executes them.
+
+The helpers call accepted real core APIs/PG/local source intake, not a fake
+queue or synthetic SQL result. The runtime must reuse app.OpenDeliveryWorker
+and ProcessNext. Normal TLS, explicit selected-origin transport, no ambient
+proxy/credential inheritance, and owned-only endpoints are required.
+
+Read CONTRACT.txt for defaults, precise client/CA policy, endpoint and lease
+rules, health semantics and bounded cancellation/process cleanup. There is
+no hidden UI, installer, Helm, Quadlet or live-account certification requirement.
+
+Use Test-DeliveryRuntime.ps1 with the existing private loopback runtime and
+fresh OutputName labels. Contract builds the actual command then runs all
+tests. ServiceContract / CommandBuild distinguish the missing prerequisites.
+HarnessCompile is only a compiler diagnostic and never acceptance.
+
+reviews\v1 contains narrow source/control hashes, RED, runtime-interface
+decisions and an unsigned frozen inventory. No existing file was amended or
+archived. Parent verifies/seals; separate coder and independent reviewer follow.

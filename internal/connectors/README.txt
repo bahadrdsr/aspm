@@ -68,6 +68,12 @@ without query/fragment/userinfo; native routes are appended to that base.
 Teams is the full URL exception. Credentials and authorization of configured
 endpoints are the caller's responsibility, not discovered or provisioned here.
 
+Finding DeepLink values are HTTPS browser links, not provider request targets.
+They may retain a client-side hash route such as /#/work?finding=<id>; the exact
+link reaches the native payload unchanged. HTTP endpoints still reject fragments.
+Browser links reject credentials, invalid ports, oversized values and raw or
+decoded control characters, including those in query/fragment text.
+
 Bounds and evidence
 -------------------
 Limits defaults: Requests=32 per operation, Pages=8 per feed, PageSize=50,

@@ -1,0 +1,281 @@
+SLACK CONNECTION AND FINDING DELIVERY UI - INDEPENDENT TEST-FIRST CONTRACT
+========================================================================
+
+Authority and scope
+-------------------
+The starting published UI is commit
+2a156bc103aaa9035e1579e583d0b8df3e5f517a. Its 58 existing browser cases,
+including Reports and finding actions, remain acceptance authority. The
+working tree already contains the separately accepted durable Slack backend.
+This packet does not implement or amend that backend, a worker entrypoint,
+service/deployment wiring, production UI, dependencies or source approvals.
+
+The author inspected the actual internal\app\remediation_connections.go,
+remediation_credentials.go, remediation_deliveries.go, remediation_worker.go,
+remediation_schema.go, http.go, auth.go and README.txt; connector types.go,
+notifications.go, delivery.go and http.go; tests\remediation\CONTRACT.txt;
+the existing production UI and browser fixtures, guards and test runner.
+The actual source wins over informal DTO spelling or guessed endpoints.
+BEFORE.json records raw hashes of 834 original inputs, including the already
+dirty accepted backend. No previous review directory was recursively copied.
+
+Eight top-level cases use only the real production React application served
+by the unchanged Vite/Playwright runner. Mocking stops at declared loopback
+HTTP responses. No React replacement, component injection, window-state
+substitute, production fixture import, actual backend/worker invocation,
+database, cloud, OAuth, vendor credential or provider I/O is authorized.
+Every record, token canary, actor and receipt in this packet is synthetic.
+Mocked qualification does not depend on which API an old live core exposes.
+
+New files and the only legacy amendment
+--------------------------------------
+web\tests\slack-ui-data.ts
+web\tests\slack-ui-fixture.ts
+web\tests\slack-delivery.spec.ts
+web\tests\slack-navigation.ts
+web\tests\reviews\slack-delivery-ui-v1\* (contract/hash/evidence handoff)
+
+The only amended original files are network.ts, application-fixture.ts,
+finding-actions-fixture.ts and reports-fixture.ts, all under web\tests.
+Each gets one helper import and one additive GET navigation dispatch after
+its existing authority checks. No old assertion, authentication/credential/
+Origin/JSON/provenance guard, compiler config, runner, timeout, request budget,
+package or lockfile statement is removed or changed.
+
+The helper accepts only:
+  GET /api/v1/integrations/connections
+  GET /api/v1/findings/{already-owned-fixture-id}/deliveries
+with an existing selected workspace and validated limit/cursor. It returns
+the true empty synthetic collection {apiVersion,dataOrigin,items:[],
+total:0,nextCursor:null}. It never invents a connection, credential, delivery
+detail, verification, write authority or retry/dispatch route. Unknown IDs,
+workspaces, methods and query fields are rejected, not passed to the backend.
+Legacy fixture IDs are exactly allowlisted as they already exist; this does
+not change the new backend's 32-hex identity requirements.
+
+ARCHIVES.json and history\before contain byte archives only for those four
+actually amended files. GUARDS.json records an exact additive comparison:
+removing just the recorded insertion ranges reconstructs each old byte stream.
+All original assertion files and unrelated inputs must remain byte-identical.
+Old signatures/control manifests are neither overwritten nor re-signed.
+The parent must review the delta and seal a new packet, not claim that an old
+signature already authorizes a changed fixture.
+
+Exact HTTP contract
+-------------------
+Every protected request follows the authenticated application session and
+uses X-ASPM-Workspace-ID. All browser writes use the matching loopback Origin
+in this explicitly synthetic test boundary and JSON objects. This fixture
+does not claim to qualify production HTTPS/cookie/CSRF middleware.
+Session metadata roles and current serverRoles are independent maps. A cached
+admin/analyst session never forces a successful server write after revocation.
+
+GET  /api/v1/integrations/connections
+POST /api/v1/integrations/connections
+GET  /api/v1/integrations/connections/{id}
+PATCH /api/v1/integrations/connections/{id}
+
+POST input contains exactly:
+  {profile:"slack-workspace-bot",name,channel,token,enabled:boolean}
+Admin only. Name: Go nonblank/NUL-free text, at most 256 UTF-8 bytes.
+Channel: ^[CG][A-Z0-9]{2,127}$, not a #name, search term or webhook URL.
+Token: opaque nonempty text, at most 16384 UTF-8 bytes, no leading/trailing
+Go whitespace or Unicode control characters. Input JSON is bounded to 32 KiB.
+Enabled is an explicit boolean choice. No public operator-encryption-key
+input, endpoint, header, requester, approval, profile expansion or OAuth flow.
+
+PATCH accepts only intentional name/channel/token/enabled fields. Omission
+preserves prior data. A token field starts blank on every edit; blank is not
+a replacement, and unchanged tokens are not resubmitted. Only explicit new,
+nonempty token input may replace it. Profile/identity/workspace are immutable.
+Revision is returned server metadata, not a submitted body/header/precondition.
+Meaningful changes advance it. A form draft is not an acknowledged update.
+
+DTO contains exactly:
+  id,workspaceId,profile,name,channel,enabled,credentialConfigured,
+  revision,createdAt,updatedAt
+POST returns 201 {apiVersion,connection}; GET/PATCH detail returns 200.
+List returns {apiVersion,items,total,nextCursor}. Optional dataOrigin is
+supported; this packet explicitly labels its responses synthetic.
+No token, key, ciphertext, headers or endpoint may appear in metadata/errors.
+Credential presence is not a connected/healthy/live-verified claim.
+Missing operator encryption configuration yields 503/unavailable, never a
+mock successful verification. 403 remains an authoritative server denial.
+Nonsecret draft fields survive these errors with actionable guidance and
+without a secret echo. Token drafts are cleared on close/success/scope/session.
+
+POST /api/v1/findings/{id}/deliveries
+  {connectionId,idempotencyKey}
+GET /api/v1/findings/{id}/deliveries
+GET /api/v1/integrations/deliveries/{id}
+
+Admin/analyst may enqueue; members may read their workspace metadata/history.
+A selected connection must belong to that workspace and be enabled.
+Disabled enqueue is 409/conflict. Foreign/missing resources are 404.
+The idempotency key is nonblank/NUL-free and at most 256 UTF-8 bytes.
+Enqueue JSON is bounded to 16 KiB. No actor, payload, title/body/deepLink,
+endpoint, headers, evidence or approval is submitted by the browser.
+New intent: 202 queued. Same immutable binding/key replay: 200 same job,
+including its current durable outcome. Changed binding: 409, not a rewrite.
+
+Delivery DTO contains exactly:
+  id,workspaceId,findingId,connectionId,connectionRevision,profile,channel,
+  requestedBy,state,payload:{title,body,deepLink},createdAt,
+  dispatchStartedAt:null|timestamp,completedAt:null|timestamp,
+  receipt:null|{remoteId,remoteUrl},
+  failure:null|{code,nativeCode,httpStatus,retryAfterSeconds,retryable:false}
+
+Important source corrections:
+  1. The actual JSON tag is receipt.remoteUrl, not remoteURL.
+  2. The present Slack adapter returns channel:timestamp as remoteId and an
+     empty remoteUrl. Do not construct or pretend to have a supplied Slack
+     permalink. A supplied nonempty URL is a DTO value, not an invitation to
+     call Slack for a permalink. The tests do not click a remote link.
+  3. Native failure code rate_limited uses an underscore; delivery state
+     rate-limited uses a hyphen. failed/invalid_auth can have HTTP status 200.
+     Blocked preflight and lost-owner uncertainty may have HTTP status 0.
+  4. The schema/shared worker admit accepted. The fixture type admits it,
+     but the seven Slack outcome samples do not fabricate an accepted Slack
+     response to claim a native operation that this adapter never performs.
+
+Server snapshot at enqueue:
+  title = canonical finding title
+  body = "Severity: " + severity + "\nAsset: " + assetName
+  deepLink = trusted process PublicOrigin + "/#/work?finding=" + encoded ID
+The preview may show the current application's finding link because no
+PublicOrigin discovery route exists. After acknowledgement it must use the
+immutable DTO's exact link, including the synthetic server origin, rather than
+rebuild it from window.location, current asset metadata or report contents.
+Source code, raw evidence, original notes and remediation prose are excluded.
+
+IDs use 32 lowercase hexadecimal characters. Lists sort by ID, with native
+default limit 100, allowed 1..500, optional valid-ID cursor, total for the
+whole collection and nextCursor equal to the last returned ID only when
+another page exists. No invented offset/page/role/enabled filtering API.
+The fixture rejects duplicate or unrelated query fields as an explicit UI
+route allowlist even where the backend ignores unused parameters.
+Timestamps retain RFC3339 UTC identity, including PostgreSQL microseconds.
+Display may be localized; semantic time datetime values retain the source.
+
+State, intent and lifetime semantics
+-----------------------------------
+Queued means durable intent, not sent/accepted/confirmed. Dispatching is not
+confirmation either. Only a confirmed native receipt is confirmed. An
+independent native worker changes the durable status; the browser never
+dispatches work or calls a fabricated send/retry API.
+Blocked, failed, rate-limited and uncertain retain failure details. Retry-After
+7 seconds is data only. It must not start an enqueue/send timer.
+Terminal uncertainty says the outcome cannot be confirmed or may already
+have occurred, and offers no retry/resend/send-again control. Read-only
+"Refresh delivery" remains useful. No exactly-once or undo-remote-write claim.
+
+Network loss after enqueue is different from a durable uncertain result.
+The fixture persists the synthetic intent before dropping/holding its ACK.
+Before a user explicitly confirms the same unresolved intent again, either:
+  A. retain its exact connectionId + idempotencyKey and accept a 200 replay
+     with the same immutable ID and full durable result; or
+  B. prevent a new attempt until an authorized manual history read reconciles
+     the original job. Never silently turn lost acknowledgement into a fresh
+     idempotency key or automatic duplicate enqueue.
+Closing a modal or canceling fetch is not represented as a server rollback.
+
+Workspace changes, logout and 401 remove protected connection/form/preview/
+delivery/history state, abort old in-flight reads/writes, and discard late
+responses or committed ACKs. Switching via the real Workspace control is
+explicit in multi-phase tests: hash navigation does not reset a valid scope.
+After a detail 403/404, old detail metadata remains withheld through subsequent
+503 retries until a new authorized read succeeds. An independently authorized
+parent table is not required to disappear merely because its detail is denied.
+
+A notification never resolves a finding, changes owner/workflow/disposition,
+relabels scanner inference or claims independent verification. Its status
+must not replace original evidence, observation timestamps, analyst context
+or Work filter/selection/focus/scroll.
+
+Semantic UI surface
+-------------------
+Reuse existing shared shadcn/Animate controls, FormDialog, finding dialog,
+scoped resource/action and session patterns where useful. No new third-party
+form/chart/widget dependency. No implementation class names, test IDs,
+component internals, native-dialog-only checks, forced focus target or
+particular DOM repair technique is prescribed by this packet.
+
+Small discoverable controls with accessible names:
+  Connections region and table; Add/Create/New connection; Refresh connections.
+  Labelled connection form: Name, Channel ID, bot token, explicit Enabled.
+  Edit connection; contextual Save; revision from the returned server metadata.
+  Notify/Send to Slack inside the finding dialog, not a global bulk toolbar.
+  Small named notification preview/form, selected Connection and confirmation.
+  Delivery history and Deliveries table, optionally opened by a disclosure.
+  Open/View delivery; named Selected delivery region and Delivery status.
+  Refresh delivery and Refresh delivery history; contextual Retry for reads.
+Equivalent aliases listed in the spec are intentional, not implementation
+requirements. Native or accessible custom connection/enabled selectors are
+allowed. Disabled selector entries may be absent or truthfully disabled.
+Paging may append or replace the returned page while following nextCursor.
+
+The dialog must be keyboard reachable, keep focus inside while active, allow
+Escape/cancel and restore sensible context. At 390x844, long valid names,
+channels and payload context must fit without full-document horizontal
+overflow, with reachable dialog scrolling. Reduced motion affects real CSS
+and Web Animations, not only a preference attribute. Work query, selection,
+trigger focus and actual scrolled position survive cancel/confirmation.
+
+Eight bounded top-level cases
+-----------------------------
+SD1: All eight unverified catalog families, separate connection loading/
+     error/true-empty, 501-record native cursor paging, masked explicit
+     outbound creation, keyless 503/actionable draft handling, held 201 ACK
+     and secret clearing. Opening/configuring does not enqueue or verify.
+SD2: Admin detail read, name-only PATCH, disable-only PATCH, explicit token/
+     channel replacement, server revisions, pending truth and sparse fields.
+     Current server role denies a cached admin write; analyst/viewer cannot
+     create/edit, while disabled names and metadata remain readable.
+SD3: Analyst's one contextual preview, title/severity/asset/link only, no raw
+     source/evidence, no enqueue on open/cancel. Exact explicit enqueue,
+     queued receipt, unchanged finding and Work context, cached-role 403,
+     and viewer read-only history.
+SD4: History loading/error/manual retry, seven real state-shaped synthetic
+     responses, queued -> dispatching -> confirmed reads, exact immutable
+     payload/times/receipt/failure details. Browser clock advances eight
+     seconds solely to observe that Retry-After 7 does not cause a write.
+     Terminal uncertain has no retry/send-again control. No worker is simulated.
+SD5: Committed intent with dropped network ACK; no automatic second enqueue;
+     user-confirmed same-key 200 replay OR blocked attempt plus history
+     reconciliation. One immutable job survives either permitted UX.
+SD6: Workspace changes abort held connection-list and creation ACK requests,
+     clear token drafts, then discard a held history read and a committed
+     enqueue ACK without exposing Alpha data in Beta.
+SD7: Connection and delivery detail 403 and 404 each followed by 503 keep
+     old detail metadata withheld until 200. Logout discards held enqueue
+     ACK; active-token-form 401 clears everything and stays cleared on reload.
+SD8: 390px reduced-motion long-name/channel/asset context, keyboard containment,
+     Escape/focus, real scrolled Work preserved after cancel and explicit
+     confirmation, unchanged source state and existing Reports navigation.
+
+Execution, evidence and stopping point
+-------------------------------------
+Use the unchanged web\playwright.config.ts and web\scripts\playwright.mjs:
+one worker, zero retries, no skips/fixmes, 20-second test timeout, five-second
+expect timeout. Every new case has one combined 60-API-request ledger across
+auth, Work, connection, history, detail and writes. External HTTP is aborted
+and recorded as a violation. Existing guard statements are preserved verbatim.
+Only aspm.theme light/dark preferences may persist in browser storage.
+Token canaries are checked in text, URL, readable cookies, storage and console,
+including encoded forms; draft input values may exist only in masked fields.
+HTTP ledger attachments redact synthetic token/login fields. Browser traces
+may still contain explicitly synthetic test input, never live credentials.
+
+Mutable logs, traces, result JSON and compiler enumeration belong outside
+protected tests in .artifacts\slack-delivery-ui-v1-author. Original RED outputs
+use unique names and must never be overwritten by coder/parent/reviewer runs.
+COMPILATION.json, RED.json, COMPATIBILITY.json and GUARDS.json record actual
+commands, exits, assertions reached, counts, hashes and limitations.
+RED is expected to stop at missing UI, not at TypeScript errors or mock route
+mistakes. Downstream assertions blocked by missing UI are not claimed executed.
+Compatibility means the actual 58 original tests, not a smaller selected subset.
+
+After freezing PACKET.json and PACKET.sha256, stop for parent review/seal and
+a separate coder/reviewer. Do not change production to make this packet green,
+amend prior assertions, change retries/timeouts/dependencies, sign old history,
+commit anything or add worker/deployment tests under this author scope.

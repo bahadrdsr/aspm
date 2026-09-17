@@ -15,9 +15,10 @@ roles, assets, queued report intake, findings and scan history, CSV exports,
 and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
-and live posture reports with saved snapshots. Integration setup remains
-unfinished; the Reports UI still awaits separate source review and live HTTPS
-workflow qualification.
+live posture reports with saved snapshots, and Slack connections with explicit
+finding-notification previews and delivery history. Other integration setup remains
+unfinished. Reports and finding triage have independent source acceptance and
+owned HTTPS workflow qualification.
 
 Core API, ingestion and reporting run as separate processes. Core and ingestion
 use distinct scoped storage identities; reporting is database-only. Real local
@@ -26,7 +27,7 @@ deployment, recovery and capacity gates remain open. PostgreSQL role separation
 and production network isolation are not yet qualified.
 
 Eight native integration families and four configurable AI provider adapters
-exist as libraries. Persistent integration/assessment jobs, configuration UI
+exist as libraries. Beyond the Slack notification slice, persistent integration/assessment jobs, configuration UI
 and live vendor/model qualification remain incomplete. Verification supports
 approved deterministic synthetic evidence only, not exploit execution or
 autonomous offensive tools.
@@ -117,10 +118,58 @@ action. Closing cancels pending browser actions but cannot roll back a request
 already committed by the service. Finding-action source review and real HTTPS
 qualification remain separate from the synthetic browser checks.
 
-Finding-history pagination is not yet wired; a returned next-page cursor is disclosed
+Observation and analyst-note pagination is not yet wired; a returned next-page cursor is disclosed
 rather than presenting the loaded page as the complete history. Workspace
 changes, logout and session rejection clear these scoped views and cancel their
 browser requests. No report or authentication data is stored in browser storage.
+
+In **Integrations**, **Connections** lists workspace Slack destinations separately
+from the eight catalog families. Admins can create and edit a name, C/G channel ID,
+masked opaque bot token and explicit enabled state. A blank edit token preserves
+the stored credential; other edits send only changed fields. Credential presence
+and revision are metadata, not a connected or live-verified claim. Server permission
+denials remain authoritative. If credential encryption is unavailable, an operator
+must configure the service; the browser never requests an encryption key.
+
+In the existing finding dialog, admins and analysts can **Notify**, review the
+selected enabled connection and a title/severity/asset/link-only preview, then
+explicitly confirm. Opening or cancelling a preview does not enqueue anything.
+Original evidence, source code, notes and remediation text are excluded. A 202
+means queued, not sent. After acknowledgement, **Selected delivery** uses the exact
+immutable server payload, link, times and receipt rather than reconstructing them.
+**Delivery history** and Connections follow native limit/cursor pages; disabled
+connection metadata remains readable.
+
+Delivery/history refreshes are manual reads, never sends or polling. Failure codes,
+native codes, HTTP status and Retry-After remain literal outcome data. Uncertain
+outcomes have no resend action. A lost enqueue acknowledgement retains the same
+intent key in scoped memory, including across dialog closes, for explicit replay;
+closing is not server rollback. Workspace/session loss clears drafts, intents and
+protected views and aborts old requests. No connection or notification data is
+persisted in browser storage. These UI workflows neither change findings nor
+independently verify a Slack account. The complete UI, encrypted connection store,
+durable queue and separate delivery command have been exercised together through
+real HTTPS and an owned certificate-validated Slack-protocol fixture. Confirmed
+and lost-acknowledgement outcomes remain distinct, with no automatic resend.
+This is not live Slack installation or channel-authority certification.
+
+For this initial managed notification profile, core and `cmd\delivery-worker`
+must receive the same independently generated 32-byte key through protected
+`ASPM_INTEGRATION_ENCRYPTION_KEY` configuration, encoded as canonical standard
+base64. Do not derive it from database, bootstrap or storage credentials.
+The delivery process also needs the selected database URL/schema; it does not
+need S3 or bootstrap credentials. After provisioning those values in its own
+protected process environment, run:
+
+```powershell
+go run .\cmd\delivery-worker
+```
+
+The default outbound base is `https://slack.com`. Only trusted process
+configuration may select an approved HTTPS gateway and its optional CA file.
+See `internal\service\README.txt` for transport, lease and shutdown behavior.
+Helm/Quadlet/installer scheduling of this new role and production key rotation
+remain unfinished; the presence of the UI does not start a worker automatically.
 
 In **Reports**, **Live overview** displays the service's exact totals, all-finding
 severity counts, coverage, as-of time and freshness bounds. Edit **Freshness days**

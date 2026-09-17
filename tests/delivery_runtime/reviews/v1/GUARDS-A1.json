@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-effective-tls-a1",
+  "capturedAt": "2026-09-16T23:33:31.883528+00:00",
+  "beforeReference": {
+    "path": ".artifacts\\delivery-runtime-tls-a1\\BEFORE-A1.json",
+    "bytes": 3124,
+    "sha256": "ce63abcbf748eef34efde03029589f1daf5e7852d6b6d07b2b2910a330f785b2"
+  },
+  "unchangedHeldSourceAndRuntimeFiles": [
+    {
+      "path": "internal\\service\\delivery_client.go",
+      "bytes": 6710,
+      "sha256": "11c7d833c3f66bc328ef7f6f0a0864e543182e51d1224d2b99c6c22a77a3ddde"
+    },
+    {
+      "path": "internal\\service\\delivery_runtime.go",
+      "bytes": 2066,
+      "sha256": "e236716a2ec591cb6b91a01709f4fd3a11a137272006fcf5403317324a358ed1"
+    },
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 8935,
+      "sha256": "70be1ed4bde5a29cc81d3dae34348836e4e768690984f88596a6159eef851c66"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 10867,
+      "sha256": "7f23b5ed2099287c5a7020c68db4187c87a8abd9ea2337decf4800bc2349b3f3"
+    },
+    {
+      "path": "cmd\\delivery-worker\\main.go",
+      "bytes": 614,
+      "sha256": "edd04403a575417aa2d9cc167399177e40d394301cbeba08fd76dd5f5ac82f36"
+    },
+    {
+      "path": "tests\\delivery_runtime\\contract_test.go",
+      "bytes": 654,
+      "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\production_bindings_test.go",
+      "bytes": 1485,
+      "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\fixtures_test.go",
+      "bytes": 16270,
+      "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"
+    },
+    {
+      "path": "tests\\delivery_runtime\\roles_test.go",
+      "bytes": 17423,
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1",
+      "bytes": 7421,
+      "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\PACKET.json",
+      "bytes": 3913,
+      "sha256": "1c06494b330c64103478c0cd4b65eb6cdd17322f54cde5ca2f9abb300644fa69"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "6f2a25922855161c501da88e241a85c110d7589d2476de52259235bff851a5ba"
+    },
+    {
+      "path": ".oracles\\delivery-runtime-v1.json",
+      "bytes": 20524,
+      "sha256": "e9ae420d7deb877c850369367350d435599ac0e737e90e7004f251b79c7cfe17"
+    },
+    {
+      "path": ".oracles\\delivery-runtime-v1.json.sig",
+      "bytes": 89,
+      "sha256": "fc54ef21c49d94c124e724b8320ab621fae21608b5dec703555d141effdbd73a"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "changedExistingFiles": [],
+  "originalRuntimeAuthority": {
+    "manifest": {
+      "path": ".oracles\\delivery-runtime-v1.json",
+      "bytes": 20524,
+      "sha256": "e9ae420d7deb877c850369367350d435599ac0e737e90e7004f251b79c7cfe17"
+    },
+    "signature": {
+      "path": ".oracles\\delivery-runtime-v1.json.sig",
+      "bytes": 89,
+      "sha256": "fc54ef21c49d94c124e724b8320ab621fae21608b5dec703555d141effdbd73a"
+    },
+    "requiredControlCount": 109,
+    "allOriginalHashesUnchanged": true,
+    "originalHashArrayPointer": "/files",
+    "resigned": false
+  },
+  "newTest": {
+    "path": "tests\\delivery_runtime\\tls_range_test.go",
+    "bytes": 4337,
+    "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"
+  },
+  "existingFourCasesFixturesBindingsRunnerUnchanged": true,
+  "helperExtraction": false,
+  "dependencyChanges": [],
+  "archives": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "nativeEnvironmentChanges": false
+}

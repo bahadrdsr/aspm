@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "capturedAt": "2026-09-16T20:22:00.222Z",
+  "originalConfigurationReproduction": {
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-before.receipt.json",
+      "bytes": 894,
+      "sha256": "b841dd746b3679b8e808ab96e4f946398815dd680b5ee09aefe822490a27b2cf"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-before.jsonl",
+      "bytes": 1882,
+      "sha256": "adb14df307528867cdddf0f47e060bb2b4ba55894ecbb1a4712c2d77ba959bce"
+    },
+    "log": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-before.log",
+      "bytes": 299,
+      "sha256": "bd42a6feb55f356253f34d1fdd224e41676b0f33e6d947663c27a8ea457e26dd"
+    },
+    "effectiveInvocation": {
+      "path": ".artifacts\\remediation-binding-a1\\config-before-invocation.json",
+      "bytes": 318,
+      "sha256": "1562aabf8ac5ef3059f07f1051407dca4729e478fcc90cf5d69eab4cd1dfc7a8"
+    },
+    "exitCode": 1,
+    "topLevelResults": [
+      {
+        "name": "TestRemediationExplicitOptionalKeyAndMinimalWorkerRole",
+        "outcome": "fail",
+        "elapsed": 0.89
+      }
+    ],
+    "interpretation": "Executed original interface-nil assertion failure; production concrete pointer correctly nil."
+  },
+  "focusedConfiguration": {
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-after.receipt.json",
+      "bytes": 892,
+      "sha256": "22ab7270dbf91ec635455bd6d20880b8495cd0568ad2455fd41249d47ebd8c9a"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-after.jsonl",
+      "bytes": 2092,
+      "sha256": "d77c5bfd3068f7ccd195bc1a9a22f021cd183d75ac7c93fa9ee6c1a7b1483733"
+    },
+    "log": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-after.log",
+      "bytes": 359,
+      "sha256": "319c4761a1ca1f832f4e1cce8fcc058ace540c1c3ccb6c20db388dcb01a769ee"
+    },
+    "effectiveInvocation": {
+      "path": ".artifacts\\remediation-binding-a1\\config-after-invocation.json",
+      "bytes": 315,
+      "sha256": "b8437236a7b341fe17150210001e2da316fcbf1ad132dada860809163486fd21"
+    },
+    "exitCode": 0,
+    "fullBindingIncluded": true,
+    "topLevelResults": [
+      {
+        "name": "TestRemediationExplicitOptionalKeyAndMinimalWorkerRole",
+        "outcome": "pass",
+        "elapsed": 1.58
+      }
+    ]
+  },
+  "fullContract": {
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-full-contract.receipt.json",
+      "bytes": 894,
+      "sha256": "f4fb66eb42ade7f4b3ebb9c6a8ff0e6e09b660a607544e52b6772775ca51a542"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-full-contract.jsonl",
+      "bytes": 18040,
+      "sha256": "0be469d61c82811af6f36328e2413f258aac9ad55663a9b934546b19ede83e86"
+    },
+    "log": {
+      "path": ".artifacts\\remediation-v1\\binding-a1-full-contract.log",
+      "bytes": 2902,
+      "sha256": "9c338d8bc94be7a4c7031878ab3d0854e1d40ac7bfe0296cd49e672d368bd29b"
+    },
+    "effectiveInvocation": {
+      "path": ".artifacts\\remediation-binding-a1\\full-contract-invocation.json",
+      "bytes": 240,
+      "sha256": "3752d363dc90b4de9a11269e7709bfbebab527a04f87e326375f90b1970045a2"
+    },
+    "exitCode": 0,
+    "fullBindingIncluded": true,
+    "topLevelPassed": 9,
+    "topLevelFailed": 0,
+    "skipped": 0,
+    "nativeFailureSubcasesPassed": 8,
+    "topLevelResults": [
+      {
+        "name": "TestRemediationOwnedRuntimePreflight",
+        "outcome": "pass",
+        "elapsed": 0.09
+      },
+      {
+        "name": "TestRemediationConnectionsRBACRedactionAndAuthenticatedEncryption",
+        "outcome": "pass",
+        "elapsed": 1.84
+      },
+      {
+        "name": "TestRemediationImmutableScopedEnqueueAndIdempotency",
+        "outcome": "pass",
+        "elapsed": 1.88
+      },
+      {
+        "name": "TestRemediationIndependentNativeSlackReceiptAndFreshReplay",
+        "outcome": "pass",
+        "elapsed": 1.25
+      },
+      {
+        "name": "TestRemediationPredispatchActorAndConnectionDenials",
+        "outcome": "pass",
+        "elapsed": 1.33
+      },
+      {
+        "name": "TestRemediationConcurrentOwnershipCancellationAndAvailableSQLPool",
+        "outcome": "pass",
+        "elapsed": 1.19
+      },
+      {
+        "name": "TestRemediationRealWorkerCrashRecoversDispatchAsUncertain",
+        "outcome": "pass",
+        "elapsed": 2.54
+      },
+      {
+        "name": "TestRemediationNativeFailuresAndRetryAfterNeverAutoRetry",
+        "outcome": "pass",
+        "elapsed": 1.28
+      },
+      {
+        "name": "TestRemediationExplicitOptionalKeyAndMinimalWorkerRole",
+        "outcome": "pass",
+        "elapsed": 1.11
+      }
+    ],
+    "remainingConfigurationChecksExecuted": true
+  },
+  "priorCompatibilityReference": {
+    "file": {
+      "path": ".cache\\remediation-coder\\compatibility-HANDOFF.json",
+      "bytes": 516216,
+      "sha256": "215129cf9c880d690e4bf6cf3bf3a6ca5146c7f2b91fe1f145a401eeda212958"
+    },
+    "reported": [
+      {
+        "name": "api-security",
+        "passed": 30,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "runtime-roles",
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "native-adapters",
+        "passed": 26,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "rerunByThisAuthor": false,
+    "newAmendmentBaselineClaimedForThoseSuites": false
+  },
+  "heldSourceUnchangedDuringActualRuns": true,
+  "actualNewClaims": [
+    "Focused full-binding configuration gate passed.",
+    "Unfiltered full nine-gate Contract passed, including eight native-failure subcases."
+  ],
+  "retriesOrSuppressionAdded": false,
+  "liveVendorCalls": 0,
+  "agentsSpawned": 0,
+  "commitsCreated": 0
+}

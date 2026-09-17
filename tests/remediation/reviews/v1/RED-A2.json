@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "capturedAt": "2026-09-16T21:22:54.368Z",
+  "status": "FROZEN_SAFE_RUNTIME_ORDER_RED_PENDING_PARENT_FIX",
+  "result": {
+    "mode": "Contract",
+    "fullBindingIncluded": true,
+    "effectiveInvocation": {
+      "path": ".artifacts\\remediation-lock-order-a2\\invocation-final.json",
+      "bytes": 317,
+      "sha256": "7c47a4f520bea54d73d513ad7d684cc8e927bc641a19928902a4c4bd8e91bd5e"
+    },
+    "runnerReceipt": {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-02.receipt.json",
+      "bytes": 896,
+      "sha256": "adb51706b3fc4e849693365c4591628dd5bb5839e18f63d2ff4ab14b8c5508af"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-02.jsonl",
+      "bytes": 5233,
+      "sha256": "f94fa33800babf0c15bd37fdd4d324ba23ffaa36b80d733aa5245525f198b3fe"
+    },
+    "log": {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-02.log",
+      "bytes": 1244,
+      "sha256": "27066ff3a26415254680c4cdd22cbe331a6f5ac917ac9e3fdf9ebdc310c7f5bf"
+    },
+    "exitCode": 1,
+    "topLevelCases": 1,
+    "executedOperationVariants": 2,
+    "failedOrderVariants": 2,
+    "skips": 0,
+    "retriesAdded": 0
+  },
+  "observations": [
+    {
+      "file": {
+        "path": ".artifacts\\remediation-v1\\a2-lock-order-connection-create-b03f36864b44105aeaeb9087.json",
+        "bytes": 450,
+        "sha256": "2f8505affbfec796829b719f76c073025b1eb14f68742c2c6fcb5a484c55a5b9"
+      },
+      "value": {
+        "Variant": "connection-create",
+        "OwnedSchema": "remediation_f2accaaefd0765e94fde39bb",
+        "UnsafeOrderCancelled": true,
+        "CompetingSameRoleUpdateStarted": false,
+        "ActualPGBlockerObserved": false,
+        "MembershipCompletedAfterWorkspace": false,
+        "InsertionHTTPStatus": 503,
+        "UpdateHTTPStatus": 0,
+        "Trace": [
+          {
+            "phase": "membership-start",
+            "pid": 795,
+            "inTransaction": true
+          },
+          {
+            "phase": "membership-end",
+            "pid": 795,
+            "inTransaction": true,
+            "queryFailed": true
+          }
+        ],
+        "LiveDeadlockReproduced": false
+      }
+    },
+    {
+      "file": {
+        "path": ".artifacts\\remediation-v1\\a2-lock-order-delivery-enqueue-f72e622d121df12e596b0fe2.json",
+        "bytes": 449,
+        "sha256": "78dffd4148d5fe6542d00b05e712070d9e24b7366b84f7d9c1ebbe77be3e7751"
+      },
+      "value": {
+        "Variant": "delivery-enqueue",
+        "OwnedSchema": "remediation_f3d635d64745ee9878752ad1",
+        "UnsafeOrderCancelled": true,
+        "CompetingSameRoleUpdateStarted": false,
+        "ActualPGBlockerObserved": false,
+        "MembershipCompletedAfterWorkspace": false,
+        "InsertionHTTPStatus": 503,
+        "UpdateHTTPStatus": 0,
+        "Trace": [
+          {
+            "phase": "membership-start",
+            "pid": 798,
+            "inTransaction": true
+          },
+          {
+            "phase": "membership-end",
+            "pid": 798,
+            "inTransaction": true,
+            "queryFailed": true
+          }
+        ],
+        "LiveDeadlockReproduced": false
+      }
+    }
+  ],
+  "interpretation": {
+    "actualEvidence": "Real PG insertion transaction reached membership-lock start without a successfully completed workspace-row protection query. Read-only observer safely canceled the owned insertion, whose API returned 503.",
+    "liveDeadlockReproduced": false,
+    "deadlockCycleIntentionallyStaged": false,
+    "competingUpdatesStartedOnThisBaseline": 0,
+    "blockedDownstreamNotRun": [
+      "Correct-order workspace lock acquisition/scheduling hold",
+      "Controlled same-role concurrent update",
+      "Actual pg_blocking_pids one-way wait assertion",
+      "Successful ordered insertion/update completion and unchanged admin role"
+    ],
+    "oldNineNarrativesRerunByThisAuthor": false,
+    "oldNineNarrativeBytesPreserved": true,
+    "noProductionPassClaimed": true
+  },
+  "authorCompileDiagnostic": {
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-01.receipt.json",
+      "bytes": 896,
+      "sha256": "7359393fe84a360d27031f33803e0c3a876ab03438d00fcef8a86f6592659c73"
+    },
+    "log": {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-01.log",
+      "bytes": 244,
+      "sha256": "d73086d6e5ff40aeddad4484b4df6ac1bb9331d78acba5bc61fab60d557cdcfe"
+    },
+    "classification": "Unused import in new regression corrected before semantic baseline; not production RED"
+  }
+}

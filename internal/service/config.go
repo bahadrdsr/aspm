@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"net/url"
 	"os"
 	"regexp"
@@ -19,27 +21,32 @@ import (
 )
 
 type Config struct {
-	Listen           string
-	Assets           string
-	WorkerID         string
-	Workspace        string
-	PublicOrigin     string
-	TLSCertFile      string
-	TLSKeyFile       string
-	BootstrapToken   string `json:"-"`
-	ReadinessKey     string
-	PrepareReadiness bool
-	NormalizedPrefix string
-	Jobs             jobs.Config
-	Evidence         evidence.Config
+	Listen                   string
+	Assets                   string
+	WorkerID                 string
+	Workspace                string
+	PublicOrigin             string
+	TLSCertFile              string
+	TLSKeyFile               string
+	BootstrapToken           string `json:"-"`
+	IntegrationEncryptionKey []byte `json:"-"`
+	DeliveryLeaseDuration    time.Duration
+	SlackEndpoint            string       `json:"-"`
+	DeliveryClient           *http.Client `json:"-"`
+	DeliveryCAFile           string       `json:"-"`
+	ReadinessKey             string
+	PrepareReadiness         bool
+	NormalizedPrefix         string
+	Jobs                     jobs.Config
+	Evidence                 evidence.Config
 }
 
 func Environment(role string) (Config, error) {
-	if role != "core" && role != "ingestion" && role != "reports" {
+	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" {
 		return Config{}, errors.New("unsupported service role")
 	}
 	prepare := false
-	if value := os.Getenv("ASPM_S3_PREPARE_READINESS"); value != "" {
+	if value := os.Getenv("ASPM_S3_PREPARE_READINESS"); role != "delivery" && value != "" {
 		var err error
 		prepare, err = strconv.ParseBool(value)
 		if err != nil {
@@ -55,8 +62,11 @@ func Environment(role string) (Config, error) {
 	}
 	connections := int64(5)
 	minimum := int64(2)
-	if role == "reports" {
+	if role == "reports" || role == "delivery" {
 		minimum = 1
+	}
+	if role == "delivery" {
+		connections = 1
 	}
 	if value := os.Getenv("ASPM_DB_MAX_CONNECTIONS"); value != "" {
 		connections, err = strconv.ParseInt(value, 10, 32)
@@ -75,7 +85,7 @@ func Environment(role string) (Config, error) {
 			MaxLease: time.Minute, MaxAttempts: 3, RetryDelay: time.Second, MaxRetryDelay: 30 * time.Second,
 		},
 	}
-	if role != "reports" {
+	if role != "reports" && role != "delivery" {
 		config.Evidence = evidence.Config{
 			Endpoint: os.Getenv("ASPM_S3_ENDPOINT"), Bucket: env("ASPM_S3_BUCKET", "aspm-evidence"),
 			AccessKey: os.Getenv("ASPM_S3_ACCESS_KEY"), SecretKey: os.Getenv("ASPM_S3_SECRET_KEY"),
@@ -88,11 +98,24 @@ func Environment(role string) (Config, error) {
 		config.Assets = env("ASPM_ASSETS", "web/dist")
 		config.PublicOrigin = os.Getenv("ASPM_PUBLIC_ORIGIN")
 		config.BootstrapToken = os.Getenv("ASPM_BOOTSTRAP_TOKEN")
+		config.IntegrationEncryptionKey, err = integrationEncryptionKey(os.Getenv("ASPM_INTEGRATION_ENCRYPTION_KEY"), false)
+		if err != nil {
+			return Config{}, err
+		}
 	}
 	if role == "ingestion" {
 		config.NormalizedPrefix = env("ASPM_S3_NORMALIZED_PREFIX", "normalized/")
 	}
+	if role == "delivery" {
+		config.WorkerID = "delivery-" + jobs.NewID()
+		if err := deliveryEnvironment(&config); err != nil {
+			return Config{}, err
+		}
+	}
 	if err := validateConfig(role, config); err != nil {
+		if role == "delivery" && config.DeliveryClient != nil {
+			config.DeliveryClient.CloseIdleConnections()
+		}
 		return Config{}, err
 	}
 	return config, nil
@@ -111,13 +134,18 @@ func databaseConfig(config jobs.Config) app.DatabaseConfig {
 // Validate the complete caller configuration before EnsureSchema, pool opens,
 // storage probes, listeners, or worker goroutines can perform I/O.
 func validateConfig(role string, config Config) error {
-	if role != "core" && role != "ingestion" && role != "reports" {
+	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" {
 		return errors.New("unsupported service role")
 	}
-	if config.PrepareReadiness && (role != "core" || config.ReadinessKey == "") {
+	if role == "delivery" {
+		if err := validateDeliveryConfig(config); err != nil {
+			return err
+		}
+	}
+	if role != "delivery" && config.PrepareReadiness && (role != "core" || config.ReadinessKey == "") {
 		return errors.New("readiness preparation requires core and an explicit scoped readiness key")
 	}
-	if role != "reports" {
+	if role != "reports" && role != "delivery" {
 		if err := app.ValidateStorageConfig(storageConfig(config.Evidence)); err != nil {
 			return err
 		}
@@ -155,6 +183,9 @@ func validateConfig(role string, config Config) error {
 		return errors.New("both TLS certificate and key files are required for direct HTTPS")
 	}
 	if role == "core" {
+		if len(config.IntegrationEncryptionKey) != 0 && len(config.IntegrationEncryptionKey) != 32 {
+			return errors.New("core integration encryption requires an explicit 32-byte key")
+		}
 		if config.Assets == "" || (config.BootstrapToken != "" && len(config.BootstrapToken) < 32) {
 			return errors.New("invalid core assets or bootstrap configuration")
 		}
@@ -173,6 +204,17 @@ func env(name, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func integrationEncryptionKey(encoded string, required bool) ([]byte, error) {
+	if encoded == "" && !required {
+		return nil, nil
+	}
+	key, err := base64.StdEncoding.Strict().DecodeString(encoded)
+	if err != nil || len(key) != 32 || base64.StdEncoding.EncodeToString(key) != encoded {
+		return nil, errors.New("ASPM_INTEGRATION_ENCRYPTION_KEY must be standard base64 for exactly 32 bytes")
+	}
+	return key, nil
 }
 
 func EnsureSchema(ctx context.Context, config jobs.Config) (err error) {

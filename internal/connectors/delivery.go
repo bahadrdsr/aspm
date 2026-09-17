@@ -94,7 +94,7 @@ func (d *deliveryBase) validateAction(action Action, sending bool) error {
 	if sending && (!textID(action.IntentID, 256) || !textID(action.ApprovalRef, 512)) {
 		return connectorError(ErrScope)
 	}
-	if _, err := tlsURL(action.DeepLink, true); err != nil {
+	if err := validateBrowserLink(action.DeepLink); err != nil {
 		return err
 	}
 	if d.config.Profile == JiraCloudV3 {
@@ -103,6 +103,27 @@ func (d *deliveryBase) validateAction(action Action, sending bool) error {
 				return connectorError(ErrScope)
 			}
 		}
+	}
+	return nil
+}
+
+// Browser fragments are payload data, never part of a provider request target.
+func validateBrowserLink(value string) error {
+	if len(value) > 16384 || strings.ContainsFunc(value, unicode.IsControl) {
+		return connectorError(ErrScope)
+	}
+	base, fragment, _ := strings.Cut(value, "#")
+	parsed, err := tlsURL(base, true)
+	if err != nil {
+		return err
+	}
+	decodedFragment, err := url.PathUnescape(fragment)
+	if err != nil || strings.ContainsFunc(decodedFragment, unicode.IsControl) {
+		return connectorError(ErrScope)
+	}
+	decodedQuery, err := url.QueryUnescape(parsed.RawQuery)
+	if err != nil || strings.ContainsFunc(decodedQuery, unicode.IsControl) {
+		return connectorError(ErrScope)
 	}
 	return nil
 }

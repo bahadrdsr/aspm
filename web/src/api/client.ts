@@ -406,10 +406,10 @@ interface RequestOptions {
   body?: unknown;
   scoped?: boolean;
   headers?: Record<string, string>;
-  expectedStatus?: 200 | 201 | 202;
+  expectedStatus?: 200 | 201 | 202 | readonly (200 | 201 | 202)[];
 }
 
-export async function request<T>(path: string, parse: (value: unknown) => T, options: RequestOptions = {}): Promise<T> {
+export async function request<T>(path: string, parse: (value: unknown, status: number) => T, options: RequestOptions = {}): Promise<T> {
   const authority = requestAuthority();
   const scoped = options.scoped !== false;
   if (scoped && !authority.workspace) throw new APIError("Sign in to continue.", "unauthorized", false);
@@ -433,8 +433,11 @@ export async function request<T>(path: string, parse: (value: unknown) => T, opt
   }
   if (scoped && authority.revision !== requestAuthority().revision) throw new DOMException("Workspace changed", "AbortError");
   if (response.status === 401 && scoped) rejectSession(authority.revision);
-  if (response.ok && options.expectedStatus !== undefined && response.status !== options.expectedStatus) return invalid("HTTP response status");
-  if (response.status === 204) return parse(null);
+  if (response.ok && options.expectedStatus !== undefined) {
+    const accepted = typeof options.expectedStatus === "number" ? [options.expectedStatus] : options.expectedStatus;
+    if (!accepted.some((status) => status === response.status)) return invalid("HTTP response status");
+  }
+  if (response.status === 204) return parse(null, response.status);
   let payload: unknown;
   try {
     payload = await response.json();
@@ -453,7 +456,7 @@ export async function request<T>(path: string, parse: (value: unknown) => T, opt
     );
   }
   if (scoped && authority.revision !== requestAuthority().revision) throw new DOMException("Workspace changed", "AbortError");
-  return parse(payload);
+  return parse(payload, response.status);
 }
 
 async function reportRead<T>(path: string, parse: (value: unknown) => T, signal: AbortSignal): Promise<T> {

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "amendment": "AMENDMENT-A2.json",
+  "role": "independent-original-test-author",
+  "status": "FROZEN_RUNTIME_ORDER_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-16T21:22:54.368Z",
+  "newRegression": "tests\\remediation\\lock_order_test.go",
+  "operationVariants": [
+    "connection-create",
+    "delivery-enqueue"
+  ],
+  "instrumentationOnlyExistingEdits": [
+    "tests\\remediation\\contract_test.go",
+    "tests\\remediation\\production_bindings_test.go"
+  ],
+  "allPriorA1NarrativeHelperAssertionsUnchanged": true,
+  "noProductionChanges": true,
+  "originalA1Controls": 79,
+  "otherOriginalA1ControlDigestsUnchanged": 77,
+  "originalSignaturesUnchanged": true,
+  "archives": 4,
+  "recursiveOldHistoryCopies": 0,
+  "results": {
+    "executedVariants": 2,
+    "runtimeOrderRed": 2,
+    "safelyCancelledOwnedRequests": 2,
+    "observedInsertionHTTPStatus": 503,
+    "competingUpdatesStarted": 0,
+    "liveDeadlocksReproduced": 0,
+    "skips": 0,
+    "vendorRequests": 0
+  },
+  "heldBeforeDigest": "sha256:806d8922ffd14655fec724627361296ff28a8f630df05356d773f905d5f5bf0a",
+  "productionUnchangedDigest": "sha256:17f8af03cf1aada8648d1341c7ed0c8a716a24bee5028578667a24bb53f762fa",
+  "guards": "GUARDS-A2.json",
+  "red": "RED-A2.json",
+  "humanHandoff": "HANDOFF-A2.txt",
+  "currentPacket": "PACKET-A2.json",
+  "currentPacketDigest": "PACKET-A2.sha256",
+  "externalEvidence": [
+    {
+      "path": ".artifacts\\remediation-lock-order-a2\\BEFORE-A2.json",
+      "bytes": 46706,
+      "sha256": "28232861445f2c71c4aaf0f4b115dfb498ea79ba313e3cc80e4361523e045323"
+    },
+    {
+      "path": ".artifacts\\remediation-lock-order-a2\\archive-receipt.json",
+      "bytes": 1176,
+      "sha256": "c2e097c9f75fc308f1d331b06f8e936508a95aefc930180445f7a4bfb92289d0"
+    },
+    {
+      "path": ".artifacts\\remediation-lock-order-a2\\instrumentation-delta.json",
+      "bytes": 1082,
+      "sha256": "159f187e9214fd628e0ba47f07c71ae8fbcd341805b95a641341959ecd57f07f"
+    },
+    {
+      "path": ".artifacts\\remediation-lock-order-a2\\invocation-final.json",
+      "bytes": 317,
+      "sha256": "7c47a4f520bea54d73d513ad7d684cc8e927bc641a19928902a4c4bd8e91bd5e"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\a2-lock-order-connection-create-b03f36864b44105aeaeb9087.json",
+      "bytes": 450,
+      "sha256": "2f8505affbfec796829b719f76c073025b1eb14f68742c2c6fcb5a484c55a5b9"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\a2-lock-order-delivery-enqueue-f72e622d121df12e596b0fe2.json",
+      "bytes": 449,
+      "sha256": "78dffd4148d5fe6542d00b05e712070d9e24b7366b84f7d9c1ebbe77be3e7751"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-01.receipt.json",
+      "bytes": 896,
+      "sha256": "7359393fe84a360d27031f33803e0c3a876ab03438d00fcef8a86f6592659c73"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-01.jsonl",
+      "bytes": 1191,
+      "sha256": "40c5e3fb75ff9f562391eec9db14d47fb93490669699369507889dc918f7a473"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-01.log",
+      "bytes": 244,
+      "sha256": "d73086d6e5ff40aeddad4484b4df6ac1bb9331d78acba5bc61fab60d557cdcfe"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-02.receipt.json",
+      "bytes": 896,
+      "sha256": "adb51706b3fc4e849693365c4591628dd5bb5839e18f63d2ff4ab14b8c5508af"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-02.jsonl",
+      "bytes": 5233,
+      "sha256": "f94fa33800babf0c15bd37fdd4d324ba23ffaa36b80d733aa5245525f198b3fe"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\lock-order-a2-baseline-02.log",
+      "bytes": 1244,
+      "sha256": "27066ff3a26415254680c4cdd22cbe331a6f5ac917ac9e3fdf9ebdc310c7f5bf"
+    }
+  ],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify the exact optional read-only tracer field/import/forwarding instrumentation.",
+    "Verify both actual PG runtime-order safety-cancellation negatives without claiming a live deadlock reproduction.",
+    "Seal the NEW A2 controls, retaining all older signatures/history.",
+    "Fix production workspace-before-membership ordering in BOTH insertion transactions and then execute the blocked controlled-concurrency checks."
+  ],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "productionEdited": false,
+  "rolePolicyChanged": false
+}

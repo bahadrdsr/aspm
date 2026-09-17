@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "scope": "connector-browser-links-v1",
+  "phase": "pre-code-red",
+  "author": "independent-connector-link-test-author",
+  "capturedAt": "2026-09-16T19:42:27.557Z",
+  "redEvidence": {
+    "sha256": "8661ccba23c4c1485b5528f9ebdb1b772dde5fb12a045539a348fff119fd9efd",
+    "exitCode": 1
+  },
+  "protectedRoots": [
+    "tests/connector_links"
+  ],
+  "bindingPaths": [],
+  "files": [
+    {
+      "path": "go.mod",
+      "normalization": "none",
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "normalization": "none",
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal/connectors/collection_guardrails_test.go",
+      "normalization": "none",
+      "sha256": "2341c7c267ef8b40a735f3572af2a6a6add98caa6c0f18c4f93b97ba13766618"
+    },
+    {
+      "path": "internal/connectors/guardrails_test.go",
+      "normalization": "none",
+      "sha256": "9d6ca42297da00fb52dd3e55229dca2066a2323312e1b0957b32ab489f6225d9"
+    },
+    {
+      "path": "tests/connector_links/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "e25c1c23df1166aee47b7d402ec9f4d23d760108e30fb028876ac2c7c6472471"
+    },
+    {
+      "path": "tests/connector_links/links_test.go",
+      "normalization": "none",
+      "sha256": "e48c91110c620a108f7f5f859f379287a4c170b4cf6504ed41d001d62c986c2a"
+    },
+    {
+      "path": "tests/connector_links/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "506252215a8b167747f7bf9d084aa2f50efaf7c024353a0bd292c84ea09fd4f4"
+    },
+    {
+      "path": "tests/connector_links/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "6dda5f8d4b72c8cabcee35e72c696580427cc80acd826ca923db5cec36822459"
+    },
+    {
+      "path": "tests/connector_links/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "2f1ac7fa85a6c7cc48cc6e4ee753bb9c0c58a4aa8f6cf85a0326785f64ea342b"
+    },
+    {
+      "path": "tests/connector_links/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "9f48f907634e6d707fca28cfd15f1505bd9b8256792783757820cbf1a4358b37"
+    },
+    {
+      "path": "tests/connector_links/Test-ConnectorLinks.ps1",
+      "normalization": "none",
+      "sha256": "833ee682d7f71dfad3d25bd1b70b4814846d4738d5e98455869f0f89b08a4f95"
+    },
+    {
+      "path": "tests/connectors/cloud_test.go",
+      "normalization": "none",
+      "sha256": "695bd31e54639f2d5690f1011888462a921671a21386da331ba044caf6a37ae8"
+    },
+    {
+      "path": "tests/connectors/contract_test.go",
+      "normalization": "none",
+      "sha256": "9c162c0ec401eb88876fe7be5f862278fb4b6a114a0288593338eb0db9c20c2e"
+    },
+    {
+      "path": "tests/connectors/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "d8fc51ec4a1dd259988acc1997d69a8ac214dcc84def9856498181000a38bc56"
+    },
+    {
+      "path": "tests/connectors/credential_boundary_test.go",
+      "normalization": "none",
+      "sha256": "b2ba5c15ed3e68637f9748f429f98f682b2009805fc2805f58a55448db40fdc0"
+    },
+    {
+      "path": "tests/connectors/delivery_test.go",
+      "normalization": "none",
+      "sha256": "adc0ea52472faa392817e01ae22305a9c2389c1076d73cfd06faec04242c19ad"
+    },
+    {
+      "path": "tests/connectors/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "8c0480d305a6427cd8a66516823f1327d64b0a14002a2a32536997b3193f7756"
+    },
+    {
+      "path": "tests/connectors/repositories_test.go",
+      "normalization": "none",
+      "sha256": "cf5523a2ebeff849c784ecfdeff5a07c4a32e1e991a2e22aab4e283a2937bc3b"
+    },
+    {
+      "path": "tests/connectors/review_boundaries_test.go",
+      "normalization": "none",
+      "sha256": "34d4321db539746f090b0b5806b3edd7ed21c01606a5aac3b175183afb91d66e"
+    }
+  ]
+}

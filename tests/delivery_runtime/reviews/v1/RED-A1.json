@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-effective-tls-a1",
+  "capturedAt": "2026-09-16T23:33:31.883528+00:00",
+  "status": "FROZEN_SEMANTIC_PREFLIGHT_RED_PENDING_PARENT_FIX",
+  "actualRun": {
+    "receipt": {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\tls-range-red-01.receipt.json",
+      "bytes": 776,
+      "sha256": "141f774a84c201a19dd59aa25405a77e9820f7dc94679898476f21683fca1bf2"
+    },
+    "events": {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\tls-range-red-01.jsonl",
+      "bytes": 21356,
+      "sha256": "fc0fb331e314cf1cc0ce211cbc557707c485dd1a7bf77b0029d1bbfd63c4e28e"
+    },
+    "log": {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\tls-range-red-01.log",
+      "bytes": 4621,
+      "sha256": "09990d6d85f6ce7e68637ac9487ce8f06382328d927936ef57b10d71ea0be408"
+    },
+    "exitCode": 1,
+    "topLevelTests": 1,
+    "executedTableRows": 12,
+    "newInvalidRangeRed": 3,
+    "existingNegativeControlsPassed": 2,
+    "positivePreflightControlsPassed": 7,
+    "skipped": 0,
+    "retries": 0,
+    "fullProductionBindingIncluded": true,
+    "existingRunnerEdited": false
+  },
+  "rows": [
+    {
+      "case": "contradictory-supported-bounds",
+      "minVersion": 772,
+      "maxVersion": 771,
+      "clientPreflightShouldPass": false,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "fail"
+    },
+    {
+      "case": "future-minimum-default-maximum",
+      "minVersion": 773,
+      "maxVersion": 0,
+      "clientPreflightShouldPass": false,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "fail"
+    },
+    {
+      "case": "future-only-explicit-range",
+      "minVersion": 773,
+      "maxVersion": 774,
+      "clientPreflightShouldPass": false,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "fail"
+    },
+    {
+      "case": "existing-lower-floor-denial",
+      "minVersion": 770,
+      "maxVersion": 772,
+      "clientPreflightShouldPass": false,
+      "ownedDBConnections": 0,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "existing-upper-floor-denial",
+      "minVersion": 0,
+      "maxVersion": 770,
+      "clientPreflightShouldPass": false,
+      "ownedDBConnections": 0,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "effective-default-bounds",
+      "minVersion": 0,
+      "maxVersion": 0,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "TLS12-only",
+      "minVersion": 771,
+      "maxVersion": 771,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "TLS13-only",
+      "minVersion": 772,
+      "maxVersion": 772,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "TLS12-through-TLS13",
+      "minVersion": 771,
+      "maxVersion": 772,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "default-minimum-TLS12-maximum",
+      "minVersion": 0,
+      "maxVersion": 771,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "TLS13-minimum-default-maximum",
+      "minVersion": 772,
+      "maxVersion": 0,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    },
+    {
+      "case": "supported-overlap-with-future-upper",
+      "minVersion": 771,
+      "maxVersion": 773,
+      "clientPreflightShouldPass": true,
+      "ownedDBConnections": 1,
+      "providerRequests": 0,
+      "result": "pass"
+    }
+  ],
+  "interpretation": {
+    "finding": "Contradictory and future-only effective TLS windows pass current client validation and reach an owned DB connection before receiving a non-TLS startup error.",
+    "notCertificateVerificationBypass": true,
+    "positiveClaim": "Supported effective windows pass legitimate client preflight and reach only an owned DB tripwire that closes startup.",
+    "TLSHandshakeSuccessClaimed": false,
+    "realPostgreSQLUsed": false,
+    "queueOrJobsCreated": false,
+    "workerListenerStarted": false,
+    "providerHTTPRequests": 0,
+    "loadOrDoSLoop": false,
+    "oldFourCasesRerun": false
+  },
+  "requiredRule": "Keep the existing TLS1.2 floor; interpret zero minimum/maximum as effective TLS1.2/TLS1.3 defaults; reject inverted bounds or no supported-version overlap, without predicting certificate/cipher/server negotiation. A future upper bound with supported overlap stays valid."
+}

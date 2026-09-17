@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "capturedAt": "2026-09-16T20:22:00.222Z",
+  "before": {
+    "path": ".artifacts\\remediation-binding-a1\\BEFORE-A1.json",
+    "bytes": 506861,
+    "sha256": "47f02874b1c5486b83dae754aa87c877ab09ad389020137fbc2fd22e043c7a7a"
+  },
+  "heldInputAuthority": {
+    "path": ".cache\\remediation-coder\\contract-01-inputs-1.json",
+    "sha256": "1274f29ccc85980d7ea6d7d09f475d66b32454185bc3004197e6b3ea774fd99a"
+  },
+  "heldInputCount": 2182,
+  "beforeTreeDigest": "sha256:e413fe9dec4924f18da15c90d2a619e7159630c3388432f626ce813831118900",
+  "afterSameInputSetTreeDigest": "sha256:a2071d3439e9648e3b5673361992dd6f0b02d432000dfbf3df63359a454bb920",
+  "authorizedInputChanges": [
+    {
+      "path": "tests/remediation/production_bindings_test.go",
+      "oldSHA256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e",
+      "newSHA256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180"
+    }
+  ],
+  "production": {
+    "files": 67,
+    "beforeDigest": "sha256:1d4d6e52cabbf63061f883c315ae102dced86ef25e3086c6bf28249d4a82e1f9",
+    "afterDigest": "sha256:1d4d6e52cabbf63061f883c315ae102dced86ef25e3086c6bf28249d4a82e1f9",
+    "allBytesUnchanged": true,
+    "hashReferences": {
+      "path": ".artifacts\\remediation-binding-a1\\BEFORE-A1.json",
+      "sha256": "47f02874b1c5486b83dae754aa87c877ab09ad389020137fbc2fd22e043c7a7a",
+      "pointer": "/productionFiles"
+    }
+  },
+  "originalControlAuthority": {
+    "manifest": {
+      "path": ".oracles\\remediation-slack-v1.json",
+      "bytes": 12488,
+      "sha256": "83306cae4ab2edfc7a1e34fdfdf282f2a29d9bc2d7e9f47fbee1628181bc3bd1"
+    },
+    "signature": {
+      "path": ".oracles\\remediation-slack-v1.json.sig",
+      "bytes": 89,
+      "sha256": "01325ba32e8362835ff0f937858fee885ff8dbc4e0294cc17e6d858aa90e0ac3"
+    },
+    "originalHashesPointer": "/files",
+    "requiredControls": 67,
+    "unchangedOtherControls": 66,
+    "authorizedChangedControl": {
+      "path": "tests/remediation/production_bindings_test.go",
+      "oldSHA256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e",
+      "newSHA256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180"
+    },
+    "originalSignatureUnchanged": true,
+    "oldManifestPassClaimedAfterAmendment": false,
+    "signingKeyUsed": false,
+    "recaptured": false
+  },
+  "assertionFile": {
+    "path": "tests\\remediation\\remediation_test.go",
+    "bytes": 26738,
+    "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+  },
+  "fixtureFile": {
+    "path": "tests\\remediation\\fixtures_test.go",
+    "bytes": 22855,
+    "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+  },
+  "runner": {
+    "path": "tests\\remediation\\Test-Remediation.ps1",
+    "bytes": 7315,
+    "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+  },
+  "moduleFiles": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "originalPacket": {
+    "path": "tests\\remediation\\reviews\\v1\\PACKET.json",
+    "bytes": 4740,
+    "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+  },
+  "originalPacketDigest": {
+    "path": "tests\\remediation\\reviews\\v1\\PACKET.sha256",
+    "bytes": 79,
+    "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+  },
+  "onlyExistingFileEdited": "tests\\remediation\\production_bindings_test.go",
+  "noExistingSourceOrAssertionEdits": true,
+  "noCredentialOrRequestPermissionChanges": true,
+  "noCompiledHistoryAdded": true
+}

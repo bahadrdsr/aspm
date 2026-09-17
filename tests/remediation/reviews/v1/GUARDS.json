@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T19:01:09.589356+00:00",
+  "baseline": {
+    "path": "tests\\remediation\\reviews\\v1\\BEFORE.json",
+    "bytes": 152371,
+    "sha256": "bde46139e7e626280b65e83b1cb9099557b4db6b8df06b0a338dc23ef728a543"
+  },
+  "historicalHead": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "currentHead": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "headIsNotByteGuard": true,
+  "originalFilesCompared": 774,
+  "changedExistingFiles": [],
+  "newControls": [
+    {
+      "path": "tests\\remediation\\contract_test.go",
+      "bytes": 3377,
+      "sha256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274"
+    },
+    {
+      "path": "tests\\remediation\\fixtures_test.go",
+      "bytes": 22855,
+      "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+    },
+    {
+      "path": "tests\\remediation\\production_bindings_test.go",
+      "bytes": 2879,
+      "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+    },
+    {
+      "path": "tests\\remediation\\remediation_test.go",
+      "bytes": 26738,
+      "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+    },
+    {
+      "path": "tests\\remediation\\slack_fixture_test.go",
+      "bytes": 7437,
+      "sha256": "19d744d2c8d63151ce7cfb0c24b18be41dcf1679180017eed0e59e299731e66d"
+    },
+    {
+      "path": "tests\\remediation\\worker_process_test.go",
+      "bytes": 4873,
+      "sha256": "2a4b578ac31f73b2bd9a62a5814e0fbfc61021fa9a26209ddfb8559d76e87eb4"
+    },
+    {
+      "path": "tests\\remediation\\Test-Remediation.ps1",
+      "bytes": 7315,
+      "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+    }
+  ],
+  "unchangedImportedFixtureAndNativeControls": [
+    {
+      "path": "tests\\acceptance\\testdata\\sarif.json",
+      "bytes": 916,
+      "sha256": "76a29fde1673ccfc08a860d576c8a300fd9238ede49bfae4408db4e58b64e15a"
+    },
+    {
+      "path": "tests\\acceptance\\application_bindings_test.go",
+      "bytes": 1408,
+      "sha256": "be223a9a5122b7c33efcf3c11dc1ce25dd1605e9de11de7f0f9b82f2f6094144"
+    },
+    {
+      "path": "tests\\acceptance\\services_test.go",
+      "bytes": 7299,
+      "sha256": "9b47472ae7c488e96932626698466a0492850cd88f522750bc949ce136b093b6"
+    },
+    {
+      "path": "tests\\acceptance\\Test-Acceptance.ps1",
+      "bytes": 4179,
+      "sha256": "2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6"
+    },
+    {
+      "path": "tests\\runtime_roles\\bindings_test.go",
+      "bytes": 2781,
+      "sha256": "ec5e14d31a26d0ae29a1bf74e3a198123e86ff078e322ad9c8a7df3aa2f18c55"
+    },
+    {
+      "path": "tests\\runtime_roles\\fixtures_test.go",
+      "bytes": 13927,
+      "sha256": "8255591dca603b9a1da9eabd2ce76c8aeaf200d2bda39d828cfe3dc3e8a610cf"
+    },
+    {
+      "path": "tests\\runtime_roles\\Test-RuntimeRoles.ps1",
+      "bytes": 4880,
+      "sha256": "69cb370026c78b22262e278311914560e70426993a0429ed891f89d49efdcf54"
+    },
+    {
+      "path": "tests\\connectors\\production_bindings_test.go",
+      "bytes": 3747,
+      "sha256": "8c0480d305a6427cd8a66516823f1327d64b0a14002a2a32536997b3193f7756"
+    },
+    {
+      "path": "internal\\connectors\\README.txt",
+      "bytes": 7601,
+      "sha256": "40e629dbba730575aeca38b41e403ab11a40b05f4c39fff97f0e492cd5373a00"
+    },
+    {
+      "path": "internal\\connectors\\types.go",
+      "bytes": 4176,
+      "sha256": "0aa06eab951f22794eb767ee3ffe428560ebea5dbc0ee387827b796ffd4836d8"
+    },
+    {
+      "path": "internal\\connectors\\delivery.go",
+      "bytes": 5063,
+      "sha256": "973af817b699b76e317d539bc03065d027e2dba0cb77fc3f3a003f5684da827b"
+    },
+    {
+      "path": "internal\\connectors\\notifications.go",
+      "bytes": 5684,
+      "sha256": "42157e1f07a28c8a6089c6ecee5e24dcf295a4caaa6a07de1b59e45ab37c85d1"
+    },
+    {
+      "path": "internal\\connectors\\http.go",
+      "bytes": 10292,
+      "sha256": "6db2eeaf5c5e1dc4efa4f0b9ef0a95b35baf20611ba44505194c8a0ca4d201b5"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "sourceWitnesses": [
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 5076,
+      "sha256": "7beee5586e03e0214a5635cf7e169ea10bc60ff34000698b4fc2605236d44b24"
+    },
+    {
+      "path": "internal\\app\\database.go",
+      "bytes": 2717,
+      "sha256": "9c90aa184044ccdeddc17f88e9ec17e5eda914a38558c39d4be3e995e9c9375b"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 8580,
+      "sha256": "44325f5f5203738ab6119e4b730b7c59a9a4d02c42feef828cace6bae2616e19"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 10395,
+      "sha256": "74e7788f857f5bd62654924227b63e6d194919aaa504f46069690445274a6110"
+    },
+    {
+      "path": "internal\\app\\membership.go",
+      "bytes": 3758,
+      "sha256": "999b1ee075f598ccd8b516e4e5cb259bd39302e07510cafec8e550ee7edfdc55"
+    },
+    {
+      "path": "internal\\app\\auth.go",
+      "bytes": 14449,
+      "sha256": "7d425f995d8eb2145eddd07b6f69fcd52a2bc4846c608a2ffe91b296f0be8cdb"
+    },
+    {
+      "path": "internal\\app\\findings.go",
+      "bytes": 5771,
+      "sha256": "aadd5e679a5637d652264ea3f45401bcf8a6a53376204cb3e6936f2ad22e094e"
+    },
+    {
+      "path": "internal\\app\\report_worker.go",
+      "bytes": 5252,
+      "sha256": "8ba228276f2200c8ed8c1c3585dc7f436332f7601f633c0698450f67d71a5cf5"
+    },
+    {
+      "path": "internal\\app\\worker_constructors.go",
+      "bytes": 2505,
+      "sha256": "dd062bcef87ed8e5c273dc551f92600930b2f45f60227b576bf24035f9d9db23"
+    },
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 7234,
+      "sha256": "5ff05dded3cfd58a1a0d8e3b783027e2c42e2e004f3b2c6f9f5760b886aae678"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 9736,
+      "sha256": "f8f77cefce8eef4a523e1d7ed0048b46e5aceaa97ee6fd926251405daa1d5b5c"
+    },
+    {
+      "path": "internal\\jobs\\types.go",
+      "bytes": 1685,
+      "sha256": "fe228ce6778a00231e7cccac58fc3e81d3c402ec58a268a14017900a7b373da4"
+    },
+    {
+      "path": "internal\\jobs\\store.go",
+      "bytes": 13329,
+      "sha256": "109eec4dd3d76c57cb0849b7d2bda5389b179f1d40a7d83fc052c6c39a59c09a"
+    }
+  ],
+  "oldUIOrReportsOrFindingActionControlsChanged": false,
+  "oldOracleOrSignatureOrPublicationFilesChanged": false,
+  "newProductionFiles": [],
+  "existingFileAmendments": [],
+  "archives": [],
+  "recursiveHistoryCopies": false,
+  "databaseRoleOrPolicyChanges": false,
+  "existingSchemaChanges": false,
+  "ownedFixturePolicy": "One random remediation_<24 hex> schema and matching local S3 prefix per fixture, bounded cleanup; no delivery/lease/approval/receipt SQL fabrication. Only selected owned credential bytes are corrupted for the AAD negative.",
+  "nativeIOPolicy": "Owned HTTPS protocol server and explicitly scoped client only. Ambient HTTP restricted to the selected local S3 fixture. No live vendor authorization.",
+  "privateRuntimeValuesPersisted": false
+}

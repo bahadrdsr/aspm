@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-v1",
+  "capturedAt": "2026-09-16T21:54:07.3411645+00:00",
+  "head": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "policy": "Narrow hash-only existing source/fixture/module/A2 authority witnesses; no historical byte copies.",
+  "files": [
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 7992,
+      "sha256": "0875be7ef48cfdae246efbadce3c7c2666b1d2387b25732625d03c29acbd9a01"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 9819,
+      "sha256": "9181b8f09f1f69ead06f8a4e41da629136ad7a8298027ce8c1dc2fb118484377"
+    },
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 5479,
+      "sha256": "71fae105d8649bb1be5a2df1ebf7122d654f9cae33b7aa1011ddcd9f44c3a309"
+    },
+    {
+      "path": "internal\\app\\remediation_worker.go",
+      "bytes": 12268,
+      "sha256": "0a91021c7866f52889a794aa5367435a47e4ce5bf8c5cf73740d6d653d74bbeb"
+    },
+    {
+      "path": "internal\\app\\remediation_connections.go",
+      "bytes": 7663,
+      "sha256": "676955d88687f807981ac2d0ea443ac27ad1acfc5a8bd7ccfa91843ae6c54b6e"
+    },
+    {
+      "path": "internal\\app\\remediation_deliveries.go",
+      "bytes": 8997,
+      "sha256": "d04bd31f36b1578ec169149a3c06a35eebc9f8e9976f5e6e5118de8959e4a37f"
+    },
+    {
+      "path": "cmd\\report-worker\\main.go",
+      "bytes": 440,
+      "sha256": "10dbf16c73d812c50fdb5dc76812955a646d0db35d6f5b04b242a443eead974f"
+    },
+    {
+      "path": "cmd\\core-api\\main.go",
+      "bytes": 433,
+      "sha256": "d7b3b1a3aabb31ba0b37d4f5b920b1033143bff1566917341a5a10694758f4b1"
+    },
+    {
+      "path": "cmd\\ingestion\\main.go",
+      "bytes": 782,
+      "sha256": "8f6de71c2ec5453050bb593f526700acb256eee4344a1ef1a7ac0b3ccac1c5fe"
+    },
+    {
+      "path": "tests\\runtime_roles\\bindings_test.go",
+      "bytes": 2781,
+      "sha256": "ec5e14d31a26d0ae29a1bf74e3a198123e86ff078e322ad9c8a7df3aa2f18c55"
+    },
+    {
+      "path": "tests\\runtime_roles\\fixtures_test.go",
+      "bytes": 13927,
+      "sha256": "8255591dca603b9a1da9eabd2ce76c8aeaf200d2bda39d828cfe3dc3e8a610cf"
+    },
+    {
+      "path": "tests\\runtime_roles\\roles_test.go",
+      "bytes": 13339,
+      "sha256": "ad7a1972c99d74fb91a8c5efbf796bece828d5842f2d529386213c87f9052bf1"
+    },
+    {
+      "path": "tests\\acceptance\\testdata\\sarif.json",
+      "bytes": 916,
+      "sha256": "76a29fde1673ccfc08a860d576c8a300fd9238ede49bfae4408db4e58b64e15a"
+    },
+    {
+      "path": "tests\\remediation\\contract_test.go",
+      "bytes": 3437,
+      "sha256": "c9b7ce392dfebf5a688b1c523b9f27230a153dbcf0faab74bf1474958e427850"
+    },
+    {
+      "path": "tests\\remediation\\production_bindings_test.go",
+      "bytes": 3001,
+      "sha256": "b6a879674c162e8d2e73210b2611229d15ac146e7586769857a071d200baff23"
+    },
+    {
+      "path": "tests\\remediation\\lock_order_test.go",
+      "bytes": 11164,
+      "sha256": "b2162517e513c1782ae78d5a2c6ea353ca4f9074273cb1674532a83784fe6d92"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 11206,
+      "sha256": "2ec143eb5047007fed5045852b0c7cdd05594ef483a2e706109dade8d708f42c"
+    },
+    {
+      "path": ".oracles\\remediation-slack-a2.json",
+      "bytes": 17558,
+      "sha256": "74dd43bbdbac7bdbccd6610d3eca4b331c6b944b2ba9e11784cff12af61ca1f3"
+    },
+    {
+      "path": ".oracles\\remediation-slack-a2.json.sig",
+      "bytes": 89,
+      "sha256": "2714bc9e5d20a471482ddcd4d13bb8ef412e9e7d405006527c91615166c878e5"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ]
+}

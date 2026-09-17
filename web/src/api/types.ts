@@ -235,6 +235,65 @@ export interface CatalogResponse {
   items: IntegrationSummary[];
 }
 
+export interface SlackConnection {
+  id: string;
+  workspaceId: string;
+  profile: "slack-workspace-bot";
+  name: string;
+  channel: string;
+  enabled: boolean;
+  credentialConfigured: boolean;
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SlackConnectionInput {
+  profile: "slack-workspace-bot";
+  name: string;
+  channel: string;
+  token: string;
+  enabled: boolean;
+}
+export type SlackConnectionPatch = Partial<Omit<SlackConnectionInput, "profile">>;
+export interface SlackConnectionResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin?: DataOrigin;
+  connection: SlackConnection;
+}
+export interface SlackPage<T> {
+  apiVersion: typeof apiVersion;
+  dataOrigin?: DataOrigin;
+  items: T[];
+  total: number;
+  nextCursor: string | null;
+}
+
+export type FindingDeliveryState = "queued" | "dispatching" | "confirmed" | "accepted" | "blocked" | "failed" | "rate-limited" | "uncertain";
+export interface FindingDelivery {
+  id: string;
+  workspaceId: string;
+  findingId: string;
+  connectionId: string;
+  connectionRevision: number;
+  profile: "slack-workspace-bot";
+  channel: string;
+  requestedBy: string;
+  state: FindingDeliveryState;
+  payload: { title: string; body: string; deepLink: string };
+  createdAt: string;
+  dispatchStartedAt: string | null;
+  completedAt: string | null;
+  receipt: { remoteId: string; remoteUrl: string } | null;
+  failure: { code: string; nativeCode: string; httpStatus: number; retryAfterSeconds: number; retryable: false } | null;
+}
+export interface FindingDeliveryInput { connectionId: string; idempotencyKey: string }
+export interface FindingDeliveryResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin?: DataOrigin;
+  delivery: FindingDelivery;
+}
+
 export interface ErrorResponse {
   apiVersion: typeof apiVersion;
   error: {

@@ -1,0 +1,338 @@
+REMEDIATION V1 - DURABLE SLACK OUTBOX, INDEPENDENT TEST-FIRST CONTRACT
+=================================================================
+
+Status and boundaries
+---------------------
+This is a backend/API/worker test packet, not production implementation or UI.
+SlackWorkspaceBot is the first durable orchestration profile. The existing
+eight integration families are not replaced, expanded or certified by these
+tests. UI connection/send controls must follow the real working API.
+
+No existing production file, test, module/dependency, installer, UI control,
+publication control, source approval, signature or old history is amended.
+Nine top-level tests are authored: one explicit owned-runtime preflight and
+eight delivery acceptance narratives. A real constructor/configuration compile
+failure is RED. It does not mean any blocked semantic assertion executed.
+
+Source authority read
+---------------------
+internal\connectors\README.txt, types.go, delivery.go, notifications.go, http.go
+internal\jobs\types.go, store.go
+internal\app\app.go, database.go, schema.go, worker_constructors.go,
+  report_worker.go, membership.go, auth.go, findings.go, http.go, catalog.go,
+  storage.go
+internal\service\config.go, run.go
+internal\evidence\store.go
+tests\acceptance\application_bindings_test.go, api_test.go, services_test.go,
+  m05_test.go, Test-Acceptance.ps1 and the unchanged testdata\sarif.json
+tests\runtime_roles\bindings_test.go, fixtures_test.go, roles_test.go,
+  Test-RuntimeRoles.ps1
+tests\connectors\production_bindings_test.go and current module manifests.
+
+Important foundation decisions
+------------------------------
+The existing connector is stateless and already requires trusted Action.Prior.
+It is not an outbox, credential store, distributed lease or authorization
+engine. Its native Slack POST is api/chat.postMessage appended to the configured
+HTTPS base, with bearer authorization, plain_text blocks, parse:none and no
+unfurling. It performs no automatic native write retry.
+
+The generic M02 jobs store accepts only evidence-integrity-check envelopes and
+can reclaim expired leased work. The reporting worker also requeues canceled
+work. Neither policy can be copied blindly for a possibly completed native
+write. Use an application-owned durable outbox whose dispatch-start state is
+never turned back into an eligible fresh send after owner loss.
+
+New PG persistence belongs in the existing application's schema migrations,
+inside the caller's already-created selected schema. The tests do not implement
+queue/migration/application state, create a replacement business database or
+insert delivery/approval/receipt rows. All such state comes from the actual API
+and production worker. There are no DB role/policy or existing-schema changes.
+
+Exact production entrypoints required
+------------------------------------
+The compiled production_bindings_test.go performs only field/method forwarding
+to real production. There is no stub worker, fake handler, fallback registration,
+reflection discovery or test-side implementation. Missing symbols intentionally
+fail actual contract compilation until the separate coder provides them:
+
+  app.Config.IntegrationEncryptionKey []byte
+
+  app.DeliveryWorkerConfig {
+    Database app.DatabaseConfig
+    EncryptionKey []byte
+    WorkerID string
+    LeaseDuration time.Duration
+    SlackEndpoint string
+    Client *http.Client
+  }
+
+  app.OpenDeliveryWorker(context.Context, app.DeliveryWorkerConfig)
+    (*app.DeliveryWorker, error)
+
+  (*app.DeliveryWorker).ProcessNext(context.Context) (bool, error)
+  (*app.DeliveryWorker).Ping(context.Context) error
+  (*app.DeliveryWorker).Close() error
+
+  service.Config.IntegrationEncryptionKey []byte
+  service.Environment("core") parses ASPM_INTEGRATION_ENCRYPTION_KEY.
+  service.Run(..., "core", ...) forwards that key into app.Open.
+
+ProcessNext handles at most one eligible queued or expired-dispatch record.
+true means one record was processed/reconciled, including durable blocking or
+uncertainty. false,nil means no eligible work now, including another worker's
+live lease. It does not sleep waiting for another lease or retry-after time.
+Persisted provider failures are terminal data and return true,nil. Go errors
+represent infrastructure failure or cancellation. Cancellation may return a
+context error after safely recording uncertainty.
+
+WorkerID is explicit, bounded and nonblank. LeaseDuration is explicit, bounded
+to 250ms..1 minute; tests use 750ms, 1s and 4s. Renewing a live lease is permitted
+without retaining a transaction during network I/O. Every claim/recovery has a
+fence, and only the live matching owner/fence can complete a dispatch.
+The constructor must validate required key/client/configuration before native
+I/O and have its own PG pool. It has no core/auth handler, S3 config, bootstrap,
+credential chain or hosted-service dependency.
+
+This packet qualifies a real independent worker constructor/process, plus
+actual core environment/role key forwarding. A new installer/deployment role,
+daemon scheduling policy or CLI credential provisioning is not silently added.
+Those can be separately reviewed after this durable backend exists.
+
+Key configuration and persisted cryptography
+-------------------------------------------
+ASPM_INTEGRATION_ENCRYPTION_KEY is optional for unrelated core startup. If
+present, it is standard base64 encoding of exactly 32 bytes; malformed or
+wrong-sized supplied values are configuration errors, not a fallback. The
+typed app/worker configuration carries the raw 32 bytes. Do not derive them
+from database, bootstrap, S3 or any other application secret.
+
+Without a key, existing core session/assets/intake behavior remains functional,
+but connection creation returns 503/unavailable and worker construction fails
+clearly. Core environment parsing and the actual service.Run core path are
+included, not merely an unused field on an app-only test constructor.
+
+Use the standard-library AES-256-GCM authenticated-encryption envelope:
+  credential_ciphertext = byte(1) || random 12-byte nonce || GCM ciphertext/tag
+  AAD = UTF-8("aspm/slack-credential/v1\0" + workspaceID + "\0" + connectionID)
+The version byte is 1. Use a fresh cryptographic nonce on every encryption.
+The tests independently authenticate/decrypt that stored envelope with the
+generated fixture key and reject wrong workspace/connection AAD. No new crypto
+dependency is required. The encrypted value is opaque to APIs and logs.
+
+Minimal inspected PG relations/columns
+-------------------------------------
+  app_integration_connections:
+    id, workspace_id, credential_ciphertext bytea
+    plus persisted profile/name/channel/enabled/revision and timestamps.
+
+  app_finding_deliveries:
+    id, workspace_id, state, worker_id, fence,
+    dispatch_started_at timestamptz, lease_until timestamptz
+    plus the immutable binding/payload, idempotency identity and durable result.
+
+These names let independent connections inspect real persistence. The native
+TLS server reads the dispatch row before acknowledging a POST; an uncommitted
+or missing dispatch-start marker fails the test. Tests also inspect stored
+rows privately for literal/encoded plaintext credentials and keys.
+
+The only non-DDL application-row SQL mutation in the tests is explicitly
+bounded corruption: substitute one test-created connection's encrypted bytes
+into another test-created connection after enqueue. No queue/lease/receipt/
+actor state is forged. The worker must reject the wrong AAD identity before
+dispatch. Schema/probe creation and bounded owned-schema cleanup are fixtures,
+not production migration substitutes.
+
+Exact HTTP vocabulary
+---------------------
+All routes use the existing aspm/v1alpha1 envelope, real session cookie,
+Origin checks and X-ASPM-Workspace-ID selection. The existing membership
+authorization remains authoritative. Unknown mutation fields are rejected.
+
+GET  /api/v1/integrations/connections
+POST /api/v1/integrations/connections
+GET  /api/v1/integrations/connections/{id}
+PATCH /api/v1/integrations/connections/{id}
+
+Only admin creates/changes connections. Workspace members can read their own
+nonsecret metadata. Cross-workspace detail is 404. IDs are server-generated
+32-character lowercase hex, as in existing application resources.
+
+POST input, with enabled explicitly required:
+  {profile:"slack-workspace-bot", name:string, channel:string,
+   token:string, enabled:boolean}
+name is nonblank/NUL-free, at most 256 UTF-8 bytes. The selected channel is a
+bounded C/G channel ID, not #general, a webhook URL or channel search. Token is
+an explicitly supplied, nonempty bounded opaque credential compatible with
+the existing adapter's token validation. Decode within a 32 KiB JSON bound.
+No endpoint, headers, credential URL, approval or requester authority is accepted.
+
+PATCH selects only name/channel/token/enabled. Omission retains existing data;
+token replacement is explicit and nonempty. Profile/identity/workspace are
+immutable. A meaningful configuration change advances revision. Revision
+binds pending jobs to their original destination and credential configuration.
+
+Connection DTO contains exactly:
+  id, workspaceId, profile, name, channel, enabled, credentialConfigured,
+  revision, createdAt, updatedAt
+Create returns 201 {apiVersion,connection}; detail/PATCH return 200. Listing
+returns {apiVersion,items,total,nextCursor}; existing bounded list conventions
+apply. Optional dataOrigin is permitted. No token, ciphertext, encryption key,
+credential URL, endpoint or header object appears in DTOs/errors/logs.
+credentialConfigured means a stored credential exists, not vendor verification.
+
+POST /api/v1/findings/{id}/deliveries
+  {connectionId:string, idempotencyKey:string}
+GET /api/v1/findings/{id}/deliveries
+GET /api/v1/integrations/deliveries/{id}
+
+Only admin/analyst can enqueue. Members can read their workspace's history.
+The current finding and connection must belong to the selected workspace.
+Disabled connection enqueue is 409/conflict. Foreign finding/connection is
+404, not a vendor request. Forged requestedBy/workspaceId/approvalRef/payload/
+deepLink/endpoint/headers/Prior fields return 400 without vendor I/O.
+There is no retry/send-again API in this slice.
+
+New enqueue returns HTTP 202 {apiVersion,delivery}, state queued. Replay of an
+identical same-workspace idempotency key returns HTTP 200 with the same job and
+durable result, without I/O. A changed actor, finding, connection, connection
+revision/destination or canonical payload binding conflicts with 409. The
+original job is not rewritten. To read an old result after configuration/source
+changes, use GET rather than pretending the newly changed binding is identical.
+
+Immutable notification snapshot, derived on the server at enqueue:
+  title    = canonical finding title
+  body     = "Severity: " + canonical severity + "\nAsset: " + canonical asset name
+  deepLink = app PublicOrigin + "/#/work?finding=" + URL-encoded finding ID
+PublicOrigin is trusted process configuration. Scanner properties, request
+headers, raw report code/evidence and enqueue JSON do not set routing or approval.
+The original payload remains unchanged if an asset is renamed after enqueue.
+The adapter renders its existing plain_text block, accessible fallback text,
+View finding button, parse:none, unfurl_links:false, unfurl_media:false.
+
+Delivery DTO:
+  id, workspaceId, findingId, connectionId, connectionRevision,
+  profile, channel, requestedBy, state, payload:{title,body,deepLink},
+  createdAt, dispatchStartedAt:null|timestamp, completedAt:null|timestamp,
+  receipt:null|{remoteId,remoteURL},
+  failure:null|{code,nativeCode,httpStatus,retryAfterSeconds,retryable:false}
+JSON uses lower camel case (receipt remoteUrl is accepted by the typed reader).
+List envelope is {apiVersion,items,total,nextCursor}; detail/enqueue/replay uses
+{apiVersion,delivery}. The internal approval reference is generated from the
+authorized durable intent, not accepted from a report/client.
+
+Durable dispatch, uncertainty and the linearization boundary
+----------------------------------------------------------
+Persist the immutable intent before acknowledging enqueue. An API request or
+connection creation/import never dispatches. An independent worker reopens PG,
+claims with a lease/fence, checks current actor write membership and current
+connection enabled/revision, decrypts only that selected bound credential, and
+commits dispatching + dispatch_started_at BEFORE the native POST.
+
+The committed authorized dispatch-start transaction is the logical dispatch
+boundary. A disable/revocation that wins before it prevents I/O. Changes or
+cancellation after it cannot promise the provider saw nothing: a request may
+already be in flight/accepted. Honor contexts where the transport honors them,
+record uncertainty and never claim to undo a remote write. Do not hold SQL
+transactions/connections across the provider call to pretend atomic remote I/O.
+
+Connection/actor preflight failures become blocked without dispatchStartedAt:
+  authorization-revoked; connection-disabled or connection-changed;
+  credential-unavailable for unauthenticatable selected ciphertext.
+Eager durable blocking in the admin mutation transaction is allowed; worker
+checks remain required, and later regrant must not resurrect a blocked job.
+
+A lost owner/expired dispatching marker is reconciled to uncertain, not queued
+or a new send with Prior:nil. Never reuse generic expired-job retry policy here.
+Fresh worker/adapter opens preserve confirmed/accepted receipts and uncertainty
+without I/O. Prior, when invoking the existing adapter, comes only from the
+trusted durable record. There is no exactly-once claim.
+
+Slack 200 ok:true with matching channel and valid ts is confirmed. HTTP 200
+ok:false auth/channel errors remain failed. Actual 429 is rate-limited with
+retryAfterSeconds:7 in the fixture, as data only. Missing/malformed ack, 5xx,
+transport loss and cancellation after possible POST are uncertain. Redirects
+are blocked, not followed. No automatic native retry or backoff/sleep occurs.
+Slack itself produces confirmed, not Teams-style accepted. Accepted replay is
+an existing shared-adapter rule covered by unchanged adapter regressions; this
+packet does not forge an accepted Slack row to manufacture new PG coverage.
+
+Owned fixtures and execution safety
+----------------------------------
+The runner reads only the explicitly supplied private loopback runtime.json,
+never real Slack credentials. PG and the existing LOCAL S3 endpoint must both
+be 127.0.0.1 with explicit ports. S3 is used only for the existing real core
+intake path so canonical findings are created by actual API/parser/PG behavior,
+not fixture SQL. No bucket, DB role or policy is provisioned or changed.
+Each case owns a random remediation_<24 hex> schema and matching object prefix.
+Cleanup deletes only that prefix and schema within fixed page/time bounds.
+
+Slack uses a task-owned real TLS HTTP server and pinned certificate client.
+The client transport forwards only that exact owned native POST route and
+honors contexts; no URL/header/body substitution implements application logic.
+Ambient default HTTP transport is restricted to the selected local S3 endpoint;
+the worker uses only its separately approved owned TLS client. Redirects and
+other provider destinations fail before I/O. No Slack.com call is authorized.
+
+The crash case launches the actual compiled test binary in a private worker
+mode. Its forwarding binding opens the real production worker. DB/key/public
+TLS fixture inputs travel over stdin, never process arguments or persisted
+configuration files. S3/bootstrap/ambient integration credentials are stripped
+from that child. Only its exact owned PID is killed after the provider receives
+a POST with a committed dispatch marker. Recovery waits for actual PG clock
+lease expiry, never SQL-edits a queue state or fabricates a receipt.
+
+The API fixture budget is 160 calls per narrative; provider plans are bounded
+to 12. Core/worker/fixture PG pools are small; the held-I/O case uses a one-slot
+worker pool and bounded Ping/interactive API reads to expose retained SQL.
+No time.Sleep is used for native retry. Bounded fixture lease/readiness waits
+are observations, not a production write retry mechanism.
+
+Nine top-level narratives
+------------------------
+1. Owned-runtime preflight: real PG commit/read through a second connection,
+   real local S3 owned-prefix write and bounded cleanup. No delivery semantics.
+2. Connections: admin-only writes, member nonsecret metadata, strict fields,
+   enabled flag, real AES-GCM nonce/AAD proof, token rotation, foreign workspace
+   denial, no native send on connection/import, and controlled credential-
+   identity corruption blocked before dispatch. Eight-family list remains.
+3. Enqueue: real scoped finding/connection membership, forged fields rejected,
+   immutable canonical payload/actor/revision, same-key replay and changed
+   binding conflicts, no inline I/O and no raw scanner routing/approval.
+4. Independent native delivery: core/worker reopen, snapshot survives asset
+   rename, actual existing Slack mapping, durable confirmed receipt, fresh
+   replay with no I/O and no finding workflow/source/evidence mutation.
+5. Predispatch: current actor revocation, disabled connection and revision
+   changes block; regrant/fresh worker do not resurrect the old intent.
+6. Concurrent ownership and cancellation: held real provider request sees
+   committed marker; another worker cannot send it; SQL remains available;
+   context cancellation becomes durable uncertainty, not eligibility.
+7. Real process crash: kill owned worker after possible write, wait actual PG
+   lease expiry, reopen and reconcile to uncertain without another POST.
+8. Native failure table: auth/channel, 429, 503, malformed/missing ack, closed
+   response transport and redirect. Preserve safe native classification and
+   retry-after; no blind retry/sleep/retry endpoint, no secret-bearing logs.
+9. Config/minimal role: optional explicit key, malformed keys rejected, existing
+   keyless intake still works, actual core environment + service.Run forwarding,
+   missing worker key/client and unsigned gateway rejected, independent worker
+   has no S3/bootstrap/auth-handler dependency or implicit provider call.
+
+Evidence limits and next owner
+------------------------------
+Constructor/configuration symbols do not currently exist. Full contract
+compilation RED is separate from helper-only compilation and the isolated
+owned-runtime preflight. The latter modes intentionally omit only the missing
+production binding and do not execute or substitute delivery business logic.
+No green helper/preflight result proves the eight blocked semantic narratives.
+The unchanged connector suites use owned protocol fixtures, not live accounts.
+
+Unproven broader cases include arbitrary DB/network partitions, every
+cross-process interleaving, production key rotation/provisioning, real Slack
+installation/channel authority and deployed worker scheduling. They are not
+silently replaced by fake PG success or an exactly-once assertion.
+
+reviews\v1 contains hash-only source/control/compiler witnesses, actual RED and
+an unsigned frozen packet inventory. Runtime logs/JSONL/binaries remain in
+.artifacts\remediation-v1 and work/cache files in .cache\remediation-v1.
+No older history is copied. Parent verifies, seals NEW controls and assigns a
+separate coder; existing oracle signatures/publication/UI history stay intact.

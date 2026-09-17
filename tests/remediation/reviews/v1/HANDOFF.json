@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "scope": "remediation-slack-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_CONSTRUCTOR_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-16T19:01:09.589356+00:00",
+  "sourceHead": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "controls": [
+    {
+      "path": "tests\\remediation\\contract_test.go",
+      "bytes": 3377,
+      "sha256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274"
+    },
+    {
+      "path": "tests\\remediation\\fixtures_test.go",
+      "bytes": 22855,
+      "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+    },
+    {
+      "path": "tests\\remediation\\production_bindings_test.go",
+      "bytes": 2879,
+      "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+    },
+    {
+      "path": "tests\\remediation\\remediation_test.go",
+      "bytes": 26738,
+      "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+    },
+    {
+      "path": "tests\\remediation\\slack_fixture_test.go",
+      "bytes": 7437,
+      "sha256": "19d744d2c8d63151ce7cfb0c24b18be41dcf1679180017eed0e59e299731e66d"
+    },
+    {
+      "path": "tests\\remediation\\worker_process_test.go",
+      "bytes": 4873,
+      "sha256": "2a4b578ac31f73b2bd9a62a5814e0fbfc61021fa9a26209ddfb8559d76e87eb4"
+    },
+    {
+      "path": "tests\\remediation\\Test-Remediation.ps1",
+      "bytes": 7315,
+      "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+    }
+  ],
+  "contract": "tests\\remediation\\CONTRACT.txt",
+  "humanHandoff": "tests\\remediation\\HANDOFF.txt",
+  "red": "RED.json",
+  "guards": "GUARDS.json",
+  "compiler": "COMPILATION.json",
+  "externalEvidence": "EVIDENCE.json",
+  "results": {
+    "authoredTopLevelCases": 9,
+    "deliverySemanticNarratives": 8,
+    "fullContract": "constructor/configuration compile RED",
+    "fullContractExecutedCases": 0,
+    "helperCompile": "PASS_NOT_ACCEPTANCE",
+    "realOwnedRuntimePreflight": "PASS",
+    "unchangedNativeAdapterTopLevelPasses": 26,
+    "skips": 0,
+    "baselineFilesUnchanged": 774,
+    "newDependencies": 0,
+    "agentsSpawned": 0,
+    "commitsCreated": 0,
+    "liveVendorOrCloudOperations": 0
+  },
+  "originalFilesEdited": [],
+  "sourceOrUIChanges": [],
+  "archives": [],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify the source/fixture/compiler hashes and actual constructor RED.",
+    "Review and seal the exact DTO, encryption envelope and dispatch linearization decisions in CONTRACT.txt.",
+    "Seal only NEW remediation controls, leaving all earlier oracle/publication/UI history unchanged.",
+    "Assign a separate production coder to implement the real entrypoints and existing native-adapter orchestration.",
+    "Execute full Contract mode after implementation; do not substitute helper-only/preflight PASS for blocked semantic tests."
+  ]
+}

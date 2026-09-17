@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-16T22:45:29.817Z",
+  "status": "FROZEN - ready for parent scoped UI-test review/seal, separate coder and independent reviewer",
+  "head": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "authorScope": "Synthetic Playwright UI acceptance fixture/data/spec, exact GET-only legacy fixture additions and hash handoff only",
+  "results": {
+    "actualTypecheckExitCode": 0,
+    "newCases": 8,
+    "finalMissingUIFailures": 8,
+    "priorCases": 58,
+    "priorPassed": 58,
+    "skips": 0,
+    "flakes": 0,
+    "playwrightRetries": 0,
+    "fixtureViolations": 0,
+    "browserErrors": 0,
+    "externalHTTPAttempts": 0,
+    "caseAPIRequests": [
+      3,
+      4,
+      6,
+      6,
+      6,
+      4,
+      4,
+      4
+    ],
+    "limits": {
+      "combinedAPIRequests": 60,
+      "testMS": 20000,
+      "expectMS": 5000,
+      "workers": 1
+    }
+  },
+  "authorChanges": {
+    "newCompiledFiles": [
+      {
+        "path": "web\\tests\\slack-ui-data.ts",
+        "bytes": 12760,
+        "sha256": "d8ecc78c517274fc4c21177e6f6621e88aba2b67d3e35c818fd47063c582b315"
+      },
+      {
+        "path": "web\\tests\\slack-ui-fixture.ts",
+        "bytes": 29329,
+        "sha256": "69afa8107fed7c289ef5f06183e139c241c1df332924095d1e1cedd086fb85f5"
+      },
+      {
+        "path": "web\\tests\\slack-delivery.spec.ts",
+        "bytes": 49215,
+        "sha256": "bf5d7ee46f6a85a33b62b1a2fb11785ba54b6e946b92903020d01b64fd5a29f7"
+      },
+      {
+        "path": "web\\tests\\slack-navigation.ts",
+        "bytes": 795,
+        "sha256": "fc61865f9d6d0a2ff6a7247299c86152117a0507717843f2f8c9331bfb50feb0"
+      }
+    ],
+    "amendedOriginalHTTPFixtures": [
+      {
+        "path": "web\\tests\\network.ts",
+        "bytes": 6155,
+        "sha256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584"
+      },
+      {
+        "path": "web\\tests\\application-fixture.ts",
+        "bytes": 19485,
+        "sha256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22"
+      },
+      {
+        "path": "web\\tests\\finding-actions-fixture.ts",
+        "bytes": 22158,
+        "sha256": "8ebcb28bc9f0f682a860b9353028fea1b72e18503f77069da1092a5f7b2d238c"
+      },
+      {
+        "path": "web\\tests\\reports-fixture.ts",
+        "bytes": 20429,
+        "sha256": "57c254f93cdc79fdae103bfafc8c19fccbf5593adf773a52555bc119f03b0bd2"
+      }
+    ],
+    "insertedLegacyLines": 41,
+    "oldAssertionChanges": 0,
+    "productionChanges": 0,
+    "dependencyOrCompilerChanges": 0,
+    "backendWorkerDeployTestChanges": 0,
+    "commits": 0,
+    "agents": 0,
+    "signatures": 0
+  },
+  "apiSourceCorrections": [
+    "Receipt JSON is remoteUrl, not remoteURL.",
+    "The actual Slack adapter supplies an empty remoteUrl; no fabricated permalink.",
+    "Queued is not sent; rate_limited failure code differs from rate-limited state."
+  ],
+  "originalRED": {
+    "preserved": true,
+    "sources": {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\RED-01-SOURCES.json",
+      "bytes": 1801,
+      "sha256": "c3733206c91efa9ed74e19100537199ea45e233bc9838953057ae50c251ffc29"
+    },
+    "readLifecycleCorrection": {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\AUTHOR-CORRECTION.txt",
+      "bytes": 2786,
+      "sha256": "f952e6d2fcf6528aab2f75f8e2014236e0809a06c49f28cb5bccee77d4ccdb4c"
+    }
+  },
+  "currentScope": {
+    "frontendInputsUnchanged": true,
+    "frontendInputCount": 311,
+    "apiDTOAuthorityUnchanged": true,
+    "repoWideSealRequiresReconciliation": true,
+    "outOfScopeConcurrentDrift": [
+      "internal\\app\\remediation_worker.go",
+      "internal\\service\\config.go",
+      "internal\\service\\run.go"
+    ],
+    "snapshot": {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\FREEZE-STATE.json",
+      "bytes": 66926,
+      "sha256": "01e2a8061d982940401e4b5c56e0b58f641135bca01bba36b924a980d53d31a6"
+    }
+  },
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\CONTRACT.txt",
+      "bytes": 17297,
+      "sha256": "abd9710ea696521c533f67a369ce2e057d47460e67eeacf2c9da97fad2d08a2a"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\AUTHOR-CORRECTION.txt",
+      "bytes": 2786,
+      "sha256": "f952e6d2fcf6528aab2f75f8e2014236e0809a06c49f28cb5bccee77d4ccdb4c"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\BEFORE.json",
+      "bytes": 160096,
+      "sha256": "32a8130be7a0605e4a712ece190e297db8fae3f0135f4c83d5550662d53c527a"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\ARCHIVES.json",
+      "bytes": 1293,
+      "sha256": "624593a1c417b2ab9579555bc77f4473db0da29854a9a5aad6bf51c933dfa6f2"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\AMENDMENT.json",
+      "bytes": 4658,
+      "sha256": "181a0e7e670d3ab3e759b898ce46c92a9e5277c267774246dd7b7900eaf924cf"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\RED-01-SOURCES.json",
+      "bytes": 1801,
+      "sha256": "c3733206c91efa9ed74e19100537199ea45e233bc9838953057ae50c251ffc29"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\COMPILATION.json",
+      "bytes": 3263,
+      "sha256": "d4e33c7f07132066bac75a96a0cffec97a354845a6097c9b2d104d965f25adda"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\RED.json",
+      "bytes": 60809,
+      "sha256": "5f2c60b82af12dc555c1580f6b80e96723767ddd4f801b4aa4225b2690875c0a"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\COMPATIBILITY.json",
+      "bytes": 37392,
+      "sha256": "ec4fe9c038070943d59e7bbb8e6ac0e21dacadb47df054e1b6ab6789d6c1a47f"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\GUARDS.json",
+      "bytes": 34808,
+      "sha256": "e6e03fc2c94eedfa3e4c74da553b38b51e5052133ae082e270d6e67198fdf2cb"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\FREEZE-STATE.json",
+      "bytes": 66926,
+      "sha256": "01e2a8061d982940401e4b5c56e0b58f641135bca01bba36b924a980d53d31a6"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\EVIDENCE.json",
+      "bytes": 19102,
+      "sha256": "6917c23cb18f0388cc3f7d4b09ae02f126617ae41902473dc4053bd2c60bd9c1"
+    },
+    {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\HANDOFF.txt",
+      "bytes": 6977,
+      "sha256": "0419c74cbdc661fe75021374f491f7a52d5f7f00724f51050e275db2e5c3f291"
+    }
+  ],
+  "limitations": [
+    "No production UI has been implemented by this author.",
+    "Downstream new-feature assertions remain blocked by missing UI; do not count them as executed green.",
+    "No backend, native Slack, deployment, worker daemon or live credential qualification is claimed.",
+    "A shared repository changed outside this author scope; historical backend hashes are not a current whole-repository attestation."
+  ],
+  "next": [
+    "Parent reviews the exact additive legacy GET delta and current scoped hash packet.",
+    "Parent reconciles concurrent backend runtime source history before any repository-wide seal.",
+    "Separate coder implements UI without amending frozen tests or guards.",
+    "Independent reviewer runs all 66 browser cases and typecheck on fresh unique evidence paths."
+  ]
+}

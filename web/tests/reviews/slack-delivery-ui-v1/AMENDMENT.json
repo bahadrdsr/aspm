@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "scope": "Only minimal additive validated empty GET navigation. Existing assertions and guards remain byte-identical.",
+  "changes": [
+    {
+      "path": "web\\tests\\network.ts",
+      "beforeSHA256": "11e810daaaecd5a892216df01a86f618ff059a7d0d00d91c10476eae16aab6fd",
+      "afterSHA256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584",
+      "beforeBytes": 5619,
+      "afterBytes": 6155,
+      "reconstructsOriginalBytes": true,
+      "insertions": [
+        {
+          "kind": "helper import",
+          "byteOffset": 293,
+          "text": "import { emptySlackNavigation } from \"./slack-navigation\";\r\n"
+        },
+        {
+          "kind": "guarded GET-only dispatch",
+          "byteOffset": 2427,
+          "text": "      try {\r\n        const empty = emptySlackNavigation(url, request.method(), request.headers()[\"x-aspm-workspace-id\"],\r\n          new Map(syntheticSession().workspaces.map((workspace) => [workspace.id, [findingResponse.finding.id]])));\r\n        if (empty) { await route.fulfill({ json: empty }); return; }\r\n      } catch (error) {\r\n        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);\r\n        await route.abort();\r\n        return;\r\n      }\r\n"
+        }
+      ]
+    },
+    {
+      "path": "web\\tests\\application-fixture.ts",
+      "beforeSHA256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "afterSHA256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22",
+      "beforeBytes": 19020,
+      "afterBytes": 19485,
+      "reconstructsOriginalBytes": true,
+      "insertions": [
+        {
+          "kind": "helper import",
+          "byteOffset": 308,
+          "text": "import { emptySlackNavigation } from \"./slack-navigation\";\r\n"
+        },
+        {
+          "kind": "guarded GET-only dispatch",
+          "byteOffset": 12719,
+          "text": "      try {\r\n        const empty = emptySlackNavigation(url, method, workspace,\r\n          new Map([[alpha.id, [detailedFinding.id]], [beta.id, [workItems[2].id]]]));\r\n        if (empty) { await route.fulfill({ json: empty }); return; }\r\n      } catch (error) {\r\n        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);\r\n        await route.abort();\r\n        return;\r\n      }\r\n"
+        }
+      ]
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "beforeSHA256": "5a9c4945255981d2ee2d62a77677fdc3f83bdb05ecadb4e00bd76b13ec0aea42",
+      "afterSHA256": "8ebcb28bc9f0f682a860b9353028fea1b72e18503f77069da1092a5f7b2d238c",
+      "beforeBytes": 21604,
+      "afterBytes": 22158,
+      "reconstructsOriginalBytes": true,
+      "insertions": [
+        {
+          "kind": "helper import",
+          "byteOffset": 218,
+          "text": "import { emptySlackNavigation } from \"./slack-navigation\";\r\n"
+        },
+        {
+          "kind": "guarded GET-only dispatch",
+          "byteOffset": 17189,
+          "text": "      try {\r\n        const empty = emptySlackNavigation(url, method, workspace, new Map([...this.roles.keys()].map((id) => [\r\n          id, [...this.findings.values()].filter((item) => item.workspaceId === id).map((item) => item.id),\r\n        ])));\r\n        if (empty) { await this.deliver(route, call, 200, empty); return; }\r\n      } catch (error) {\r\n        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);\r\n        await route.abort();\r\n        return;\r\n      }\r\n"
+        }
+      ]
+    },
+    {
+      "path": "web\\tests\\reports-fixture.ts",
+      "beforeSHA256": "f0d433b9f33c37cf28ca1aea7334651f4a65982daed7947bf81c25f0058825f2",
+      "afterSHA256": "57c254f93cdc79fdae103bfafc8c19fccbf5593adf773a52555bc119f03b0bd2",
+      "beforeBytes": 19949,
+      "afterBytes": 20429,
+      "reconstructsOriginalBytes": true,
+      "insertions": [
+        {
+          "kind": "helper import",
+          "byteOffset": 342,
+          "text": "import { emptySlackNavigation } from \"./slack-navigation\";\r\n"
+        },
+        {
+          "kind": "guarded GET-only dispatch",
+          "byteOffset": 14016,
+          "text": "      try {\r\n        const empty = emptySlackNavigation(url, method, workspace,\r\n          new Map([reportAlpha.id, reportBeta.id].map((id) => [id, [findingResponse.finding.id]])));\r\n        if (empty) { await route.fulfill({ json: empty }); return; }\r\n      } catch (error) {\r\n        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);\r\n        await route.abort();\r\n        return;\r\n      }\r\n"
+        }
+      ]
+    }
+  ]
+}

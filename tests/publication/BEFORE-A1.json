@@ -1,0 +1,864 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "capturedAt": "2026-09-17T00:42:38.289Z",
+  "classification": "Previously reviewed fixture evolution / selected calibration-baseline maintenance; not new production bug RED or feature pre-code evidence.",
+  "artifactRoot": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0",
+  "head": "2a156bc103aaa9035e1579e583d0b8df3e5f517a",
+  "realIndexBefore": {
+    "path": ".git\\index",
+    "bytes": 96756,
+    "sha256": "ed944901811592270a587b5284891a8d05e9869b8127167538fec7e48508b834",
+    "lineEndings": {
+      "crlf": 0,
+      "lf": 247,
+      "cr": 115
+    }
+  },
+  "selectedSources": [
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json",
+      "bytes": 71222,
+      "sha256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1808,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json.sig",
+      "bytes": 89,
+      "sha256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 35,
+        "cr": 0
+      }
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 68,
+        "cr": 0
+      }
+    },
+    {
+      "path": "scripts\\process.mjs",
+      "bytes": 1464,
+      "sha256": "b1aa330a639acdc943184581fb2b0ca49c810aba5d519db2872d24bf4085242f",
+      "lineEndings": {
+        "crlf": 29,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "web\\tests\\application-fixture.ts",
+      "bytes": 19485,
+      "sha256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22",
+      "lineEndings": {
+        "crlf": 339,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\acceptance\\Test-Acceptance.ps1",
+      "bytes": 4179,
+      "sha256": "2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6",
+      "lineEndings": {
+        "crlf": 88,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\installer\\CONTRACT.txt",
+      "bytes": 15434,
+      "sha256": "2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15",
+      "lineEndings": {
+        "crlf": 214,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\installer\\contract_test.go",
+      "bytes": 2905,
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 118,
+        "cr": 0
+      }
+    }
+  ],
+  "originalPublicationFiles": [
+    {
+      "path": "tests\\publication\\.gitattributes",
+      "bytes": 9,
+      "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992",
+      "lineEndings": {
+        "crlf": 1,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\CONTRACT.txt",
+      "bytes": 5996,
+      "sha256": "77058629758573dcbeb5f3b5deeb5d616935222f2c8a21dd2dc1e2ac28f185e4",
+      "lineEndings": {
+        "crlf": 87,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\controls.before.sha256",
+      "bytes": 411,
+      "sha256": "2279fdac8f6ff54d44d54d9dffdbb8de84f61b8ff0030e9ad378fc4ae56d790b",
+      "lineEndings": {
+        "crlf": 5,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\inputs.before.json",
+      "bytes": 2749,
+      "sha256": "b7ebb5d555758af25e1bae9dd20a7a61e95ab4cdbbcd81776a98c83ec5ab0fc3",
+      "lineEndings": {
+        "crlf": 80,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\PACKET.sha256",
+      "bytes": 652,
+      "sha256": "c697e46602d3517aa9cc961a52f9328233e6ff8738ea08358010c4486835a601",
+      "lineEndings": {
+        "crlf": 8,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\publication.test.mjs",
+      "bytes": 17032,
+      "sha256": "607bef7ca070fb0dfbe091ff76323e881d49df7d0240b9413663f94ed14ddd8d",
+      "lineEndings": {
+        "crlf": 333,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\RED.json",
+      "bytes": 6787,
+      "sha256": "7ce71e100ee0007eb0944e443861145c81fccf788c60cb16b7b7eede8f6cef95",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 213,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\RED.tap",
+      "bytes": 29254,
+      "sha256": "39e32a84c629cf410ae0ca96e0a2e545ee8f208de16939615a743ee3e148b902",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 435,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\run.mjs",
+      "bytes": 907,
+      "sha256": "029d4e95ec9662219b88d6e09b5856efae0b9a65fdeea0cb27c7fbb1618f7c04",
+      "lineEndings": {
+        "crlf": 15,
+        "lf": 0,
+        "cr": 0
+      }
+    }
+  ],
+  "policies": [
+    {
+      "path": ".gitattributes",
+      "bytes": 158,
+      "sha256": "be70b0ae94d82ca8c96d5155db137634d10188ecf70cbe5e8647ccb392373658",
+      "lineEndings": {
+        "crlf": 3,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 444,
+      "sha256": "df53e295a6292ecb51aa5f528952e23c7a9f1d45c069275ab5c00bce56749ad0",
+      "lineEndings": {
+        "crlf": 26,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "web\\.gitattributes",
+      "bytes": 25,
+      "sha256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893",
+      "lineEndings": {
+        "crlf": 1,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": "tests\\publication\\.gitattributes",
+      "bytes": 9,
+      "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992",
+      "lineEndings": {
+        "crlf": 1,
+        "lf": 0,
+        "cr": 0
+      }
+    }
+  ],
+  "publicOraclesAndSignatures": [
+    {
+      "path": ".oracles\\backend-security-v1.json",
+      "bytes": 6493,
+      "sha256": "02d825324796f04ac963e98d7ce9fe129a31c81ecccf0b5b41d1805f32fc42a0",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 187,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\backend-security-v1.json.sig",
+      "bytes": 89,
+      "sha256": "8ce9ac915a6aa076b0b8265a084d0383b22b4aae21a00e052a715f77ed85f701",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\cli-existing-controls-v1.json",
+      "bytes": 3720,
+      "sha256": "efc49ba3eb105f689639bc52019573f37b3310a454711d4042c03843e280a41c",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 109,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\cli-existing-controls-v1.json.sig",
+      "bytes": 89,
+      "sha256": "b85564ee68339effa44dee2cfab88f190a7b4044fbb20c8f39fcb35c70baddec",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\connector-browser-links-v1.json",
+      "bytes": 3844,
+      "sha256": "e310ef0eebf875819f026d93fd0143ae0f92e2976e0c19074f6da57b671bf9ad",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 112,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\connector-browser-links-v1.json.sig",
+      "bytes": 89,
+      "sha256": "09801b6282d63d393b6bc64e8d2fb6e22b42492744037bd4c7d28db495b82613",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\delivery-runtime-a1.json",
+      "bytes": 22230,
+      "sha256": "8f0432004f9999706bf1a6dfeb2fc0f520b0274ead90ed2ba1b9d5ec581067f2",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 607,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\delivery-runtime-a1.json.sig",
+      "bytes": 89,
+      "sha256": "30501dddb8912dfc1f4af8d99484f58dd91b626a6263959e4ee9121cb98ff4ef",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\delivery-runtime-v1.json",
+      "bytes": 20524,
+      "sha256": "e9ae420d7deb877c850369367350d435599ac0e737e90e7004f251b79c7cfe17",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 562,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\delivery-runtime-v1.json.sig",
+      "bytes": 89,
+      "sha256": "fc54ef21c49d94c124e724b8320ab621fae21608b5dec703555d141effdbd73a",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\finding-actions-a1.json",
+      "bytes": 109835,
+      "sha256": "6a7da2b9048563f02a3180dc7af5860a64a1c57b3757748b8eaedbad6fa07efa",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 2710,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\finding-actions-a1.json.sig",
+      "bytes": 89,
+      "sha256": "468c331f2e713b23c70b17a17fa7e661dc25128296b2ff6dafa9658a9c8228b3",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\finding-actions-v1.json",
+      "bytes": 107513,
+      "sha256": "6dc927236de4aa10933e5ac1394b4049bed22b17d3f22f33d34952b598fc21f6",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 2653,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\finding-actions-v1.json.sig",
+      "bytes": 89,
+      "sha256": "5a54b6c3bb991d45341d80f9128f0f81fcd156783072fad732f86834c6c30402",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\installer-execution-v1.json",
+      "bytes": 3628,
+      "sha256": "563a89e164dcb459b4b37c850c60a5d27aa915ea2b5af0032ab872f9b1ac54e0",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 107,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\installer-execution-v1.json.sig",
+      "bytes": 89,
+      "sha256": "d8d7315c7523694370192b2f087bb18e5396e2e5d5f2a551487b86df2b6eeafd",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\installer-readiness-wiring-v3.json",
+      "bytes": 10392,
+      "sha256": "e703d7db10c9d26d906668158df2076a3b6b13bdff53072c39d0068d064a77fd",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 282,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\installer-readiness-wiring-v3.json.sig",
+      "bytes": 89,
+      "sha256": "b67153a77772f4903c8c4621c145e90b674858f05e94b7b3471bd91120e6a6ce",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\installer-review-corrections-v2.json",
+      "bytes": 8549,
+      "sha256": "d854016b9e9f839ba44508bfdfbf2d80313ab2acdc1614a80149141191a1b7f7",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 232,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\installer-review-corrections-v2.json.sig",
+      "bytes": 89,
+      "sha256": "dba71c34902518853a8978c89f58b3445af9f057fc4fce9594ba92211d38b9c0",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\preview-control-set-v1.json",
+      "bytes": 29531,
+      "sha256": "1a1268e05319ea07e2bcda310af1b1a7b193e420c41cb19844d83b15f1736dc6",
+      "lineEndings": {
+        "crlf": 484,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\preview-control-set-v2.json",
+      "bytes": 41894,
+      "sha256": "65e45ac243b9c929ec151f3f332f6a0fd95164fda44240f0792ee7834e38c0bb",
+      "lineEndings": {
+        "crlf": 634,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\preview-control-set-v3.json",
+      "bytes": 43595,
+      "sha256": "0a7918b525486586993426503b2fa63e26bb816e689fbc4f19f121721df5dcd0",
+      "lineEndings": {
+        "crlf": 664,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\preview-control-set-v4.json",
+      "bytes": 49629,
+      "sha256": "d9fa8259ee4d481d42d80d6c41539d616cd50469e2401190febaabf8e9391e23",
+      "lineEndings": {
+        "crlf": 774,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-findings-v3.json",
+      "bytes": 132585,
+      "sha256": "daebe2301e3186592c2445694bde098a3c30fb066f5793d0c85e6dea0f0b4cdc",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 3282,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-findings-v3.json.sig",
+      "bytes": 89,
+      "sha256": "f153d1bcd4ffd78b9bc63d690ca10ebcc7561f67b492dbf7e3e30780b6b06f3c",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-preview-v1.json",
+      "bytes": 94051,
+      "sha256": "6787b8b532f8d8431cbcbf1eb4977bdf4c2b3a13ee0d6ee6c18ee3e64f9e5707",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 2382,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-preview-v1.json.sig",
+      "bytes": 89,
+      "sha256": "db689f3311613809703b25506194ceb1c2e1f5552519610b11784bb8254dc588",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-reports-v2.json",
+      "bytes": 126805,
+      "sha256": "73eafe9840e108448f6abd25256406152edf7cf44760d94698a575371483bc34",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 3132,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-reports-v2.json.sig",
+      "bytes": 89,
+      "sha256": "d4a7054a21fad4db5ebcf1fc240be7b6c72eff9e02923009958b32ce9207f684",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-slack-v4.json",
+      "bytes": 153666,
+      "sha256": "a681cb110e7ed024701981c4f183659036cebc9c4ff018cd96e1e8250ac343b0",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 3835,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\publication-slack-v4.json.sig",
+      "bytes": 89,
+      "sha256": "24df329e2dc032a648b49dd0759690e95268a03ca0c6682030f2fb39d61f6806",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\readiness-bootstrap-v1.json",
+      "bytes": 3776,
+      "sha256": "5a89ee132c0fc303421eb07dc26d6b9e488d4ff4c08506bee2f1b7bbfc52c6c2",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 107,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\readiness-bootstrap-v1.json.sig",
+      "bytes": 89,
+      "sha256": "96df22a5e6314a4fde300fdde50ceffb34a859564c6b629d4345dd3a544621ed",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\remediation-slack-a1.json",
+      "bytes": 14736,
+      "sha256": "0220ef9f93fd6db40a068a4b897b27d49832d4cea126434c6a2ee2a3ad4d055c",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 409,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\remediation-slack-a1.json.sig",
+      "bytes": 89,
+      "sha256": "752b6f90ceacca6bce9cd0ae8af5663f70e0dab262bcd387a66e9dfaf162f7b6",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\remediation-slack-a2.json",
+      "bytes": 17558,
+      "sha256": "74dd43bbdbac7bdbccd6610d3eca4b331c6b944b2ba9e11784cff12af61ca1f3",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 482,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\remediation-slack-a2.json.sig",
+      "bytes": 89,
+      "sha256": "2714bc9e5d20a471482ddcd4d13bb8ef412e9e7d405006527c91615166c878e5",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\remediation-slack-v1.json",
+      "bytes": 12488,
+      "sha256": "83306cae4ab2edfc7a1e34fdfdf282f2a29d9bc2d7e9f47fbee1628181bc3bd1",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 352,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\remediation-slack-v1.json.sig",
+      "bytes": 89,
+      "sha256": "01325ba32e8362835ff0f937858fee885ff8dbc4e0294cc17e6d858aa90e0ac3",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\reports-ui-v1.json",
+      "bytes": 104706,
+      "sha256": "5bba4583f58b07be1715046ebbf44b16299c3464ee575490ea7a4abcdd060e61",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 2578,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\reports-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "55e37548abc7249255f3880fb685bd6e4eed8b3b35e9b593ede429b2b5fb33a7",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\slack-delivery-ui-v1.json",
+      "bytes": 115457,
+      "sha256": "8b281d396a7bedfbf0bf8fef9811f02451ba51718f4add94b19ebd9201b5d27d",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 2853,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\slack-delivery-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "24dc0902f7ab2ea1724b967003ead4a2c47b24f7f47cfcd02d889be58afb44d1",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\ui-controls-v1.json",
+      "bytes": 9753,
+      "sha256": "5e9668043ac756c315b5a3680bbd8e34179cbfb58aa4ba0218ddecdd62a4fdf9",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 290,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\ui-controls-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c238750c4ec9920f71d57513e4f733becfa1dd7622476f6bd15425901cee6d72",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json",
+      "bytes": 71222,
+      "sha256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1808,
+        "cr": 0
+      }
+    },
+    {
+      "path": ".oracles\\ui-workflow-review-v2.json.sig",
+      "bytes": 89,
+      "sha256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 1,
+        "cr": 0
+      }
+    }
+  ],
+  "approvedEvolution": {
+    "amendment": {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\AMENDMENT.json",
+      "bytes": 4658,
+      "sha256": "181a0e7e670d3ab3e759b898ce46c92a9e5277c267774246dd7b7900eaf924cf",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 86,
+        "cr": 0
+      }
+    },
+    "archives": {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\ARCHIVES.json",
+      "bytes": 1293,
+      "sha256": "624593a1c417b2ab9579555bc77f4473db0da29854a9a5aad6bf51c933dfa6f2",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 30,
+        "cr": 0
+      }
+    },
+    "oldFixtureArchive": {
+      "path": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\before\\application-fixture.ts.txt",
+      "bytes": 19020,
+      "sha256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "lineEndings": {
+        "crlf": 329,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    "selectedPath": "web/tests/application-fixture.ts",
+    "before": {
+      "path": "web/tests/application-fixture.ts",
+      "bytes": 19020,
+      "sha256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "lineEndings": {
+        "crlf": 329,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    "approvedAfter": {
+      "path": "web\\tests\\application-fixture.ts",
+      "bytes": 19485,
+      "sha256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22",
+      "lineEndings": {
+        "crlf": 339,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    "exactInsertionsReconstructPrior": true
+  },
+  "history": [
+    {
+      "source": "tests\\publication\\inputs.before.json",
+      "archive": "tests\\publication\\history\\a1\\inputs.before.json.before.txt",
+      "path": "tests\\publication\\history\\a1\\inputs.before.json.before.txt",
+      "bytes": 2749,
+      "sha256": "b7ebb5d555758af25e1bae9dd20a7a61e95ab4cdbbcd81776a98c83ec5ab0fc3",
+      "lineEndings": {
+        "crlf": 80,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\controls.before.sha256",
+      "archive": "tests\\publication\\history\\a1\\controls.before.sha256.before.txt",
+      "path": "tests\\publication\\history\\a1\\controls.before.sha256.before.txt",
+      "bytes": 411,
+      "sha256": "2279fdac8f6ff54d44d54d9dffdbb8de84f61b8ff0030e9ad378fc4ae56d790b",
+      "lineEndings": {
+        "crlf": 5,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\PACKET.sha256",
+      "archive": "tests\\publication\\history\\a1\\PACKET.sha256.before.txt",
+      "path": "tests\\publication\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 652,
+      "sha256": "c697e46602d3517aa9cc961a52f9328233e6ff8738ea08358010c4486835a601",
+      "lineEndings": {
+        "crlf": 8,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\RED.tap",
+      "archive": "tests\\publication\\history\\a1\\RED.tap.before.txt",
+      "path": "tests\\publication\\history\\a1\\RED.tap.before.txt",
+      "bytes": 29254,
+      "sha256": "39e32a84c629cf410ae0ca96e0a2e545ee8f208de16939615a743ee3e148b902",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 435,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\RED.json",
+      "archive": "tests\\publication\\history\\a1\\RED.json.before.txt",
+      "path": "tests\\publication\\history\\a1\\RED.json.before.txt",
+      "bytes": 6787,
+      "sha256": "7ce71e100ee0007eb0944e443861145c81fccf788c60cb16b7b7eede8f6cef95",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 213,
+        "cr": 0
+      }
+    }
+  ],
+  "parentFailureLog": {
+    "original": {
+      "path": ".cache\\slack-publication-bytecheck.log",
+      "bytes": 5433,
+      "sha256": "e3405d66a80396ebf6bf92ea3fe62824f99bf1830fb6d1b9cef8c6df434ad65b",
+      "lineEndings": {
+        "crlf": 126,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    "preserved": {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\parent-clean-mismatch.before.log",
+      "bytes": 5433,
+      "sha256": "e3405d66a80396ebf6bf92ea3fe62824f99bf1830fb6d1b9cef8c6df434ad65b",
+      "lineEndings": {
+        "crlf": 126,
+        "lf": 0,
+        "cr": 0
+      }
+    }
+  }
+}

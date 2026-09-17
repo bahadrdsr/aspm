@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-effective-tls-a1",
+  "role": "independent-test-author",
+  "status": "FROZEN_PREFLIGHT_REGRESSION_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-16T23:33:31.883528+00:00",
+  "newControlFile": {
+    "path": "tests\\delivery_runtime\\tls_range_test.go",
+    "bytes": 4337,
+    "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"
+  },
+  "oldFilesAmended": [],
+  "oldSignaturesUnchanged": true,
+  "existingFourCasesFixturesBindingsRunnerByteIdentical": true,
+  "results": {
+    "newInvalidRangesRed": 3,
+    "existingFloorDenialControlsPass": 2,
+    "supportedRangePreflightControlsPass": 7,
+    "providerRequests": 0,
+    "realDBOrQueueUse": false,
+    "handshakeSuccessClaimed": false,
+    "skips": 0,
+    "retries": 0
+  },
+  "sourceFixOwner": "parent",
+  "sourceFixTarget": "internal/service/delivery_client.go",
+  "contract": "HANDOFF-A1.txt",
+  "guards": "GUARDS-A1.json",
+  "red": "RED-A1.json",
+  "currentPacket": "PACKET-A1.json",
+  "currentDigest": "PACKET-A1.sha256",
+  "externalEvidence": [
+    {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\BEFORE-A1.json",
+      "bytes": 3124,
+      "sha256": "ce63abcbf748eef34efde03029589f1daf5e7852d6b6d07b2b2910a330f785b2"
+    },
+    {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\tls-range-red-01.jsonl",
+      "bytes": 21356,
+      "sha256": "fc0fb331e314cf1cc0ce211cbc557707c485dd1a7bf77b0029d1bbfd63c4e28e"
+    },
+    {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\tls-range-red-01.log",
+      "bytes": 4621,
+      "sha256": "09990d6d85f6ce7e68637ac9487ce8f06382328d927936ef57b10d71ea0be408"
+    },
+    {
+      "path": ".artifacts\\delivery-runtime-tls-a1\\tls-range-red-01.receipt.json",
+      "bytes": 776,
+      "sha256": "141f774a84c201a19dd59aa25405a77e9820f7dc94679898476f21683fca1bf2"
+    }
+  ],
+  "noDependencyAgentCommitOrLiveVendorActivity": true,
+  "archives": [],
+  "next": "Parent verifies this owned-tripwire semantic RED, seals new current controls, then fixes effective version-range preflight without weakening existing TLS validation."
+}

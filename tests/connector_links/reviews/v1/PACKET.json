@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "scope": "connector-browser-links-v1",
+  "phase": "frozen-independent-semantic-red",
+  "frozenAt": "2026-09-16T19:38:54.781906+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned inventory for NEW independent dependency controls only. No remediation or older oracle amendment.",
+  "payloadFileCount": 5,
+  "ownedFileCount": 7,
+  "ownedFiles": [
+    "tests\\connector_links\\CONTRACT.txt",
+    "tests\\connector_links\\Test-ConnectorLinks.ps1",
+    "tests\\connector_links\\links_test.go",
+    "tests\\connector_links\\reviews\\v1\\BEFORE.json",
+    "tests\\connector_links\\reviews\\v1\\PACKET.json",
+    "tests\\connector_links\\reviews\\v1\\PACKET.sha256",
+    "tests\\connector_links\\reviews\\v1\\RED.json"
+  ],
+  "files": [
+    {
+      "path": "tests\\connector_links\\CONTRACT.txt",
+      "bytes": 4364,
+      "sha256": "e25c1c23df1166aee47b7d402ec9f4d23d760108e30fb028876ac2c7c6472471"
+    },
+    {
+      "path": "tests\\connector_links\\links_test.go",
+      "bytes": 10670,
+      "sha256": "e48c91110c620a108f7f5f859f379287a4c170b4cf6504ed41d001d62c986c2a"
+    },
+    {
+      "path": "tests\\connector_links\\reviews\\v1\\BEFORE.json",
+      "bytes": 2027,
+      "sha256": "506252215a8b167747f7bf9d084aa2f50efaf7c024353a0bd292c84ea09fd4f4"
+    },
+    {
+      "path": "tests\\connector_links\\reviews\\v1\\RED.json",
+      "bytes": 5666,
+      "sha256": "9f48f907634e6d707fca28cfd15f1505bd9b8256792783757820cbf1a4358b37"
+    },
+    {
+      "path": "tests\\connector_links\\Test-ConnectorLinks.ps1",
+      "bytes": 3603,
+      "sha256": "833ee682d7f71dfad3d25bd1b70b4814846d4738d5e98455869f0f89b08a4f95"
+    }
+  ],
+  "redEvidence": "tests\\connector_links\\reviews\\v1\\RED.json",
+  "externalEvidenceRoot": ".artifacts\\connector-links-v1",
+  "selfBinding": "PACKET.sha256 binds raw PACKET.json; only this digest pair is excluded from payload hashes."
+}

@@ -1,0 +1,827 @@
+import type { Locator, Page } from "@playwright/test";
+import { password } from "./application-fixture";
+import { catalogResponse } from "./fixtures";
+import { requireProductionUI } from "./network";
+import {
+  alphaConnection, betaConnection, changedAt, connectionPath, connectionsPath, connectionSeries, createInput,
+  deliveryPath, deliveryResult, disabledConnection, draftToken, findingPath, hexID, historyPath,
+  longAssetName, longConnectionName, queuedDelivery, replacementToken, slackAlpha, slackBeta, slackFinding,
+  slackUser, validText, workPath,
+} from "./slack-ui-data";
+import type { SlackConnection, SlackDelivery, SlackPage } from "./slack-ui-data";
+import { expect, test } from "./slack-ui-fixture";
+import type { SlackCall, SlackControl } from "./slack-ui-fixture";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+test.beforeEach(async ({ slack }) => {
+  requireProductionUI();
+  expect(slack.requests).toEqual([]);
+});
+
+const addName = /^(?:Add|Create|New) (?:Slack )?connection$/i;
+const editorName = /^(?:Add|Create|New|Edit) (?:Slack )?connection$/i;
+const saveConnectionName = /^(?:Save|Create|Add)(?: (?:Slack )?connection| changes)?$/i;
+const notifyName = /^(?:Notify(?: finding| via Slack)?|Send to Slack)$/i;
+const previewName = /^(?:Notify(?: finding| via Slack)?|Send to Slack|(?:Preview|Review)(?: Slack)? notification)$/i;
+const confirmName = /^(?:Send to Slack|Notify|Queue(?: Slack)? notification|Confirm(?: notification| send)?|Send notification)$/i;
+const connectionNameLabel = /^(?:Connection )?Name$/i;
+const channelLabel = /^(?:(?:Slack )?Channel(?: ID)?)(?: \(.*\))?$/i;
+const tokenLabel = /^(?:(?:New |Replacement )?(?:Slack )?(?:bot )?token)(?: \(.*\))?$/i;
+const enabledLabel = /^(?:Enabled|Enable connection|Enabled for notifications|Enable notifications)$/i;
+const retryName = /^(?:Retry(?: (?:connections?|delivery|history|delivery history))?|Try again)$/i;
+const pendingText = /pending|saving|creating|queuing|submitting|please wait|awaiting/i;
+const emptyConnections = /^(?:No (?:workspace |Slack )?connections(?: yet)?|No saved connections)$/i;
+
+function connections(page: Page) { return page.getByRole("region", { name: /^(?:Workspace )?Connections$/i, includeHidden: true }); }
+function connectionTable(page: Page) { return connections(page).getByRole("table", { name: /^(?:Workspace )?Connections$/i, includeHidden: true }); }
+function connectionRow(page: Page, name: string) { return connectionTable(page).getByRole("row", { includeHidden: true }).filter({ hasText: name }); }
+function connectionEditor(page: Page) { return page.getByRole("dialog", { name: editorName }); }
+function connectionForm(page: Page) { return connectionEditor(page).getByRole("form", { name: /connection/i }); }
+function addConnection(page: Page) { return connections(page).getByRole("button", { name: addName }); }
+function refreshConnections(page: Page) { return connections(page).getByRole("button", { name: /^Refresh connections$/i }); }
+function workTable(page: Page) { return page.getByRole("table", { name: "Findings", exact: true, includeHidden: true }); }
+function findingRow(page: Page) { return workTable(page).getByRole("row", { includeHidden: true }).filter({ hasText: slackFinding.title }); }
+function findingTrigger(page: Page) {
+  return findingRow(page).getByRole("button", { name: slackFinding.title, exact: true, includeHidden: true })
+    .or(findingRow(page).getByRole("link", { name: slackFinding.title, exact: true, includeHidden: true }));
+}
+function workFilter(page: Page) { return page.getByRole("textbox", { name: "Filter findings", exact: true, includeHidden: true }); }
+function findingSelection(page: Page) { return findingRow(page).getByRole("checkbox", { name: `Select ${slackFinding.title}`, exact: true, includeHidden: true }); }
+function findingDialog(page: Page) { return page.getByRole("dialog", { name: slackFinding.title, exact: true }); }
+function preview(page: Page) { return page.getByRole("dialog", { name: previewName }); }
+function previewForm(page: Page) { return preview(page).getByRole("form", { name: /notify|notification|slack/i }); }
+function confirm(page: Page) { return previewForm(page).getByRole("button", { name: confirmName }); }
+function history(page: Page) { return page.getByRole("region", { name: /^(?:Slack )?Delivery history$/i, includeHidden: true }); }
+function historyTable(page: Page) { return history(page).getByRole("table", { name: /^(?:Slack )?Deliveries$|^Delivery history$/i, includeHidden: true }); }
+function deliveryDetails(page: Page) { return page.getByRole("region", { name: /^(?:(?:Selected|Latest) )?Delivery(?: details)?$/i, includeHidden: true }); }
+function status(page: Page) {
+  return deliveryDetails(page).getByRole("status", { name: /Delivery status/i })
+    .or(deliveryDetails(page).getByRole("alert", { name: /Delivery status/i }));
+}
+function refreshDelivery(page: Page) { return deliveryDetails(page).getByRole("button", { name: /^Refresh delivery$/i }); }
+function refreshHistory(page: Page) { return history(page).getByRole("button", { name: /^Refresh (?:delivery )?history$|^Refresh deliveries$/i }); }
+function literal(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+function deliveryRow(page: Page, id: string) {
+  const rows = historyTable(page).getByRole("row", { includeHidden: true });
+  const identity = page.getByRole("button", { name: new RegExp(literal(id)), includeHidden: true })
+    .or(page.getByRole("link", { name: new RegExp(literal(id)), includeHidden: true }));
+  return rows.filter({ hasText: id }).or(rows.filter({ has: identity }));
+}
+function nextConnections(page: Page) {
+  return connections(page).getByRole("button", { name: /^(?:Load more connections|Next(?: connections| page)?)$/i });
+}
+function nextDeliveries(page: Page) {
+  return history(page).getByRole("button", { name: /^(?:Load more (?:deliveries|history)|Next(?: deliveries| page)?)$/i });
+}
+async function frame(page: Page, count = 2) {
+  await page.evaluate(async (frames) => {
+    for (let index = 0; index < frames; index++) await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  }, count);
+}
+async function requested(control: SlackControl) {
+  await expect.poll(() => control.call !== null, "The real UI must reach the declared HTTP boundary.").toBe(true);
+  return control.call!;
+}
+async function release(page: Page, control: SlackControl, aborted = false) {
+  control.release();
+  await control.delivered;
+  await frame(page);
+  if (aborted) for (const call of control.calls) {
+    await expect.poll(() => call.failure, "Scope/session loss must abort each old request, not just cover late content.").toMatch(/abort/i);
+  }
+}
+async function noEnabledAction(action: Locator) {
+  for (const item of await action.all()) await expect(item).toBeDisabled();
+}
+async function setEnabled(form: Locator, enabled: boolean) {
+  const checkbox = form.getByRole("checkbox", { name: enabledLabel }).or(form.getByRole("switch", { name: enabledLabel }));
+  const select = form.getByRole("combobox", { name: enabledLabel });
+  const radio = form.getByRole("radio", { name: new RegExp(`^${enabled ? "Enabled" : "Disabled"}(?: for notifications)?$`, "i") });
+  if (await checkbox.count()) {
+    if (!await checkbox.evaluate((element) => element instanceof HTMLInputElement)) {
+      if ((await checkbox.getAttribute("aria-checked") === "true") !== enabled) await checkbox.click();
+    } else await checkbox.setChecked(enabled);
+  } else if (await select.count()) {
+    if (await select.evaluate((element) => element.tagName === "SELECT")) {
+      const option = select.getByRole("option").filter({ hasText: new RegExp(`^${enabled ? "Enabled" : "Disabled"}$`, "i") });
+      await select.selectOption(await option.getAttribute("value") ?? (enabled ? "true" : "false"));
+    } else {
+      await select.click();
+      await form.page().getByRole("option", { name: enabled ? "Enabled" : "Disabled", exact: true }).click();
+    }
+  } else {
+    await expect(radio, "Use a labelled explicit enabled choice, never a 'Connected' credential-presence checkbox.").toBeVisible();
+    await radio.check();
+  }
+  await expect(form.getByRole("checkbox", { name: /connected|verified/i })).toHaveCount(0);
+}
+async function selectConnection(page: Page, value = alphaConnection) {
+  const select = previewForm(page).getByRole("combobox", { name: /^(?:Slack )?Connection$/i });
+  await expect(select).toBeVisible();
+  if (await select.evaluate((element) => element.tagName === "SELECT")) await select.selectOption(value.id);
+  else {
+    await select.click();
+    await page.getByRole("option", { name: new RegExp(literal(value.name)) }).click();
+  }
+  await expect(preview(page)).toContainText(value.channel);
+  for (const option of await page.getByRole("option", { name: new RegExp(literal(disabledConnection.name)) }).all()) {
+    await expect(option, "Disabled connections may be labelled in a selector, but must not be selectable.").toBeDisabled();
+  }
+}
+async function openAdd(page: Page) {
+  await addConnection(page).click();
+  await expect(connectionEditor(page)).toBeVisible();
+  await expect(connectionForm(page)).toBeVisible();
+  await expect(connectionForm(page).getByLabel(tokenLabel)).toHaveAttribute("type", "password");
+  await expect(connectionForm(page).getByLabel(tokenLabel)).toHaveValue("");
+  return connectionForm(page);
+}
+async function fillConnection(form: Locator, input = createInput) {
+  await form.getByLabel(connectionNameLabel).fill(input.name);
+  await form.getByLabel(channelLabel).fill(input.channel);
+  await form.getByLabel(tokenLabel).fill(input.token);
+  await setEnabled(form, input.enabled);
+}
+async function editConnection(page: Page, name = alphaConnection.name) {
+  const row = connectionRow(page, name);
+  const action = row.getByRole("button", { name: /^(?:Edit|Open)(?: connection)?(?: .*)?$/i })
+    .or(row.getByRole("link", { name: /^(?:Edit|Open)(?: connection)?(?: .*)?$/i }));
+  await action.click();
+  await expect(connectionEditor(page)).toBeVisible();
+}
+async function openFinding(page: Page, selected = true, query = slackFinding.assetName) {
+  await page.goto("/#/work");
+  await expect(workTable(page)).toBeVisible();
+  const workspace = page.getByRole("combobox", { name: "Workspace", exact: true });
+  await workspace.selectOption(slackAlpha.id);
+  await expect(workspace).toHaveValue(slackAlpha.id);
+  await workFilter(page).fill(query);
+  if (selected) await findingSelection(page).check();
+  await findingTrigger(page).click();
+  await expect(findingDialog(page)).toBeVisible();
+  return findingDialog(page);
+}
+async function openPreview(page: Page, value = alphaConnection) {
+  const action = findingDialog(page).getByRole("button", { name: notifyName });
+  await expect(action, "One contextual notification action belongs in the existing finding dialog.").toHaveCount(1);
+  await action.click();
+  await expect(preview(page)).toBeVisible();
+  await expect(previewForm(page)).toBeVisible();
+  await selectConnection(page, value);
+}
+async function openHistory(page: Page) {
+  const toggle = findingDialog(page).getByRole("button", { name: /^(?:Show |View )?(?:delivery history|deliveries)$/i });
+  if (!await history(page).isVisible() && await toggle.isVisible()) await toggle.click();
+  await expect(history(page)).toBeVisible();
+}
+async function openDelivery(page: Page, value: SlackDelivery) {
+  await openHistory(page);
+  await expect(historyTable(page)).toBeVisible();
+  for (let pageIndex = 0; pageIndex < 8; pageIndex++) {
+    await expect.poll(async () => await deliveryRow(page, value.id).count() > 0 ||
+      await nextDeliveries(page).isVisible() && await nextDeliveries(page).isEnabled(),
+    "Wait for a returned history page before choosing its row or next cursor.").toBe(true);
+    if (await deliveryRow(page, value.id).count()) break;
+    await expect(nextDeliveries(page), "Follow the real history cursor if the selected delivery is on a later page.").toBeEnabled();
+    const previous = await historyTable(page).textContent();
+    await nextDeliveries(page).click();
+    await expect(historyTable(page)).not.toHaveText(previous ?? "");
+  }
+  const action = deliveryRow(page, value.id).getByRole("button", { name: /^(?:Open|View)(?: delivery)?(?: .*)?$/i })
+    .or(deliveryRow(page, value.id).getByRole("link", { name: /^(?:Open|View)(?: delivery)?(?: .*)?$/i }));
+  await action.click();
+  await expect(deliveryDetails(page)).toBeVisible();
+  await expect(deliveryDetails(page)).toContainText(value.id);
+}
+async function sourceUnchanged(page: Page, assetName = slackFinding.assetName) {
+  const dialog = findingDialog(page);
+  for (const value of [slackFinding.evidence.text, slackFinding.evidence.sourceLabel, slackFinding.description,
+    slackFinding.remediation, "No independently verified resolution is recorded."]) {
+    await expect(dialog.getByText(value, { exact: true })).toBeVisible();
+  }
+  await expect(dialog.getByText("Not verified", { exact: true }).first()).toBeVisible();
+  await expect(dialog.getByText("Observed", { exact: true })).toBeVisible();
+  await expect(findingRow(page)).toContainText(assetName);
+  await expect(findingRow(page).getByRole("cell", { includeHidden: true }).filter({ hasText: /^Open$/i })).toHaveCount(1);
+  await expect(findingRow(page).getByRole("cell", { includeHidden: true }).filter({ hasText: /^Unassigned$/i })).toHaveCount(1);
+}
+async function catalogUnverified(page: Page) {
+  const catalog = page.getByRole("list", { name: "Native integrations", exact: true });
+  await expect(catalog.getByRole("listitem")).toHaveCount(8);
+  for (const family of catalogResponse.items) {
+    const item = catalog.getByRole("listitem").filter({ has: page.getByRole("heading", { name: family.name, exact: true }) });
+    await expect(item.getByText(/not verified|unverified|not run/i)).toBeVisible();
+    await expect(item.getByText(/^connected$|^live verified$|^verified$|^ready to connect$/i)).toHaveCount(0);
+  }
+}
+async function assertQueued(page: Page, value: SlackDelivery) {
+  await expect(status(page)).toContainText(/\bqueued\b/i);
+  await expect(status(page)).toContainText(/not (?:yet )?sent|not dispatched|awaiting.*worker|waiting.*worker/i);
+  await expect(deliveryDetails(page)).toContainText(value.id);
+  await expect(deliveryDetails(page).getByText(/^Sent(?: to Slack)?$|^Delivered$|^Confirmed$/i)).toHaveCount(0);
+  await expect(deliveryDetails(page).locator(`time[datetime="${value.createdAt}"]`)).toBeVisible();
+}
+async function returnFromPreview(page: Page) {
+  if (await preview(page).isVisible()) await page.keyboard.press("Escape");
+  await expect(findingDialog(page)).toBeVisible();
+}
+function deliveryFrom(call: SlackCall): SlackDelivery {
+  const value = call.response?.delivery as SlackDelivery | undefined;
+  expect(value, "Consume the complete immutable DTO returned by the server.").toBeDefined();
+  if (!value) throw new Error("No synthetic delivery DTO was returned.");
+  return value;
+}
+async function exactDelivery(page: Page, value: SlackDelivery) {
+  const details = deliveryDetails(page);
+  await expect(status(page)).toContainText(new RegExp(`\\b${value.state.replace("-", "[- ]")}\\b`, "i"));
+  for (const text of [value.id, value.channel, value.payload.title, value.payload.body]) await expect(details).toContainText(text);
+  await expect(details.getByRole("link", { name: /^(?:View|Open) finding$|^Finding link$/i })).toHaveAttribute("href", value.payload.deepLink);
+  for (const stamp of [value.createdAt, value.dispatchStartedAt, value.completedAt].filter((item): item is string => item !== null)) {
+    await expect(details.locator(`time[datetime="${stamp}"]`).first()).toBeVisible();
+  }
+  if (value.receipt) {
+    await expect(details).toContainText(value.receipt.remoteId);
+    if (value.receipt.remoteUrl) await expect(details.getByRole("link", { name: /Slack|remote receipt|remote message/i })).toHaveAttribute("href", value.receipt.remoteUrl);
+    else await expect(details.getByRole("link", { name: /Slack|remote receipt|remote message/i }),
+      "The actual Slack adapter supplies no remote URL; do not construct a purported verified permalink.").toHaveCount(0);
+  }
+  if (value.failure) {
+    await expect(details).toContainText(value.failure.code);
+    if (value.failure.nativeCode) await expect(details).toContainText(value.failure.nativeCode);
+    await expect(details).toContainText(new RegExp(`HTTP(?: status)?\\s*:?\\s*${value.failure.httpStatus}\\b`, "i"));
+    await expect(details).toContainText(/no automatic retr(?:y|ies)|not (?:automatically )?retried|retryable\s*:\s*false/i);
+    if (value.failure.retryAfterSeconds) await expect(details).toContainText(/retry.after\s*:?\s*7\s*(?:s\b|seconds?)/i);
+  }
+}
+async function noOldScope(page: Page, extra: string[] = []) {
+  await expect(page.getByRole("dialog", { includeHidden: true })).toHaveCount(0);
+  for (const value of [alphaConnection.name, disabledConnection.name, createInput.name, slackFinding.title, slackFinding.assetName, ...extra]) {
+    await expect(page.locator("body")).not.toContainText(value);
+  }
+}
+async function privateGone(page: Page, extra: string[] = []) {
+  await noOldScope(page, extra);
+  for (const region of [connections(page), history(page), deliveryDetails(page), workTable(page)]) await expect(region).toHaveCount(0);
+  await expect(page.getByRole("combobox", { name: "Workspace", exact: true, includeHidden: true })).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(slackUser.name);
+  await expect(page.locator("body")).not.toContainText(slackAlpha.name);
+}
+async function closeFindingStack(page: Page) {
+  if (await preview(page).isVisible()) await page.keyboard.press("Escape");
+  if (await findingDialog(page).isVisible()) await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { includeHidden: true })).toHaveCount(0);
+}
+async function signIn(page: Page) {
+  const form = page.getByRole("form", { name: "Sign in", exact: true });
+  await expect(form).toBeVisible();
+  await form.getByLabel("Email", { exact: true }).fill(slackUser.email);
+  await form.getByLabel("Password", { exact: true }).fill(password);
+  await form.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page.getByRole("combobox", { name: "Workspace", exact: true })).toBeVisible();
+}
+
+test("SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection", async ({ page, slack }) => {
+  slack.seedConnections(slackAlpha.id, []);
+  const unavailable = slack.queueRead(connectionsPath, slackAlpha.id, 503, true);
+  await page.goto("/#/integrations");
+  await catalogUnverified(page);
+  await expect(connections(page), "Add a named workspace Connections region without replacing the eight catalog families.").toBeVisible();
+  await requested(unavailable);
+  await expect(connections(page).getByRole("status").filter({ hasText: /loading.*connections/i })).toBeVisible();
+  await expect(connections(page).getByText(emptyConnections)).toHaveCount(0);
+  await release(page, unavailable);
+  await expect(connections(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+  await expect(connections(page).getByText(emptyConnections)).toHaveCount(0);
+  slack.queueRead(connectionsPath);
+  await connections(page).getByRole("button", { name: retryName }).click();
+  await expect(connections(page).getByText(emptyConnections)).toBeVisible();
+
+  const form = await openAdd(page);
+  await expect(connectionEditor(page)).toContainText(/Slack/i);
+  await expect(connectionEditor(page)).toContainText(/outbound|finding notifications/i);
+  await expect(form.getByLabel(/encryption key|endpoint|requester|webhook|provider URL/i)).toHaveCount(0);
+  await expect(connectionEditor(page).getByRole("button", { name: /verify|test (?:send|connection)|OAuth|sign in.*Slack/i })).toHaveCount(0);
+  await fillConnection(form);
+  await slack.assertPrivate(page);
+  expect(slack.requests.filter((call) => call.method !== "GET")).toEqual([]);
+  slack.encryptionAvailable = false;
+  const deniedKey = slack.queueCreate(201, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  const failedCall = await requested(deniedKey);
+  expect(failedCall.body).toEqual(createInput);
+  await expect(connectionEditor(page).getByRole("status").filter({ hasText: pendingText })).toBeVisible();
+  await expect(connectionRow(page, createInput.name)).toHaveCount(0);
+  await release(page, deniedKey);
+  expect(failedCall.status).toBe(503);
+  await expect(connectionEditor(page).getByRole("alert")).toContainText(/operator|administrator|configuration|unavailable/i);
+  await expect(form.getByLabel(connectionNameLabel)).toHaveValue(createInput.name);
+  await expect(form.getByLabel(channelLabel)).toHaveValue(createInput.channel);
+  await slack.assertPrivate(page);
+  slack.encryptionAvailable = true;
+  await form.getByLabel(tokenLabel).fill(draftToken);
+  const created = slack.queueCreate(201, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  const createdCall = await requested(created);
+  expect(createdCall.body).toEqual(createInput);
+  await expect(connectionRow(page, createInput.name)).toHaveCount(0);
+  await release(page, created);
+  await expect(connectionEditor(page)).toHaveCount(0);
+  await expect(connectionRow(page, createInput.name)).toContainText(/disabled/i);
+  expect(createdCall.response?.connection).toMatchObject({ revision: 1, credentialConfigured: true, enabled: false, updatedAt: changedAt });
+  await slack.assertPrivate(page, true);
+  await openAdd(page);
+  await page.keyboard.press("Escape");
+  await slack.assertPrivate(page, true);
+  expect(slack.requests.filter((call) => call.method === "POST" && call.path.endsWith("/deliveries"))).toEqual([]);
+
+  slack.seedConnections(slackAlpha.id, connectionSeries(501));
+  await refreshConnections(page).click();
+  await expect(connectionRow(page, alphaConnection.name)).toBeVisible();
+  const firstPage = slack.pages.filter((entry) => entry.call.path === connectionsPath).at(-1)!;
+  expect(firstPage.response.total).toBe(501);
+  expect(firstPage.response.nextCursor).not.toBeNull();
+  await expect(connections(page)).toContainText(/\b501\b/);
+  const next = slack.queueRead(connectionsPath);
+  await nextConnections(page).click();
+  const nextCall = await requested(next);
+  expect(nextCall.query.cursor).toBe(firstPage.response.nextCursor);
+  await next.delivered;
+  const returned = nextCall.response as unknown as SlackPage<SlackConnection>;
+  for (const item of [returned.items[0], returned.items.at(-1)!]) await expect(connectionRow(page, item.name)).toHaveCount(1);
+  await catalogUnverified(page);
+});
+
+test("SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial", async ({ page, slack }) => {
+  await page.goto("/#/integrations");
+  await expect(connectionRow(page, alphaConnection.name)).toBeVisible();
+  const initialRead = slack.queueRead(connectionPath(alphaConnection.id), slackAlpha.id, 200, true);
+  await editConnection(page);
+  await requested(initialRead);
+  await release(page, initialRead);
+  const form = connectionForm(page), renamed = "Synthetic renamed on-call room";
+  await expect(form.getByLabel(tokenLabel)).toHaveValue("");
+  await expect(form.getByLabel(tokenLabel)).toHaveAttribute("type", "password");
+  await expect(connectionEditor(page)).toContainText(/revision\s*:?\s*4\b/i);
+  await form.getByLabel(connectionNameLabel).fill(renamed);
+  const nameAck = slack.queuePatch(alphaConnection.id, 200, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  expect((await requested(nameAck)).body).toEqual({ name: renamed });
+  await expect(connectionRow(page, alphaConnection.name)).toHaveCount(1);
+  await expect(connectionRow(page, renamed)).toHaveCount(0);
+  await release(page, nameAck);
+  await expect(connectionEditor(page)).toHaveCount(0);
+  await expect(connectionRow(page, renamed)).toBeVisible();
+  expect((nameAck.call!.response?.connection as SlackConnection).revision).toBe(5);
+
+  await editConnection(page, renamed);
+  await expect(form.getByLabel(tokenLabel)).toHaveValue("");
+  await expect(connectionEditor(page)).toContainText(/revision\s*:?\s*5\b/i);
+  await setEnabled(form, false);
+  const disableAck = slack.queuePatch(alphaConnection.id, 200, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  expect((await requested(disableAck)).body).toEqual({ enabled: false });
+  await expect(connectionRow(page, renamed)).toContainText(/enabled/i);
+  await release(page, disableAck);
+  await expect(connectionEditor(page)).toHaveCount(0);
+  await expect(connectionRow(page, renamed)).toContainText(/disabled/i);
+  expect((disableAck.call!.response?.connection as SlackConnection).revision).toBe(6);
+
+  await editConnection(page, renamed);
+  await expect(form.getByLabel(tokenLabel)).toHaveValue("");
+  await form.getByLabel(channelLabel).fill("GREPLACEMENT42");
+  await form.getByLabel(tokenLabel).fill(replacementToken);
+  const replacement = slack.queuePatch(alphaConnection.id, 200, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  expect((await requested(replacement)).body).toEqual({ channel: "GREPLACEMENT42", token: replacementToken });
+  await release(page, replacement);
+  await expect(connectionEditor(page)).toHaveCount(0);
+  expect((replacement.call!.response?.connection as SlackConnection).revision).toBe(7);
+  await slack.assertPrivate(page, true);
+  await editConnection(page, renamed);
+  await expect(form.getByLabel(tokenLabel)).toHaveValue("");
+  slack.serverRoles.set(slackAlpha.id, "analyst");
+  await form.getByLabel(connectionNameLabel).fill("Synthetic denied rename draft");
+  const forbidden = slack.queuePatch(alphaConnection.id);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  await requested(forbidden);
+  await forbidden.delivered;
+  expect(forbidden.call!.status).toBe(403);
+  await expect(connectionEditor(page).getByRole("alert")).toContainText(/not permitted|permission|access|forbidden/i);
+  await expect(form.getByLabel(connectionNameLabel)).toHaveValue("Synthetic denied rename draft");
+  expect(slack.connections.get(alphaConnection.id)!.name).toBe(renamed);
+  await page.keyboard.press("Escape");
+  for (const role of ["analyst", "viewer"] as const) {
+    slack.roles.set(slackAlpha.id, role);
+    slack.serverRoles.set(slackAlpha.id, role);
+    await page.reload();
+    await expect(connectionRow(page, renamed)).toContainText(/disabled/i);
+    await expect(connectionRow(page, disabledConnection.name)).toBeVisible();
+    await noEnabledAction(addConnection(page));
+    await noEnabledAction(connectionTable(page).getByRole("button", { name: /^Edit(?: connection)?(?: .*)?$/i }));
+    await expect(connectionEditor(page)).toHaveCount(0);
+  }
+  await catalogUnverified(page);
+});
+
+test("SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation", async ({ page, slack }) => {
+  slack.roles.set(slackAlpha.id, "analyst");
+  slack.serverRoles.set(slackAlpha.id, "analyst");
+  await openFinding(page);
+  await sourceUnchanged(page);
+  await openPreview(page);
+  for (const text of [slackFinding.title, slackFinding.assetName, alphaConnection.name, alphaConnection.channel]) await expect(preview(page)).toContainText(text);
+  await expect(preview(page)).toContainText(/\bhigh\b/i);
+  await expect(preview(page)).toContainText(/(?:no |not |exclude|without)[\s\S]*(?:evidence|source code)|(?:evidence|source code)[\s\S]*(?:not|exclude)/i);
+  for (const text of [slackFinding.evidence.text, slackFinding.description, slackFinding.remediation, slackFinding.notes[0].text]) {
+    await expect(preview(page)).not.toContainText(text);
+  }
+  const link = preview(page).getByRole("link", { name: /^(?:View|Open) finding$|^Finding link$/i });
+  const previewURL = new URL(await link.getAttribute("href") ?? "", page.url());
+  expect(previewURL.hash).toMatch(new RegExp(`^#/work\\?.*finding=${slackFinding.id}(?:&|$)`));
+  expect(slack.calls("POST", historyPath)).toHaveLength(0);
+  await page.keyboard.press("Escape");
+  await expect(findingDialog(page).getByRole("button", { name: notifyName })).toBeFocused();
+  await sourceUnchanged(page);
+  await openPreview(page);
+  const ack = slack.queueEnqueue(202, true);
+  await confirm(page).click();
+  const call = await requested(ack);
+  expect(Object.keys(call.body).sort()).toEqual(["connectionId", "idempotencyKey"]);
+  expect(call).toMatchObject({ workspace: slackAlpha.id, query: {}, body: { connectionId: alphaConnection.id } });
+  expect(validText(call.body.idempotencyKey, 256)).toBe(true);
+  expect(call.body.idempotencyKey).not.toBe(alphaConnection.id);
+  await expect(preview(page).getByRole("status").filter({ hasText: pendingText })).toBeVisible();
+  await noEnabledAction(confirm(page));
+  await frame(page, 4);
+  expect(slack.calls("POST", historyPath)).toHaveLength(1);
+  await release(page, ack);
+  const queued = deliveryFrom(call);
+  expect(call.status).toBe(202);
+  expect(queued).toMatchObject({ state: "queued", receipt: null, failure: null, connectionRevision: alphaConnection.revision });
+  await returnFromPreview(page);
+  await assertQueued(page, queued);
+  await sourceUnchanged(page);
+  await expect(workFilter(page)).toHaveValue(slackFinding.assetName);
+  await expect(findingSelection(page)).toBeChecked();
+  expect(slack.calls("PATCH", findingPath)).toEqual([]);
+
+  slack.serverRoles.set(slackAlpha.id, "viewer");
+  await openPreview(page);
+  const denied = slack.queueEnqueue();
+  await confirm(page).click();
+  await requested(denied);
+  await denied.delivered;
+  expect(denied.call!.status).toBe(403);
+  await expect(preview(page).getByRole("alert")).toContainText(/not permitted|permission|access|forbidden/i);
+  expect(slack.deliveries.size).toBe(1);
+  await closeFindingStack(page);
+  await expect(findingTrigger(page)).toBeFocused();
+  slack.roles.set(slackAlpha.id, "viewer");
+  await page.reload();
+  await findingTrigger(page).click();
+  await expect(findingDialog(page)).toBeVisible();
+  await noEnabledAction(findingDialog(page).getByRole("button", { name: notifyName }));
+  await openHistory(page);
+  await expect(deliveryRow(page, queued.id)).toHaveCount(1);
+});
+
+test("SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts", async ({ page, slack }) => {
+  await page.clock.install();
+  const states = ["queued", "dispatching", "confirmed", "blocked", "failed", "rate-limited", "uncertain"] as const;
+  const samples = states.map((state, index) => deliveryResult(queuedDelivery(
+    state === "blocked" ? { ...disabledConnection, revision: disabledConnection.revision - 1, enabled: true } : alphaConnection,
+    slackFinding, index + 1,
+  ), state));
+  for (const value of samples) slack.seedDelivery(value);
+  const missing = slack.queueRead(historyPath, slackAlpha.id, 503, true);
+  await openFinding(page);
+  await openHistory(page);
+  await requested(missing);
+  await expect(history(page).getByRole("status").filter({ hasText: /loading.*(?:deliver|history)/i })).toBeVisible();
+  await expect(history(page).getByText(/^No deliveries(?: yet)?$/i)).toHaveCount(0);
+  await release(page, missing);
+  await expect(history(page).getByRole("alert")).toContainText(/could not|unavailable|unable/i);
+  await expect(history(page).getByText(/^No deliveries(?: yet)?$/i)).toHaveCount(0);
+  slack.queueRead(historyPath);
+  await history(page).getByRole("button", { name: retryName }).click();
+  await expect(historyTable(page)).toBeVisible();
+  await openDelivery(page, samples[0]);
+  await assertQueued(page, samples[0]);
+  let latest = slack.publishResult(samples[0].id, "dispatching");
+  await refreshDelivery(page).click();
+  await exactDelivery(page, latest);
+  latest = slack.publishResult(samples[0].id, "confirmed");
+  await refreshDelivery(page).click();
+  await exactDelivery(page, latest);
+  for (const sample of samples.slice(1)) {
+    const read = slack.queueRead(deliveryPath(sample.id));
+    await openDelivery(page, sample);
+    await requested(read);
+    await read.delivered;
+    await exactDelivery(page, sample);
+    if (sample.state === "rate-limited") {
+      await page.clock.fastForward(8_000);
+      await frame(page);
+      expect(slack.calls("POST", historyPath), "Retry-After 7 is data, never a timer that enqueues or sends.").toHaveLength(0);
+      await exactDelivery(page, sample);
+    }
+    if (sample.state === "uncertain") {
+      await expect(deliveryDetails(page)).toContainText(/may (?:already )?have|unknown|cannot confirm|uncertain/i);
+      await expect(deliveryDetails(page).getByRole("button", { name: /retry|resend|send again|dispatch/i })).toHaveCount(0);
+      await expect(refreshDelivery(page)).toBeEnabled();
+    }
+  }
+  await sourceUnchanged(page);
+  expect(slack.calls("PATCH", findingPath)).toEqual([]);
+  expect(slack.requests.filter((call) => call.method !== "GET")).toEqual([]);
+  for (const sample of samples.slice(1)) expect(slack.deliveries.get(sample.id)).toEqual(sample);
+});
+
+test("SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation", async ({ page, slack }) => {
+  await openFinding(page);
+  await openPreview(page);
+  const dropped = slack.queueEnqueue("drop-ack");
+  await confirm(page).click();
+  const call = await requested(dropped);
+  await dropped.delivered;
+  await expect.poll(() => call.failure).toMatch(/failed/i);
+  const committed = deliveryFrom(call);
+  expect(slack.deliveries.size).toBe(1);
+  const error = preview(page).getByRole("alert").or(findingDialog(page).getByRole("alert"));
+  await expect(error.first()).toContainText(/acknowledg|confirm|unknown|network|could not|may have/i);
+  await frame(page, 4);
+  expect(slack.calls("POST", historyPath), "Network acknowledgement loss cannot trigger an automatic second enqueue.").toHaveLength(1);
+  const confirmed = slack.publishResult(committed.id, "confirmed");
+  const repeat = confirm(page).or(preview(page).getByRole("button", { name: /^Retry enqueue$|^Confirm same notification$/i }));
+  if (await repeat.count() && await repeat.first().isEnabled()) {
+    const replay = slack.queueEnqueue(200, true);
+    await repeat.first().click();
+    const second = await requested(replay);
+    expect(second.body, "A user-confirmed repetition of this unresolved intent must reuse both original fields.").toEqual(call.body);
+    await release(page, replay);
+    expect(second.status).toBe(200);
+    expect(deliveryFrom(second)).toEqual(confirmed);
+    await returnFromPreview(page);
+  } else {
+    await returnFromPreview(page);
+    await openHistory(page);
+    const read = slack.queueRead(historyPath);
+    await refreshHistory(page).click();
+    await requested(read);
+    await read.delivered;
+    expect(slack.calls("POST", historyPath)).toHaveLength(1);
+    await openDelivery(page, confirmed);
+  }
+  await exactDelivery(page, confirmed);
+  expect(slack.deliveries.size).toBe(1);
+  expect(new Set(slack.calls("POST", historyPath).map((item) => item.body.idempotencyKey)).size).toBe(1);
+  await sourceUnchanged(page);
+  await slack.assertPrivate(page, true);
+});
+
+test("SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs", async ({ page, slack }) => {
+  const historical = deliveryResult(queuedDelivery(), "confirmed");
+  slack.seedDelivery(historical);
+  await page.goto("/#/integrations");
+  await expect(connectionRow(page, alphaConnection.name)).toBeVisible();
+  const oldList = slack.queueRead(connectionsPath, slackAlpha.id, 200, true);
+  await refreshConnections(page).click();
+  await requested(oldList);
+  const draft = await openAdd(page);
+  await fillConnection(draft);
+  await page.keyboard.press("Escape");
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(slackBeta.id);
+  await expect(connectionRow(page, betaConnection.name)).toBeVisible();
+  await release(page, oldList, true);
+  await noOldScope(page);
+  await slack.assertPrivate(page, true);
+
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(slackAlpha.id);
+  await expect(connectionRow(page, alphaConnection.name)).toBeVisible();
+  const form = await openAdd(page);
+  await fillConnection(form);
+  const oldCreate = slack.queueCreate(201, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  await requested(oldCreate);
+  await page.keyboard.press("Escape");
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(slackBeta.id);
+  await expect(connectionRow(page, betaConnection.name)).toBeVisible();
+  await release(page, oldCreate, true);
+  await noOldScope(page);
+  await slack.assertPrivate(page, true);
+
+  await openFinding(page);
+  await openDelivery(page, historical);
+  await exactDelivery(page, historical);
+  const oldHistory = slack.queueRead(historyPath, slackAlpha.id, 200, true);
+  await refreshHistory(page).click();
+  await requested(oldHistory);
+  await openPreview(page);
+  const oldEnqueue = slack.queueEnqueue(202, true);
+  await confirm(page).click();
+  const submitted = await requested(oldEnqueue), job = deliveryFrom(submitted);
+  await closeFindingStack(page);
+  const betaWork = slack.queueRead(workPath, slackBeta.id, 200, true);
+  await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption(slackBeta.id);
+  await requested(betaWork);
+  await noOldScope(page, [job.id, historical.id, historical.receipt!.remoteId]);
+  await release(page, oldHistory, true);
+  await release(page, oldEnqueue, true);
+  await noOldScope(page, [job.id, historical.id, historical.receipt!.remoteId]);
+  await release(page, betaWork);
+  await expect(workFilter(page)).toHaveValue("");
+  await expect(workTable(page).getByRole("checkbox", { checked: true })).toHaveCount(0);
+  await slack.assertPrivate(page, true);
+});
+
+test("SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs", async ({ page, slack }) => {
+  const receipt = deliveryResult(queuedDelivery(), "confirmed");
+  slack.seedDelivery(receipt);
+  await page.goto("/#/integrations");
+  await expect(connectionRow(page, alphaConnection.name)).toBeVisible();
+  await editConnection(page);
+  await expect(connectionForm(page).getByLabel(connectionNameLabel)).toHaveValue(alphaConnection.name);
+  await page.keyboard.press("Escape");
+  for (const denial of [403, 404] as const) {
+    const denied = slack.queueRead(connectionPath(alphaConnection.id), slackAlpha.id, denial);
+    await editConnection(page);
+    await requested(denied);
+    await denied.delivered;
+    await expect(connectionEditor(page).getByRole("alert")).toBeVisible();
+    for (const statusCode of [503, 200] as const) {
+      const fieldValues = await connectionEditor(page).locator("input, textarea").evaluateAll((items) => items.map((item) => (item as HTMLInputElement).value));
+      expect(fieldValues).not.toContain(alphaConnection.name);
+      expect(fieldValues).not.toContain(alphaConnection.channel);
+      expect(fieldValues).not.toContain(draftToken);
+      await expect(connectionEditor(page)).not.toContainText(alphaConnection.channel);
+      const retry = slack.queueRead(connectionPath(alphaConnection.id), slackAlpha.id, statusCode);
+      await connectionEditor(page).getByRole("button", { name: retryName }).click();
+      await requested(retry);
+      await retry.delivered;
+      if (statusCode === 503) await expect(connectionEditor(page).getByRole("alert")).toContainText(/unavailable|could not|unable/i);
+    }
+    await expect(connectionForm(page).getByLabel(connectionNameLabel)).toHaveValue(alphaConnection.name);
+    await expect(connectionForm(page).getByLabel(tokenLabel)).toHaveValue("");
+    await page.keyboard.press("Escape");
+  }
+
+  await openFinding(page);
+  await openDelivery(page, receipt);
+  for (const denial of [403, 404] as const) {
+    const denied = slack.queueRead(deliveryPath(receipt.id), slackAlpha.id, denial);
+    await refreshDelivery(page).click();
+    await requested(denied);
+    await denied.delivered;
+    await expect(deliveryDetails(page).getByRole("alert")).toBeVisible();
+    for (const statusCode of [503, 200] as const) {
+      for (const value of [receipt.id, receipt.payload.body, receipt.receipt!.remoteId, receipt.payload.deepLink]) {
+        await expect(deliveryDetails(page)).not.toContainText(value);
+      }
+      await expect(deliveryDetails(page).locator(`a[href="${receipt.payload.deepLink}"], time[datetime="${receipt.createdAt}"]`)).toHaveCount(0);
+      const retry = slack.queueRead(deliveryPath(receipt.id), slackAlpha.id, statusCode);
+      await deliveryDetails(page).getByRole("button", { name: retryName }).click();
+      await requested(retry);
+      await retry.delivered;
+      if (statusCode === 503) await expect(deliveryDetails(page).getByRole("alert")).toContainText(/unavailable|could not|unable/i);
+    }
+    await exactDelivery(page, receipt);
+  }
+  await openPreview(page);
+  const old = slack.queueEnqueue(202, true);
+  await confirm(page).click();
+  const oldCall = await requested(old);
+  await closeFindingStack(page);
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await privateGone(page, [receipt.id, deliveryFrom(oldCall).id]);
+  await release(page, old, true);
+  await privateGone(page, [receipt.id, deliveryFrom(oldCall).id]);
+  await slack.assertPrivate(page, true);
+  await signIn(page);
+  await page.goto("/#/integrations");
+  await expect(connectionRow(page, alphaConnection.name)).toBeVisible();
+  const form = await openAdd(page);
+  await fillConnection(form);
+  const expired = slack.queueCreate(401, true);
+  await form.getByRole("button", { name: saveConnectionName }).click();
+  await requested(expired);
+  await release(page, expired);
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await privateGone(page, [receipt.id]);
+  await slack.assertPrivate(page, true);
+  await page.reload();
+  await expect(page.getByRole("form", { name: "Sign in", exact: true })).toBeVisible();
+  await privateGone(page, [receipt.id]);
+});
+
+async function modalFits(page: Page, modal: Locator) {
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+    "The 390px document must not acquire horizontal overflow.").toBe(true);
+  expect(await modal.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return rect.left >= -1 && rect.right <= innerWidth + 1 && rect.top >= -1 && rect.bottom <= innerHeight + 1;
+  }), "The active dialog must fit the viewport with its own reachable scrolling content.").toBe(true);
+}
+async function reducedMotion(page: Page) {
+  const moving = await page.evaluate(async () => {
+    const found = new Set<string>();
+    for (let frame = 0; frame < 6; frame++) {
+      for (const animation of document.getAnimations()) {
+        if (animation.playState !== "running" || !(animation.effect instanceof KeyframeEffect)) continue;
+        if (animation.effect.getTiming().iterations === Infinity) found.add("continuous");
+        const frames = animation.effect.getKeyframes() as Array<Record<string, unknown>>;
+        for (const key of ["transform", "translate", "scale", "rotate", "top", "left"]) {
+          if (new Set(frames.map((item) => item[key]).filter((value) => value !== undefined).map(String)).size > 1) found.add(key);
+        }
+      }
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    }
+    return [...found];
+  });
+  expect(moving, "Reduced motion applies to actual shared controls and composed dialogs.").toEqual([]);
+}
+async function keyboardWithin(page: Page, modal: Locator) {
+  for (let index = 0; index < 12; index++) {
+    await page.keyboard.press("Tab");
+    expect(await modal.evaluate((element) => element.contains(document.activeElement)), "Focus stays inside the active accessible modal.").toBe(true);
+  }
+  await page.keyboard.press("Shift+Tab");
+  expect(await modal.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+}
+async function scrollPosition(trigger: Locator) {
+  return trigger.evaluate((element) => {
+    let innerX = 0, innerY = 0;
+    for (let parent = element.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
+      innerX += parent.scrollLeft; innerY += parent.scrollTop;
+    }
+    return { pageX: scrollX, pageY: scrollY, innerX, innerY };
+  });
+}
+
+test("SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm", async ({ page, slack }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const longConnection = { ...alphaConnection, name: longConnectionName, channel: "C" + "A".repeat(127) };
+  slack.seedConnection(longConnection);
+  slack.seedFinding({ ...slackFinding, assetName: longAssetName });
+  for (let index = 1; index <= 28; index++) slack.seedFinding({
+    ...slackFinding, id: hexID("40", index), title: `Synthetic earlier queue row ${index}`, assetName: longAssetName,
+  });
+  await page.goto("/#/integrations");
+  await expect(connectionRow(page, longConnection.name)).toBeVisible();
+  await addConnection(page).focus();
+  await addConnection(page).press("Enter");
+  await expect(connectionEditor(page)).toBeVisible();
+  await fillConnection(connectionForm(page), { ...createInput, name: longConnectionName });
+  await modalFits(page, connectionEditor(page));
+  await reducedMotion(page);
+  await keyboardWithin(page, connectionEditor(page));
+  await slack.assertPrivate(page);
+  await page.keyboard.press("Escape");
+  await expect(addConnection(page)).toBeFocused();
+  await slack.assertPrivate(page, true);
+
+  await page.goto("/#/work");
+  await expect(workTable(page)).toBeVisible();
+  await workFilter(page).fill(longAssetName);
+  await findingSelection(page).check();
+  const trigger = findingTrigger(page);
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.focus();
+  const before = await scrollPosition(trigger);
+  expect(before.pageY + before.innerY, "Use an actually scrolled Work context.").toBeGreaterThan(200);
+  await trigger.press("Enter");
+  await expect(findingDialog(page)).toBeVisible();
+  await openPreview(page, longConnection);
+  await expect(preview(page)).toContainText(longAssetName);
+  await expect(preview(page)).toContainText(longConnectionName);
+  await modalFits(page, preview(page));
+  await reducedMotion(page);
+  await keyboardWithin(page, preview(page));
+  await page.keyboard.press("Escape");
+  await expect(findingDialog(page).getByRole("button", { name: notifyName })).toBeFocused();
+  await openPreview(page, longConnection);
+  const queued = slack.queueEnqueue(202, true);
+  await confirm(page).focus();
+  await confirm(page).press("Enter");
+  const call = await requested(queued);
+  await modalFits(page, preview(page));
+  expect(await preview(page).evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await release(page, queued);
+  await returnFromPreview(page);
+  await assertQueued(page, deliveryFrom(call));
+  await sourceUnchanged(page, longAssetName);
+  await modalFits(page, findingDialog(page));
+  await page.keyboard.press("Escape");
+  await expect(trigger).toBeFocused();
+  await expect(workFilter(page)).toHaveValue(longAssetName);
+  await expect(findingSelection(page)).toBeChecked();
+  const after = await scrollPosition(trigger);
+  for (const key of ["pageX", "pageY", "innerX", "innerY"] as const) {
+    expect(Math.abs(after[key] - before[key]), "Cancel/confirm must not reset or jump the Work scroll context.").toBeLessThanOrEqual(3);
+  }
+  expect(slack.calls("POST", historyPath)).toHaveLength(1);
+  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Reports", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Live overview", exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Saved snapshots", exact: true })).toBeVisible();
+  await slack.assertPrivate(page, true);
+});

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_PREREQUISITE_RED_PENDING_PARENT_SEAL",
+  "capturedAt": "2026-09-16T22:16:30.094530+00:00",
+  "controls": [
+    {
+      "path": "tests\\delivery_runtime\\contract_test.go",
+      "bytes": 654,
+      "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\fixtures_test.go",
+      "bytes": 16270,
+      "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"
+    },
+    {
+      "path": "tests\\delivery_runtime\\production_bindings_test.go",
+      "bytes": 1485,
+      "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\roles_test.go",
+      "bytes": 17423,
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1",
+      "bytes": 7421,
+      "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"
+    },
+    {
+      "path": "tests\\delivery_runtime\\CONTRACT.txt",
+      "bytes": 10514,
+      "sha256": "fdcef55a75e24400db4dceb3d355aeaa49c320a9c160fb3b433bc08928f00029"
+    },
+    {
+      "path": "tests\\delivery_runtime\\HANDOFF.txt",
+      "bytes": 1965,
+      "sha256": "5b9571f97e8c81a2cb30d14e8feeae85c03714dfaa818b3f2a6f929544c146f6"
+    }
+  ],
+  "contract": "tests\\delivery_runtime\\CONTRACT.txt",
+  "humanHandoff": "tests\\delivery_runtime\\HANDOFF.txt",
+  "red": "RED.json",
+  "guards": "GUARDS.json",
+  "externalEvidence": "EVIDENCE.json",
+  "exactSurfaces": {
+    "command": "cmd/delivery-worker",
+    "environment": "service.Environment(\"delivery\")",
+    "run": "service.Run(ctx,\"delivery\",Config)",
+    "newConfigFields": {
+      "DeliveryLeaseDuration": "time.Duration",
+      "SlackEndpoint": "string",
+      "DeliveryClient": "*http.Client",
+      "DeliveryCAFile": "string"
+    },
+    "defaults": {
+      "lease": "15s",
+      "gateway": "https://slack.com"
+    },
+    "key": "canonical standard base64 of exactly 32 bytes; mandatory for delivery",
+    "transport": "explicit selected-origin no-proxy/no-redirect normal-TLS client; optional trusted CA file"
+  },
+  "outcomes": {
+    "authoredTopLevel": 4,
+    "executedRuntimeCases": 0,
+    "command": "missing-directory build RED",
+    "service": "missing-field compile RED",
+    "helperCompile": "PASS_NOT_ACCEPTANCE",
+    "skips": 0,
+    "acceptedA2ControlDigestsUnchanged": 93,
+    "existingFileAmendments": 0
+  },
+  "scopeLimits": [
+    "No new outbox or accepted backend/A2 edits.",
+    "No old runtime/service-test edits.",
+    "No UI, Helm, Quadlet or installer role scheduling requirement or certification.",
+    "Windows graceful cancellation is tested through real service.Run context; actual command PID cleanup is not an OS-signal graceful-shutdown claim.",
+    "No real Slack/cloud credentials or endpoints are used."
+  ],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify exact configuration/client/CA/entrypoint decisions and actual build/compile RED.",
+    "Seal only NEW delivery runtime controls without rewriting A2 or old service/runtime history.",
+    "Assign separate coder to implement the real role and command, reusing the accepted DeliveryWorker.",
+    "Run full Contract mode after implementation and independently review health, processing, TLS and lifecycle behavior before later UI/deployment increments."
+  ]
+}

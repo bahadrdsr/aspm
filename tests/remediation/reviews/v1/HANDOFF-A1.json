@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "amendment": "AMENDMENT-A1.json",
+  "role": "original-independent-test-author",
+  "status": "FROZEN_BINDING_CORRECTION_PENDING_PARENT_RESEAL",
+  "capturedAt": "2026-09-16T20:22:00.222Z",
+  "onlyExistingFileEdited": "tests\\remediation\\production_bindings_test.go",
+  "oldBindingSHA256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e",
+  "newBindingSHA256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180",
+  "allOtherBindingBytesIdentical": true,
+  "concreteNilNormalizationOnly": true,
+  "nonNilWorkerAndOriginalErrorPreserved": true,
+  "assertionsFixturesProductionRunnerPermissionsUnchanged": true,
+  "results": {
+    "structuralNilConversionIndependentlyVerified": true,
+    "originalConfigurationFailureReproduced": true,
+    "focusedFullBindingConfiguration": "PASS",
+    "fullNineGateContract": "9 PASS",
+    "nativeFailureSubcasesPassed": 8,
+    "skips": 0,
+    "retriesAdded": 0
+  },
+  "heldProductionDigest": "sha256:1d4d6e52cabbf63061f883c315ae102dced86ef25e3086c6bf28249d4a82e1f9",
+  "heldProductionFileCount": 67,
+  "originalControlCount": 67,
+  "otherOriginalControlDigestsUnchanged": 66,
+  "originalSignaturesUnchanged": true,
+  "originalByteArchiveCount": 3,
+  "recursiveHistoryCopies": 0,
+  "priorCompatibilityRerunByAuthor": false,
+  "guards": "GUARDS-A1.json",
+  "validation": "VALIDATION-A1.json",
+  "humanHandoff": "HANDOFF-A1.txt",
+  "currentPacket": "PACKET-A1.json",
+  "currentPacketDigest": "PACKET-A1.sha256",
+  "externalEvidence": [
+    {
+      "path": ".artifacts\\remediation-binding-a1\\archive-receipt.json",
+      "bytes": 974,
+      "sha256": "fce2af644d53a50ef92a189fedcf9ec359adc93045f93ab4cfa7c7fa3a877707"
+    },
+    {
+      "path": ".artifacts\\remediation-binding-a1\\BEFORE-A1.json",
+      "bytes": 506861,
+      "sha256": "47f02874b1c5486b83dae754aa87c877ab09ad389020137fbc2fd22e043c7a7a"
+    },
+    {
+      "path": ".artifacts\\remediation-binding-a1\\config-after-invocation.json",
+      "bytes": 315,
+      "sha256": "b8437236a7b341fe17150210001e2da316fcbf1ad132dada860809163486fd21"
+    },
+    {
+      "path": ".artifacts\\remediation-binding-a1\\config-before-invocation.json",
+      "bytes": 318,
+      "sha256": "1562aabf8ac5ef3059f07f1051407dca4729e478fcc90cf5d69eab4cd1dfc7a8"
+    },
+    {
+      "path": ".artifacts\\remediation-binding-a1\\DELTA-A1.json",
+      "bytes": 1145,
+      "sha256": "c0077e7c06bac9189f4212ddae6e9d3a08c74efbcf005a37cc24af4db804b797"
+    },
+    {
+      "path": ".artifacts\\remediation-binding-a1\\full-contract-invocation.json",
+      "bytes": 240,
+      "sha256": "3752d363dc90b4de9a11269e7709bfbebab527a04f87e326375f90b1970045a2"
+    },
+    {
+      "path": ".artifacts\\remediation-binding-a1\\structural-probe.log",
+      "bytes": 413,
+      "sha256": "891df20d95e8ee833f354715b0e91cfd12f2b59ce8ac91f14937e213485c8cc3"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-before.receipt.json",
+      "bytes": 894,
+      "sha256": "b841dd746b3679b8e808ab96e4f946398815dd680b5ee09aefe822490a27b2cf"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-before.jsonl",
+      "bytes": 1882,
+      "sha256": "adb14df307528867cdddf0f47e060bb2b4ba55894ecbb1a4712c2d77ba959bce"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-before.log",
+      "bytes": 299,
+      "sha256": "bd42a6feb55f356253f34d1fdd224e41676b0f33e6d947663c27a8ea457e26dd"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-after.receipt.json",
+      "bytes": 892,
+      "sha256": "22ab7270dbf91ec635455bd6d20880b8495cd0568ad2455fd41249d47ebd8c9a"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-after.jsonl",
+      "bytes": 2092,
+      "sha256": "d77c5bfd3068f7ccd195bc1a9a22f021cd183d75ac7c93fa9ee6c1a7b1483733"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-config-after.log",
+      "bytes": 359,
+      "sha256": "319c4761a1ca1f832f4e1cce8fcc058ace540c1c3ccb6c20db388dcb01a769ee"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-full-contract.receipt.json",
+      "bytes": 894,
+      "sha256": "f4fb66eb42ade7f4b3ebb9c6a8ff0e6e09b660a607544e52b6772775ca51a542"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-full-contract.jsonl",
+      "bytes": 18040,
+      "sha256": "0be469d61c82811af6f36328e2413f258aac9ad55663a9b934546b19ede83e86"
+    },
+    {
+      "path": ".artifacts\\remediation-v1\\binding-a1-full-contract.log",
+      "bytes": 2902,
+      "sha256": "9c338d8bc94be7a4c7031878ab3d0854e1d40ac7bfe0296cd49e672d368bd29b"
+    }
+  ],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Verify the exact concrete-nil-only forwarding delta and held source/control hashes.",
+    "Verify new focused configuration and full nine-gate Contract receipts; retain older compatibility results as separately attributed history.",
+    "Re-seal NEW current remediation controls before acceptance; keep every original signature and historical packet intact."
+  ],
+  "productionChanges": [],
+  "assertionChanges": [],
+  "fixtureChanges": [],
+  "runnerChanges": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0,
+  "liveVendorActivity": 0
+}

@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"crypto/cipher"
 	"crypto/sha256"
 	"errors"
 	"io"
@@ -24,18 +25,19 @@ type StorageConfig struct {
 }
 
 type Config struct {
-	DatabaseURL             string `json:"-"`
-	Schema, ApplicationName string
-	MaxConnections          int32
-	Storage                 StorageConfig
-	BootstrapToken          string           `json:"-"`
-	Now                     func() time.Time `json:"-"`
-	LogOutput               io.Writer        `json:"-"`
-	SessionTTL              time.Duration
-	MaxUploadBytes          int64
-	ManualProcessing        bool
-	OIDC                    *OIDCConfig
-	QueryTracer             pgx.QueryTracer `json:"-"`
+	DatabaseURL              string `json:"-"`
+	Schema, ApplicationName  string
+	MaxConnections           int32
+	Storage                  StorageConfig
+	BootstrapToken           string           `json:"-"`
+	IntegrationEncryptionKey []byte           `json:"-"`
+	Now                      func() time.Time `json:"-"`
+	LogOutput                io.Writer        `json:"-"`
+	SessionTTL               time.Duration
+	MaxUploadBytes           int64
+	ManualProcessing         bool
+	OIDC                     *OIDCConfig
+	QueryTracer              pgx.QueryTracer `json:"-"`
 	// PublicOrigin is the trusted HTTPS browser origin when TLS terminates at a
 	// reverse proxy. Forwarded headers are deliberately not trusted.
 	PublicOrigin string
@@ -43,11 +45,12 @@ type Config struct {
 
 type Application struct {
 	*database
-	Handler http.Handler
-	storage *reportStore
-	config  Config
-	oidc    *oidcAuth
-	imports *ImportWorker
+	Handler                http.Handler
+	storage                *reportStore
+	config                 Config
+	oidc                   *oidcAuth
+	imports                *ImportWorker
+	integrationCredentials cipher.AEAD
 
 	bootstrapEnabled bool
 	bootstrapHash    [32]byte
@@ -63,6 +66,11 @@ var schemaName = regexp.MustCompile(`^[a-z][a-z0-9_]{0,62}$`)
 // Open migrates only app-owned tables in an existing, explicitly selected
 // schema. It does not create databases, schemas, buckets, or M02 job tables.
 func Open(ctx context.Context, config Config) (*Application, error) {
+	credentials, err := newIntegrationCipher(config.IntegrationEncryptionKey)
+	if err != nil {
+		return nil, err
+	}
+	config.IntegrationEncryptionKey = nil
 	if config.Now == nil {
 		config.Now = time.Now
 	}
@@ -107,9 +115,10 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 	}
 	a := &Application{
 		config: config, storage: storage,
-		bootstrapEnabled: config.BootstrapToken != "",
-		bootstrapHash:    sha256.Sum256([]byte(config.BootstrapToken)),
-		hashSlots:        make(chan struct{}, 2),
+		integrationCredentials: credentials,
+		bootstrapEnabled:       config.BootstrapToken != "",
+		bootstrapHash:          sha256.Sum256([]byte(config.BootstrapToken)),
+		hashSlots:              make(chan struct{}, 2),
 	}
 	a.config.BootstrapToken = ""
 	a.database, err = openDatabase(ctx, dbConfig)

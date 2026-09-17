@@ -1,0 +1,62 @@
+REMEDIATION V1 - PARENT / SEPARATE CODER / INDEPENDENT REVIEWER HANDOFF
+==================================================================
+
+Read CONTRACT.txt before implementing. This packet is backend/API/worker only.
+No UI or production implementation is supplied by this author.
+
+Actual initial contract RED is missing production configuration/constructors:
+  app.Config.IntegrationEncryptionKey
+  app.DeliveryWorkerConfig
+  app.OpenDeliveryWorker
+  service.Config.IntegrationEncryptionKey
+
+production_bindings_test.go is real forwarding-only code, intentionally not a
+nil-success shim. Keep the full binding in acceptance. Supply those actual
+entrypoints and their declared ProcessNext/Ping/Close behavior in production.
+Do not put queue/credential/approval/retry logic into the binding or fixtures.
+
+Nine top-level tests are authored. The complete contract does not currently
+compile, so its eight delivery semantic narratives have NOT RUN. Helper-only
+compilation and one separately executed real PG/local-S3 preflight are explicitly
+non-acceptance diagnostics. See reviews\v1\RED.json for measured outcomes.
+
+Run from C:\bahadr\serious\aspm with the existing private runtime JSON:
+  .\tests\remediation\Test-Remediation.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName parent-contract-01
+
+Fresh output labels are required; the runner refuses to replace evidence.
+Its default cached Go is 1.27.1, not the machine's older Go 1.25 launcher.
+It uses existing modules offline, -mod=readonly, project-local work paths and
+redacted logs. It does not install tools, fetch vendors or load Slack secrets.
+
+Diagnostic modes:
+  -Mode HarnessCompile: compiles helper/spec files only, without the absent
+    constructor binding, into an external artifact; executes no tests.
+  -Mode Preflight: runs only TestRemediationOwnedRuntimePreflight in that
+    explicitly helper-only file set. It is a real local service capability/
+    cleanup check, not delivery acceptance.
+  -Mode ExistingAdapters: executes the unchanged native adapter suites using
+    their already-owned TLS fixtures. This is not live-vendor certification.
+
+Do not use helper-only modes as green evidence for this delivery slice. Once
+production exists, the full Contract mode must execute all nine top-level cases,
+including the actual separate-process crash and all durable-state assertions.
+
+The core uses the existing real local S3 intake path to create canonical PG
+findings. Only the delivery worker is DB/key/approved-client-only. This avoids
+inventing findings or queue/receipt/authorization state through fixture SQL.
+Only task-owned credential ciphertext substitution is permitted as a controlled
+cryptographic fault. Lease expiry is real PG time, not an UPDATE shortcut.
+
+The accepted dispatch boundary is the committed authorized dispatch marker.
+Changes after that marker may race an already possible remote write. Preserve
+uncertainty and fencing rather than promising remote rollback or blind retry.
+The generic evidence/report retry queues are not safe native outbox policies.
+
+Current source/UI/publication controls are historical hash references. Parent
+may advance the finding-actions publication HEAD without changing working bytes.
+Do not recapture old signatures, alter UI tests or reset their history.
+No existing-file amendment or archive was needed for this packet.
+
+Parent next: verify source/control hashes, inspect the explicit interface
+decisions and constructor RED, seal NEW remediation controls, then hand these
+frozen tests to the separate implementation and review roles.

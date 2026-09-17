@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T12:24:25.903Z",
+  "policiesBefore": [
+    {
+      "path": ".gitattributes",
+      "bytes": 296,
+      "sha256": "972f8aac74c0dc9d2d071150de2e95b58f6b55cbd19e79f92245be89321819bd",
+      "lineEndings": { "crlf": 16, "lf": 0, "cr": 0 }
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 342,
+      "sha256": "265cafb3158afc14dc7a5c64014f951a147326e5d4c29aab4ddda7d8a6e93fcb",
+      "lineEndings": { "crlf": 18, "lf": 0, "cr": 0 }
+    },
+    {
+      "path": "web/.gitattributes",
+      "bytes": 25,
+      "sha256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893",
+      "lineEndings": { "crlf": 1, "lf": 0, "cr": 0 }
+    }
+  ],
+  "sources": [
+    {
+      "path": ".oracles/ui-workflow-review-v2.json",
+      "bytes": 71222,
+      "sha256": "105a744435a06f730b645d8697866ae6c428a60d8315af802ade7dfa93950615",
+      "lineEndings": { "crlf": 0, "lf": 1808, "cr": 0 }
+    },
+    {
+      "path": ".oracles/ui-workflow-review-v2.json.sig",
+      "bytes": 89,
+      "sha256": "96c07207c95e6fb036a411dce87adad082d4e93096d0a5d199b4f2eeb3b48a6a",
+      "lineEndings": { "crlf": 0, "lf": 1, "cr": 0 }
+    },
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038",
+      "lineEndings": { "crlf": 0, "lf": 35, "cr": 0 }
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6",
+      "lineEndings": { "crlf": 0, "lf": 68, "cr": 0 }
+    },
+    {
+      "path": "scripts/process.mjs",
+      "bytes": 1464,
+      "sha256": "b1aa330a639acdc943184581fb2b0ca49c810aba5d519db2872d24bf4085242f",
+      "lineEndings": { "crlf": 29, "lf": 0, "cr": 0 }
+    },
+    {
+      "path": "web/tests/application-fixture.ts",
+      "bytes": 19020,
+      "sha256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "lineEndings": { "crlf": 329, "lf": 0, "cr": 0 }
+    },
+    {
+      "path": "tests/acceptance/Test-Acceptance.ps1",
+      "bytes": 4179,
+      "sha256": "2db29ecdfac846a571747411345be399d0a752a59b3721d5982047adcd5ca7c6",
+      "lineEndings": { "crlf": 88, "lf": 0, "cr": 0 }
+    },
+    {
+      "path": "tests/installer/CONTRACT.txt",
+      "bytes": 15434,
+      "sha256": "2de75466630ac59a25e1a8b1daf9af3c8ee612d67b3cdf22ee9bf09ac985bb15",
+      "lineEndings": { "crlf": 214, "lf": 0, "cr": 0 }
+    },
+    {
+      "path": "tests/installer/contract_test.go",
+      "bytes": 2905,
+      "sha256": "77928b5ddd99adef39edffb5cc75a5e0b48dce4d746355a359c271cdb31b0f9f",
+      "lineEndings": { "crlf": 0, "lf": 118, "cr": 0 }
+    }
+  ]
+}

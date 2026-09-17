@@ -1,0 +1,46 @@
+.slack-panel { min-width: 0; overflow-wrap: anywhere; margin-block: 20px; }
+.slack-panel-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 18px; border-bottom: 1px solid var(--line); }
+.slack-panel-heading > div { min-width: 0; }
+.slack-panel-content { display: grid; gap: 14px; padding: 18px; min-width: 0; }
+.slack-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.slack-summary { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 11px; }
+.slack-table-scroll { max-height: 440px; overflow: auto; min-width: 0; }
+.slack-table-scroll:focus-visible { outline-offset: -3px; }
+.slack-table { width: 100%; border-collapse: collapse; table-layout: fixed; text-align: left; font-size: 11px; }
+.slack-table th { padding: 10px; color: var(--muted); background: var(--surface-soft); font-weight: 550; }
+.slack-table th:last-child { width: 136px; }
+.slack-table td { border-top: 1px solid var(--line); padding: 12px 10px; vertical-align: top; overflow-wrap: anywhere; }
+.slack-table td strong { display: block; font-size: 12px; }
+.slack-table td p { margin-top: 5px; color: var(--muted); font-size: 11px; }
+.slack-table button { white-space: normal; height: auto; min-height: 36px; text-align: left; }
+.slack-empty { padding: 16px 0; }
+.slack-empty h3 { margin-bottom: 8px; }
+.slack-form { min-width: 0; overflow-wrap: anywhere; }
+.slack-form input, .slack-form select { max-width: 100%; }
+.slack-form select { text-overflow: ellipsis; }
+.slack-form .slack-payload { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); }
+.slack-payload { min-width: 0; overflow-wrap: anywhere; font-size: 12px; }
+.slack-payload h3 { margin-bottom: 10px; }
+.slack-payload p { white-space: pre-wrap; margin-bottom: 10px; }
+.slack-link { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.slack-notifications { margin-top: 20px; min-width: 0; }
+.slack-notifications-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.slack-notifications-heading h3 { margin-right: auto; font-size: 12px; }
+.slack-notifications > .form-help { margin-top: 8px; }
+.slack-notifications .slack-panel { margin-block: 14px; box-shadow: none; }
+.slack-notifications .slack-panel-heading h3 { font-size: 12px; }
+.slack-delivery-state { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: var(--surface-soft); font-size: 12px; }
+.slack-delivery-state p { margin-top: 7px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.slack-state-queued, .slack-state-dispatching, .slack-state-accepted { color: var(--accent-ink); background: var(--accent-soft); }
+.slack-state-confirmed { color: var(--success); background: var(--success-soft); }
+.slack-state-blocked, .slack-state-failed, .slack-state-uncertain, .slack-state-rate-limited { color: var(--danger); background: var(--danger-soft); }
+.slack-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; font-size: 11px; }
+.slack-facts dt { color: var(--muted); margin-bottom: 4px; }
+.slack-facts dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .slack-panel-heading, .slack-panel-content { padding: 12px; }
+  .slack-table th:last-child { width: 100px; }
+  .slack-table td, .slack-table th { padding: 9px 7px; }
+  .slack-facts { grid-template-columns: 1fr; }
+  .slack-notifications-heading { gap: 8px; }
+}

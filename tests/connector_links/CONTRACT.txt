@@ -1,0 +1,74 @@
+CONNECTOR BROWSER LINKS V1 - NARROW INDEPENDENT DEPENDENCY TEST
+===========================================================
+
+This is a separate tests/connector_links package. It does not amend production,
+old connector tests, the remediation contract/oracle, modules, UI or history.
+Parent owns the narrow connector-source fix, not the remediation coder.
+
+The real canonical finding browser URL remains:
+  https://<trusted-app-origin>/#/work?finding=<finding-id>
+Do not replace it with a nonworking fragment-free application route to make
+delivery tests pass. Fragment-free HTTPS links remain valid as generic legacy
+browser links, not as a replacement canonical ASPM route.
+
+Direct existing connectors.OpenDelivery is used with SlackWorkspaceBot.
+Every action has generated nonempty workspace/finding/intent/approval identities.
+Those adapter identity/approval-reference obligations are not weakened.
+No test-side durable outbox, application state or new production binding exists.
+
+Three top-level cases
+--------------------
+1. Canonical browser fragment:
+   Preview must accept the exact HTTPS /#/work?finding=... link without I/O.
+   An independent Send subcase must carry that same string byte-exactly in the
+   real owned TLS Slack request's accessible text and link button. It must not
+   strip, decode, rewrite, move or substitute the browser route.
+   The actual HTTPS request stays at the configured /api/chat.postMessage,
+   with no request query or fragment. The real native ACK confirms the original
+   workspace/intent identity. Send payload assertions are BLOCKED if the current
+   validator rejects the link before it sends; that is not a passing wire claim.
+
+2. Fragment-free compatibility:
+   Existing HTTPS path and query browser links still Preview without I/O and
+   Send byte-exactly through the actual owned TLS server. Only the link and
+   fixed native destination behavior are checked, not the entire old mapping
+   matrix already covered by the native adapter suites.
+
+3. Negative boundary controls:
+   Fragments in DeliveryConfig.Endpoint and CollectorConfig.Endpoint remain
+   rejected with ErrScope before I/O. The separate collector FindingsEndpoint
+   is also tested, with zero credential-provider retrieval.
+   Browser links reject non-HTTPS schemes, userinfo, raw controls, decoded path,
+   fragment and base-query controls, invalid/out-of-range ports and total inputs
+   over the existing 16384-byte URL bound. Invalid Preview and Send fail closed,
+   without a native request.
+
+Browser-link and request-destination validation are different responsibilities.
+The parent can add a dedicated DeepLink validator while retaining strict tlsURL
+validation for the fragment-free base and for every actual HTTP destination.
+Checking only the raw input or only the stripped base is insufficient: decoded
+fragment/base-query controls and an oversized fragment are rejected too.
+Validation must not rewrite the string later placed in the Slack payload.
+
+Safety and isolation
+--------------------
+Each case owns a fixed real TLS server and certificate-validated client.
+The transport forwards only POST to that server's /api/chat.postMessage.
+Its dialer admits only the exact owned loopback address; redirects are denied.
+The displayed browser.synthetic.invalid host is data only and is never fetched.
+Tokens and all identities are generated synthetic inputs; tests withhold them
+from failure messages. No Slack.com, cloud/vendor activity, real credentials,
+PG/runtime metadata, agent, commit or dependency installation is authorized.
+
+Run from C:\bahadr\serious\aspm:
+  .\tests\connector_links\Test-ConnectorLinks.ps1 -OutputName parent-red-01
+
+The runner uses cached Go 1.27.1 and existing modules offline, with -mod=readonly,
+-count=1 and a 30-second package bound. Work files and current logs are outside
+protected roots. Use fresh output labels; prior evidence is not overwritten.
+
+reviews\v1 records the current semantic RED versus passing boundary controls,
+the narrow unchanged source/module/remediation-authority hashes, and an unsigned
+frozen inventory of these NEW controls. No older review tree is copied.
+Parent verifies and seals these separate controls before its connector-source
+fix; the remediation contract and all earlier oracles remain unchanged.

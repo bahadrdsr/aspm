@@ -3,6 +3,7 @@ import type { Page, Request, Route } from "@playwright/test";
 import { apiVersion } from "./api-contract";
 import { bootstrapToken, password, sessionCookie, wrongPassword } from "./application-fixture";
 import { catalogResponse, findingResponse, workResponse } from "./fixtures";
+import { emptySlackNavigation } from "./slack-navigation";
 import {
   alphaOverview, betaOverview, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
   savedReport, savedSnapshots, snapshotParameters, snapshotSummary, snapshotsPath, withFreshness,
@@ -261,6 +262,15 @@ export class ReportsAPI {
       if (!workspace || !this.roles.has(workspace)) {
         this.violations.push("Protected Reports omitted or invented the session-owned selected workspace.");
         await this.error(route, 403);
+        return;
+      }
+      try {
+        const empty = emptySlackNavigation(url, method, workspace,
+          new Map([reportAlpha.id, reportBeta.id].map((id) => [id, [findingResponse.finding.id]])));
+        if (empty) { await route.fulfill({ json: empty }); return; }
+      } catch (error) {
+        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);
+        await route.abort();
         return;
       }
       if (path === overviewPath && method === "GET") {

@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "capturedAt": "2026-09-16T21:22:54.368Z",
+  "before": {
+    "path": ".artifacts\\remediation-lock-order-a2\\BEFORE-A2.json",
+    "bytes": 46706,
+    "sha256": "28232861445f2c71c4aaf0f4b115dfb498ea79ba313e3cc80e4361523e045323"
+  },
+  "heldInputCount": 141,
+  "beforeHeldTreeDigest": "sha256:806d8922ffd14655fec724627361296ff28a8f630df05356d773f905d5f5bf0a",
+  "afterSameInputSetTreeDigest": "sha256:c3ba6003580343a67a5b09a7f925a7340ad1d7d569c4dad2d7227c71c2d70689",
+  "authorizedHeldInputChanges": [
+    {
+      "path": "tests\\remediation\\contract_test.go",
+      "oldSHA256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274",
+      "newSHA256": "c9b7ce392dfebf5a688b1c523b9f27230a153dbcf0faab74bf1474958e427850"
+    },
+    {
+      "path": "tests\\remediation\\production_bindings_test.go",
+      "oldSHA256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180",
+      "newSHA256": "b6a879674c162e8d2e73210b2611229d15ac146e7586769857a071d200baff23"
+    }
+  ],
+  "production": {
+    "fileCount": 66,
+    "beforeAfterUnchanged": true,
+    "afterDigest": "sha256:17f8af03cf1aada8648d1341c7ed0c8a716a24bee5028578667a24bb53f762fa",
+    "originalHashReference": {
+      "path": ".artifacts\\remediation-lock-order-a2\\BEFORE-A2.json",
+      "sha256": "28232861445f2c71c4aaf0f4b115dfb498ea79ba313e3cc80e4361523e045323",
+      "pointer": "/heldFiles"
+    },
+    "paths": [
+      "go.mod",
+      "go.sum",
+      "internal/app/app.go",
+      "internal/app/assets.go",
+      "internal/app/auth.go",
+      "internal/app/auth_test.go",
+      "internal/app/catalog.go",
+      "internal/app/database.go",
+      "internal/app/doc.go",
+      "internal/app/findings.go",
+      "internal/app/http.go",
+      "internal/app/import_authorization.go",
+      "internal/app/import_security_schema.go",
+      "internal/app/imports.go",
+      "internal/app/membership.go",
+      "internal/app/oidc.go",
+      "internal/app/oidc_identity.go",
+      "internal/app/oidc_provider.go",
+      "internal/app/oidc_schema.go",
+      "internal/app/reconcile.go",
+      "internal/app/remediation_connections.go",
+      "internal/app/remediation_credentials.go",
+      "internal/app/remediation_deliveries.go",
+      "internal/app/remediation_schema.go",
+      "internal/app/remediation_worker.go",
+      "internal/app/report_snapshots.go",
+      "internal/app/report_worker.go",
+      "internal/app/reports.go",
+      "internal/app/reports_schema.go",
+      "internal/app/schema.go",
+      "internal/app/storage.go",
+      "internal/app/types.go",
+      "internal/app/work.go",
+      "internal/app/worker.go",
+      "internal/app/worker_constructors.go",
+      "internal/connectors/ado.go",
+      "internal/connectors/aws.go",
+      "internal/connectors/azure.go",
+      "internal/connectors/collect.go",
+      "internal/connectors/collection_guardrails_test.go",
+      "internal/connectors/delivery.go",
+      "internal/connectors/github.go",
+      "internal/connectors/gitlab.go",
+      "internal/connectors/guardrails_test.go",
+      "internal/connectors/http.go",
+      "internal/connectors/jira.go",
+      "internal/connectors/notifications.go",
+      "internal/connectors/types.go",
+      "internal/devhost/handler.go",
+      "internal/evidence/doc.go",
+      "internal/evidence/reader.go",
+      "internal/evidence/readiness.go",
+      "internal/evidence/store.go",
+      "internal/ingestion/integrity.go",
+      "internal/jobs/store.go",
+      "internal/jobs/types.go",
+      "internal/parsers/native_reports.go",
+      "internal/parsers/parsers.go",
+      "internal/parsers/parsers_test.go",
+      "internal/parsers/portable.go",
+      "internal/parsers/sarif.go",
+      "internal/service/check.go",
+      "internal/service/config.go",
+      "internal/service/doc.go",
+      "internal/service/integrity.go",
+      "internal/service/run.go"
+    ]
+  },
+  "originalA1ControlAuthority": {
+    "manifest": {
+      "path": ".oracles\\remediation-slack-a1.json",
+      "bytes": 14736,
+      "sha256": "0220ef9f93fd6db40a068a4b897b27d49832d4cea126434c6a2ee2a3ad4d055c"
+    },
+    "signature": {
+      "path": ".oracles\\remediation-slack-a1.json.sig",
+      "bytes": 89,
+      "sha256": "752b6f90ceacca6bce9cd0ae8af5663f70e0dab262bcd387a66e9dfaf162f7b6"
+    },
+    "requiredControlCount": 79,
+    "unchangedOtherControlDigests": 77,
+    "authorizedChangedControls": [
+      "tests\\remediation\\contract_test.go",
+      "tests\\remediation\\production_bindings_test.go"
+    ],
+    "originalHashArrayPointer": "/files",
+    "oldSignatureUnchanged": true,
+    "oldOraclePassClaimedAfterInstrumentation": false,
+    "recaptured": false
+  },
+  "unchangedAssertionHelperRunnerFiles": [
+    {
+      "path": "tests\\remediation\\remediation_test.go",
+      "bytes": 26738,
+      "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+    },
+    {
+      "path": "tests\\remediation\\fixtures_test.go",
+      "bytes": 22855,
+      "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+    },
+    {
+      "path": "tests\\remediation\\slack_fixture_test.go",
+      "bytes": 7437,
+      "sha256": "19d744d2c8d63151ce7cfb0c24b18be41dcf1679180017eed0e59e299731e66d"
+    },
+    {
+      "path": "tests\\remediation\\worker_process_test.go",
+      "bytes": 4873,
+      "sha256": "2a4b578ac31f73b2bd9a62a5814e0fbfc61021fa9a26209ddfb8559d76e87eb4"
+    },
+    {
+      "path": "tests\\remediation\\Test-Remediation.ps1",
+      "bytes": 7315,
+      "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+    }
+  ],
+  "priorPacket": {
+    "path": "tests\\remediation\\reviews\\v1\\PACKET-A1.json",
+    "bytes": 8115,
+    "sha256": "34d7734935e05676930b50d6a611a0582657ad3241c8f36575ed3dbfa6bc7cc2"
+  },
+  "priorPacketDigest": {
+    "path": "tests\\remediation\\reviews\\v1\\PACKET-A1.sha256",
+    "bytes": 81,
+    "sha256": "b627b6db7dcc7c49287d6b15a8b1042121ae4270862640461d9f5a7399813157"
+  },
+  "newCompiledTestFile": "tests\\remediation\\lock_order_test.go",
+  "newDependencies": [],
+  "productionEdits": [],
+  "originalNarrativeEdits": [],
+  "requestPermissionChanges": [],
+  "oldSignaturesChanged": [],
+  "agentsSpawned": 0,
+  "commitsCreated": 0
+}

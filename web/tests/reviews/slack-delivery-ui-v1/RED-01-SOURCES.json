@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "reason": "Preserve original RED-01 source bytes before correcting new HTTP read fixture StrictMode lifecycle handling. Only the two actually amended new TS files are archived.",
+  "archived": [
+    {
+      "source": "web\\tests\\slack-delivery.spec.ts",
+      "archive": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\red-01\\slack-delivery.spec.ts.txt",
+      "bytes": 49107,
+      "sha256": "463fe4e126814993c62561b09224e248819880221bc59ed9296b7cb9a675c622"
+    },
+    {
+      "source": "web\\tests\\slack-ui-fixture.ts",
+      "archive": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\red-01\\slack-ui-fixture.ts.txt",
+      "bytes": 28963,
+      "sha256": "0b81c859f0ff36313b348ca9fc60a8980b105b2881b62aaf2d8c3f3bf702829c"
+    }
+  ],
+  "unchangedInputs": [
+    {
+      "path": "web\\tests\\slack-ui-data.ts",
+      "bytes": 12760,
+      "sha256": "d8ecc78c517274fc4c21177e6f6621e88aba2b67d3e35c818fd47063c582b315"
+    },
+    {
+      "path": "web\\tests\\slack-navigation.ts",
+      "bytes": 795,
+      "sha256": "fc61865f9d6d0a2ff6a7247299c86152117a0507717843f2f8c9331bfb50feb0"
+    },
+    {
+      "path": "web\\tests\\network.ts",
+      "bytes": 6155,
+      "sha256": "6544d7f2c1c3e1f77899cfb04b9bb3e91522ef152657afb03cb4af0423bdd584"
+    },
+    {
+      "path": "web\\tests\\application-fixture.ts",
+      "bytes": 19485,
+      "sha256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22"
+    },
+    {
+      "path": "web\\tests\\finding-actions-fixture.ts",
+      "bytes": 22158,
+      "sha256": "8ebcb28bc9f0f682a860b9353028fea1b72e18503f77069da1092a5f7b2d238c"
+    },
+    {
+      "path": "web\\tests\\reports-fixture.ts",
+      "bytes": 20429,
+      "sha256": "57c254f93cdc79fdae103bfafc8c19fccbf5593adf773a52555bc119f03b0bd2"
+    }
+  ]
+}

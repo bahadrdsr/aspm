@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "scope": "durable-slack-remediation-v1",
+  "amendment": "A1",
+  "phase": "frozen-original-author-nil-forwarding-correction",
+  "frozenAt": "2026-09-16T20:23:16.880Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned original-author amendment inventory only; parent must verify and re-seal NEW current controls.",
+  "payloadFileCount": 25,
+  "ownedFileCount": 27,
+  "ownedFiles": [
+    "tests\\remediation\\CONTRACT.txt",
+    "tests\\remediation\\HANDOFF.txt",
+    "tests\\remediation\\Test-Remediation.ps1",
+    "tests\\remediation\\contract_test.go",
+    "tests\\remediation\\fixtures_test.go",
+    "tests\\remediation\\production_bindings_test.go",
+    "tests\\remediation\\remediation_test.go",
+    "tests\\remediation\\reviews\\v1\\AMENDMENT-A1.json",
+    "tests\\remediation\\reviews\\v1\\BEFORE.json",
+    "tests\\remediation\\reviews\\v1\\COMPILATION.json",
+    "tests\\remediation\\reviews\\v1\\EVIDENCE.json",
+    "tests\\remediation\\reviews\\v1\\GUARDS-A1.json",
+    "tests\\remediation\\reviews\\v1\\GUARDS.json",
+    "tests\\remediation\\reviews\\v1\\HANDOFF-A1.json",
+    "tests\\remediation\\reviews\\v1\\HANDOFF-A1.txt",
+    "tests\\remediation\\reviews\\v1\\HANDOFF.json",
+    "tests\\remediation\\reviews\\v1\\PACKET-A1.json",
+    "tests\\remediation\\reviews\\v1\\PACKET-A1.sha256",
+    "tests\\remediation\\reviews\\v1\\PACKET.json",
+    "tests\\remediation\\reviews\\v1\\PACKET.sha256",
+    "tests\\remediation\\reviews\\v1\\RED.json",
+    "tests\\remediation\\reviews\\v1\\VALIDATION-A1.json",
+    "tests\\remediation\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+    "tests\\remediation\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+    "tests\\remediation\\reviews\\v1\\history\\a1\\production_bindings_test.go.before.txt",
+    "tests\\remediation\\slack_fixture_test.go",
+    "tests\\remediation\\worker_process_test.go"
+  ],
+  "files": [
+    {
+      "path": "tests\\remediation\\contract_test.go",
+      "bytes": 3377,
+      "sha256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274"
+    },
+    {
+      "path": "tests\\remediation\\CONTRACT.txt",
+      "bytes": 19861,
+      "sha256": "ccf8a74afe74cc0c394dd58dd151c1ae0de6763258b51630aa17eaaed2d7c3ba"
+    },
+    {
+      "path": "tests\\remediation\\fixtures_test.go",
+      "bytes": 22855,
+      "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+    },
+    {
+      "path": "tests\\remediation\\HANDOFF.txt",
+      "bytes": 3649,
+      "sha256": "f3ef8a1233343841872aa965bde0c0dd111e04a97f074c39ec57b5b088c62703"
+    },
+    {
+      "path": "tests\\remediation\\production_bindings_test.go",
+      "bytes": 2952,
+      "sha256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180"
+    },
+    {
+      "path": "tests\\remediation\\remediation_test.go",
+      "bytes": 26738,
+      "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\AMENDMENT-A1.json",
+      "bytes": 3755,
+      "sha256": "8d47af47605f0c3639e242fc343e45145ac6517aecb2c6bd6e780176331f0c5c"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\BEFORE.json",
+      "bytes": 152371,
+      "sha256": "bde46139e7e626280b65e83b1cb9099557b4db6b8df06b0a338dc23ef728a543"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\COMPILATION.json",
+      "bytes": 4359,
+      "sha256": "decd2e88fc2b9d962fb36196d884fb8ee62fe2ed52e31c9d42628a2d014aea5f"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 5422,
+      "sha256": "22757ec4cf6fb951ccfca28fc136a5e12b6614e2846dd90290cee63e24d1eb1c"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 3802,
+      "sha256": "3d767b093e4364f741db3c6b4fc90cf0d750161fcebde753ae1062a6fe0cf87d"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\GUARDS.json",
+      "bytes": 7402,
+      "sha256": "41ad95c5aebfed08fd5cd9a30d8bfdcd4af733f8c09539186a44a3319cc2c25b"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\HANDOFF-A1.json",
+      "bytes": 5208,
+      "sha256": "a62f31e213c5538be60ad17c39d92fdd85ec5cde14c581452118d93f87814b00"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 4770,
+      "sha256": "8b9938d731ac5afaa476c3f2cc9de737fbed1c044908b87d2567c373601c6368"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\HANDOFF.json",
+      "bytes": 2978,
+      "sha256": "c0a4e3810022a2fb16bb8649110368eae91521b897fb0833650359a960fad1e1"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 4740,
+      "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 79,
+      "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\history\\a1\\production_bindings_test.go.before.txt",
+      "bytes": 2879,
+      "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\PACKET.json",
+      "bytes": 4740,
+      "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\RED.json",
+      "bytes": 11525,
+      "sha256": "9eace3fd93f96491354816a41168be748ae50cfabf5faa531c073cbaeae45b13"
+    },
+    {
+      "path": "tests\\remediation\\reviews\\v1\\VALIDATION-A1.json",
+      "bytes": 5763,
+      "sha256": "f73f6ec8b4106b252d40c925cbf5487bcac63add6f4ccb4d7694f70700fa97d8"
+    },
+    {
+      "path": "tests\\remediation\\slack_fixture_test.go",
+      "bytes": 7437,
+      "sha256": "19d744d2c8d63151ce7cfb0c24b18be41dcf1679180017eed0e59e299731e66d"
+    },
+    {
+      "path": "tests\\remediation\\Test-Remediation.ps1",
+      "bytes": 7315,
+      "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+    },
+    {
+      "path": "tests\\remediation\\worker_process_test.go",
+      "bytes": 4873,
+      "sha256": "2a4b578ac31f73b2bd9a62a5814e0fbfc61021fa9a26209ddfb8559d76e87eb4"
+    }
+  ],
+  "currentBinding": {
+    "path": "tests\\remediation\\production_bindings_test.go",
+    "bytes": 2952,
+    "sha256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180"
+  },
+  "originalBindingArchive": {
+    "path": "tests\\remediation\\reviews\\v1\\history\\a1\\production_bindings_test.go.before.txt",
+    "bytes": 2879,
+    "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+  },
+  "oldPacketHistorical": {
+    "path": "tests\\remediation\\reviews\\v1\\PACKET.json",
+    "bytes": 4740,
+    "sha256": "3778d683ffd811310da3cadbac635b00ff9492188d396a3a2cfc6aa7b3d8abbd"
+  },
+  "oldPacketHashHistorical": {
+    "path": "tests\\remediation\\reviews\\v1\\PACKET.sha256",
+    "bytes": 79,
+    "sha256": "48557a925e2f7eac4b7806a8f4d3726d5780281a7e9a18c2153fb664c533d7b9"
+  },
+  "oldControlAuthority": {
+    "manifest": {
+      "path": ".oracles\\remediation-slack-v1.json",
+      "bytes": 12488,
+      "sha256": "83306cae4ab2edfc7a1e34fdfdf282f2a29d9bc2d7e9f47fbee1628181bc3bd1"
+    },
+    "signature": {
+      "path": ".oracles\\remediation-slack-v1.json.sig",
+      "bytes": 89,
+      "sha256": "01325ba32e8362835ff0f937858fee885ff8dbc4e0294cc17e6d858aa90e0ac3"
+    },
+    "hashArrayPointer": "/files",
+    "requiredControls": 67,
+    "unchangedOtherControlDigests": 66,
+    "authorizedBindingDelta": "AMENDMENT-A1.json",
+    "oldSignaturesUnchanged": true
+  },
+  "handoff": "HANDOFF-A1.json",
+  "validation": "VALIDATION-A1.json",
+  "guards": "GUARDS-A1.json",
+  "selfBinding": "PACKET-A1.sha256 binds raw PACKET-A1.json; only this self-digest pair is excluded from payload hashes."
+}

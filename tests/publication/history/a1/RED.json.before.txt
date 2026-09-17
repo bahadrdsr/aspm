@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "phase": "pre-code-red",
+  "scope": "Bounded publication hygiene; no secret-scan or publication-readiness certification",
+  "command": "node tests\\publication\\run.mjs",
+  "startedAt": "2026-09-16T12:32:03.503Z",
+  "completedAt": "2026-09-16T12:32:09.859Z",
+  "platform": "win32",
+  "nodeVersion": "v22.20.0",
+  "gitVersions": [
+    "git version 2.55.0.windows.3"
+  ],
+  "exitCode": 1,
+  "signal": null,
+  "stderrBytes": 0,
+  "summary": {
+    "tests": 4,
+    "passed": 2,
+    "failed": 2,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "gates": [
+    "ok 1 - native Git LF/CRLF calibration and frozen input controls",
+    "not ok 2 - selected protected inputs retain exact blob and clean checkout bytes",
+    "not ok 3 - mutable generated paths are ignored by copied repository policy",
+    "ok 4 - sources, licenses, evidence and explicitly tracked historical RED remain versionable"
+  ],
+  "inputSnapshotSha256": "b7ebb5d555758af25e1bae9dd20a7a61e95ab4cdbbcd81776a98c83ec5ab0fc3",
+  "controlsBeforeSha256": "2279fdac8f6ff54d44d54d9dffdbb8de84f61b8ff0030e9ad378fc4ae56d790b",
+  "stdout": {
+    "path": "RED.tap",
+    "bytes": 29254,
+    "sha256": "39e32a84c629cf410ae0ca96e0a2e545ee8f208de16939615a743ee3e148b902"
+  },
+  "policiesBeforeRun": [
+    {
+      "path": ".gitattributes",
+      "bytes": 296,
+      "sha256": "972f8aac74c0dc9d2d071150de2e95b58f6b55cbd19e79f92245be89321819bd"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 342,
+      "sha256": "265cafb3158afc14dc7a5c64014f951a147326e5d4c29aab4ddda7d8a6e93fcb"
+    },
+    {
+      "path": "tests/publication/.gitattributes",
+      "bytes": 9,
+      "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"
+    },
+    {
+      "path": "web/.gitattributes",
+      "bytes": 25,
+      "sha256": "90e745694b6e13ce660371a62acf19da28e8bd168e8abb69f0f0830f63cbf893"
+    }
+  ],
+  "passingControls": {
+    "calibrationCases": 12,
+    "exactRoundtrips": [
+      {
+        "path": ".oracles/ui-workflow-review-v2.json",
+        "autocrlf": false
+      },
+      {
+        "path": "tests/installer/contract_test.go",
+        "autocrlf": false
+      },
+      {
+        "path": ".oracles/ui-workflow-review-v2.json",
+        "autocrlf": true
+      },
+      {
+        "path": "tests/installer/contract_test.go",
+        "autocrlf": true
+      }
+    ],
+    "ignoredGeneratedPaths": [
+      ".cache/publication-tests/synthetic/current.jsonl",
+      ".cache/node_modules/synthetic/index.js",
+      "node_modules/synthetic/index.js",
+      "web/node_modules/synthetic/index.js",
+      ".artifacts/publication-preview.zip",
+      "web/.artifacts/publication-preview.zip"
+    ],
+    "visibleSourceLicenseOracleAndEvidencePaths": 34,
+    "explicitlyTrackedHistoricalStandIns": [
+      "tests/readiness_bootstrap/.run/red.jsonl",
+      "tests/readiness_bootstrap/.run/red.log"
+    ]
+  },
+  "observedSemanticFailures": {
+    "exactRoundtrips": [
+      {
+        "path": ".oracles/ui-workflow-review-v2.json.sig",
+        "autocrlf": false,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.mod",
+        "autocrlf": false,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.sum",
+        "autocrlf": false,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "scripts/process.mjs",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "web/tests/application-fixture.ts",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/acceptance/Test-Acceptance.ps1",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/installer/CONTRACT.txt",
+        "autocrlf": false,
+        "blobExact": false,
+        "checkoutExact": true
+      },
+      {
+        "path": ".oracles/ui-workflow-review-v2.json.sig",
+        "autocrlf": true,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.mod",
+        "autocrlf": true,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "go.sum",
+        "autocrlf": true,
+        "blobExact": true,
+        "checkoutExact": false
+      },
+      {
+        "path": "scripts/process.mjs",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "web/tests/application-fixture.ts",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/acceptance/Test-Acceptance.ps1",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": false
+      },
+      {
+        "path": "tests/installer/CONTRACT.txt",
+        "autocrlf": true,
+        "blobExact": false,
+        "checkoutExact": true
+      }
+    ],
+    "unignoredMutablePaths": [
+      "tests/acceptance/.run/build/synthetic-cache.a",
+      "tests/acceptance/.run/work/synthetic-work.go",
+      "tests/acceptance/.run/modules/example.invalid/synthetic@v0.0.0/go.mod",
+      "tests/acceptance/.run/gopath/pkg/synthetic-cache.a",
+      "tests/acceptance/.run/current.jsonl",
+      "tests/acceptance/.run/private.env",
+      "tests/readiness_bootstrap/.run/build/synthetic-cache.a",
+      "tests/publication-fixture/deep/.run/work/generated.txt",
+      "tests/acceptance/.security-run/build/synthetic-cache.a",
+      "tests/acceptance/.security-run/work/synthetic-work.go",
+      "tests/acceptance/.security-run/modules/example.invalid/synthetic@v0.0.0/go.mod",
+      "tests/acceptance/.security-run/gopath/pkg/synthetic-cache.a",
+      "tests/acceptance/.security-run/current.jsonl",
+      "tests/analysis/deep/.security-run/current.jsonl",
+      "private.env"
+    ]
+  },
+  "verifiedInvariants": {
+    "selectedSourceBytesUnchanged": true,
+    "preExistingRootAndNestedPoliciesUnchanged": true,
+    "authoredControlHashesUnchangedDuringSemanticRed": true,
+    "afterHookCompletedWithoutFailure": true,
+    "originalRuntimeLogsRead": false,
+    "realRepositoryStagingCommitOrPush": false,
+    "testPacketLocalAttributesOnly": true
+  },
+  "authorSetupCorrectionBeforeSemanticRed": {
+    "startedAt": "2026-09-16T12:30:36.265Z",
+    "exitCode": 1,
+    "stdoutSha256": "c0224343771196cb490b9fbaea29452c79fd540605e258f4de1e2f9ed5d4c0f2",
+    "classification": "Harness-only failure before native Git; not evidence of policy RED",
+    "correction": "The author control-list parser was made CRLF-tolerant and packet-only byte-preserving attributes were added before repinning controls. Selected source snapshots and original root/nested policies were unchanged."
+  }
+}

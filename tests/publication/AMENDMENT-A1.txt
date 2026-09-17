@@ -1,0 +1,100 @@
+PUBLICATION A1 - ACCEPTED SLACK FIXTURE CALIBRATION MAINTENANCE
+============================================================
+
+Classification and authority
+----------------------------
+This is explicit maintenance for previously reviewed fixture evolution.
+It is NOT new production-bug RED, a Git-policy regression, a new feature
+pre-code claim, a runtime requalification or a secret/publication scan.
+
+The independent Slack UI author added only a validated read-only navigation
+import/dispatch to web\tests\application-fixture.ts. The accepted amendment
+and original archive remain unchanged at:
+  web\tests\reviews\slack-delivery-ui-v1\AMENDMENT.json
+  web\tests\reviews\slack-delivery-ui-v1\ARCHIVES.json
+  web\tests\reviews\slack-delivery-ui-v1\history\before\application-fixture.ts.txt
+
+The current fixture exactly matches that recorded approved after hash.
+Removing only its two recorded insertion ranges reconstructs the archived
+original byte stream. This correction does not edit the fixture again.
+
+Exact selected calibration change
+--------------------------------
+The only selected source entry changed is sources[5], whose path remains:
+  web/tests/application-fixture.ts
+
+                              Original                 Accepted current
+  bytes                       19020                    19485
+  CRLF                         329                      339
+  bare LF                        0                        0
+  bare CR                        0                        0
+  SHA-256 before:
+    bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091
+  SHA-256 after:
+    9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22
+
+Only bytes, sha256 and lineEndings.crlf change in inputs.before.json.
+The nine selected paths, the other eight source entries, schemaVersion,
+capturedAt and all historical policiesBefore records are byte-identical.
+The original capturedAt remains a historical timestamp; this A1 record
+documents the one subsequently calibrated entry.
+
+controls.before.sha256 changes only the inputs.before.json digest.
+PACKET.sha256 changes only its input-snapshot and control-list digests.
+Neither list gains or loses entries, changes ordering, normalizes EOLs or
+changes hashes for the test, runner, contract, attributes or original RED.
+These fixed values were edited explicitly. No update mode, auto-recapture
+code, bypass, fallback, relaxed hash check or weakened assertion was added.
+
+Preserved controls and historical evidence
+-----------------------------------------
+publication.test.mjs, run.mjs, CONTRACT.txt and every applicable policy remain
+byte-identical. All four calibration/roundtrip/ignore/visibility gates, both
+core.autocrlf modes, all nine selected paths, link protections, ownership
+checks, native Git behavior, fixture cleanup and before/after hooks remain.
+
+Original RED.tap and RED.json are unchanged in place. Those describe the
+original author's historical policy RED, not this maintenance run.
+history\a1 contains exactly five noncompiled, byte-for-byte copies:
+  inputs.before.json.before.txt
+  controls.before.sha256.before.txt
+  PACKET.sha256.before.txt
+  RED.tap.before.txt
+  RED.json.before.txt
+The old RED's recorded input/control hashes resolve to these preserved
+original bytes, not to the updated active calibration. No old review tree,
+test source, production source or signature was recursively archived.
+
+Reproduction and validation
+---------------------------
+Before changing the calibration, the unchanged runner was executed against
+the CURRENT root, not only the parent's failed clean-checkout directory:
+  node tests\publication\run.mjs
+All four cases stopped in the before hook at 19485 !== 19020 for the selected
+fixture. Their semantic Git-policy bodies did not run. This is a stale
+calibration observation, not new evidence that Git policy is defective.
+
+After the explicit update, the same command passed all four native Git tests:
+  12 LF/CRLF calibration comparisons
+  18 exact blob/clean-checkout comparisons (nine sources, both autocrlf modes)
+  21 required generated-path ignore checks
+  34 required source/license/oracle/evidence visibility checks
+  two explicitly tracked historical stand-ins retained and ordinarily updated
+  zero failures, skipped tests, cancellations or todo cases
+
+Fresh TAP/JSON/stderr evidence and a preserved copy of the parent's supplied
+failed clean-check log are outside this packet in the exact owned directory
+recorded by BEFORE-A1.json. Original RED files were never used as log targets.
+All Git indexes created/updated by the tests were task-owned fixture indexes.
+The real repository index is unchanged. No real staging, commit, push,
+credentials, agents, cloud, backend or worker operation occurred.
+
+Handoff boundary
+----------------
+BEFORE-A1.json and VALIDATION-A1.json record the exact source/control/history
+hashes, minimal deltas, commands, observed outcomes and preservation checks.
+HANDOFF-A1.json and PACKET-A1.sha256 freeze this explicit maintenance packet.
+The original PACKET.sha256 list remains separately preserved in history\a1.
+Unkeyed digests are handoff evidence, not authorization from an old signature.
+No .oracles file or signature is edited or re-signed. The parent must review
+A1 and version the current publication signatures before publication.

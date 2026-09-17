@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scope": "delivery-runtime-v1",
+  "phase": "frozen-independent-command-and-config-prerequisite-red",
+  "frozenAt": "2026-09-16T22:17:27.555721+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned inventory of NEW independent runtime tests only; parent verifies and seals. Existing backend/A2/service/runtime controls remain untouched.",
+  "payloadFileCount": 12,
+  "ownedFileCount": 14,
+  "ownedFiles": [
+    "tests\\delivery_runtime\\CONTRACT.txt",
+    "tests\\delivery_runtime\\HANDOFF.txt",
+    "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1",
+    "tests\\delivery_runtime\\contract_test.go",
+    "tests\\delivery_runtime\\fixtures_test.go",
+    "tests\\delivery_runtime\\production_bindings_test.go",
+    "tests\\delivery_runtime\\reviews\\v1\\BEFORE.json",
+    "tests\\delivery_runtime\\reviews\\v1\\EVIDENCE.json",
+    "tests\\delivery_runtime\\reviews\\v1\\GUARDS.json",
+    "tests\\delivery_runtime\\reviews\\v1\\HANDOFF.json",
+    "tests\\delivery_runtime\\reviews\\v1\\PACKET.json",
+    "tests\\delivery_runtime\\reviews\\v1\\PACKET.sha256",
+    "tests\\delivery_runtime\\reviews\\v1\\RED.json",
+    "tests\\delivery_runtime\\roles_test.go"
+  ],
+  "files": [
+    {
+      "path": "tests\\delivery_runtime\\CONTRACT.txt",
+      "bytes": 10514,
+      "sha256": "fdcef55a75e24400db4dceb3d355aeaa49c320a9c160fb3b433bc08928f00029"
+    },
+    {
+      "path": "tests\\delivery_runtime\\contract_test.go",
+      "bytes": 654,
+      "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\fixtures_test.go",
+      "bytes": 16270,
+      "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"
+    },
+    {
+      "path": "tests\\delivery_runtime\\HANDOFF.txt",
+      "bytes": 1965,
+      "sha256": "5b9571f97e8c81a2cb30d14e8feeae85c03714dfaa818b3f2a6f929544c146f6"
+    },
+    {
+      "path": "tests\\delivery_runtime\\production_bindings_test.go",
+      "bytes": 1485,
+      "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\BEFORE.json",
+      "bytes": 3913,
+      "sha256": "f3bef3f55ea21280bc591c133e666d51f7de87a850d88eee4ea666e2fecd7a7c"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 6066,
+      "sha256": "636c447278eb6fc4bd6e2a3a3a18ff726704c97ae88f7a7a41ebde52f8f158fa"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\GUARDS.json",
+      "bytes": 7100,
+      "sha256": "973a327fce537d56c4ad9f3401a3cf4a3b261fd6ce2e0ee8742081d788d58e25"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3627,
+      "sha256": "6ab157d8a045800fc5e48979ce1843de9503f3ccd17cf4916d163022a72bc102"
+    },
+    {
+      "path": "tests\\delivery_runtime\\reviews\\v1\\RED.json",
+      "bytes": 3543,
+      "sha256": "6077f5b4b34974bf667e13b6c8df722ae90fdcce6bab7c348a885402a61dc2ea"
+    },
+    {
+      "path": "tests\\delivery_runtime\\roles_test.go",
+      "bytes": 17423,
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1",
+      "bytes": 7421,
+      "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"
+    }
+  ],
+  "contract": "tests\\delivery_runtime\\CONTRACT.txt",
+  "handoff": "tests\\delivery_runtime\\HANDOFF.txt",
+  "red": "tests\\delivery_runtime\\reviews\\v1\\RED.json",
+  "externalEvidence": "tests\\delivery_runtime\\reviews\\v1\\EVIDENCE.json",
+  "selfBinding": "PACKET.sha256 binds raw PACKET.json. Only this self-digest pair is excluded from payload hashes.",
+  "archives": [],
+  "existingFileAmendments": []
+}

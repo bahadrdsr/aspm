@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"encoding/json"
@@ -24,7 +25,7 @@ import (
 type roleRuntime struct {
 	api     http.Handler
 	checks  []func(context.Context) error
-	workers []func(context.Context)
+	workers []func(context.Context) error
 	closers []func() error
 }
 
@@ -49,6 +50,16 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			runtime = nil
 		}
 	}()
+	if role == "delivery" {
+		worker, openErr := app.OpenDeliveryWorker(ctx, deliveryWorkerConfig(config))
+		if openErr != nil {
+			return runtime, openErr
+		}
+		runtime.closers = append(runtime.closers, worker.Close)
+		runtime.checks = append(runtime.checks, worker.Ping)
+		runtime.workers = append(runtime.workers, func(ctx context.Context) error { return runDelivery(ctx, worker) })
+		return runtime, nil
+	}
 	if role == "reports" {
 		worker, openErr := app.OpenReportWorker(ctx, databaseConfig(config.Jobs))
 		if openErr != nil {
@@ -56,7 +67,10 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 		}
 		runtime.closers = append(runtime.closers, worker.Close)
 		runtime.checks = append(runtime.checks, worker.Ping)
-		runtime.workers = append(runtime.workers, func(ctx context.Context) { drain(ctx, "report", worker.ProcessReports) })
+		runtime.workers = append(runtime.workers, func(ctx context.Context) error {
+			drain(ctx, "report", worker.ProcessReports)
+			return nil
+		})
 		return runtime, nil
 	}
 	jobConfig := config.Jobs
@@ -75,7 +89,8 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			DatabaseURL: db.DatabaseURL, Schema: db.Schema, ApplicationName: db.ApplicationName,
 			MaxConnections: db.MaxConnections, Storage: storageConfig(config.Evidence),
 			BootstrapToken: config.BootstrapToken, PublicOrigin: config.PublicOrigin,
-			Now: db.Now, LogOutput: db.LogOutput, SessionTTL: 8 * time.Hour, MaxUploadBytes: 8 << 20,
+			IntegrationEncryptionKey: config.IntegrationEncryptionKey,
+			Now:                      db.Now, LogOutput: db.LogOutput, SessionTTL: 8 * time.Hour, MaxUploadBytes: 8 << 20,
 			ManualProcessing: true,
 		})
 		if openErr != nil {
@@ -100,14 +115,25 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 	}
 	runtime.closers = append(runtime.closers, reader.Close)
 	runtime.workers = append(runtime.workers,
-		func(ctx context.Context) { drain(ctx, "import", worker.ProcessImports) },
-		func(ctx context.Context) { work(ctx, queue, reader, config) })
+		func(ctx context.Context) error { drain(ctx, "import", worker.ProcessImports); return nil },
+		func(ctx context.Context) error { work(ctx, queue, reader, config); return nil })
 	return runtime, nil
 }
 
 func Run(ctx context.Context, role string, config Config) (err error) {
+	if role == "delivery" {
+		config.IntegrationEncryptionKey = bytes.Clone(config.IntegrationEncryptionKey)
+		defer clear(config.IntegrationEncryptionKey)
+	}
 	if err := validateConfig(role, config); err != nil {
 		return err
+	}
+	if role == "delivery" {
+		config.DeliveryClient, err = ownDeliveryClient(config)
+		if err != nil {
+			return err
+		}
+		defer config.DeliveryClient.CloseIdleConnections()
 	}
 	startup, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
@@ -136,7 +162,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			}
 		}
 	}
-	if role != "reports" && config.ReadinessKey != "" {
+	if role != "reports" && role != "delivery" && config.ReadinessKey != "" {
 		if config.PrepareReadiness {
 			if err := evidence.PrepareReadiness(startup, config.Evidence, config.ReadinessKey); err != nil {
 				return err
@@ -169,7 +195,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			}
 		}
 		storage := "not-required"
-		if role != "reports" {
+		if role != "reports" && role != "delivery" {
 			storage = "not-probed"
 			if config.ReadinessKey != "" {
 				if err := app.ProbeStorage(check, storageConfig(config.Evidence), config.ReadinessKey); err != nil {
@@ -201,11 +227,14 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 	runCtx, stop := context.WithCancel(ctx)
 	defer stop()
 	var workers sync.WaitGroup
+	workerErrors := make(chan error, len(runtime.workers))
 	for _, worker := range runtime.workers {
 		workers.Add(1)
-		go func(run func(context.Context)) {
+		go func(run func(context.Context) error) {
 			defer workers.Done()
-			run(runCtx)
+			if err := run(runCtx); err != nil {
+				workerErrors <- err
+			}
 		}(worker)
 	}
 	workerDone := make(chan struct{})
@@ -219,9 +248,10 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 		}
 	}()
 	slog.Info("service listening", "role", role, "address", listener.Addr().String())
-	var serveError error
+	var serveError, workerError error
 	select {
 	case serveError = <-exited:
+	case workerError = <-workerErrors:
 	case <-ctx.Done():
 	}
 	stop()
@@ -239,7 +269,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 	if serveError != nil && !errors.Is(serveError, http.ErrServerClosed) {
 		return errors.Join(shutdownErr, errors.New("service HTTP listener stopped unexpectedly"))
 	}
-	return shutdownErr
+	return errors.Join(shutdownErr, workerError)
 }
 
 func drain(ctx context.Context, kind string, process func(context.Context) error) {

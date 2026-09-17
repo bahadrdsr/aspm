@@ -1,0 +1,75 @@
+//go:build integration
+
+package remediation
+
+import (
+	"context"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/bahadrdsr/aspm/internal/evidence"
+	"github.com/bahadrdsr/aspm/internal/jobs"
+	"github.com/bahadrdsr/aspm/internal/service"
+)
+
+func appDatabase(config databaseConfig) app.DatabaseConfig {
+	return app.DatabaseConfig{
+		DatabaseURL: config.URL, Schema: config.Schema, ApplicationName: config.ApplicationName,
+		MaxConnections: config.MaxConnections,
+	}
+}
+
+func appStorage(config storageConfig) app.StorageConfig {
+	return app.StorageConfig{
+		Endpoint: config.Endpoint, Bucket: config.Bucket, Prefix: config.Prefix,
+		Region: config.Region, AccessKey: config.AccessKey, SecretKey: config.SecretKey,
+	}
+}
+
+func init() {
+	Production.OpenCore = func(ctx context.Context, config coreConfig) (core, error) {
+		instance, err := app.Open(ctx, app.Config{
+			DatabaseURL: config.Database.URL, Schema: config.Database.Schema,
+			ApplicationName: config.Database.ApplicationName, MaxConnections: config.Database.MaxConnections,
+			Storage: appStorage(config.Storage), BootstrapToken: config.BootstrapToken,
+			PublicOrigin: config.PublicOrigin, LogOutput: config.LogOutput, ManualProcessing: true,
+			IntegrationEncryptionKey: config.EncryptionKey,
+		})
+		if err != nil {
+			return core{}, err
+		}
+		return core{Handler: instance.Handler, Close: instance.Close, ProcessImports: instance.ProcessImports}, nil
+	}
+	Production.OpenWorker = func(ctx context.Context, config workerConfig) (deliveryWorker, error) {
+		database := appDatabase(config.Database)
+		database.LogOutput = config.LogOutput
+		worker, err := app.OpenDeliveryWorker(ctx, app.DeliveryWorkerConfig{
+			Database: database, EncryptionKey: config.EncryptionKey, WorkerID: config.WorkerID,
+			LeaseDuration: config.LeaseDuration, SlackEndpoint: config.SlackEndpoint, Client: config.Client,
+		})
+		if worker == nil {
+			return nil, err
+		}
+		return worker, err
+	}
+	Production.EnvironmentKey = func() ([]byte, error) {
+		config, err := service.Environment("core")
+		return config.IntegrationEncryptionKey, err
+	}
+	Production.RunCore = func(ctx context.Context, config coreConfig, listen, assets string) error {
+		return service.Run(ctx, "core", service.Config{
+			Listen: listen, Assets: assets, PublicOrigin: config.PublicOrigin, BootstrapToken: config.BootstrapToken,
+			IntegrationEncryptionKey: config.EncryptionKey,
+			Jobs: jobs.Config{
+				DatabaseURL: config.Database.URL, Schema: config.Database.Schema,
+				ApplicationName: config.Database.ApplicationName, MaxConnections: 3,
+				MaxLease: time.Second, MaxAttempts: 3, RetryDelay: time.Second, MaxRetryDelay: 2 * time.Second,
+			},
+			Evidence: evidence.Config{
+				Endpoint: config.Storage.Endpoint, Bucket: config.Storage.Bucket, Prefix: config.Storage.Prefix,
+				Region: config.Storage.Region, AccessKey: config.Storage.AccessKey, SecretKey: config.Storage.SecretKey,
+				Timeout: 4 * time.Second,
+			},
+		})
+	}
+}

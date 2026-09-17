@@ -1,0 +1,128 @@
+INDEPENDENT SLACK UI TEST AUTHOR - FROZEN HANDOFF
+===============================================
+
+Stop point
+----------
+This is a completed test-first packet, not a UI or worker implementation.
+Parent review/seal and a separate coder/reviewer are next. No commits,
+production edits, dependency changes, native credentials, backend requests,
+worker/deployment test changes, nested agents or signatures were made here.
+
+Final measured qualification
+----------------------------
+  Actual npm.cmd run typecheck: exit 0 (typecheck-04).
+  New acceptance: 8 expected missing-UI assertion failures (red-ui-02).
+  Prior compatibility: all 58 original cases passed (compat-58-03).
+  Skips: 0. Flakes: 0. Playwright retries: 0. Worker count: 1.
+  Test timeout: 20 seconds. Expect timeout: 5 seconds. Neither was changed.
+  Final RED HTTP counts: 3,4,6,6,6,4,4,4, each within the original 60-call cap.
+  Fixture violations, unhandled browser errors and external HTTP attempts: 0.
+
+RED reaches the actual existing production UI and stops at the absent
+Connections region/table, contextual Notify action or Delivery history.
+Later form, delivery, idempotency, scope and mobile assertions are authored
+requirements, not claimed executed successes. Backend/native delivery is
+not qualified by this packet; the already accepted backend has its own tests.
+
+The original red-ui-01 outputs remain frozen with their exact original source
+bytes under history\red-01. The author corrected only the new fixture's
+scripted read lifetime after the real StrictMode-aborted requests exposed
+one-shot response consumption. AUTHOR-CORRECTION.txt explains that correction.
+The old 58 assertions and their guards did not change. Both complete 58-case
+passing runs are retained. A separate initial Windows selector-quoting
+diagnostic executed zero tests and is not hidden or counted as a test retry.
+
+Files and exact permissions
+--------------------------
+New compiled files:
+  web\tests\slack-ui-data.ts
+  web\tests\slack-ui-fixture.ts
+  web\tests\slack-delivery.spec.ts
+  web\tests\slack-navigation.ts
+
+Only four original HTTP fixtures are amended, by 41 inserted lines total:
+  web\tests\network.ts
+  web\tests\application-fixture.ts
+  web\tests\finding-actions-fixture.ts
+  web\tests\reports-fixture.ts
+
+Each change is one import plus validated empty GET navigation for Connections
+or the already-owned finding's deliveries. All original lines, including
+auth, credential, JSON, Origin, provenance and request-budget guards, remain
+byte-identical. ARCHIVES.json + AMENDMENT.json prove exact reconstruction by
+removing only those insertions. Native original CRLF is retained; Git's
+default raw-byte whitespace check flags CR, while the CRLF-aware check and
+actual inserted-space/tab check pass. No Git configuration file was changed.
+
+There are only six byte archives: those four amended original fixtures and
+the two new author files corrected after RED-01. No old review tree or
+compiler-source tree was recursively copied. Archives use .txt and are not
+new compiler inputs. The compiler enumeration adds exactly the four new TS
+files above. Old assertions, package/lock/compiler/runner files, auth fixtures,
+source approvals and provenance inputs are unchanged apart from the explicit
+additive fixture branches.
+
+API details that must not be guessed
+-----------------------------------
+Use the actual inspected Go JSON: receipt.remoteUrl, not remoteURL. The
+current Slack adapter returns a remote ID with an empty remote URL. Do not
+invent a Slack permalink, connected status or live-verification claim.
+Credential presence is only stored-credential metadata.
+
+POST connection: profile/name/channel/token/enabled only; admin only.
+PATCH: intentional name/channel/token/enabled only. A blank edit token is
+omitted; omission, not an empty-string PATCH value, preserves the credential.
+POST finding deliveries: connectionId/idempotencyKey only; admin/analyst.
+202 is queued, not sent. Same-intent replay is 200 with the full immutable DTO.
+Payload title/body/deepLink are server snapshots, not browser-supplied fields.
+rate-limited is a state; rate_limited is the actual native failure code.
+Retry-After is terminal data, not a timer that sends. Uncertain has no retry.
+The preview cannot discover operator PublicOrigin or request an encryption key.
+No import, connection creation, preview opening or read performs delivery.
+
+Concurrent work is explicitly separated
+---------------------------------------
+BEFORE.json is the 834-input starting snapshot. GUARDS.json records a later
+capture with exactly the four allowed fixture deltas and no other change at
+that capture. It is not a claim that a shared repository stopped changing.
+
+During final UI qualification, another process changed:
+  internal\app\remediation_worker.go
+  internal\service\config.go
+  internal\service\run.go
+Additional delivery_runtime tests/oracles also appeared outside this scope.
+This author neither changed nor reverted them. FREEZE-STATE.json records the
+observed raw hashes, timestamps and new paths separately.
+
+The 311 frontend inputs in the final UI vector, every old assertion and every
+inspected HTTP/connection/delivery DTO source still match the qualified bytes.
+Therefore the UI RED/58-case compatibility evidence remains applicable.
+A repository-wide seal must first reconcile the parent's concurrent worker
+runtime source history; do not mislabel historical backend hashes as current.
+This packet is ready for scoped UI-test review/seal, not a fabricated
+whole-repository immutable-source attestation.
+
+Evidence and re-running
+----------------------
+Frozen receipt files here:
+  CONTRACT.txt, AUTHOR-CORRECTION.txt, COMPILATION.json, RED.json,
+  COMPATIBILITY.json, GUARDS.json, FREEZE-STATE.json, EVIDENCE.json,
+  HANDOFF.json, PACKET.json, PACKET.sha256
+
+Logs, screenshots, traces and raw results are hash-referenced in place under:
+  .artifacts\slack-delivery-ui-v1-author
+Do not reuse red-ui-01, red-ui-02 or compat-58-01/02/03 names. All are frozen.
+PACKET.sha256 is the digest of PACKET.json; the latter inventories the packet
+and four authorized fixture amendments, not mutable runtime output directories.
+No private signing key or old oracle is used.
+
+From C:\bahadr\serious\aspm\web, choose a free loopback port and fresh artifacts:
+  npm.cmd run typecheck
+  $env:ASPM_WEB_TEST_PORT='18749'
+  $env:PLAYWRIGHT_JSON_OUTPUT_FILE='..\.artifacts\slack-ui-parent-01.json'
+  npm.cmd test -- 'slack-delivery[.]spec[.]ts$' --output ..\.artifacts\slack-ui-parent-01 --reporter=list,json
+
+For compatibility, pass all ten selector arguments from COMPATIBILITY.json's
+final command. Do not pass unescaped alternation through npm.cmd on Windows.
+After separate UI implementation, run the 8 new and 58 existing cases, keep
+the same guards/budget/timeouts, and use entirely new evidence names.

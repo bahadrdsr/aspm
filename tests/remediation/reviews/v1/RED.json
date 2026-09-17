@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T19:01:09.589356+00:00",
+  "status": "FROZEN_CONSTRUCTOR_RED_PENDING_PARENT_SEAL",
+  "actualContract": {
+    "stage": "GO_BUILD",
+    "exitCode": 1,
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\constructor-red-final.receipt.json",
+      "bytes": 888,
+      "sha256": "e667e49f2e890a2ecb17ee6fab747bc83e926cdb2360ded3dea505b5b4b354da"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\constructor-red-final.jsonl",
+      "bytes": 2318,
+      "sha256": "18231cc7615692a6fb541c68d4c2c1d33e3736c668716eae7b1e366fa3e579a6"
+    },
+    "log": {
+      "path": ".artifacts\\remediation-v1\\constructor-red-final.log",
+      "bytes": 769,
+      "sha256": "41e16042f59fb6ce091d8d180c20513691686f48cc7843011015eeab6da74546"
+    },
+    "fullBindingIncluded": true,
+    "missingProductionInterfaces": [
+      "app.Config.IntegrationEncryptionKey",
+      "app.OpenDeliveryWorker",
+      "app.DeliveryWorkerConfig",
+      "service.Config.IntegrationEncryptionKey"
+    ],
+    "diagnosticText": "# github.com/bahadrdsr/aspm/tests/remediation [github.com/bahadrdsr/aspm/tests/remediation.test]\ntests\\remediation\\production_bindings_test.go:36:4: unknown field IntegrationEncryptionKey in struct literal of type app.Config\ntests\\remediation\\production_bindings_test.go:46:14: undefined: app.OpenDeliveryWorker\ntests\\remediation\\production_bindings_test.go:46:42: undefined: app.DeliveryWorkerConfig\ntests\\remediation\\production_bindings_test.go:53:17: config.IntegrationEncryptionKey undefined (type service.Config has no field or method IntegrationEncryptionKey)\ntests\\remediation\\production_bindings_test.go:58:4: unknown field IntegrationEncryptionKey in struct literal of type service.Config\nFAIL\tgithub.com/bahadrdsr/aspm/tests/remediation [build failed]\n",
+    "topLevelAuthored": 9,
+    "topLevelExecuted": 0,
+    "semanticNarrativesExecuted": 0,
+    "blockedNotSkipped": true
+  },
+  "cases": [
+    {
+      "name": "TestRemediationOwnedRuntimePreflight",
+      "fullContractStatus": "BLOCKED_BY_PACKAGE_BUILD",
+      "separatePreflightStatus": "PASS_REAL_OWNED_PG_AND_LOCAL_S3_ONLY"
+    },
+    {
+      "name": "TestRemediationConnectionsRBACRedactionAndAuthenticatedEncryption",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "connection admin RBAC and member redaction",
+        "actual AES-GCM payload/nonce/AAD and token rotation",
+        "owned ciphertext identity fault before dispatch",
+        "no automatic native send on import/connection creation"
+      ]
+    },
+    {
+      "name": "TestRemediationImmutableScopedEnqueueAndIdempotency",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "scoped immutable actor/finding/connection/revision/payload binding",
+        "forged authority/routing rejection",
+        "durable idempotency replay/conflict with no native I/O"
+      ]
+    },
+    {
+      "name": "TestRemediationIndependentNativeSlackReceiptAndFreshReplay",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "independent real worker and actual Slack mapping",
+        "committed dispatch marker before POST",
+        "PG receipt/fresh core-worker replay and no finding closure"
+      ]
+    },
+    {
+      "name": "TestRemediationPredispatchActorAndConnectionDenials",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "current actor revocation and connection enabled/revision checks",
+        "durable predispatch blocking and no resurrection"
+      ]
+    },
+    {
+      "name": "TestRemediationConcurrentOwnershipCancellationAndAvailableSQLPool",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "concurrent fenced ownership",
+        "single-slot worker pool and interactive SQL availability during held HTTP",
+        "context cancellation and durable uncertainty/no duplicate"
+      ]
+    },
+    {
+      "name": "TestRemediationRealWorkerCrashRecoversDispatchAsUncertain",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "real owned process crash after possible POST",
+        "actual PG lease expiry and fresh-worker uncertainty recovery",
+        "no unsafe send with Prior=nil"
+      ]
+    },
+    {
+      "name": "TestRemediationNativeFailuresAndRetryAfterNeverAutoRetry",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "actual native auth/channel/429/5xx/ack/transport/redirect classification",
+        "safe retry-after and receipt/error/log data",
+        "no automatic retry/sleep/unsafe retry endpoint"
+      ]
+    },
+    {
+      "name": "TestRemediationExplicitOptionalKeyAndMinimalWorkerRole",
+      "status": "BLOCKED_NOT_RUN",
+      "unexecutedChecks": [
+        "optional independent core key and actual service.Environment/service.Run forwarding",
+        "keyless unrelated startup/intake",
+        "minimal worker role without S3/bootstrap/core handler",
+        "missing approved client and unsigned gateway rejection"
+      ]
+    }
+  ],
+  "separateRuntimePreflight": {
+    "result": "PASS",
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\runtime-preflight-final.receipt.json",
+      "bytes": 1288,
+      "sha256": "246d99ef39c1503c14eb6d090c0aa15a898c63312cab2c255ba66e8f56b5c11a"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\runtime-preflight-final.jsonl",
+      "bytes": 1553,
+      "sha256": "64a1aca74d2940373c3400daac9038934ff057d292e9041b8b95c58293d746d3"
+    },
+    "passedCase": "TestRemediationOwnedRuntimePreflight",
+    "claim": "Real loopback PG commit/independent read, real local S3 owned-prefix write and successful cleanup; no remediation business logic or Slack delivery ran."
+  },
+  "unchangedNativeRegressions": {
+    "result": "PASS",
+    "topLevelPassed": 26,
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\existing-native-adapters-01.receipt.json",
+      "bytes": 913,
+      "sha256": "48dd3fb64df2e136c55610eef8e67b2a9bac6848debea2a193cf9c0f3eb9645f"
+    },
+    "events": {
+      "path": ".artifacts\\remediation-v1\\existing-native-adapters-01.jsonl",
+      "bytes": 90791,
+      "sha256": "36001a2593a34cec5bfd6c385d6824c17ade96670ea260db62952ffbc81cbb14"
+    },
+    "cases": [
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09AWSSignedInventoryAndFindings"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09AzureResourceGraphAndAssessments"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestNativeCredentialBoundaryRejectsMissingTokensBeforeRequests"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestNativeSigningBoundaryRejectsUnavailableAWSIdentity"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestNativeDeliveryBoundaryRejectsMissingCredentialBeforePreviewOrSend"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM08JiraNativeFieldsCreateAndStatus"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM08TeamsAndSlackNativePayloads"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM08DeliveryFailuresAndRetrySafety"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09GitHubRepositoriesAndAlerts"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09GitLabPipelineArtifact"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09AzureDevOpsBuildArtifact"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09CollectionBoundsAndFailures"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09ReviewGitHub403QuotaAndPermissionRemainDistinct"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/tests/connectors",
+        "name": "TestM09ReviewAzureAssessmentParentScopes"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestGitLabLinkageAndRedirectFailClosed"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestContinuationOriginPathAndQueryScope"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestEC2RawBytesAndAccountScope"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestZIPExactFileAndBounds"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestCloudRecordsDoNotWidenSelectedScope"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestFactoriesDoNoIOOrCredentialDiscovery"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestConfigurationAndResourceValidation"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestDurableSnapshotsReplayAcrossFreshAdapters"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestAmbiguousAcknowledgementsStayUncertain"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestJiraMetadataPagingAndCaps"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestErrorCodesBoundsAndRedaction"
+      },
+      {
+        "package": "github.com/bahadrdsr/aspm/internal/connectors",
+        "name": "TestCancellationBeforeIOKeepsCollectionIdentity"
+      }
+    ],
+    "liveVendorCertification": false
+  },
+  "skips": 0,
+  "retriesOrExpectedFailureSuppression": 0,
+  "newSemanticSuccessClaimed": false,
+  "authorDiagnostics": [
+    {
+      "kind": "GO_LITERAL_SYNTAX_AND_UNUSED_IMPORT_FIXED_ONLY_IN_NEW_FILES",
+      "helperFirstCompile": {
+        "path": ".artifacts\\remediation-v1\\harness-compile-01.receipt.json",
+        "bytes": 1292,
+        "sha256": "8a8c52ec8d2d7b271a940c791fdbf90540ad5b87aa45b33cc3d6f5596b27fdc3"
+      }
+    },
+    {
+      "kind": "INITIAL_CONSTRUCTOR_RED_SUPERSEDED_BY_FROZEN_RUN",
+      "receipt": {
+        "path": ".artifacts\\remediation-v1\\constructor-red-01.receipt.json",
+        "bytes": 882,
+        "sha256": "a893005b8bc5b4493df5ec0e6c44fa7c54a4ebf16af18100ac32d74fb9dcffee"
+      }
+    }
+  ],
+  "unsafeAssumptionsAvoided": [
+    "No simulated outbox/receipt/PG success or untrusted enqueue authority.",
+    "No generic expired evidence/report retry policy for native delivery.",
+    "Committed authorized dispatch marker is the logical boundary; later cancellation cannot guarantee remote rollback.",
+    "Accepted replay is an existing shared-adapter rule, not a forged accepted Slack PG row.",
+    "New CLI/deployment scheduling, real account installation and broad distributed fault coverage are deferred explicitly."
+  ]
+}

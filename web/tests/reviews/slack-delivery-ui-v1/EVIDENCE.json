@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T22:36:36.213Z",
+  "purpose": "Hash references only. Mutable log/trace roots are outside protected tests; all original run names are now frozen and must never be reused.",
+  "artifactRoot": ".artifacts\\slack-delivery-ui-v1-author",
+  "files": [
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-01.run.json",
+      "bytes": 492,
+      "sha256": "f09aa210c9e9aec3a3a54cc6e808d46fbc01ae7d881dd45e1016634aea5902c8"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-01.stdout.txt",
+      "bytes": 112,
+      "sha256": "d38435a71668c8d21cba6cc0b4fe560839697143402b9bdcee93d91586b7f315"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-02-traces\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-02.results.json",
+      "bytes": 667127,
+      "sha256": "2fb29d25719c94538c1c33852471fa61d7562b419bf7da05ee1ce8a66218bb3f"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-02.run.json",
+      "bytes": 703,
+      "sha256": "f35581e5ad816c89c1278f011e1ad15f0fbab837f639829c848a2b85cd1eeead"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-02.stdout.txt",
+      "bytes": 9241,
+      "sha256": "4a8d3c60e8cb58d53d9b0492726def08b3fb15ae2542b9feee85398714652411"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-03-traces\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-03.results.json",
+      "bytes": 666604,
+      "sha256": "53f7a8cfecd4a57027b2da6bffdbc2ebfdecc8a59ad2a1085120bfaf81a2f6f5"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-03.run.json",
+      "bytes": 712,
+      "sha256": "096814a12825a1aa492b2dd43d3db5491337f2065b87ca8910910b3aa265dacf"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compat-58-03.stdout.txt",
+      "bytes": 9240,
+      "sha256": "a2390a4234bf69a1eea7753f36a702cb7bd6b0ce3d225524f1ae3b91f2552e8c"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\compiler-inputs-01.txt",
+      "bytes": 22530,
+      "sha256": "95fa0c183be8d2d507927db08822266dc00d9be56c58011466b52f68de57e76f"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\protected-before-ui-01.json",
+      "bytes": 1157,
+      "sha256": "07f092b6c7a2018e4f10e013c91187b4a4a107b106250556a0ac0bce912285eb"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\.last-run.json",
+      "bytes": 439,
+      "sha256": "29052069b44d707b676d7db575e38c6ad665b5df69907d73cbd244d30210709a"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\error-context.md",
+      "bytes": 20395,
+      "sha256": "598889027bf4fcf6b2da3543504985b8c5d2efcbb978501681feb3b683994418"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\trace.zip",
+      "bytes": 205457,
+      "sha256": "d9fb32a2b142e72069c7ec7dbe9e908726c2737115437043780e52e436ef2830"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\error-context.md",
+      "bytes": 20147,
+      "sha256": "d7fc208b65576d3a5da99ade146bc83c6600c76b1c2601861277480c91470fe2"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\trace.zip",
+      "bytes": 226177,
+      "sha256": "f406c538495530f6c18720379af7d7e4abb01a901cdd8e3507abdadfde435327"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\error-context.md",
+      "bytes": 32417,
+      "sha256": "658d0d0fffdd7e07845799ffa49ca6eaca5f014c9eac508b14eeb9acd0cf35f5"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\test-failed-1.png",
+      "bytes": 92825,
+      "sha256": "a5c31993603a715d7e4de462dd22f49eb3a291087c50c6b9a4dc024a29948f67"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\trace.zip",
+      "bytes": 443861,
+      "sha256": "24676e79106a85873668af785861cce2ff93a1fcf23521e4b1cef40bb5ed97d3"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\error-context.md",
+      "bytes": 24194,
+      "sha256": "85f7550aa3574a980a8f1c3d9068040a367e5f25d575175c5774a4ce16b83c2c"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\test-failed-1.png",
+      "bytes": 92721,
+      "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\trace.zip",
+      "bytes": 437110,
+      "sha256": "cea6a02c16ab18e849d30a377467702eeafbd3e5439475e6f4729552e7e78472"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\error-context.md",
+      "bytes": 32415,
+      "sha256": "cb74d0372e231b981f3691b21972293888ee184699521d1770acd8022e13b289"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\test-failed-1.png",
+      "bytes": 92721,
+      "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\trace.zip",
+      "bytes": 436281,
+      "sha256": "d25dd010032c500485f9d04fdf39d957f7c3d2ec5ae54eebd8e2cf722b7943e6"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\error-context.md",
+      "bytes": 18658,
+      "sha256": "80ae602a6cdb031811a9d40f3866046e84e37db48946a54aa26c6d815df00649"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\trace.zip",
+      "bytes": 226014,
+      "sha256": "3805204f896f066218066577317db4535c205b670a0f80be9917ce749e93d36e"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\error-context.md",
+      "bytes": 18455,
+      "sha256": "bd80dda02e588e9b8709220abd6f9f16fe531e52830741133c4685ae4ac9bf03"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\trace.zip",
+      "bytes": 223788,
+      "sha256": "4f594f66a91ca0ec5a3bf7617463877254ce5b9a8494bea433e80c887fe20f8d"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\error-context.md",
+      "bytes": 16240,
+      "sha256": "b6c2d4ad24d4bb5ff548cc17ee88d57a60330c154f88bc092b556c11fea69356"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\test-failed-1.png",
+      "bytes": 36667,
+      "sha256": "8f8fd0d0e6a83943de4a854dad9c00045b8ca831521a6184592b27130d55b95c"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\trace.zip",
+      "bytes": 145522,
+      "sha256": "ac01245c75d4bbd270fdc24ba76c67e5243fca41a3285c61e24b6424292f4f82"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01.results.json",
+      "bytes": 187308,
+      "sha256": "1cd71a8a7b1195d1dbec3fa5e9f01e70639c32d3b65d36bb805c952cc39fd1fb"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01.run.json",
+      "bytes": 358,
+      "sha256": "ef659c464df4ce120da586c19d8bf95b0979abe2a20773918be5627b5b011f32"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-01.stdout.txt",
+      "bytes": 30207,
+      "sha256": "d46d40c54482852218307f4f7ef3aab1ec1f6bcc129102ac7240a8f364fa6ea1"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\.last-run.json",
+      "bytes": 439,
+      "sha256": "29052069b44d707b676d7db575e38c6ad665b5df69907d73cbd244d30210709a"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\error-context.md",
+      "bytes": 20392,
+      "sha256": "54aa2901a8d71817deee11ea3cbd9562f778e8e70c5f9aac06e2790602384f0a"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD1-Connect-9cafd-und-masked-token-connection\\trace.zip",
+      "bytes": 205257,
+      "sha256": "a30b083e7996f5e8c587ca8b8191504b7562aa07baf7db1000c50dedc59f4a9e"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\error-context.md",
+      "bytes": 20181,
+      "sha256": "63cc1ebc51ab30ef6878f890a92f7c9418668351dd43cbd4ef88f9192ed19e09"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD2-Admin-e-be106-roles-never-override-denial\\trace.zip",
+      "bytes": 226204,
+      "sha256": "8a91378907078259862fe5a1eec393c24a00c8b00ba8485508fc01ebcfaa7b86"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\error-context.md",
+      "bytes": 32329,
+      "sha256": "6fe95e82e82c59155cca62fcbd9650427cf39d4aaf89acefa5c6a49e45404abf"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\test-failed-1.png",
+      "bytes": 92825,
+      "sha256": "a5c31993603a715d7e4de462dd22f49eb3a291087c50c6b9a4dc024a29948f67"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD3-Explici-59eed-dence-or-a-finding-mutation\\trace.zip",
+      "bytes": 413966,
+      "sha256": "ab226b85d7c7122d23da8a1095e3c25d769e2d79ad013ebca7c2bdadd22c1cf7"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\error-context.md",
+      "bytes": 24068,
+      "sha256": "cf0238139dd1c9702abc1657bfd7ade0c77bb0f3ab6bc4cff46e34f3fdb62946"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\test-failed-1.png",
+      "bytes": 92721,
+      "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD4-Deliver-8e505-esends-or-invented-receipts\\trace.zip",
+      "bytes": 434990,
+      "sha256": "d6e4c7e1fb0092e8ce4c5e1dab25ed73ce199f43109bdbbb9d79e6573fcfe2c3"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\error-context.md",
+      "bytes": 32327,
+      "sha256": "44cf5ae39d4295cce51ec3aa12e09ff2151099e73e118d3f02a144603d438a99"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\test-failed-1.png",
+      "bytes": 92721,
+      "sha256": "084ada234d286384b9b7d704b0b0e5af4187d852bb45518cfe4404697dcb3854"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD5-A-lost--84513-ntil-history-reconciliation\\trace.zip",
+      "bytes": 438560,
+      "sha256": "98acb7b0b98d3a0312ebec019dfa651647d958791a8ffaf7275dd19ff608f7e3"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\error-context.md",
+      "bytes": 18629,
+      "sha256": "06f0ba4e19f9a0ac5434cea701e0746d93d0967fd42d304de62ffba6e1290af8"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD6-Workspa-c87e2-ld-reads-and-committed-ACKs\\trace.zip",
+      "bytes": 226650,
+      "sha256": "8efaa4041979d2a5cbab27e896442cc63a1d39b0d3bcda1a2acb0caa4ce7ae8e"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\error-context.md",
+      "bytes": 18455,
+      "sha256": "fc97e85f59455d7286d72b858a00d8562f165ad07db1697b5ada8c97fd21e03f"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\test-failed-1.png",
+      "bytes": 68654,
+      "sha256": "17aa0c1383f035512cda19af254dfedc4ef8c1587f5b1c58dc67ced6077fd596"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD7-Detail--43002--discard-late-delivery-ACKs\\trace.zip",
+      "bytes": 226226,
+      "sha256": "fd13cfa72dc4cbaaad562bd22e000251bd0cf4b4918c2f63164ca22cb03246ee"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\error-context.md",
+      "bytes": 16240,
+      "sha256": "17ba34efce4b7881433614cad120aa0744969cb5d83bdaf8deae80050b86b4ad"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\test-failed-1.png",
+      "bytes": 36667,
+      "sha256": "8f8fd0d0e6a83943de4a854dad9c00045b8ca831521a6184592b27130d55b95c"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02-traces\\slack-delivery-SD8-At-390p-5b42d-rk-after-cancel-and-confirm\\trace.zip",
+      "bytes": 146582,
+      "sha256": "d9809fc968486230a4f9fb63d44312089040cf9edb8816e43e1e6caccde73081"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.inputs.json",
+      "bytes": 159832,
+      "sha256": "39b0737a6f8da27056a0cfa082f55e467225ce0cf286e12684e54d12c189246e"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.results.json",
+      "bytes": 181096,
+      "sha256": "bc039dd7611f6fc236b77e0bbed6aaa6d0571f942e1f86091adb2e7bb0a5f4f6"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.run.json",
+      "bytes": 403,
+      "sha256": "d2c8c4e1d5d7ee8149f1b739f85a86e52545f851b67c3ecdf73a8414e7af0a1e"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\red-ui-02.stdout.txt",
+      "bytes": 30207,
+      "sha256": "9aa88a5a9bbbbb831a32330c18db60fc7ec524432584f3b06e8ab33d8bca5151"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-01.run.json",
+      "bytes": 156,
+      "sha256": "843bdaf2289bfc44cb65d3b4525bb5fa20ea1e3f726fcea593c3df639c2e81db"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-01.stdout.txt",
+      "bytes": 245,
+      "sha256": "a90302074c67bc4e97a90862132255611ae95762d3401d8179784e564484e0cc"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-02.run.json",
+      "bytes": 156,
+      "sha256": "a84e54c5cc19a17cf8b6a9645572123c5782a40000c6f61db97ab16fd95d0bea"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-02.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-03.run.json",
+      "bytes": 156,
+      "sha256": "8ffb2a393bbb752f12e74ecb1d54da85c6c0f2aaa776a0010289d754fbef4366"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-03.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-04.run.json",
+      "bytes": 256,
+      "sha256": "2e1aced41a29dfbb95d6bdddce5295737f03d9805c2509c9a4f608d66e190124"
+    },
+    {
+      "path": ".artifacts\\slack-delivery-ui-v1-author\\typecheck-04.stdout.txt",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  ]
+}

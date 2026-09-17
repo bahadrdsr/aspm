@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A1",
+  "status": "Frozen unsigned maintenance packet; stop for parent independent review and publication signature versioning",
+  "classification": "Previously reviewed fixture evolution / explicit calibration-baseline maintenance",
+  "newProductionBugOrFeaturePreCodeClaim": false,
+  "modifiedOriginalFiles": [
+    {
+      "path": "tests\\publication\\inputs.before.json",
+      "bytes": 2749,
+      "sha256": "d5e9db591063d15cfc6685cbfb803c2e4b86fc4414e34ed54775931cdd61f2e6"
+    },
+    {
+      "path": "tests\\publication\\controls.before.sha256",
+      "bytes": 411,
+      "sha256": "2f52c34b003cb32ce3ceac5e2eb177980f374378bc77c7a48c88935464025821"
+    },
+    {
+      "path": "tests\\publication\\PACKET.sha256",
+      "bytes": 652,
+      "sha256": "193785fc9e4ccf01c4df33b1547935608d55409db7e1c43689770281f51d085a"
+    }
+  ],
+  "selectedCalibration": {
+    "path": "web/tests/application-fixture.ts",
+    "before": {
+      "path": "web/tests/application-fixture.ts",
+      "bytes": 19020,
+      "sha256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091",
+      "lineEndings": {
+        "crlf": 329,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    "after": {
+      "path": "web/tests/application-fixture.ts",
+      "bytes": 19485,
+      "sha256": "9cc7549331d36f7e64bf8805231096c5644cc69754121f6a659d0f5993245a22",
+      "lineEndings": {
+        "crlf": 339,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    "changedJSONPointers": [
+      "/sources/5/bytes",
+      "/sources/5/sha256",
+      "/sources/5/lineEndings/crlf"
+    ],
+    "allOtherInputBytesReconstructedExactly": true,
+    "allNineSelectedPathsAndOrderUnchanged": true,
+    "historicalPoliciesAndTimestampUnchanged": true
+  },
+  "result": {
+    "command": "node tests\\publication\\run.mjs",
+    "tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "calibrationCases": 12,
+    "exactByteRoundtrips": 18,
+    "ignoredGeneratedPaths": 21,
+    "visibleSourcePaths": 34,
+    "trackedHistoricalStandIns": 2
+  },
+  "assertionTestHash": {
+    "path": "tests\\publication\\publication.test.mjs",
+    "bytes": 17032,
+    "sha256": "607bef7ca070fb0dfbe091ff76323e881d49df7d0240b9413663f94ed14ddd8d"
+  },
+  "runnerHash": {
+    "path": "tests\\publication\\run.mjs",
+    "bytes": 907,
+    "sha256": "029d4e95ec9662219b88d6e09b5856efae0b9a65fdeea0cb27c7fbb1618f7c04"
+  },
+  "originalREDPreserved": [
+    {
+      "path": "tests\\publication\\RED.tap",
+      "bytes": 29254,
+      "sha256": "39e32a84c629cf410ae0ca96e0a2e545ee8f208de16939615a743ee3e148b902"
+    },
+    {
+      "path": "tests\\publication\\RED.json",
+      "bytes": 6787,
+      "sha256": "7ce71e100ee0007eb0944e443861145c81fccf788c60cb16b7b7eede8f6cef95"
+    }
+  ],
+  "oldByteHistory": [
+    {
+      "source": "tests\\publication\\inputs.before.json",
+      "archive": "tests\\publication\\history\\a1\\inputs.before.json.before.txt",
+      "path": "tests\\publication\\history\\a1\\inputs.before.json.before.txt",
+      "bytes": 2749,
+      "sha256": "b7ebb5d555758af25e1bae9dd20a7a61e95ab4cdbbcd81776a98c83ec5ab0fc3",
+      "lineEndings": {
+        "crlf": 80,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\controls.before.sha256",
+      "archive": "tests\\publication\\history\\a1\\controls.before.sha256.before.txt",
+      "path": "tests\\publication\\history\\a1\\controls.before.sha256.before.txt",
+      "bytes": 411,
+      "sha256": "2279fdac8f6ff54d44d54d9dffdbb8de84f61b8ff0030e9ad378fc4ae56d790b",
+      "lineEndings": {
+        "crlf": 5,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\PACKET.sha256",
+      "archive": "tests\\publication\\history\\a1\\PACKET.sha256.before.txt",
+      "path": "tests\\publication\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 652,
+      "sha256": "c697e46602d3517aa9cc961a52f9328233e6ff8738ea08358010c4486835a601",
+      "lineEndings": {
+        "crlf": 8,
+        "lf": 0,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\RED.tap",
+      "archive": "tests\\publication\\history\\a1\\RED.tap.before.txt",
+      "path": "tests\\publication\\history\\a1\\RED.tap.before.txt",
+      "bytes": 29254,
+      "sha256": "39e32a84c629cf410ae0ca96e0a2e545ee8f208de16939615a743ee3e148b902",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 435,
+        "cr": 0
+      }
+    },
+    {
+      "source": "tests\\publication\\RED.json",
+      "archive": "tests\\publication\\history\\a1\\RED.json.before.txt",
+      "path": "tests\\publication\\history\\a1\\RED.json.before.txt",
+      "bytes": 6787,
+      "sha256": "7ce71e100ee0007eb0944e443861145c81fccf788c60cb16b7b7eede8f6cef95",
+      "lineEndings": {
+        "crlf": 0,
+        "lf": 213,
+        "cr": 0
+      }
+    }
+  ],
+  "realIndexUnchanged": true,
+  "signatureFilesUnchanged": true,
+  "parentMustVersionCurrentSignatures": true,
+  "noOldSignatureValidityClaimForAmendedActiveBytes": true,
+  "references": [
+    {
+      "path": "tests\\publication\\AMENDMENT-A1.txt",
+      "bytes": 5417,
+      "sha256": "dc83a003ff3faccab7f23ad37eaa1d52de2a607c2551484aa75d3da0de382663"
+    },
+    {
+      "path": "tests\\publication\\BEFORE-A1.json",
+      "bytes": 22889,
+      "sha256": "f0cda910f60944d1a659603f9eca9620e0990f0b355172fbe785fbce4a47e3d1"
+    },
+    {
+      "path": "tests\\publication\\VALIDATION-A1.json",
+      "bytes": 54430,
+      "sha256": "5c1cb1b7644f8f19e26596fb6f07055ef9a5d69a7780c493f0ec1f20b29ec7e2"
+    },
+    {
+      "path": "tests\\publication\\PACKET.sha256",
+      "bytes": 652,
+      "sha256": "193785fc9e4ccf01c4df33b1547935608d55409db7e1c43689770281f51d085a"
+    }
+  ],
+  "evidence": [
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\after-a1.json",
+      "bytes": 27061,
+      "sha256": "76f37d8c2243fa6910e41a844acc93d36844f3fbe7628d7c96fe0e810d6ba812"
+    },
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\after-a1.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\after-a1.tap",
+      "bytes": 20738,
+      "sha256": "4142d56b8f7a9c19af0b505f0db01c8d3d032938b4cb77bb1acc1c0f46df2525"
+    },
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\mismatch-current-root.json",
+      "bytes": 1131,
+      "sha256": "7ad5e4669c26d374bc3df2bc4ad6dd891d7096987f0d6d3a5b0877efe0814767"
+    },
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\mismatch-current-root.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\mismatch-current-root.tap",
+      "bytes": 4802,
+      "sha256": "15ebc444050482604f37b176c6aacdea8070d6b6a20825ee1c0a94eda7491ee0"
+    },
+    {
+      "path": ".cache\\publication-tests\\a1-slack-calibration-ffeca909-39ca-496a-bf89-fdddf88f12f0\\parent-clean-mismatch.before.log",
+      "bytes": 5433,
+      "sha256": "e3405d66a80396ebf6bf92ea3fe62824f99bf1830fb6d1b9cef8c6df434ad65b"
+    }
+  ],
+  "doNotOverwriteEvidence": true
+}

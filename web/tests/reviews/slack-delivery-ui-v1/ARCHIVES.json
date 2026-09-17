@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "reason": "Only four HTTP fixtures will receive an additive read-only validated empty-navigation branch. No assertions or prior review trees are copied.",
+  "archives": [
+    {
+      "source": "web\\tests\\network.ts",
+      "archive": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\before\\network.ts.txt",
+      "bytes": 5619,
+      "sha256": "11e810daaaecd5a892216df01a86f618ff059a7d0d00d91c10476eae16aab6fd"
+    },
+    {
+      "source": "web\\tests\\application-fixture.ts",
+      "archive": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\before\\application-fixture.ts.txt",
+      "bytes": 19020,
+      "sha256": "bdbe12dc172c08659bb10cd41ec67bce2eaaba3fedffea1bf5d44dd4b06c1091"
+    },
+    {
+      "source": "web\\tests\\finding-actions-fixture.ts",
+      "archive": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\before\\finding-actions-fixture.ts.txt",
+      "bytes": 21604,
+      "sha256": "5a9c4945255981d2ee2d62a77677fdc3f83bdb05ecadb4e00bd76b13ec0aea42"
+    },
+    {
+      "source": "web\\tests\\reports-fixture.ts",
+      "archive": "web\\tests\\reviews\\slack-delivery-ui-v1\\history\\before\\reports-fixture.ts.txt",
+      "bytes": 19949,
+      "sha256": "f0d433b9f33c37cf28ca1aea7334651f4a65982daed7947bf81c25f0058825f2"
+    }
+  ]
+}

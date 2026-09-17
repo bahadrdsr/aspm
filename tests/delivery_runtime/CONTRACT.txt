@@ -1,0 +1,183 @@
+DELIVERY RUNTIME V1 - INDEPENDENT SERVICE/COMMAND TEST-FIRST CONTRACT
+================================================================
+
+Scope and ownership
+-------------------
+This NEW tests/delivery_runtime package qualifies a separately runnable
+delivery-worker role using the accepted app.OpenDeliveryWorker/ProcessNext.
+It does not implement another outbox, change the accepted backend or A2
+assertions/bindings, edit old service/runtime tests, add dependencies, deploy
+containers, or add UI/Helm/Quadlet/installer scheduling.
+
+Four top-level integration tests are authored. The exact forwarding-only
+production binding calls real service.Environment and service.Run. Missing
+configuration fields and a missing command are compile/build-prerequisite RED,
+not passing behavior or a fabricated runtime. Helpers compile separately only
+as a non-acceptance diagnostic.
+
+Production surfaces to implement
+--------------------------------
+  cmd/delivery-worker
+  service.Environment("delivery")
+  service.Run(ctx, "delivery", service.Config)
+
+New exact service.Config fields:
+  DeliveryLeaseDuration time.Duration
+  SlackEndpoint string
+  DeliveryClient *http.Client
+  DeliveryCAFile string
+
+Use the already accepted IntegrationEncryptionKey []byte and Jobs database
+configuration fields. The delivery runtime owns one independent DB pool and
+the existing DeliveryWorker. It must not open generic integrity jobs, storage,
+authentication or a core HTTP handler to run this role.
+
+Environment contract
+--------------------
+ASPM_DATABASE_URL / ASPM_SCHEMA and the existing explicit DB configuration
+rules apply. ASPM_DB_MAX_CONNECTIONS=1 is valid for this one-pool role.
+ASPM_INTEGRATION_ENCRYPTION_KEY is REQUIRED and must be canonical standard
+base64 for exactly 32 bytes. It is never derived or discovered from another
+credential. Missing/malformed/wrong-sized input is an error before startup.
+
+ASPM_DELIVERY_LEASE_DURATION is optional; default exactly 15s. Explicit values
+must parse as durations and satisfy the accepted worker's 250ms..1 minute
+bound. No silent clamp or fallback for an invalid supplied value.
+Programmatic service.Run receives an explicit nonzero valid duration.
+
+ASPM_SLACK_ENDPOINT is trusted process configuration, default https://slack.com.
+The existing strict HTTPS base/gateway validation applies: no userinfo,
+query/fragment, unsafe path/control characters or invalid port.
+This setting never comes from an API body, scanner report or delivery payload.
+
+ASPM_DELIVERY_CA_FILE is an optional explicit trusted PEM CA file for an
+approved gateway. Missing/unreadable/malformed supplied files fail clearly
+before DB, provider or listener startup. CA contents are bounded; normal
+certificate/hostname verification is never disabled. With no file, use normal
+system roots. With a file, construct an explicitly trusted CA pool; replacing
+or augmenting system roots is a documented implementation policy, not an
+InsecureSkipVerify fallback. No private CA key is needed by this role.
+
+Environment("delivery") constructs an explicit bounded client so the ordinary
+command can pass it to Run. DeliveryClient uses *http.Transport, Proxy:nil,
+normal TLS with MinVersion >= TLS1.2 and no InsecureSkipVerify, a nonzero
+timeout <=30s, no cookie jar and a rejecting CheckRedirect policy.
+Its DialContext is bound to the configured HTTPS endpoint origin, including
+normalized host/port. An unrelated address is rejected before dialing, not
+redirected or rewritten. This prevents accidental fallback to Slack.com or an
+ambient proxy when a gateway was explicitly selected.
+
+Trusted programmatic callers provide their own exact approved client. Run
+rejects a nil client/transport, insecure TLS configuration or an ambient proxy
+transport before startup. The test-owned client pins its TLS certificate and
+dials only its exact loopback server. Neither the service nor binding replaces
+its endpoint, headers or payload with fixture/business logic.
+
+Delivery must neither require nor inherit Evidence/S3/AWS/bootstrap capabilities.
+Environment ignores unrelated malformed S3 readiness settings for this role and
+returns zero Evidence configuration and an empty BootstrapToken. Existing
+core/reports/ingestion environment behavior remains intact. Worker environment
+does not load a credential chain. The command receives only explicit DB/key/
+listen/lease/gateway/CA configuration, not core or storage credentials.
+
+Preflight ordering
+------------------
+Validate DB/key/client/gateway/lease before EnsureSchema, pool opens, native
+requests or listener binding. Error text identifies the invalid category
+(database, key, client/transport, TLS, proxy, gateway, lease) without private
+values. Tests use an owned DB connection detector, owned provider and an
+already-bound owned listen address. A field-specific preflight error must win
+over a possible listen conflict, with no DB/provider I/O. No shared database
+schema or third-party address is used by these invalid-input cases.
+
+Runtime behavior
+----------------
+The role repeatedly invokes the accepted ProcessNext; it does not create,
+requeue, resend or reinterpret outbox records. A false,nil idle result may use
+a short bounded context-aware idle delay. A true result represents handled
+durable work, including terminal failures. There is no native failure retry or
+backoff/sleep scheduled by the runtime. All waits stop on cancellation.
+
+GET /healthz reports apiVersion aspm/v1alpha1, service:delivery, status:alive.
+GET /readyz reports service:delivery, status:ready, database:reachable,
+storage:not-required only when the real role is ready. A failed DB check must
+not claim ready. Health remains responsive during a held native request.
+GET /api/v1/session and / return 404: no auth/application/UI handler is exposed.
+
+Real core API creates a new connection and analyst actor, ingests the unchanged
+existing SARIF fixture through actual local S3/parser/PG, and enqueues the
+canonical finding. Nothing sends before the independent role starts. The role
+must actually drain and expose a durable confirmed API receipt from a real
+owned TLS Slack ACK, using the supplied actor and selected credential.
+Constructor success or a healthy fake handler is not processing evidence.
+
+Context cancellation while the owned TLS response is held stops that request,
+the processing loop and the role's HTTP listener within bounded shutdown.
+Accepted backend uncertainty remains durable. A fresh actual command process
+sees the old uncertain receipt and does not resend it. A separately authorized
+new intent then demonstrates that the actual command still processes genuine
+new work rather than merely serving health.
+
+Command and TLS evidence
+------------------------
+The runner builds the actual cmd/delivery-worker into its own artifact path,
+then gives that path to tests. There is no substitute test binary/handler for
+the delivery command. The fresh process receives private configuration through
+its process environment, never command arguments, with S3/AWS/bootstrap and
+ambient proxy/integration settings stripped.
+
+Only the synthetic public certificate from the task-owned TLS server is
+written as a PEM CA file inside a new owned artifact subdirectory. No private
+key is written, no trust store is modified and no insecure verification is
+used. The configured-origin transport is a required safety boundary before
+the actual command is exercised; no Slack.com request is authorized.
+
+On Windows, graceful cancellation is verified through the real service.Run
+context with held native I/O. The later actual command process is killed by
+its specific owned PID only after durable terminal/new-work checks, for bounded
+test cleanup. That cleanup is NOT evidence of OS-signal graceful shutdown or
+proof of rollback of an accepted remote request.
+
+Four narratives
+---------------
+1. Actual service role drains a real actor-owned core intent, confirms one
+   native receipt, has truthful responsive health/readiness, and no core route.
+2. Programmatic invalid DB/key/client/TLS/proxy/gateway/lease configurations
+   fail in preflight before owned detector I/O or listen conflict.
+3. Held TLS cancellation and complete service shutdown preserve uncertainty.
+   A fresh actual command with owned CA has health, does not resend uncertainty,
+   then handles exactly one newly authorized intent and persists its receipt.
+4. Environment defaults, explicit key/lease/gateway/CA validation, selected-
+   origin normal-TLS client policy, no S3/bootstrap inheritance, and unchanged
+   legacy core/reports/ingestion parsing behavior.
+
+Fixture and artifact limits
+--------------------------
+Private runtime.json supplies only the already approved authenticated loopback
+PG/local S3 fixture. Canonical core input uses that S3 prefix; the delivery
+role itself has DB/key/client only. Each case owns a random
+delivery_runtime_<24 hex> schema and matching object prefix. Cleanup is bounded
+and restricted to those names; there is no DB role/policy or bucket mutation.
+Native fixture requests are capped at three, receipts are observed with bounded
+reads, contexts/listeners/processes have fixed cleanup bounds, and no load loop
+or real vendor/cloud credential is used.
+
+New logs/binaries/CA artifacts are outside protected roots:
+  .artifacts\delivery-runtime-v1
+  .cache\delivery-runtime-v1
+Old tests/source/module/A2 signatures are hash references, not copied history.
+
+Run from C:\bahadr\serious\aspm:
+  .\tests\delivery_runtime\Test-DeliveryRuntime.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName parent-runtime-01
+
+Contract builds the real command first, then compiles/runs the full binding and
+all four tests. CommandBuild and ServiceContract record prerequisites separately.
+HarnessCompile omits only the missing production-binding file and compiles
+helpers/specs without executing them; it is never product acceptance.
+Use fresh output names. Existing Go 1.27.1/modules are used offline with
+-mod=readonly; no installation/download or old runner change is authorized.
+
+Parent verifies these compile/build RED prerequisites and seals NEW controls.
+The separate coder implements the actual runtime/command; independent review
+then verifies the real health, processing, TLS and lifecycle checks. Deployment
+scheduling and UI remain separate, unqualified next increments.

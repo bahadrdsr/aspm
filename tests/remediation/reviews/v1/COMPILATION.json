@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-16T19:01:09.589356+00:00",
+  "fullContract": "BLOCKED_AT_REAL_PRODUCTION_CONSTRUCTOR_CONFIGURATION_SYMBOLS",
+  "helperCompilation": {
+    "result": "PASS",
+    "executesTests": false,
+    "excludesOnlyProductionBindingForDiagnostic": true,
+    "receipt": {
+      "path": ".artifacts\\remediation-v1\\harness-final.receipt.json",
+      "bytes": 1277,
+      "sha256": "e2d21cd150091f11189e0e97b5408eb256c7dbe458809d38ad8934597be88f98"
+    },
+    "notProductAcceptance": true
+  },
+  "resolvedDependencyPackages": 353,
+  "resolvedSourceAndTargetTestInputs": 2065,
+  "resolvedInputHashInventory": {
+    "path": ".artifacts\\remediation-v1\\compiler-input-hashes.json",
+    "bytes": 484801,
+    "sha256": "d17770b0d95cf69a928be52b4acace68b5433c15617fb67dfb5acab956037665"
+  },
+  "resolvedGraph": {
+    "path": ".artifacts\\remediation-v1\\compiler-dependencies.json",
+    "bytes": 1112595,
+    "sha256": "fa635766950b8276cf62378d6a8f17484cafee11b9bee483791204b48c5aad66"
+  },
+  "inputInterpretation": "Resolved compilation graph and target test-control source files; full target type-check/semantic execution remains blocked at missing production constructors. Dependency-only test files are excluded.",
+  "generatedOrMissingInputs": [],
+  "newGoControls": [
+    {
+      "path": "tests\\remediation\\contract_test.go",
+      "bytes": 3377,
+      "sha256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274"
+    },
+    {
+      "path": "tests\\remediation\\fixtures_test.go",
+      "bytes": 22855,
+      "sha256": "ac989ea4f582b24f07fcb903aacccf37fb4dd5b669b44f0ec3a44ff3ce5a1690"
+    },
+    {
+      "path": "tests\\remediation\\production_bindings_test.go",
+      "bytes": 2879,
+      "sha256": "b48ae09d1f5893e7c2a3b021ed4b99933bbb14fd4d4d5d40546e683f76ba365e"
+    },
+    {
+      "path": "tests\\remediation\\remediation_test.go",
+      "bytes": 26738,
+      "sha256": "8ca40b2ad4c5136bcb0363d785a60d68bee15bc2fc4c5c85542020c321a442a1"
+    },
+    {
+      "path": "tests\\remediation\\slack_fixture_test.go",
+      "bytes": 7437,
+      "sha256": "19d744d2c8d63151ce7cfb0c24b18be41dcf1679180017eed0e59e299731e66d"
+    },
+    {
+      "path": "tests\\remediation\\worker_process_test.go",
+      "bytes": 4873,
+      "sha256": "2a4b578ac31f73b2bd9a62a5814e0fbfc61021fa9a26209ddfb8559d76e87eb4"
+    },
+    {
+      "path": "tests\\remediation\\Test-Remediation.ps1",
+      "bytes": 7315,
+      "sha256": "5848eb19ce0f6276e2598cba6f1c4005fadafd444d430612a9ddfbbc38ccc4f5"
+    }
+  ],
+  "existingModuleControls": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "selectedExistingToolchain": "go1.27.1 windows/amd64",
+  "toolchainBinaries": [
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\gofmt.exe",
+      "bytes": 3392000,
+      "sha256": "ab730b8446c0c2369be901f263fb7433ea0d2d053d3a3584ca543aaff3b667cc"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\pkg\\tool\\windows_amd64\\compile.exe",
+      "bytes": 28696064,
+      "sha256": "69294d68bcaa3e786f80d23bfb8bed807d5d969e931d5bf92161bdf518778a01"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\pkg\\tool\\windows_amd64\\asm.exe",
+      "bytes": 5705216,
+      "sha256": "3a4b87bb276604f3c4186c50b8cfd90106ed9d2e523e5afa729b55aa8211eb17"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\pkg\\tool\\windows_amd64\\link.exe",
+      "bytes": 7581696,
+      "sha256": "9146582fd2b0a8cf765831e7ee3127603faaf51697531496584024db96414720"
+    }
+  ],
+  "newDependencies": [],
+  "downloadsAllowed": false,
+  "productionBindingCompiles": false,
+  "originalCompilerAndFixtureFilesAmended": []
+}

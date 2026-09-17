@@ -1,0 +1,103 @@
+REMEDIATION V1 - A2 BOUNDED INSERTION LOCK-ORDER REGRESSION
+=======================================================
+
+Scope: exactly two real API operation variants, connection-create and
+delivery-enqueue, in one new integration test:
+  TestRemediationInsertionWorkspaceBeforeMembershipA2
+
+Production remains unchanged. The nine A1 narratives and their assertions,
+fixtures, worker/native adapter controls, permissions, runner and dependencies
+remain byte-identical. The only instrumentation amendment is one
+coreConfig.QueryTracer pgx.QueryTracer field, its necessary import, and direct
+forwarding into the existing app.Config.QueryTracer field. The real application
+already forwards that tracer to its pgx pool. No SQL/status/result replacement,
+authorization shortcut, reflection, queue logic or business-state mutation is
+implemented in the tracer or binding.
+
+Read-only runtime evidence, not a source-text assertion
+------------------------------------------------------
+The tracer observes actual pgx query start/end events on an explicitly marked
+test request. It classifies workspace/membership row-lock queries only for the
+random owned schema. It records no SQL arguments, credentials, response values
+or raw SQL. A workspace lock counts only after actual successful completion,
+one returned row and a real active transaction on the same backend PID.
+Transaction boundaries reset the observation.
+
+Before any insertion membership-lock query executes, the tracer checks that
+completed workspace-row protection has already been observed on that same
+transaction/connection. If not, it cancels ONLY the owned insertion request
+immediately. The competing membership update is never started on this unsafe
+branch. This prevents staging the known inverse lock cycle.
+
+If correct order is observed, the tracer places a bounded scheduling hold
+after the workspace row-lock query has actually completed. It changes no
+database state or returned result. A second actual API request then makes a
+benign admin -> admin membership update using the normal session, Origin and
+workspace authorization headers.
+
+The test observes pg_blocking_pids for those two owned backend PIDs through an
+independent real PG connection. The workspace writer must be waiting on the
+insertion's already-acquired row protection. This is a safe one-way wait, not
+a deliberately staged deadlock. Releasing the tracer hold allows membership
+locking/insertion/commit first, then the same-role update. Both operations must
+complete normally and the real session must still show admin membership.
+
+Bounds and cancellation
+-----------------------
+Only two operation variants are run. Each uses its own random remediation
+schema and existing bounded cleanup. Each observed API request has a three-
+second context. Holds end on explicit release or context cancellation. PG
+blocker inspection lasts at most 500ms with at most 25 read-only probes.
+Cancellation paths release holds and drain owned requests within fixed bounds.
+There is no load/DoS loop, shared-schema target or database role/policy change.
+The requested admin -> admin API update never changes effective permission.
+The new test starts no worker and makes no vendor request. Enqueue setup uses
+the existing real local intake fixture only to create a canonical finding.
+
+Observed unchanged-source baseline
+----------------------------------
+Both variants executed and failed the runtime order guard:
+  membership-start occurred in an active PG transaction with no completed
+  workspace-row protection.
+  The owned membership query was canceled and ended with an error.
+  The actual API returned 503 after safety cancellation.
+  No competing same-role update was started.
+
+The baseline did NOT reproduce a live deadlock, sustain a cycle, reach the
+controlled-concurrent-success path or observe a pg_blocking_pids wait. Those
+downstream checks remain BLOCKED/NOT RUN until the parent fixes production
+workspace-before-membership order in both insertion transactions.
+
+The held 141-file parent input tree was verified before authoring:
+  sha256:806d8922ffd14655fec724627361296ff28a8f630df05356d773f905d5f5bf0a
+It includes test/control inputs, so the authorized two-file instrumentation
+delta changes that aggregate. GUARDS-A2.json separately proves all production
+bytes unchanged and records the exact allowed instrumentation delta.
+
+History, evidence and authority
+------------------------------
+Only the actually amended contract_test.go and production_bindings_test.go,
+plus the prior PACKET-A1.json/PACKET-A1.sha256 pointers, were copied into
+history\a2 as noncompiled .txt files. Old signatures/packets and all other
+history stay unchanged in place. No large previous review tree was copied.
+
+Current sanitized observations and runner output are outside frozen roots:
+  .artifacts\remediation-lock-order-a2
+  .artifacts\remediation-v1\lock-order-a2-*
+  .artifacts\remediation-v1\a2-lock-order-*.json
+
+From C:\bahadr\serious\aspm, using a fresh OutputName and the existing private
+owned runtime:
+  $env:GOFLAGS='-run=^TestRemediationInsertionWorkspaceBeforeMembershipA2$'
+  .\tests\remediation\Test-Remediation.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName parent-lock-order-a2-01
+
+The unchanged full production binding is included. The effective GOFLAGS
+selector is explicitly recorded in the invocation receipt; no runner source
+or test timeout is changed. The initial unused-import build diagnostic is not
+semantic RED and is kept separately from the executed final baseline.
+
+PACKET-A2.json / PACKET-A2.sha256 are the new frozen current control inventory.
+Parent verifies this runtime order/cancellation RED and seals new A2 controls.
+The source repair belongs to the parent/coder after that verification. Do not
+weaken the tracer/assertions or describe this safe baseline as a live deadlock
+reproduction or passing concurrency validation.

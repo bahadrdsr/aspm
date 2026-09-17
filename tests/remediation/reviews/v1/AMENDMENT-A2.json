@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "amendment": "A2",
+  "scope": "bounded-runtime-insertion-lock-order",
+  "capturedAt": "2026-09-16T21:22:54.368Z",
+  "authorization": "One QueryTracer field/import in coreConfig plus pure forwarding to existing app.Config.QueryTracer, and a separate new two-variant runtime locking regression. No production or A1 assertion/helper changes.",
+  "instrumentationDelta": {
+    "changes": [
+      {
+        "path": "tests\\remediation\\contract_test.go",
+        "oldSHA256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274",
+        "newSHA256": "c9b7ce392dfebf5a688b1c523b9f27230a153dbcf0faab74bf1474958e427850",
+        "allOtherBytesIdentical": true,
+        "oldFragment": "\t\"time\"\n)",
+        "newFragment": "\t\"time\"\n\n\t\"github.com/jackc/pgx/v5\"\n)",
+        "additionalField": "QueryTracer pgx.QueryTracer"
+      },
+      {
+        "path": "tests\\remediation\\production_bindings_test.go",
+        "oldSHA256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180",
+        "newSHA256": "b6a879674c162e8d2e73210b2611229d15ac146e7586769857a071d200baff23",
+        "allOtherBytesIdentical": true,
+        "oldFragment": "\t\t\tIntegrationEncryptionKey: config.EncryptionKey,\n",
+        "newFragment": "\t\t\tIntegrationEncryptionKey: config.EncryptionKey,\n\t\t\tQueryTracer:              config.QueryTracer,\n",
+        "additionalField": null
+      }
+    ],
+    "oldNineNarrativeFileUnchanged": true,
+    "roleOrRequestPermissionChanges": false
+  },
+  "newRegression": {
+    "path": "tests\\remediation\\lock_order_test.go",
+    "bytes": 11164,
+    "sha256": "b2162517e513c1782ae78d5a2c6ea353ca4f9074273cb1674532a83784fe6d92"
+  },
+  "mechanism": "Read-only real pgx query start/end completion and transaction/backend identity. Unsafe membership-start order cancels the owned request before query execution; the competing writer is never started on that branch.",
+  "safeConcurrentPath": "Only after a completed workspace-row locking query is observed, hold the tracer callback briefly, start one benign admin-to-admin actual API update, observe the two owned PIDs through pg_blocking_pids, release and require normal completion. No intentional lock cycle.",
+  "bounds": {
+    "operationVariants": 2,
+    "ownedRequestSeconds": 3,
+    "maximumBlockerReadWindowMilliseconds": 500,
+    "maximumReadOnlyBlockerProbes": 25,
+    "requestDrainSeconds": 4,
+    "apiBudgetUnchanged": 160
+  },
+  "archives": [
+    {
+      "source": "tests\\remediation\\contract_test.go",
+      "path": "tests\\remediation\\reviews\\v1\\history\\a2\\contract_test.go.before.txt",
+      "bytes": 3377,
+      "sha256": "dc460082bba09d8ae53eb574c547b2bcf86188c21ea1923cc9ce447621d87274"
+    },
+    {
+      "source": "tests\\remediation\\production_bindings_test.go",
+      "path": "tests\\remediation\\reviews\\v1\\history\\a2\\production_bindings_test.go.before.txt",
+      "bytes": 2952,
+      "sha256": "7b538bf6cae57600e29a80702f132b5e800150f80b374bdd0e36908a9e270180"
+    },
+    {
+      "source": "tests\\remediation\\reviews\\v1\\PACKET-A1.json",
+      "path": "tests\\remediation\\reviews\\v1\\history\\a2\\PACKET-A1.json.before.txt",
+      "bytes": 8115,
+      "sha256": "34d7734935e05676930b50d6a611a0582657ad3241c8f36575ed3dbfa6bc7cc2"
+    },
+    {
+      "source": "tests\\remediation\\reviews\\v1\\PACKET-A1.sha256",
+      "path": "tests\\remediation\\reviews\\v1\\history\\a2\\PACKET-A1.sha256.before.txt",
+      "bytes": 81,
+      "sha256": "b627b6db7dcc7c49287d6b15a8b1042121ae4270862640461d9f5a7399813157"
+    }
+  ],
+  "onlyActuallyAmendedFilesAndPriorPointersArchived": true,
+  "noSQLBusinessMutationInTracerOrBinding": true,
+  "noFakeSQLResultsStatusesOrSourceTextOnlyAssertion": true,
+  "noRolePolicyChange": true,
+  "noVendorRequests": true,
+  "priorA1AssertionsUnchanged": true,
+  "priorA1NilForwardingPreserved": true,
+  "parentSourceFixRequired": true
+}

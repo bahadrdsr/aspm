@@ -3,6 +3,7 @@ import { expect, test as base } from "@playwright/test";
 import type { Page, Route } from "@playwright/test";
 import { apiVersion } from "./api-contract";
 import { catalogResponse, findingResponse, syntheticSession, workItems, workResponse } from "./fixtures";
+import { emptySlackNavigation } from "./slack-navigation";
 
 export const alpha = syntheticSession().workspaces[0];
 export const beta = { id: "33333333-3333-4333-8333-333333333333", name: "Synthetic Beta workspace", role: "analyst" };
@@ -227,6 +228,15 @@ export class ApplicationAPI {
       const workspace = headers["x-aspm-workspace-id"] ?? alpha.id;
       if (!headers["x-aspm-workspace-id"]) this.violations.push("Protected request omitted the selected workspace header.");
       if (![alpha.id, beta.id].includes(workspace)) { await this.error(route, 403, "forbidden", "Workspace access denied."); return; }
+      try {
+        const empty = emptySlackNavigation(url, method, workspace,
+          new Map([[alpha.id, [detailedFinding.id]], [beta.id, [workItems[2].id]]]));
+        if (empty) { await route.fulfill({ json: empty }); return; }
+      } catch (error) {
+        this.violations.push(`Invalid additive Slack navigation: ${String(error)}`);
+        await route.abort();
+        return;
+      }
       if (method === "GET" && path === "/api/v1/work") {
         if (this.workGate?.workspace === workspace) await this.workGate.wait;
         await route.fulfill({ json: workResponse(url.searchParams.get("q") ?? "", workspace === alpha.id ? [detailedFinding, workItems[1]] : [workItems[2]]) });
