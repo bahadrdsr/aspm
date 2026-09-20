@@ -114,6 +114,9 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
+	if strings.HasPrefix(path, "/api/v1/ai/") {
+		return a.routeAIConfiguration(w, r, membership, session)
+	}
 	switch path {
 	case "/api/v1/sources":
 		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T14:42:28.325Z",
+  "author": "successor-independent-ai-settings-ui-a1-native-option-20260920",
+  "scope": "New independent current-candidate RED reproduction before measurement correction, separate from preserved original V1 missing-controls RED.",
+  "run": "successor-a1-red-20260920-01",
+  "process": {
+    "schemaVersion": 1,
+    "run": "successor-a1-red-20260920-01",
+    "command": "node scripts\\playwright.mjs test --config tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts ai-settings-ui.spec.ts --grep \"AIU3 \"",
+    "startedAt": "2026-09-20T14:29:40.5106447+00:00",
+    "completedAt": "2026-09-20T14:30:06.5754715+00:00",
+    "durationMs": 26059,
+    "exitCode": 1,
+    "port": 18756,
+    "NODE_USE_SYSTEM_CA": "1",
+    "specSHA256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222",
+    "listenersAfter": []
+  },
+  "report": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results.json",
+    "bytes": 37138,
+    "sha256": "37d1d8ea88549e52196dac9b564d7f1942bca354f51813f37139fb049a6e717d"
+  },
+  "consoleLog": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01.log",
+    "bytes": 4174,
+    "sha256": "32e60fabf97b93fa75b8cea972cb3b9360187490bfc337bf3dae841514104825"
+  },
+  "execution": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01-execution.json",
+    "bytes": 534,
+    "sha256": "4efa0ab38dda4a194bd31282bc0529fc660477a183bfeb8f233d188674e7afc4"
+  },
+  "stats": {
+    "startTime": "2026-09-20T14:29:43.897Z",
+    "duration": 22630.260000000002,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "counts": {
+    "selected": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "retries": 0,
+    "flakes": 0,
+    "otherAIUCasesNotSelected": 5
+  },
+  "cases": [
+    {
+      "title": "AIU3 Explicit policy and sensitive finite grants retain workspace decisions, expiry and revoke receipts",
+      "file": "web\\tests\\ai-settings-ui.spec.ts",
+      "line": 367,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 8730,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts",
+            "column": 116,
+            "line": 57
+          },
+          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeDisabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('region', { name: 'Grant approval', exact: true, includeHidden: true }).getByRole('form', { name: 'Approve AI grant', exact: true }).getByRole('combobox', { name: 'Profile', exact: true }).getByRole('option').filter({ hasText: 'Synthetic disabled profile' }).first()\nExpected: disabled\nReceived: enabled\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeDisabled\" getByRole('region', { name: 'Grant approval', exact: true, includeHidden: true }).getByRole('form', { name: 'Approve AI grant', exact: true }).getByRole('combobox', { name: 'Profile', exact: true }).getByRole('option').filter({ hasText: 'Synthetic disabled profile' }).first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('region', { name: 'Grant approval', exact: true, includeHidden: true }).getByRole('form', { name: 'Approve AI grant', exact: true }).getByRole('combobox', { name: 'Profile', exact: true }).getByRole('option').filter({ hasText: 'Synthetic disabled profile' }).first()\u001b[22m\n\u001b[2m    13 × locator resolved to <option disabled value=\"c8000000000000000000000000000003\">Synthetic disabled profile (disabled)</option>\u001b[22m\n\u001b[2m       - unexpected value \"enabled\"\u001b[22m\n\n\n  55 |   }\n  56 | }\n> 57 | async function noEnabledActions(actions: Locator) { for (const action of await actions.all()) await expect(action).toBeDisabled(); }\n     |                                                                                                                    ^\n  58 | async function shell(page: Page, ai: AISettingsHTTP) {\n  59 |   await page.goto(\"/#/integrations\");\n  60 |   await expect(page.getByRole(\"heading\", { name: \"Integrations\", exact: true, level: 1 })).toBeVisible();\n    at noEnabledActions (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:57:116)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:381:5"
+        }
+      ],
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+        "AI settings explicitly opened"
+      ],
+      "combinedAPIRequests": 12,
+      "aiRequests": 6,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-http-boundary",
+        "bytes": 18555,
+        "sha256": "adb0b74a3a0b9b11d385f2c4119651ba9c3057e9716262e300520be49c0382b0",
+        "containingReport": {
+          "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results.json",
+          "bytes": 37138,
+          "sha256": "37d1d8ea88549e52196dac9b564d7f1942bca354f51813f37139fb049a6e717d"
+        }
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\test-failed-1.png",
+          "bytes": 65407,
+          "sha256": "f27fa94e1a9d433aea01cff490606ec0c2a6b398b7318d40484b4d5bdd8a9ca3"
+        },
+        {
+          "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\error-context.md",
+          "bytes": 28364,
+          "sha256": "b798376eebacb47c26204984da90b24911949766d018fb57c74fd83945493591"
+        },
+        {
+          "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\trace.zip",
+          "bytes": 718185,
+          "sha256": "6f4cf70f3a7c41b7c199af11abc02d29df27eae3b77630bc756a35e03142b21f"
+        }
+      ]
+    }
+  ],
+  "atThisREDOnly": {
+    "AIU3AfterOriginalLine381": "BLOCKED/NOT RUN",
+    "tails": [
+      "finite sensitive consent and exact grant creation",
+      "expired grant history",
+      "issuer demotion without revocation",
+      "canonical explicit revocation"
+    ]
+  },
+  "disposition": "A1 measurement-only amendment follows independently paired native calibration; final completed tails are recorded in RESULTS-A1.json."
+}

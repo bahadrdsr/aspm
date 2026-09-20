@@ -1,0 +1,193 @@
+AI SETTINGS UI V1 - ORIGINAL AUTHOR, CONFIGURATION ONLY
+=====================================================
+
+Authority and permitted boundary
+--------------------------------
+This contract precedes the new browser tests. Backend authority is frozen at:
+  tests\ai_configuration\CONTRACT.txt
+  tests\ai_configuration\reviews\v1\DECISIONS.json
+  tests\ai_configuration\contract_test.go
+The published source witness is 24556fd41090628f391a728457f9c377ca624983.
+Backend implementation/publication may advance independently. Its mutable
+working tree is not part of this UI packet's protected-byte control set.
+
+Only NEW data, protocol-shaped HTTP fixture, spec and this packet are authored.
+Production, backend, runtime, provider adapters, dependencies, existing tests,
+fixtures, helpers, settings, modules, approved components, signatures and
+commits are untouched. No old-fixture AI route additions are authorized.
+
+The real application renders its own controls and state. Only same-origin
+application HTTP responses are substituted. All foreign HTTP/WebSocket
+requests and undeclared native application APIs are blocked before I/O.
+No React, module, hook, client-state, DOM, clock, worker or provider substitute
+is installed. Browser evaluate is observation/frame synchronization only.
+Synthetic profile/policy/grant metadata is HTTP scenario data, not a resolver,
+worker, encryption implementation or execution-permission oracle.
+
+Surface and minimal semantic vocabulary
+---------------------------------------
+Keep exactly five Primary navigation links and all eight Native integrations
+families, alongside Connections and Sources. Integrations has one button named
+"AI settings", initially aria-expanded=false. No AI HTTP request occurs until
+its explicit activation. Closed settings have no retained AI region or forms.
+Opening renders an in-page region "AI settings", not a sixth destination.
+"Close AI settings" closes it, aborts reads/writes and returns focus to its
+entry. Workspace changes and sign-in start with this entry closed.
+
+The panel contains regions "AI profiles", "AI policy", "AI grants".
+Each has "Refresh profiles/policy/grants" and "Retry profiles/policy/grants"
+buttons as applicable, with an accessible loading status and error alert.
+Tables are named "AI profiles" and "AI grants"; a grant row includes its ID.
+Empty-success headings are "No AI profiles" and "No AI grants", never used
+for pending, denied or unavailable reads. The policy has a labelled status
+"Current AI policy" showing the fetched mode and opaque revision, not merely
+the unsaved selector value. Dates shown as metadata use time[datetime].
+
+Profile actions: "Add profile", row "Edit profile", shared dialog and form
+"Create AI profile" or "Edit AI profile", save "Create profile"/"Save profile".
+Labels: "Name", "Family", "Endpoint", "Model", "Deployment", "API key",
+"Enabled", "Structured output reviewed". Family, Enabled and capability
+review are wrapped native selects addressed by role=combobox plus their name.
+Family values are the four API enums; boolean values are "true"/"false".
+Creation requires explicit family/enabled/capability choices, with no assumed
+model, deployment, endpoint or tested capability. Deployment is required for
+azure-foundry only; for other families it is absent or disabled and empty.
+The password input is labelled "API key" on both create/edit and starts blank.
+Edit help explains omission retains the key. Only local exposes a checkbox
+"Clear stored API key"; checking it disables/empties replacement and sends
+null. Blank replacement never sends an empty string, null or an old key.
+Dialogs use shared focus containment/Escape/return-focus conventions.
+"Retry profile" is available on failed authoritative edit-detail reads.
+
+Policy: native combobox "AI policy mode", enum option values, explicit
+"Save policy". Admin-only saves send just mode. Explain setup starts no
+assessment; disabled is deny-only, local-only is family local only (even if a
+hosted URL is loopback), and approved-hosted is not itself an egress grant.
+Current status remains the confirmed receipt after a failed save, or remains
+unknown after a failed initial read. Never invent a disabled default on 503.
+
+Grant creation is a nonmodal region "Grant approval" with a form
+"Approve AI grant", opened by "Add grant" inside AI grants. This deliberate
+in-page choice permits normal refresh/workspace/logout controls while consent
+is open and avoids nested modals. "Cancel grant" removes the draft.
+Native select "Profile" offers enabled, structured-output-reviewed profiles;
+ineligible entries may be omitted or disabled, not silently substituted.
+Input "Expires at (UTC)" is an initially blank datetime-local input with UTC
+help. The operator enters a finite future UTC time; no indefinite/default
+consent or automatic expiry extension is allowed.
+"Review current configuration" explicitly reads GET profiles/{id} and GET
+policy for the selected workspace. It is also the manual refresh of consent
+facts. Only their authorized responses enable region "Grant consent".
+That region shows exact name, family, model, deployment when present,
+destination, profile/policy revisions, finding-validity and finding-evidence.
+It explains potentially sensitive evidence/source/code context, excludes
+credentials from approved content, and promises neither execution nor future
+permission. Checkbox "Approve potentially sensitive finding evidence" is
+unchecked initially and after changed/denied/conflicting facts. "Create grant"
+requires current reviewed facts, explicit acknowledgement and a future expiry.
+
+Grant rows use "View grant" for the region "Grant details", authoritative GET
+grants/{id}, and "Refresh grant"/"Retry grant". "Revoke grant" opens one shared
+dialog "Revoke AI grant"; its explicit "Confirm revocation" sends {}. Cancel or
+Escape sends nothing. Canonical receipts preserve historical rows and times.
+Status text "Matches current configuration" is a derived snapshot label,
+never "Allowed", "Authorized", "Healthy", "Verified" or execution permission.
+It is absent for expired, revoked, disabled/unreviewed or revision/destination/
+mode-mismatched metadata. Those rows explain "Expired", "Revoked" or
+"Configuration changed" as applicable. A later issuer demotion alone is not
+revocation; no issuer-role lookup or arbitrary approvalRef is a browser API.
+
+Protocol and authority rules
+----------------------------
+GET/POST /api/v1/ai/profiles; GET/PATCH /api/v1/ai/profiles/{id}
+GET/PATCH /api/v1/ai/policy
+GET/POST /api/v1/ai/grants; GET /api/v1/ai/grants/{id}
+POST /api/v1/ai/grants/{id}/revoke with {}
+All JSON envelopes contain apiVersion "aspm/v1alpha1", use lower-camel DTO
+names, real-shaped 32-lowercase-hex IDs, and the exact frozen metadata fields.
+Revisions are nonempty opaque strings, including lexically decreasing values;
+never parse, increment, sort or compare them as numeric Sources revisions.
+No resolver, connection test, model discovery, inference or assessment API
+exists. No background probing, fallback, data/evidence retrieval or writes.
+
+Profile POST supplies name/family/endpoint/model/deployment/enabled/
+structuredOutput, with apiKey absent or null only for keyless local. Hosted
+keys are required. PATCH includes intentional changes only and validates the
+combined resulting profile. Name/model/deployment are bounded to 256 UTF-8
+bytes; endpoint/key to 16384 bytes; encoded profile JSON to 32 KiB.
+Hosted endpoints require HTTPS; local HTTP requires literal private/loopback
+IP, not localhost or public HTTP. Userinfo/query/fragment, raw/decoded controls,
+unsafe paths, invalid ports and malformed/oversized URLs are invalid for every
+family. Endpoint strings are operator decisions, never catalog recommendations
+or normalized grant destinations. Model and Foundry deployment remain distinct.
+CredentialConfigured means stored-key presence only. Local keyless metadata
+works without operator encryption; hosted/key writes return explicit 503 when
+unavailable. Never ask the browser user for the operator encryption key.
+
+Profile fields: id,workspaceId,name,family,endpoint,model,deployment,enabled,
+structuredOutput,credentialConfigured,revision,createdAt,updatedAt.
+Policy fields: workspaceId,mode,revision,updatedAt,updatedBy.
+Fetched default: disabled, revision "0", updatedAt:null, updatedBy:null.
+Grant creation body has EXACTLY profileId,profileRevision,policyRevision,
+destination,task:"finding-validity",dataClass:"finding-evidence",expiresAt.
+Revisions/destination come from newly authorized metadata, not editable hidden
+authority, actor/id/createdAt/approvalRef or global allowlists.
+Grant fields: id,workspaceId,profileId,profileRevision,policyRevision,
+destination,task,dataClass,expiresAt,createdAt,grantedBy,revokedAt,revokedBy.
+POST profile/grant returns 201; reads/patch/revoke return 200. All lists use
+{apiVersion,items,total,nextCursor}. Default 100, max 500; native ID cursor
+only. This bounded UI uses the native 100-item page (omitted or limit=100).
+No prefetch/draining. Pagination tests generate only 101 rows per collection.
+Manual next-page failure retains the last confirmed page; retry uses the
+identical cursor and limit. A new authorized page may replace or append.
+
+Admin controls are based on actual selected-workspace admin session metadata.
+Viewer and analyst are read-only, not merely cosmetic disabled-looking writes.
+Stale admin metadata never overrides server 403. Protected calls use shared
+session-cookie, Origin, workspace-header, typed request/error and epoch rules.
+Denial 403/404 clears denied details, draft authority and caches; a later 503
+cannot resurrect them. Only authorized 200 can restore those details.
+Authorized current profile/policy refresh updates open consent or explicitly
+invalidates it. A newer receipt must not be replaced by an older in-flight
+read, nor by an old selected-row copy. Missing from a later page is not deletion.
+409 displays changed facts/conflict and makes no automatic second POST.
+The operator must review current facts again and explicitly acknowledge them.
+
+Privacy/lifecycle and bounded case plan
+---------------------------------------
+No raw key in successful JSON, UI text, URLs, logs, readable cookies, or browser
+storage. Only the existing aspm.theme preference may persist. Password drafts
+clear on close, success, session loss and scope loss. Failed credential edits
+must not render a key echoed in a diagnostic. Synthetic error-echo canaries
+exercise redaction without exposing a real key. Return focus remains usable.
+Close/settings/workspace/logout/401 abort old AI HTTP requests and clear old
+metadata/profile/grant drafts. Released delayed responses cannot reappear.
+390px, reduced motion, focus containment, inert source/model strings and no
+document-wide horizontal overflow are acceptance requirements.
+
+AIU1: opt-in loading, fetched default vs failure, empty/retry, keyless local
+      without encryption, viewer/analyst read-only, no legacy route additions.
+AIU2: all four families, explicit choices, Foundry model/deployment, endpoint
+      rejection, hosted 503, masked/sparse retain/replace/local-null semantics,
+      canonical receipts and secret-safe errors.
+AIU3: explicit policy saves and failures, sensitive finite grant consent,
+      exact binding, issuer demotion snapshot, expiry and canonical revocation.
+AIU4: current facts after authorized refresh, opaque revisions, stale consent,
+      conflict/no resubmit, current-review requirement, old grant invalidation.
+AIU5: manual native profile/grant pages, confirmed-page failure/retry, denied
+      details and lists withheld across 503, server-authoritative admin denial.
+AIU6: mobile/reduced motion/inert text/focus/privacy, close/workspace/401/logout,
+      aborted delayed reads and cleared profile/grant/metadata scope.
+
+Exactly six top-level browser cases. Existing 20s case/5s expect, one worker,
+zero retries/skips, combined 60 API requests per case, blocked service workers,
+retain-on-failure tracing and only-on-failure screenshots are unchanged.
+No sleeps, forced clicks, selector-index fallbacks, DOM replacement or raised
+timeouts are allowed to make missing controls pass. Test steps record reached
+phases; assertions after first missing UI remain BLOCKED/NOT RUN.
+Original-author outputs use fresh labels below:
+  .artifacts\ai-settings-ui-v1-author
+The packet records actual missing-controls RED, typecheck, byte guards and
+93-case compatibility separately. This is not a GREEN UI, runtime, encryption,
+provider, resolver, permission, accessibility-audit or production certification.
+Parent verifies/seals only NEW controls and assigns separate coder/reviewer.

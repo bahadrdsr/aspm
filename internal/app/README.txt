@@ -96,3 +96,86 @@ Image and opt-in deployment artifacts consume this backend without automatically
 provisioning credentials or starting collection. Installer provisioning, live
 GitHub authority, broader partitions, key rotation and capacity qualification
 remain separate work.
+
+Persistent AI configuration foundation
+=====================================
+
+M11 setup adds selected-workspace GET/POST /api/v1/ai/profiles and GET/PATCH
+/api/v1/ai/profiles/{id}, GET/PATCH /api/v1/ai/policy, GET/POST /api/v1/ai/grants,
+GET /api/v1/ai/grants/{id}, and POST /api/v1/ai/grants/{id}/revoke. All routes use
+the existing protected session and workspace selection; mutations also require
+the existing Origin check and a transactionally rechecked administrator.
+Members may read metadata. Lists use limit=1..500 (default 100) and ID cursors.
+Bodies are bounded to 32 KiB and reject undeclared fields.
+
+Profiles explicitly select openai, azure-foundry, anthropic or local, a name,
+endpoint, model, enabled boolean and structuredOutput review boolean. Name,
+model and deployment are bounded to 256 UTF-8 bytes; endpoint and API key to
+16384 bytes. Foundry requires a separately supplied nonblank deployment. Its
+value may match the model; neither field is inferred from the other. Other
+families use an empty deployment. Hosted credentials are required.
+Local credentials may be omitted or null. Empty keys are invalid. PATCH retains
+omitted fields, including credentials; null clears only a local credential.
+Any meaningful change, including name/disable/re-enable, advances the server's
+string revision. A public no-op retains it. A supplied nonempty key always
+replaces the credential and advances revision, without comparing secret bytes.
+
+Credentials reuse the optional independent IntegrationEncryptionKey and shared
+v1 AES-256-GCM envelope, with fresh nonces and the distinct authenticated domain
+aspm/ai-credential/v1 + NUL + workspace + NUL + profile. Slack and source domains
+and key handling remain unchanged. Storing a key without encryption capability
+is unavailable (503); keyless local configuration requires no encryption key.
+Metadata exposes credentialConfigured, never a key, envelope or native header.
+No ambient provider, bootstrap, database or storage credential supplies an AI key.
+
+Endpoint validation is pure and never probes or resolves a provider/catalog.
+Hosted families require HTTPS even on loopback. Local HTTP permits only literal
+private/loopback IPs, not localhost or public HTTP; local HTTPS may use an
+explicit hostname. Userinfo, queries/fragments, invalid ports, raw/decoded
+controls, path traversal, encoded separators and nested escapes are rejected.
+Reviewed destination strings are stored and compared exactly, including a
+trailing slash. Existing provider protocols and TLS/proxy behavior are unchanged.
+
+Unconfigured policy is deny-only disabled metadata at revision "0", with null
+actor/time and no persisted authority. PATCH accepts only mode. Meaningful
+changes persist the server actor/time and advance revision; no-op changes do not.
+local-only requires family local and no grant, even for a hosted family pointed
+at loopback. approved-hosted requires a real matching grant for every family.
+Grant creation asserts the current profile ID/revision, policy revision, exact
+destination, finding-validity task, finding-evidence class and explicit future
+RFC3339 expiry. The server checks these assertions, generates the scoped ID and
+records the issuing admin. Expiry is never defaulted or extended; precision
+beyond PostgreSQL microseconds is truncated earlier. Revocation requires {} and
+preserves its first server actor/time on repeated calls.
+
+finding-evidence means potentially sensitive application/repository evidence,
+including finding metadata, source locations and untrusted bounded code/evidence
+excerpts. It is not a certification of public/redacted data. Configuration keys
+are never approved payload. This foundation reads or transmits no such evidence.
+A grant is a durable workspace decision: issuer demotion alone does not revoke
+it. Explicit revocation, expiry or changed profile/policy revision invalidates it.
+Changing policy mode or disabling/re-enabling a profile cannot revive an old grant.
+
+OpenAIConfigurationResolver(ctx, AIConfigurationResolverConfig{Database,
+EncryptionKey}) owns a separate DB-only pool and optional cipher, with Close().
+Resolve(ctx, AIConfigurationRequest{WorkspaceID, ActorID, ProfileID, GrantID, Task,
+DataClass}) uses one read-only repeatable-read snapshot. ActorID is trusted
+server/worker identity, never a public actor override. Every lookup checks current
+admin/analyst membership and all current profile/policy/grant bindings before
+decryption. Denials return zero configuration and a safe policy/capability error;
+database failures are safe unavailable errors. The private providers.Profile and
+Policy authorize only one workspace/task/class/exact destination, no fallbacks,
+and only a verified stored grant ID as ApprovalRef. HTTP never returns this result.
+
+AI writes lock workspace before session/membership, and profile before policy
+before grant where needed. Sparse patches serialize without losing omitted fields.
+Schema v7 is additive after the exact published v6 schema, and reopens do not
+repeat it. Schema-only upgrade evidence makes no old customer-data migration claim.
+Resolve is a point-in-time configuration check, not a future action reservation.
+Later worker work must re-resolve separately. The AI settings interface now uses
+these configuration APIs. A separate owned HTTPS/core/PostgreSQL workflow covered
+four provider families, matching Foundry model/deployment names, finite grants,
+revision invalidation and revocation with zero provider requests and a final
+disabled policy. This is not inference or provider-account qualification.
+There is no prompt, assessment job, tool, source/scan/verification execution or
+finding/workflow mutation in this foundation, and no M11 execution/completion claim.

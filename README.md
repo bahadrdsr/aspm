@@ -17,7 +17,8 @@ login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, and Slack connections with explicit
 finding-notification previews and delivery history, plus selected GitHub source
-configuration, explicit collection intents and raw record/evidence views. Other integration setup remains
+configuration, explicit collection intents and raw record/evidence views, plus
+opt-in persistent AI profile, policy and grant configuration. Other integration setup remains
 unfinished. Reports and finding triage have independent source acceptance and
 owned HTTPS workflow qualification.
 
@@ -172,6 +173,70 @@ The native dialog, note drafts and Work context remain in place during paging.
 Closing, workspace changes, logout and session rejection clear the scoped history
 and cancel old requests. No history, note, report or authentication data is stored
 in browser storage.
+
+In **Integrations**, **AI settings** is initially closed. Only explicitly opening
+it loads workspace AI profiles, policy and grants. Closing it, changing workspace,
+signing out or losing the session aborts requests and clears metadata, credentials
+and consent drafts. No AI metadata or secrets are stored in browser storage.
+This is configuration only: no provider requests, model discovery, connection
+tests, evidence access, inference or assessment jobs are started.
+
+Workspace administrators choose every profile's family (`openai`,
+`azure-foundry`, `anthropic` or `local`), exact endpoint, model, enabled state and
+structured-output review. Foundry model and deployment are supplied independently;
+their names may match. Hosted
+endpoints require HTTPS; local HTTP requires a literal private or loopback IP,
+not `localhost`. Edits send only intentional changes. The API key field is always
+masked and blank on edit; omission retains it, a nonempty value replaces it,
+and only local profiles can explicitly clear it. Keyless local metadata does not
+require credential encryption. Hosted/key-write unavailability is an operator
+configuration issue, never a request for the browser to supply an application
+encryption key. Credential presence is not verified provider access.
+To store provider keys, core uses the existing protected
+`ASPM_INTEGRATION_ENCRYPTION_KEY`: canonical standard base64 for an independently
+generated 32-byte key. Do not derive it from database, bootstrap or storage
+credentials. Keyless local profile configuration does not require this key.
+
+**Current AI policy** shows the confirmed receipt, separately from the unsaved
+mode selector. Only **Save policy** writes a mode. A fetched disabled revision
+`"0"` with no author/time is the service's unconfigured deny-only policy; failed
+reads never fabricate that default. `local-only` means family `local`, including
+when a hosted-family URL points to loopback. `approved-hosted` is not itself a
+grant or permission to execute.
+
+**Add grant** opens an in-page approval form, not another modal. Choose an enabled,
+structured-output-reviewed profile, a finite future **Expires at (UTC)** value,
+then **Review current configuration**. Authorized profile and policy reads show
+the exact destination, model/deployment, opaque revisions, `finding-validity`
+task and `finding-evidence` data class. Explicit acknowledgement covers potentially
+sensitive finding/source/code context, excluding credentials. Changed or denied
+facts clear consent; conflicts require another manual review and acknowledgement,
+with no automatic resubmission. These are point-in-time facts, not execution or
+future permission guarantees.
+
+Profile/grant pages, policy and grant details have manual refresh/retry controls
+and native 100-item cursor pages. Failed continuation reads retain the confirmed
+page and retry its exact query. Permission/missing-detail denials withhold cached
+metadata through unavailable retries until an authorized read succeeds. Receipt
+ordering prevents older in-flight reads from replacing newer acknowledgements;
+opaque revisions are never treated as numeric counters. Later pages that omit
+a selected profile are not deletion.
+
+Grant history retains server-issued IDs, actors and timestamps. **Matches current
+configuration** is only a derived snapshot label. Expiry, revocation, disabled or
+unreviewed profiles and changed revisions/destinations/policy prevent that match;
+issuer demotion alone is not revocation. **Revoke grant** requires explicit shared
+dialog confirmation and preserves history. Viewer/analyst access is read only,
+and current server denials override cached administrator membership. UI browser
+checks do not by themselves qualify the actual configuration API/database path,
+encryption, provider access, future execution or production operation.
+
+The combined UI/core/PostgreSQL path was separately exercised over trusted HTTPS
+in an owned fixture, including all four families, matching Foundry model/deployment
+names, finite grants, revision invalidation and explicit revocation. The provider
+tripwire recorded zero requests, and the fixture ended with its policy disabled.
+This is configuration qualification, not live-provider, inference or assessment
+execution certification.
 
 In **Integrations**, **Sources** manages one selected GitHub `owner/repo` per
 `github-cloud-app` source, separately from the catalog and Slack destinations.

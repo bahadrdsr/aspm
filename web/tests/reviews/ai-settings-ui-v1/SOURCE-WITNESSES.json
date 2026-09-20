@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T08:17:54.512Z",
+  "publicationWitness": "24556fd41090628f391a728457f9c377ca624983",
+  "observedHeadAtFreeze": "24556fd41090628f391a728457f9c377ca624983",
+  "frozenBackendAPI": [
+    {
+      "path": "tests\\ai_configuration\\CONTRACT.txt",
+      "bytes": 13625,
+      "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3154,
+      "sha256": "8db255260105ef022137df3b2dd1611ecc90d0a65e7feceddb1426b482cdac61"
+    },
+    {
+      "path": "tests\\ai_configuration\\contract_test.go",
+      "bytes": 2023,
+      "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+    }
+  ],
+  "webConventionReferences": [
+    {
+      "path": "web\\playwright.config.ts",
+      "bytes": 1481,
+      "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+    },
+    {
+      "path": "web\\scripts\\playwright.mjs",
+      "bytes": 1080,
+      "sha256": "4df69b83a466c18e625c8729d510d30d934d7b00607e868ac6d7c8da7e5e25a1"
+    },
+    {
+      "path": "web\\tsconfig.json",
+      "bytes": 848,
+      "sha256": "2c233d484659a18d90e6c5bcf6fd74759541a9f4dd9e5cfb24d64005c09f3a82"
+    },
+    {
+      "path": "web\\src\\lib\\session.tsx",
+      "bytes": 9378,
+      "sha256": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de"
+    },
+    {
+      "path": "web\\src\\api\\authorization.ts",
+      "bytes": 761,
+      "sha256": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277"
+    },
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 34716,
+      "sha256": "840e28de7544dc4986eb800efe67468e10eff369404b4909b4c6140c2fecc60f"
+    },
+    {
+      "path": "web\\src\\lib\\use-resource.ts",
+      "bytes": 1472,
+      "sha256": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23"
+    },
+    {
+      "path": "web\\src\\lib\\use-scoped-action.ts",
+      "bytes": 1847,
+      "sha256": "fffa2ca7e8bdd11d230e83ab7c9c3d646a6d46440f6c9d4e68ec22f8830804d4"
+    },
+    {
+      "path": "web\\src\\components\\form-dialog.tsx",
+      "bytes": 2987,
+      "sha256": "445f09aede950c5a39ac06383f47cb5b594f0f3b705865fa6f2a0e3861d07708"
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "bytes": 4955,
+      "sha256": "5f18f7901d1d757b21caec85ec0a6819bd8a691317c0155b7356390aa3f32ddc"
+    },
+    {
+      "path": "web\\src\\App.tsx",
+      "bytes": 9492,
+      "sha256": "13a561e6da30f6d12d48430164fae751ea96786af39099b66052187e97c1e04a"
+    },
+    {
+      "path": "web\\src\\components\\sources\\sources.tsx",
+      "bytes": 4742,
+      "sha256": "1cb502f49288f3db8410fb1ecd72208c9a7bc350745713ef2ce95d4fb8e188e2"
+    },
+    {
+      "path": "web\\src\\components\\sources\\source-editor.tsx",
+      "bytes": 6704,
+      "sha256": "4d236a4ae8fb9f8233fdf0f30473a1c273b5417a3c0d72ca3c533f4dff3c6e4a"
+    },
+    {
+      "path": "web\\src\\components\\sources\\use-source-page.ts",
+      "bytes": 3108,
+      "sha256": "973264f49a479fb990172b8da5cbea3c00a2d6738b3dbf258eac48768efbbc01"
+    },
+    {
+      "path": "web\\src\\components\\slack-connection-editor.tsx",
+      "bytes": 6963,
+      "sha256": "e037b1a4f4cfb0d15ef62d574b98d800ae0d502f9f59c96d4ee4e8cf0f66afc7"
+    },
+    {
+      "path": "web\\tests\\source-selection.spec.ts",
+      "bytes": 15243,
+      "sha256": "42d415f47b416c933558d21f15e655acf67069c90299f8e554d543c0c5d2c5e4"
+    }
+  ],
+  "publishedProviderValidationReference": {
+    "commit": "24556fd41090628f391a728457f9c377ca624983",
+    "path": "internal\\providers\\assessor.go",
+    "blob": "c88df0e52fd83f16638b1ad8cbbc02d56362b9fc",
+    "meaning": "Read-only published endpoint policy context. No inference adapter or assessor was executed."
+  },
+  "externalBackendObservations": [
+    "M internal/app/README.txt",
+    " M internal/app/doc.go",
+    " M internal/app/http.go",
+    " M internal/app/schema.go",
+    "?? .oracles/ai-configuration-v1.json",
+    "?? .oracles/ai-configuration-v1.json.sig",
+    "?? internal/app/ai_grants.go",
+    "?? internal/app/ai_policy.go",
+    "?? internal/app/ai_profiles.go",
+    "?? internal/app/ai_resolver.go",
+    "?? internal/app/ai_routes.go",
+    "?? internal/app/ai_schema.go",
+    "?? internal/app/ai_types.go",
+    "?? internal/app/ai_validation.go",
+    "?? tests/ai_configuration/"
+  ],
+  "mutableBackendWorkFrozen": false,
+  "mutableBackendUsedToRedefineAPI": false,
+  "sourceReferencesAreNotLaterProductionPublicationFreezes": true
+}

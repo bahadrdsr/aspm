@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T08:17:54.512Z",
+  "outcome": "passed",
+  "successfulChecks": 36,
+  "command": "node --experimental-strip-types .\\tests\\reviews\\ai-settings-ui-v1\\calibrate.mjs ..\\.artifacts\\ai-settings-ui-v1-author\\calibration-02.json",
+  "result": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\calibration-02.json",
+    "bytes": 3942,
+    "sha256": "d9f06f983eb32af7c8690af2dc312141877e3b5c0e48c454f6c6421b84f073b7"
+  },
+  "log": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\calibration-02.log",
+    "bytes": 84,
+    "sha256": "89e5bb7040ade1a2624feddf502df1694a1bf9cb12e66bca0b90563dd790537d"
+  },
+  "sourceInputs": [
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\calibrate.mjs",
+      "bytes": 8299,
+      "sha256": "1e2a3d99025e59806b2b17790d6d461b6ab0134d212344381aa4da8ddd8d7be4"
+    },
+    {
+      "path": "web\\tests\\ai-settings-ui-data.ts",
+      "bytes": 11596,
+      "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Four declared profile families and distinct configured Foundry fields",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint openai: https://provider.synthetic.invalid/base/",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint anthropic: https://127.0.0.1:9443/exact-base/",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint azure-foundry: https://foundry.synthetic.invalid/operator-base",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: https://local.synthetic.invalid/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://127.0.0.1:8899/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://10.23.45.67:8899/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://172.16.1.2/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://192.168.5.6/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://[::1]:8899/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://[fd12::1]:8899/v1",
+      "passed": true
+    },
+    {
+      "name": "Declared safe endpoint local: http://[::ffff:127.0.0.1]:8899/v1",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 1 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 2 (local)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 3 (local)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 4 (local)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 5 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 6 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 7 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 8 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 9 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 10 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 11 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 12 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 13 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 14 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 15 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 16 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 17 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 18 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 19 (local)",
+      "passed": true
+    },
+    {
+      "name": "Invalid endpoint vector 20 (openai)",
+      "passed": true
+    },
+    {
+      "name": "Combined PATCH validation and explicit sparse credential semantics",
+      "passed": true
+    },
+    {
+      "name": "UTF-8 bounds, required booleans and no catalog capability assumption",
+      "passed": true
+    },
+    {
+      "name": "Native 100+1 pagination, max 500, exact lowercase-hex continuation and real empty pages",
+      "passed": true
+    },
+    {
+      "name": "Exact nonsecret lower-camel metadata and opaque revisions",
+      "passed": true
+    }
+  ],
+  "firstAttempt": {
+    "log": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\calibration-01.log",
+      "bytes": 672,
+      "sha256": "4542409ef91baff643a8f78f8d5782676ebac2ac5bad8e9b561fc105f432caa1"
+    },
+    "status": "Tooling error before checks; no browser run or dependency installation",
+    "correction": "Use installed Node type stripping instead of the unavailable TypeScript runtime transpilation API."
+  },
+  "scope": "Pure synthetic data/protocol-shape calibration only. No browser UI, native API, HTTP, DB, provider, resolver, worker or encryption execution.",
+  "cannotClaim": "These checks do not execute assertions blocked after the missing AI settings entry."
+}

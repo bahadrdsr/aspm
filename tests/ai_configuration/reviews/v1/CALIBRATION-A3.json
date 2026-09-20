@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T16:00:51.003Z",
+  "author": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+  "role": "Original A2 independent author",
+  "scope": "Actual PG/API fixture measurement proof only, NOT product acceptance.",
+  "run": "author-a3-time-calibration-20260920-01",
+  "receipt": {
+    "schemaVersion": 1,
+    "run": "author-a3-time-calibration-20260920-01",
+    "startedAt": "2026-09-20T15:51:36.8386361+00:00",
+    "finishedAt": "2026-09-20T15:52:17.6596403+00:00",
+    "exitCode": 0,
+    "arguments": [
+      "test",
+      "-json",
+      "-tags=integration",
+      "-mod=readonly",
+      "-count=1",
+      "-timeout=60s",
+      "-run=^TestAIConfigurationTimeInstantMeasurementCalibration$",
+      ".\\.cache\\ai-configuration-a3\\author-a3-time-calibration-20260920-01"
+    ],
+    "templateSHA256": "f7bbdb544183dc4b9360a1b05070df67a5cd09b82a873f63739f2d1ad28ab244",
+    "unchangedFixtureCopies": [
+      {
+        "source": "tests\\ai_configuration\\contract_test.go",
+        "copy": ".cache\\ai-configuration-a3\\author-a3-time-calibration-20260920-01\\contract_test.go",
+        "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+      },
+      {
+        "source": "tests\\ai_configuration\\fixtures_test.go",
+        "copy": ".cache\\ai-configuration-a3\\author-a3-time-calibration-20260920-01\\fixtures_test.go",
+        "sha256": "b5d2de47e87e87024c0bad45aeb2d23f556088130deb25551f7ff1eaecc5ff76"
+      },
+      {
+        "source": "tests\\ai_configuration\\production_bindings_test.go",
+        "copy": ".cache\\ai-configuration-a3\\author-a3-time-calibration-20260920-01\\production_bindings_test.go",
+        "sha256": "e6a219defcdc4b6091d474006f308540e6d13da120dbe7caf20f69996afc8358"
+      }
+    ],
+    "workingCopiesRemoved": true,
+    "originalFixtureOrBindingModified": false,
+    "timezoneEnvironmentChanged": false,
+    "privateRuntimeValuesCopied": false,
+    "productAcceptance": false,
+    "scope": "Two actual owned PG/API PATCH observations plus bounded in-memory measurement vectors; no provider/storage HTTP."
+  },
+  "evidence": [
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-calibration-20260920-01.jsonl",
+      "bytes": 9053,
+      "sha256": "badd5f0cd5cae2ff14c38bddf55a8acd593ffd81e60c675cd12a68329c741b08"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-calibration-20260920-01.log",
+      "bytes": 5370,
+      "sha256": "cea47a68f098b45e00eb854ddd288b4ed3c347b34ee62a80785fa29036269191"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-calibration-20260920-01.receipt.json",
+      "bytes": 1748,
+      "sha256": "d143bef19849c3adead60b05bbde52c8015500e1d073ce5a0795373930a6e72b"
+    }
+  ],
+  "sources": [
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\Calibrate-Time-A3.ps1",
+      "bytes": 6381,
+      "sha256": "258af37fca7ebedaa52a8c646f3d4a9fd3c1b058891ce05524ced0a17ac22ff1"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\calibrate-time-A3.go.txt",
+      "bytes": 5969,
+      "sha256": "f7bbdb544183dc4b9360a1b05070df67a5cd09b82a873f63739f2d1ad28ab244"
+    }
+  ],
+  "counts": {
+    "actualPATCHObservations": 2,
+    "oldComparisonFalseNegativesReproduced": 2,
+    "vectors": 35,
+    "passed": 35,
+    "failed": 0,
+    "blocked": 0,
+    "sameInstantAccepted": 4,
+    "differentInstantRejected": 4,
+    "revisionRejected": 5,
+    "otherDTOFieldsRejected": 22
+  },
+  "observation": {
+    "ambient": 0,
+    "applicationStateInjected": false,
+    "http": 0,
+    "jsonZRoundtripUsedAsProof": false,
+    "scope": "Actual owned PG/API fixture measurement proof only, not product acceptance",
+    "stages": [
+      {
+        "PatchField": "deployment",
+        "Actual": "2026-09-17T14:00:00+02:00",
+        "Expected": "2026-09-17T12:00:00Z",
+        "ActualLocation": "Local",
+        "ExpectedLocation": "UTC",
+        "ActualOffsetSeconds": 7200,
+        "ExpectedOffsetSeconds": 0,
+        "EqualInstant": true,
+        "OldDeepEqual": false,
+        "RevisionChanged": true,
+        "DifferentFields": [
+          "UpdatedAt"
+        ],
+        "Vectors": [
+          {
+            "Name": "native PG/API offset: same instant",
+            "Expected": true,
+            "Matched": true,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "same observed instant represented as UTC",
+            "Expected": true,
+            "Matched": true,
+            "UpdatedAt": "2026-09-17T12:00:00Z"
+          },
+          {
+            "Name": "different instant 1ns",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00.000000001+02:00"
+          },
+          {
+            "Name": "different instant -1ns",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T13:59:59.999999999+02:00"
+          },
+          {
+            "Name": "empty or unchanged revision ",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "empty or unchanged revision 1",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field ID differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field WorkspaceID differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Name differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Family differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Endpoint differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Model differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Deployment differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Enabled differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field StructuredOutput differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field CredentialConfigured differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field CreatedAt differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          }
+        ]
+      },
+      {
+        "PatchField": "model",
+        "Actual": "2026-09-17T14:00:00+02:00",
+        "Expected": "2026-09-17T12:00:00Z",
+        "ActualLocation": "Local",
+        "ExpectedLocation": "UTC",
+        "ActualOffsetSeconds": 7200,
+        "ExpectedOffsetSeconds": 0,
+        "EqualInstant": true,
+        "OldDeepEqual": false,
+        "RevisionChanged": true,
+        "DifferentFields": [
+          "UpdatedAt"
+        ],
+        "Vectors": [
+          {
+            "Name": "native PG/API offset: same instant",
+            "Expected": true,
+            "Matched": true,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "same observed instant represented as UTC",
+            "Expected": true,
+            "Matched": true,
+            "UpdatedAt": "2026-09-17T12:00:00Z"
+          },
+          {
+            "Name": "different instant 1ns",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00.000000001+02:00"
+          },
+          {
+            "Name": "different instant -1ns",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T13:59:59.999999999+02:00"
+          },
+          {
+            "Name": "empty or unchanged revision ",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "empty or unchanged revision 2",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "reused original revision",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field ID differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field WorkspaceID differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Name differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Family differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Endpoint differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Model differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Deployment differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field Enabled differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field StructuredOutput differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field CredentialConfigured differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          },
+          {
+            "Name": "other DTO field CreatedAt differs",
+            "Expected": false,
+            "Matched": false,
+            "UpdatedAt": "2026-09-17T14:00:00+02:00"
+          }
+        ]
+      }
+    ],
+    "tcp": 0,
+    "timezoneEnvironmentChanged": false
+  },
+  "method": "Existing real owned PG/core API/session fixture and trusted binding copied byte-for-byte into a new calibration-only cache package, then removed. Actual API timestamps, not a JSON-Z-only experiment or forced timezone, supply the comparison inputs. Vector changes are private in-memory DTO copies, not application/DB mutation.",
+  "referenceOnly": [
+    {
+      "url": "https://pkg.go.dev/time#Time.Equal",
+      "subject": "Time.Equal instant comparison"
+    },
+    {
+      "url": "https://pkg.go.dev/reflect#DeepEqual",
+      "subject": "DeepEqual struct-field comparison"
+    }
+  ],
+  "unchangedApplicationTimezone": true,
+  "originalFixturesModified": false
+}

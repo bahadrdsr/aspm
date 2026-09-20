@@ -1,0 +1,84 @@
+//go:build integration
+
+package ai_configuration
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions(t *testing.T) {
+	h := newHarness(t, true)
+	t.Cleanup(func() {
+		t.Logf("AI7 no-provider/storage HTTP counters: http=%d ambient=%d tcp=%d", h.httpCalls.Load(), h.ambientDials.Load(), h.tcpCalls.Load())
+		h.networkNone()
+	})
+	const equalName = "synthetic-foundry-equal-identifier"
+	const otherName = "synthetic-foundry-other-identifier"
+	key := secret(t)
+	h.remember(key)
+	endpoint := h.tlsTripwire.URL + "/openai/v1"
+	input := map[string]any{
+		"name": "Synthetic independent Foundry names", "family": "azure-foundry", "endpoint": endpoint,
+		"model": equalName, "deployment": equalName, "enabled": true, "structuredOutput": true, "apiKey": key,
+	}
+	t.Log("AI7 reached: explicit equal-name Foundry POST with real admin session")
+	created := h.json(h.admin, "POST", profilesPath, input, 201).Profile
+	check(t, created.ID != "" && created.WorkspaceID == h.admin.Workspace && created.Family == "azure-foundry" &&
+		created.Model == equalName && created.Deployment == equalName && created.Endpoint == endpoint &&
+		created.Revision != "" && created.Enabled && created.StructuredOutput && created.CredentialConfigured,
+		"explicit equal model/deployment values must remain independent persisted Foundry metadata")
+	h.credential("ai_profiles", created.ID, "aspm/ai-credential/v1", key)
+	h.reopen()
+	check(t, reflect.DeepEqual(h.get(h.admin, created.ID), created), "equal-name Foundry metadata did not survive actual core reopen")
+	r := h.resolver()
+	pol := h.mode(h.admin, "approved-hosted")
+	check(t, pol.Mode == "approved-hosted" && pol.WorkspaceID == h.admin.Workspace && pol.Revision != "", "Foundry resolution requires explicit current admin policy")
+	assertDenied(t, r, h.ctx, lookupFor(h.admin, created, nil))
+	firstGrant := h.authorize(h.admin, created, pol)
+	beforeResolve := h.stateSnapshot()
+	assertResolved(t, r, h.ctx, h.admin, created, pol, &firstGrant, key)
+	check(t, reflect.DeepEqual(beforeResolve, h.stateSnapshot()), "equal-name configuration resolution mutated trusted state")
+	t.Log("AI7 completed: equal POST persistence, authenticated credential and exact grant-bound resolution")
+
+	distinct := h.json(h.admin, "PATCH", profilesPath+"/"+created.ID, map[string]any{"deployment": otherName}, 200).Profile
+	wantDistinct := created
+	wantDistinct.Deployment, wantDistinct.Revision, wantDistinct.UpdatedAt = otherName, distinct.Revision, h.now()
+	check(t, distinct.Revision != "" && distinct.Revision != created.Revision && reflect.DeepEqual(distinct, wantDistinct),
+		"deployment-only sparse PATCH must retain model and omitted fields while advancing revision")
+	check(t, reflect.DeepEqual(h.get(h.admin, created.ID), distinct), "distinct Foundry fields were not persisted")
+	h.credential("ai_profiles", distinct.ID, "aspm/ai-credential/v1", key)
+	assertDenied(t, r, h.ctx, lookupFor(h.admin, distinct, &firstGrant))
+	distinctGrant := h.authorize(h.admin, distinct, pol)
+	assertResolved(t, r, h.ctx, h.admin, distinct, pol, &distinctGrant, key)
+	t.Log("AI7 completed: equal-to-distinct sparse deployment PATCH and stale-grant denial")
+
+	equalAgain := h.json(h.admin, "PATCH", profilesPath+"/"+created.ID, map[string]any{"model": otherName}, 200).Profile
+	wantEqual := distinct
+	wantEqual.Model, wantEqual.Revision, wantEqual.UpdatedAt = otherName, equalAgain.Revision, h.now()
+	check(t, equalAgain.Revision != "" && equalAgain.Revision != distinct.Revision && equalAgain.Revision != created.Revision &&
+		reflect.DeepEqual(equalAgain, wantEqual),
+		"model-only sparse PATCH may equal retained deployment without aliasing fields or reusing a revision")
+	check(t, reflect.DeepEqual(h.get(h.admin, created.ID), equalAgain), "new equal Foundry fields were not persisted")
+	h.credential("ai_profiles", equalAgain.ID, "aspm/ai-credential/v1", key)
+	assertDenied(t, r, h.ctx, lookupFor(h.admin, equalAgain, &firstGrant))
+	assertDenied(t, r, h.ctx, lookupFor(h.admin, equalAgain, &distinctGrant))
+	currentGrant := h.authorize(h.admin, equalAgain, pol)
+	assertResolved(t, r, h.ctx, h.admin, equalAgain, pol, &currentGrant, key)
+	t.Log("AI7 completed: distinct-to-equal sparse model PATCH and exact renewed grant-bound resolution")
+
+	beforeRejected := h.stateSnapshot()
+	for _, omitted := range []string{"model", "deployment"} {
+		body := map[string]any{}
+		for field, value := range input {
+			if field != omitted {
+				body[field] = value
+			}
+		}
+		body["name"] = "Synthetic explicitly omitted " + omitted
+		h.json(h.admin, "POST", profilesPath, body, 400)
+	}
+	check(t, reflect.DeepEqual(beforeRejected, h.stateSnapshot()), "missing Foundry model/deployment must not default or mutate stored configuration")
+	t.Log("AI7 completed: omitted model and omitted deployment rejected without defaulting")
+	h.networkNone()
+}

@@ -1,0 +1,110 @@
+SOURCE COLLECTION A3 - INDEPENDENT SCHEMA-V7 COMPATIBILITY HANDOFF
+================================================================
+
+Status: independently qualified, unsigned, awaiting parent verification and
+new-current seal. This is NOT a production fix or an authority capture.
+This successor test author is NOT the original source-collection/A2 author.
+
+Exact amendment
+---------------
+Only tests\source_collection\upgrade_test.go changed among existing files:
+  - current constructor ledger: exact [1,2,3,4,5,6] -> [1,2,3,4,5,6,7];
+  - repeat-open ledger: the same exact extension to require v7;
+  - the two directly associated diagnostics now name the current v7 obligation.
+Reversing those four changed lines reconstructs the archived prior file
+byte-for-byte. No generic >= comparison, future-version tolerance, skipped
+assertion, timeout, binding, fixture, module or runtime change was introduced.
+
+The v5 historical fixture remains byte-identical, SHA-256:
+  fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77
+Its exact five published raw SQL values, source hashes, Git blobs, ledger
+definition and all 18 legacy relation names were independently reverified.
+Its genuine starting ledger is still exactly [1,2,3,4,5].
+Archive only: history\a3\upgrade_test.go.before.txt.
+
+All prior checks remain: the four actual v6 source relations, all legacy
+column/type/null/default/identity/generated definitions, constraints and
+indexes, actual source CRUD/enqueue, real owned native three-record collection,
+all evidence reads, one linked asset, strict current ledger and unchanged
+legacy definitions after repeat core/worker opens. A2 test/observation names
+and opaque worker labels intentionally remain historical identifiers.
+
+Independent actual results
+--------------------------
+The original frozen full Source runner was used for a fresh pre-amendment run:
+  independent-a3-v7-before-20260918-01
+Eight top-level cases passed. Both upgrade entrypoints failed at the stale
+line-178 equality; the enclosing upgrade case failed. Both observations showed
+successful current construction, genuine v5 starting state, 25 relations and
+the correct exact ledger [1,2,3,4,5,6,7]. Both tails were blocked then.
+No missing migration was observed. The parent evidence was also checked and
+remains referenced, not rewritten or substituted for this independent run.
+
+After the four-line amendment:
+  independent-a3-v7-source-full-20260918-01
+All NINE Source top-level cases passed, with 15 named pass events and no
+failures/skips. This includes the existing owned-I/O preflight, seven fresh
+source narratives and the historical upgrade narrative with both entrypoints.
+BOTH new observations have PostUpgradeAPITailExecuted=true, 25 relations,
+starting version 5 and exact current ledger [1,2,3,4,5,6,7].
+The actual CRUD, queue, native three-record/evidence, single-asset and durable
+reopen tails ran and passed. This is not calibration-only acceptance.
+
+  independent-a3-v7-ai-full-20260918-01
+All SIX AI configuration top-level cases passed, with eight named pass events
+and no failures/skips. Actual published v6 -> v7 upgrade and repeated-open
+configuration/resolver persistence passed using the unchanged full production
+binding. These are backend AI configuration narratives, not the six UI cases.
+
+Both runners stayed in Contract mode, -mod=readonly, -count=1, original
+timeouts and cached offline Go toolchain. They ran sequentially against the
+original restored private fixtures, without changing PG connection limits,
+roles, bucket policies, services or runtime configuration.
+
+Scope and guard interpretation
+-----------------------------
+The 12 held backend paths still match the handoff:
+  .cache\ai-configuration-coder\HANDOFF.json
+  SHA-256 01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c
+All other production Go inputs and both frozen runners remain unchanged.
+Private RUNTIME/runtime.json is unchanged; only its fingerprint is retained.
+Original owned schema/object cleanup assertions passed in every complete run.
+No runtime credential values were copied into this packet or its public logs.
+
+Of the existing 138 signed AI controls, 137 remain byte-identical and exactly
+one has the explicitly authorized upgrade-test delta. All 770 signed AI/UI
+controls remain identical, including the previous 93 browser cases and the
+new six AI UI cases. No UI tests were edited or rerun for this A3 qualification.
+Concurrent separate UI production implementation is outside this source hold.
+
+All old packets, manifests and signature bytes remain unchanged. Their
+historical signatures are NOT falsely claimed to match the amended current
+upgrade test. The parent must verify this exact compatibility delta and issue
+a new current seal. No signing key or authority-capture tool was used here.
+
+Source acceptance performs real owned PG/local-S3/owned-TLS native-source I/O;
+it is NOT inference and NOT zero-network evidence. No live vendor/model calls
+were authorized. AI configuration retains its separate no-provider/storage-
+HTTP tripwires. No provider adapter, dependency, production, UI, AI test,
+binding, fixture, agent or commit change was made by this author.
+
+Packet and reproduction
+-----------------------
+PACKET-A3.json binds the amended test and NEW A3 files only. Its SHA-256 is in
+PACKET-A3.sha256, which is an unsigned checksum, not an oracle signature.
+ORIGIN-A3.json, AMENDMENT-A3.txt, RED-A3.json, VALIDATION-A3.json and
+GUARDS-A3.json distinguish genuine historical baseline, stale-oracle evidence,
+intentional compatibility change, actual passing tails and unchanged inputs.
+Old history is retained by hash references, not recursive archive copies.
+
+Outputs:
+  .artifacts\source-collection-a3-schema-v7
+  .artifacts\source-collection-v1\independent-a3-v7-*.*
+  .artifacts\ai-configuration-v1\independent-a3-v7-ai-full-20260918-01.*
+
+From C:\bahadr\serious\aspm, use the same private runtime and fresh labels:
+  .\tests\source_collection\Test-SourceCollection.ps1 -RuntimeConfig '<private RUNTIME\runtime.json>' -Mode Contract -OutputName parent-source-a3-v7-01
+  .\tests\ai_configuration\Test-AIConfiguration.ps1 -RuntimeConfig '<private RUNTIME\runtime.json>' -Mode Contract -OutputName parent-ai-a3-v7-01
+
+Stop here for parent verification/new-current seal. Do not rewrite old
+signatures, capture authority, launch agents, change held code or commit.

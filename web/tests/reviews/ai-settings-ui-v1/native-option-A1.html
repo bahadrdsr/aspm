@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'">
+<title>Isolated A1 native option measurement calibration</title>
+<body>
+  <label>Wrapped Profile
+    <select>
+      <option value="eligible-a" selected>Eligible alpha</option>
+      <option value="disabled" disabled>Disabled profile</option>
+      <optgroup label="Disabled group" disabled>
+        <option value="inherited">Group disabled profile</option>
+      </optgroup>
+      <option value="eligible-b">Eligible beta</option>
+      <option value="enabled">Enabled ineligible profile</option>
+    </select>
+  </label>
+  <label for="unwrapped">Unwrapped Profile</label>
+  <select id="unwrapped">
+    <option value="control" selected>Unwrapped eligible</option>
+    <option value="disabled" disabled>Unwrapped disabled</option>
+  </select>
+  <label>Aria Profile
+    <select>
+      <option value="control" selected>Aria control eligible</option>
+      <option value="aria-only" aria-disabled="true">Aria-only profile</option>
+    </select>
+  </label>
+  <button role="option" disabled>Non-option disabled impostor</button>
+  <label>Ambiguous Profile
+    <select>
+      <option value="control" selected>Ambiguous control eligible</option>
+      <option value="duplicate-a" disabled>Duplicate identity</option>
+      <option value="duplicate-b" disabled>Duplicate identity</option>
+    </select>
+  </label>
+</body>
+</html>

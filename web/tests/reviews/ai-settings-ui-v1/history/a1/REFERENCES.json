@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T14:29:22.919Z",
+  "archive": {
+    "path": "web\\tests\\reviews\\ai-settings-ui-v1\\history\\a1\\ai-settings-ui.spec.ts.v1",
+    "bytes": 45102,
+    "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+  },
+  "originalPath": "web\\tests\\ai-settings-ui.spec.ts",
+  "references": [
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\PACKET.json",
+      "bytes": 4434,
+      "sha256": "e69dafbe432ce783ca3555f623c5ee9bd0aa8e05ed46bf079e71512b8adb6b62"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "80366c1547d16aa1ff1eaea156148320fed74af3230861d9a29cb7c60003678a"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+      "bytes": 12884,
+      "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\RED.json",
+      "bytes": 109762,
+      "sha256": "46c1c720aa75b60f0f689a7a4f763e763871a933d992d7cf91fe53337cdba2fe"
+    },
+    {
+      "path": ".oracles\\ai-settings-ui-v1.json",
+      "bytes": 155283,
+      "sha256": "783c48a0f7e99038c0797a10917815734ff1fa2b1fc75d7727211ce764f05e16"
+    },
+    {
+      "path": ".oracles\\ai-settings-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "f1daae764d02f02733608b0cfef04bd737278ae712bba456dc05996f54c72269"
+    }
+  ],
+  "note": "Only the actual original spec is archived. Original V1 packet, RED and detached signatures remain in place; no recursive history copies."
+}

@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-configuration-a2-foundry-name-equality",
+  "phase": "frozen-independent-current-equal-name-post-red",
+  "frozenAt": "2026-09-20T15:30:45.564Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned new independent regression inventory only. Parent verifies and seals before its separately authorized production comparison/doc correction. No old oracle or signature is replaced.",
+  "author": {
+    "id": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7",
+    "role": "Successor independent backend regression author only",
+    "originalAI6Author": false,
+    "backendCoder": false,
+    "uiCoder": false,
+    "earlierWork": "Authored the independent UI A1 native-option measurement correction, not production UI code."
+  },
+  "changeScope": {
+    "newIntegrationFiles": 1,
+    "newTopLevelCases": 1,
+    "existingFilesEdited": 0,
+    "newTest": "tests\\ai_configuration\\foundry_names_test.go",
+    "testName": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+    "newReviewDirectory": "tests\\ai_configuration\\reviews\\v1",
+    "originalContractNotRewritten": true,
+    "fixturesBindingsRunnerDependenciesOraclesUnchanged": true,
+    "productionSchemaProviderUIUnchanged": true
+  },
+  "payloadFileCount": 7,
+  "ownedFileCount": 9,
+  "ownedFiles": [
+    "tests\\ai_configuration\\foundry_names_test.go",
+    "tests\\ai_configuration\\reviews\\v1\\BEFORE-A2.json",
+    "tests\\ai_configuration\\reviews\\v1\\CONTRACT-A2.txt",
+    "tests\\ai_configuration\\reviews\\v1\\GUARDS-A2.json",
+    "tests\\ai_configuration\\reviews\\v1\\HANDOFF-A2.txt",
+    "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.json",
+    "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.sha256",
+    "tests\\ai_configuration\\reviews\\v1\\PROVENANCE-A2.json",
+    "tests\\ai_configuration\\reviews\\v1\\RED-A2.json"
+  ],
+  "files": [
+    {
+      "path": "tests\\ai_configuration\\foundry_names_test.go",
+      "bytes": 4889,
+      "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\BEFORE-A2.json",
+      "bytes": 207708,
+      "sha256": "811057b6c0fb85072eaf3a09f66a79e0264fc8ae807f16395fe56bd370be73ea"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\CONTRACT-A2.txt",
+      "bytes": 3359,
+      "sha256": "101a1a16f35f38a95d0cc1b14aaa0dec03db5778cad58bc661b1a810b4ab67f6"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\GUARDS-A2.json",
+      "bytes": 19713,
+      "sha256": "2374b0bd29b6eba0749ce8f0d09413605c2b218d2bc558d19b093e6c58e00bbb"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\HANDOFF-A2.txt",
+      "bytes": 5741,
+      "sha256": "6fa2c253ef93839874cdc5c00406497d47fc62a770ea701d7cab2907beaee0fa"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PROVENANCE-A2.json",
+      "bytes": 5302,
+      "sha256": "be617dad7e6b29c9e3161d7cfd9256fc8c956613d296349c8a108099daf9a85d"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A2.json",
+      "bytes": 8338,
+      "sha256": "9798b6c9344449a798f7ad2096833bcac8426ae3473a6f8d3f66979d3e9b9260"
+    }
+  ],
+  "previousAuthority": {
+    "originalContract": {
+      "path": "tests\\ai_configuration\\CONTRACT.txt",
+      "bytes": 13625,
+      "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+    },
+    "originalPacket": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET.json",
+      "bytes": 5794,
+      "sha256": "9b46f96ac2c506770de53715ab7a6db3bc85dfcd6d848933838fd3fda19dbca4"
+    },
+    "originalPacketChecksum": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "0a04f697f9a6f4243133425c039ea15a633df58b32406a931041b4d2f58791b5"
+    },
+    "originalRED": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED.json",
+      "bytes": 5454,
+      "sha256": "aa8d9a214d30f9f4ba673ac0b5e8b8768ebac918d495113134c063c46b87b6cd"
+    },
+    "backendA1Manifest": {
+      "path": ".oracles\\ai-configuration-a1.json",
+      "bytes": 28645,
+      "sha256": "2946de37a65e5333c3ab39ef500f5517a3c5dfea76d7333d332270a1ec2708b7"
+    },
+    "backendA1Signature": {
+      "path": ".oracles\\ai-configuration-a1.json.sig",
+      "bytes": 89,
+      "sha256": "fdc67353b8ac1a99107c0f77a0276a87c088d81c8d9e956c922d30566902565d"
+    },
+    "priorBackendCoderHandoff": {
+      "path": ".cache\\ai-configuration-coder\\HANDOFF.json",
+      "bytes": 19027,
+      "sha256": "01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c"
+    },
+    "priorAcceptanceDoesNotCoverEqualNames": true
+  },
+  "semantics": {
+    "independentFieldsNotInequality": true,
+    "equalExplicitNonblankStringsAccepted": true,
+    "modelAndDeploymentBothRequired": true,
+    "noInferenceOrDefaultsForOmittedFields": true,
+    "nonFoundryNonemptyDeploymentStillRejected": true,
+    "publicPrimaryProvenance": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PROVENANCE-A2.json",
+      "bytes": 5302,
+      "sha256": "be617dad7e6b29c9e3161d7cfd9256fc8c956613d296349c8a108099daf9a85d"
+    },
+    "clarification": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\CONTRACT-A2.txt",
+      "bytes": 3359,
+      "sha256": "101a1a16f35f38a95d0cc1b14aaa0dec03db5778cad58bc661b1a810b4ab67f6"
+    }
+  },
+  "actualRED": {
+    "run": "successor-a2-foundry-red-20260920-01",
+    "receiptExitCode": 1,
+    "counts": {
+      "topLevelSelected": 7,
+      "topLevelPassed": 6,
+      "topLevelFailed": 1,
+      "topLevelSkipped": 0,
+      "topLevelBlockedBeforeEntry": 0,
+      "existingNestedPassed": 2,
+      "existingNestedFailed": 0,
+      "repeatedRegressions": 0,
+      "newRegressionPassed": 0,
+      "newRegressionFailed": 1,
+      "blockedNewTailSections": 4
+    },
+    "failure": {
+      "file": "tests\\ai_configuration\\foundry_names_test.go",
+      "line": 26,
+      "method": "POST",
+      "route": "/api/v1/ai/profiles",
+      "expectedStatus": 201,
+      "actualStatus": 400,
+      "message": "actual POST /api/v1/ai/profiles returned 400, want 201; private response withheld"
+    },
+    "networkCounters": {
+      "http": 0,
+      "ambient": 0,
+      "tcp": 0
+    },
+    "compiledWithFullProductionBinding": true,
+    "evidence": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A2.json",
+      "bytes": 8338,
+      "sha256": "9798b6c9344449a798f7ad2096833bcac8426ae3473a6f8d3f66979d3e9b9260"
+    },
+    "rawEvidence": [
+      {
+        "path": ".artifacts\\ai-configuration-v1\\successor-a2-foundry-red-20260920-01.jsonl",
+        "bytes": 12216,
+        "sha256": "98f321e3e8938e1a12396f875942ab0779d3b4dbe94ba85467bc7a1035600427"
+      },
+      {
+        "path": ".artifacts\\ai-configuration-v1\\successor-a2-foundry-red-20260920-01.log",
+        "bytes": 2307,
+        "sha256": "fb570df01d9b13c7fce662968037d9101a5f11543b60d0a4f9d724a2ae58a5a1"
+      },
+      {
+        "path": ".artifacts\\ai-configuration-v1\\successor-a2-foundry-red-20260920-01.receipt.json",
+        "bytes": 840,
+        "sha256": "2f066896e167084a6b0597e7360cf5f02b8fa74cc1ed869c68c91c113b727f62"
+      },
+      {
+        "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-7f7a4a366d58d7a7f43b212c.json",
+        "bytes": 765,
+        "sha256": "ed7b699fc6078c03c921d1ce9e5a082cbc75c550302f74fb56c2359442fec183"
+      }
+    ]
+  },
+  "blockedTails": [
+    {
+      "section": "Equal-name metadata persistence/reopen, AES-GCM/AAD and exact grant-bound resolver/private key",
+      "status": "BLOCKED/NOT RUN after equality POST"
+    },
+    {
+      "section": "Equal-to-distinct deployment-only PATCH, meaningful revision and old grant denial",
+      "status": "BLOCKED/NOT RUN after equality POST"
+    },
+    {
+      "section": "Distinct-to-equal model-only PATCH, meaningful revision, prior grant denial and fresh exact resolution",
+      "status": "BLOCKED/NOT RUN after equality POST"
+    },
+    {
+      "section": "Missing model/deployment POSTs reject without inferred defaults or DB mutation",
+      "status": "BLOCKED/NOT RUN after equality POST"
+    }
+  ],
+  "preservedControls": {
+    "backend150": 150,
+    "ui786": 786,
+    "heldBackendProductionPaths": 12,
+    "heldUIProductionPaths": 13,
+    "sourceCollectionControlsIncludingUpgradeA3": 48,
+    "providerSourceFiles": 2,
+    "oldAI6AndSource9BytesUnchanged": true,
+    "latestFull99ArtifactUnchanged": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01\\results.json",
+      "bytes": 26012971,
+      "sha256": "a9b159385cd3ede762385eabd4375419b32669d69eda20ecbd345cefe1da3e33"
+    },
+    "guards": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\GUARDS-A2.json",
+      "bytes": 19713,
+      "sha256": "2374b0bd29b6eba0749ce8f0d09413605c2b218d2bc558d19b093e6c58e00bbb"
+    }
+  },
+  "productionStillUnfixed": {
+    "path": "internal\\app\\ai_validation.go",
+    "line": 31,
+    "condition": "profile.Deployment == profile.Model",
+    "source": {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3278,
+      "sha256": "fe69d54be17c9930d90c44b2ca8aca9d8c3914b0dad3b5d3d2d9615f64ab3141"
+    },
+    "authorEditedIt": false
+  },
+  "prohibitions": {
+    "privateAuthorityAccess": false,
+    "oracleCapturedOrChanged": false,
+    "oldContractRewrite": false,
+    "oldTestsFixturesBindingsChanged": false,
+    "productionSchemaProviderUIChanged": false,
+    "dependencyInstallOrUpgrade": false,
+    "commits": 0,
+    "agentsLaunched": 0,
+    "realProviderAccountsOrRequests": false,
+    "storageHTTP": false,
+    "privateRuntimeValuesCopied": false,
+    "userCodeOrCredentialsSharedWithInternet": false,
+    "inferenceOrAssessmentExecution": false
+  },
+  "packetHashPolicy": "Raw SHA256 of all seven new payloads. PACKET-A2.sha256 hashes this packet; the checksum is non-recursively hashed publication metadata. RED-A2.json hashes the four fresh runner/upgrade evidence files. No prior source/history copy is made.",
+  "parentNext": [
+    "Verify the exact additive test, clarification/provenance, actual RED and preserved byte guards.",
+    "Seal the new A2 controls without replacing old manifests/signatures.",
+    "Parent performs only the separately authorized validator comparison removal and false production-doc wording correction.",
+    "Rerun seven AI cases and affected source/provider-type compatibility; have the same independent reviewer verify the fix."
+  ],
+  "stopStatus": "Author stopped. No green claim for blocked new tails, new provider behavior, publication readiness or independent acceptance."
+}

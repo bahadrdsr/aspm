@@ -1,0 +1,99 @@
+AI CONFIGURATION A3 - ORIGINAL A2 AUTHOR HANDOFF
+===============================================
+
+Status: LOCAL VALIDATION GREEN; PARENT VERIFICATION/NEW CURRENT SEAL PENDING.
+Date: September 20, 2026.
+Author: successor-independent-ai-configuration-foundry-names-a2-20260920
+Role: original independent A2 author, not original AI6 author or production coder.
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+
+Exact minimal delta
+--------------------
+tests\ai_configuration\foundry_names_test.go changes FOUR lines in TWO existing
+PATCH comparisons. Each expected UpdatedAt uses the actual timestamp's
+representation, while a separate UpdatedAt.Equal(h.now()) predicate requires
+the exact expected instant. The full reflect.DeepEqual and every existing
+nonempty/new/non-reused revision check remain. All other test bytes are identical.
+No truncation, rounding, greater-than check, tolerance, copied full actual DTO,
+default success or production timezone-format change is used.
+
+Before A2 test SHA256:
+e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857
+After A3 test SHA256:
+3d9dc391c6f90ae426ee22d9153a29409b3492fbcfc513d6b82079c6276dc9cd
+
+Independent evidence
+---------------------
+author-a3-time-red-20260920-01:
+  Original A2 on current held production: six old cases passed; new case failed
+  at line 47. Equal POST/reopen/key/grant/resolve passed. The deployment PATCH
+  returned 200, then its representation-sensitive comparison failed.
+  Later test-body assertions were BLOCKED/NOT RUN in this RED only.
+
+author-a3-time-calibration-20260920-01:
+  Independently reproduced both PATCH observations using the real owned PG/API.
+  Actual 2026-09-17T14:00:00+02:00 / Local and expected
+  2026-09-17T12:00:00Z / UTC are the same instant.
+  Only UpdatedAt differed; old DeepEqual=false; Equal=true; revision changed.
+  These are real API observations at the original fixture's fixed clock,
+  not a JSON-Z-only diagnostic or forced timezone.
+  All 35 measurement vectors passed: 4 same-instant accepts, 4 +/-1 ns rejects,
+  5 bad revision rejects and 22 other-field rejects.
+  Measurement proof ONLY, not product acceptance.
+  HTTP/ambient/TCP tripwires were zero. Unchanged fixture/binding working copies
+  were byte-verified, used only in a separate cache package, then removed.
+
+Actual acceptance/compatibility
+--------------------------------
+author-a3-time-green-20260920-01:
+  AI7: 7/7 top-level cases passed, 2 existing nested cases passed, exit 0.
+  ALL four new Foundry sections completed, including both sparse PATCHes,
+  stale-grant denial, renewed exact resolution/private key and omitted-input
+  rejection without defaulting. Remaining blocked Foundry sections: 0.
+  New-case HTTP/ambient/TCP counters: 0/0/0.
+
+author-a3-schema-source9-20260920-01:
+  Source9: 9/9 top-level cases passed, 6 existing nested cases passed, exit 0.
+  Includes the original owned-I/O preflight and published-v5 current-core/
+  current-worker upgrade probes. Its local S3 and owned TLS GitHub fixture
+  traffic is intentional, not a live provider call or a zero-fixture-HTTP claim.
+  Together with AI7's published-v6 probe, this qualifies the parent-fixed
+  unpublished schemaV7 condition through the existing upgrade paths.
+  No already-deployed old schemaV7 constraint migration is claimed.
+
+All selected cases ran with count=1 and no skips. Original acceptance runners,
+timeouts, API budgets, fixture/binding controls and dependency settings are
+unchanged. No provider/inference compatibility beyond these scopes is claimed.
+
+Preservation and packet
+------------------------
+All 12 held backend source files are unchanged by this author. The parent had
+already fixed Go validation, schemaV7 and internal/app/README before this task;
+those three are hash-held, and the other nine still match the A2 baseline.
+All 13 UI source paths, 786 UI controls, provider sources, Source9/upgrade A3
+controls and previous full99 evidence are unchanged. UI tests were not rerun.
+Of the 161 sealed A2 controls, exactly one has its authorized new test hash;
+the other 160 are unchanged. Old manifests/signatures are NOT resigned.
+
+history\a3 contains only the actual A2 test and REFERENCES.json. No recursive
+history copy was made. Original A2 packets, RED and signatures remain in place.
+AMENDMENT-A3.txt explains the exact-instant rationale; CALIBRATION-A3.json,
+RED-A3.json, RESULTS-A3.json and GUARDS-A3.json bind observations and outcomes.
+All 16 raw evidence files are hashed. PACKET-A3.json hashes every changed/new
+payload; PACKET-A3.sha256 hashes the unsigned packet.
+
+Replay with fresh labels
+------------------------
+From C:\bahadr\serious\aspm, use the same private restored owned runtime:
+  .\tests\ai_configuration\reviews\v1\Calibrate-Time-A3.ps1 -RuntimeConfig '<private-runtime.json>' -OutputName '<fresh-hyphenated-label>'
+  .\tests\ai_configuration\Test-AIConfiguration.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+  .\tests\source_collection\Test-SourceCollection.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+The calibration helper is new evidence tooling only; neither acceptance runner
+was changed. Do not overwrite recorded labels. Private runtime values remain
+in the existing private runtime and are redacted by the runners.
+
+No production/schema/provider/UI fixes, old AI6/Source9/fixture/binding changes,
+dependency installs, agents, commits, private authority access or oracle writes
+were performed. Parent must verify this narrow measurement correction, create
+a new current seal, then repeat actual AI7 and complete its independent review.
+This author stops here without self-acceptance or publication approval.

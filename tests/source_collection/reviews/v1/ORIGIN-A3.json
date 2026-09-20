@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T09:18:59.141Z",
+  "role": "independent successor test author, not original A2 author",
+  "publishedV5Commit": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+  "fixture": {
+    "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+    "bytes": 14328,
+    "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+  },
+  "exactPublishedFragments": [
+    {
+      "version": 1,
+      "sourcePath": "internal\\app\\schema.go",
+      "gitBlob": "65ee8d75d07beb005ef5ff9a15b9748c4158c15f",
+      "sourceSHA256": "c1b74f3952ca837c0f56754b2ac715fc682f459d5060613a37542320faf4eab7",
+      "SQLSHA256": "9f3f2eabe541f45edf54ae28417acd2d7cdf700062aa2972c4a620d89eb3cf67",
+      "SQLBytes": 5954,
+      "exactPublishedValue": true
+    },
+    {
+      "version": 2,
+      "sourcePath": "internal\\app\\reports_schema.go",
+      "gitBlob": "b640d9eaef82635a5a899a946b3475e36cf922e7",
+      "sourceSHA256": "5f665312ddd3306630fc047d828fd8d1fc655050809439d0338dabb7a822a4ef",
+      "SQLSHA256": "32a8c05b67e2de5c293b269258b2992c81306d2a537523c643493b05afa3a7fa",
+      "SQLBytes": 1645,
+      "exactPublishedValue": true
+    },
+    {
+      "version": 3,
+      "sourcePath": "internal\\app\\oidc_schema.go",
+      "gitBlob": "796448a2e73e69ee48e0e37a9525d21d174a120a",
+      "sourceSHA256": "df3fa9da88d362f93ce5f7e6f18a8a9f0e3a9ae096de83568aa39b86eb446428",
+      "SQLSHA256": "143f4a75c018a63dc52e5fc410bf84be4305647b2688b7049e841ccd4e924765",
+      "SQLBytes": 1261,
+      "exactPublishedValue": true
+    },
+    {
+      "version": 4,
+      "sourcePath": "internal\\app\\import_security_schema.go",
+      "gitBlob": "7811141ea19e0b1a64afe6e099d56eea01ce36ac",
+      "sourceSHA256": "e6e98356057ea34bdf86f702b78a39dbbf33a506b11e4c04c56ddfa3aea09d54",
+      "SQLSHA256": "6ba9e46b578ced3cbd8b17323ea317f3c21fcd65dd89b1041f1b6db1ee66db2c",
+      "SQLBytes": 303,
+      "exactPublishedValue": true
+    },
+    {
+      "version": 5,
+      "sourcePath": "internal\\app\\remediation_schema.go",
+      "gitBlob": "7a4d6b31350d0efaaf9ff49e3ee3f055b7af5beb",
+      "sourceSHA256": "96440287edc6c7f77432703abdb6052fdc010603bb999bb52c1200fc27b8f58e",
+      "SQLSHA256": "c06be76a70eebd29d07df28cabb909c987fe51138d24fb3de4e7407655d84421",
+      "SQLBytes": 2171,
+      "exactPublishedValue": true
+    }
+  ],
+  "legacyRelations": [
+    "assets",
+    "auth_throttle",
+    "bootstrap",
+    "coverage",
+    "finding_deliveries",
+    "findings",
+    "imports",
+    "integration_connections",
+    "memberships",
+    "notes",
+    "observations",
+    "oidc_flows",
+    "oidc_identities",
+    "report_snapshots",
+    "schema_versions",
+    "sessions",
+    "users",
+    "workspaces"
+  ],
+  "ledgerDDLMatchesPublishedDefinition": true,
+  "baselineLedgerStillExact": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "businessRowsSeeded": false,
+  "requiredCurrentLedger": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "v7Authority": {
+    "path": "tests\\ai_configuration\\CONTRACT.txt",
+    "bytes": 13625,
+    "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+  },
+  "legacyDefinitionChecks": "All columns/types/nullability/defaults/identity/generated flags, constraints and indexes remain unchanged in the existing test.",
+  "preexistingSourceAndEvidenceTails": "Unmodified real v6 relation checks; source API create/patch/detail/list, queue, native 3 records, all evidence reads, one linked asset and repeat core/worker opens.",
+  "amendment": "A3 schema-v7 compatibility",
+  "authorRole": "independent successor test author",
+  "originalSourceOrA2AuthorClaimed": false,
+  "parentAuthorization": "User explicitly authorized only both exact current-ledger expectations and strictly necessary associated diagnostic wording on 2026-09-18.",
+  "sourceOfV7Requirement": "Frozen tests\\ai_configuration\\CONTRACT.txt, requiring v7 once over real published v6 and exact durable reopens.",
+  "heldSourceHandoff": {
+    "path": ".cache\\ai-configuration-coder\\HANDOFF.json",
+    "bytes": 19027,
+    "sha256": "01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c"
+  },
+  "heldSourceReferences": [
+    {
+      "path": "internal\\app\\README.txt",
+      "bytes": 11691,
+      "sha256": "a24a10a1af29cb6180223e7ffbfaf84d79da9cd44909fabf99068b4e53678ddc"
+    },
+    {
+      "path": "internal\\app\\doc.go",
+      "bytes": 7402,
+      "sha256": "b87d2b36a9d993fb6bf7c25e6a457d8ba473662be326bad22c195ec8f287f7b8"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 13578,
+      "sha256": "bf6f3abffd23223a8f2adef5c685996aed171a64e0c839ec0e0e41a131a3df07"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 9852,
+      "sha256": "95f0f20b3dd6ae2dc279aa98993da53de9225f65005fa31bceead85d44b3d823"
+    },
+    {
+      "path": "internal\\app\\ai_grants.go",
+      "bytes": 5541,
+      "sha256": "3cb4a9fd01e0abd26df9c39a37ade5347dfb00b8b244ae1ac4bd6f3c8b74827a"
+    },
+    {
+      "path": "internal\\app\\ai_policy.go",
+      "bytes": 1764,
+      "sha256": "2901ebf698bd1310a9dee70e3a6a24705d3075aa841e2011367029c0b696e191"
+    },
+    {
+      "path": "internal\\app\\ai_profiles.go",
+      "bytes": 6932,
+      "sha256": "aab634e887719da18687459a9fab8cd64efe7a98ccb255464de8d17a77a9de96"
+    },
+    {
+      "path": "internal\\app\\ai_resolver.go",
+      "bytes": 6025,
+      "sha256": "8a4f40efb33604f1084cdfc47c96865199965cd4804934fe3204f9f69906abce"
+    },
+    {
+      "path": "internal\\app\\ai_routes.go",
+      "bytes": 2866,
+      "sha256": "95ef2824cf9eb8c0da9ea41ce10482eb3074ba2403ccf86ea448646fe10078c7"
+    },
+    {
+      "path": "internal\\app\\ai_schema.go",
+      "bytes": 2202,
+      "sha256": "2b132bcedd65d211433656687216d7e094ce8900e19083b67a7ae7da4eb7631a"
+    },
+    {
+      "path": "internal\\app\\ai_types.go",
+      "bytes": 3527,
+      "sha256": "f968865505e6258779d5e0e62a41bd3bbfea091d557452fb23d0229f5f995bc1"
+    },
+    {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3278,
+      "sha256": "fe69d54be17c9930d90c44b2ca8aca9d8c3914b0dad3b5d3d2d9615f64ab3141"
+    }
+  ],
+  "historicalFixtureStartUnchanged": true,
+  "oldA2HistoryRewritten": false,
+  "archiveOnlyModifiedFile": {
+    "path": "tests\\source_collection\\reviews\\v1\\history\\a3\\upgrade_test.go.before.txt",
+    "bytes": 10714,
+    "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+  },
+  "parentExistingGuardLog": {
+    "bytes": 5018,
+    "sha256": "b43b8e65e4ed89c2f5538874a176f0ff36837cc2dba56a02a2c9a801b8c5b7d4",
+    "alias": "RUNTIME\\ai-configuration-parent-check\\source-compat-v1.log",
+    "contentsCopied": false
+  },
+  "rationale": "The old exact v6 current-ledger oracle predates the intentional v7 feature. Constructor success, 25 actual relations and exact ledger 1..7 were already observed before this test-only compatibility amendment; no missing migration or production fix is claimed."
+}

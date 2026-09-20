@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T23:16:00.335479+00:00",
+  "status": "FROZEN_AI_SETUP_CONSTRUCTOR_AND_UPGRADE_RED_PENDING_PARENT_SEAL",
+  "actualFullContract": {
+    "receipt": {
+      "path": ".artifacts\\ai-configuration-v1\\resolver-red-final.receipt.json",
+      "bytes": 840,
+      "sha256": "3a3f91fd5ebc16ca2e9241926df753ee496161a2b77c1e5fb82fb0b3e1297d1f"
+    },
+    "events": {
+      "path": ".artifacts\\ai-configuration-v1\\resolver-red-final.jsonl",
+      "bytes": 2063,
+      "sha256": "7bdbfa4d549abcd0d2b8d962efe89304dc9e5246036bac5b8a5bdac53d4cd24f"
+    },
+    "log": {
+      "path": ".artifacts\\ai-configuration-v1\\resolver-red-final.log",
+      "bytes": 579,
+      "sha256": "67f3390351b6c4f1d07132345d8184017edc54f3fdc4bb5d169fb69b80cfca7f"
+    },
+    "exitCode": 1,
+    "bindingIncluded": true,
+    "missing": [
+      "app.OpenAIConfigurationResolver",
+      "app.AIConfigurationResolverConfig",
+      "app.AIConfigurationResolver",
+      "app.AIConfigurationRequest"
+    ],
+    "sixMainNarrativesExecuted": 0
+  },
+  "cases": [
+    {
+      "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+      "fullContractStatus": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+      "fullContractStatus": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+      "fullContractStatus": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+      "fullContractStatus": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+      "fullContractStatus": "BLOCKED_NOT_RUN"
+    },
+    {
+      "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+      "fullContractStatus": "BLOCKED_NOT_RUN"
+    }
+  ],
+  "separateActualUpgradePrerequisite": {
+    "receipt": {
+      "path": ".artifacts\\ai-configuration-v1\\upgrade-red-final.receipt.json",
+      "bytes": 1322,
+      "sha256": "37c78bd9b7c5c4cb3487409e1f5731550e99498129bf434514ded71e0a363715"
+    },
+    "events": {
+      "path": ".artifacts\\ai-configuration-v1\\upgrade-red-final.jsonl",
+      "bytes": 3266,
+      "sha256": "84797214087e5f228aae7055b0cc7162f2ec3323041bc5b0282099b4bb7749f9"
+    },
+    "log": {
+      "path": ".artifacts\\ai-configuration-v1\\upgrade-red-final.log",
+      "bytes": 703,
+      "sha256": "62d7a9e26a666696c30baec9efe4bec0a4f74607ce54f7fdf3c6fdd3e86f6fb1"
+    },
+    "observation": {
+      "file": {
+        "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-85c8a0a8c7f87bf29c1ce537.json",
+        "bytes": 702,
+        "sha256": "ade6541744a664d87e372c7e94f5d99d8ba913171a35cb30af62240612025060"
+      },
+      "value": {
+        "Origin": "24556fd41090628f391a728457f9c377ca624983",
+        "Schema": "ai_config_2f4d3dd81c1e92fd375fedee",
+        "VerifiedStartingVersion": 6,
+        "LegacyRelations": 22,
+        "CurrentCoreOpened": true,
+        "AfterVersions": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "AfterTables": [
+          "app_assets",
+          "app_auth_throttle",
+          "app_bootstrap",
+          "app_coverage",
+          "app_finding_deliveries",
+          "app_findings",
+          "app_imports",
+          "app_integration_connections",
+          "app_memberships",
+          "app_notes",
+          "app_observations",
+          "app_oidc_flows",
+          "app_oidc_identities",
+          "app_report_snapshots",
+          "app_schema_versions",
+          "app_sessions",
+          "app_source_collection_records",
+          "app_source_collections",
+          "app_source_connections",
+          "app_source_repository_assets",
+          "app_users",
+          "app_workspaces"
+        ],
+        "LegacyBusinessRowsSeeded": false
+      }
+    },
+    "result": "CURRENT core succeeds but remains at verified real v6, missing required v7.",
+    "newResolverBindingExcludedOnlyForThisPrerequisite": true,
+    "AIAPIResolverAndSuccessfulUpgradeTailsExecuted": false,
+    "legacyCustomerDataMigrationClaimed": false
+  },
+  "ownedFixtureCalibration": {
+    "receipt": {
+      "path": ".artifacts\\ai-configuration-v1\\fixture-final.receipt.json",
+      "bytes": 1302,
+      "sha256": "1c6aae001c87bc5a2f767c1034a715b49a861449e45ff86d7bc8ad87052c4c21"
+    },
+    "events": {
+      "path": ".artifacts\\ai-configuration-v1\\fixture-final.jsonl",
+      "bytes": 1645,
+      "sha256": "75692e8c066ed455387e22bdcceff52f99b2da4c26b2d72272292e77851381df"
+    },
+    "result": "PASS_REAL_PG_API_SESSION_AND_NETWORK_NONE_FIXTURE",
+    "providerHTTPRequests": 0,
+    "storageHTTPRequests": 0,
+    "notAISetupAcceptance": true
+  },
+  "inferenceAssessmentSourceScanVerificationCalls": 0,
+  "skips": 0,
+  "retriesAdded": 0,
+  "oldInferenceAdapterSuitesRun": false,
+  "authorDiagnostic": {
+    "receipt": {
+      "path": ".artifacts\\ai-configuration-v1\\helpers-01.receipt.json",
+      "bytes": 1276,
+      "sha256": "1b7e6dc8d6f06420dc9c5183ce8a2b70754f8024ded0e538929fa62d5f4ed1f0"
+    },
+    "reason": "Unused import corrected only in new fixture before final compiler validation; not product RED."
+  }
+}

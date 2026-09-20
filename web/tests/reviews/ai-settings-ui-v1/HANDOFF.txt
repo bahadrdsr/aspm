@@ -1,0 +1,121 @@
+AI SETTINGS UI V1 - ORIGINAL-AUTHOR HANDOFF
+=========================================
+
+Status: frozen unsigned acceptance slice, awaiting parent verification/seal.
+No UI implementation, backend implementation, native API, database, provider,
+resolver, worker, encryption, dependency, signature or commit work was done by
+this author. Separate backend work was neither reset nor used to redefine the
+frozen API. This packet does not claim that persistent AI settings now exist.
+
+Read CONTRACT.txt and DECISIONS.json first. They were written/captured before
+the spec. The backend CONTRACT/DECISIONS/contract_test.go references remain the
+authority. SOURCE-WITNESSES.json records their hashes and the web patterns read.
+The original publication witness is:
+  24556fd41090628f391a728457f9c377ca624983
+Production/backend source references describe the observed source, not a
+freeze of unrelated implementation or subsequent publication.
+
+New executable inputs only
+-------------------------
+  web\tests\ai-settings-ui-data.ts
+  web\tests\ai-settings-ui-fixture.ts
+  web\tests\ai-settings-ui.spec.ts
+  web\tests\reviews\ai-settings-ui-v1\playwright.config.ts
+  web\tests\reviews\ai-settings-ui-v1\calibrate.mjs
+
+The runner imports original controls. It changes output/report locations only
+and refuses altered 20s cases, 5s expects, one worker, zero retries, blocked
+service workers, failure-only screenshots or retained failure tracing.
+The fixture enforces the original combined 60 application API requests per
+case. All nonlocal/provider HTTP and WebSockets are blocked; only local Vite
+assets/HMR pass through. Application responses are synthetic HTTP metadata.
+There is no React/client-state/DOM replacement, worker simulation, provider
+protocol, resolver response or real app API transport.
+
+Semantic implementation handoff
+-------------------------------
+Use the initially closed Integrations "AI settings" entry, an in-page settings
+panel, shared profile/revoke dialogs and nonmodal "Grant approval" described in
+CONTRACT.txt. All native wrapped selects use role/name locators, not getByLabel
+as a substitute for the actual select. Manual pagination buttons are named
+"Load more profiles" and "Load more grants"; initial pages use native default
+100 or explicit limit=100. "Retry" keeps the failed cursor and original limit.
+Only 101 synthetic records per paginated collection are generated.
+
+Revisions are opaque identity strings, not numeric Sources revisions. The
+data deliberately refreshes to lexically smaller revisions. Consent reads a
+selected profile and policy explicitly, binds the exact stored destination
+including its trailing slash, and cannot survive changed facts as old enabled
+authority. Stored grant IDs/issuer/times come only from receipts. The browser
+never accepts an approvalRef, supplies an actor, grants global permissions or
+calls the secret-bearing internal resolver.
+
+Key drafts are synthetic password canaries. Successful metadata never includes
+a key. A deliberate secret-bearing error message challenges UI redaction; it
+is not a claim that the backend normally echoes keys. Local keyless setup is
+valid without operator encryption. Hosted failure must remain explicit without
+asking the browser user for the application encryption key.
+
+Actual evidence, not planned coverage
+------------------------------------
+TYPECHECK.json: final typecheck succeeded. Compiler input enumeration includes
+the new data, fixture, spec and runner.
+CALIBRATION.json: 36 pure data/protocol checks succeeded without browser or
+HTTP execution. The first calibration attempt stopped before any check because
+the installed compiler did not expose the assumed transpilation API. The
+author corrected only the new calibration tool to use installed Node type
+stripping, with no dependency change. Both attempts remain in artifacts.
+
+RED.json: final red-02 has SIX actual missing-controls failures, zero skips,
+retries or flakes. Every case first rendered real Integrations with five
+destinations, eight catalog families, Connections/Sources and zero AI calls.
+Each then failed the 5s assertion for the absent "AI settings" button. Each
+case made six synthetic application GETs, zero AI requests, zero external
+attempts, zero fixture violations and zero browser exceptions. Screenshots,
+traces and per-case source witnesses are referenced, not copied into tests.
+
+All assertions after that absent entry are BLOCKED/NOT RUN. This includes
+profile/policy/grant loading and forms, creation/update/revoke, full privacy
+and epoch narratives, mobile AI-panel layout/focus, and request counts/durations
+of the complete future flows. The 390px existing shell was reached, but no
+new AI mobile panel was rendered. No functional GREEN or full accessibility,
+cryptographic, provider, resolver or execution-permission claim is made.
+
+The earlier red-01 is retained as history. The author then tightened new-only
+charset/privacy/source-witness guards, receipt checks and explicit denial
+response synchronization. Final source qualification is red-02, not an old run
+mislabelled with newer bytes. No failures were marked expected/skipped and no
+test timeout, retry, request cap or old assertion was weakened.
+
+COMPATIBILITY.json: all 93 previous browser cases passed in compatibility-01,
+with one worker, 20s case limits, zero retries/skips/flakes. This proves the
+unchanged current UI/test baseline, not compatibility of a future implementation.
+No AI route was added to any old fixture. Closing settings before any AI load
+is the intended compatibility boundary and must remain so when UI work begins.
+
+GUARDS.json and BEFORE.json: every one of the 517 pre-existing tracked web
+files remains byte-identical, including all 93 case/helper/module/settings and
+approved component inputs. All 111 existing oracle JSON/signature witnesses
+remain byte-identical. Mutable backend paths are recorded only as external
+work observations. PACKET.json binds only NEW author files; PACKET.sha256 is a
+checksum of that unsigned manifest, not an oracle signature or publication.
+
+Artifacts and manual reproduction
+---------------------------------
+Persistent outputs/traces are under:
+  C:\bahadr\serious\aspm\.artifacts\ai-settings-ui-v1-author
+Original labels: red-01, red-02, compatibility-01, enumeration-01.
+Use a fresh ASPM_AI_UI_RUN label, never overwrite original-author evidence.
+
+From C:\bahadr\serious\aspm\web, in PowerShell:
+  node .\node_modules\typescript\bin\tsc --noEmit --pretty false
+  node --experimental-strip-types .\tests\reviews\ai-settings-ui-v1\calibrate.mjs '..\.artifacts\ai-settings-ui-v1-author\calibration-parent-01.json'
+  $env:ASPM_AI_UI_RUN = 'parent-red-01'
+  $env:ASPM_WEB_TEST_PORT = '48463'
+  node .\scripts\playwright.mjs test --config tests\reviews\ai-settings-ui-v1\playwright.config.ts ai-settings-ui.spec.ts
+For the previous 93 only, choose another fresh label and replace the final
+filename selector with --grep-invert 'AIU[1-6] '.
+
+Stop here for parent verification/seal and separately assigned coder/reviewer.
+Do not update old signatures, add old-fixture AI routes, launch agents or
+implement inference/assessment/jobs/quotas/discovery as part of this slice.

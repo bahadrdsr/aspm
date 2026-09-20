@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T14:42:28.336Z",
+  "scope": "Fixture measurement proof only, NOT product acceptance.",
+  "counts": {
+    "checks": 9,
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "blocked": 0,
+    "retries": 0,
+    "intentionalNegativeRejections": 5
+  },
+  "rawEvidence": [
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01\\calibration.json",
+      "bytes": 11976,
+      "sha256": "d0bb456b6714c175f8e519e46af097ec4552681910ef0e8b28b85861edad6660"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01.log",
+      "bytes": 782,
+      "sha256": "73ebca325a29668b01efd491dc270461057389f7ce206a551d376eb75d4aef9f"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01-execution.json",
+      "bytes": 473,
+      "sha256": "5b9fbcd4ebdbe28c729edd370954e7b6767a4e2ac945337fdb3027a9d9925acf"
+    }
+  ],
+  "calibration": {
+    "schemaVersion": 1,
+    "capturedAt": "2026-09-20T14:32:46.767Z",
+    "run": "successor-a1-native-20260920-01",
+    "author": "successor-independent-ai-settings-ui-a1-native-option-20260920",
+    "scope": "Isolated static synthetic native DOM fixture measurement proof only, NOT product acceptance.",
+    "constraints": {
+      "applicationDOMOrStateInjection": false,
+      "applicationNavigation": false,
+      "http": false,
+      "providers": false,
+      "nativeApplicationAPI": false,
+      "database": false,
+      "serviceWorkers": "block",
+      "pages": 1,
+      "assertionTimeoutMs": 5000,
+      "perCheckCapMs": 20000,
+      "totalCapMs": 60000,
+      "retries": 0
+    },
+    "sources": [
+      {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\calibrate-option-A1.mjs",
+        "bytes": 11098,
+        "sha256": "ae0426005d8dfdd8286a78eeea669d9bb2687b031a5f1d21b17cdff26020670e"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.html",
+        "bytes": 1488,
+        "sha256": "13dcaa3b8d649ef09c7f90bbfca1d488a016cae8d4b5ec1ed9cf91e0173efa76"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+        "bytes": 552,
+        "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+      },
+      {
+        "path": "web\\node_modules\\playwright-core\\lib\\coreBundle.js",
+        "bytes": 3477183,
+        "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+      }
+    ],
+    "installedMechanism": [
+      {
+        "needle": "function getAriaDisabled(",
+        "offset": 921846,
+        "escapedSourceExcerpt": "function getAriaDisabled(element) {\\n  return isNativelyDisabled(element) || hasExplicitAriaDisabled(element);\\n}\\nfunction isNativelyDisabled(element) {\\n  const isNativeFormControl = [\"BUTTON\", \"INPUT\", \"SELECT\", \"TEXTAREA\", \"OPTION\", \"OPTGROUP\"].includes(elementSafeTagName(element));\\n  return isNativeFormControl && (element.hasAttribute(\"disabled\") || belongsToDisabledOptGroup(element) || belongsToDisabledFieldSet(element));\\n}\\nfunction belongsToDisabledOptGroup(element) {\\n  return elementSafeTagName(element) === \"OPTION\" && !!element.closest(\"OPTGROUP[DISABLED]\");\\n}\\nfunction belongsToDisabledFi"
+      },
+      {
+        "needle": "retarget(node, behavior) {",
+        "offset": 1056854,
+        "escapedSourceExcerpt": "retarget(node, behavior) {\\n    let element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;\\n    if (!element)\\n      return null;\\n    if (behavior === \"none\")\\n      return element;\\n    if (!element.matches(\"input, textarea, select\") && !element.isContentEditable) {\\n      if (behavior === \"button-link\")\\n        element = element.closest(\"button, [role=button], a, [role=link]\") || element;\\n      else\\n        element = element.closest(\"button, [role=button], [role=checkbox], [role=radio]\") || element;\\n    }\\n    if (behavior === \"follow-label\") {\\n      if (!element.matches(\"a, input, textarea, button, select, [role=link], [role=button], [role=checkbox], [role=radio]\") && !element.isContentEditable) {\\n        const enclosingLabel = element.closest(\"label\");\\n        if (enclosingLabel && enclosingLabel.control)\\n          element = enclosingLabel.control;\\n      }\\n    }\\n    return element;\\n  }\\n  async checkElementStates(node, "
+      },
+      {
+        "needle": "elementState(node, state) {",
+        "offset": 1060661,
+        "escapedSourceExcerpt": "elementState(node, state) {\\n    const element = this.retarget(node, [\"visible\", \"hidden\"].includes(state) ? \"none\" : \"follow-label\");\\n    if (!element || !element.isConnected) {\\n      if (state === \"hidden\")\\n        return { matches: true, received: \"hidden\" };\\n      return { matches: false, received: \"error:notconnected\" };\\n    }\\n    if (state === \"visible\" || state === \"hidden\") {\\n      const visible = isElementVisible(element);\\n      return {\\n        matches: state === \"visible\" ? visible : !visible,\\n        received: visible ? \"visible\" : \"hidden\"\\n      };\\n    }\\n    if (state === \"disabled\" || state === \"enabled\") {\\n      const disabled = getAriaDisabled(element);\\n      return {\\n        matches: state === \"disabled\" ? disabled : !disabled,\\n        received: disabled ? \"disabled\" : \"enabled\"\\n      };\\n    }\\n    if (state === \"editable\") {\\n      const disabled = getAriaDisabled(element);\\n      const readonly = getReadonly(element);\\n      if (readonly === \"error\")\\n        throw this.createStacklessError(\"Element is not an <input>, <textarea>, <select> or [contenteditable] and does not have a role allowing [a"
+      }
+    ],
+    "checks": [
+      {
+        "name": "Wrapped enabled SELECT: disabled OPTION passes new check and old assertion fails",
+        "passed": true,
+        "durationMs": 5106.7162,
+        "evidence": {
+          "observed": {
+            "tag": "OPTION",
+            "nativeDisabled": true,
+            "ownDisabled": true,
+            "ariaDisabled": null,
+            "labelControlTag": "SELECT",
+            "labelControlDisabled": false,
+            "html": "<option value=\"disabled\" disabled=\"\">Disabled profile</option>"
+          },
+          "oldAssertion": {
+            "expectedRejection": true,
+            "durationMs": 5016.9087,
+            "message": "expect(locator).toBeDisabled() failed\n\nLocator:  getByRole('combobox', { name: 'Wrapped Profile', exact: true }).getByRole('option', { name: 'Disabled profile', exact: true })\nExpected: disabled\nReceived: enabled\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeDisabled\" getByRole('combobox', { name: 'Wrapped Profile', exact: true }).getByRole('option', { name: 'Disabled profile', exact: true }) with timeout 5000ms\n  - waiting for getByRole('combobox', { name: 'Wrapped Profile', exact: true }).getByRole('option', { name: 'Disabled profile', exact: true })\n    14 × locator resolved to <option disabled value=\"disabled\">Disabled profile</option>\n       - unexpected value \"enabled\"\n"
+          },
+          "newAssertion": "passed"
+        }
+      },
+      {
+        "name": "Paired unwrapped SELECT: the same native disabled OPTION passes the old assertion",
+        "passed": true,
+        "durationMs": 55.72569999999996,
+        "evidence": {
+          "tag": "OPTION",
+          "nativeDisabled": true,
+          "ownDisabled": true,
+          "ariaDisabled": null,
+          "labelControlTag": null,
+          "labelControlDisabled": null,
+          "html": "<option value=\"disabled\" disabled=\"\">Unwrapped disabled</option>"
+        }
+      },
+      {
+        "name": "Present enabled ineligible OPTION fails the new check",
+        "passed": true,
+        "durationMs": 4094.252299999999,
+        "evidence": {
+          "observed": {
+            "tag": "OPTION",
+            "nativeDisabled": false,
+            "ownDisabled": false,
+            "ariaDisabled": null,
+            "labelControlTag": "SELECT",
+            "labelControlDisabled": false,
+            "html": "<option value=\"enabled\">Enabled ineligible profile</option>"
+          },
+          "rejection": {
+            "expectedRejection": true,
+            "durationMs": 4078.2699000000002,
+            "message": "Ineligible profiles must be omitted or natively disabled options.\n\nIneligible profiles must be omitted or natively disabled options.\n\nexpect(received).toMatch(expected)\n\nExpected pattern: /^(omitted|disabled)$/\nReceived string:  \"invalid\"\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          }
+        }
+      },
+      {
+        "name": "Omitted ineligible OPTION is allowed explicitly",
+        "passed": true,
+        "durationMs": 16.83640000000014,
+        "evidence": {
+          "matchedCount": 0,
+          "result": "omitted, permitted by original contract"
+        }
+      },
+      {
+        "name": "Disabled OPTGROUP inheritance passes without an own OPTION disabled property",
+        "passed": true,
+        "durationMs": 34.55420000000049,
+        "evidence": {
+          "tag": "OPTION",
+          "nativeDisabled": true,
+          "ownDisabled": false,
+          "ariaDisabled": null,
+          "labelControlTag": "SELECT",
+          "labelControlDisabled": false,
+          "html": "<option value=\"inherited\">Group disabled profile</option>"
+        }
+      },
+      {
+        "name": "Enabled eligible options remain selectable and native keyboard skips disabled options",
+        "passed": true,
+        "durationMs": 132.6163000000015,
+        "evidence": {
+          "nativeActions": [
+            "selectOption eligible-a",
+            "ArrowDown skips disabled OPTION and OPTGROUP",
+            "selectOption eligible-a",
+            "selectOption eligible-b"
+          ],
+          "selected": "eligible-b"
+        }
+      },
+      {
+        "name": "aria-disabled alone is selectable and fails native selection-blocking measurement",
+        "passed": true,
+        "durationMs": 5044.2502,
+        "evidence": {
+          "observed": {
+            "tag": "OPTION",
+            "nativeDisabled": false,
+            "ownDisabled": false,
+            "ariaDisabled": "true",
+            "labelControlTag": "SELECT",
+            "labelControlDisabled": false,
+            "html": "<option value=\"aria-only\" aria-disabled=\"true\">Aria-only profile</option>"
+          },
+          "rejection": {
+            "expectedRejection": true,
+            "durationMs": 5000.050800000001,
+            "message": "Ineligible profiles must be omitted or natively disabled options.\n\nIneligible profiles must be omitted or natively disabled options.\n\nexpect(received).toMatch(expected)\n\nExpected pattern: /^(omitted|disabled)$/\nReceived string:  \"invalid\"\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          },
+          "selected": "aria-only"
+        }
+      },
+      {
+        "name": "A natively disabled non-OPTION cannot pass via a role or disabled attribute",
+        "passed": true,
+        "durationMs": 5011.844500000001,
+        "evidence": {
+          "observed": {
+            "tag": "BUTTON",
+            "nativeDisabled": true,
+            "ownDisabled": null,
+            "ariaDisabled": null,
+            "labelControlTag": null,
+            "labelControlDisabled": null,
+            "html": "<button role=\"option\" disabled=\"\">Non-option disabled impostor</button>"
+          },
+          "rejection": {
+            "expectedRejection": true,
+            "durationMs": 5000.715200000002,
+            "message": "Ineligible profiles must be omitted or natively disabled options.\n\nIneligible profiles must be omitted or natively disabled options.\n\nexpect(received).toMatch(expected)\n\nExpected pattern: /^(omitted|disabled)$/\nReceived string:  \"invalid\"\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          }
+        }
+      },
+      {
+        "name": "Duplicate option identity fails strictly without first/nth/index fallbacks",
+        "passed": true,
+        "durationMs": 30.681400000001304,
+        "evidence": {
+          "matchedCount": 2,
+          "rejection": {
+            "expectedRejection": true,
+            "durationMs": 19.626899999999296,
+            "message": "locator.evaluate: Error: strict mode violation: getByRole('combobox', { name: 'Ambiguous Profile', exact: true }).getByRole('option', { name: 'Duplicate identity', exact: true }) resolved to 2 elements:\n    1) <option disabled value=\"duplicate-a\">Duplicate identity</option> aka getByLabel('Ambiguous Profile Ambiguous')\n    2) <option disabled value=\"duplicate-b\">Duplicate identity</option> aka getByLabel('Ambiguous Profile Ambiguous')\n\nCall log:\n  - waiting for getByRole('combobox', { name: 'Ambiguous Profile', exact: true }).getByRole('option', { name: 'Duplicate identity', exact: true })\n"
+          }
+        }
+      }
+    ],
+    "attemptedNetwork": [],
+    "pageErrors": [],
+    "outcome": "passed",
+    "trace": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01\\trace.zip",
+      "bytes": 75670,
+      "sha256": "24b081a3c4b8e115ced02444b3e5da3568c84ea1176db70354b291a8594564aa"
+    },
+    "completedAt": "2026-09-20T14:33:08.373Z"
+  }
+}

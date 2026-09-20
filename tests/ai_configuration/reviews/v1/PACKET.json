@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-configuration-v1",
+  "phase": "frozen-independent-setup-constructor-and-upgrade-red",
+  "frozenAt": "2026-09-17T23:17:16.922540+00:00",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned NEW M11 setup-foundation test inventory only. Parent verifies trust/data-class decisions and real RED before sealing; no assessment execution or old-oracle amendment.",
+  "payloadFileCount": 18,
+  "ownedFileCount": 20,
+  "ownedFiles": [
+    "tests\\ai_configuration\\CONTRACT.txt",
+    "tests\\ai_configuration\\HANDOFF.txt",
+    "tests\\ai_configuration\\Test-AIConfiguration.ps1",
+    "tests\\ai_configuration\\configuration_test.go",
+    "tests\\ai_configuration\\contract_test.go",
+    "tests\\ai_configuration\\fixture_calibration_test.go",
+    "tests\\ai_configuration\\fixtures_test.go",
+    "tests\\ai_configuration\\production_bindings_test.go",
+    "tests\\ai_configuration\\reviews\\v1\\BEFORE.json",
+    "tests\\ai_configuration\\reviews\\v1\\COMPILATION.json",
+    "tests\\ai_configuration\\reviews\\v1\\DECISIONS.json",
+    "tests\\ai_configuration\\reviews\\v1\\EVIDENCE.json",
+    "tests\\ai_configuration\\reviews\\v1\\GUARDS.json",
+    "tests\\ai_configuration\\reviews\\v1\\HANDOFF.json",
+    "tests\\ai_configuration\\reviews\\v1\\ORIGIN.json",
+    "tests\\ai_configuration\\reviews\\v1\\PACKET.json",
+    "tests\\ai_configuration\\reviews\\v1\\PACKET.sha256",
+    "tests\\ai_configuration\\reviews\\v1\\RED.json",
+    "tests\\ai_configuration\\testdata\\published-24556-schema-v6.json",
+    "tests\\ai_configuration\\upgrade_test.go"
+  ],
+  "files": [
+    {
+      "path": "tests\\ai_configuration\\configuration_test.go",
+      "bytes": 18172,
+      "sha256": "56242511fb13d31279d5d645bc9cf063b388def995ff40b8c193890fbc06852f"
+    },
+    {
+      "path": "tests\\ai_configuration\\CONTRACT.txt",
+      "bytes": 13625,
+      "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+    },
+    {
+      "path": "tests\\ai_configuration\\contract_test.go",
+      "bytes": 2023,
+      "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixture_calibration_test.go",
+      "bytes": 395,
+      "sha256": "8c8effd8011c7a44874ff2ed113feee0362dac9007bc5a0407d675408e752b84"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixtures_test.go",
+      "bytes": 18486,
+      "sha256": "b5d2de47e87e87024c0bad45aeb2d23f556088130deb25551f7ff1eaecc5ff76"
+    },
+    {
+      "path": "tests\\ai_configuration\\HANDOFF.txt",
+      "bytes": 3956,
+      "sha256": "6600567ce454d494665fea4b5fc8d5c993e15193ef9be6bb1e85408771f85f75"
+    },
+    {
+      "path": "tests\\ai_configuration\\production_bindings_test.go",
+      "bytes": 1013,
+      "sha256": "e6a219defcdc4b6091d474006f308540e6d13da120dbe7caf20f69996afc8358"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\BEFORE.json",
+      "bytes": 3981,
+      "sha256": "63a2f27d781e52227e3496ec2893f9fe9b31b83430f8c23a17fe76790644c23d"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\COMPILATION.json",
+      "bytes": 2636,
+      "sha256": "d6763581e1eae6431e4df15d009bf05229c7bb9055aa64208b4f5d204ff4e789"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3154,
+      "sha256": "8db255260105ef022137df3b2dd1611ecc90d0a65e7feceddb1426b482cdac61"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 6261,
+      "sha256": "bb8bd3abb78f2f030647773203e04184363818a83ad9ac279846d5430a494ce8"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\GUARDS.json",
+      "bytes": 6360,
+      "sha256": "ffd524d48bd5b2bdbf0c10a5c43941030225565edf9d36e6281051239c7234e4"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3686,
+      "sha256": "cff3858c0b1acabe8a8879eb0ccef1268a69079c60ab267ac7da4845d7b1274b"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\ORIGIN.json",
+      "bytes": 3206,
+      "sha256": "5ce34573a5aec9f5007d02bd60bbebaef5841b598b8de40932f74c877362b29f"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED.json",
+      "bytes": 5454,
+      "sha256": "aa8d9a214d30f9f4ba673ac0b5e8b8768ebac918d495113134c063c46b87b6cd"
+    },
+    {
+      "path": "tests\\ai_configuration\\Test-AIConfiguration.ps1",
+      "bytes": 5511,
+      "sha256": "98832e83f504a06061237839f50af19a555cd61e117a5084eb1445d580415521"
+    },
+    {
+      "path": "tests\\ai_configuration\\testdata\\published-24556-schema-v6.json",
+      "bytes": 17753,
+      "sha256": "507a2366bf23b541f3cdf1bca85723ae84f24bab9e9dbdcacf30d01d68b51a55"
+    },
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "bytes": 7136,
+      "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+    }
+  ],
+  "contract": "tests\\ai_configuration\\CONTRACT.txt",
+  "handoff": "tests\\ai_configuration\\HANDOFF.txt",
+  "decisions": "tests\\ai_configuration\\reviews\\v1\\DECISIONS.json",
+  "red": "tests\\ai_configuration\\reviews\\v1\\RED.json",
+  "origin": "tests\\ai_configuration\\reviews\\v1\\ORIGIN.json",
+  "externalEvidence": "tests\\ai_configuration\\reviews\\v1\\EVIDENCE.json",
+  "selfBinding": "PACKET.sha256 binds raw PACKET.json. Only this self-digest pair is excluded from payload hashes.",
+  "existingFileAmendments": [],
+  "oldReviewTreeCopies": false,
+  "historicalCopy": "Only the exact published schemaV1..V6 DDL needed for upgrade tests, with source/blob/value hashes.",
+  "M11ExecutionOrCompletionClaimed": false
+}

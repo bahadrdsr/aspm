@@ -1,0 +1,237 @@
+AI CONFIGURATION V1 - M11 SETUP FOUNDATION, NO ASSESSMENT EXECUTION
+================================================================
+
+Scope and decisions before tests
+-------------------------------
+This NEW tests/ai_configuration packet authors persistent profile/policy/grant
+configuration and a trusted read-only database resolver only. It is not M11
+completion. No prompt, inference, assessment-shaped result, job, tool/exploit,
+scanner/source execution, verification or finding/risk/workflow mutation is
+created. Existing providers.Profile/Policy are the mapping targets, not new
+provider protocols. No models/catalog/latest-model selection is inferred.
+
+The explicit decisions below precede test authoring. No generic policy/role
+builder or global allowlist is introduced. UI, workers, durable assessment jobs,
+quotas and deployment are later separately authorized increments.
+
+Production entrypoints
+----------------------
+The existing app.Open(ctx, app.Config) hosts the new configuration APIs using
+the existing optional IntegrationEncryptionKey. No new core HTTP client,
+provider discovery or storage capability is needed for these routes.
+
+The separately opened trusted DB-only lookup interface is:
+  app.AIConfigurationResolverConfig {
+    Database app.DatabaseConfig
+    EncryptionKey []byte
+  }
+  app.OpenAIConfigurationResolver(ctx, config)
+    (*app.AIConfigurationResolver, error)
+  resolver.Resolve(ctx, app.AIConfigurationRequest) (app.AIConfiguration, error)
+  resolver.Close() error
+  app.AIConfigurationRequest {
+    WorkspaceID, ActorID, ProfileID, GrantID, Task, DataClass string
+  }
+  app.AIConfiguration {
+    Profile providers.Profile
+    Policy providers.Policy
+  }
+
+The binding constructs/forwards only, preserves errors and normalizes a nil
+concrete resolver pointer. Resolve reads trusted persisted state in a consistent
+snapshot. It never writes configuration, generates a grant or calls a provider.
+ActorID is a future server/worker identity, not a new public JSON override.
+The requesting actor must currently be an admin/analyst in the selected workspace.
+
+An allowed result is configuration-shaped: Profile matches the exact current
+stored provider fields/revision and privately decrypted APIKey, while Policy
+contains only the selected workspace, task, dataClass and exact destination.
+No fallback profile IDs are authorized. Profile.APIKey remains json:"-" as in
+the existing provider type. No HTTP route serializes this secret-bearing
+internal result. Denial returns zero configuration plus providers.ErrPolicy
+(or providers.ErrCapability for an unreviewed capability), never success-shaped
+or partially secret-bearing output.
+
+Point-in-time resolution is NOT a reservation or future permission guarantee.
+The next worker slice must re-resolve when performing its separately approved
+action. This setup packet adds no execution or long-lived approval exemption.
+
+Exact API vocabulary
+--------------------
+All routes use existing apiVersion aspm/v1alpha1, protected real session cookies,
+Origin checks and X-ASPM-Workspace-ID selection.
+
+GET/POST /api/v1/ai/profiles
+GET/PATCH /api/v1/ai/profiles/{id}
+  POST {
+    name, family, endpoint, model, deployment,
+    enabled:boolean, structuredOutput:boolean, apiKey?:string|null
+  }
+Families are exactly openai, azure-foundry, anthropic, local.
+Name/model are bounded nonblank strings; name/model/deployment <=256 UTF-8
+bytes, endpoint <=16384 bytes, apiKey <=16384 bytes and body <=32 KiB.
+StructuredOutput is an explicit admin capability review, not a catalog fact.
+False may be persisted, but cannot resolve into approved execution configuration.
+enabled and structuredOutput are required booleans.
+
+Azure Foundry requires a distinct nonblank deployment, preserving model and
+deployment separately. Other families have no nonempty deployment.
+Hosted families require an explicit nonempty API key. Local may omit it or use
+null. Explicit nonempty local keys still require encryption. PATCH omission
+retains a key; explicit null clears it only for local; an explicit empty string
+is invalid. No ambient provider key or raw/DB/bootstrap/storage fallback exists.
+
+PATCH is sparse and validates the combined resulting profile, preserving
+omitted fields. ID/workspace are immutable. All meaningful public changes
+(including name/enabled) advance the server revision. A no-op public patch does
+not. An explicitly supplied nonempty key is a replacement action and advances
+revision even if bytes happen to match, without exposing a key equality oracle.
+Null clearing that changes a local credential also advances revision.
+
+Profile metadata DTO:
+  id, workspaceId, name, family, endpoint, model, deployment,
+  enabled, structuredOutput, credentialConfigured, revision, createdAt, updatedAt
+ID is the existing server-generated 32-hex identity. Revisions are nonempty
+server-assigned strings, matching providers.Profile.Revision directly; clients
+do not generate or set them. Metadata never contains APIKey, ciphertext, key,
+headers or a credential-bearing URL.
+POST returns 201 {apiVersion,profile}; GET/PATCH return 200. Lists use the
+existing bounded {apiVersion,items,total,nextCursor} pattern.
+Disable uses PATCH enabled:false; no destructive profile deletion is required.
+
+GET/PATCH /api/v1/ai/policy
+  PATCH {mode:"disabled"|"local-only"|"approved-hosted"}
+Policy is selected-workspace singleton metadata:
+  workspaceId, mode, revision, updatedAt:null|timestamp, updatedBy:null|userID
+The unconfigured read-only default is explicitly disabled, revision "0",
+with null author/time. This is a deny-only default, never synthetic authority.
+The first meaningful configured policy mutation is persisted. Reopening keeps
+it. A no-op mode change retains revision; a meaningful mode change advances it.
+No API Workspaces/AllowedDestinations/FallbackProfileIDs/ApprovalRef list is
+accepted from callers, reports, finding text or model text.
+
+POST/GET /api/v1/ai/grants
+GET /api/v1/ai/grants/{id}
+POST /api/v1/ai/grants/{id}/revoke
+  CREATE {
+    profileId, profileRevision, policyRevision, destination,
+    task:"finding-validity", dataClass:"finding-evidence", expiresAt:RFC3339
+  }
+The caller must be a currently authenticated selected-workspace admin.
+Policy must currently be approved-hosted. Revision and destination fields are
+explicit review assertions, not authority: they must exactly match persisted
+current profile/policy values or fail with 409. The profile must be enabled
+and its structured-output capability reviewed.
+Expiry is an explicit valid future instant, never defaulted/extended. The
+single allowed task/dataClass pair is validated; unknown values are 400.
+
+Grant metadata:
+  id, workspaceId, profileId, profileRevision, policyRevision, destination,
+  task, dataClass, expiresAt, createdAt, grantedBy, revokedAt:null|timestamp,
+  revokedBy:null|userID
+ID, workspace, issuer and creation/revocation times come from the server/session.
+Create returns 201 {apiVersion,grant}; reads/revoke return 200. Revoke body is {}.
+Repeated revoke is idempotent and does not rewrite its original actor/time.
+Lists are workspace-scoped and use real bounded ID continuation.
+No caller approvalRef/id/actor/time/revocation field is accepted as authority.
+
+Grant trust and policy semantics
+-------------------------------
+The sole data class finding-evidence means potentially sensitive application/
+repository evidence context: finding metadata, identifiers, source locations,
+and bounded untrusted evidence/code excerpts for read-only validity analysis.
+It is NOT a guarantee of public/redacted data. Credentials/configuration keys
+are not approved payload content. This setup never reads or transmits that data.
+
+local-only permits only family local, even if a hosted-family endpoint happens
+to be loopback. It needs no hosted grant; GrantID must be empty. Approved-hosted
+requires the supplied server grant ID to be looked up and fully validated for
+all families, including local. An arbitrary string without a real row fails.
+
+Grant checks bind workspace, profile ID AND current profile revision, current
+policy revision, exact stored destination (no trailing-slash normalization),
+task/dataClass, expiry and revocation. Any endpoint/family/model/deployment/key/
+capability revision change invalidates old grants. Disabling/re-enabling a
+profile or changing policy mode also prevents old grants from resurrecting.
+At expiry equality, the grant is expired.
+
+A grant is a durable workspace-admin decision, not a personal login token.
+Issuer admin/session authority is checked transactionally at creation/revoke;
+current requesting actor write membership is checked on every Resolve.
+This first contract does not infer grant revocation solely from a later issuer
+role change: withdrawal is explicit revocation, expiry, policy or profile
+revision invalidation. The choice is explicit, not an ambient role framework.
+
+The returned providers.Policy has Mode and the current revision; in hosted mode
+ApprovalRef is the verified stored grant ID, not a copied arbitrary reference.
+Workspaces/Tasks/DataClasses/AllowedDestinations each contain exactly the
+selected value; FallbackProfileIDs is empty. Do not register global allowlists.
+
+Endpoint validation, no network
+------------------------------
+All families reject malformed URLs, userinfo, query/fragment, raw or decoded
+control characters, invalid ports, oversized endpoint strings and unsafe path
+boundaries. Hosted endpoints require HTTPS, even on loopback.
+Local HTTPS remains an explicitly configured browser-independent provider base.
+Local HTTP is allowed only for literal private/loopback IPs as in the existing
+provider policy; http://localhost or public HTTP is not an implicit exception.
+No endpoint is probed, resolved for a catalog, redirected or used for inference.
+
+The fixtures supply owned HTTP/TLS tripwires and a deny-all ambient HTTP dialer.
+Any configuration/lookup network attempt fails the test. Nothing changes or
+loosens runtime client/TLS/proxy rules. No OpenAssessor/Assess/verification API,
+prompt, assessment output or tool is called. Do not run old inference-shaped
+adapter suites as though they were configuration-only evidence.
+
+Encryption and persistence
+--------------------------
+Use the existing independent application key and shared authenticated AES
+primitive. AI credential envelope is version byte 1 || fresh 12-byte nonce ||
+AES-256-GCM ciphertext/tag, bound to:
+  "aspm/ai-credential/v1\0" + workspaceId + "\0" + profileId
+No application key is required for keyless local metadata; storing any API key
+without it is 503/unavailable. The resolver can open without a key for local
+keyless policy; it must not derive or return encrypted hosted credentials if a
+key is unavailable.
+
+Existing Slack and source envelope/AAD/key bytes stay unchanged:
+  aspm/slack-credential/v1\0<workspace>\0<connection>
+  aspm/source-credential/v1\0github-cloud-app\0<workspace>\0<source>
+Only read-only SQL credential inspection/decryption assertions are used.
+No fake profile/policy/grant/actor rows or authorization lookup is inserted.
+Minimal inspected new tables are app_ai_profiles (credential_ciphertext),
+app_ai_policies and app_ai_egress_grants; PG stores trusted configuration and
+bounded approval metadata. Concurrent sparse updates must serialize without
+losing unrelated fields.
+
+Fresh schema/reopen AND actual published v6 upgrade are required. The legacy
+fixture contains only exact committed schemaV1..schemaV6 DDL from published
+24556fd41090628f391a728457f9c377ca624983, with blob/source/value hashes.
+It creates all legacy relations and versions 1..6 in a random owned PG schema.
+It never deletes current tables or relabels a version ledger. Current Open
+must apply v7 once, preserve legacy definitions, and expose usable AI config
+APIs/resolver on repeated open. No old customer rows are seeded, so no
+pre-existing customer-data migration proof is claimed.
+
+Six runtime narratives
+----------------------
+1. Keyless core remains usable, policy defaults disabled, local keyless config
+   and local-only resolution are explicit; no provider I/O or secret derivation.
+2. Sparse profile persistence, masked metadata, AES/AAD/key replacement and
+   nullable local key behavior, no secret readback.
+3. All four family/profile/capability and strict endpoint validation with no
+   inference, native request or model catalog.
+4. Real admin grant binding, exact destination/revisions/task/class, expiry,
+   explicit revocation, profile/policy revision invalidation and pure lookup.
+5. Viewer/analyst/admin, foreign-workspace and forged actor/approval/endpoint
+   fields, including resolver current membership checks and scoped metadata.
+6. Reopens/concurrent sparse configuration, unchanged Slack/source credentials,
+   and real published-v6-to-v7 migration/reopen without fake legacy data.
+
+Minimal fixture-only calibration may compile/run separately from the missing
+resolver binding; it proves owned PG/tripwire setup, not the six AI behaviors.
+Missing constructor/type compile RED is labelled BLOCKED/NOT RUN, never
+assessment-shaped or setup success. All artifacts remain in the new packet/
+owned .artifacts and .cache paths. No old review tree, dependency, production,
+old oracle, agent or commit is changed. Parent verifies these trust/data-class
+decisions, seals NEW controls, and assigns separate implementation/review.

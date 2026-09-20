@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "name": "ai-settings-ui-v1",
+  "status": "frozen unsigned original-author acceptance packet",
+  "createdAt": "2026-09-18T08:17:54.512Z",
+  "publicationWitness": "24556fd41090628f391a728457f9c377ca624983",
+  "observedHeadAtFreeze": "24556fd41090628f391a728457f9c377ca624983",
+  "controlledFiles": [
+    {
+      "path": "web\\tests\\ai-settings-ui-data.ts",
+      "bytes": 11596,
+      "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+    },
+    {
+      "path": "web\\tests\\ai-settings-ui-fixture.ts",
+      "bytes": 26140,
+      "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+    },
+    {
+      "path": "web\\tests\\ai-settings-ui.spec.ts",
+      "bytes": 45102,
+      "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\BEFORE.json",
+      "bytes": 125477,
+      "sha256": "83c3529e26aef5324874e7022babb9efe6f874c98ef61a1114e4c9e08596d94c"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CALIBRATION.json",
+      "bytes": 5319,
+      "sha256": "9e55c1d72e53000ede1e181e39a069349488f8fd8316d93d4ce978510c42504e"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\COMPATIBILITY.json",
+      "bytes": 25790,
+      "sha256": "349f19cdef4f1aa040169c26d790dc0a5b7f311b4bec0fb03420e341543a0e94"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+      "bytes": 12884,
+      "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\DECISIONS.json",
+      "bytes": 1514,
+      "sha256": "a1870ca52c778f1c84e1db0fa899d50c9509e1dd14974ccb46649e3da788d5f1"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\GUARDS.json",
+      "bytes": 2967,
+      "sha256": "e554cbba9bf11bd93f3d74155157eb92ac0995d1cd3edd346a5e285440735fde"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\HANDOFF.txt",
+      "bytes": 7307,
+      "sha256": "9d22299e7f842192f02f001a4128080c8acf783968bec2400b1281bdcfef7f5a"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\RED.json",
+      "bytes": 109762,
+      "sha256": "46c1c720aa75b60f0f689a7a4f763e763871a933d992d7cf91fe53337cdba2fe"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\SOURCE-WITNESSES.json",
+      "bytes": 4549,
+      "sha256": "3de60c72a5f9eed8e9eec4dd3f2c6ce6502028a9e2297e3bd2bc2277a1fdcf01"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\TYPECHECK.json",
+      "bytes": 1651,
+      "sha256": "1115ea4ac10857680b4313250d08e5b180d40f65f10484b6b5808dd67ea83972"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\calibrate.mjs",
+      "bytes": 8299,
+      "sha256": "1e2a3d99025e59806b2b17790d6d461b6ab0134d212344381aa4da8ddd8d7be4"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+      "bytes": 1113,
+      "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+    }
+  ],
+  "qualification": {
+    "typecheck": "passed",
+    "pureProtocolChecks": 36,
+    "newBrowserCases": 6,
+    "actualMissingControlsRED": 6,
+    "previousBrowserCasesPassed": 93,
+    "skips": 0,
+    "retries": 0,
+    "flakes": 0,
+    "externalAttempts": 0,
+    "fixtureViolations": 0,
+    "browserErrors": 0,
+    "allFunctionalAIAssertions": "BLOCKED/NOT RUN"
+  },
+  "outputRoot": ".artifacts\\ai-settings-ui-v1-author",
+  "qualifiedREDReport": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results.json",
+    "bytes": 152163,
+    "sha256": "b9bca3c2f80e3367172766c4efb61451d8b152d1300b8af6e6f2dcd344b01d97"
+  },
+  "compatibilityReport": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\compatibility-01\\results.json",
+    "bytes": 25415320,
+    "sha256": "f6b1b6573d6e271609e6ce4dea94e4b066afed864306451c66b80f78983787a4"
+  },
+  "originalSourceWitnesses": {
+    "path": "web\\tests\\reviews\\ai-settings-ui-v1\\SOURCE-WITNESSES.json",
+    "bytes": 4549,
+    "sha256": "3de60c72a5f9eed8e9eec4dd3f2c6ce6502028a9e2297e3bd2bc2277a1fdcf01"
+  },
+  "controlsBindOnlyNewFiles": true,
+  "oldOracleSignaturesChanged": false,
+  "mutableBackendWorkFrozen": false,
+  "parentAction": "Verify and seal only NEW controls, then separately assign implementation/review. This author stops without launching either."
+}

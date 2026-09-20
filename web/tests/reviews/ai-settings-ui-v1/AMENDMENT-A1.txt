@@ -1,0 +1,108 @@
+AI SETTINGS UI A1 - SUCCESSOR INDEPENDENT OPTION MEASUREMENT CORRECTION
+====================================================================
+
+Author and scope
+----------------
+Author identity: successor-independent-ai-settings-ui-a1-native-option-20260920
+Role: the executing successor independent test author, not original author
+0ccaa08f, not the UI implementation coder, and not the backend author.
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+The original author was cleared across the pause before producing A1.
+This packet does not claim that author's continuity, signature or approval.
+
+Exact authorized delta
+----------------------
+web\tests\ai-settings-ui.spec.ts has exactly two textual changes:
+1. Import expectIneligibleOption from this review's native-option-A1.ts.
+2. In AIU3 only, call that helper instead of noEnabledActions for the
+   ineligible grant-profile OPTION locator. The locator itself is unchanged.
+
+The generic noEnabledActions implementation, its button callers, and all other
+case bodies are byte-identical. The archived original spec is compared against
+an exact two-substitution reconstruction of the amended spec, including CRLF.
+No fixture, provider data, policy, grant, epoch, privacy or secret expectation
+has been changed.
+
+The small option-only helper explicitly allows zero matched options. Otherwise
+it uses strict Locator.evaluate and retries the actual HTMLOptionElement's
+matches(":disabled") result with the existing 5000 ms expect.poll deadline.
+The locator evaluation is also capped at 5000 ms. A present enabled option,
+aria-disabled-only option, non-OPTION or ambiguous locator does not pass.
+Native disabled OPTGROUP inheritance is covered. There is no default-true
+fallback and no first(), nth(), index fallback, UI mutation or forced action.
+
+Independent current RED and mechanism
+-------------------------------------
+Before the spec amendment, successor-a1-red-20260920-01 ran the current real
+application through AIU3. It failed at the original option assertion after
+resolving <option disabled>, with Expected disabled / Received enabled.
+The original V1 missing-controls RED remains unchanged and is separate.
+
+The installed playwright-core\lib\coreBundle.js SHA256 is
+549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171.
+Independent source inspection located elementState's follow-label retargeting,
+retarget's OPTION-nonexempt enclosingLabel.control substitution, and the
+downstream native/aria disabled check. The substituted control is the enabled
+SELECT, not the disabled OPTION. The calibration records source offsets and
+excerpts from these exact installed bytes.
+
+Independent paired native calibration
+--------------------------------------
+calibrate-option-A1.mjs uses native-option-A1.html as an isolated static file
+page. It never navigates to the application or substitutes its DOM/state.
+HTTP/WebSocket requests are blocked, the page has no scripts or resources, and
+browser evaluation is observation only. Select changes and ArrowDown are
+ordinary Playwright native user actions. No runtime/provider/DB is involved.
+
+The nine checks cover:
+1. Wrapped enabled SELECT: disabled OPTION passes the new check while the old
+   toBeDisabled assertion reproduces the false-negative at 5000 ms.
+2. Paired unwrapped SELECT: native disabled OPTION passes the old assertion.
+3. Present enabled ineligible OPTION actually fails the new check.
+4. An absent ineligible OPTION is explicitly permitted by the original contract.
+5. Disabled OPTGROUP inheritance works without OPTION.disabled being true.
+6. Eligible options remain selectable; ArrowDown skips disabled OPTION/OPTGROUP.
+7. aria-disabled alone remains selectable and fails the native measurement.
+8. A disabled BUTTON with role=option still fails the HTMLOptionElement guard.
+9. Duplicate identity fails strictly rather than selecting the first match.
+
+These checks are fixture measurement proof, NOT product acceptance.
+
+Unchanged requirements and validation
+-------------------------------------
+CONTRACT.txt remains the original authority. Ineligible profiles may be omitted
+or genuinely disabled. Wrapped labels/selects remain intended UX; the correction
+does not demand omission, unwrap labels or disable the whole selector.
+Four families, sparse/secret-safe credentials, explicit policy, sensitive
+finite consent, exact grant bindings, expiry, opaque revisions, explicit
+revocation, issuer-demotion snapshot semantics, lifecycle epochs and read-only
+authority remain required.
+
+The original runner and settings remain unchanged: exactly six AIU cases,
+20-second case timeout, 5-second expectations, one worker, zero retries/skips,
+combined 60-API-request cap, native visibility/shadow-root semantics,
+serviceWorkers=block, retain-on-failure traces and only-on-failure screenshots.
+Validation order is current AIU3 RED, native calibration, amended AIU3, all six
+focused cases, then full 99 and typecheck only after focused green.
+RESULTS-A1.json records actual outcomes and completed AIU3 tail markers.
+Passing runs retain no acceptance trace, exactly as the unchanged runner says.
+
+Preservation and parent boundary
+--------------------------------
+BEFORE-A1.json binds the original 770 controls and held 13-file UI candidate.
+GUARDS-A1.json verifies the 769 unrelated controls, 13 production paths and
+17 prior-spec files comprising the existing 93 cases remain byte-identical.
+The inherited 854-input digest can be restored exactly by substituting only
+the archived V1 spec; new A1 files are separately hashed in PACKET-A1.json.
+
+history\a1 contains only the actual old spec and its hash references, not
+copies of prior packet/history trees. Original V1 PACKET.json, PACKET.sha256,
+RED.json, oracle manifest and detached signature remain in place unchanged.
+No oracle is captured, modified, re-signed or sealed by this author. The V1
+signature does not authenticate the amended spec or these new A1 payloads.
+No private authority access, production/backend/source_collection edits,
+dependency installation/upgrade, commits or delegated agents are involved.
+
+Stop here for parent byte verification, a new independently authorized A1
+seal, and independent review. This packet is not self-acceptance, release
+approval, a production certification, or runtime/encryption/provider/DB proof.

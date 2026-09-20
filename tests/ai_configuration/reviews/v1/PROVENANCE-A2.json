@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T15:20:26.824Z",
+  "author": {
+    "id": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7",
+    "role": "Successor independent regression author only",
+    "originalAI6Author": false,
+    "backendCoder": false,
+    "uiCoder": false
+  },
+  "scope": "Separate semantic fields may contain equal explicitly supplied strings. No implicit model/deployment defaulting or execution change.",
+  "clarificationBeforeNewTest": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\CONTRACT-A2.txt",
+    "bytes": 3359,
+    "sha256": "101a1a16f35f38a95d0cc1b14aaa0dec03db5778cad58bc661b1a810b4ab67f6"
+  },
+  "originalContractUnchanged": {
+    "path": "tests\\ai_configuration\\CONTRACT.txt",
+    "bytes": 13625,
+    "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+  },
+  "originalDecisionsUnchanged": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\DECISIONS.json",
+    "bytes": 3154,
+    "sha256": "8db255260105ef022137df3b2dd1611ecc90d0a65e7feceddb1426b482cdac61"
+  },
+  "publicPrimarySources": [
+    {
+      "publisher": "Microsoft Learn",
+      "title": "How to switch between OpenAI and Azure OpenAI endpoints",
+      "url": "https://learn.microsoft.com/en-us/azure/developer/ai/how-to/switching-endpoints",
+      "section": "Specify the model / Important",
+      "reviewedOn": "2026-09-20",
+      "pageLastUpdated": "2026-08-24",
+      "shortQuote": "Our documentation often shows deployment names that match model names to show which model works with each API endpoint.",
+      "interpretation": "Deployment names have their own API role, but matching model/deployment name values are permitted. No live model or endpoint availability is inferred."
+    },
+    {
+      "publisher": "Microsoft Learn",
+      "title": "Create and deploy an Azure OpenAI in Microsoft Foundry Models resource (classic)",
+      "requestedURL": "https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/create-resource?view=foundry-classic",
+      "resolvedURL": "https://learn.microsoft.com/en-us/azure/foundry-classic/openai/how-to/create-resource?view=foundry-classic",
+      "section": "Deploy a model / deployment name / Important",
+      "reviewedOn": "2026-09-20",
+      "shortQuote": "deployment names are represented as identical to model names",
+      "interpretation": "The guide separately describes choosing deployment names and also explicitly uses matching values. Name equality does not collapse the two semantic roles."
+    }
+  ],
+  "localSourceWitnesses": [
+    {
+      "path": "tests\\ai_configuration\\contract_test.go",
+      "bytes": 2023,
+      "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+    },
+    {
+      "path": "tests\\ai_configuration\\production_bindings_test.go",
+      "bytes": 1013,
+      "sha256": "e6a219defcdc4b6091d474006f308540e6d13da120dbe7caf20f69996afc8358"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixtures_test.go",
+      "bytes": 18486,
+      "sha256": "b5d2de47e87e87024c0bad45aeb2d23f556088130deb25551f7ff1eaecc5ff76"
+    },
+    {
+      "path": "tests\\ai_configuration\\configuration_test.go",
+      "bytes": 18172,
+      "sha256": "56242511fb13d31279d5d645bc9cf063b388def995ff40b8c193890fbc06852f"
+    },
+    {
+      "path": "tests\\ai_configuration\\Test-AIConfiguration.ps1",
+      "bytes": 5511,
+      "sha256": "98832e83f504a06061237839f50af19a555cd61e117a5084eb1445d580415521"
+    },
+    {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3278,
+      "sha256": "fe69d54be17c9930d90c44b2ca8aca9d8c3914b0dad3b5d3d2d9615f64ab3141"
+    },
+    {
+      "path": "internal\\providers\\types.go",
+      "bytes": 2186,
+      "sha256": "da26338e465a8c393863c943ac0464a0fea0b28db40f22afd5364ffe0dc1568d"
+    },
+    {
+      "path": "internal\\providers\\assessor.go",
+      "bytes": 14733,
+      "sha256": "cbb81de861b4df105d80ade8d0b5a86b074201f6c4d7888a32eca0c23fba6ac8"
+    }
+  ],
+  "observedIncompatibleProductionCondition": {
+    "path": "internal\\app\\ai_validation.go",
+    "line": 31,
+    "expression": "!validAIText(profile.Deployment, 256) || profile.Deployment == profile.Model",
+    "authorHasNotChangedIt": true
+  },
+  "providerInspectionOnly": {
+    "profileFields": "Model and Deployment are separate providers.Profile fields; APIKey is json-omitted.",
+    "nonblankCheckLine": 200,
+    "foundryUsesDeploymentLine": 230,
+    "inequalityRestriction": false,
+    "providerConstructorOrAssessInvoked": false
+  },
+  "oldNegativeRequirements": {
+    "case": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+    "assertions": [
+      "empty-model -> 400",
+      "missing-foundry-deployment (empty string) -> 400",
+      "non-foundry-deployment (nonempty string) -> 400"
+    ],
+    "existingBytesUnchanged": true
+  },
+  "networkAndPrivacy": {
+    "research": "Only the two explicitly supplied public official Microsoft pages were read.",
+    "repositoryCodeOrCredentialsUploaded": false,
+    "providerAccountsUsed": false,
+    "realProviderRequests": false,
+    "privateAuthorityAccess": false,
+    "privateRuntimeValuesCopied": false
+  },
+  "newCaseNotYetAuthoredAtThisCapture": true,
+  "previousAcceptanceDoesNotProveEqualNames": true
+}

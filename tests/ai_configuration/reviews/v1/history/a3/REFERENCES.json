@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T15:48:32.617Z",
+  "archive": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\history\\a3\\foundry_names_test.go.a2",
+    "bytes": 4889,
+    "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+  },
+  "originalPath": "tests\\ai_configuration\\foundry_names_test.go",
+  "references": [
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 10691,
+      "sha256": "6a628934ca84bc320b1f093516b370c071ff9e71702090c460b97233e05d1e06"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "0dbc37171b54343b190723d6d05d5fc468bff2a51911c399d232038da1aa511e"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A2.json",
+      "bytes": 8338,
+      "sha256": "9798b6c9344449a798f7ad2096833bcac8426ae3473a6f8d3f66979d3e9b9260"
+    },
+    {
+      "path": ".oracles\\ai-configuration-a2.json",
+      "bytes": 30834,
+      "sha256": "9f2dac2ef9ebc1fbedc393681fea612fc5b17a091ec6a0527689a872c9d42e56"
+    },
+    {
+      "path": ".oracles\\ai-configuration-a2.json.sig",
+      "bytes": 89,
+      "sha256": "4516eca6a4765c4232359c92cb8a0824ec4bbb0c7900bd3b69484f9c0cb6a85c"
+    }
+  ],
+  "note": "Only the actual A2 test and hash references are archived. Existing A2 packet/RED/seals remain in place; no recursive history copies."
+}

@@ -1,0 +1,90 @@
+AI CONFIGURATION A3 - EXACT-INSTANT TIMESTAMP MEASUREMENT
+========================================================
+
+Author: successor-independent-ai-configuration-foundry-names-a2-20260920
+Role: ORIGINAL independent A2 author, now correcting only that new test's
+timestamp representation measurement. Not the original AI6 author or coder.
+
+Production boundary
+--------------------
+Before this task the parent removed the Foundry inequality from BOTH the Go
+validator and the unpublished schemaV7 CHECK, and corrected internal/app/README.
+Those three current source files are held, not edited by this author. The other
+nine backend production files, all thirteen UI files and provider sources remain
+unchanged. No production timestamp serialization/timezone change is requested.
+
+Independent actual RED
+----------------------
+author-a3-time-red-20260920-01 ran the unchanged sealed A2 case on that current
+candidate with the original real-PG/API/session runner. All six old AI cases
+passed. A2's equal-name POST, reopen, encrypted credential and exact
+admin-policy/grant/resolver section passed. Its deployment-only PATCH returned
+200, then line 47 failed the full profile comparison. Later sections were
+BLOCKED/NOT RUN in that RED.
+
+Independent actual PG/API calibration
+-------------------------------------
+Calibrate-Time-A3.ps1 uses byte-identical working copies of the existing
+contract, fixtures and production binding. Originals are never edited.
+The working copies are removed after the bounded calibration. Its new Go source
+is stored as calibrate-time-A3.go.txt so it is not an extra acceptance case.
+
+For BOTH actual API PATCH responses, calibration observed:
+  actual UpdatedAt:   2026-09-17T14:00:00+02:00, Location "Local"
+  expected h.now():   2026-09-17T12:00:00Z,      Location "UTC"
+  UpdatedAt.Equal:    true
+  old DeepEqual:     false
+  revision changed:  true
+  only differing field: UpdatedAt
+
+These are independently obtained owned PostgreSQL/core API responses, not a
+standard-library JSON-Z roundtrip, copied parent conclusions, injected rows or
+a forced timezone. The parent's diagnostic remains supporting evidence only.
+
+The 35 bounded in-memory vectors use those observed DTOs:
+  - Four same-instant checks accept native-offset and UTC representations.
+  - Four different-instant checks reject both +1 ns and -1 ns.
+  - Five empty/unchanged/reused revision checks reject.
+  - Twenty-two checks independently change each of the eleven other DTO fields
+    in both PATCH stages and reject, including CreatedAt.
+Both old offset-only false negatives are reproduced separately.
+All vectors passed; provider/storage HTTP, ambient dials and TCP tripwires
+remained zero. This calibration is measurement proof, NOT product acceptance.
+
+Exact authorized amendment
+--------------------------
+Exactly FOUR lines change in tests/ai_configuration/foundry_names_test.go:
+1. Set wantDistinct.UpdatedAt to distinct.UpdatedAt, not h.now().
+2. Add distinct.UpdatedAt.Equal(h.now()) to the existing full-profile assertion.
+3. Set wantEqual.UpdatedAt to equalAgain.UpdatedAt, not h.now().
+4. Add equalAgain.UpdatedAt.Equal(h.now()) to its existing full-profile assertion.
+
+Only the expected timestamp representation is copied. The expected profile
+still comes from the prior receipt plus the explicitly changed field. FULL
+reflect.DeepEqual remains, including every other field. All original nonempty,
+new and non-reused revision checks remain. No general helper replaces them.
+No rounding, truncation, greater-than comparison, time tolerance or default
+success is introduced. A one-nanosecond change still fails.
+
+The original contract requires timestamp metadata, not UTC lexical encoding or
+Go Location identity for profile UpdatedAt. Different offset representations can
+denote the same instant. Model/deployment roles, explicit input requirements, encrypted keys,
+exact grants and data-approval boundaries are unchanged.
+
+Actual validation and preservation
+----------------------------------
+The original AI runner passed all SEVEN cases, including every new Foundry
+PATCH/stale-grant/renewed-grant/omission tail. The unchanged Source runner passed
+all NINE cases, including its existing published-v5 current-core/current-worker
+upgrade probes, to qualify the parent's unpublished schemaV7 condition change.
+Source9 intentionally uses its existing owned local S3 and TLS GitHub fixture;
+this is not a claim of zero fixture HTTP or live-provider compatibility.
+No migration of an already-deployed old schemaV7 constraint is claimed.
+
+Only the actual A2 test and hash references are archived in history\a3.
+All original A2 packet/RED/seals remain unchanged. The old seal now has exactly
+one expected file-hash delta, the amended test; it does not authenticate A3.
+New A3 payloads are separately hash-bound and await parent verification/sealing.
+No old AI6, Source9, fixtures, bindings, runners, dependencies, UI, provider,
+schema, oracle or signature is changed. No agents, commits or provider calls.
+Stop for parent verification, a new current seal, and its repeated actual AI7.

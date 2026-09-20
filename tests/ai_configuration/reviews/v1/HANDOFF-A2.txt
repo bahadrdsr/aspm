@@ -1,0 +1,108 @@
+AI CONFIGURATION A2 - FOUNDRY NAME REGRESSION HANDOFF
+===================================================
+
+Status: ACTUAL CURRENT RED FROZEN. Parent sealing and production correction pending.
+Date: September 20, 2026.
+Author: successor-independent-ai-configuration-foundry-names-a2-20260920
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+Role: successor independent test author only, not original AI6 author, backend
+coder or UI coder. Earlier work by this successor was the UI A1 measurement
+amendment, not production UI implementation.
+
+Exact additive payload
+----------------------
+ONE new integration file:
+  tests\ai_configuration\foundry_names_test.go
+ONE new top-level case:
+  TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions
+Test SHA256:
+  e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857
+
+New review evidence is under tests\ai_configuration\reviews\v1:
+  CONTRACT-A2.txt, PROVENANCE-A2.json, BEFORE-A2.json, RED-A2.json,
+  GUARDS-A2.json, HANDOFF-A2.txt, PACKET-A2.json and PACKET-A2.sha256.
+No original contract, case, fixture, binding, runner, dependency or packet was
+edited. No history copy was needed because this regression is purely additive.
+
+CONTRACT-A2 clarifies that model/deployment are independently supplied semantic
+fields, not unequal strings. PROVENANCE-A2 records the two independently read
+official Microsoft sources and unchanged local source witnesses. Synthetic
+test values are explicit, not model-catalog recommendations or inferred defaults.
+
+Actual current RED
+------------------
+Original unchanged redacting runner, Mode Contract:
+  successor-a2-foundry-red-20260920-01
+Receipt time: 2026-09-20T15:22:59Z to 2026-09-20T15:23:44Z.
+Exit code: 1.
+Top-level cases: 7 selected, 6 passed, 1 failed, 0 skipped.
+Existing nested cases: 2 passed, 0 failed.
+The six original cases passed, including their existing empty-model,
+blank-Foundry-deployment and non-Foundry-nonempty-deployment 400 assertions.
+
+The new case completed real owned PG/core/bootstrap/admin login, then failed:
+  foundry_names_test.go:26
+  actual POST /api/v1/ai/profiles returned 400, want 201
+  private response withheld
+Both model and deployment were explicitly set to the same nonblank synthetic
+string. This is a runtime API incompatibility, not missing-fixture, connection,
+constructor or compilation failure. Full production resolver binding compiled.
+
+The unchanged rejecting production condition is at:
+  internal\app\ai_validation.go:31
+  profile.Deployment == profile.Model
+This author did not remove it.
+
+New-case network counters: HTTP=0, ambient dials=0, tripwire TCP=0.
+The original six also passed their existing no-provider/storage-I/O guards.
+No provider constructor/Assess, inference, model call, source scan or job ran.
+
+Honest blocked tails
+---------------------
+All remaining test-body assertions after the failed equality POST are
+BLOCKED/NOT RUN. Cleanup/network guards did run.
+1. Equal-name persistence/reopen, authenticated encrypted key and exact
+   approved-hosted admin grant/resolver mapping of both fields/private key.
+2. Deployment-only equal-to-distinct PATCH, revision change, old grant denial
+   and exact renewed lookup.
+3. Model-only distinct-to-equal PATCH, revision change, prior grants denied
+   and exact renewed lookup.
+4. Missing-model and missing-deployment POST rejection without defaulting.
+The new case has zero successful tail sections. None is assumed green.
+
+Preserved boundaries
+--------------------
+Post-RED SHA256 guards verified all 150 backend controls, all 786 UI A1 controls,
+all 12 held backend production paths, all 13 held UI production paths, both
+provider source files and 48 source_collection controls including upgrade A3.
+The latest successful full99 report in the original author output root and the
+parent's later focused UI report are unchanged; no UI suite was rerun here.
+Original V1/A1 manifests, detached signatures and packets remain unchanged.
+The existing seal does not cover the new A2 regression or payloads.
+
+Prior backend coder HANDOFF SHA256 remains:
+  01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c
+That remains prior bounded acceptance, not proof of equal-name compatibility.
+All new payloads and four raw run evidence files are hash-bound by the packet
+and RED report. PACKET-A2.sha256 hashes the unsigned packet itself.
+
+Reproduction and stop
+----------------------
+From C:\bahadr\serious\aspm, with the same private owned PG runtime and a fresh
+unused output label:
+  .\tests\ai_configuration\Test-AIConfiguration.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+The runner remains cached-toolchain/offline/read-only, with count=1 and 180s
+package timeout. Existing 60s fixture and 220-request bounds are unchanged.
+Private runtime contents were neither displayed nor copied.
+
+No production/schema/provider/UI edits, existing-test edits, dependency installs,
+oracle captures/edits, private authority access, commits or agents were used.
+Only the explicitly supplied public Microsoft documentation was read remotely;
+no user code, credentials or provider account was sent to an internet service.
+
+Parent must verify and seal A2, then perform the separately authorized narrow
+validator comparison removal and false production-doc wording correction.
+Parent reruns all seven AI cases and affected compatibility and obtains the
+same independent reviewer's verification of the corrected candidate.
+This author stops without changing production or claiming the blocked tails,
+provider compatibility, publication readiness or independent acceptance passed.

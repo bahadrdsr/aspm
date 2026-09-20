@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T09:18:59.141Z",
+  "classification": "Independent reproduction of stale schema-specific oracle, not missing migration",
+  "authorRole": "independent successor test author",
+  "parentEvidenceReferences": [
+    {
+      "path": ".artifacts\\source-collection-v1\\parent-ai-source-compat-20260918-01.log",
+      "bytes": 3232,
+      "sha256": "c15d88aff068e713067a6c458d14fce83b818d9e7ceaf1a18b65fc31cce51d69"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\parent-ai-source-compat-20260918-01.jsonl",
+      "bytes": 17906,
+      "sha256": "000aa92d87eb3b3416f4dec3e76fe840b498e5fee055bf8606385b978fced1de"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-4ca54a5333c34b3693ce54bd.json",
+      "bytes": 884,
+      "sha256": "f091913c1b764ea37cf8575f428d9d280e54402425e74e4dd60bb81c88a37d65"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-0e2ca3db2fa16e9c69197058.json",
+      "bytes": 886,
+      "sha256": "495f97b8ec33707b9b4ff5e6fb4a3630492e386fb3c85ab5681838e69b8c529b"
+    }
+  ],
+  "parentExistingGuardLog": {
+    "bytes": 5018,
+    "sha256": "b43b8e65e4ed89c2f5538874a176f0ff36837cc2dba56a02a2c9a801b8c5b7d4",
+    "alias": "RUNTIME\\ai-configuration-parent-check\\source-compat-v1.log",
+    "contentsCopied": false
+  },
+  "actualIndependentRun": {
+    "label": "independent-a3-v7-before-20260918-01",
+    "receipt": {
+      "path": ".artifacts\\source-collection-v1\\independent-a3-v7-before-20260918-01.receipt.json",
+      "bytes": 735,
+      "sha256": "92f6e73759d87a0eaf20711d73130bdf64d318eb79843366ce9307cc30244522"
+    },
+    "events": {
+      "path": ".artifacts\\source-collection-v1\\independent-a3-v7-before-20260918-01.jsonl",
+      "bytes": 17904,
+      "sha256": "894037f9a110e72d73f8225e94f34e200f6abb74e745780e8e36bc8a2ef4599f"
+    },
+    "log": {
+      "path": ".artifacts\\source-collection-v1\\independent-a3-v7-before-20260918-01.log",
+      "bytes": 3232,
+      "sha256": "fff91900e3588c7a2c9dc691e1c94cef948ee191f7109ce9cdf61b65275211d8"
+    },
+    "exitCode": 1,
+    "fullProductionBindingIncluded": true,
+    "topLevelPassed": [
+      "TestSourceCollectionOwnedIOPreflight",
+      "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+      "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+      "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+      "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+      "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+      "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+      "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot"
+    ],
+    "failedNamedTests": [
+      "TestSourceCollectionPublishedV5UpgradeA2",
+      "TestSourceCollectionPublishedV5UpgradeA2/current-core",
+      "TestSourceCollectionPublishedV5UpgradeA2/current-worker"
+    ],
+    "actualObservations": [
+      {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-9aed255e7d1e2adcd609d523.json",
+        "sha256": "15a0ce56979caa04d2f58aaa2a816534c7974a02dc0330aa69aabfeda8a1c338",
+        "observation": {
+          "Entrypoint": "current-core",
+          "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+          "OwnedSchema": "source_collection_40a61c289d764f56a49bc447",
+          "LegacyRelations": 18,
+          "VerifiedStartingMaxVersion": 5,
+          "CurrentConstructorSucceeded": true,
+          "AfterOpenVersions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "AfterOpenTables": [
+            "app_ai_egress_grants",
+            "app_ai_policies",
+            "app_ai_profiles",
+            "app_assets",
+            "app_auth_throttle",
+            "app_bootstrap",
+            "app_coverage",
+            "app_finding_deliveries",
+            "app_findings",
+            "app_imports",
+            "app_integration_connections",
+            "app_memberships",
+            "app_notes",
+            "app_observations",
+            "app_oidc_flows",
+            "app_oidc_identities",
+            "app_report_snapshots",
+            "app_schema_versions",
+            "app_sessions",
+            "app_source_collection_records",
+            "app_source_collections",
+            "app_source_connections",
+            "app_source_repository_assets",
+            "app_users",
+            "app_workspaces"
+          ],
+          "PostUpgradeAPITailExecuted": false,
+          "LegacyBusinessDataPreservationClaimed": false
+        }
+      },
+      {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-8c0ddf7d5656770f530ce9fa.json",
+        "sha256": "56b8b26e0964d3bb6fbcdbf84f6f9d019cfba216bb1b71ed93419079c64b38d6",
+        "observation": {
+          "Entrypoint": "current-worker",
+          "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+          "OwnedSchema": "source_collection_dc8949ee7707c49450054707",
+          "LegacyRelations": 18,
+          "VerifiedStartingMaxVersion": 5,
+          "CurrentConstructorSucceeded": true,
+          "AfterOpenVersions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "AfterOpenTables": [
+            "app_ai_egress_grants",
+            "app_ai_policies",
+            "app_ai_profiles",
+            "app_assets",
+            "app_auth_throttle",
+            "app_bootstrap",
+            "app_coverage",
+            "app_finding_deliveries",
+            "app_findings",
+            "app_imports",
+            "app_integration_connections",
+            "app_memberships",
+            "app_notes",
+            "app_observations",
+            "app_oidc_flows",
+            "app_oidc_identities",
+            "app_report_snapshots",
+            "app_schema_versions",
+            "app_sessions",
+            "app_source_collection_records",
+            "app_source_collections",
+            "app_source_connections",
+            "app_source_repository_assets",
+            "app_users",
+            "app_workspaces"
+          ],
+          "PostUpgradeAPITailExecuted": false,
+          "LegacyBusinessDataPreservationClaimed": false
+        }
+      }
+    ],
+    "postUpgradeTails": "BLOCKED/NOT RUN before amendment"
+  },
+  "originalCurrentLedger": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "actualBeforeAmendmentLedger": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "genuineHistoricalStart": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "legacyRelations": 18,
+  "actualCurrentRelations": 25,
+  "bothCurrentConstructorsSucceeded": true,
+  "missingMigrationObserved": false,
+  "preAmendmentTailsClaimedPassing": false
+}

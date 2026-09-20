@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-configuration-v1",
+  "capturedAt": "2026-09-17T23:16:00.335479+00:00",
+  "contractBeforeTests": {
+    "path": "tests\\ai_configuration\\CONTRACT.txt",
+    "bytes": 13625,
+    "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+  },
+  "pureLookup": {
+    "constructor": "app.OpenAIConfigurationResolver(ctx, app.AIConfigurationResolverConfig) (*app.AIConfigurationResolver,error)",
+    "config": {
+      "Database": "app.DatabaseConfig",
+      "EncryptionKey": "[]byte"
+    },
+    "request": {
+      "WorkspaceID": "string",
+      "ActorID": "string",
+      "ProfileID": "string",
+      "GrantID": "string",
+      "Task": "string",
+      "DataClass": "string"
+    },
+    "result": "app.AIConfiguration{Profile providers.Profile; Policy providers.Policy}",
+    "noHTTPOrMutationOrAssessment": true,
+    "currentRequestingActorMustWrite": true,
+    "pointInTimeNotFuturePermit": true
+  },
+  "task": "finding-validity",
+  "dataClass": {
+    "name": "finding-evidence",
+    "meaning": "Potentially sensitive application/repository finding metadata, source locations and bounded untrusted evidence/code excerpts; not certified public/redacted; credentials/configuration keys are excluded from approved payload content."
+  },
+  "policy": {
+    "default": "disabled, revision \"0\", no configured actor/time",
+    "modes": [
+      "disabled",
+      "local-only",
+      "approved-hosted"
+    ],
+    "localOnly": "only family local, even if hosted family endpoint is loopback; no GrantID",
+    "approvedHosted": "real persisted grant looked up by ID, current profile/policy revision, exact destination, selected workspace/task/class, expiry/revocation; applies to all families",
+    "modeRevisionInvalidatesGrants": true,
+    "globalAllowedDestinationsFromJSON": false
+  },
+  "grantIssuerDecision": "Issuing/revoking actor must be admin at that transaction. Grant is a durable workspace decision; later issuer role demotion alone does not infer revocation. Current requesting actor membership is checked at each Resolve. Withdrawal is explicit revoke, expiry or profile/policy revision invalidation.",
+  "profileRevisions": "Server-assigned nonempty strings map directly to providers.Profile.Revision. Public no-op retains revision; meaningful changes and explicit nonempty key replacement advance it.",
+  "secretPolicy": {
+    "localKeyMayBeAbsent": true,
+    "hostedKeyRequired": true,
+    "storeKeyWithoutAppEncryptionKey": "503/unavailable",
+    "AAD": "aspm/ai-credential/v1\\0<workspace>\\0<profile>",
+    "slackAndSourceAADUnchanged": true,
+    "JSONSecretReadback": false
+  },
+  "validationGap": "providers.Open constructs a no-I/O snapshot but per-profile checks currently live in Assess. Setup needs pure validation reuse/factoring, never calling Assess as validation. Existing TLS/proxy/client constraints are not relaxed.",
+  "historicalUpgradeBaseline": "Exact published v1-v6 DDL, no current-table deletion/version relabel and no old customer-data preservation claim.",
+  "noJobsInferenceModelCatalogOrDeploymentScope": true
+}

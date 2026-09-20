@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-configuration-a3-exact-instant-measurement",
+  "phase": "frozen-independent-time-measurement-correction",
+  "frozenAt": "2026-09-20T16:09:42.776Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned amendment by the original independent A2 author. Parent verifies/new-seals current controls; no old oracle/signature is changed.",
+  "author": {
+    "id": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+    "role": "Original independent A2 author, now A3 timestamp measurement correction",
+    "originalA2Author": true,
+    "originalAI6Author": false,
+    "productionCoder": false,
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "payloadFileCount": 12,
+  "addedPayloadCount": 11,
+  "files": [
+    {
+      "path": "tests\\ai_configuration\\foundry_names_test.go",
+      "bytes": 4989,
+      "sha256": "3d9dc391c6f90ae426ee22d9153a29409b3492fbcfc513d6b82079c6276dc9cd"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\AMENDMENT-A3.txt",
+      "bytes": 5181,
+      "sha256": "ce07e98a28cd6051b1343537c816b979786dc2e5c985a086f41e010e0457b76b"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\BEFORE-A3.json",
+      "bytes": 202282,
+      "sha256": "9687b0e6a0efe0e57929abbd68b6f05dfa2056db74c9c688a838924f96aa6703"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\CALIBRATION-A3.json",
+      "bytes": 12240,
+      "sha256": "87071e438453f8b8c80dea3f5c36b133b29a817ba40c897105725e73ef0214f0"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\Calibrate-Time-A3.ps1",
+      "bytes": 6381,
+      "sha256": "258af37fca7ebedaa52a8c646f3d4a9fd3c1b058891ce05524ced0a17ac22ff1"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\GUARDS-A3.json",
+      "bytes": 21735,
+      "sha256": "4291e61223e130e1d293bc843a63b8d74fbd28bf9dd211492a9255153211b4eb"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\HANDOFF-A3.txt",
+      "bytes": 5810,
+      "sha256": "3cc714f8b0fdcab0baeb5b20267c1c574827d02b5accb8868f60cdb2f1e37388"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A3.json",
+      "bytes": 5064,
+      "sha256": "fe497ead3a5497e5b8c03456b02a954ab0b4e01597c25bd39045c0ec68c46fe9"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RESULTS-A3.json",
+      "bytes": 15450,
+      "sha256": "9c5f615493f22c28ec6f223c371a82025f25f999efe733cd4858850f1bdc122a"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\calibrate-time-A3.go.txt",
+      "bytes": 5969,
+      "sha256": "f7bbdb544183dc4b9360a1b05070df67a5cd09b82a873f63739f2d1ad28ab244"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\history\\a3\\REFERENCES.json",
+      "bytes": 1416,
+      "sha256": "35b2ba4583b17e8b5345b4c364f75a2f5b429751309cc3271a3177994ba8ccef"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\history\\a3\\foundry_names_test.go.a2",
+      "bytes": 4889,
+      "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+    }
+  ],
+  "ownedFiles": [
+    "tests\\ai_configuration\\foundry_names_test.go",
+    "tests\\ai_configuration\\reviews\\v1\\AMENDMENT-A3.txt",
+    "tests\\ai_configuration\\reviews\\v1\\BEFORE-A3.json",
+    "tests\\ai_configuration\\reviews\\v1\\CALIBRATION-A3.json",
+    "tests\\ai_configuration\\reviews\\v1\\Calibrate-Time-A3.ps1",
+    "tests\\ai_configuration\\reviews\\v1\\GUARDS-A3.json",
+    "tests\\ai_configuration\\reviews\\v1\\HANDOFF-A3.txt",
+    "tests\\ai_configuration\\reviews\\v1\\PACKET-A3.json",
+    "tests\\ai_configuration\\reviews\\v1\\PACKET-A3.sha256",
+    "tests\\ai_configuration\\reviews\\v1\\RED-A3.json",
+    "tests\\ai_configuration\\reviews\\v1\\RESULTS-A3.json",
+    "tests\\ai_configuration\\reviews\\v1\\calibrate-time-A3.go.txt",
+    "tests\\ai_configuration\\reviews\\v1\\history\\a3\\REFERENCES.json",
+    "tests\\ai_configuration\\reviews\\v1\\history\\a3\\foundry_names_test.go.a2"
+  ],
+  "originalA2": {
+    "packet": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 10691,
+      "sha256": "6a628934ca84bc320b1f093516b370c071ff9e71702090c460b97233e05d1e06"
+    },
+    "checksum": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "0dbc37171b54343b190723d6d05d5fc468bff2a51911c399d232038da1aa511e"
+    },
+    "RED": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A2.json",
+      "bytes": 8338,
+      "sha256": "9798b6c9344449a798f7ad2096833bcac8426ae3473a6f8d3f66979d3e9b9260"
+    },
+    "testBefore": {
+      "path": "tests\\ai_configuration\\foundry_names_test.go",
+      "bytes": 4889,
+      "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+    },
+    "archivedTest": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\history\\a3\\foundry_names_test.go.a2",
+      "bytes": 4889,
+      "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+    },
+    "manifest": {
+      "path": ".oracles\\ai-configuration-a2.json",
+      "bytes": 30834,
+      "sha256": "9f2dac2ef9ebc1fbedc393681fea612fc5b17a091ec6a0527689a872c9d42e56"
+    },
+    "signature": {
+      "path": ".oracles\\ai-configuration-a2.json.sig",
+      "bytes": 89,
+      "sha256": "4516eca6a4765c4232359c92cb8a0824ec4bbb0c7900bd3b69484f9c0cb6a85c"
+    },
+    "allOriginalRecordsPreserved": true
+  },
+  "exactMinimalDelta": {
+    "file": "tests\\ai_configuration\\foundry_names_test.go",
+    "logicalComparisons": 2,
+    "changedLines": 4,
+    "after": {
+      "path": "tests\\ai_configuration\\foundry_names_test.go",
+      "bytes": 4989,
+      "sha256": "3d9dc391c6f90ae426ee22d9153a29409b3492fbcfc513d6b82079c6276dc9cd"
+    },
+    "meaning": "Copy only actual UpdatedAt representation into the expected prior-receipt DTO; separately require UpdatedAt.Equal(h.now()) in each PATCH assertion. Retain full DeepEqual and all nonempty/new/non-reused revision checks.",
+    "byteReconstructionProof": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\GUARDS-A3.json",
+      "bytes": 21735,
+      "sha256": "4291e61223e130e1d293bc843a63b8d74fbd28bf9dd211492a9255153211b4eb"
+    },
+    "otherTestBytesIdentical": true,
+    "noRoundingTruncationToleranceOrGreaterThan": true
+  },
+  "independentActualMismatch": {
+    "beforeCorrectionRED": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A3.json",
+      "bytes": 5064,
+      "sha256": "fe497ead3a5497e5b8c03456b02a954ab0b4e01597c25bd39045c0ec68c46fe9"
+    },
+    "actualPGAPICalibration": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\CALIBRATION-A3.json",
+      "bytes": 12240,
+      "sha256": "87071e438453f8b8c80dea3f5c36b133b29a817ba40c897105725e73ef0214f0"
+    },
+    "observed": "Only UpdatedAt differed: actual 2026-09-17T14:00:00+02:00 Local vs expected 2026-09-17T12:00:00Z UTC; equal instant=true, old DeepEqual=false, revision changed=true for both PATCHes.",
+    "parentDiagnosticNotUsedAsAcceptance": true,
+    "jsonZOnlyRoundtripNotUsedAsProof": true,
+    "timezoneEnvironmentUnchanged": true
+  },
+  "qualification": {
+    "currentA2RED": {
+      "selected": 7,
+      "passed": 6,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "calibration": {
+      "vectors": 35,
+      "passed": 35,
+      "failed": 0
+    },
+    "AI7": {
+      "selected": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "Source9": {
+      "selected": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 6,
+      "nestedFailed": 0
+    },
+    "completedFoundrySections": 4,
+    "remainingBlockedFoundrySections": 0,
+    "productionChangesByThisAuthor": 0
+  },
+  "results": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\RESULTS-A3.json",
+    "bytes": 15450,
+    "sha256": "9c5f615493f22c28ec6f223c371a82025f25f999efe733cd4858850f1bdc122a"
+  },
+  "calibrationClassification": "35 actual-DTO-based measurement vectors with 4 same-instant accepts, 4 +/-1ns rejects, 5 revision rejects and 22 other-field rejects. Fixture measurement proof, not product acceptance.",
+  "source9Qualification": "Original nine cases, including owned I/O preflight and published-v5 current-core/current-worker upgrade probes. Intentional owned local S3/TLS GitHub fixture traffic is not a zero-HTTP claim or a real provider call.",
+  "schemaQualification": "Fresh owned and original published-v5/v6 upgrade paths qualify the parent-fixed unpublished schemaV7 constraint. No already-deployed old schemaV7 constraint migration is claimed.",
+  "heldProduction": {
+    "parentChangedThreeBeforeThisTask": [
+      {
+        "path": "internal\\app\\README.txt",
+        "bytes": 11755,
+        "sha256": "15be1b206d3ed5ded5da6cc6421cf4439cb057059207b0024728024aa99e2d63"
+      },
+      {
+        "path": "internal\\app\\ai_schema.go",
+        "bytes": 2180,
+        "sha256": "50f99db94b2eb29160e13f1937ad38d78fc5051d378a96499763e90f7255688c"
+      },
+      {
+        "path": "internal\\app\\ai_validation.go",
+        "bytes": 3239,
+        "sha256": "efcaa7beaa4afe88d61616ca7653a279539f04b7e28563a4263aa800ea369ad1"
+      }
+    ],
+    "allTwelveBackendPathsHeldUnchanged": [
+      {
+        "path": "internal\\app\\README.txt",
+        "bytes": 11755,
+        "sha256": "15be1b206d3ed5ded5da6cc6421cf4439cb057059207b0024728024aa99e2d63"
+      },
+      {
+        "path": "internal\\app\\doc.go",
+        "bytes": 7402,
+        "sha256": "b87d2b36a9d993fb6bf7c25e6a457d8ba473662be326bad22c195ec8f287f7b8"
+      },
+      {
+        "path": "internal\\app\\http.go",
+        "bytes": 13578,
+        "sha256": "bf6f3abffd23223a8f2adef5c685996aed171a64e0c839ec0e0e41a131a3df07"
+      },
+      {
+        "path": "internal\\app\\schema.go",
+        "bytes": 9852,
+        "sha256": "95f0f20b3dd6ae2dc279aa98993da53de9225f65005fa31bceead85d44b3d823"
+      },
+      {
+        "path": "internal\\app\\ai_grants.go",
+        "bytes": 5541,
+        "sha256": "3cb4a9fd01e0abd26df9c39a37ade5347dfb00b8b244ae1ac4bd6f3c8b74827a"
+      },
+      {
+        "path": "internal\\app\\ai_policy.go",
+        "bytes": 1764,
+        "sha256": "2901ebf698bd1310a9dee70e3a6a24705d3075aa841e2011367029c0b696e191"
+      },
+      {
+        "path": "internal\\app\\ai_profiles.go",
+        "bytes": 6932,
+        "sha256": "aab634e887719da18687459a9fab8cd64efe7a98ccb255464de8d17a77a9de96"
+      },
+      {
+        "path": "internal\\app\\ai_resolver.go",
+        "bytes": 6025,
+        "sha256": "8a4f40efb33604f1084cdfc47c96865199965cd4804934fe3204f9f69906abce"
+      },
+      {
+        "path": "internal\\app\\ai_routes.go",
+        "bytes": 2866,
+        "sha256": "95ef2824cf9eb8c0da9ea41ce10482eb3074ba2403ccf86ea448646fe10078c7"
+      },
+      {
+        "path": "internal\\app\\ai_schema.go",
+        "bytes": 2180,
+        "sha256": "50f99db94b2eb29160e13f1937ad38d78fc5051d378a96499763e90f7255688c"
+      },
+      {
+        "path": "internal\\app\\ai_types.go",
+        "bytes": 3527,
+        "sha256": "f968865505e6258779d5e0e62a41bd3bbfea091d557452fb23d0229f5f995bc1"
+      },
+      {
+        "path": "internal\\app\\ai_validation.go",
+        "bytes": 3239,
+        "sha256": "efcaa7beaa4afe88d61616ca7653a279539f04b7e28563a4263aa800ea369ad1"
+      }
+    ],
+    "otherNineStillMatchA2": true,
+    "allThirteenUIPathsHeldUnchanged": [
+      {
+        "path": "README.md",
+        "bytes": 26975,
+        "sha256": "0de01453510170b01c45d1243f6696beb84b3e6621cc9dcfea92ff8ef25cb8e6"
+      },
+      {
+        "path": "web\\src\\api\\ai-input.ts",
+        "bytes": 5254,
+        "sha256": "dbcd6400f87e9e04d503ce92de62e64b3e560c095a361c53c0b829d34c932fb0"
+      },
+      {
+        "path": "web\\src\\api\\ai-types.ts",
+        "bytes": 1634,
+        "sha256": "b1beded23f65a24e78d68c2d4abb436510a1d548b27a94af4d84b7182250ea76"
+      },
+      {
+        "path": "web\\src\\api\\ai.ts",
+        "bytes": 15474,
+        "sha256": "5e26cefe18276b35534c2591274f2da8eff3192933e10ff5b7198ac4b57df579"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\ai-grants.tsx",
+        "bytes": 8580,
+        "sha256": "ded9e89f51b27ecf92b8af633cc523410af9f1e8a5fda873368e9c87fea788b0"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\ai-policy.tsx",
+        "bytes": 3641,
+        "sha256": "f38f45af9e79dc1a7180e5afb6918cbb5df85e45bddcf7c7814bf0628fe6cf7d"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\ai-settings.css",
+        "bytes": 2486,
+        "sha256": "3ce9207e7bc84a7ee41a92e0d2e6e867ed06341468a754037470967c33ae89c3"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\ai-settings.tsx",
+        "bytes": 4869,
+        "sha256": "08964011a044ed6f24d4782f0d9112855aa7a7aaaa9b9442c2cd9d5a4e2c418e"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\ai-ui.tsx",
+        "bytes": 2113,
+        "sha256": "187af814e9a7ace6bad37ab6cb9075bbb8d21c4b08d1957285db781092fe3c1e"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\grant-approval.tsx",
+        "bytes": 8497,
+        "sha256": "860e28aa31983e6f1afb502dfe744fde22617455f0d16f2ac53189c095797d5d"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\profile-editor.tsx",
+        "bytes": 9406,
+        "sha256": "c6a69041373f8303b59ec2371427ae6b650c04e1250823efbd30a75946b7a805"
+      },
+      {
+        "path": "web\\src\\components\\ai-settings\\use-ai-data.ts",
+        "bytes": 9016,
+        "sha256": "6524e431f07290de0e10e3377bc6544003a82711f715f693f285a3444abedcc3"
+      },
+      {
+        "path": "web\\src\\pages\\integrations.tsx",
+        "bytes": 5474,
+        "sha256": "fda682a80a5422c01a591aaede4bff7a6455b382108be563830c68042f90e13b"
+      }
+    ],
+    "productionProviderSchemaUIEditsByAuthor": 0
+  },
+  "preservedControls": {
+    "sealedA2Total": 161,
+    "authorizedTestHashDeltas": 1,
+    "otherA2ControlsUnchanged": 160,
+    "UIControlsUnchanged": 786,
+    "SourceCollectionControlsUnchanged": 48,
+    "oldFixturesBindingsRunnersDependenciesUnchanged": true,
+    "oldA2SealAuthenticatesAmendedSpec": false,
+    "newA3AdditionsRequireNewSeal": true,
+    "guards": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\GUARDS-A3.json",
+      "bytes": 21735,
+      "sha256": "4291e61223e130e1d293bc843a63b8d74fbd28bf9dd211492a9255153211b4eb"
+    }
+  },
+  "archive": {
+    "onlyActualA2TestAndHashReferences": true,
+    "recursiveHistoryCopies": false,
+    "calibrationWorkingCopiesRemoved": true
+  },
+  "rawEvidenceFileCount": 16,
+  "hashPolicy": "Raw payload SHA256 values in files; PACKET-A3.sha256 hashes the packet. The checksum is non-recursively hashed publication metadata. RESULTS-A3.json hashes all 16 raw evidence files.",
+  "prohibitions": {
+    "oraclesCapturedModifiedOrResigned": false,
+    "privateAuthorityAccess": false,
+    "providerInferenceOrAssessmentCalls": false,
+    "realProviderAccounts": false,
+    "dependencyInstallsOrUpgrades": false,
+    "oldAI6Source9FixtureBindingEdits": false,
+    "productionTimezoneFormatChanges": false,
+    "agents": 0,
+    "commits": 0
+  },
+  "parentAction": "Verify exact two-comparison/four-line measurement amendment, held source/control hashes and actual results; issue a new current seal without replacing A2 records, then repeat actual full AI7 and independent review.",
+  "stopStatus": "Original A2 author stops here; no self-acceptance or publication approval."
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { api } from "@/api/client";
 import type { IntegrationId } from "@/api/types";
 import { useResource } from "@/lib/use-resource";
@@ -8,6 +8,8 @@ import { DataNotice, EmptyState, ErrorState, LoadingState } from "@/components/s
 import { Icon } from "@/components/icon";
 import { SlackConnections } from "@/components/slack-connections";
 import { Sources } from "@/components/sources/sources";
+import { AISettings } from "@/components/ai-settings/ai-settings";
+import { Button } from "@/components/ui/button";
 
 const familyPresentation: Record<IntegrationId, { monogram: string; purpose: string }> = {
   github: { monogram: "GH", purpose: "Repository context" },
@@ -24,12 +26,17 @@ export function IntegrationsPage() {
   const resource = useResource(api.catalog);
   const dataOrigin = resource.data?.dataOrigin;
   const [query, setQuery] = useState("");
+  const [aiOpen, setAIOpen] = useState(false);
+  const aiEntry = useRef<HTMLButtonElement>(null);
   const items = resource.data?.items.filter((item) => `${item.name} ${item.capabilities.join(" ")}`.toLowerCase().includes(query.toLowerCase())) ?? [];
   return <>
     <header className="page-heading"><div><p className="eyebrow">Bring context together</p><h1>Integrations</h1><p className="page-description">Know what each source can do before you connect it.</p></div><div className="heading-actions">{resource.data && <DataNotice origin={resource.data.dataOrigin} />}<ActionButton variant="outline" onClick={resource.reload} disabled={resource.status === "loading"}><Icon name="refresh" />Refresh</ActionButton></div></header>
     <div className="catalog-intro"><div><Icon name="integrations" size={24} /><p><strong>Capabilities first. Credentials later.</strong><span>Support maturity, connection health, and live verification are separate.</span></p></div><span className="subtle-pill">Read-only catalog</span></div>
     <SlackConnections />
     <Sources />
+    <div className="ai-entry"><Button ref={aiEntry} type="button" variant="outline" aria-expanded={aiOpen}
+      onClick={() => setAIOpen(true)}>AI settings</Button></div>
+    {aiOpen && <AISettings onClose={() => { setAIOpen(false); aiEntry.current?.focus({ preventScroll: true }); }} />}
     <div className="catalog-toolbar"><h2>Native integrations{resource.data && <span className="count-badge">{resource.data.items.length}</span>}</h2><div className="filter-field"><Icon name="search" size={17} /><input type="search" aria-label="Filter integrations" placeholder="Find a source or capability" value={query} onChange={(event) => setQuery(event.target.value)} /></div></div>
     {resource.error && <ErrorState error={resource.error} retry={resource.reload} stale={resource.data !== null} />}
     {resource.status === "loading" && !resource.data && <div className="surface"><LoadingState label="Loading integration catalog" /></div>}

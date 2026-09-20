@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T09:18:59.141Z",
+  "role": "independent successor compatibility test author",
+  "actualFullBindingRuns": [
+    {
+      "kind": "source",
+      "label": "independent-a3-v7-source-full-20260918-01",
+      "receipt": {
+        "path": ".artifacts\\source-collection-v1\\independent-a3-v7-source-full-20260918-01.receipt.json",
+        "bytes": 735,
+        "sha256": "45905a4806f340b9cc38a2fdb07f1b10bfc228cf628fd29c8f9f46db18a7db93"
+      },
+      "events": {
+        "path": ".artifacts\\source-collection-v1\\independent-a3-v7-source-full-20260918-01.jsonl",
+        "bytes": 17845,
+        "sha256": "5f1b83533e4a1b2afead09707f538ab2ec17e3c63ef343235f670a3d921e83c7"
+      },
+      "log": {
+        "path": ".artifacts\\source-collection-v1\\independent-a3-v7-source-full-20260918-01.log",
+        "bytes": 3248,
+        "sha256": "57984b35d6ef55e78f8bd88bd18e03f9d7b84a11d5e2bc1ca69254f8cf379212"
+      },
+      "mode": "Contract",
+      "exitCode": 0,
+      "arguments": [
+        "test",
+        "-mod=readonly",
+        "-tags=integration",
+        "-json",
+        "-count=1",
+        "-timeout=240s",
+        ".\\tests\\source_collection"
+      ],
+      "startedAt": "2026-09-18T09:03:11.8860787+00:00",
+      "finishedAt": "2026-09-18T09:03:30.0482503+00:00",
+      "packageElapsedSeconds": 15.809,
+      "topLevelPassed": 9,
+      "totalPassEvents": 15,
+      "failed": 0,
+      "skipped": 0,
+      "passedTests": [
+        {
+          "name": "TestSourceCollectionOwnedIOPreflight",
+          "elapsedSeconds": 0.09
+        },
+        {
+          "name": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+          "elapsedSeconds": 1.3
+        },
+        {
+          "name": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+          "elapsedSeconds": 1.09
+        },
+        {
+          "name": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+          "elapsedSeconds": 1.16
+        },
+        {
+          "name": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+          "elapsedSeconds": 1.55
+        },
+        {
+          "name": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+          "elapsedSeconds": 1.04
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-cancel",
+          "elapsedSeconds": 1.04
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-revoke",
+          "elapsedSeconds": 1
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-revoke",
+          "elapsedSeconds": 0.94
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-source-revision",
+          "elapsedSeconds": 0.98
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+          "elapsedSeconds": 3.96
+        },
+        {
+          "name": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+          "elapsedSeconds": 2.34
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2/current-core",
+          "elapsedSeconds": 1.26
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2/current-worker",
+          "elapsedSeconds": 1.41
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2",
+          "elapsedSeconds": 2.67
+        }
+      ],
+      "observations": [
+        {
+          "reference": {
+            "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-c107b52402107009c9d1ca4e.json",
+            "bytes": 883,
+            "sha256": "ae66884ffef6cc14d2f046eed50f5e445ff5998823f6ba02118e2351c4de1875"
+          },
+          "actual": {
+            "Entrypoint": "current-core",
+            "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+            "OwnedSchema": "source_collection_619be8d5ec77f2fabd2e1a0c",
+            "LegacyRelations": 18,
+            "VerifiedStartingMaxVersion": 5,
+            "CurrentConstructorSucceeded": true,
+            "AfterOpenVersions": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7"
+            ],
+            "AfterOpenTables": [
+              "app_ai_egress_grants",
+              "app_ai_policies",
+              "app_ai_profiles",
+              "app_assets",
+              "app_auth_throttle",
+              "app_bootstrap",
+              "app_coverage",
+              "app_finding_deliveries",
+              "app_findings",
+              "app_imports",
+              "app_integration_connections",
+              "app_memberships",
+              "app_notes",
+              "app_observations",
+              "app_oidc_flows",
+              "app_oidc_identities",
+              "app_report_snapshots",
+              "app_schema_versions",
+              "app_sessions",
+              "app_source_collection_records",
+              "app_source_collections",
+              "app_source_connections",
+              "app_source_repository_assets",
+              "app_users",
+              "app_workspaces"
+            ],
+            "PostUpgradeAPITailExecuted": true,
+            "LegacyBusinessDataPreservationClaimed": false
+          }
+        },
+        {
+          "reference": {
+            "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-a21d5b723fee44c9dbe79b5e.json",
+            "bytes": 885,
+            "sha256": "2c7d5aca19245d7834e8036fd5762e8cbf723663361e224e7b74d8271f87bb24"
+          },
+          "actual": {
+            "Entrypoint": "current-worker",
+            "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+            "OwnedSchema": "source_collection_ed83ca398838b856d23e05ef",
+            "LegacyRelations": 18,
+            "VerifiedStartingMaxVersion": 5,
+            "CurrentConstructorSucceeded": true,
+            "AfterOpenVersions": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7"
+            ],
+            "AfterOpenTables": [
+              "app_ai_egress_grants",
+              "app_ai_policies",
+              "app_ai_profiles",
+              "app_assets",
+              "app_auth_throttle",
+              "app_bootstrap",
+              "app_coverage",
+              "app_finding_deliveries",
+              "app_findings",
+              "app_imports",
+              "app_integration_connections",
+              "app_memberships",
+              "app_notes",
+              "app_observations",
+              "app_oidc_flows",
+              "app_oidc_identities",
+              "app_report_snapshots",
+              "app_schema_versions",
+              "app_sessions",
+              "app_source_collection_records",
+              "app_source_collections",
+              "app_source_connections",
+              "app_source_repository_assets",
+              "app_users",
+              "app_workspaces"
+            ],
+            "PostUpgradeAPITailExecuted": true,
+            "LegacyBusinessDataPreservationClaimed": false
+          }
+        }
+      ]
+    },
+    {
+      "kind": "ai",
+      "label": "independent-a3-v7-ai-full-20260918-01",
+      "receipt": {
+        "path": ".artifacts\\ai-configuration-v1\\independent-a3-v7-ai-full-20260918-01.receipt.json",
+        "bytes": 840,
+        "sha256": "4aa977ad2f112a11d6411fdda45d58f7b63f81a1df9089558f19603c0c703764"
+      },
+      "events": {
+        "path": ".artifacts\\ai-configuration-v1\\independent-a3-v7-ai-full-20260918-01.jsonl",
+        "bytes": 10067,
+        "sha256": "7c8209bf6852e9c42bf4842e9569466370118d1c10736c7f22340581f71bc25f"
+      },
+      "log": {
+        "path": ".artifacts\\ai-configuration-v1\\independent-a3-v7-ai-full-20260918-01.log",
+        "bytes": 1812,
+        "sha256": "452f392d8b68e7f03a5a62824e884ccec986d0acd7b360e3b463e40a5979b9e2"
+      },
+      "mode": "Contract",
+      "exitCode": 0,
+      "arguments": [
+        "test",
+        "-json",
+        "-tags=integration",
+        "-mod=readonly",
+        "-count=1",
+        "-timeout=180s",
+        ".\\tests\\ai_configuration"
+      ],
+      "startedAt": "2026-09-18T09:04:23.0963540+00:00",
+      "finishedAt": "2026-09-18T09:04:33.6273169+00:00",
+      "packageElapsedSeconds": 8.269,
+      "topLevelPassed": 6,
+      "totalPassEvents": 8,
+      "failed": 0,
+      "skipped": 0,
+      "passedTests": [
+        {
+          "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+          "elapsedSeconds": 0.75
+        },
+        {
+          "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+          "elapsedSeconds": 0.94
+        },
+        {
+          "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+          "elapsedSeconds": 0.79
+        },
+        {
+          "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+          "elapsedSeconds": 1.19
+        },
+        {
+          "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+          "elapsedSeconds": 1.36
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/fresh-concurrent-and-credential-compatibility",
+          "elapsedSeconds": 1.15
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/published-v6-upgrade",
+          "elapsedSeconds": 1.56
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+          "elapsedSeconds": 2.71
+        }
+      ],
+      "observations": [
+        {
+          "reference": {
+            "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-e57a750bf5d179d56b78b6be.json",
+            "bytes": 765,
+            "sha256": "04511aa9fea0d7a137c60b52f53be089b7d2bcb3577a7dbd51a9347df6cb242e"
+          },
+          "actual": {
+            "Origin": "24556fd41090628f391a728457f9c377ca624983",
+            "Schema": "ai_config_5c5b4f243215310564322112",
+            "VerifiedStartingVersion": 6,
+            "LegacyRelations": 22,
+            "CurrentCoreOpened": true,
+            "AfterVersions": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7"
+            ],
+            "AfterTables": [
+              "app_ai_egress_grants",
+              "app_ai_policies",
+              "app_ai_profiles",
+              "app_assets",
+              "app_auth_throttle",
+              "app_bootstrap",
+              "app_coverage",
+              "app_finding_deliveries",
+              "app_findings",
+              "app_imports",
+              "app_integration_connections",
+              "app_memberships",
+              "app_notes",
+              "app_observations",
+              "app_oidc_flows",
+              "app_oidc_identities",
+              "app_report_snapshots",
+              "app_schema_versions",
+              "app_sessions",
+              "app_source_collection_records",
+              "app_source_collections",
+              "app_source_connections",
+              "app_source_repository_assets",
+              "app_users",
+              "app_workspaces"
+            ],
+            "LegacyBusinessRowsSeeded": false
+          }
+        }
+      ]
+    }
+  ],
+  "fullSourceTailsExecuted": true,
+  "calibrationOnly": false,
+  "heldBackendPathsUnchanged": 12,
+  "productionGoInputsUnchanged": 111,
+  "AIControlsUnchanged": 137,
+  "AIControlsAuthorizedChanged": [
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10731,
+      "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+    }
+  ],
+  "AIUIControlsUnchanged": 770,
+  "historicalV5FixtureUnchanged": {
+    "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+    "bytes": 14328,
+    "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+  },
+  "runtime": {
+    "alias": "RUNTIME\\runtime.json",
+    "bytes": 553,
+    "sha256": "183159aeebcc9190c4e33bd8c959ee7905ab7ac983d34a6c015de5a925fe6446",
+    "contentsCopied": false,
+    "unchanged": true
+  },
+  "privateRuntimeLeakScan": {
+    "filesScanned": 11,
+    "leaks": 0,
+    "valuesDisclosed": false
+  },
+  "cleanup": {
+    "allOriginalFixtureCleanupAssertionsPassed": true,
+    "originalPrivateFixtureConfigurationUsed": true,
+    "rolesPoliciesBucketsServicesOrRuntimeConfigChangedByAuthor": false
+  },
+  "boundaries": {
+    "source": "Owned PG, local S3, owned TLS native protocol plus actual core/worker. Not inference or zero-network evidence.",
+    "ai": "Owned PG and unchanged no-provider/storage-HTTP tripwires; no inference/assessment."
+  },
+  "originalRunnersTimeoutsBindingsModulesFixturesUnchanged": true,
+  "authorityCaptureOrSignatureRewrite": false,
+  "amendmentClass": "Intentional current-schema compatibility of prior oracle",
+  "selectedObservationFilesCameFromExactRunLogs": true,
+  "observedTablesMatchAll18LegacyPlus4SourcePlus3AI": true,
+  "sourceFullTails": {
+    "bothEntrypointsPassed": true,
+    "sourceCRUD": true,
+    "queuedBeforeDispatch": true,
+    "ownedTLSRequests": 3,
+    "recordsPerCollection": 3,
+    "allEvidenceReads": true,
+    "singleLinkedAsset": true,
+    "coreAndWorkerDurableReopens": true,
+    "repeatLedgerExactly": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "legacyColumnConstraintIndexDefinitionsUnchanged": true
+  },
+  "sourceSuiteIncludesOnePreflightPlusSevenFreshPlusOneHistoricalNarrative": true,
+  "UIFunctionalAcceptanceClaimed": false,
+  "heldWorkingTreeNotNewPublication": true,
+  "packageElapsedSourceIsEventMeasurement": true
+}

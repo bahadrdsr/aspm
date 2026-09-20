@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-configuration-v1",
+  "role": "independent-test-author",
+  "status": "FROZEN_SETUP_FOUNDATION_RED_PENDING_PARENT_VERIFICATION_AND_SEAL",
+  "capturedAt": "2026-09-17T23:16:00.335479+00:00",
+  "currentHead": "24556fd41090628f391a728457f9c377ca624983",
+  "controls": [
+    {
+      "path": "tests\\ai_configuration\\configuration_test.go",
+      "bytes": 18172,
+      "sha256": "56242511fb13d31279d5d645bc9cf063b388def995ff40b8c193890fbc06852f"
+    },
+    {
+      "path": "tests\\ai_configuration\\CONTRACT.txt",
+      "bytes": 13625,
+      "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+    },
+    {
+      "path": "tests\\ai_configuration\\contract_test.go",
+      "bytes": 2023,
+      "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixture_calibration_test.go",
+      "bytes": 395,
+      "sha256": "8c8effd8011c7a44874ff2ed113feee0362dac9007bc5a0407d675408e752b84"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixtures_test.go",
+      "bytes": 18486,
+      "sha256": "b5d2de47e87e87024c0bad45aeb2d23f556088130deb25551f7ff1eaecc5ff76"
+    },
+    {
+      "path": "tests\\ai_configuration\\HANDOFF.txt",
+      "bytes": 3956,
+      "sha256": "6600567ce454d494665fea4b5fc8d5c993e15193ef9be6bb1e85408771f85f75"
+    },
+    {
+      "path": "tests\\ai_configuration\\production_bindings_test.go",
+      "bytes": 1013,
+      "sha256": "e6a219defcdc4b6091d474006f308540e6d13da120dbe7caf20f69996afc8358"
+    },
+    {
+      "path": "tests\\ai_configuration\\Test-AIConfiguration.ps1",
+      "bytes": 5511,
+      "sha256": "98832e83f504a06061237839f50af19a555cd61e117a5084eb1445d580415521"
+    },
+    {
+      "path": "tests\\ai_configuration\\testdata\\published-24556-schema-v6.json",
+      "bytes": 17753,
+      "sha256": "507a2366bf23b541f3cdf1bca85723ae84f24bab9e9dbdcacf30d01d68b51a55"
+    },
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "bytes": 7136,
+      "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+    }
+  ],
+  "contract": "tests\\ai_configuration\\CONTRACT.txt",
+  "humanHandoff": "tests\\ai_configuration\\HANDOFF.txt",
+  "decisions": "DECISIONS.json",
+  "origin": "ORIGIN.json",
+  "compiler": "COMPILATION.json",
+  "guards": "GUARDS.json",
+  "red": "RED.json",
+  "externalEvidence": "EVIDENCE.json",
+  "outcomes": {
+    "mainNarrativesAuthored": 6,
+    "mainFullBindingNarrativesExecuted": 0,
+    "resolver": "missing-constructor/type compile RED",
+    "actualPublishedV6Upgrade": "RED: version7 absent after current core open",
+    "helperCompile": "PASS_NOT_ACCEPTANCE",
+    "realOwnedPGSessionAndNoNetworkCalibration": "PASS",
+    "providerInferenceRequests": 0,
+    "unchangedOriginalWitnesses": 21,
+    "existingFileEdits": 0,
+    "newDependencies": 0,
+    "agentsSpawned": 0,
+    "commitsCreated": 0
+  },
+  "M11CompletionClaimed": false,
+  "assessmentWorkerUIJobsOrDeploymentImplemented": false,
+  "archives": [],
+  "nextOwner": "parent",
+  "nextActions": [
+    "Review explicit finding-evidence sensitivity, issuer trust, exact-destination and revision invalidation decisions before sealing.",
+    "Verify actual constructor RED and independent real v6 upgrade RED without treating fixture/compiler passes as AI setup acceptance.",
+    "Seal NEW configuration controls only, preserving all existing provider/source/Slack/history bytes.",
+    "Assign separate configuration implementation/review; no assessment execution follows automatically from this setup packet."
+  ]
+}

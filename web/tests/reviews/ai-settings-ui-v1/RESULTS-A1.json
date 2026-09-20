@@ -1,0 +1,3453 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T14:46:13.350Z",
+  "author": "successor-independent-ai-settings-ui-a1-native-option-20260920",
+  "status": "Local validation green; HOLD for parent verification/new seal and independent review.",
+  "scope": "Measurement-only correction on the unchanged 13-file UI candidate. All application checks use the original local Vite/Playwright and synthetic HTTP fixtures.",
+  "summary": {
+    "priorCurrentAIU3RED": {
+      "selected": 1,
+      "passed": 0,
+      "failed": 1,
+      "expectedReproduction": true
+    },
+    "nativeCalibration": {
+      "selected": 9,
+      "passed": 9,
+      "failed": 0,
+      "blocked": 0,
+      "productAcceptance": false
+    },
+    "amendedAIU3": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "focusedSix": {
+      "selected": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "full99": {
+      "selected": 99,
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "legacyWithinFull99": {
+      "selected": 93,
+      "passed": 93,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "outcome": "passed"
+    },
+    "previouslyBlockedAIU3Tails": "All completed in standalone AIU3, focused-six and full-99 runs",
+    "remainingBlockedAIU3Tails": 0,
+    "newlyExposedProductionOrOracleIssues": []
+  },
+  "helperWitness": {
+    "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+    "bytes": 552,
+    "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+  },
+  "specWitness": {
+    "path": "web\\tests\\ai-settings-ui.spec.ts",
+    "bytes": 45196,
+    "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+  },
+  "provenanceNote": "The original fixture sourceWitnesses list was not altered. The new helper is additionally bound by calibration source hashes, each run execution receipt, this result and PACKET-A1.json.",
+  "aiu3": {
+    "run": "successor-a1-aiu3-20260920-01",
+    "process": {
+      "schemaVersion": 1,
+      "run": "successor-a1-aiu3-20260920-01",
+      "command": "node scripts\\playwright.mjs test --config tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts ai-settings-ui.spec.ts --grep \"AIU3 \"",
+      "startedAt": "2026-09-20T14:33:43.0595194+00:00",
+      "completedAt": "2026-09-20T14:33:56.7991208+00:00",
+      "durationMs": 13733,
+      "exitCode": 0,
+      "port": 18756,
+      "NODE_USE_SYSTEM_CA": "1",
+      "specSHA256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba",
+      "helperSHA256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a",
+      "listenersAfter": []
+    },
+    "report": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01\\results.json",
+      "bytes": 81863,
+      "sha256": "7588c932e21dc765b0eb4693c957012ec523b46dc10e1418872c564de33755a8"
+    },
+    "consoleLog": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01.log",
+      "bytes": 217,
+      "sha256": "93a5bf9e80695316768810277bcdb4b043bd56fcf23d534b3bf620861af7afb4"
+    },
+    "execution": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01-execution.json",
+      "bytes": 622,
+      "sha256": "0644f0600e77d1faa11510b93fa3461f6ab069a7390b814943d7a2b0d4cadc22"
+    },
+    "stats": {
+      "startTime": "2026-09-20T14:33:44.021Z",
+      "duration": 12717.036,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "counts": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "settings": {
+      "workers": 1,
+      "fullyParallel": false,
+      "retries": 0,
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "combinedAIAPICap": 60,
+      "configuration": {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+        "bytes": 1113,
+        "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+      },
+      "controlConfiguration": {
+        "path": "web\\playwright.config.ts",
+        "bytes": 1481,
+        "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+      }
+    },
+    "playwrightVersion": "1.63.0",
+    "cases": [
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 368,
+        "title": "AIU3 Explicit policy and sensitive finite grants retain workspace decisions, expiry and revoke receipts",
+        "status": "passed",
+        "durationMs": 7197,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 58455,
+            "inlineSHA256": "d76062e45c4d708664612967e15cf10dcec098a82c2c30f86a6e23e5f5b5ea35"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 35,
+          "aiRequests": 17,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU3 policy receipts, failed disabled save and exact sensitive finite grant completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU3 expired history, issuer demotion without revocation and canonical revoke completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "focused": {
+    "run": "successor-a1-focused-20260920-01",
+    "process": {
+      "schemaVersion": 1,
+      "run": "successor-a1-focused-20260920-01",
+      "command": "node scripts\\playwright.mjs test --config tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts ai-settings-ui.spec.ts",
+      "startedAt": "2026-09-20T14:34:13.6656721+00:00",
+      "completedAt": "2026-09-20T14:34:54.0545525+00:00",
+      "durationMs": 40384,
+      "exitCode": 0,
+      "port": 18756,
+      "NODE_USE_SYSTEM_CA": "1",
+      "specSHA256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba",
+      "helperSHA256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a",
+      "listenersAfter": []
+    },
+    "report": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01\\results.json",
+      "bytes": 604556,
+      "sha256": "12aa6cf7cc344b6fd1983247f5db729bbab633ee7b3bd31cbf9823d35a1666c1"
+    },
+    "consoleLog": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01.log",
+      "bytes": 994,
+      "sha256": "85a0d2d2f0b5fded87ca8babe3f3d1346345994608249198cfd342891424c982"
+    },
+    "execution": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01-execution.json",
+      "bytes": 608,
+      "sha256": "2e1b42af0b4b16e937a9df68ee99afd7553033819f8c072ab9ab657a247652ef"
+    },
+    "stats": {
+      "startTime": "2026-09-20T14:34:14.928Z",
+      "duration": 39086.082,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "counts": {
+      "selected": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "settings": {
+      "workers": 1,
+      "fullyParallel": false,
+      "retries": 0,
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "combinedAIAPICap": 60,
+      "configuration": {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+        "bytes": 1113,
+        "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+      },
+      "controlConfiguration": {
+        "path": "web\\playwright.config.ts",
+        "bytes": 1481,
+        "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+      }
+    },
+    "playwrightVersion": "1.63.0",
+    "cases": [
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 257,
+        "title": "AIU1 Opt-in setup distinguishes fetched default, loading, failure, keyless local and readonly roles",
+        "status": "passed",
+        "durationMs": 4469,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 40443,
+            "inlineSHA256": "bd0791dc9a81953e862dd0755fd4ef23cb95b58b118dd7e4485f2e88a793b727"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 26,
+          "aiRequests": 12,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU1 fetched default/error/empty/retry assertions completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU1 keyless local without encryption and analyst/viewer readonly completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 307,
+        "title": "AIU2 Four explicit families preserve models, endpoints, sparse keys and authoritative receipts",
+        "status": "passed",
+        "durationMs": 6582,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 28804,
+            "inlineSHA256": "67528aea9d5a29667808c7a496d6681b1712e9cfc47b5ec03742e64e6afa541b"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 23,
+          "aiRequests": 17,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU2 four family creation, endpoint rejection and hosted-key 503 completed",
+            "AIU2 sparse rename/booleans/retain/replacement/error-redaction/local-null receipts completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 368,
+        "title": "AIU3 Explicit policy and sensitive finite grants retain workspace decisions, expiry and revoke receipts",
+        "status": "passed",
+        "durationMs": 5143,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 58469,
+            "inlineSHA256": "bea7391fabfea0c1768290f540bcafdfd2fccb80ea8e1ce1313803dd2eef3dc3"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 35,
+          "aiRequests": 17,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU3 policy receipts, failed disabled save and exact sensitive finite grant completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU3 expired history, issuer demotion without revocation and canonical revoke completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 432,
+        "title": "AIU4 Authorized current facts and opaque revisions invalidate stale consent without automatic conflict resubmission",
+        "status": "passed",
+        "durationMs": 3546,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 27886,
+            "inlineSHA256": "93b21440d1c62b13996e546cd60857f401f59cd79b7e1dc9bb3689d86b027083"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 19,
+          "aiRequests": 13,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU4 authorized refresh reconciled current facts and invalidated old opaque bindings",
+            "AIU4 409 made no guessed resubmission; fresh explicit review and exact new grant completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 485,
+        "title": "AIU5 Native manual pages and denial retries preserve confirmed data without stale authority",
+        "status": "passed",
+        "durationMs": 7279,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 220489,
+            "inlineSHA256": "e644d0eeab4a80e511f7ac1fe5491442c5ac888ae6c8d2b5757f07caeff21765"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 25,
+          "aiRequests": 19,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU5 native 100+1 manual pages, same-cursor retry and selected-profile absence safety completed",
+            "AIU5 detail/list denials survived 503 retries; stale admin policy write respected server 403"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 570,
+        "title": "AIU6 Mobile reduced-motion focus and privacy survive close, workspace, 401 and logout epochs",
+        "status": "passed",
+        "durationMs": 5691,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 69546,
+            "inlineSHA256": "8d6a9069eba7ac989e4204e797b48fbfa84a893f7dd880f7ee4f29e7b6013b2c"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 46,
+          "aiRequests": 26,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU6 390px, reduced motion, inert text, dialog focus/secret clear and closed-settings abort completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU6 workspace and 401 cleared grant/profile/secret scope and aborted old reads",
+            "AI settings explicitly opened",
+            "AIU6 actual sign-in/sign-out HTTP, cleared consent and logout abort completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "full99": {
+    "run": "successor-a1-full99-20260920-01",
+    "process": {
+      "schemaVersion": 1,
+      "run": "successor-a1-full99-20260920-01",
+      "command": "node scripts\\playwright.mjs test --config tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+      "startedAt": "2026-09-20T14:35:27.3893892+00:00",
+      "completedAt": "2026-09-20T14:42:00.6399152+00:00",
+      "durationMs": 393245,
+      "exitCode": 0,
+      "requiredFocusedGreen": "successor-a1-focused-20260920-01",
+      "port": 18756,
+      "NODE_USE_SYSTEM_CA": "1",
+      "specSHA256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba",
+      "helperSHA256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a",
+      "listenersAfter": []
+    },
+    "report": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01\\results.json",
+      "bytes": 26012971,
+      "sha256": "a9b159385cd3ede762385eabd4375419b32669d69eda20ecbd345cefe1da3e33"
+    },
+    "consoleLog": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01.log",
+      "bytes": 16085,
+      "sha256": "8515c851f3c8c7b47077440bf74a6c57ca5c6cecb58f664efb5523dc21fc8c35"
+    },
+    "execution": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01-execution.json",
+      "bytes": 648,
+      "sha256": "3fa77146fc180d7a30250d754836ed82d02679a0c0009111f964569f2408989d"
+    },
+    "stats": {
+      "startTime": "2026-09-20T14:35:34.087Z",
+      "duration": 386362.123,
+      "expected": 99,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "counts": {
+      "selected": 99,
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "settings": {
+      "workers": 1,
+      "fullyParallel": false,
+      "retries": 0,
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "combinedAIAPICap": 60,
+      "configuration": {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+        "bytes": 1113,
+        "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+      },
+      "controlConfiguration": {
+        "path": "web\\playwright.config.ts",
+        "bytes": 1481,
+        "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+      }
+    },
+    "playwrightVersion": "1.63.0",
+    "cases": [
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 257,
+        "title": "AIU1 Opt-in setup distinguishes fetched default, loading, failure, keyless local and readonly roles",
+        "status": "passed",
+        "durationMs": 6147,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 40429,
+            "inlineSHA256": "c5067e06a19e4f8bc7fa0ed78b05c2c5c2e9f6e6dee1f5e23d3ce72a405273b0"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 26,
+          "aiRequests": 12,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU1 fetched default/error/empty/retry assertions completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU1 keyless local without encryption and analyst/viewer readonly completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 307,
+        "title": "AIU2 Four explicit families preserve models, endpoints, sparse keys and authoritative receipts",
+        "status": "passed",
+        "durationMs": 10353,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 28804,
+            "inlineSHA256": "a8c8daa842f335aeaa38d07f15e94ca923ea72e81115d838af11d06e9167d3e8"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 23,
+          "aiRequests": 17,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU2 four family creation, endpoint rejection and hosted-key 503 completed",
+            "AIU2 sparse rename/booleans/retain/replacement/error-redaction/local-null receipts completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 368,
+        "title": "AIU3 Explicit policy and sensitive finite grants retain workspace decisions, expiry and revoke receipts",
+        "status": "passed",
+        "durationMs": 7783,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 57553,
+            "inlineSHA256": "1ce445e76920614511889ae8342a964982df1986cc2f25c7908a836e996e3f5c"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 34,
+          "aiRequests": 17,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU3 policy receipts, failed disabled save and exact sensitive finite grant completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU3 expired history, issuer demotion without revocation and canonical revoke completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 432,
+        "title": "AIU4 Authorized current facts and opaque revisions invalidate stale consent without automatic conflict resubmission",
+        "status": "passed",
+        "durationMs": 4243,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 27886,
+            "inlineSHA256": "a597c64915ad14387b8497ca66770c71d29b7b3f3f4cd57f71f67adeb3ded968"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 19,
+          "aiRequests": 13,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU4 authorized refresh reconciled current facts and invalidated old opaque bindings",
+            "AIU4 409 made no guessed resubmission; fresh explicit review and exact new grant completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 485,
+        "title": "AIU5 Native manual pages and denial retries preserve confirmed data without stale authority",
+        "status": "passed",
+        "durationMs": 10981,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 220489,
+            "inlineSHA256": "c18e20d073340089272897890428b5a732690010d64cec7447af671288aa6743"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 25,
+          "aiRequests": 19,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU5 native 100+1 manual pages, same-cursor retry and selected-profile absence safety completed",
+            "AIU5 detail/list denials survived 503 retries; stale admin policy write respected server 403"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "ai-settings-ui.spec.ts",
+        "line": 570,
+        "title": "AIU6 Mobile reduced-motion focus and privacy survive close, workspace, 401 and logout epochs",
+        "status": "passed",
+        "durationMs": 7803,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ai-http-boundary",
+            "contentType": "application/json",
+            "inlineBytes": 69532,
+            "inlineSHA256": "59b01bcddef2f99c495f245aae2074aa186a5c6bb5ae7ab1f38926d49b0fb247"
+          }
+        ],
+        "ai": {
+          "combinedAPIRequests": 46,
+          "aiRequests": 26,
+          "externalAttempts": 0,
+          "fixtureViolations": [],
+          "browserExceptions": [],
+          "reached": [
+            "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+            "AI settings explicitly opened",
+            "AIU6 390px, reduced motion, inert text, dialog focus/secret clear and closed-settings abort completed",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AI settings explicitly opened",
+            "AIU6 workspace and 401 cleared grant/profile/secret scope and aborted old reads",
+            "AI settings explicitly opened",
+            "AIU6 actual sign-in/sign-out HTTP, cleared consent and logout abort completed"
+          ],
+          "sourceWitnesses": [
+            {
+              "path": "web\\tests\\ai-settings-ui-data.ts",
+              "bytes": 11596,
+              "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui-fixture.ts",
+              "bytes": 26140,
+              "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+            },
+            {
+              "path": "web\\tests\\ai-settings-ui.spec.ts",
+              "bytes": 45196,
+              "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+              "bytes": 12884,
+              "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+            },
+            {
+              "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+              "bytes": 1113,
+              "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+            }
+          ]
+        }
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 53,
+        "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+        "status": "passed",
+        "durationMs": 2120,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 53,
+        "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+        "status": "passed",
+        "durationMs": 1863,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 84,
+        "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+        "status": "passed",
+        "durationMs": 2084,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 148,
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+        "status": "passed",
+        "durationMs": 2187,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 148,
+        "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+        "status": "passed",
+        "durationMs": 2745,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 148,
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+        "status": "passed",
+        "durationMs": 2088,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-review-regressions.spec.ts",
+        "line": 148,
+        "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+        "status": "passed",
+        "durationMs": 2335,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 39,
+        "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+        "status": "passed",
+        "durationMs": 1617,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 58,
+        "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+        "status": "passed",
+        "durationMs": 2024,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 87,
+        "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+        "status": "passed",
+        "durationMs": 1040,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 116,
+        "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+        "status": "passed",
+        "durationMs": 1345,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 139,
+        "title": "M04 assets can be created and edited without leaving their selected workspace",
+        "status": "passed",
+        "durationMs": 1560,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 175,
+        "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+        "status": "passed",
+        "durationMs": 2185,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "application-workflows.spec.ts",
+        "line": 236,
+        "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+        "status": "passed",
+        "durationMs": 1244,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "asset-pagination-ack.spec.ts",
+        "line": 71,
+        "title": "AP6 edit: canonical ACK is visible before its NEW post-save GET settles (200)",
+        "status": "passed",
+        "durationMs": 3303,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ack-before-new-get-release",
+            "contentType": "application/json",
+            "inlineBytes": 1354,
+            "inlineSHA256": "ba1af254c6dcfc9dd955fb51beae0e7f9c7f830596c6737be23e31f8169e490f"
+          },
+          {
+            "name": "inventory-with-new-get-held",
+            "contentType": "image/png",
+            "inlineBytes": 72326,
+            "inlineSHA256": "acafbd37a686d7a795aa06edeea248ca30be5654dc61b3fce311fc347ec9ee42"
+          },
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 199086,
+            "inlineSHA256": "6ac735c042e9590c6f343523919ba37d4444285d8457ec8de3555a026e3e62fb"
+          }
+        ]
+      },
+      {
+        "file": "asset-pagination-ack.spec.ts",
+        "line": 71,
+        "title": "AP6 create: canonical ACK is visible before its NEW post-save GET settles (503)",
+        "status": "passed",
+        "durationMs": 3575,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "ack-before-new-get-release",
+            "contentType": "application/json",
+            "inlineBytes": 1502,
+            "inlineSHA256": "e709726b8fc6d7ce1663b3068cd01a53efbc70e4725f123703b0406f310f9ef7"
+          },
+          {
+            "name": "inventory-with-new-get-held",
+            "contentType": "image/png",
+            "inlineBytes": 71990,
+            "inlineSHA256": "4d1c117966d15242830a4573e3f722708ec4094d9764b06e5d129332d19e3f28"
+          },
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 160437,
+            "inlineSHA256": "84d6ebe043afd0b345e6f585274e01441aeee01f9c2a53134de64ba207a41862"
+          }
+        ]
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "line": 154,
+        "title": "AP1 Native inventory continuation preserves rows and truthful counts through failure, same-cursor retry and overlapping refresh",
+        "status": "passed",
+        "durationMs": 2262,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 159522,
+            "inlineSHA256": "0b2db19929f2a56f5c41e08fe0d91fce96714b9cb9d96ac6cf7e1c82018e71ee"
+          }
+        ]
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "line": 192,
+        "title": "AP2 Import selection reaches a server asset beyond its initial page and preserves that exact ID through more pages and form edits",
+        "status": "passed",
+        "durationMs": 3173,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 160982,
+            "inlineSHA256": "282c63e7236bc5e40f30c60c136c5916af08e616005c656955db3b0ad9bb211b"
+          }
+        ]
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "line": 242,
+        "title": "AP3 Viewer paging has no write authority and workspace, logout and 401 discard every old page and held continuation",
+        "status": "passed",
+        "durationMs": 3244,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 396576,
+            "inlineSHA256": "e166f2ee6fac2f6d832911fe4fc1272fef742fea6a39548bf10a240d5e35f80a"
+          }
+        ]
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "line": 276,
+        "title": "AP4 Canonical edit/create acknowledgements survive old overlapping pages without optimistic rows or loss of loaded context",
+        "status": "passed",
+        "durationMs": 3847,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 278601,
+            "inlineSHA256": "6c0bdd9ef433780026c1492d62d41b6bfe78f9af4d9f81532fbfdd03ccc79bf8"
+          }
+        ]
+      },
+      {
+        "file": "asset-pagination.spec.ts",
+        "line": 352,
+        "title": "AP5 At 390px manual inventory/selector paging preserves selected IDs, draft caret and reduced-motion keyboard context",
+        "status": "passed",
+        "durationMs": 5032,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "asset-pagination-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 159024,
+            "inlineSHA256": "6b6b701617dc0ab9d9c700c1a712fca8e86b2313b2e49f23b95a337e6c8845e5"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 254,
+        "title": "FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership",
+        "status": "passed",
+        "durationMs": 2897,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 18078,
+            "inlineSHA256": "3f6c20da7e21cfc8a55226d4591312d3d2b3e219f23e5ff0025b0c5cf6f87be2"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 309,
+        "title": "FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter",
+        "status": "passed",
+        "durationMs": 2003,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 17683,
+            "inlineSHA256": "2bc3214093c6ea90c69c521997e0bf552ff073e5931e23a5db39d3be5e7cc802"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 348,
+        "title": "FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification",
+        "status": "passed",
+        "durationMs": 3910,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 26748,
+            "inlineSHA256": "c026a2c48d0ec1923b4aa6fd54be014a1ca589963f8ac5bf37d3535088bd4635"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 388,
+        "title": "FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes",
+        "status": "passed",
+        "durationMs": 2939,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 27910,
+            "inlineSHA256": "56b658dd5a70f60cdbf28e7caa4be188127c2b26a893c67e028b56e2fe8af83f"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 456,
+        "title": "FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities",
+        "status": "passed",
+        "durationMs": 3770,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 45367,
+            "inlineSHA256": "a0628379d4789268c3bd0334c2df6ec0607386175470a476faba93a12a662281"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 541,
+        "title": "FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace",
+        "status": "passed",
+        "durationMs": 5775,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 66715,
+            "inlineSHA256": "12503fbce08343917599d4854c8499f579dc8b7bc4d4989a7962dc162a63cf2e"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 613,
+        "title": "FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs",
+        "status": "passed",
+        "durationMs": 4717,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 62945,
+            "inlineSHA256": "fe46ac96c95226809bd6e344003955a8207b3616454aac20ff4b74e7185de9f4"
+          }
+        ]
+      },
+      {
+        "file": "finding-actions.spec.ts",
+        "line": 674,
+        "title": "FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh",
+        "status": "passed",
+        "durationMs": 6637,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-actions-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 97862,
+            "inlineSHA256": "feda973ac1dd8fbfe5167908e87ed2f3355025b85947e55a0d4ab6f7c818fea6"
+          }
+        ]
+      },
+      {
+        "file": "finding-history.spec.ts",
+        "line": 175,
+        "title": "FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream",
+        "status": "passed",
+        "durationMs": 8442,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-history-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 1708431,
+            "inlineSHA256": "967db57441cc9dbb47ddf87df0688cf080644baa701e73fd739224e3b72c018d"
+          }
+        ]
+      },
+      {
+        "file": "finding-history.spec.ts",
+        "line": 200,
+        "title": "FH2 A held/503 history continuation keeps both loaded streams and retries the same native cursor without duplicate or reset",
+        "status": "passed",
+        "durationMs": 5786,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-history-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 2346004,
+            "inlineSHA256": "6c286ba2140e27a072a458d25e10eae82669478fc2f3b651796fa631efc9934f"
+          }
+        ]
+      },
+      {
+        "file": "finding-history.spec.ts",
+        "line": 224,
+        "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+        "status": "passed",
+        "durationMs": 8285,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-history-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 2511024,
+            "inlineSHA256": "30714645fa21398b33796b2b0107dfca2dac4222904fab68ecb20ea0216cc60e"
+          }
+        ]
+      },
+      {
+        "file": "finding-history.spec.ts",
+        "line": 264,
+        "title": "FH4 Viewer history is read-only; 403/404 latch protected metadata through 503 retry and 401 clears the entire finding scope",
+        "status": "passed",
+        "durationMs": 10484,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-history-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 5644801,
+            "inlineSHA256": "88698bbcc4ace1a6e0ad3f59d9529caaa4630601d81e3e9bc9d508fb7707a71c"
+          }
+        ]
+      },
+      {
+        "file": "finding-history.spec.ts",
+        "line": 325,
+        "title": "FH5 At 390px user-moved draft focus/scroll survive a history load; workspace/logout abort and discard later held pages",
+        "status": "passed",
+        "durationMs": 7607,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "finding-history-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 3404176,
+            "inlineSHA256": "5f7146c970338cd68dea92b5ffa1457926bf15bc7ba1be538f7097f9d174378b"
+          }
+        ]
+      },
+      {
+        "file": "foundations.spec.ts",
+        "line": 51,
+        "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+        "status": "passed",
+        "durationMs": 1566,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "harness.spec.ts",
+        "line": 9,
+        "title": "harness compiles React and exercises real browser keyboard events",
+        "status": "passed",
+        "durationMs": 489,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "harness.spec.ts",
+        "line": 20,
+        "title": "harness produces static assets without needing the production UI",
+        "status": "passed",
+        "durationMs": 187,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "harness.spec.ts",
+        "line": 33,
+        "title": "approval guard distinguishes reviewed license candidates from approved components",
+        "status": "passed",
+        "durationMs": 32,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "line": 145,
+        "title": "M01 skip link focuses main without changing any destination or hash",
+        "status": "passed",
+        "durationMs": 2406,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "line": 165,
+        "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+        "status": "passed",
+        "durationMs": 5380,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "line": 66,
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "status": "passed",
+        "durationMs": 5123,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "line": 66,
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "status": "passed",
+        "durationMs": 4810,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "line": 66,
+        "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+        "status": "passed",
+        "durationMs": 5613,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "m01-review-regressions.spec.ts",
+        "line": 66,
+        "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+        "status": "passed",
+        "durationMs": 4812,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "line": 150,
+        "title": "RF1 The import selector names exactly seven implemented profiles with honest JSON/CSV/manual guidance and literal mapping",
+        "status": "passed",
+        "durationMs": 1948,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "report-formats-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 4243,
+            "inlineSHA256": "ce3f0523e0e604554537ec97543d2dce2d4a47dd9b3c0d097343f9001de8f366"
+          }
+        ]
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "line": 190,
+        "title": "RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit provenance in one JSON request without mapping or local success",
+        "status": "passed",
+        "durationMs": 4444,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "report-formats-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 18599,
+            "inlineSHA256": "b57a2b9bcf5233d418b95a159445230923a22d30ab98dd74485d8bb6dd9df6ce"
+          }
+        ]
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "line": 219,
+        "title": "RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays human-authored and plain prose is never converted",
+        "status": "passed",
+        "durationMs": 3744,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "report-formats-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 14950,
+            "inlineSHA256": "92a3242d1ff8af89bf533aa310c523e475398b5360ac023d50f844e4b6f6fe8f"
+          }
+        ]
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "line": 259,
+        "title": "RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8, excessive file bytes and JSON-wrapper expansion without truncation",
+        "status": "passed",
+        "durationMs": 7576,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "report-formats-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 6732,
+            "inlineSHA256": "a312a2585ac4ca40fb6a0dd55170ce21db9d058e896bf99432c7d6dfb68b06c8"
+          }
+        ]
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "line": 291,
+        "title": "RF5 New profiles retain central viewer/current-role authority and surface server 403/415/413/401 without guessing another parser",
+        "status": "passed",
+        "durationMs": 3803,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "report-formats-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 14592,
+            "inlineSHA256": "c845ae08978821f6d4a3b4f3745cef06cfa76eb63778dab29ec1c8241f44ee0f"
+          }
+        ]
+      },
+      {
+        "file": "report-formats.spec.ts",
+        "line": 364,
+        "title": "RF6 At 390px CSV file-read cancellation and held-import scope loss clear old bytes/progress while keeping keyboard asset context",
+        "status": "passed",
+        "durationMs": 3235,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "report-formats-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 8476,
+            "inlineSHA256": "f683901c4ac7ab224a5c717f713a5d0d47b0651d204f3bcdde73a10b0ab71a3b"
+          }
+        ]
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 185,
+        "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+        "status": "passed",
+        "durationMs": 5174,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 220,
+        "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+        "status": "passed",
+        "durationMs": 3840,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 261,
+        "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+        "status": "passed",
+        "durationMs": 6027,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 306,
+        "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+        "status": "passed",
+        "durationMs": 2282,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 361,
+        "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+        "status": "passed",
+        "durationMs": 3743,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 396,
+        "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+        "status": "passed",
+        "durationMs": 5101,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 434,
+        "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+        "status": "passed",
+        "durationMs": 10736,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 481,
+        "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+        "status": "passed",
+        "durationMs": 5835,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "reports-workflows.spec.ts",
+        "line": 555,
+        "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+        "status": "passed",
+        "durationMs": 4704,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 390px by pointer",
+        "status": "passed",
+        "durationMs": 1372,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 390px by keyboard",
+        "status": "passed",
+        "durationMs": 2509,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 683px by pointer",
+        "status": "passed",
+        "durationMs": 1357,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 683px by keyboard",
+        "status": "passed",
+        "durationMs": 2386,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 850px by pointer",
+        "status": "passed",
+        "durationMs": 1555,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 850px by keyboard",
+        "status": "passed",
+        "durationMs": 2558,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 851px by pointer",
+        "status": "passed",
+        "durationMs": 1485,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "responsive-session-controls.spec.ts",
+        "line": 86,
+        "title": "authenticated session controls remain reachable at 851px by keyboard",
+        "status": "passed",
+        "durationMs": 2525,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 57,
+        "title": "primary navigation exposes the five focused destinations",
+        "status": "passed",
+        "durationMs": 1447,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 70,
+        "title": "theme follows the system and preserves an explicit light/dark choice",
+        "status": "passed",
+        "durationMs": 1870,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 87,
+        "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+        "status": "passed",
+        "durationMs": 1488,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 87,
+        "title": "finding details retain filter, selection and keyboard focus (reduce)",
+        "status": "passed",
+        "durationMs": 1668,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 123,
+        "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+        "status": "passed",
+        "durationMs": 1910,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 145,
+        "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+        "status": "passed",
+        "durationMs": 1421,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "shell.spec.ts",
+        "line": 158,
+        "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+        "status": "passed",
+        "durationMs": 1325,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "synthetic-gallery-light",
+            "contentType": "image/png",
+            "inlineBytes": 76947,
+            "inlineSHA256": "26f636eba1a6ee20188d822048fb4f8d84dbb3c825a07c1185c884681be86ba8"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 283,
+        "title": "SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection",
+        "status": "passed",
+        "durationMs": 3201,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 113051,
+            "inlineSHA256": "73a9aaedf8c8aa381a829f332a3da650319767c64fb871c9264b4fed40d2b702"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 354,
+        "title": "SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial",
+        "status": "passed",
+        "durationMs": 3966,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 49160,
+            "inlineSHA256": "0ec28387953ca10b06342dee6f0ada29d79e88a8afae2828e14a415630746f70"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 426,
+        "title": "SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation",
+        "status": "passed",
+        "durationMs": 3902,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 33327,
+            "inlineSHA256": "d0dbe44402ea690b0317ad3cf3da1d3876ba0771dd7849312860e63da2c494b1"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 488,
+        "title": "SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts",
+        "status": "passed",
+        "durationMs": 4571,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 33622,
+            "inlineSHA256": "b41c7f74f053100096168e41380abd760cae4321942366069699442de8ff4d23"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 540,
+        "title": "SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation",
+        "status": "passed",
+        "durationMs": 2189,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 18158,
+            "inlineSHA256": "799ebcd5e59345ed62890256aa939d376c035cf6e2ca273695498eeaa214ec08"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 582,
+        "title": "SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs",
+        "status": "passed",
+        "durationMs": 3830,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 69092,
+            "inlineSHA256": "89f54923cde59abdceb56fa50f4cf361d76d6dea2bf757c0974f2a445ed5c336"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 637,
+        "title": "SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs",
+        "status": "passed",
+        "durationMs": 5753,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 53884,
+            "inlineSHA256": "f03e94cb9b378757d797f34607350d893645f6eff43981e9c95d292c29acf0a7"
+          }
+        ]
+      },
+      {
+        "file": "slack-delivery.spec.ts",
+        "line": 761,
+        "title": "SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm",
+        "status": "passed",
+        "durationMs": 5778,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "slack-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 69229,
+            "inlineSHA256": "b59f91e2276a8fb58ee856e016af2db4732fb9b0a533562e335211e2d392ee91"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 230,
+        "title": "SU1 Sources retain the five-nav/eight-family/Slack surface and distinguish loading, failure, empty, native pages and explicit masked creation",
+        "status": "passed",
+        "durationMs": 3595,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 65388,
+            "inlineSHA256": "bdd6f835bfadb0c8ce042692d2d847060f1c263ef34bf01e5933d91134b4635d"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 284,
+        "title": "SU2 Admin source edits are sparse and server-confirmed, blank token preserves it and current role overrides stale controls",
+        "status": "passed",
+        "durationMs": 3525,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 32313,
+            "inlineSHA256": "87db02eed32bd6eb48a1a52499c788fe2b19826f6941ed34793eba15f8bcfa8d"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 331,
+        "title": "SU3 Explicit collection queues only idempotencyKey; unavailable storage is not success and a lost ACK cannot create a blind new job",
+        "status": "passed",
+        "durationMs": 2089,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 16665,
+            "inlineSHA256": "9f8eaaa75b475842684024cda7b1a1236320930dee6ceb24972d52ea55f37e3b"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 385,
+        "title": "SU4 Manual collection status preserves complete/partial/native failure meaning and displays exact raw records/evidence without normalization or execution",
+        "status": "passed",
+        "durationMs": 4183,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 30769,
+            "inlineSHA256": "2cc95bc05456d3f8a2938695ba8367634d96902700f0e4db2c31eabab2f97b58"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 416,
+        "title": "SU5 Native history/record pagination retries the same cursor and evidence denial stays withheld through unavailable/digest errors",
+        "status": "passed",
+        "durationMs": 4321,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 281163,
+            "inlineSHA256": "48d37449eb834c0e1be3612e5e4f8d8be3a30875a5fb52a670d7b4e5c8b5e0bd"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 462,
+        "title": "SU6 Workspace/logout/401 clear source drafts and abort late collection/evidence/ACK data; viewer reads do not gain write authority",
+        "status": "passed",
+        "durationMs": 4323,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 63198,
+            "inlineSHA256": "45d370dab228dcceb03f180bc971c3b1650698c3b48db2f1600ce6d40b59e011"
+          }
+        ]
+      },
+      {
+        "file": "source-collection-ui.spec.ts",
+        "line": 499,
+        "title": "SU7 At 390px reduced-motion native source/collection controls preserve keyboard context and 401 clears an active token form",
+        "status": "passed",
+        "durationMs": 3355,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 15041,
+            "inlineSHA256": "bf9ed788255e45aa8a3a7754c3e49f0284951ed1b8c6521f1ff18b9894016b49"
+          }
+        ]
+      },
+      {
+        "file": "source-selection.spec.ts",
+        "line": 114,
+        "title": "ST1 Authorized source refresh updates the selected target before consent; later-page absence and disable do not revive old facts",
+        "status": "passed",
+        "durationMs": 3788,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "authorized-table-and-selected-target",
+            "contentType": "application/json",
+            "inlineBytes": 46367,
+            "inlineSHA256": "7829e327d459d1e3b2d6d92cebdc4e110026ba1151fe16854ec1aaff67f32ab5"
+          },
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 170233,
+            "inlineSHA256": "0c810c34f7412f5146f3fd044610220efef7a59e2a0f74bc6e3a1e2282b38906"
+          }
+        ]
+      },
+      {
+        "file": "source-selection.spec.ts",
+        "line": 171,
+        "title": "ST2 A held authorized refresh updates or invalidates open consent without posting or forgetting a lost-ACK intent",
+        "status": "passed",
+        "durationMs": 2347,
+        "retry": 0,
+        "attachments": [
+          {
+            "name": "authorized-refresh-while-consent-open",
+            "contentType": "application/json",
+            "inlineBytes": 1492,
+            "inlineSHA256": "057498c00d9083ab165af8a12671ad6e311e134ae41b00725ae4fd087f5cdf30"
+          },
+          {
+            "name": "source-collection-ui-http-ledger",
+            "contentType": "application/json",
+            "inlineBytes": 17748,
+            "inlineSHA256": "36f145a50ae9eea6f20927da7a4691795c5e96d69189a43df082eba1cb830eff"
+          }
+        ]
+      },
+      {
+        "file": "workspace-reselection.spec.ts",
+        "line": 21,
+        "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+        "status": "passed",
+        "durationMs": 1462,
+        "retry": 0,
+        "attachments": []
+      },
+      {
+        "file": "workspace-reselection.spec.ts",
+        "line": 42,
+        "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+        "status": "passed",
+        "durationMs": 1251,
+        "retry": 0,
+        "attachments": []
+      }
+    ]
+  },
+  "prior93Identity": {
+    "originalReport": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\COMPATIBILITY.json",
+      "bytes": 25790,
+      "sha256": "349f19cdef4f1aa040169c26d790dc0a5b7f311b4bec0fb03420e341543a0e94"
+    },
+    "caseMultisetMatches": true,
+    "fileCount": 17,
+    "cases": 93
+  },
+  "typecheck": {
+    "schemaVersion": 1,
+    "run": "successor-a1-typecheck-20260920-01",
+    "command": "npm.cmd run typecheck -- --pretty false",
+    "startedAt": "2026-09-20T14:35:24.7507107+00:00",
+    "completedAt": "2026-09-20T14:35:32.1956811+00:00",
+    "durationMs": 7439,
+    "exitCode": 0,
+    "requiredFocusedGreen": "successor-a1-focused-20260920-01",
+    "dependencyInstalls": 0,
+    "dependencyUpgrades": 0,
+    "compilerSettingsChanged": false,
+    "compiler": "existing installed package script, tsc --noEmit --pretty false",
+    "outcome": "passed",
+    "execution": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-typecheck-20260920-01-execution.json",
+      "bytes": 519,
+      "sha256": "066f84f8be6f7a954392e62a303d959ed6ef18cbc01ac73972fd67342a941538"
+    },
+    "consoleLog": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-typecheck-20260920-01.log",
+      "bytes": 64,
+      "sha256": "bedf36a08fcb2955be061de34b64d38a37d8995cddb4642c212cb7f87555ff63"
+    }
+  },
+  "aiu3Tails": [
+    {
+      "run": "successor-a1-aiu3-20260920-01",
+      "status": "all previously blocked tails completed",
+      "blockedTailSections": 0,
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+        "AI settings explicitly opened",
+        "AIU3 policy receipts, failed disabled save and exact sensitive finite grant completed",
+        "AI settings explicitly opened",
+        "AI settings explicitly opened",
+        "AIU3 expired history, issuer demotion without revocation and canonical revoke completed"
+      ],
+      "combinedAPIRequests": 35,
+      "aiRequests": 17,
+      "writes": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "local-only"
+          },
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "policy": {
+              "workspaceId": "18000000000000000000000000000001",
+              "mode": "local-only",
+              "revision": "policy-A:receipt/1",
+              "updatedAt": "2026-09-18T07:15:16.654321Z",
+              "updatedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "disabled"
+          },
+          "status": 503,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "error": {
+              "code": "unavailable",
+              "message": "AI configuration is unavailable. Ask the operator to check server-side configuration.",
+              "requestId": "synthetic-ai-settings-request",
+              "retryable": false
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "approved-hosted"
+          },
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "policy": {
+              "workspaceId": "18000000000000000000000000000001",
+              "mode": "approved-hosted",
+              "revision": "policy-A:receipt/2",
+              "updatedAt": "2026-09-18T07:15:16.654321Z",
+              "updatedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/ai/grants",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "profileId": "c8000000000000000000000000000001",
+            "profileRevision": "profile-Z/opaque.9",
+            "policyRevision": "policy-A:receipt/2",
+            "destination": "https://127.0.0.1:9443/selected-base/",
+            "task": "finding-validity",
+            "dataClass": "finding-evidence",
+            "expiresAt": "2026-09-20T15:33:00.000Z"
+          },
+          "status": 201,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "grant": {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:33:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/ai/grants/db000000000000000000000000000003/revoke",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "grant": {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:33:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": "2026-09-18T07:16:17.654321Z",
+              "revokedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        }
+      ],
+      "sessionRoles": [
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        }
+      ],
+      "grantHistoryReceipts": [
+        {
+          "status": 200,
+          "items": []
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:33:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:33:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:33:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:33:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:33:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:33:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        }
+      ],
+      "proofBasis": "Unchanged later AIU3 assertions passed and final phase marker was reached; these are synthetic HTTP receipts, not live service authority."
+    },
+    {
+      "run": "successor-a1-focused-20260920-01",
+      "status": "all previously blocked tails completed",
+      "blockedTailSections": 0,
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+        "AI settings explicitly opened",
+        "AIU3 policy receipts, failed disabled save and exact sensitive finite grant completed",
+        "AI settings explicitly opened",
+        "AI settings explicitly opened",
+        "AIU3 expired history, issuer demotion without revocation and canonical revoke completed"
+      ],
+      "combinedAPIRequests": 35,
+      "aiRequests": 17,
+      "writes": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "local-only"
+          },
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "policy": {
+              "workspaceId": "18000000000000000000000000000001",
+              "mode": "local-only",
+              "revision": "policy-A:receipt/1",
+              "updatedAt": "2026-09-18T07:15:16.654321Z",
+              "updatedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "disabled"
+          },
+          "status": 503,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "error": {
+              "code": "unavailable",
+              "message": "AI configuration is unavailable. Ask the operator to check server-side configuration.",
+              "requestId": "synthetic-ai-settings-request",
+              "retryable": false
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "approved-hosted"
+          },
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "policy": {
+              "workspaceId": "18000000000000000000000000000001",
+              "mode": "approved-hosted",
+              "revision": "policy-A:receipt/2",
+              "updatedAt": "2026-09-18T07:15:16.654321Z",
+              "updatedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/ai/grants",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "profileId": "c8000000000000000000000000000001",
+            "profileRevision": "profile-Z/opaque.9",
+            "policyRevision": "policy-A:receipt/2",
+            "destination": "https://127.0.0.1:9443/selected-base/",
+            "task": "finding-validity",
+            "dataClass": "finding-evidence",
+            "expiresAt": "2026-09-20T15:34:00.000Z"
+          },
+          "status": 201,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "grant": {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:34:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/ai/grants/db000000000000000000000000000003/revoke",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "grant": {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:34:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": "2026-09-18T07:16:17.654321Z",
+              "revokedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        }
+      ],
+      "sessionRoles": [
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        }
+      ],
+      "grantHistoryReceipts": [
+        {
+          "status": 200,
+          "items": []
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:34:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:34:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:34:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:34:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:34:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:34:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        }
+      ],
+      "proofBasis": "Unchanged later AIU3 assertions passed and final phase marker was reached; these are synthetic HTTP receipts, not live service authority."
+    },
+    {
+      "run": "successor-a1-full99-20260920-01",
+      "status": "all previously blocked tails completed",
+      "blockedTailSections": 0,
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls",
+        "AI settings explicitly opened",
+        "AIU3 policy receipts, failed disabled save and exact sensitive finite grant completed",
+        "AI settings explicitly opened",
+        "AI settings explicitly opened",
+        "AIU3 expired history, issuer demotion without revocation and canonical revoke completed"
+      ],
+      "combinedAPIRequests": 34,
+      "aiRequests": 17,
+      "writes": [
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "local-only"
+          },
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "policy": {
+              "workspaceId": "18000000000000000000000000000001",
+              "mode": "local-only",
+              "revision": "policy-A:receipt/1",
+              "updatedAt": "2026-09-18T07:15:16.654321Z",
+              "updatedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "disabled"
+          },
+          "status": 503,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "error": {
+              "code": "unavailable",
+              "message": "AI configuration is unavailable. Ask the operator to check server-side configuration.",
+              "requestId": "synthetic-ai-settings-request",
+              "retryable": false
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "PATCH",
+          "path": "/api/v1/ai/policy",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "mode": "approved-hosted"
+          },
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "policy": {
+              "workspaceId": "18000000000000000000000000000001",
+              "mode": "approved-hosted",
+              "revision": "policy-A:receipt/2",
+              "updatedAt": "2026-09-18T07:15:16.654321Z",
+              "updatedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/ai/grants",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {
+            "profileId": "c8000000000000000000000000000001",
+            "profileRevision": "profile-Z/opaque.9",
+            "policyRevision": "policy-A:receipt/2",
+            "destination": "https://127.0.0.1:9443/selected-base/",
+            "task": "finding-validity",
+            "dataClass": "finding-evidence",
+            "expiresAt": "2026-09-20T15:36:00.000Z"
+          },
+          "status": 201,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "grant": {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:36:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          },
+          "failure": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/v1/ai/grants/db000000000000000000000000000003/revoke",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "grant": {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:36:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": "2026-09-18T07:16:17.654321Z",
+              "revokedBy": "28000000000000000000000000000001"
+            }
+          },
+          "failure": null
+        }
+      ],
+      "sessionRoles": [
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "workspaces": [
+            {
+              "id": "18000000000000000000000000000001",
+              "role": "admin"
+            },
+            {
+              "id": "18000000000000000000000000000002",
+              "role": "analyst"
+            },
+            {
+              "id": "18000000000000000000000000000003",
+              "role": "viewer"
+            }
+          ]
+        }
+      ],
+      "grantHistoryReceipts": [
+        {
+          "status": 200,
+          "items": []
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:36:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:36:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:36:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:36:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        },
+        {
+          "status": 200,
+          "items": [
+            {
+              "id": "d8000000000000000000000000000063",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T13:36:00.000Z",
+              "createdAt": "2026-09-16T12:13:14.123456Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            },
+            {
+              "id": "db000000000000000000000000000003",
+              "workspaceId": "18000000000000000000000000000001",
+              "profileId": "c8000000000000000000000000000001",
+              "profileRevision": "profile-Z/opaque.9",
+              "policyRevision": "policy-A:receipt/2",
+              "destination": "https://127.0.0.1:9443/selected-base/",
+              "task": "finding-validity",
+              "dataClass": "finding-evidence",
+              "expiresAt": "2026-09-20T15:36:00.000Z",
+              "createdAt": "2026-09-18T07:15:16.654321Z",
+              "grantedBy": "28000000000000000000000000000001",
+              "revokedAt": null,
+              "revokedBy": null
+            }
+          ]
+        }
+      ],
+      "proofBasis": "Unchanged later AIU3 assertions passed and final phase marker was reached; these are synthetic HTTP receipts, not live service authority."
+    }
+  ],
+  "aiHTTPGuardEvidence": {
+    "standaloneAndFocusedAndFullAIUCases": 13,
+    "externalAttempts": 0,
+    "fixtureViolations": 0,
+    "browserExceptions": 0,
+    "maximumCombinedAPIRequests": 46,
+    "noLiveServiceRequests": true
+  },
+  "prior93NetworkQualification": "The 93 unchanged legacy cases passed their existing fixture guards. No unsupported aggregate external-attempt counter is invented for cases without that counter in their attachments.",
+  "rawPayloadFiles": [
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01-execution.json",
+      "bytes": 622,
+      "sha256": "0644f0600e77d1faa11510b93fa3461f6ab069a7390b814943d7a2b0d4cadc22"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01.log",
+      "bytes": 217,
+      "sha256": "93a5bf9e80695316768810277bcdb4b043bd56fcf23d534b3bf620861af7afb4"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01\\results.json",
+      "bytes": 81863,
+      "sha256": "7588c932e21dc765b0eb4693c957012ec523b46dc10e1418872c564de33755a8"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-aiu3-20260920-01\\results\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01-execution.json",
+      "bytes": 608,
+      "sha256": "2e1b42af0b4b16e937a9df68ee99afd7553033819f8c072ab9ab657a247652ef"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01.log",
+      "bytes": 994,
+      "sha256": "85a0d2d2f0b5fded87ca8babe3f3d1346345994608249198cfd342891424c982"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01\\results.json",
+      "bytes": 604556,
+      "sha256": "12aa6cf7cc344b6fd1983247f5db729bbab633ee7b3bd31cbf9823d35a1666c1"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-focused-20260920-01\\results\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01-execution.json",
+      "bytes": 648,
+      "sha256": "3fa77146fc180d7a30250d754836ed82d02679a0c0009111f964569f2408989d"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01.log",
+      "bytes": 16085,
+      "sha256": "8515c851f3c8c7b47077440bf74a6c57ca5c6cecb58f664efb5523dc21fc8c35"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01\\results.json",
+      "bytes": 26012971,
+      "sha256": "a9b159385cd3ede762385eabd4375419b32669d69eda20ecbd345cefe1da3e33"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01\\results\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01-execution.json",
+      "bytes": 473,
+      "sha256": "5b9fbcd4ebdbe28c729edd370954e7b6767a4e2ac945337fdb3027a9d9925acf"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01.log",
+      "bytes": 782,
+      "sha256": "73ebca325a29668b01efd491dc270461057389f7ce206a551d376eb75d4aef9f"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01\\calibration.json",
+      "bytes": 11976,
+      "sha256": "d0bb456b6714c175f8e519e46af097ec4552681910ef0e8b28b85861edad6660"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-native-20260920-01\\trace.zip",
+      "bytes": 75670,
+      "sha256": "24b081a3c4b8e115ced02444b3e5da3568c84ea1176db70354b291a8594564aa"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01-execution.json",
+      "bytes": 534,
+      "sha256": "4efa0ab38dda4a194bd31282bc0529fc660477a183bfeb8f233d188674e7afc4"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01.log",
+      "bytes": 4174,
+      "sha256": "32e60fabf97b93fa75b8cea972cb3b9360187490bfc337bf3dae841514104825"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results.json",
+      "bytes": 37138,
+      "sha256": "37d1d8ea88549e52196dac9b564d7f1942bca354f51813f37139fb049a6e717d"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\.last-run.json",
+      "bytes": 96,
+      "sha256": "f6b26aaccd0cd8790fea548e48a801cb16585352f0022155172425856186a105"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\error-context.md",
+      "bytes": 28364,
+      "sha256": "b798376eebacb47c26204984da90b24911949766d018fb57c74fd83945493591"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\test-failed-1.png",
+      "bytes": 65407,
+      "sha256": "f27fa94e1a9d433aea01cff490606ec0c2a6b398b7318d40484b4d5bdd8a9ca3"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-red-20260920-01\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\trace.zip",
+      "bytes": 718185,
+      "sha256": "6f4cf70f3a7c41b7c199af11abc02d29df27eae3b77630bc756a35e03142b21f"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-typecheck-20260920-01-execution.json",
+      "bytes": 519,
+      "sha256": "066f84f8be6f7a954392e62a303d959ed6ef18cbc01ac73972fd67342a941538"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-typecheck-20260920-01.log",
+      "bytes": 64,
+      "sha256": "bedf36a08fcb2955be061de34b64d38a37d8995cddb4642c212cb7f87555ff63"
+    }
+  ],
+  "limitations": {
+    "calibrationIsProductAcceptance": false,
+    "releaseOrSelfAcceptance": false,
+    "oracleSeal": false,
+    "privateAuthorityAccess": false,
+    "runtimeAPIProviderDatabaseProof": false,
+    "dependenciesInstalledOrUpgraded": false,
+    "productionOrBackendEdits": false,
+    "buildRerunByThisAuthor": false,
+    "commits": 0,
+    "agentsLaunched": 0
+  }
+}

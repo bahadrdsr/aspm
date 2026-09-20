@@ -1,0 +1,101 @@
+SOURCE COLLECTION A3 - INTENTIONAL SCHEMA-V7 COMPATIBILITY
+========================================================
+
+Author role and authorization
+-----------------------------
+This amendment is authored by an independent successor test author on
+September 18, 2026. This author is NOT the original source-collection or A2
+historical-upgrade test author. The prior author was cleared; no original
+authorship, original acceptance authority, or new signing authority is claimed.
+
+The parent explicitly authorized one compatibility amendment to the existing
+tests\source_collection\upgrade_test.go: require the intentional current
+schema ledger [1,2,3,4,5,6,7] both after current constructor open and after
+repeat core/worker opens. Only those two expectations and their directly
+associated diagnostic wording may change.
+
+This is evolution of a prior schema-specific oracle, NOT a production fix.
+The frozen AI configuration contract explicitly requires v7 once over actual
+published v6, preserving legacy definitions and durable API-created data.
+The held backend had already implemented that feature. It must not be changed
+to appease the old [1,2,3,4,5,6] equality check.
+
+Independent origin verification before amendment
+------------------------------------------------
+The schema-only fixture remains the exact published v5 from:
+  7281edf4466c2b940eea7aa95c377d25e7f4c2b0
+The complete historical fixture SHA-256 remains:
+  fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77
+
+All five SQL fragments were independently compared with the exact committed
+Go raw-string values, their Git blob IDs, source hashes and SQL hashes. CR
+removal follows Go raw-string semantics. The published ledger definition and
+the complete set of 18 legacy relations also matched. No current-schema DDL,
+historical binary, fake ledger or table deletion was used to construct v5.
+The starting ledger assertion remains exactly [1,2,3,4,5].
+
+The independent pre-amend full source Contract run reproduced BOTH historical
+entrypoint failures at line 178, with the other eight top-level narratives
+passing. Each current constructor succeeded on actual published v5; actual
+observations contained 25 relations and the exact ledger [1,2,3,4,5,6,7].
+The old diagnostic did not establish a missing v6 migration. Its exact current
+ledger expectation was stale for the intentional v7 feature.
+Both pre-amend post-upgrade API/evidence/reopen tails were BLOCKED/NOT RUN.
+
+Exact retained obligations
+--------------------------
+No generic version >= 6, ignored future version, skipped assertion, timeout
+increase, failure bypass or migration-ledger rewrite is authorized.
+The current ledger must be EXACTLY 1 through 7 at both checkpoints.
+
+Everything else in upgrade_test.go stays byte-identical:
+  - fresh empty owned schema and all five complete historical DDL executions;
+  - historical fixture hash, versions 1..5 and all 18 real legacy relations;
+  - columns/types/nullability/defaults/identity/generated flags, constraints
+    and indexes of every legacy relation;
+  - all four actual v6 source relations;
+  - actual post-upgrade source create/patch/detail/list and queued enqueue;
+  - actual independently opened worker, three native records and all evidence;
+  - one linked asset, unchanged legacy definitions and durable core/worker
+    reopens with the exact current ledger.
+
+The A2 test name, observation filename prefix, original fixtures, bindings,
+helpers and opaque worker labels remain unchanged. A3 observations are selected
+from the actual new runner log, not from whichever old observation is newest.
+No pre-existing customer/business rows were seeded; none are claimed preserved.
+
+Qualification and boundaries
+----------------------------
+The held backend handoff is:
+  .cache\ai-configuration-coder\HANDOFF.json
+  SHA-256 01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c
+All 12 held implementation paths must remain byte-identical.
+
+Use only the unchanged redacting Test-SourceCollection.ps1 and
+Test-AIConfiguration.ps1, Contract mode, the original private RUNTIME/runtime.json
+and original restored PG/S3 fixtures. No runtime service/configuration,
+role/policy, provider adapter, module, dependency or source implementation edit.
+Run all nine source and all six AI configuration narratives. A calibration or
+preflight alone is not acceptance. Previously blocked tails are qualified only
+by complete actual passing runs and their observations.
+
+Native-source compatibility performs owned PG, local S3 and owned TLS native
+source I/O. It is NOT inference and NOT a zero-network claim. No real vendor or
+model endpoint is authorized. The AI configuration suite has its own unchanged
+no-provider/storage-HTTP tripwires; do not conflate those separate boundaries.
+
+History and new-current seal
+----------------------------
+Archive only the actually modified upgrade_test.go at:
+  history\a3\upgrade_test.go.before.txt
+All other old source/AI/UI controls, packets and signatures stay unchanged.
+The 138 signed AI controls have exactly one parent-authorized current-file
+delta; the other 137 must remain identical. All 770 signed AI/UI controls,
+including the previous 93 browser cases and new six AI UI cases, stay identical.
+Separate UI implementation is not part of this amendment or its source hold.
+
+New A3 records contain hash references, rationale, exact diff, actual results
+and guards. Old signed manifests still describe their historical bytes and
+must not be rewritten or falsely reported as matching the amended current file.
+This author creates no authority capture, new oracle signature, agent or commit.
+Stop at the unsigned A3 packet for parent verification and a new current seal.

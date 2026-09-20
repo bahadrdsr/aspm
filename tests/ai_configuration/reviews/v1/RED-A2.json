@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T15:26:21.515Z",
+  "author": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+  "status": "Actual current equal-name POST RED frozen; production remains unfixed.",
+  "run": "successor-a2-foundry-red-20260920-01",
+  "runner": {
+    "path": "tests\\ai_configuration\\Test-AIConfiguration.ps1",
+    "bytes": 5511,
+    "sha256": "98832e83f504a06061237839f50af19a555cd61e117a5084eb1445d580415521"
+  },
+  "receipt": {
+    "schemaVersion": 1,
+    "mode": "Contract",
+    "startedAt": "2026-09-20T15:22:59.1154784+00:00",
+    "finishedAt": "2026-09-20T15:23:44.8353951+00:00",
+    "exitCode": 1,
+    "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "arguments": [
+      "test",
+      "-json",
+      "-tags=integration",
+      "-mod=readonly",
+      "-count=1",
+      "-timeout=180s",
+      ".\\tests\\ai_configuration"
+    ],
+    "fullProductionResolverBindingIncluded": true,
+    "helperOnlyIsNotFullAcceptance": false,
+    "capabilities": "Owned random PG schemas and real API sessions; owned HTTP tripwires with no provider requests. No S3, prompt, inference, source/scan or verification execution.",
+    "privateRuntimeValuesCopied": false,
+    "providerAccountsOrKeysDiscovered": false
+  },
+  "source": {
+    "path": "tests\\ai_configuration\\foundry_names_test.go",
+    "bytes": 4889,
+    "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+  },
+  "counts": {
+    "topLevelSelected": 7,
+    "topLevelPassed": 6,
+    "topLevelFailed": 1,
+    "topLevelSkipped": 0,
+    "topLevelBlockedBeforeEntry": 0,
+    "existingNestedPassed": 2,
+    "existingNestedFailed": 0,
+    "repeatedRegressions": 0,
+    "newRegressionPassed": 0,
+    "newRegressionFailed": 1,
+    "blockedNewTailSections": 4
+  },
+  "topLevelCases": [
+    {
+      "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+      "status": "pass",
+      "durationSeconds": 0.88,
+      "completedAt": "2026-09-20T17:23:38.3765232+02:00"
+    },
+    {
+      "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+      "status": "pass",
+      "durationSeconds": 0.78,
+      "completedAt": "2026-09-20T17:23:39.1607113+02:00"
+    },
+    {
+      "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+      "status": "pass",
+      "durationSeconds": 0.75,
+      "completedAt": "2026-09-20T17:23:39.9070865+02:00"
+    },
+    {
+      "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+      "status": "pass",
+      "durationSeconds": 0.96,
+      "completedAt": "2026-09-20T17:23:40.8691636+02:00"
+    },
+    {
+      "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+      "status": "pass",
+      "durationSeconds": 1.17,
+      "completedAt": "2026-09-20T17:23:42.0430831+02:00"
+    },
+    {
+      "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+      "status": "pass",
+      "durationSeconds": 2.07,
+      "completedAt": "2026-09-20T17:23:44.1141593+02:00"
+    },
+    {
+      "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+      "status": "fail",
+      "durationSeconds": 0.58,
+      "completedAt": "2026-09-20T17:23:44.693717+02:00"
+    }
+  ],
+  "existingNestedCases": [
+    {
+      "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/fresh-concurrent-and-credential-compatibility",
+      "status": "pass",
+      "durationSeconds": 0.85,
+      "completedAt": "2026-09-20T17:23:42.8920686+02:00"
+    },
+    {
+      "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/published-v6-upgrade",
+      "status": "pass",
+      "durationSeconds": 1.22,
+      "completedAt": "2026-09-20T17:23:44.1141593+02:00"
+    }
+  ],
+  "newRegression": {
+    "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+    "phaseReached": "Real owned PG/core/bootstrap/admin login completed; explicit equal model/deployment POST was sent.",
+    "failure": {
+      "file": "tests\\ai_configuration\\foundry_names_test.go",
+      "line": 26,
+      "method": "POST",
+      "route": "/api/v1/ai/profiles",
+      "expectedStatus": 201,
+      "actualStatus": 400,
+      "message": "actual POST /api/v1/ai/profiles returned 400, want 201; private response withheld"
+    },
+    "networkCounters": {
+      "http": 0,
+      "ambient": 0,
+      "tcp": 0
+    },
+    "reachedOutputs": [
+      "=== RUN   TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+      "    foundry_names_test.go:25: AI7 reached: explicit equal-name Foundry POST with real admin session",
+      "    foundry_names_test.go:26: actual POST /api/v1/ai/profiles returned 400, want 201; private response withheld",
+      "    foundry_names_test.go:13: AI7 no-provider/storage HTTP counters: http=0 ambient=0 tcp=0",
+      "--- FAIL: TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions (0.58s)"
+    ],
+    "compiledAndExecuted": true,
+    "notACompileFixtureOrConnectivityFailure": true,
+    "blockedNotRun": [
+      {
+        "section": "Equal-name metadata persistence/reopen, AES-GCM/AAD and exact grant-bound resolver/private key",
+        "status": "BLOCKED/NOT RUN after equality POST"
+      },
+      {
+        "section": "Equal-to-distinct deployment-only PATCH, meaningful revision and old grant denial",
+        "status": "BLOCKED/NOT RUN after equality POST"
+      },
+      {
+        "section": "Distinct-to-equal model-only PATCH, meaningful revision, prior grant denial and fresh exact resolution",
+        "status": "BLOCKED/NOT RUN after equality POST"
+      },
+      {
+        "section": "Missing model/deployment POSTs reject without inferred defaults or DB mutation",
+        "status": "BLOCKED/NOT RUN after equality POST"
+      }
+    ]
+  },
+  "unchangedOldNegatives": {
+    "case": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+    "status": "pass",
+    "blankFoundryDeployment400": "Existing empty-string assertion executed and passed.",
+    "nonFoundryNonemptyDeployment400": "Existing assertion executed and passed.",
+    "emptyModel400": "Existing assertion executed and passed.",
+    "newOmissionAssertions": "BLOCKED in the new case, not claimed as passed."
+  },
+  "evidence": [
+    {
+      "path": ".artifacts\\ai-configuration-v1\\successor-a2-foundry-red-20260920-01.jsonl",
+      "bytes": 12216,
+      "sha256": "98f321e3e8938e1a12396f875942ab0779d3b4dbe94ba85467bc7a1035600427"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\successor-a2-foundry-red-20260920-01.log",
+      "bytes": 2307,
+      "sha256": "fb570df01d9b13c7fce662968037d9101a5f11543b60d0a4f9d724a2ae58a5a1"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\successor-a2-foundry-red-20260920-01.receipt.json",
+      "bytes": 840,
+      "sha256": "2f066896e167084a6b0597e7360cf5f02b8fa74cc1ed869c68c91c113b727f62"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-7f7a4a366d58d7a7f43b212c.json",
+      "bytes": 765,
+      "sha256": "ed7b699fc6078c03c921d1ce9e5a082cbc75c550302f74fb56c2359442fec183"
+    }
+  ],
+  "productionReason": {
+    "file": "internal\\app\\ai_validation.go",
+    "line": 31,
+    "incorrectCondition": "profile.Deployment == profile.Model",
+    "unchangedSource": {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3278,
+      "sha256": "fe69d54be17c9930d90c44b2ca8aca9d8c3914b0dad3b5d3d2d9615f64ab3141"
+    },
+    "correctionPerformed": false
+  },
+  "boundaries": {
+    "actualOwnedPostgreSQL": true,
+    "realCoreAPIHandlerAndSession": true,
+    "productionResolverBindingCompiled": true,
+    "originalSixNoNetworkGuardsPassed": true,
+    "newCaseProviderOrStorageRequests": 0,
+    "providerConstructorOrAssessInvoked": false,
+    "providerAccountsUsed": false,
+    "runtimeValuesCopied": false,
+    "dependenciesInstalled": false,
+    "oracleCapturedOrEdited": false,
+    "productionEdited": false
+  },
+  "laterVerification": "Parent must seal the regression, make the narrow validator/doc correction, rerun all seven and affected compatibility, and obtain independent review. No later blocked assertion or provider behavior is assumed green."
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T07:37:18.4752531+00:00",
+  "contractBeforeTests": {
+    "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+    "bytes": 12884,
+    "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+  },
+  "backendAuthority": [
+    {
+      "path": "tests\\ai_configuration\\CONTRACT.txt",
+      "bytes": 13625,
+      "sha256": "0c9beff6b3c2611493427a9fbac26712635b5162f76b882f6efb57bdd84d8366"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3154,
+      "sha256": "8db255260105ef022137df3b2dd1611ecc90d0a65e7feceddb1426b482cdac61"
+    },
+    {
+      "path": "tests\\ai_configuration\\contract_test.go",
+      "bytes": 2023,
+      "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+    }
+  ],
+  "publicationWitness": "24556fd41090628f391a728457f9c377ca624983",
+  "semanticChoice": "Opt-in in-page settings, shared profile/revoke dialogs, nonmodal explicit grant facts/consent",
+  "newBrowserCases": 6,
+  "localOnlyFamilyRule": "local only, never hosted-loopback exception",
+  "grantAuthority": "Real stored server decision with exact current opaque revisions and destination; no approvalRef input",
+  "opaqueRevisions": "Receipt identity strings, never Sources numeric ordering",
+  "backendWorkingTreeFrozen": false,
+  "oldFilesMayChange": false,
+  "providerOrNativeNetworkAllowed": false,
+  "contractAuthoredBeforeSpec": true
+}

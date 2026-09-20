@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "name": "source-collection-v1-a3-schema-v7-compatibility",
+  "status": "frozen unsigned independent successor-author packet awaiting parent new-current seal",
+  "authorRole": "independent successor test author, NOT original source/A2 author",
+  "capturedAt": "2026-09-18T09:18:59.141Z",
+  "observedHead": "24556fd41090628f391a728457f9c377ca624983",
+  "heldSourceHandoff": {
+    "path": ".cache\\ai-configuration-coder\\HANDOFF.json",
+    "bytes": 19027,
+    "sha256": "01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c"
+  },
+  "controlledFiles": [
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10731,
+      "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a3\\upgrade_test.go.before.txt",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\AMENDMENT-A3.txt",
+      "bytes": 5810,
+      "sha256": "f086cd7c66417124b035a356bc515d22e2f0c51d3c12ffaba0740804467b9a1b"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\BEFORE-A3.json",
+      "bytes": 225841,
+      "sha256": "6ba8ecd9d3e7304be9868460b0cfc6815a7cdf732abfec11b96c976046517832"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\ORIGIN-A3.json",
+      "bytes": 6953,
+      "sha256": "68fb2eacba1ac7a20944c6f7cebf1e8224c74b40d8222c247bbcbd024e292317"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED-A3.json",
+      "bytes": 6879,
+      "sha256": "9a6a672a7397c872c06d1e3690f65aef3035c8f89c49baef0d6a9f782240a7af"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\VALIDATION-A3.json",
+      "bytes": 13912,
+      "sha256": "ac2135bfd0b466b008554d68fb040fe711da2c5b52961985bf64ce16b4915f8a"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS-A3.json",
+      "bytes": 5212,
+      "sha256": "8f16ad2775c00058e8fd9b9d09ec24cca0ffd17fb9e2abb69e6e38ee6c0fe1e0"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A3.txt",
+      "bytes": 6507,
+      "sha256": "9141b8d2a9eb3cdb2e295dd03d68891021ec978b4d250a723e64603b7f087d53"
+    }
+  ],
+  "onlyExistingFileAmended": "tests\\source_collection\\upgrade_test.go",
+  "authorizationCaptured": false,
+  "oldSignaturesRewritten": false,
+  "compatibilityRationale": "Require intentional current schema v7 exactly; preserve genuine historical v5 construction and all source/evidence/reopen obligations. Not a production fix.",
+  "qualification": {
+    "independentPreAmendFailureEntrypoints": 2,
+    "preAmendOtherTopLevelPasses": 8,
+    "sourceTopLevelPasses": 9,
+    "sourcePassEvents": 15,
+    "bothPreviouslyBlockedSourceTailsExecuted": true,
+    "AIConfigurationTopLevelPasses": 6,
+    "AIConfigurationPassEvents": 8,
+    "failed": 0,
+    "skipped": 0,
+    "sourcePackageElapsedSeconds": 15.809,
+    "aiPackageElapsedSeconds": 8.269,
+    "heldBackendPathsUnchanged": 12,
+    "AIControlsUnchanged": 137,
+    "AIControlsAuthorizedDelta": 1,
+    "AIUIControlsUnchanged": 770,
+    "runtimeUnchanged": true,
+    "actualAcceptanceNotCalibrationOnly": true
+  },
+  "outputRoot": ".artifacts\\source-collection-a3-schema-v7",
+  "nativeSourceBoundary": "Actual owned PG, local S3 and owned TLS native protocol; not inference and not zero-network.",
+  "parentAction": "Verify the exact one-file compatibility exception and complete actual results, then create the new current seal. Author stops without authority capture, implementation, agents or commits."
+}

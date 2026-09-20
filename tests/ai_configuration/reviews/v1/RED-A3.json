@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T16:00:51.007Z",
+  "author": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+  "scope": "Independent current A2 timestamp RED after parent Go/schema inequality corrections, before the A3 test amendment.",
+  "run": "author-a3-time-red-20260920-01",
+  "receipt": {
+    "schemaVersion": 1,
+    "mode": "Contract",
+    "startedAt": "2026-09-20T15:48:32.8632629+00:00",
+    "finishedAt": "2026-09-20T15:48:52.8011106+00:00",
+    "exitCode": 1,
+    "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "arguments": [
+      "test",
+      "-json",
+      "-tags=integration",
+      "-mod=readonly",
+      "-count=1",
+      "-timeout=180s",
+      ".\\tests\\ai_configuration"
+    ],
+    "fullProductionResolverBindingIncluded": true,
+    "helperOnlyIsNotFullAcceptance": false,
+    "capabilities": "Owned random PG schemas and real API sessions; owned HTTP tripwires with no provider requests. No S3, prompt, inference, source/scan or verification execution.",
+    "privateRuntimeValuesCopied": false,
+    "providerAccountsOrKeysDiscovered": false
+  },
+  "counts": {
+    "selected": 7,
+    "passed": 6,
+    "failed": 1,
+    "skipped": 0,
+    "nestedPassed": 2,
+    "nestedFailed": 0
+  },
+  "source": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\history\\a3\\foundry_names_test.go.a2",
+    "bytes": 4889,
+    "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+  },
+  "evidence": [
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-red-20260920-01.jsonl",
+      "bytes": 12591,
+      "sha256": "b374c09eda064a29acee36a2e68b77eceac1e32d949cf07121923547bc5a1c21"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-red-20260920-01.log",
+      "bytes": 2445,
+      "sha256": "89d8573d12b81d2da50f4291e3f18896daff9dd186727804e5c99de21719417c"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-red-20260920-01.receipt.json",
+      "bytes": 840,
+      "sha256": "77a5d0ccadc7578e8b34ed66350f21d61c0118b39efe53499c12ba382fd7bd8e"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-8f5d92b9f87057db3f3b2704.json",
+      "bytes": 765,
+      "sha256": "d9c7ce504419e18bbd9781e23bd5b6d82a5955819f1b0951a4b4cf9f75e02ee6"
+    }
+  ],
+  "cases": [
+    {
+      "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+      "status": "pass",
+      "durationSeconds": 1.31
+    },
+    {
+      "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+      "status": "pass",
+      "durationSeconds": 1.38
+    },
+    {
+      "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+      "status": "pass",
+      "durationSeconds": 2.32
+    },
+    {
+      "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+      "status": "pass",
+      "durationSeconds": 2.24
+    },
+    {
+      "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+      "status": "pass",
+      "durationSeconds": 3.04
+    },
+    {
+      "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+      "status": "pass",
+      "durationSeconds": 5.09
+    },
+    {
+      "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+      "status": "fail",
+      "durationSeconds": 2.01
+    }
+  ],
+  "newCase": {
+    "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+    "reachedOutput": "=== RUN   TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions\n    foundry_names_test.go:25: AI7 reached: explicit equal-name Foundry POST with real admin session\n    foundry_names_test.go:42: AI7 completed: equal POST persistence, authenticated credential and exact grant-bound resolution\n    foundry_names_test.go:47: deployment-only sparse PATCH must retain model and omitted fields while advancing revision\n    foundry_names_test.go:13: AI7 no-provider/storage HTTP counters: http=0 ambient=0 tcp=0\n--- FAIL: TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions (2.01s)\n",
+    "failedAt": {
+      "file": "tests\\ai_configuration\\foundry_names_test.go",
+      "line": 47,
+      "message": "deployment-only sparse PATCH must retain model and omitted fields while advancing revision"
+    },
+    "equalPOSTReopenKeyGrantResolveSection": "PASSED",
+    "deploymentPATCH": "Returned expected 200 before reaching the profile comparison; the comparison failed.",
+    "modelPATCHAndOmissionSections": "BLOCKED/NOT RUN",
+    "assertionsAfterLine47": "BLOCKED/NOT RUN",
+    "networkCounters": {
+      "http": 0,
+      "ambient": 0,
+      "tcp": 0
+    }
+  },
+  "independentMismatchProof": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\CALIBRATION-A3.json",
+    "bytes": 12240,
+    "sha256": "87071e438453f8b8c80dea3f5c36b133b29a817ba40c897105725e73ef0214f0"
+  },
+  "originalA2EqualityPOSTREDReplaced": false
+}

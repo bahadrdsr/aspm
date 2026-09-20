@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 1,
+  "name": "ai-settings-ui-v1-amendment-a1",
+  "status": "Unsigned successor independent-author measurement correction; HOLD for parent verification, new seal and independent review.",
+  "createdAt": "2026-09-20T14:48:32.170Z",
+  "author": {
+    "id": "successor-independent-ai-settings-ui-a1-native-option-20260920",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7",
+    "role": "Successor independent test author only",
+    "originalAuthor": false,
+    "originalAuthorId": "0ccaa08f",
+    "uiCoder": false,
+    "backendAuthor": false,
+    "continuityClaimed": false,
+    "delegatedAgents": 0
+  },
+  "amendmentOf": {
+    "packet": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\PACKET.json",
+      "bytes": 4434,
+      "sha256": "e69dafbe432ce783ca3555f623c5ee9bd0aa8e05ed46bf079e71512b8adb6b62"
+    },
+    "checksum": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "80366c1547d16aa1ff1eaea156148320fed74af3230861d9a29cb7c60003678a"
+    },
+    "red": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\RED.json",
+      "bytes": 109762,
+      "sha256": "46c1c720aa75b60f0f689a7a4f763e763871a933d992d7cf91fe53337cdba2fe"
+    },
+    "contract": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+      "bytes": 12884,
+      "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+    },
+    "allRemainInPlace": true,
+    "originalPacketControlledFilesProperty": "controlledFiles"
+  },
+  "exactMinimalDelta": {
+    "oldControlPath": "web\\tests\\ai-settings-ui.spec.ts",
+    "original": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\history\\a1\\ai-settings-ui.spec.ts.v1",
+      "bytes": 45102,
+      "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+    },
+    "amended": {
+      "path": "web\\tests\\ai-settings-ui.spec.ts",
+      "bytes": 45196,
+      "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+    },
+    "changes": [
+      "Add import of expectIneligibleOption.",
+      "Change only the AIU3 ineligible grant-profile OPTION measurement call; keep the exact locator."
+    ],
+    "smallOptionOnlyHelper": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+      "bytes": 552,
+      "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+    },
+    "genericButtonHelperChanged": false,
+    "otherAIUCaseBodiesChanged": false,
+    "fixtureProviderDataOrProductionChanged": false,
+    "byteReconstructionProof": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\GUARDS-A1.json",
+      "bytes": 162145,
+      "sha256": "28ed0b38baeb6f7d55b12e9926d4718d25ad87e43cb8d33903b371928c7e3f39"
+    }
+  },
+  "controlledFiles": [
+    {
+      "path": "web\\tests\\ai-settings-ui.spec.ts",
+      "bytes": 45196,
+      "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\AMENDMENT-A1.txt",
+      "bytes": 6430,
+      "sha256": "a6d1994fb2e5896aa85246b5dbaee8838d1c9b1a152591b0dd026a9c0f4c6d2a"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\BEFORE-A1.json",
+      "bytes": 159497,
+      "sha256": "5791cf73fc813e28ea9d4f83a1b54a65b77de96792df84c2e7e9f528f61a03e6"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CALIBRATION-A1.json",
+      "bytes": 13407,
+      "sha256": "97ab0df6fea3d2d394f55761da0c60d78837b041a29c256c5716d51bfb6cfe4a"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\GUARDS-A1.json",
+      "bytes": 162145,
+      "sha256": "28ed0b38baeb6f7d55b12e9926d4718d25ad87e43cb8d33903b371928c7e3f39"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\HANDOFF-A1.txt",
+      "bytes": 7810,
+      "sha256": "ea1a94009e227f50bd7666df8872e3c884609b5a088e826fafd50cd11b9a5fdf"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\RED-A1.json",
+      "bytes": 7653,
+      "sha256": "6012a5f1a1a0f0bf5a9d8f7f40c18a8ed4fdbf108372cead73938eca73c17875"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\RESULTS-A1.json",
+      "bytes": 127180,
+      "sha256": "f4af7d97c329f4b77094cf26c2af8784125b11c1cd2d0453522b0e5302914848"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\calibrate-option-A1.mjs",
+      "bytes": 11098,
+      "sha256": "ae0426005d8dfdd8286a78eeea669d9bb2687b031a5f1d21b17cdff26020670e"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\history\\a1\\REFERENCES.json",
+      "bytes": 1595,
+      "sha256": "c559ffcb69d757fcb6ecf41837ba664aafc261c55a77f2e3779beb35f45a6d0c"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\history\\a1\\ai-settings-ui.spec.ts.v1",
+      "bytes": 45102,
+      "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.html",
+      "bytes": 1488,
+      "sha256": "13dcaa3b8d649ef09c7f90bbfca1d488a016cae8d4b5ec1ed9cf91e0173efa76"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+      "bytes": 552,
+      "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+    }
+  ],
+  "digestPolicy": "Raw SHA256 bytes, no normalization. controlledFiles covers the changed spec and all 12 new A1 payloads. The packet itself is hashed by PACKET-A1.sha256; that checksum is publication metadata, not a recursively self-hashed payload. Raw run artifacts are transitively hashed in RESULTS-A1.json.",
+  "heldUICandidate": {
+    "handoff": {
+      "path": ".cache\\ai-settings-ui-coder\\HANDOFF.json",
+      "bytes": 118689,
+      "sha256": "afa738f7a15c5c46173d716b17a014fd5db7ca08023a68683ec6ee8950ec5431"
+    },
+    "productionPathsUnchanged": 13,
+    "original854InputTreeDigest": "sha256:8569b8412344f7ff4d709b06cec2b43707fa0a0197158e4d208cd83e11d19bab",
+    "inherited854AfterSpecAmendment": "sha256:685a2680846a0acbc84aa197f2a4c33dff407cd7407b266ce7c8d5f83a46c5c4",
+    "other853InputsUnchanged": true,
+    "newA1PayloadsExcludedFromInherited854List": true
+  },
+  "unchangedControls": {
+    "originalCount": 770,
+    "authorizedChangedCount": 1,
+    "otherUnchangedCount": 769,
+    "prior93SpecFilesUnchanged": 17,
+    "prior93CasesPassed": 93,
+    "guards": {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\GUARDS-A1.json",
+      "bytes": 162145,
+      "sha256": "28ed0b38baeb6f7d55b12e9926d4718d25ad87e43cb8d33903b371928c7e3f39"
+    }
+  },
+  "originalSealPreserved": {
+    "manifest": {
+      "path": ".oracles\\ai-settings-ui-v1.json",
+      "bytes": 155283,
+      "sha256": "783c48a0f7e99038c0797a10917815734ff1fa2b1fc75d7727211ce764f05e16"
+    },
+    "signature": {
+      "path": ".oracles\\ai-settings-ui-v1.json.sig",
+      "bytes": 89,
+      "sha256": "f1daae764d02f02733608b0cfef04bd737278ae712bba456dc05996f54c72269"
+    },
+    "config": {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-seal-inputs\\ai-settings-ui-oracle-set.json",
+      "bytes": 50360,
+      "sha256": "8bb8eec461029c758bcb1f009416377e4e1187bd2ca8c002ad62b1c06c05c26c",
+      "readOnly": true
+    },
+    "originalV1SealAuthenticatesA1": false,
+    "oracleCapturedOrModifiedByThisAuthor": false,
+    "privateAuthorityAccess": false,
+    "newSealStatus": "PENDING parent authority"
+  },
+  "qualification": {
+    "priorCurrentAIU3RED": {
+      "selected": 1,
+      "passed": 0,
+      "failed": 1,
+      "expectedReproduction": true
+    },
+    "nativeCalibration": {
+      "selected": 9,
+      "passed": 9,
+      "failed": 0,
+      "blocked": 0,
+      "productAcceptance": false
+    },
+    "amendedAIU3": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "focusedSix": {
+      "selected": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "full99": {
+      "selected": 99,
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0,
+      "retries": 0,
+      "flakes": 0
+    },
+    "legacyWithinFull99": {
+      "selected": 93,
+      "passed": 93,
+      "failed": 0,
+      "skipped": 0,
+      "blocked": 0
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "outcome": "passed"
+    },
+    "previouslyBlockedAIU3Tails": "All completed in standalone AIU3, focused-six and full-99 runs",
+    "remainingBlockedAIU3Tails": 0,
+    "newlyExposedProductionOrOracleIssues": []
+  },
+  "calibrationClassification": "Nine paired static-native-DOM fixture measurement checks, NOT product acceptance. Installed follow-label retargeting reproduced independently, without application DOM/state injection or external HTTP.",
+  "results": {
+    "path": "web\\tests\\reviews\\ai-settings-ui-v1\\RESULTS-A1.json",
+    "bytes": 127180,
+    "sha256": "f4af7d97c329f4b77094cf26c2af8784125b11c1cd2d0453522b0e5302914848"
+  },
+  "guardSettingsUnchanged": {
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000,
+    "combinedAPIRequestsPerCase": 60,
+    "workers": 1,
+    "retries": 0,
+    "serviceWorkers": "block",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure",
+    "nativeVisibilityAndShadowRootSemanticsElsewhere": true
+  },
+  "scopeExclusions": {
+    "productionEdits": 0,
+    "backendOrSourceCollectionUpgradeA3Edits": 0,
+    "dependencyInstallsOrUpgrades": 0,
+    "existingRunnerCompilerDependencyProvenanceSettingEdits": 0,
+    "fixtureOrProviderDataEdits": 0,
+    "commits": 0,
+    "agentsLaunched": 0,
+    "nativeApplicationAPIProviderOrDBNetwork": false,
+    "selfAcceptance": false,
+    "runtimeProviderDatabaseCertification": false
+  },
+  "archive": {
+    "onlyActualOldSpecAndHashReferences": true,
+    "files": [
+      {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\history\\a1\\REFERENCES.json",
+        "bytes": 1595,
+        "sha256": "c559ffcb69d757fcb6ecf41837ba664aafc261c55a77f2e3779beb35f45a6d0c"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-settings-ui-v1\\history\\a1\\ai-settings-ui.spec.ts.v1",
+        "bytes": 45102,
+        "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+      }
+    ],
+    "recursiveHistoryCopies": false
+  },
+  "parentAction": "Verify every payload and unchanged-byte guard; create a new authorized A1 seal covering the amended spec and all new A1 files without replacing the original V1 records; obtain independent review. Successor author stops here.",
+  "independentReviewStatus": "PENDING",
+  "releaseApproval": false
+}

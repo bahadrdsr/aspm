@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T23:16:00.335479+00:00",
+  "fullBinding": "MISSING_RESOLVER_CONSTRUCTOR_TYPE_COMPILE_RED",
+  "helperCompile": {
+    "result": "PASS_NOT_ACCEPTANCE",
+    "receipt": {
+      "path": ".artifacts\\ai-configuration-v1\\helpers-final.receipt.json",
+      "bytes": 1279,
+      "sha256": "894fd78ac92c78ddbbe0900e0a7567acec5259acff51d65c6123218d1921af49"
+    },
+    "executesTests": false
+  },
+  "actualResolvedGraph": {
+    "path": ".artifacts\\ai-configuration-v1\\compiler-dependencies.json",
+    "bytes": 1084350,
+    "sha256": "978e221fd61558d790961bc224a2a7f249d1b2a5ec3844969b53deb685f57805"
+  },
+  "actualResolvedHashes": {
+    "path": ".artifacts\\ai-configuration-v1\\compiler-input-hashes.json",
+    "bytes": 485668,
+    "sha256": "8e90947c1b10521a46762968907583c81a7e0fd47a3e40b04a7a2b38ef003fa8"
+  },
+  "resolvedPackages": 349,
+  "resolvedInputs": 2073,
+  "scope": "Resolved full target/production/dependency sources; missing AI resolver symbols still block target compilation. Unrelated dependency-only tests excluded.",
+  "missingFileInputs": [],
+  "newGoFiles": [
+    {
+      "path": "tests\\ai_configuration\\configuration_test.go",
+      "bytes": 18172,
+      "sha256": "56242511fb13d31279d5d645bc9cf063b388def995ff40b8c193890fbc06852f"
+    },
+    {
+      "path": "tests\\ai_configuration\\contract_test.go",
+      "bytes": 2023,
+      "sha256": "9faaacab35c3792b37de4b8ff3f7ec30fcfe32088ccea27ebf93f060f5fe0223"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixture_calibration_test.go",
+      "bytes": 395,
+      "sha256": "8c8effd8011c7a44874ff2ed113feee0362dac9007bc5a0407d675408e752b84"
+    },
+    {
+      "path": "tests\\ai_configuration\\fixtures_test.go",
+      "bytes": 18486,
+      "sha256": "b5d2de47e87e87024c0bad45aeb2d23f556088130deb25551f7ff1eaecc5ff76"
+    },
+    {
+      "path": "tests\\ai_configuration\\production_bindings_test.go",
+      "bytes": 1013,
+      "sha256": "e6a219defcdc4b6091d474006f308540e6d13da120dbe7caf20f69996afc8358"
+    },
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "bytes": 7136,
+      "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+    }
+  ],
+  "toolchain": {
+    "version": "go1.27.1 windows/amd64",
+    "binary": {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    "offlineExistingModulesOnly": true
+  },
+  "moduleChanges": []
+}

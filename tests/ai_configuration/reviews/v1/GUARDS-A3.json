@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T16:04:50.527Z",
+  "author": {
+    "id": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+    "role": "Original independent A2 author, now A3 timestamp measurement correction",
+    "originalA2Author": true,
+    "originalAI6Author": false,
+    "productionCoder": false,
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "outcome": "passed",
+  "scope": "Post-run byte/hash verification only, not a new oracle capture or signature verification.",
+  "baseline": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\BEFORE-A3.json",
+    "bytes": 202282,
+    "sha256": "9687b0e6a0efe0e57929abbd68b6f05dfa2056db74c9c688a838924f96aa6703"
+  },
+  "authorizedDelta": {
+    "path": "tests\\ai_configuration\\foundry_names_test.go",
+    "logicalComparisons": 2,
+    "changedLines": 4,
+    "exactFourReplacementReconstruction": true,
+    "replacements": [
+      {
+        "from": "wantDistinct.Deployment, wantDistinct.Revision, wantDistinct.UpdatedAt = otherName, distinct.Revision, h.now()",
+        "to": "wantDistinct.Deployment, wantDistinct.Revision, wantDistinct.UpdatedAt = otherName, distinct.Revision, distinct.UpdatedAt"
+      },
+      {
+        "from": "check(t, distinct.Revision != \"\" && distinct.Revision != created.Revision && reflect.DeepEqual(distinct, wantDistinct),",
+        "to": "check(t, distinct.UpdatedAt.Equal(h.now()) && distinct.Revision != \"\" && distinct.Revision != created.Revision && reflect.DeepEqual(distinct, wantDistinct),"
+      },
+      {
+        "from": "wantEqual.Model, wantEqual.Revision, wantEqual.UpdatedAt = otherName, equalAgain.Revision, h.now()",
+        "to": "wantEqual.Model, wantEqual.Revision, wantEqual.UpdatedAt = otherName, equalAgain.Revision, equalAgain.UpdatedAt"
+      },
+      {
+        "from": "check(t, equalAgain.Revision != \"\" && equalAgain.Revision != distinct.Revision && equalAgain.Revision != created.Revision &&",
+        "to": "check(t, equalAgain.UpdatedAt.Equal(h.now()) && equalAgain.Revision != \"\" && equalAgain.Revision != distinct.Revision && equalAgain.Revision != created.Revision &&"
+      }
+    ],
+    "before": {
+      "path": "tests\\ai_configuration\\foundry_names_test.go",
+      "bytes": 4889,
+      "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+    },
+    "archive": {
+      "path": "tests\\ai_configuration\\reviews\\v1\\history\\a3\\foundry_names_test.go.a2",
+      "bytes": 4889,
+      "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+    },
+    "after": {
+      "path": "tests\\ai_configuration\\foundry_names_test.go",
+      "bytes": 4989,
+      "sha256": "3d9dc391c6f90ae426ee22d9153a29409b3492fbcfc513d6b82079c6276dc9cd"
+    },
+    "allOtherTestBytesIdentical": true,
+    "fullDeepEqualPreserved": true,
+    "allRevisionChecksPreserved": true,
+    "exactInstantCheckAddedTwice": true,
+    "noTruncationToleranceOrGreaterThan": true
+  },
+  "sealedA2": {
+    "originalControlCount": 161,
+    "authorizedChangedControls": [
+      {
+        "before": {
+          "path": "tests\\ai_configuration\\foundry_names_test.go",
+          "bytes": 4889,
+          "sha256": "e25bd11cd7bf114b360a691fc4f5e3f862a4140d1da92f86c2065877f0736857"
+        },
+        "after": {
+          "path": "tests\\ai_configuration\\foundry_names_test.go",
+          "bytes": 4989,
+          "sha256": "3d9dc391c6f90ae426ee22d9153a29409b3492fbcfc513d6b82079c6276dc9cd"
+        }
+      }
+    ],
+    "otherControlsUnchanged": 160,
+    "unchangedInventorySHA256": "4c996565a0977bcc73c9f0e5a1cb4af625002985b61d27e064581163e84a54d1",
+    "fullInventoryReference": {
+      "file": "tests\\ai_configuration\\reviews\\v1\\BEFORE-A3.json",
+      "section": "backend161.files"
+    },
+    "oldSignatureAuthenticatesAmendedTest": false,
+    "newA3PayloadsRequireSeparateSeal": true
+  },
+  "ui786": {
+    "matched": 786,
+    "unchanged": true,
+    "currentInventorySHA256": "d3d460d365670c5573dde775fced0697fdbd1059a13c7cdac8dbbb4afc49200c",
+    "fullInventoryReference": {
+      "file": "tests\\ai_configuration\\reviews\\v1\\BEFORE-A3.json",
+      "section": "ui786.files"
+    }
+  },
+  "heldBackend12": [
+    {
+      "path": "internal\\app\\README.txt",
+      "bytes": 11755,
+      "sha256": "15be1b206d3ed5ded5da6cc6421cf4439cb057059207b0024728024aa99e2d63"
+    },
+    {
+      "path": "internal\\app\\doc.go",
+      "bytes": 7402,
+      "sha256": "b87d2b36a9d993fb6bf7c25e6a457d8ba473662be326bad22c195ec8f287f7b8"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 13578,
+      "sha256": "bf6f3abffd23223a8f2adef5c685996aed171a64e0c839ec0e0e41a131a3df07"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 9852,
+      "sha256": "95f0f20b3dd6ae2dc279aa98993da53de9225f65005fa31bceead85d44b3d823"
+    },
+    {
+      "path": "internal\\app\\ai_grants.go",
+      "bytes": 5541,
+      "sha256": "3cb4a9fd01e0abd26df9c39a37ade5347dfb00b8b244ae1ac4bd6f3c8b74827a"
+    },
+    {
+      "path": "internal\\app\\ai_policy.go",
+      "bytes": 1764,
+      "sha256": "2901ebf698bd1310a9dee70e3a6a24705d3075aa841e2011367029c0b696e191"
+    },
+    {
+      "path": "internal\\app\\ai_profiles.go",
+      "bytes": 6932,
+      "sha256": "aab634e887719da18687459a9fab8cd64efe7a98ccb255464de8d17a77a9de96"
+    },
+    {
+      "path": "internal\\app\\ai_resolver.go",
+      "bytes": 6025,
+      "sha256": "8a4f40efb33604f1084cdfc47c96865199965cd4804934fe3204f9f69906abce"
+    },
+    {
+      "path": "internal\\app\\ai_routes.go",
+      "bytes": 2866,
+      "sha256": "95ef2824cf9eb8c0da9ea41ce10482eb3074ba2403ccf86ea448646fe10078c7"
+    },
+    {
+      "path": "internal\\app\\ai_schema.go",
+      "bytes": 2180,
+      "sha256": "50f99db94b2eb29160e13f1937ad38d78fc5051d378a96499763e90f7255688c"
+    },
+    {
+      "path": "internal\\app\\ai_types.go",
+      "bytes": 3527,
+      "sha256": "f968865505e6258779d5e0e62a41bd3bbfea091d557452fb23d0229f5f995bc1"
+    },
+    {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3239,
+      "sha256": "efcaa7beaa4afe88d61616ca7653a279539f04b7e28563a4263aa800ea369ad1"
+    }
+  ],
+  "parentFixedThreeHeldUnchanged": [
+    {
+      "path": "internal\\app\\README.txt",
+      "bytes": 11755,
+      "sha256": "15be1b206d3ed5ded5da6cc6421cf4439cb057059207b0024728024aa99e2d63"
+    },
+    {
+      "path": "internal\\app\\ai_schema.go",
+      "bytes": 2180,
+      "sha256": "50f99db94b2eb29160e13f1937ad38d78fc5051d378a96499763e90f7255688c"
+    },
+    {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3239,
+      "sha256": "efcaa7beaa4afe88d61616ca7653a279539f04b7e28563a4263aa800ea369ad1"
+    }
+  ],
+  "otherNineUnchangedSinceA2": true,
+  "heldUI13": [
+    {
+      "path": "README.md",
+      "bytes": 26975,
+      "sha256": "0de01453510170b01c45d1243f6696beb84b3e6621cc9dcfea92ff8ef25cb8e6"
+    },
+    {
+      "path": "web\\src\\api\\ai-input.ts",
+      "bytes": 5254,
+      "sha256": "dbcd6400f87e9e04d503ce92de62e64b3e560c095a361c53c0b829d34c932fb0"
+    },
+    {
+      "path": "web\\src\\api\\ai-types.ts",
+      "bytes": 1634,
+      "sha256": "b1beded23f65a24e78d68c2d4abb436510a1d548b27a94af4d84b7182250ea76"
+    },
+    {
+      "path": "web\\src\\api\\ai.ts",
+      "bytes": 15474,
+      "sha256": "5e26cefe18276b35534c2591274f2da8eff3192933e10ff5b7198ac4b57df579"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\ai-grants.tsx",
+      "bytes": 8580,
+      "sha256": "ded9e89f51b27ecf92b8af633cc523410af9f1e8a5fda873368e9c87fea788b0"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\ai-policy.tsx",
+      "bytes": 3641,
+      "sha256": "f38f45af9e79dc1a7180e5afb6918cbb5df85e45bddcf7c7814bf0628fe6cf7d"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\ai-settings.css",
+      "bytes": 2486,
+      "sha256": "3ce9207e7bc84a7ee41a92e0d2e6e867ed06341468a754037470967c33ae89c3"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\ai-settings.tsx",
+      "bytes": 4869,
+      "sha256": "08964011a044ed6f24d4782f0d9112855aa7a7aaaa9b9442c2cd9d5a4e2c418e"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\ai-ui.tsx",
+      "bytes": 2113,
+      "sha256": "187af814e9a7ace6bad37ab6cb9075bbb8d21c4b08d1957285db781092fe3c1e"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\grant-approval.tsx",
+      "bytes": 8497,
+      "sha256": "860e28aa31983e6f1afb502dfe744fde22617455f0d16f2ac53189c095797d5d"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\profile-editor.tsx",
+      "bytes": 9406,
+      "sha256": "c6a69041373f8303b59ec2371427ae6b650c04e1250823efbd30a75946b7a805"
+    },
+    {
+      "path": "web\\src\\components\\ai-settings\\use-ai-data.ts",
+      "bytes": 9016,
+      "sha256": "6524e431f07290de0e10e3377bc6544003a82711f715f693f285a3444abedcc3"
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "bytes": 5474,
+      "sha256": "fda682a80a5422c01a591aaede4bff7a6455b382108be563830c68042f90e13b"
+    }
+  ],
+  "providerSources": [
+    {
+      "path": "internal\\providers\\assessor.go",
+      "bytes": 14733,
+      "sha256": "cbb81de861b4df105d80ade8d0b5a86b074201f6c4d7888a32eca0c23fba6ac8"
+    },
+    {
+      "path": "internal\\providers\\types.go",
+      "bytes": 2186,
+      "sha256": "da26338e465a8c393863c943ac0464a0fea0b28db40f22afd5364ffe0dc1568d"
+    }
+  ],
+  "unchangedSourceCollectionControlCount": 48,
+  "unchangedSourceCollectionControls": [
+    {
+      "path": "tests\\source_collection\\commit_trace_test.go",
+      "bytes": 1516,
+      "sha256": "3dfed44d0ebc17b231b28320970218b2ec37e4e24acce21185d7dd2119880554"
+    },
+    {
+      "path": "tests\\source_collection\\contract_test.go",
+      "bytes": 3298,
+      "sha256": "ff8e9fcd848b1f892c66d06b2f69d3eee4c3f4f0848f82623be32cfbba944485"
+    },
+    {
+      "path": "tests\\source_collection\\CONTRACT.txt",
+      "bytes": 18020,
+      "sha256": "df78884eb39444f2eb20ccc913abe70ec9938ef99c35f96cccb836b2034e97e3"
+    },
+    {
+      "path": "tests\\source_collection\\fixture_calibration_test.go",
+      "bytes": 11498,
+      "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 23504,
+      "sha256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    },
+    {
+      "path": "tests\\source_collection\\github_fixture_test.go",
+      "bytes": 5991,
+      "sha256": "bab80aa3ae842c6c9ac6ad3f51dd7790b6180f468ba05c2a1e017f28fb548b45"
+    },
+    {
+      "path": "tests\\source_collection\\HANDOFF.txt",
+      "bytes": 2988,
+      "sha256": "4cce2a6066f9705f1fbc098802f0fe30bb185114b92727971e3cf3b8757bbff1"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\AMENDMENT-A1.json",
+      "bytes": 3845,
+      "sha256": "f9ed634045dea38c500653bdf2c6d32eaafa9a253b3fed1c4c65067385148bd2"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\AMENDMENT-A3.txt",
+      "bytes": 5810,
+      "sha256": "f086cd7c66417124b035a356bc515d22e2f0c51d3c12ffaba0740804467b9a1b"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\BEFORE-A3.json",
+      "bytes": 225841,
+      "sha256": "6ba8ecd9d3e7304be9868460b0cfc6815a7cdf732abfec11b96c976046517832"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\BEFORE.json",
+      "bytes": 5275,
+      "sha256": "2b7c12c2841a81f87ac92336d5a08ac6231c51f1b175451472826316f52395d9"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\COMPILATION.json",
+      "bytes": 2154,
+      "sha256": "615db25764de711dfe241b62d64dd149cef3a0c990328480a96d6f976e800d18"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3328,
+      "sha256": "483c060efd704fde914a512c1e1b9a2242cfc66c546a1f1d942c94cc482cdfe6"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 5491,
+      "sha256": "83b0b6805f9d2359c29affbe384f46b56c0a1f87bfa479ec229b8d307832d276"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 4147,
+      "sha256": "766ce0277c6300af072ce55843b5dffa10229fbce803de2d8a4e79e5af54a43d"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS-A2.json",
+      "bytes": 4391,
+      "sha256": "19e9525262a3030ce8e7d394f5c1760bf4dd645d2aca781caa112d771e5c1e3b"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS-A3.json",
+      "bytes": 5212,
+      "sha256": "8f16ad2775c00058e8fd9b9d09ec24cca0ffd17fb9e2abb69e6e38ee6c0fe1e0"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\GUARDS.json",
+      "bytes": 7583,
+      "sha256": "4c3b2b1e1e0c821cf82a058a5045241754dbf9ef933961c52506af0776e29bb4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A1.json",
+      "bytes": 4088,
+      "sha256": "9bad480c4f637e3033fa924277e7571d2006814e56d1ccb092fd03095ea05f0c"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 5825,
+      "sha256": "75c74f80031e73cb85b2ab67209b8f025d61703dfdd16d61390f19c6e1b12e0a"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A2.json",
+      "bytes": 3177,
+      "sha256": "9275e5dfa10fa3268a586e310c84c91ac208e5e597ad9a817042c7785e48aec8"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A2.txt",
+      "bytes": 4622,
+      "sha256": "5746c4b3219de351c3286eaa24fc5cd9163a2d05edbd588242fd4a2ef615ea06"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF-A3.txt",
+      "bytes": 6507,
+      "sha256": "9141b8d2a9eb3cdb2e295dd03d68891021ec978b4d250a723e64603b7f087d53"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\HANDOFF.json",
+      "bytes": 3377,
+      "sha256": "bc44b3e9503acc5b18d12462df5e82c60116166f2e6e09d0bebed3682a591502"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\fixtures_test.go.before.txt",
+      "bytes": 22714,
+      "sha256": "b31fbdd35cbfd19240386100449813b6cc290f52f81cccfbc76f169fb3aaa818"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.json.before.txt",
+      "bytes": 5130,
+      "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a1\\PACKET.sha256.before.txt",
+      "bytes": 79,
+      "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a3\\upgrade_test.go.before.txt",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\ORIGIN-A2.json",
+      "bytes": 3201,
+      "sha256": "15a889611dc616510bcdf79da811984c8f2b95c58cbdd14d6d1be7f79b1fb1c2"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\ORIGIN-A3.json",
+      "bytes": 6953,
+      "sha256": "68fb2eacba1ac7a20944c6f7cebf1e8224c74b40d8222c247bbcbd024e292317"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A1.json",
+      "bytes": 9063,
+      "sha256": "e196e27f5dfb595e3e513dd823b74b08191db072056b84f7564d11faf396fcbe"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "fa0428c5dcbea4883eade49a41be89bd6ae77b697b0f7443b55fbbcee2b237a3"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 10859,
+      "sha256": "4c4202b2a5f5239535065496d5f28754a64afb5945c41ae7f6ad6048811150ca"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "382a9beb5cd0d90a566d00afc9060f4dafdd36e7e0e20746d8e0bc8c84bb4038"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A3.json",
+      "bytes": 3664,
+      "sha256": "f2129dc5501e715473e87e31b827352c2836e87d1009e909cf81a212482485b1"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET-A3.sha256",
+      "bytes": 81,
+      "sha256": "52d550f78a0f8c20f5e91a39488723172288e2169129e0619f4e7d2632d089c0"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET.json",
+      "bytes": 5130,
+      "sha256": "1094a2f480ce41c88657ee20c341d1d23eba10f0655e17a02eaf584ab2670843"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\PACKET.sha256",
+      "bytes": 79,
+      "sha256": "eb25276464ed0f4d0f59b6dc47e0d97a94f20a1afaa9566f7590ce0a935503e4"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED-A2.json",
+      "bytes": 7118,
+      "sha256": "dfab0c03811064d19c5c321940f3ac025d479361992f6548aeb40c524e8aaf6e"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED-A3.json",
+      "bytes": 6879,
+      "sha256": "9a6a672a7397c872c06d1e3690f65aef3035c8f89c49baef0d6a9f782240a7af"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\RED.json",
+      "bytes": 8764,
+      "sha256": "ba06880fd6cd0072ebf878863226852e0cf91fd1e701f0f324d1e560ce9e3e25"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\VALIDATION-A1.json",
+      "bytes": 6848,
+      "sha256": "cc557fb26f0a068a36b96d16148f81bedff2c7aef69d72ebe717227b0aac55f1"
+    },
+    {
+      "path": "tests\\source_collection\\reviews\\v1\\VALIDATION-A3.json",
+      "bytes": 13912,
+      "sha256": "ac2135bfd0b466b008554d68fb040fe711da2c5b52961985bf64ce16b4915f8a"
+    },
+    {
+      "path": "tests\\source_collection\\source_collection_test.go",
+      "bytes": 28266,
+      "sha256": "36b1ac907ec92d06e3a49b0f6ccbd985d1cb51cdea1eccd5872b90f36c844616"
+    },
+    {
+      "path": "tests\\source_collection\\Test-SourceCollection.ps1",
+      "bytes": 6342,
+      "sha256": "bcc5b91ae26f30f9ce8d18f90a213184bf1ed0b1841c3c863c4704c75009c6a3"
+    },
+    {
+      "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+      "bytes": 14328,
+      "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10731,
+      "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+    }
+  ],
+  "preservedReferences": [
+    {
+      "path": ".oracles\\ai-configuration-a2.json",
+      "bytes": 30834,
+      "sha256": "9f2dac2ef9ebc1fbedc393681fea612fc5b17a091ec6a0527689a872c9d42e56"
+    },
+    {
+      "path": ".oracles\\ai-configuration-a2.json.sig",
+      "bytes": 89,
+      "sha256": "4516eca6a4765c4232359c92cb8a0824ec4bbb0c7900bd3b69484f9c0cb6a85c"
+    },
+    {
+      "path": ".oracles\\ai-settings-ui-a1.json",
+      "bytes": 158358,
+      "sha256": "ee488edab2496bcce4ab2e24e696bf19fc8be5d28af90994dcf11e888332303a"
+    },
+    {
+      "path": ".oracles\\ai-settings-ui-a1.json.sig",
+      "bytes": 89,
+      "sha256": "4ee2076a72aeed966d3e00f1bf295b708d3a025aaec0594dbde2e576eda18455"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 10691,
+      "sha256": "6a628934ca84bc320b1f093516b370c071ff9e71702090c460b97233e05d1e06"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "0dbc37171b54343b190723d6d05d5fc468bff2a51911c399d232038da1aa511e"
+    },
+    {
+      "path": "tests\\ai_configuration\\reviews\\v1\\RED-A2.json",
+      "bytes": 8338,
+      "sha256": "9798b6c9344449a798f7ad2096833bcac8426ae3473a6f8d3f66979d3e9b9260"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\successor-a1-full99-20260920-01\\results.json",
+      "bytes": 26012971,
+      "sha256": "a9b159385cd3ede762385eabd4375419b32669d69eda20ecbd345cefe1da3e33"
+    },
+    {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\parent-a1-green-20260920-01\\results.json",
+      "bytes": 604510,
+      "sha256": "730e6e48146dc9031ffc06befc19c546ee9a51730cb4f9dff0f1bc8e60f7c9b5"
+    },
+    {
+      "path": ".cache\\ai-foundry-diagnostic\\observation_test.go",
+      "bytes": 2074,
+      "sha256": "251201f3b0bb1a5fe4bb0ed2bb4f561c65989224dcf16e41578363db2a84f2bf"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\ai-configuration-parent-check\\foundry-metadata-diagnostic.log",
+      "bytes": 462,
+      "sha256": "47783d57528cbfd12be74b6412a3d032c1321dcb9c18d0ead14062303af9f0f1"
+    }
+  ],
+  "calibrationWorkingCopiesRemoved": true,
+  "originalFixturesAndBindingByteIdentical": true,
+  "rawEvidenceFilesVerified": 16,
+  "calibrationAndResults": {
+    "AI7": {
+      "selected": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "Source9": {
+      "selected": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 6,
+      "nestedFailed": 0
+    },
+    "calibration": {
+      "vectors": 35,
+      "passed": 35,
+      "failed": 0
+    },
+    "blockedFoundrySections": 0
+  },
+  "prohibitionCompliance": {
+    "productionSchemaProviderUIEdits": 0,
+    "oldAI6Source9FixtureBindingRunnerEdits": 0,
+    "dependencyInstallsOrUpgrades": 0,
+    "oracleCapturesOrResignatures": 0,
+    "privateAuthorityAccess": false,
+    "providerInferenceCalls": 0,
+    "agents": 0,
+    "commits": 0
+  },
+  "parentAction": "Verify the one authorized test delta and new A3 payloads; create a new current seal without changing old A2 records, then repeat actual AI7."
+}

@@ -1,0 +1,64 @@
+AI CONFIGURATION V1 - INDEPENDENT M11 SETUP FOUNDATION HANDOFF
+===========================================================
+
+Read CONTRACT.txt first. It records the bounded task/data-class, grant trust,
+profile/policy revision, exact destination, keyless-local and disabled-default
+decisions BEFORE tests. This is persistent setup/pure DB lookup only, not M11
+assessment execution or a model/provider recommendation.
+
+New tests/ai_configuration only. No old provider/analysis tests, production,
+modules, UI/runtime/deployment controls, oracle signatures or history is edited.
+No provider Open/Assess call, prompt, inference, assessment-shaped response,
+source scan, verification, job/exploit interface or real provider account is
+used. A deny-all HTTP dial guard and owned HTTP/TLS tripwires must stay at zero.
+
+The real core app.Open API is used against random owned PG schemas. Core's
+existing required StorageConfig is pointed at a deny-only owned tripwire with
+synthetic credentials; no S3 service or real storage identity is needed.
+The runner reads/passes only the selected local PG URL from private runtime.json
+and strips ambient provider/proxy/credential variables.
+
+Required new pure-lookup surfaces are in production_bindings_test.go:
+  app.OpenAIConfigurationResolver(ctx, app.AIConfigurationResolverConfig)
+  app.AIConfigurationResolver
+  app.AIConfigurationRequest
+  app.AIConfiguration {Profile providers.Profile; Policy providers.Policy}
+The binding forwards only and preserves nil concrete resolver/error semantics.
+The secret-bearing result is internal configuration, never an HTTP DTO.
+
+Existing providers.Open constructs snapshots without validating every profile;
+the actual per-profile checks currently happen in Assess. The setup layer needs
+pure validation reuse/factoring, not an inference request as validation. Do not
+loosen normal TLS/proxy/client or provider destination policy to configure a
+profile. Parent should approve any narrow pure-validator extraction.
+
+The granted data class finding-evidence can contain private application/
+repository evidence excerpts; it is not asserted public/redacted. Credentials
+are not approved payload content. Grants are explicit server-persisted admin
+decisions with exact profile/policy revisions, destination, task/class and
+expiry. Resolve cannot trust an arbitrary approvalRef string. It remains a
+point-in-time DB check, not permission to skip future worker revalidation.
+
+Reproduction from C:\bahadr\serious\aspm with fresh output labels:
+  .\tests\ai_configuration\Test-AIConfiguration.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName parent-ai-config-01
+
+Contract includes the real new resolver binding and all six main cases.
+HarnessCompile excludes only that missing binding for compiler diagnostics.
+FixtureCalibration proves actual owned PG/API sessions and no HTTP activity,
+not AI behavior. UpgradePrerequisite separately executes the exact published
+v6 schema construction and CURRENT app.Open v7 check, without invoking an
+unimplemented resolver or substituting its authority.
+
+The historical fixture contains only pinned published v1-v6 DDL from
+24556fd41090628f391a728457f9c377ca624983, with source/blob/value hashes. It does
+not remove current tables or relabel a ledger. No legacy customer rows were
+seeded, so no old business-data migration proof is claimed.
+
+Logs/helper binaries/upgrade observations remain in .artifacts/ai-configuration-v1
+and project-local .cache paths, not protected test roots. No old review tree
+is copied. The full constructor RED, separate real upgrade RED and zero-I/O
+fixture calibration are distinct evidence categories in reviews/v1.
+
+Parent verifies trust/validation decisions and evidence, seals NEW controls,
+then assigns separate implementation/review. No assessment execution should
+start merely because these setup APIs or a resolver later pass.

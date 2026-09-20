@@ -1,0 +1,139 @@
+//go:build integration
+
+package ai_configuration
+
+import (
+	"reflect"
+	"testing"
+	"time"
+)
+
+type a3TimeVector struct {
+	Name              string
+	Expected, Matched bool
+	UpdatedAt         string
+}
+
+type a3TimeStage struct {
+	PatchField, Actual, Expected, ActualLocation, ExpectedLocation string
+	ActualOffsetSeconds, ExpectedOffsetSeconds                     int
+	EqualInstant, OldDeepEqual, RevisionChanged                    bool
+	DifferentFields                                                []string
+	Vectors                                                        []a3TimeVector
+}
+
+func TestAIConfigurationTimeInstantMeasurementCalibration(t *testing.T) {
+	h := newHarness(t, true)
+	t.Cleanup(func() {
+		t.Logf("A3 calibration no-provider/storage counters: http=%d ambient=%d tcp=%d", h.httpCalls.Load(), h.ambientDials.Load(), h.tcpCalls.Load())
+		h.networkNone()
+	})
+	const equalName = "synthetic-foundry-equal-identifier"
+	const otherName = "synthetic-foundry-other-identifier"
+	key := secret(t)
+	h.remember(key)
+	input := map[string]any{
+		"name": "Synthetic independent Foundry timestamp calibration", "family": "azure-foundry",
+		"endpoint": h.tlsTripwire.URL + "/openai/v1", "model": equalName, "deployment": equalName,
+		"enabled": true, "structuredOutput": true, "apiKey": key,
+	}
+	created := h.json(h.admin, "POST", profilesPath, input, 201).Profile
+	h.credential("ai_profiles", created.ID, "aspm/ai-credential/v1", key)
+	h.reopen()
+	check(t, reflect.DeepEqual(h.get(h.admin, created.ID), created), "actual PG/API calibration must preserve the created profile")
+	r := h.resolver()
+	pol := h.mode(h.admin, "approved-hosted")
+	approval := h.authorize(h.admin, created, pol)
+	assertResolved(t, r, h.ctx, h.admin, created, pol, &approval, key)
+	prior := created
+	var stages []a3TimeStage
+	for index, field := range []string{"deployment", "model"} {
+		actual := h.json(h.admin, "PATCH", profilesPath+"/"+created.ID, map[string]any{field: otherName}, 200).Profile
+		expected := prior
+		if field == "deployment" {
+			expected.Deployment = otherName
+		} else {
+			expected.Model = otherName
+		}
+		expected.Revision, expected.UpdatedAt = actual.Revision, h.now()
+		stage := a3TimeStage{
+			PatchField: field, Actual: actual.UpdatedAt.Format(time.RFC3339Nano), Expected: h.now().Format(time.RFC3339Nano),
+			ActualLocation: actual.UpdatedAt.Location().String(), ExpectedLocation: h.now().Location().String(),
+			EqualInstant: actual.UpdatedAt.Equal(h.now()), OldDeepEqual: reflect.DeepEqual(actual, expected),
+			RevisionChanged: actual.Revision != "" && actual.Revision != prior.Revision,
+		}
+		_, stage.ActualOffsetSeconds = actual.UpdatedAt.Zone()
+		_, stage.ExpectedOffsetSeconds = h.now().Zone()
+		a, b := reflect.ValueOf(actual), reflect.ValueOf(expected)
+		for fieldIndex := 0; fieldIndex < a.NumField(); fieldIndex++ {
+			if !reflect.DeepEqual(a.Field(fieldIndex).Interface(), b.Field(fieldIndex).Interface()) {
+				stage.DifferentFields = append(stage.DifferentFields, a.Type().Field(fieldIndex).Name)
+			}
+		}
+		check(t, stage.EqualInstant && !stage.OldDeepEqual && stage.RevisionChanged &&
+			stage.ActualOffsetSeconds != stage.ExpectedOffsetSeconds &&
+			reflect.DeepEqual(stage.DifferentFields, []string{"UpdatedAt"}),
+			"actual PG/API responses must reproduce an offset-only UpdatedAt mismatch, not an invented JSON-Z roundtrip")
+		matches := func(candidate profile) bool {
+			want := expected
+			want.Revision, want.UpdatedAt = candidate.Revision, candidate.UpdatedAt
+			return candidate.UpdatedAt.Equal(h.now()) && candidate.Revision != "" && candidate.Revision != prior.Revision &&
+				(index == 0 || candidate.Revision != created.Revision) && reflect.DeepEqual(candidate, want)
+		}
+		measure := func(name string, candidate profile, accepted bool) {
+			got := matches(candidate)
+			check(t, got == accepted, "paired exact-instant/DTO measurement failed: "+name)
+			stage.Vectors = append(stage.Vectors, a3TimeVector{name, accepted, got, candidate.UpdatedAt.Format(time.RFC3339Nano)})
+		}
+		measure("native PG/API offset: same instant", actual, true)
+		sameUTC := actual
+		sameUTC.UpdatedAt = actual.UpdatedAt.UTC()
+		measure("same observed instant represented as UTC", sameUTC, true)
+		for _, delta := range []time.Duration{time.Nanosecond, -time.Nanosecond} {
+			changed := actual
+			changed.UpdatedAt = actual.UpdatedAt.Add(delta)
+			measure("different instant "+delta.String(), changed, false)
+		}
+		for _, revision := range []string{"", prior.Revision} {
+			changed := actual
+			changed.Revision = revision
+			measure("empty or unchanged revision "+revision, changed, false)
+		}
+		if index == 1 {
+			changed := actual
+			changed.Revision = created.Revision
+			measure("reused original revision", changed, false)
+		}
+		for fieldIndex := 0; fieldIndex < a.NumField(); fieldIndex++ {
+			name := a.Type().Field(fieldIndex).Name
+			if name == "UpdatedAt" || name == "Revision" {
+				continue
+			}
+			changed := actual
+			target := reflect.ValueOf(&changed).Elem().Field(fieldIndex)
+			switch target.Kind() {
+			case reflect.String:
+				target.SetString(target.String() + "-different")
+			case reflect.Bool:
+				target.SetBool(!target.Bool())
+			case reflect.Struct:
+				check(t, name == "CreatedAt", "unexpected calibration DTO field")
+				changed.CreatedAt = actual.CreatedAt.Add(time.Nanosecond)
+			default:
+				t.Fatal("unsupported calibration DTO field")
+			}
+			measure("other DTO field "+name+" differs", changed, false)
+		}
+		stages = append(stages, stage)
+		prior = actual
+	}
+	h.networkNone()
+	result := map[string]any{
+		"scope":  "Actual owned PG/API fixture measurement proof only, not product acceptance",
+		"stages": stages, "http": h.httpCalls.Load(), "ambient": h.ambientDials.Load(), "tcp": h.tcpCalls.Load(),
+		"timezoneEnvironmentChanged": false, "applicationStateInjected": false, "jsonZRoundtripUsedAsProof": false,
+	}
+	encoded := encode(t, result)
+	h.noSecrets(encoded)
+	t.Log("A3_TIME_MEASUREMENT_JSON " + string(encoded))
+}

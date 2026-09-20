@@ -1,0 +1,148 @@
+AI SETTINGS UI A1 - SUCCESSOR INDEPENDENT AUTHOR HANDOFF
+=======================================================
+
+Status: LOCAL VALIDATION GREEN; HOLD FOR PARENT VERIFY/NEW SEAL/INDEPENDENT REVIEW.
+Date: September 20, 2026.
+Author: successor-independent-ai-settings-ui-a1-native-option-20260920
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+This is a successor independent test-author correction, NOT original author
+0ccaa08f, NOT the UI coder, and NOT backend implementation or acceptance.
+
+Minimal correction
+-------------------
+The existing spec adds one helper import and changes only AIU3's ineligible
+profile-option call from noEnabledActions to expectIneligibleOption.
+native-option-A1.ts is a small option-only measurement helper. It explicitly
+permits absence, then uses strict Locator.evaluate plus retried
+HTMLOptionElement.matches(":disabled"). Enabled/aria-only/non-option/ambiguous
+matches fail. Disabled OPTGROUP inheritance works. Generic button checks and
+all other case bodies are byte-identical, as is the original option locator.
+
+Original spec SHA256:
+ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222
+Amended spec SHA256:
+c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba
+New option-only helper SHA256:
+7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a
+
+Independent evidence and actual outcomes
+----------------------------------------
+All runs used fresh labels under .artifacts\ai-settings-ui-v1-author.
+
+successor-a1-red-20260920-01:
+  Unchanged current AIU3: 0 passed, 1 failed, 0 skipped/retried/flaky.
+  Meaningful expected reproduction at the original option assertion.
+  Its own locator resolved <option disabled> but reported enabled.
+  Later AIU3 sections were BLOCKED/NOT RUN in this RED only.
+
+successor-a1-native-20260920-01:
+  9/9 paired native-DOM calibration checks passed, 0 failed/blocked.
+  Five intentionally negative measurements actually rejected.
+  The old assertion fails on the disabled OPTION inside an enabled wrapped
+  SELECT but passes its unwrapped native counterpart. Installed source
+  inspection independently confirms follow-label retargeting to label.control.
+  Enabled, omitted, optgroup-inherited, aria-only, non-option and ambiguous
+  controls were calibrated. Eligible options remain selectable, and ArrowDown
+  skips native disabled OPTION/OPTGROUP controls.
+  Static synthetic file page only; zero external requests or page exceptions.
+  This is measurement proof, NOT product acceptance.
+
+successor-a1-aiu3-20260920-01:
+  Corrected AIU3: 1/1 passed, 0 failed/skipped/blocked/retried/flaky.
+
+successor-a1-focused-20260920-01:
+  All six focused AIU cases: 6/6 passed, 0 failed/skipped/blocked/retried/flaky.
+
+successor-a1-full99-20260920-01:
+  Complete suite: 99/99 passed, 0 failed/skipped/blocked/retried/flaky.
+  This includes all six AIU cases and exactly the prior 93 case identities.
+
+successor-a1-typecheck-20260920-01:
+  Existing npm typecheck script: exit 0.
+  No compiler/dependency/configuration changes or installation.
+  Full99 and typecheck started only after the six focused cases were green.
+
+The finite-sensitive-grant, expired-history, issuer-demotion-without-revocation
+and canonical explicit-revocation tails completed in all three amended AIU3
+runs. RESULTS-A1.json includes their final phase markers and synthetic grant,
+session-role and revoke receipts. Remaining blocked AIU3 tails: 0.
+Across the 13 executed AIU instances, externalAttempts=0, fixtureViolations=0,
+browserExceptions=0, and the maximum combined API count was 46 of the frozen
+60-request cap. The prior 93 cases passed their unchanged fixture guards.
+No additional production bug or oracle issue surfaced in these local runs.
+
+Preservation and hashes
+-----------------------
+GUARDS-A1.json verifies:
+  - 769 unrelated original controls unchanged.
+  - All 13 held UI production paths, including root README.md, unchanged.
+  - All 17 prior spec files comprising the existing 93 tests unchanged.
+  - Only the authorized import/call differs from the archived actual V1 spec.
+  - All other 853 inherited inputs unchanged: substituting only the archived
+    spec reproduces the original 854-input digest exactly.
+  - Original V1 packet, RED, oracle manifest/signature and seal config unchanged.
+
+Original 854-input digest:
+sha256:8569b8412344f7ff4d709b06cec2b43707fa0a0197158e4d208cd83e11d19bab
+Inherited 854-input digest after the authorized spec amendment:
+sha256:685a2680846a0acbc84aa197f2a4c33dff407cd7407b266ce7c8d5f83a46c5c4
+The inherited list does NOT cover new A1 files; PACKET-A1.json separately
+hashes every changed/new A1 payload, and PACKET-A1.sha256 hashes that packet.
+RESULTS-A1.json hashes all 25 fresh raw evidence files.
+
+history\a1 contains only ai-settings-ui.spec.ts.v1 and REFERENCES.json.
+No recursive history copy was created. The original V1 packet/signatures/RED
+remain in place and have not been replaced or presented as covering A1.
+
+Replay for parent verification
+------------------------------
+Use fresh unused hyphenated labels and a free owned port. Do not overwrite
+the recorded labels or reuse another process's Vite server.
+
+From C:\bahadr\serious\aspm\web, set:
+  $env:NODE_USE_SYSTEM_CA = "1"
+  $env:ASPM_WEB_TEST_PORT = "18756"
+  $env:ASPM_AI_UI_RUN = "<fresh-hyphenated-label>"
+
+AIU3:
+  node scripts\playwright.mjs test --config tests\reviews\ai-settings-ui-v1\playwright.config.ts ai-settings-ui.spec.ts --grep "AIU3 "
+Focused six, with another fresh label:
+  node scripts\playwright.mjs test --config tests\reviews\ai-settings-ui-v1\playwright.config.ts ai-settings-ui.spec.ts
+Full99, only after focused green and with another fresh label:
+  node scripts\playwright.mjs test --config tests\reviews\ai-settings-ui-v1\playwright.config.ts
+Typecheck, only after focused green:
+  npm.cmd run typecheck -- --pretty false
+
+For isolated calibration, from the same web directory also set:
+  $env:PLAYWRIGHT_BROWSERS_PATH = Join-Path $PWD ".cache\playwright"
+  $env:TEMP = Join-Path $PWD ".cache\work"
+  $env:TMP = $env:TEMP
+  $env:TMPDIR = $env:TEMP
+  node tests\reviews\ai-settings-ui-v1\calibrate-option-A1.mjs <fresh-hyphenated-label>
+The calibration refuses to overwrite an existing output directory.
+Its HTML is isolated static synthetic markup, not application DOM injection.
+
+Unchanged limits and explicit stop
+----------------------------------
+20-second cases, 5-second expectations, one worker, zero retries/skips, the
+combined 60-request cap, native visibility/shadow-root semantics, blocked
+service workers, retain-on-failure traces and only-on-failure screenshots are
+unchanged. Passing acceptance runs therefore do not retain their traces.
+The separately identified measurement calibration retains its own proof trace.
+The owned 18756 listener was absent after each acceptance run.
+
+No production/UI/backend feature work, source_collection upgrade A3 edits,
+backend AI test edits, dependency installs/upgrades, commits, sub-agents,
+private authority access, oracle captures/edits or live native API/provider/DB
+requests were performed. Existing runtime restoration/backend review belongs
+to the parent and is not assessed or certified here.
+
+Parent verification: PENDING.
+New A1 seal: PENDING; this author has not captured or signed any oracle.
+Independent review: PENDING.
+Self-acceptance/release approval/runtime/provider/DB certification: NOT CLAIMED.
+
+Parent must verify the minimal delta and byte guards, seal the amended spec
+and new A1 payloads under a new authorized seal, and obtain independent review.
+Do not modify or reuse the original V1 signature as an A1 signature.
+The successor author stops at this handoff.

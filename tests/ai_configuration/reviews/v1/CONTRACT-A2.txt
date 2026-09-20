@@ -1,0 +1,51 @@
+AI CONFIGURATION A2 - INDEPENDENT FOUNDRY NAME CLARIFICATION
+==========================================================
+
+Successor author: successor-independent-ai-configuration-foundry-names-a2-20260920
+This is a new, narrow regression amendment. The original CONTRACT.txt, six
+cases, fixtures, production bindings and prior packets remain byte-identical.
+
+In the original Foundry requirement, "distinct" means separate semantic fields,
+not a requirement that their string values differ. Model and deployment must
+both be explicitly supplied, nonblank and within the existing UTF-8 bounds.
+Equal explicitly supplied strings are valid. Equality is not aliasing, an
+implicit default, or permission to infer either omitted field from the other.
+Deployment remains required only for azure-foundry; non-Foundry profiles still
+reject nonempty deployment. All original endpoint/key/capability rules remain.
+
+PROVENANCE-A2.json records the independently read official Microsoft documents.
+They distinguish deployment identity from model identity and explicitly show
+matching name values as valid examples. No provider account, model catalog,
+available-model claim, remote inference, or endpoint default is involved.
+
+One new top-level integration case uses the existing real owned PostgreSQL,
+core API/session, encryption assertions, exact admin policy/grant helpers and
+trusted DB-only resolver. Its bounded narrative is:
+1. POST one hosted azure-foundry profile with both fields explicitly set to
+   the same synthetic string. Expect 201, persisted independent fields and a
+   valid private AES-GCM credential bound to workspace/profile.
+2. With an explicitly saved approved-hosted policy and a newly authorized
+   exact grant, resolve both fields and the private key without widening scope.
+3. PATCH only deployment from equal to different. Expect 200, model retained,
+   a meaningful new revision, old grant denial, and exact fresh-grant lookup.
+4. PATCH only model from different to equal. Expect 200, deployment retained,
+   another meaningful revision, old grants denied and exact fresh lookup.
+5. Omit model or deployment from new POST inputs. Expect 400, not defaults
+   copied from the remaining field. The old blank-deployment and non-Foundry
+   nonempty-deployment 400 assertions remain in the unchanged existing case.
+
+All provider/storage HTTP, ambient HTTP dials and tripwire TCP connections must
+remain zero. No provider constructor/Assess, prompt, result, job or scan runs.
+The existing 60-second fixture bound, 220-API-call bound, offline cached-toolchain
+runner and 180-second Contract timeout are unchanged.
+
+First freeze the actual current equality POST/PATCH RED. Assertions after the
+first failure are BLOCKED/NOT RUN, not assumed green. The original six remain
+separate evidence; their earlier acceptance did not cover equal-name values.
+The new test never accepts the incorrect inequality restriction.
+
+Author changes are limited to the one new test file and new A2 review evidence.
+No production/schema/provider/UI/old-test/fixture/binding/dependency/oracle edit,
+recursive history copy, new seal, commit, delegated agent or private authority
+access is authorized here. Stop for parent sealing, the narrow validator/doc
+correction, reruns and the separately assigned independent reviewer.

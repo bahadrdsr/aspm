@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-configuration-v1",
+  "capturedAt": "2026-09-17T22:43:33.3534721+00:00",
+  "publishedBaseline": "24556fd41090628f391a728457f9c377ca624983",
+  "policy": "AI configuration/preflight only, no provider I/O or assessment. Exact decisions must be documented before tests; no root dependency or old source/control edits.",
+  "files": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "internal\\providers\\types.go",
+      "bytes": 2186,
+      "sha256": "da26338e465a8c393863c943ac0464a0fea0b28db40f22afd5364ffe0dc1568d"
+    },
+    {
+      "path": "internal\\providers\\assessor.go",
+      "bytes": 14733,
+      "sha256": "cbb81de861b4df105d80ade8d0b5a86b074201f6c4d7888a32eca0c23fba6ac8"
+    },
+    {
+      "path": "internal\\providers\\README.txt",
+      "bytes": 2385,
+      "sha256": "56e72028b05c497cd53ba415f7c2c49f75e8a9c44e684c94d3cb0ba7b06ec034"
+    },
+    {
+      "path": "tests\\analysis\\contract_test.go",
+      "bytes": 6869,
+      "sha256": "88ec70b175d3fec58d6d1d0be5fc0a3768a27b0e6f302bea84d673749b166802"
+    },
+    {
+      "path": "tests\\analysis\\production_bindings_test.go",
+      "bytes": 3085,
+      "sha256": "84aa931c5985d02e1910f9d6944412d20dffc7aaeae84526f65f7855aee8466b"
+    },
+    {
+      "path": "tests\\analysis\\providers_test.go",
+      "bytes": 13924,
+      "sha256": "4978a05264797d71b5fe4ee399dc766a71fb69282081a7569bf95c8d2b30b9ea"
+    },
+    {
+      "path": "tests\\analysis\\CONTRACT.txt",
+      "bytes": 7833,
+      "sha256": "e2d3aed97082eea434c657e8d8a0e04672ce52ad17f55ecbc0dac2955bf05ff2"
+    },
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 5897,
+      "sha256": "71c10d298fdb561c2c17ba97f5bf391f23f2efc2e157efd1f33e70e705443147"
+    },
+    {
+      "path": "internal\\app\\database.go",
+      "bytes": 2717,
+      "sha256": "9c90aa184044ccdeddc17f88e9ec17e5eda914a38558c39d4be3e995e9c9375b"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 9448,
+      "sha256": "c2291d9ac0a009cd5f88cd224698fe5ad6fdfe8593fc1f6fb1af5d8710be0817"
+    },
+    {
+      "path": "internal\\app\\auth.go",
+      "bytes": 14449,
+      "sha256": "7d425f995d8eb2145eddd07b6f69fcd52a2bc4846c608a2ffe91b296f0be8cdb"
+    },
+    {
+      "path": "internal\\app\\membership.go",
+      "bytes": 3758,
+      "sha256": "999b1ee075f598ccd8b516e4e5cb259bd39302e07510cafec8e550ee7edfdc55"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 13471,
+      "sha256": "b1805777cc2d2e1e71eb9d89a9763327be79225e2fdea494364859e1b1742634"
+    },
+    {
+      "path": "internal\\app\\remediation_credentials.go",
+      "bytes": 2475,
+      "sha256": "56099196f02a0623e9ba25a9474ed8ecbf05b13c3f3bcdcf9baed7806dca7ada"
+    },
+    {
+      "path": "internal\\app\\source_connections.go",
+      "bytes": 7100,
+      "sha256": "d053f7e211387bbe52b70dc9b27d6883809581171f095b458a189906c2c6d7df"
+    },
+    {
+      "path": "tests\\source_collection\\production_bindings_test.go",
+      "bytes": 1378,
+      "sha256": "47be5829b3fe6856b0b638266fecdc4c9e4eac26489eafc3ad23cd352a3681e3"
+    },
+    {
+      "path": "tests\\source_collection\\fixtures_test.go",
+      "bytes": 23504,
+      "sha256": "6a1858da6ebfdbf9bb48e69fb84dd67ac1237f7944f2e9b4f9345cb5f2274569"
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    {
+      "path": "tests\\source_collection\\fixture_calibration_test.go",
+      "bytes": 11498,
+      "sha256": "be38200ab4871a7fce5ea7a173617653c3a49aa7f08939a12e5f73677fa80d26"
+    }
+  ]
+}

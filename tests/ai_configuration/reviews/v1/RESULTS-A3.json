@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T16:00:51.011Z",
+  "author": "successor-independent-ai-configuration-foundry-names-a2-20260920",
+  "role": "Original independent A2 author",
+  "status": "Local measurement correction validated; HOLD for parent verification and new current seal.",
+  "amendedTest": {
+    "path": "tests\\ai_configuration\\foundry_names_test.go",
+    "bytes": 4989,
+    "sha256": "3d9dc391c6f90ae426ee22d9153a29409b3492fbcfc513d6b82079c6276dc9cd"
+  },
+  "summary": {
+    "currentA2RED": {
+      "selected": 7,
+      "passed": 6,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "calibration": {
+      "vectors": 35,
+      "passed": 35,
+      "failed": 0
+    },
+    "AI7": {
+      "selected": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "Source9": {
+      "selected": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 6,
+      "nestedFailed": 0
+    },
+    "completedFoundrySections": 4,
+    "remainingBlockedFoundrySections": 0,
+    "productionChangesByThisAuthor": 0
+  },
+  "AI7": {
+    "run": "author-a3-time-green-20260920-01",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "Contract",
+      "startedAt": "2026-09-20T15:54:17.2829707+00:00",
+      "finishedAt": "2026-09-20T15:54:29.7681514+00:00",
+      "exitCode": 0,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "arguments": [
+        "test",
+        "-json",
+        "-tags=integration",
+        "-mod=readonly",
+        "-count=1",
+        "-timeout=180s",
+        ".\\tests\\ai_configuration"
+      ],
+      "fullProductionResolverBindingIncluded": true,
+      "helperOnlyIsNotFullAcceptance": false,
+      "capabilities": "Owned random PG schemas and real API sessions; owned HTTP tripwires with no provider requests. No S3, prompt, inference, source/scan or verification execution.",
+      "privateRuntimeValuesCopied": false,
+      "providerAccountsOrKeysDiscovered": false
+    },
+    "counts": {
+      "selected": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "evidence": [
+      {
+        "path": ".artifacts\\ai-configuration-v1\\author-a3-time-green-20260920-01.jsonl",
+        "bytes": 13204,
+        "sha256": "6ef69db4d0f9ccfe243823327fb79e79deaae3dcd39f53a1571b45ce48b28ead"
+      },
+      {
+        "path": ".artifacts\\ai-configuration-v1\\author-a3-time-green-20260920-01.log",
+        "bytes": 2668,
+        "sha256": "fe1ab41dcd52df7f80dce917a5dfc4df586b886caa4600759f0150edf40a2792"
+      },
+      {
+        "path": ".artifacts\\ai-configuration-v1\\author-a3-time-green-20260920-01.receipt.json",
+        "bytes": 840,
+        "sha256": "f662151648efa8ef8fbca70cf5857c1f309c1b380b5a2aae7cbb89fd4c40583f"
+      },
+      {
+        "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-d1ba90fccb90c95a7557630c.json",
+        "bytes": 765,
+        "sha256": "d4fe77d429e9fa4bdf3a5707490d30bc9bd0a62076328f7ea9bb612c61569751"
+      }
+    ],
+    "cases": [
+      {
+        "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+        "status": "pass",
+        "durationSeconds": 0.9
+      },
+      {
+        "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+        "status": "pass",
+        "durationSeconds": 0.9
+      },
+      {
+        "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+        "status": "pass",
+        "durationSeconds": 0.95
+      },
+      {
+        "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+        "status": "pass",
+        "durationSeconds": 1.24
+      },
+      {
+        "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+        "status": "pass",
+        "durationSeconds": 1.35
+      },
+      {
+        "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+        "status": "pass",
+        "durationSeconds": 2.51
+      },
+      {
+        "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+        "status": "pass",
+        "durationSeconds": 1.29
+      }
+    ],
+    "nested": [
+      {
+        "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/fresh-concurrent-and-credential-compatibility",
+        "status": "pass",
+        "durationSeconds": 1.03
+      },
+      {
+        "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/published-v6-upgrade",
+        "status": "pass",
+        "durationSeconds": 1.48
+      }
+    ]
+  },
+  "Source9": {
+    "run": "author-a3-schema-source9-20260920-01",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "Contract",
+      "startedAt": "2026-09-20T15:54:17.3206215+00:00",
+      "finishedAt": "2026-09-20T15:54:36.6066457+00:00",
+      "exitCode": 0,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "arguments": [
+        "test",
+        "-mod=readonly",
+        "-tags=integration",
+        "-json",
+        "-count=1",
+        "-timeout=240s",
+        ".\\tests\\source_collection"
+      ],
+      "fullProductionBindingIncluded": true,
+      "helperOnlyIsNotAcceptance": false,
+      "boundary": "Explicit loopback PG/local S3 and exact owned TLS GitHub protocol fixture only; values withheld",
+      "liveGitHubCloudOrCredentialDiscoveryAuthorized": false
+    },
+    "counts": {
+      "selected": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 6,
+      "nestedFailed": 0
+    },
+    "evidence": [
+      {
+        "path": ".artifacts\\source-collection-v1\\author-a3-schema-source9-20260920-01.jsonl",
+        "bytes": 17860,
+        "sha256": "1da63070762c6991c6bca5102a28db946ae19414afe4586213e7c53233eb8bfb"
+      },
+      {
+        "path": ".artifacts\\source-collection-v1\\author-a3-schema-source9-20260920-01.log",
+        "bytes": 3248,
+        "sha256": "94ef68879d4d1727192b02622f2235b71e595394a758a7efba37f58b47361bca"
+      },
+      {
+        "path": ".artifacts\\source-collection-v1\\author-a3-schema-source9-20260920-01.receipt.json",
+        "bytes": 735,
+        "sha256": "b35ffb903f5d0d555b0754b1723fe68884697966320f414a88a8318c951ec5dd"
+      },
+      {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-fad69d7c5620b4de450c0b9c.json",
+        "bytes": 883,
+        "sha256": "93d471eaa6db8a537c9e53d0132606b4f8f8ff2c39e52cbc5749ab717da0d34d"
+      },
+      {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-93f99ec78782a5181c22bc88.json",
+        "bytes": 885,
+        "sha256": "b4ed6f84fcf0f1f7730ef5900373c462cb0185c7a501b402ddd392918bbe1b1a"
+      }
+    ],
+    "cases": [
+      {
+        "name": "TestSourceCollectionOwnedIOPreflight",
+        "status": "pass",
+        "durationSeconds": 0.07
+      },
+      {
+        "name": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+        "status": "pass",
+        "durationSeconds": 1.42
+      },
+      {
+        "name": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+        "status": "pass",
+        "durationSeconds": 1.24
+      },
+      {
+        "name": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+        "status": "pass",
+        "durationSeconds": 1.37
+      },
+      {
+        "name": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+        "status": "pass",
+        "durationSeconds": 1.53
+      },
+      {
+        "name": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+        "status": "pass",
+        "durationSeconds": 1.08
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+        "status": "pass",
+        "durationSeconds": 4.25
+      },
+      {
+        "name": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+        "status": "pass",
+        "durationSeconds": 2.34
+      },
+      {
+        "name": "TestSourceCollectionPublishedV5UpgradeA2",
+        "status": "pass",
+        "durationSeconds": 2.55
+      }
+    ],
+    "nested": [
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-cancel",
+        "status": "pass",
+        "durationSeconds": 1.08
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-revoke",
+        "status": "pass",
+        "durationSeconds": 1.26
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-revoke",
+        "status": "pass",
+        "durationSeconds": 1
+      },
+      {
+        "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-source-revision",
+        "status": "pass",
+        "durationSeconds": 0.91
+      },
+      {
+        "name": "TestSourceCollectionPublishedV5UpgradeA2/current-core",
+        "status": "pass",
+        "durationSeconds": 1.32
+      },
+      {
+        "name": "TestSourceCollectionPublishedV5UpgradeA2/current-worker",
+        "status": "pass",
+        "durationSeconds": 1.23
+      }
+    ]
+  },
+  "foundryTailCompletion": {
+    "case": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+    "markers": [
+      "AI7 completed: equal POST persistence, authenticated credential and exact grant-bound resolution",
+      "AI7 completed: equal-to-distinct sparse deployment PATCH and stale-grant denial",
+      "AI7 completed: distinct-to-equal sparse model PATCH and exact renewed grant-bound resolution",
+      "AI7 completed: omitted model and omitted deployment rejected without defaulting"
+    ],
+    "actualOutput": "=== RUN   TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions\n    foundry_names_test.go:25: AI7 reached: explicit equal-name Foundry POST with real admin session\n    foundry_names_test.go:42: AI7 completed: equal POST persistence, authenticated credential and exact grant-bound resolution\n    foundry_names_test.go:54: AI7 completed: equal-to-distinct sparse deployment PATCH and stale-grant denial\n    foundry_names_test.go:68: AI7 completed: distinct-to-equal sparse model PATCH and exact renewed grant-bound resolution\n    foundry_names_test.go:82: AI7 completed: omitted model and omitted deployment rejected without defaulting\n    foundry_names_test.go:13: AI7 no-provider/storage HTTP counters: http=0 ambient=0 tcp=0\n--- PASS: TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions (1.29s)\n",
+    "allTailAssertionsRan": true,
+    "networkCounters": {
+      "http": 0,
+      "ambient": 0,
+      "tcp": 0
+    }
+  },
+  "calibration": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\CALIBRATION-A3.json",
+    "bytes": 12240,
+    "sha256": "87071e438453f8b8c80dea3f5c36b133b29a817ba40c897105725e73ef0214f0"
+  },
+  "RED": {
+    "path": "tests\\ai_configuration\\reviews\\v1\\RED-A3.json",
+    "bytes": 5064,
+    "sha256": "fe497ead3a5497e5b8c03456b02a954ab0b4e01597c25bd39045c0ec68c46fe9"
+  },
+  "rawEvidenceFiles": [
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-red-20260920-01.jsonl",
+      "bytes": 12591,
+      "sha256": "b374c09eda064a29acee36a2e68b77eceac1e32d949cf07121923547bc5a1c21"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-red-20260920-01.log",
+      "bytes": 2445,
+      "sha256": "89d8573d12b81d2da50f4291e3f18896daff9dd186727804e5c99de21719417c"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-red-20260920-01.receipt.json",
+      "bytes": 840,
+      "sha256": "77a5d0ccadc7578e8b34ed66350f21d61c0118b39efe53499c12ba382fd7bd8e"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-8f5d92b9f87057db3f3b2704.json",
+      "bytes": 765,
+      "sha256": "d9c7ce504419e18bbd9781e23bd5b6d82a5955819f1b0951a4b4cf9f75e02ee6"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-calibration-20260920-01.jsonl",
+      "bytes": 9053,
+      "sha256": "badd5f0cd5cae2ff14c38bddf55a8acd593ffd81e60c675cd12a68329c741b08"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-calibration-20260920-01.log",
+      "bytes": 5370,
+      "sha256": "cea47a68f098b45e00eb854ddd288b4ed3c347b34ee62a80785fa29036269191"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-calibration-20260920-01.receipt.json",
+      "bytes": 1748,
+      "sha256": "d143bef19849c3adead60b05bbde52c8015500e1d073ce5a0795373930a6e72b"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-green-20260920-01.jsonl",
+      "bytes": 13204,
+      "sha256": "6ef69db4d0f9ccfe243823327fb79e79deaae3dcd39f53a1571b45ce48b28ead"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-green-20260920-01.log",
+      "bytes": 2668,
+      "sha256": "fe1ab41dcd52df7f80dce917a5dfc4df586b886caa4600759f0150edf40a2792"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-a3-time-green-20260920-01.receipt.json",
+      "bytes": 840,
+      "sha256": "f662151648efa8ef8fbca70cf5857c1f309c1b380b5a2aae7cbb89fd4c40583f"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-d1ba90fccb90c95a7557630c.json",
+      "bytes": 765,
+      "sha256": "d4fe77d429e9fa4bdf3a5707490d30bc9bd0a62076328f7ea9bb612c61569751"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\author-a3-schema-source9-20260920-01.jsonl",
+      "bytes": 17860,
+      "sha256": "1da63070762c6991c6bca5102a28db946ae19414afe4586213e7c53233eb8bfb"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\author-a3-schema-source9-20260920-01.log",
+      "bytes": 3248,
+      "sha256": "94ef68879d4d1727192b02622f2235b71e595394a758a7efba37f58b47361bca"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\author-a3-schema-source9-20260920-01.receipt.json",
+      "bytes": 735,
+      "sha256": "b35ffb903f5d0d555b0754b1723fe68884697966320f414a88a8318c951ec5dd"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-fad69d7c5620b4de450c0b9c.json",
+      "bytes": 883,
+      "sha256": "93d471eaa6db8a537c9e53d0132606b4f8f8ff2c39e52cbc5749ab717da0d34d"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-93f99ec78782a5181c22bc88.json",
+      "bytes": 885,
+      "sha256": "b4ed6f84fcf0f1f7730ef5900373c462cb0185c7a501b402ddd392918bbe1b1a"
+    }
+  ],
+  "source9Qualification": "Original nine cases, including owned I/O preflight and published-v5 current-core/current-worker upgrade probes. Intentional owned local S3/TLS GitHub fixture traffic is not a zero-HTTP claim or a real provider call.",
+  "schemaQualification": "Fresh owned and original published-v5/v6 upgrade paths qualify the parent-fixed unpublished schemaV7 constraint. No already-deployed old schemaV7 constraint migration is claimed.",
+  "priorUIFull99Rerun": false,
+  "privateRuntimeValuesCopied": false,
+  "providerInferenceOrAssessmentCalls": false,
+  "oldFixturesBindingsRunnersModified": false,
+  "dependenciesInstalledOrUpgraded": false,
+  "oraclesCapturedOrSigned": false,
+  "parentSealAndReviewPending": true
+}

@@ -5,6 +5,12 @@
 // termination. BootstrapToken is an out-of-band, at-least-32-byte credential;
 // no default account or password is created.
 //
+// M11 configuration-only routes persist AI profiles, workspace policy and
+// explicit administrator egress grants. OpenAIConfigurationResolver owns a
+// separate DB-only pool and resolves current actor/profile/policy/grant state
+// in a read-only snapshot. Its private provider configuration is not an HTTP
+// DTO or an execution reservation. No AI inference or jobs are started.
+//
 // Optional Config.OIDC enables /api/v1/auth/oidc/start and /callback using
 // go-oidc and oauth2. Discovery is lazy, HTTPS-only, endpoint-scoped, and bounded;
 // provider failures leave local login available. Token/JWK responses are capped

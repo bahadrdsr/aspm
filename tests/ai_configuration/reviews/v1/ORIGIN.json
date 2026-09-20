@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-17T23:16:00.335479+00:00",
+  "publishedCommit": "24556fd41090628f391a728457f9c377ca624983",
+  "historicalFixture": {
+    "path": "tests\\ai_configuration\\testdata\\published-24556-schema-v6.json",
+    "bytes": 17753,
+    "sha256": "507a2366bf23b541f3cdf1bca85723ae84f24bab9e9dbdcacf30d01d68b51a55"
+  },
+  "origins": [
+    {
+      "version": 1,
+      "path": "internal/app/schema.go",
+      "gitBlob": "32c58dcbe0f78cde8d5b7d8d945bc93b762a4008",
+      "sourceSHA256": "c2291d9ac0a009cd5f88cd224698fe5ad6fdfe8593fc1f6fb1af5d8710be0817",
+      "sqlSHA256": "9f3f2eabe541f45edf54ae28417acd2d7cdf700062aa2972c4a620d89eb3cf67",
+      "sqlBytes": 5954
+    },
+    {
+      "version": 2,
+      "path": "internal/app/reports_schema.go",
+      "gitBlob": "b640d9eaef82635a5a899a946b3475e36cf922e7",
+      "sourceSHA256": "5f665312ddd3306630fc047d828fd8d1fc655050809439d0338dabb7a822a4ef",
+      "sqlSHA256": "32a8c05b67e2de5c293b269258b2992c81306d2a537523c643493b05afa3a7fa",
+      "sqlBytes": 1645
+    },
+    {
+      "version": 3,
+      "path": "internal/app/oidc_schema.go",
+      "gitBlob": "796448a2e73e69ee48e0e37a9525d21d174a120a",
+      "sourceSHA256": "df3fa9da88d362f93ce5f7e6f18a8a9f0e3a9ae096de83568aa39b86eb446428",
+      "sqlSHA256": "143f4a75c018a63dc52e5fc410bf84be4305647b2688b7049e841ccd4e924765",
+      "sqlBytes": 1261
+    },
+    {
+      "version": 4,
+      "path": "internal/app/import_security_schema.go",
+      "gitBlob": "7811141ea19e0b1a64afe6e099d56eea01ce36ac",
+      "sourceSHA256": "e6e98356057ea34bdf86f702b78a39dbbf33a506b11e4c04c56ddfa3aea09d54",
+      "sqlSHA256": "6ba9e46b578ced3cbd8b17323ea317f3c21fcd65dd89b1041f1b6db1ee66db2c",
+      "sqlBytes": 303
+    },
+    {
+      "version": 5,
+      "path": "internal/app/remediation_schema.go",
+      "gitBlob": "7a4d6b31350d0efaaf9ff49e3ee3f055b7af5beb",
+      "sourceSHA256": "96440287edc6c7f77432703abdb6052fdc010603bb999bb52c1200fc27b8f58e",
+      "sqlSHA256": "c06be76a70eebd29d07df28cabb909c987fe51138d24fb3de4e7407655d84421",
+      "sqlBytes": 2171
+    },
+    {
+      "version": 6,
+      "path": "internal/app/source_schema.go",
+      "gitBlob": "bcf3038c1253da573801793d17812ef2583e5eae",
+      "sourceSHA256": "92ad50350f92101a3df59e5808d23154f045dcb980af89b3fce0b7ae0acb26d7",
+      "sqlSHA256": "ac0a444825ab779585c63fed10f2f9dff0fa83246571a961e7d8ddf282e0b1c0",
+      "sqlBytes": 3260
+    }
+  ],
+  "legacyRelations": [
+    "assets",
+    "auth_throttle",
+    "bootstrap",
+    "coverage",
+    "finding_deliveries",
+    "findings",
+    "imports",
+    "integration_connections",
+    "memberships",
+    "notes",
+    "observations",
+    "oidc_flows",
+    "oidc_identities",
+    "report_snapshots",
+    "schema_versions",
+    "sessions",
+    "source_collection_records",
+    "source_collections",
+    "source_connections",
+    "source_repository_assets",
+    "users",
+    "workspaces"
+  ],
+  "literalSemantics": "Exact committed Go raw-string values; CR removal matches Go semantics.",
+  "sourceAndDDLHashesReverifiedFromGit": true,
+  "businessRowsSeeded": false,
+  "oldSourceTreesCopied": false
+}

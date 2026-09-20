@@ -1,0 +1,2857 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T08:17:54.512Z",
+  "status": "actual missing-controls RED, not functional GREEN",
+  "qualifiedRun": "red-02",
+  "processExitCode": 1,
+  "publicationWitness": "24556fd41090628f391a728457f9c377ca624983",
+  "observedHeadAtFreeze": "24556fd41090628f391a728457f9c377ca624983",
+  "command": "ASPM_AI_UI_RUN=red-02; ASPM_WEB_TEST_PORT=48463; node .\\scripts\\playwright.mjs test --config tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts ai-settings-ui.spec.ts",
+  "report": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results.json",
+    "bytes": 152163,
+    "sha256": "b9bca3c2f80e3367172766c4efb61451d8b152d1300b8af6e6f2dcd344b01d97"
+  },
+  "consoleLog": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\red-02.log",
+    "bytes": 20668,
+    "sha256": "589c720dee1fd234fac7d21c415140b092e7d9ca6e72ee7ff8f48bc7d80ffc70"
+  },
+  "stats": {
+    "startTime": "2026-09-18T08:05:34.512Z",
+    "duration": 63991.020000000004,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 6,
+    "flaky": 0
+  },
+  "limits": {
+    "cases": 6,
+    "workers": 1,
+    "retries": 0,
+    "caseMS": 20000,
+    "expectMS": 5000,
+    "combinedAPIRequestsPerCase": 60,
+    "serviceWorkers": "block",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure"
+  },
+  "cases": [
+    {
+      "id": "AIU1",
+      "title": "AIU1 Opt-in setup distinguishes fetched default, loading, failure, keyless local and readonly roles",
+      "file": "ai-settings-ui.spec.ts",
+      "line": 256,
+      "actualStatus": "failed",
+      "durationMS": 8930,
+      "caseLimitMS": 20000,
+      "retries": 0,
+      "actualFailure": "Error: Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'AI settings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing AI settings controls: add an explicit, initially closed entry to real Integrations. getByRole('button', { name: 'AI settings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: 'AI settings', exact: true })\n\n\n  71 | }\n  72 | async function openSettings(page: Page, ai: AISettingsHTTP) {\n> 73 |   await expect(entry(page), \"Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\").toBeVisible();\n     |                                                                                                                            ^\n  74 |   await expect(entry(page)).toHaveAttribute(\"aria-expanded\", \"false\");\n  75 |   ai.settingsOpen = true;\n  76 |   await entry(page).click();\n    at openSettings (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:73:124)\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:83:85)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:259:3",
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls"
+      ],
+      "requestCounts": {
+        "combined": 6,
+        "ai": 0,
+        "external": 0
+      },
+      "actualRequests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:05:40.971Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:05:40.974Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "workspace": "18000000000000000000000000000001",
+          "query": {
+            "limit": "100"
+          },
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/sources",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        }
+      ],
+      "fixtureViolations": [],
+      "browserErrors": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "evidenceAttachments": [
+        {
+          "name": "screenshot",
+          "contentType": "image/png",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU1-Opt-in-da3bb-ss-local-and-readonly-roles\\test-failed-1.png",
+          "bytes": 71664,
+          "sha256": "6f8abf33ae48eeadf2aef7b37667658479773ba94ae132b41b6a59636432e233"
+        },
+        {
+          "name": "error-context",
+          "contentType": "text/markdown",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU1-Opt-in-da3bb-ss-local-and-readonly-roles\\error-context.md",
+          "bytes": 20471,
+          "sha256": "c99fb12d70a68eecdaac77eee18f04421f8adb111638dd73589def58825acf6a"
+        },
+        {
+          "name": "trace",
+          "contentType": "application/zip",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU1-Opt-in-da3bb-ss-local-and-readonly-roles\\trace.zip",
+          "bytes": 269225,
+          "sha256": "dc0b196b17a7d3d039c25f6de5885d7923623a763eaf6b006d415e2aece0e930"
+        }
+      ],
+      "blockedNotRun": [
+        "Opened AI loading/error/default/empty/retry states",
+        "Keyless local create without encryption",
+        "Viewer and analyst read-only configuration controls"
+      ],
+      "fullFlowTimingAndBudgetQualified": false
+    },
+    {
+      "id": "AIU2",
+      "title": "AIU2 Four explicit families preserve models, endpoints, sparse keys and authoritative receipts",
+      "file": "ai-settings-ui.spec.ts",
+      "line": 306,
+      "actualStatus": "failed",
+      "durationMS": 6603,
+      "caseLimitMS": 20000,
+      "retries": 0,
+      "actualFailure": "Error: Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'AI settings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing AI settings controls: add an explicit, initially closed entry to real Integrations. getByRole('button', { name: 'AI settings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: 'AI settings', exact: true })\n\n\n  71 | }\n  72 | async function openSettings(page: Page, ai: AISettingsHTTP) {\n> 73 |   await expect(entry(page), \"Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\").toBeVisible();\n     |                                                                                                                            ^\n  74 |   await expect(entry(page)).toHaveAttribute(\"aria-expanded\", \"false\");\n  75 |   ai.settingsOpen = true;\n  76 |   await entry(page).click();\n    at openSettings (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:73:124)\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:83:85)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:308:3",
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls"
+      ],
+      "requestCounts": {
+        "combined": 6,
+        "ai": 0,
+        "external": 0
+      },
+      "actualRequests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:05:51.068Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:05:51.070Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "workspace": "18000000000000000000000000000001",
+          "query": {
+            "limit": "100"
+          },
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/sources",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        }
+      ],
+      "fixtureViolations": [],
+      "browserErrors": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "evidenceAttachments": [
+        {
+          "name": "screenshot",
+          "contentType": "image/png",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU2-Four-e-45b18--and-authoritative-receipts\\test-failed-1.png",
+          "bytes": 71664,
+          "sha256": "6f8abf33ae48eeadf2aef7b37667658479773ba94ae132b41b6a59636432e233"
+        },
+        {
+          "name": "error-context",
+          "contentType": "text/markdown",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU2-Four-e-45b18--and-authoritative-receipts\\error-context.md",
+          "bytes": 20466,
+          "sha256": "4441e6d41bc509ce121791cbb3491ac3dd91db63bdf8b006d064f4c6192b5c49"
+        },
+        {
+          "name": "trace",
+          "contentType": "application/zip",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU2-Four-e-45b18--and-authoritative-receipts\\trace.zip",
+          "bytes": 267897,
+          "sha256": "57e5c935ff03fdfd9122cf245f0c7c7727f88d4d7f2a07ece9929cea67605a7c"
+        }
+      ],
+      "blockedNotRun": [
+        "All four family forms and strict endpoint rejection",
+        "Hosted-key 503 without operator-key prompt",
+        "Sparse profile updates, blank retain, replacement and local-null clear",
+        "Server receipt, secret redaction and canonical metadata rendering"
+      ],
+      "fullFlowTimingAndBudgetQualified": false
+    },
+    {
+      "id": "AIU3",
+      "title": "AIU3 Explicit policy and sensitive finite grants retain workspace decisions, expiry and revoke receipts",
+      "file": "ai-settings-ui.spec.ts",
+      "line": 367,
+      "actualStatus": "failed",
+      "durationMS": 6495,
+      "caseLimitMS": 20000,
+      "retries": 0,
+      "actualFailure": "Error: Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'AI settings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing AI settings controls: add an explicit, initially closed entry to real Integrations. getByRole('button', { name: 'AI settings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: 'AI settings', exact: true })\n\n\n  71 | }\n  72 | async function openSettings(page: Page, ai: AISettingsHTTP) {\n> 73 |   await expect(entry(page), \"Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\").toBeVisible();\n     |                                                                                                                            ^\n  74 |   await expect(entry(page)).toHaveAttribute(\"aria-expanded\", \"false\");\n  75 |   ai.settingsOpen = true;\n  76 |   await entry(page).click();\n    at openSettings (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:73:124)\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:83:85)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:368:3",
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls"
+      ],
+      "requestCounts": {
+        "combined": 6,
+        "ai": 0,
+        "external": 0
+      },
+      "actualRequests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:00.665Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:00.667Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "workspace": "18000000000000000000000000000001",
+          "query": {
+            "limit": "100"
+          },
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/sources",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        }
+      ],
+      "fixtureViolations": [],
+      "browserErrors": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "evidenceAttachments": [
+        {
+          "name": "screenshot",
+          "contentType": "image/png",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\test-failed-1.png",
+          "bytes": 71656,
+          "sha256": "c892f53133c979d7bdf428673e553f5ebe98b3e30330155df040d342f3a30b9f"
+        },
+        {
+          "name": "error-context",
+          "contentType": "text/markdown",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\error-context.md",
+          "bytes": 20475,
+          "sha256": "ae023c9612c206abdb6956c12e22fa626c441b752084c05f98362bb16b425007"
+        },
+        {
+          "name": "trace",
+          "contentType": "application/zip",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU3-Explic-84e17--expiry-and-revoke-receipts\\trace.zip",
+          "bytes": 271234,
+          "sha256": "5246701bba85517236dfd377c18eeb461ca8ffbd525631164ad26a7731c23d6a"
+        }
+      ],
+      "blockedNotRun": [
+        "Explicit policy saves including failed disabled write",
+        "Sensitive evidence consent and finite UTC grant expiry",
+        "Exact current bindings and server-created grant receipt",
+        "Expired history, issuer demotion without revocation, canonical revoke"
+      ],
+      "fullFlowTimingAndBudgetQualified": false
+    },
+    {
+      "id": "AIU4",
+      "title": "AIU4 Authorized current facts and opaque revisions invalidate stale consent without automatic conflict resubmission",
+      "file": "ai-settings-ui.spec.ts",
+      "line": 431,
+      "actualStatus": "failed",
+      "durationMS": 6678,
+      "caseLimitMS": 20000,
+      "retries": 0,
+      "actualFailure": "Error: Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'AI settings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing AI settings controls: add an explicit, initially closed entry to real Integrations. getByRole('button', { name: 'AI settings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: 'AI settings', exact: true })\n\n\n  71 | }\n  72 | async function openSettings(page: Page, ai: AISettingsHTTP) {\n> 73 |   await expect(entry(page), \"Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\").toBeVisible();\n     |                                                                                                                            ^\n  74 |   await expect(entry(page)).toHaveAttribute(\"aria-expanded\", \"false\");\n  75 |   ai.settingsOpen = true;\n  76 |   await entry(page).click();\n    at openSettings (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:73:124)\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:83:85)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:436:3",
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls"
+      ],
+      "requestCounts": {
+        "combined": 6,
+        "ai": 0,
+        "external": 0
+      },
+      "actualRequests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:10.414Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:10.416Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "workspace": "18000000000000000000000000000001",
+          "query": {
+            "limit": "100"
+          },
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/sources",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        }
+      ],
+      "fixtureViolations": [],
+      "browserErrors": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "evidenceAttachments": [
+        {
+          "name": "screenshot",
+          "contentType": "image/png",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU4-Author-cdabc-matic-conflict-resubmission\\test-failed-1.png",
+          "bytes": 71656,
+          "sha256": "c892f53133c979d7bdf428673e553f5ebe98b3e30330155df040d342f3a30b9f"
+        },
+        {
+          "name": "error-context",
+          "contentType": "text/markdown",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU4-Author-cdabc-matic-conflict-resubmission\\error-context.md",
+          "bytes": 20487,
+          "sha256": "beae2dbbeebf44a4a40473c794228253f5572a2d497b013bdae9f429b698c7ab"
+        },
+        {
+          "name": "trace",
+          "contentType": "application/zip",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU4-Author-cdabc-matic-conflict-resubmission\\trace.zip",
+          "bytes": 267987,
+          "sha256": "435e43d332541922a29c9bfedbec0a3524e023fad3d6cdc6f704bc5d0686af92"
+        }
+      ],
+      "blockedNotRun": [
+        "Authorized refresh updates or invalidates selected current consent",
+        "Opaque/lexically decreasing revision handling",
+        "Exact destination including trailing-slash conflict",
+        "409 requires current review without automatic second POST"
+      ],
+      "fullFlowTimingAndBudgetQualified": false
+    },
+    {
+      "id": "AIU5",
+      "title": "AIU5 Native manual pages and denial retries preserve confirmed data without stale authority",
+      "file": "ai-settings-ui.spec.ts",
+      "line": 484,
+      "actualStatus": "failed",
+      "durationMS": 6991,
+      "caseLimitMS": 20000,
+      "retries": 0,
+      "actualFailure": "Error: Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'AI settings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing AI settings controls: add an explicit, initially closed entry to real Integrations. getByRole('button', { name: 'AI settings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: 'AI settings', exact: true })\n\n\n  71 | }\n  72 | async function openSettings(page: Page, ai: AISettingsHTTP) {\n> 73 |   await expect(entry(page), \"Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\").toBeVisible();\n     |                                                                                                                            ^\n  74 |   await expect(entry(page)).toHaveAttribute(\"aria-expanded\", \"false\");\n  75 |   ai.settingsOpen = true;\n  76 |   await entry(page).click();\n    at openSettings (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:73:124)\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:83:85)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:489:3",
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls"
+      ],
+      "requestCounts": {
+        "combined": 6,
+        "ai": 0,
+        "external": 0
+      },
+      "actualRequests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:20.544Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:20.547Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "workspace": "18000000000000000000000000000001",
+          "query": {
+            "limit": "100"
+          },
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/sources",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        }
+      ],
+      "fixtureViolations": [],
+      "browserErrors": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "evidenceAttachments": [
+        {
+          "name": "screenshot",
+          "contentType": "image/png",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU5-Native-58129-ata-without-stale-authority\\test-failed-1.png",
+          "bytes": 71664,
+          "sha256": "6f8abf33ae48eeadf2aef7b37667658479773ba94ae132b41b6a59636432e233"
+        },
+        {
+          "name": "error-context",
+          "contentType": "text/markdown",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU5-Native-58129-ata-without-stale-authority\\error-context.md",
+          "bytes": 20463,
+          "sha256": "ce81616a4cfae1c2e168d41628e5f3c11565a6c9b9f9232ddd95f062f749079c"
+        },
+        {
+          "name": "trace",
+          "contentType": "application/zip",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU5-Native-58129-ata-without-stale-authority\\trace.zip",
+          "bytes": 268999,
+          "sha256": "4768980399162ea3a76a4e03f779ee50631a39a03914c4861c67e9b54997ce28"
+        }
+      ],
+      "blockedNotRun": [
+        "Native 100+1 manual profile/grant pages and exact cursor retry",
+        "Selected facts survive later-page absence",
+        "403/404 details and lists stay withheld through 503 until 200",
+        "Server 403 overrides stale admin policy controls"
+      ],
+      "fullFlowTimingAndBudgetQualified": false
+    },
+    {
+      "id": "AIU6",
+      "title": "AIU6 Mobile reduced-motion focus and privacy survive close, workspace, 401 and logout epochs",
+      "file": "ai-settings-ui.spec.ts",
+      "line": 569,
+      "actualStatus": "failed",
+      "durationMS": 6602,
+      "caseLimitMS": 20000,
+      "retries": 0,
+      "actualFailure": "Error: Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'AI settings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing AI settings controls: add an explicit, initially closed entry to real Integrations. getByRole('button', { name: 'AI settings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: 'AI settings', exact: true })\n\n\n  71 | }\n  72 | async function openSettings(page: Page, ai: AISettingsHTTP) {\n> 73 |   await expect(entry(page), \"Missing AI settings controls: add an explicit, initially closed entry to real Integrations.\").toBeVisible();\n     |                                                                                                                            ^\n  74 |   await expect(entry(page)).toHaveAttribute(\"aria-expanded\", \"false\");\n  75 |   ai.settingsOpen = true;\n  76 |   await entry(page).click();\n    at openSettings (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:73:124)\n    at visit (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:83:85)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-settings-ui.spec.ts:573:3",
+      "reached": [
+        "closed-shell: real Integrations, five destinations, eight families, Connections/Sources, zero AI calls"
+      ],
+      "requestCounts": {
+        "combined": 6,
+        "ai": 0,
+        "external": 0
+      },
+      "actualRequests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:30.371Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/session",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "user": {
+              "id": "28000000000000000000000000000001",
+              "name": "Synthetic AI admin",
+              "email": "ai-ui@synthetic.invalid"
+            },
+            "expiresAt": "2026-09-18T09:06:30.373Z",
+            "workspaces": [
+              {
+                "id": "18000000000000000000000000000001",
+                "name": "Synthetic AI Alpha",
+                "role": "admin"
+              },
+              {
+                "id": "18000000000000000000000000000002",
+                "name": "Synthetic AI Beta",
+                "role": "analyst"
+              },
+              {
+                "id": "18000000000000000000000000000003",
+                "name": "Synthetic AI Gamma",
+                "role": "viewer"
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/catalog",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "dataOrigin": "synthetic",
+            "items": [
+              {
+                "id": "github",
+                "name": "GitHub",
+                "capabilities": [
+                  "repository-inventory",
+                  "code-scanning-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "gitlab",
+                "name": "GitLab",
+                "capabilities": [
+                  "repository-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure-devops",
+                "name": "Azure DevOps",
+                "capabilities": [
+                  "pipeline-inventory",
+                  "security-report-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "aws",
+                "name": "AWS",
+                "capabilities": [
+                  "cloud-inventory",
+                  "security-hub-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "azure",
+                "name": "Azure",
+                "capabilities": [
+                  "cloud-inventory",
+                  "defender-for-cloud-intake"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "jira",
+                "name": "Jira",
+                "capabilities": [
+                  "work-item-create",
+                  "status-linkage"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "teams",
+                "name": "Microsoft Teams",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              },
+              {
+                "id": "slack",
+                "name": "Slack",
+                "capabilities": [
+                  "notifications",
+                  "deep-links"
+                ],
+                "kind": "native",
+                "supportMaturity": "planned",
+                "connectionState": "unconfigured",
+                "readyToConnect": false,
+                "liveVerification": {
+                  "state": "not-run",
+                  "reason": "Synthetic M01 catalog fixture, not an authorized live-endpoint verification."
+                }
+              }
+            ]
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/integrations/connections",
+          "workspace": "18000000000000000000000000000001",
+          "query": {
+            "limit": "100"
+          },
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/sources",
+          "workspace": "18000000000000000000000000000001",
+          "query": {},
+          "body": {},
+          "status": 200,
+          "response": {
+            "apiVersion": "aspm/v1alpha1",
+            "items": [],
+            "total": 0,
+            "nextCursor": null
+          },
+          "failure": null
+        }
+      ],
+      "fixtureViolations": [],
+      "browserErrors": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-settings-ui-data.ts",
+          "bytes": 11596,
+          "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui-fixture.ts",
+          "bytes": 26140,
+          "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+        },
+        {
+          "path": "web\\tests\\ai-settings-ui.spec.ts",
+          "bytes": 45102,
+          "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\CONTRACT.txt",
+          "bytes": 12884,
+          "sha256": "7363efe0bdb16bfb7a8165f964f98e41121401e72e3b0c70fbe31eb09b2a3388"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+          "bytes": 1113,
+          "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+        }
+      ],
+      "evidenceAttachments": [
+        {
+          "name": "screenshot",
+          "contentType": "image/png",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU6-Mobile-4217e-space-401-and-logout-epochs\\test-failed-1.png",
+          "bytes": 40878,
+          "sha256": "b410ef4c519ef8c5158e65c0d8dbb600fa3eadce0c57c3611bf85517ad572482"
+        },
+        {
+          "name": "error-context",
+          "contentType": "text/markdown",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU6-Mobile-4217e-space-401-and-logout-epochs\\error-context.md",
+          "bytes": 20220,
+          "sha256": "b2f3a6217a07baaf48d7f2ef779aa98a5a93a319cc7a3e4887e8ea2fa07ccd79"
+        },
+        {
+          "name": "trace",
+          "contentType": "application/zip",
+          "path": ".artifacts\\ai-settings-ui-v1-author\\red-02\\results\\ai-settings-ui-AIU6-Mobile-4217e-space-401-and-logout-epochs\\trace.zip",
+          "bytes": 188038,
+          "sha256": "d9f8c8d1c1eba40a3757b997c8c8b91a59d2cba0567d205575b1c646571cca26"
+        }
+      ],
+      "blockedNotRun": [
+        "390px AI panel layout, inert model/source rendering and reduced motion",
+        "Shared dialog focus and clearing password drafts",
+        "Settings close, workspace switch, 401 and logout clearing/abort epochs",
+        "Late protected responses do not reappear and grant consent is removed"
+      ],
+      "fullFlowTimingAndBudgetQualified": false
+    }
+  ],
+  "allAssertionsAfterMissingEntry": "BLOCKED/NOT RUN",
+  "functionalAIAssertionsExecuted": false,
+  "earlierRun": {
+    "report": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\red-01\\results.json",
+      "bytes": 144746,
+      "sha256": "f3c653a3869f6f8148a83b0714dc8f72756b91d5adca8282e0957f2214a4e63e"
+    },
+    "log": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\red-01.log",
+      "bytes": 20668,
+      "sha256": "d8dd73b3686187eca87289da69676ed2467451e36e14a6c96d3f04f044bfa09e"
+    },
+    "inputWitnesses": {
+      "path": ".artifacts\\ai-settings-ui-v1-author\\red-01.inputs.json",
+      "bytes": 1135,
+      "sha256": "02fe33af7a020b4f27f16100fbabe4ba16ac1dcc57c5f56ffd59004853924f41"
+    },
+    "outcome": "Same six missing-entry failures; retained original author history.",
+    "subsequentNewOnlyTightening": "UTF-8 charset/privacy/source hashes, exact credential receipt text, disabled/authorization labels and awaited denial responses; no old changes or guard relaxation."
+  }
+}

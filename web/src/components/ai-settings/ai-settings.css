@@ -1,0 +1,35 @@
+.ai-entry { margin-block: 20px; }
+.ai-settings { display: grid; gap: 16px; margin-block: 20px; min-width: 0; overflow-wrap: anywhere; }
+.ai-section { min-width: 0; }
+.ai-section-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 18px; }
+.ai-section > .ai-section-heading { border-bottom: 1px solid var(--line); }
+.ai-section-heading > div { min-width: 0; }
+.ai-settings > .ai-section-heading { padding: 0; }
+.ai-content { display: grid; gap: 14px; min-width: 0; padding: 18px; }
+.ai-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ai-settings button, .ai-form button { height: auto; min-height: 36px; white-space: normal; }
+.ai-table-scroll { max-height: 440px; min-width: 0; overflow: auto; }
+.ai-table-scroll:focus-visible { outline-offset: -3px; }
+.ai-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 11px; }
+.ai-table th { padding: 10px; color: var(--muted); background: var(--surface-soft); font-weight: 550; }
+.ai-table th:last-child { width: 148px; }
+.ai-table td { padding: 12px 10px; vertical-align: top; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.ai-table strong { display: block; font-size: 12px; }
+.ai-table p { margin-top: 5px; color: var(--muted); }
+.ai-form { min-width: 0; overflow-wrap: anywhere; }
+.ai-form input, .ai-form select { max-width: 100%; }
+.ai-selection { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); font-size: 12px; }
+.ai-selection > .ai-section-heading { padding: 0; }
+.ai-selection > .ai-content { padding: 14px 0 0; }
+.ai-selection > p, .ai-selection > form, .ai-selection > dl { margin-top: 12px; }
+.ai-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 0; font-size: 12px; }
+.ai-facts dt { margin-bottom: 4px; color: var(--muted); }
+.ai-facts dd { margin: 0; overflow-wrap: anywhere; }
+.ai-form .ai-checkbox { display: flex; flex-direction: row; align-items: flex-start; gap: 10px; font-size: 12px; font-weight: 550; }
+.ai-form .ai-checkbox input { width: 18px; height: 18px; min-height: 18px; flex-shrink: 0; margin: 0; }
+@media (max-width: 600px) {
+  .ai-section-heading, .ai-content { padding: 12px; }
+  .ai-table th:last-child { width: 94px; }
+  .ai-table th, .ai-table td { padding: 9px 7px; }
+  .ai-facts { grid-template-columns: 1fr; }
+}

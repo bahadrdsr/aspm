@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T08:17:54.512Z",
+  "outcome": "passed",
+  "finalExitCode": 0,
+  "command": "Set-Location C:\\bahadr\\serious\\aspm\\web; node .\\node_modules\\typescript\\bin\\tsc --noEmit --pretty false",
+  "finalLog": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\typecheck-02.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "firstLog": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\typecheck-01.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "compilerInputEnumeration": {
+    "path": ".artifacts\\ai-settings-ui-v1-author\\compiler-inputs-01.txt",
+    "bytes": 24994,
+    "sha256": "73a5f5a93845e72d7aa038e1331e6ab58df94a3422e7e196a0d8c4ca3a50d6df"
+  },
+  "qualifiedNewTypeScriptInputs": [
+    {
+      "path": "web\\tests\\ai-settings-ui-data.ts",
+      "bytes": 11596,
+      "sha256": "7f5a83510f3427bd40a538ffeda4af7f492e68e29111baa846e7c1ab7dd1d944"
+    },
+    {
+      "path": "web\\tests\\ai-settings-ui-fixture.ts",
+      "bytes": 26140,
+      "sha256": "ab859aea177b8c26e2c1dc1563e71072876d796e0f1ff3cf385a1135f57e3499"
+    },
+    {
+      "path": "web\\tests\\ai-settings-ui.spec.ts",
+      "bytes": 45102,
+      "sha256": "ecc8f4754d9b71ef1ce6090ce69a4c5fab151111f33b95fcb598175d2dbf5222"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\playwright.config.ts",
+      "bytes": 1113,
+      "sha256": "ba45217ddeabb8c6c744ca6ee14f8c54072d21b7275c35701014bd4e59d528df"
+    }
+  ],
+  "dependencyEditsOrInstalls": false,
+  "browserBehaviorClaim": false
+}

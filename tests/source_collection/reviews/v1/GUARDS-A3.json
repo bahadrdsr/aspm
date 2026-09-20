@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-18T09:18:59.141Z",
+  "role": "independent successor compatibility test author",
+  "observedHead": "24556fd41090628f391a728457f9c377ca624983",
+  "before": {
+    "path": "tests\\source_collection\\reviews\\v1\\BEFORE-A3.json",
+    "bytes": 225841,
+    "sha256": "6ba8ecd9d3e7304be9868460b0cfc6815a7cdf732abfec11b96c976046517832"
+  },
+  "heldSourceHandoff": {
+    "path": ".cache\\ai-configuration-coder\\HANDOFF.json",
+    "bytes": 19027,
+    "sha256": "01e87807e2b903df284715ec7cb8d864492428d66fe4b250faf1b4e737cd3e6c"
+  },
+  "heldBackendPathsUnchanged": 12,
+  "allProductionGoFilesUnchanged": 111,
+  "productionGoInventoryUnchanged": true,
+  "exactAuthorizedExistingFileDelta": {
+    "path": "tests\\source_collection\\upgrade_test.go",
+    "before": {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    "after": {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10731,
+      "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+    },
+    "archive": {
+      "path": "tests\\source_collection\\reviews\\v1\\history\\a3\\upgrade_test.go.before.txt",
+      "bytes": 10714,
+      "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+    },
+    "changedLines": 4,
+    "additions": [
+      "+\t\t\trequire(t, reflect.DeepEqual(afterOpenVersions, []string{\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"}),",
+      "+\t\t\t\t\"current constructor returned success but did not apply and record v6 and v7 exactly once over actual published v5\")",
+      "+\t\t\trequire(t, reflect.DeepEqual(versionLedger(t, f), []string{\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"}) &&",
+      "+\t\t\t\t\"reopening v7 repeated migration or changed legacy definitions\")"
+    ],
+    "removals": [
+      "-\t\t\trequire(t, reflect.DeepEqual(afterOpenVersions, []string{\"1\", \"2\", \"3\", \"4\", \"5\", \"6\"}),",
+      "-\t\t\t\t\"current constructor returned success but did not apply and record v6 exactly once over actual published v5\")",
+      "-\t\t\trequire(t, reflect.DeepEqual(versionLedger(t, f), []string{\"1\", \"2\", \"3\", \"4\", \"5\", \"6\"}) &&",
+      "-\t\t\t\t\"reopening v6 repeated migration or changed legacy definitions\")"
+    ],
+    "allOtherBytesReconstructedIdentically": true,
+    "currentLedgers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "historicalStartLedger": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "ledgerLineWitnesses": [
+      {
+        "line": 129,
+        "text": "reflect.DeepEqual(versionLedger(t, f), []string{\"1\", \"2\", \"3\", \"4\", \"5\"}),"
+      },
+      {
+        "line": 178,
+        "text": "require(t, reflect.DeepEqual(afterOpenVersions, []string{\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"}),"
+      },
+      {
+        "line": 222,
+        "text": "require(t, reflect.DeepEqual(versionLedger(t, f), []string{\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\"}) &&"
+      }
+    ],
+    "rawDiff": {
+      "path": ".artifacts\\source-collection-a3-schema-v7\\authorized-delta.diff",
+      "bytes": 1938,
+      "sha256": "e79ad9528cc0cb419faeb32d00b7fad64c31b51929f29cb1de88acc0f65e962e"
+    }
+  },
+  "protectedAI": {
+    "signedControls": 138,
+    "unchanged": 137,
+    "onlyAuthorizedCurrentMismatch": "tests\\source_collection\\upgrade_test.go",
+    "oldManifestAndSignatureBytesUnchanged": true,
+    "oldSignedManifestStillDescribesOldBytes": true,
+    "newCurrentSealClaimed": false
+  },
+  "protectedAIUI": {
+    "signedControls": 770,
+    "unchanged": 770,
+    "previous93CasesAndNew6AIUICasesUntouched": true,
+    "noUIControlsOrProductionEditsByAuthor": true
+  },
+  "existingSourceFilesUnchangedExceptAuthorizedTest": true,
+  "historicalFixtureUnchanged": {
+    "path": "tests\\source_collection\\testdata\\published-7281-schema-v5.json",
+    "bytes": 14328,
+    "sha256": "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+  },
+  "existingOracleFilesUnchanged": 113,
+  "oldHistoryCopiesRewritten": false,
+  "onlyArchivedFile": {
+    "path": "tests\\source_collection\\reviews\\v1\\history\\a3\\upgrade_test.go.before.txt",
+    "bytes": 10714,
+    "sha256": "eb197d1259dca24cf4add890e487ae876f39a6a6a3e83df5d760d89a0dbecc6f"
+  },
+  "recursiveOldHistoryCopies": false,
+  "originalModulesRunnersBindingsFixturesTimeoutsUnchanged": true,
+  "runtime": {
+    "alias": "RUNTIME\\runtime.json",
+    "bytes": 553,
+    "sha256": "183159aeebcc9190c4e33bd8c959ee7905ab7ac983d34a6c015de5a925fe6446",
+    "contentsCopied": false,
+    "unchanged": true
+  },
+  "originalPrivateDBS3FixturesUsedWithoutRolePolicyServiceChanges": true,
+  "ownedCleanupAssertionsPassed": true,
+  "calibrationClaimedAsActualAcceptance": false,
+  "sourceSuiteZeroNetworkOrInferenceClaim": false,
+  "vendorOrModelCallsAuthorized": false,
+  "productionBackendProviderDependencyRuntimeOrAITestEditsByAuthor": false,
+  "agentsCommitsOrAuthorityCapture": false,
+  "scope": "Unsigned evidence and exact compatibility amendment only. Parent must independently verify and issue a new current seal."
+}
