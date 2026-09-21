@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-assessments-v1",
+  "phase": "frozen-independent-constructor-and-explicit-v8-red",
+  "frozenAt": "2026-09-20T18:38:50.328Z",
+  "publishedOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "observedHEAD": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "author": {
+    "id": "independent-ai-assessments-test-author-20260920",
+    "role": "Independent test author only, not implementation coder",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned independent test-author inventory. Parent verifies contract/decisions and actual RED, issues a new current seal including the explicit compatibility deltas, then assigns a separate coder. No historical signatures are re-signed.",
+  "contractAuthority": {
+    "initialContractWrittenBeforeTests": {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    "initialWitness": {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    "initialContractByteIdentical": true,
+    "decisions": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3897,
+      "sha256": "ed2f5a7af0abf100d26de0f9981ac37f4031f39fa0271b76aa41d6369ad534ab"
+    },
+    "preImplementationWindowInterpretation": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\WINDOW-CLARIFICATION.txt",
+      "bytes": 1488,
+      "sha256": "42428340c83917607a6970ca7f9b2e36986ce581442aa729c43a65c9a02fddd2"
+    },
+    "parentApprovalRequiredForScopeConsentQuotaSubtypeDecisions": true
+  },
+  "payloadFileCount": 28,
+  "newPayloadCount": 26,
+  "modifiedExistingCount": 2,
+  "files": [
+    {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    {
+      "path": "tests\\ai_assessments\\HANDOFF.txt",
+      "bytes": 8816,
+      "sha256": "0d9ade1173527295faa1a51a520b7bc86c018ada93488282b41b9c3355daa128"
+    },
+    {
+      "path": "tests\\ai_assessments\\Test-AIAssessments.ps1",
+      "bytes": 7192,
+      "sha256": "678c44ad42514150b89f0138384b7cc0205269871daf8de2a9255b3808387552"
+    },
+    {
+      "path": "tests\\ai_assessments\\assessments_test.go",
+      "bytes": 22651,
+      "sha256": "88bd4dd295fbcd707e33af476e088cbabbc0ee66cc759f25277e981b2868bfca"
+    },
+    {
+      "path": "tests\\ai_assessments\\contract_test.go",
+      "bytes": 4015,
+      "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+    },
+    {
+      "path": "tests\\ai_assessments\\fixture_calibration_test.go",
+      "bytes": 2710,
+      "sha256": "b5c553429ac810beef9f2c4a690e690c05949f5035a6ef037872ff977e75da55"
+    },
+    {
+      "path": "tests\\ai_assessments\\fixtures_test.go",
+      "bytes": 27313,
+      "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+    },
+    {
+      "path": "tests\\ai_assessments\\native_test.go",
+      "bytes": 13115,
+      "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+    },
+    {
+      "path": "tests\\ai_assessments\\prepare-published-v7.mjs",
+      "bytes": 4083,
+      "sha256": "b2b2e471b8ddf9f0573470c55ff92b92d6359934229a6bbe0fabc3df88c4454a"
+    },
+    {
+      "path": "tests\\ai_assessments\\production_bindings_test.go",
+      "bytes": 1086,
+      "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE.json",
+      "bytes": 259005,
+      "sha256": "8e61ad18a711df8cfcc7400cd71890964b980f3e74a4590e6d28ca4e0ff26186"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION.json",
+      "bytes": 5514,
+      "sha256": "26c0986c0586eca91ae144df76b1af31098c9e3696aad13c4af45d57d0b9e3c5"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\COMPATIBILITY-V8.json",
+      "bytes": 8316,
+      "sha256": "9759345ffea0d2147f6bc6b394fb186fc6bcf368a1f35fb1b63c99f8d4012593"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3897,
+      "sha256": "ed2f5a7af0abf100d26de0f9981ac37f4031f39fa0271b76aa41d6369ad534ab"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 25179,
+      "sha256": "f6d67ae588222e07e1e7ed8f514b223da6581b39f15c32d6a2725fbd4e52f9cb"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\GUARDS.json",
+      "bytes": 5052,
+      "sha256": "bbe3ed0eea1b00677b1a37fe280b67c7cabbfbbcd424dcc480aa1a72ac6c7f90"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RED.json",
+      "bytes": 26390,
+      "sha256": "95304278066d1574efb412a72178764ba5bef1183e6733243bb7c9a74074bc1e"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\SOURCE-WITNESSES.json",
+      "bytes": 4076,
+      "sha256": "6bd16790a9682a5678bfaa15210c67ffe63feffac864065a12799db05d7423b7"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\WINDOW-CLARIFICATION.txt",
+      "bytes": 1488,
+      "sha256": "42428340c83917607a6970ca7f9b2e36986ce581442aa729c43a65c9a02fddd2"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\REFERENCES.json",
+      "bytes": 1856,
+      "sha256": "cbb14e28604e51c18ad2ce1de506433ac0be9d12133cf78494879fd19528b675"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\ai-configuration-upgrade_test.go.v7",
+      "bytes": 7136,
+      "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\source-collection-upgrade_test.go.v7",
+      "bytes": 10731,
+      "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+    },
+    {
+      "path": "tests\\ai_assessments\\testdata\\published-98a41ce-schema-v7.json",
+      "bytes": 20304,
+      "sha256": "80ce37253c46cf61d37d88b2449ab0447e832a40852be30acb32a4a17b7358d4"
+    },
+    {
+      "path": "tests\\ai_assessments\\testdata\\published-v7-source-inputs.json",
+      "bytes": 16674,
+      "sha256": "0da1df8939ac2a7ad726d78da9e6bf4da835d97dbbf2e0afbf613dfa2a1f89aa"
+    },
+    {
+      "path": "tests\\ai_assessments\\testdata\\seed-v7.main.go.txt",
+      "bytes": 7896,
+      "sha256": "21e30f593485373455aeccd720b0943afef04548a17d1eb789283d1d29725bfa"
+    },
+    {
+      "path": "tests\\ai_assessments\\upgrade_test.go",
+      "bytes": 11892,
+      "sha256": "4c58962bbbe89327ddb3d22d1e7e48541844d0aa348aa2711256353740583fbe"
+    },
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "bytes": 7157,
+      "sha256": "fb67430bb362394d1111038d548e632c8bffe063a37b172a933263bb4fd19801"
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "bytes": 10745,
+      "sha256": "9a9d0702d9ab38dcaf2cf4255d9c87c2532a1b5b50cdc35b83d9afeca4c83a95"
+    }
+  ],
+  "ownedFiles": [
+    "tests\\ai_assessments\\CONTRACT.txt",
+    "tests\\ai_assessments\\HANDOFF.txt",
+    "tests\\ai_assessments\\Test-AIAssessments.ps1",
+    "tests\\ai_assessments\\assessments_test.go",
+    "tests\\ai_assessments\\contract_test.go",
+    "tests\\ai_assessments\\fixture_calibration_test.go",
+    "tests\\ai_assessments\\fixtures_test.go",
+    "tests\\ai_assessments\\native_test.go",
+    "tests\\ai_assessments\\prepare-published-v7.mjs",
+    "tests\\ai_assessments\\production_bindings_test.go",
+    "tests\\ai_assessments\\reviews\\v1\\BEFORE.json",
+    "tests\\ai_assessments\\reviews\\v1\\CALIBRATION.json",
+    "tests\\ai_assessments\\reviews\\v1\\COMPATIBILITY-V8.json",
+    "tests\\ai_assessments\\reviews\\v1\\DECISIONS.json",
+    "tests\\ai_assessments\\reviews\\v1\\EVIDENCE.json",
+    "tests\\ai_assessments\\reviews\\v1\\GUARDS.json",
+    "tests\\ai_assessments\\reviews\\v1\\PACKET.json",
+    "tests\\ai_assessments\\reviews\\v1\\PACKET.sha256",
+    "tests\\ai_assessments\\reviews\\v1\\RED.json",
+    "tests\\ai_assessments\\reviews\\v1\\SOURCE-WITNESSES.json",
+    "tests\\ai_assessments\\reviews\\v1\\WINDOW-CLARIFICATION.txt",
+    "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\REFERENCES.json",
+    "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\ai-configuration-upgrade_test.go.v7",
+    "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\source-collection-upgrade_test.go.v7",
+    "tests\\ai_assessments\\testdata\\published-98a41ce-schema-v7.json",
+    "tests\\ai_assessments\\testdata\\published-v7-source-inputs.json",
+    "tests\\ai_assessments\\testdata\\seed-v7.main.go.txt",
+    "tests\\ai_assessments\\upgrade_test.go",
+    "tests\\ai_configuration\\upgrade_test.go",
+    "tests\\source_collection\\upgrade_test.go"
+  ],
+  "normalCasePlan": 8,
+  "fullSuiteQualification": {
+    "planned": 8,
+    "executed": 0,
+    "blocked": 8,
+    "compilerFailure": true,
+    "missingSurfaces": [
+      "app.Config.AssessmentScope missing",
+      "app.OpenAssessmentWorker missing",
+      "app.AssessmentWorkerConfig missing"
+    ],
+    "newDurableBehaviorsPassed": 0
+  },
+  "separateQualifications": {
+    "finalFixtureCalibration": {
+      "selectedTopLevel": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 0,
+      "nestedFailed": 0
+    },
+    "fullNewSuite": {
+      "planned": 8,
+      "executed": 0,
+      "blocked": 8,
+      "compileFailed": true
+    },
+    "actualPopulatedV7Upgrade": {
+      "selectedTopLevel": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 0,
+      "nestedFailed": 1
+    },
+    "plannedAI7Compatibility": {
+      "selectedTopLevel": 7,
+      "passed": 6,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 1,
+      "nestedFailed": 1
+    },
+    "plannedSource9Compatibility": {
+      "selectedTopLevel": 9,
+      "passed": 8,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 4,
+      "nestedFailed": 2
+    }
+  },
+  "actualRED": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\RED.json",
+    "bytes": 26390,
+    "sha256": "95304278066d1574efb412a72178764ba5bef1183e6733243bb7c9a74074bc1e"
+  },
+  "fixtureCalibration": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION.json",
+    "bytes": 5514,
+    "sha256": "26c0986c0586eca91ae144df76b1af31098c9e3696aad13c4af45d57d0b9e3c5"
+  },
+  "provenance": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\SOURCE-WITNESSES.json",
+    "bytes": 4076,
+    "sha256": "6bd16790a9682a5678bfaa15210c67ffe63feffac864065a12799db05d7423b7"
+  },
+  "evidence": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\EVIDENCE.json",
+    "bytes": 25179,
+    "sha256": "f6d67ae588222e07e1e7ed8f514b223da6581b39f15c32d6a2725fbd4e52f9cb"
+  },
+  "compatibility": {
+    "plannedBeforeImplementation": true,
+    "proof": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\COMPATIBILITY-V8.json",
+      "bytes": 8316,
+      "sha256": "9759345ffea0d2147f6bc6b394fb186fc6bcf368a1f35fb1b63c99f8d4012593"
+    },
+    "existingFiles": [
+      "tests\\ai_configuration\\upgrade_test.go",
+      "tests\\source_collection\\upgrade_test.go"
+    ],
+    "exactChange": "Two current-ledger assertions per file, exact 1..7 -> exact 1..8 plus minimal necessary messages only.",
+    "historicalDDLAndAllOtherAssertionsUnchanged": true,
+    "oldSignaturesHistoricalAndUnmodified": true
+  },
+  "preservation": {
+    "publishedTrackedFiles": 1368,
+    "unchangedTrackedFiles": 1366,
+    "onlyAuthorizedExistingChanges": 2,
+    "productionUIRuntimeDeployDependenciesSignaturesUnchanged": true,
+    "guards": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\GUARDS.json",
+      "bytes": 5052,
+      "sha256": "bbe3ed0eea1b00677b1a37fe280b67c7cabbfbbcd424dcc480aa1a72ac6c7f90"
+    },
+    "onlyActuallyAmendedOldFilesArchived": true,
+    "noRecursiveHistoryCopy": true
+  },
+  "publishedV7Fixture": {
+    "origin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+    "exactDDL": {
+      "path": "tests\\ai_assessments\\testdata\\published-98a41ce-schema-v7.json",
+      "bytes": 20304,
+      "sha256": "80ce37253c46cf61d37d88b2449ab0447e832a40852be30acb32a4a17b7358d4"
+    },
+    "productionDependencyClosure": {
+      "path": "tests\\ai_assessments\\testdata\\published-v7-source-inputs.json",
+      "bytes": 16674,
+      "sha256": "0da1df8939ac2a7ad726d78da9e6bf4da835d97dbbf2e0afbf613dfa2a1f89aa"
+    },
+    "legacyDataSeed": {
+      "path": "tests\\ai_assessments\\testdata\\seed-v7.main.go.txt",
+      "bytes": 7896,
+      "sha256": "21e30f593485373455aeccd720b0943afef04548a17d1eb789283d1d29725bfa"
+    },
+    "legacyDataViaRealPublishedAPIsAndIngestion": true,
+    "businessSQLSeeds": false,
+    "pinnedSourceCopiesAreBuildInputsNotReviewHistory": true,
+    "isolatedPerRunBuildCache": true
+  },
+  "importantBoundaries": {
+    "existingFourProviderAdaptersOnly": true,
+    "noAdditionalProtocolClient": true,
+    "noFakeWorkerQueueOrResults": true,
+    "noLiveProviderModelAccountOrTarget": true,
+    "rawS3OnlyForLegitimateIntake": true,
+    "workerStorageCapability": false,
+    "explicitReviewedDerivedContextNotScannerProof": true,
+    "noRegexAllCredentialsClaim": true,
+    "singleAttemptAndDispatchUncertainty": true,
+    "currentAuthorityNotOneTimeResolverReservation": true,
+    "conservativeSharedScopeAcrossReplicasProfiles": true,
+    "fullAccountModelRegionTokenScopesAndLiveQualityDeferred": true,
+    "productionImplementationAuthored": false,
+    "UIWorkerCommandHelmChanges": false,
+    "dependenciesInstalled": false,
+    "agents": 0,
+    "commits": 0,
+    "privateAuthorityAccess": false,
+    "oraclesCapturedOrModified": false
+  },
+  "adapterClassificationGap": "Published ErrOutput conflates schema/refusal/grounding. Required subtype belongs at the existing parser while preserving errors.Is ErrOutput; worker must not reimplement protocols.",
+  "hashPolicy": "Raw SHA256 payload bytes. PACKET.sha256 hashes this packet; checksum is non-recursively hashed publication metadata. EVIDENCE.json binds 25 final raw evidence files. Earlier unique labels are preserved but not final acceptance.",
+  "stopStatus": "Independent author stops for parent verification/seal and separate implementation assignment. No new worker GREEN, live-model certification, complete M11 or deployment/egress permission is claimed."
+}

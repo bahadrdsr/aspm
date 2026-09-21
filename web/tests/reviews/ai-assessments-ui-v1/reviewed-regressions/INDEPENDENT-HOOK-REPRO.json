@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-20T23:30:00.054Z",
+  "purpose": "Independent real production-hook investigation before normative assertions. Not full-app race proof or parent-approved binding.",
+  "report": {
+    "path": ".artifacts\\ai-assessments-ui-v1-author\\reviewed-independent-hook-repro-v3\\results.json",
+    "sha256": "f7b345b2ff989245c52cd094da1c11af8a9b7010c3b801327cba910fceaaf48d",
+    "bytes": 45716
+  },
+  "probe": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\reproduction-hook-v3.spec.ts.txt",
+    "sha256": "8b88173d5b686f866e4642e72a73d41af7a14c2034f88b0fe62ad9929d41f086",
+    "bytes": 8786
+  },
+  "cases": [
+    {
+      "title": "REPRO ONLY production hook 403 then queue ACK",
+      "status": "passed",
+      "durationMs": 3129,
+      "retry": 0,
+      "observed": {
+        "denial": 403,
+        "operation": "queue",
+        "afterDenial": 0,
+        "afterACK": 1,
+        "during503": {
+          "rows": 1,
+          "authorized": "true"
+        },
+        "after503": 1,
+        "after200": 2,
+        "requests": 6,
+        "claim": "Real imported production-hook invariant with React lifecycle and original guarded typed HTTP, not the full application."
+      },
+      "guards": {
+        "requests": 6,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    },
+    {
+      "title": "REPRO ONLY production hook 404 then cancellation ACK",
+      "status": "passed",
+      "durationMs": 1467,
+      "retry": 0,
+      "observed": {
+        "denial": 404,
+        "operation": "cancellation",
+        "afterDenial": 0,
+        "afterACK": 1,
+        "during503": {
+          "rows": 1,
+          "authorized": "true"
+        },
+        "after503": 1,
+        "after200": 1,
+        "requests": 7,
+        "claim": "Real imported production-hook invariant with React lifecycle and original guarded typed HTTP, not the full application."
+      },
+      "guards": {
+        "requests": 7,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    }
+  ],
+  "setupDiagnostics": [
+    {
+      "run": "reviewed-independent-hook-repro-v1",
+      "finding": "New asset path normalized outside existing harness prefix and was correctly blocked. Moved only new harness files to existing allowed tests/harness prefix. No guard relaxation."
+    },
+    {
+      "run": "reviewed-independent-hook-repro-v2",
+      "finding": "Real ActionButton requires real Preferences provider. Added that real provider to isolated unit. No mock or production change."
+    }
+  ],
+  "parentBindingApproval": "PENDING - unsigned candidate only. Parent must approve the explicitly documented existing-export unit binding before test freeze/seal."
+}

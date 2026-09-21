@@ -1,0 +1,186 @@
+package main
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+)
+
+type privateInput struct {
+	DatabaseURL, Schema, ApplicationName, BootstrapToken, Password string
+	StorageEndpoint, Bucket, Prefix, AccessKey, SecretKey          string
+	EncryptionKey                                                  []byte
+	ProviderEndpoint, ProviderKey, Report                          string
+}
+
+type envelope struct {
+	User      app.User
+	Workspace app.Workspace
+	Asset     app.Asset
+	Import    app.Import
+	Finding   app.Finding
+	Profile   app.AIProfile
+	Policy    app.AIPolicy
+	Grant     app.AIEgressGrant
+	Items     []struct{ ID string }
+}
+
+func main() {
+	if err := run(); err != nil {
+		_, _ = io.WriteString(os.Stderr, "published-v7 owned API seed failed; private details withheld\n")
+		os.Exit(1)
+	}
+}
+
+func run() error {
+	var input privateInput
+	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 512<<10))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&input) != nil || !strings.HasPrefix(input.Schema, "ai_assess_") {
+		return fmt.Errorf("invalid owned seed input")
+	}
+	dbURL, err := url.Parse(input.DatabaseURL)
+	if err != nil || dbURL.Hostname() != "127.0.0.1" || dbURL.User == nil {
+		return fmt.Errorf("invalid owned database boundary")
+	}
+	endpoint, err := url.Parse(input.StorageEndpoint)
+	if err != nil || endpoint.Hostname() != "127.0.0.1" || endpoint.Port() == "" {
+		return fmt.Errorf("invalid owned intake boundary")
+	}
+	provider, err := url.Parse(input.ProviderEndpoint)
+	if err != nil || provider.Scheme != "https" || provider.Hostname() != "127.0.0.1" || provider.Port() == "" {
+		return fmt.Errorf("invalid noncalled provider metadata")
+	}
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.Proxy = nil
+	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != endpoint.Host {
+			return nil, fmt.Errorf("published seed forbids non-intake network")
+		}
+		return (&net.Dialer{Timeout: 3 * time.Second}).DialContext(ctx, network, address)
+	}
+	http.DefaultTransport = transport
+	defer transport.CloseIdleConnections()
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	core, err := app.Open(ctx, app.Config{DatabaseURL: input.DatabaseURL, Schema: input.Schema,
+		ApplicationName: input.ApplicationName, MaxConnections: 2, BootstrapToken: input.BootstrapToken,
+		IntegrationEncryptionKey: input.EncryptionKey, ManualProcessing: true, PublicOrigin: "https://ai-assessments.synthetic.invalid",
+		MaxUploadBytes: 256 << 10, SessionTTL: time.Hour, LogOutput: io.Discard,
+		Storage: app.StorageConfig{Endpoint: input.StorageEndpoint, Bucket: input.Bucket, Prefix: input.Prefix,
+			AccessKey: input.AccessKey, SecretKey: input.SecretKey, Region: "us-east-1", Timeout: 5 * time.Second}})
+	if err != nil {
+		return fmt.Errorf("published core construction")
+	}
+	defer core.Close()
+	workspace := ""
+	var cookie *http.Cookie
+	request := func(method, route string, body any, expected int, bootstrap bool) (envelope, error) {
+		data, err := json.Marshal(body)
+		if err != nil {
+			return envelope{}, fmt.Errorf("encode seed API")
+		}
+		req := httptest.NewRequest(method, "https://ai-assessments.synthetic.invalid"+route, bytes.NewReader(data)).WithContext(ctx)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Origin", "https://ai-assessments.synthetic.invalid")
+		if workspace != "" {
+			req.Header.Set("X-ASPM-Workspace-ID", workspace)
+		}
+		if cookie != nil {
+			req.AddCookie(cookie)
+		}
+		if bootstrap {
+			req.Header.Set("X-ASPM-Bootstrap-Token", input.BootstrapToken)
+		}
+		response := httptest.NewRecorder()
+		core.Handler.ServeHTTP(response, req)
+		if response.Code != expected {
+			return envelope{}, fmt.Errorf("published API status differs")
+		}
+		var result envelope
+		if json.Unmarshal(response.Body.Bytes(), &result) != nil {
+			return result, fmt.Errorf("published API envelope")
+		}
+		for _, value := range response.Result().Cookies() {
+			if value.Name == "aspm_session" {
+				cookie = value
+			}
+		}
+		return result, nil
+	}
+	enrolled, err := request("POST", "/api/v1/bootstrap", map[string]any{"workspaceName": "Actual published V7 legacy",
+		"name": "Synthetic legacy admin", "email": "legacy@assessment.invalid", "password": input.Password}, 201, true)
+	if err != nil {
+		return err
+	}
+	workspace = enrolled.Workspace.ID
+	session, err := request("POST", "/api/v1/login", map[string]string{"email": "legacy@assessment.invalid", "password": input.Password}, 200, false)
+	if err != nil || cookie == nil {
+		return fmt.Errorf("published authenticated session")
+	}
+	asset, err := request("POST", "/api/v1/assets", map[string]any{"name": "Published V7 owned repository", "kind": "repository",
+		"environment": "test", "criticality": "medium", "tags": []string{"synthetic-legacy"}, "ownerId": session.User.ID}, 201, false)
+	if err != nil {
+		return err
+	}
+	now := time.Now().UTC()
+	queued, err := request("POST", "/api/v1/imports", map[string]any{"apiVersion": app.APIVersion, "assetId": asset.Asset.ID,
+		"format": "sarif", "report": input.Report, "sourceId": "published-v7-source", "scanId": "published-v7-scan",
+		"scope": app.Scope{ID: "owned-repository", Revision: "1", Branch: "refs/heads/main"}, "sourceScanAt": now.Add(-time.Minute),
+		"collectedAt": now, "sourceStatus": "succeeded", "scanKind": "full", "completeness": "complete"}, 202, false)
+	if err != nil {
+		return err
+	}
+	if err = core.ProcessImports(ctx); err != nil {
+		return fmt.Errorf("published legitimate ingestion")
+	}
+	completed, err := request("GET", "/api/v1/imports/"+queued.Import.ID, nil, 200, false)
+	if err != nil || completed.Import.State != "succeeded" {
+		return fmt.Errorf("published intake did not complete")
+	}
+	work, err := request("GET", "/api/v1/work", nil, 200, false)
+	if err != nil || len(work.Items) != 1 {
+		return fmt.Errorf("published finding missing")
+	}
+	id := work.Items[0].ID
+	if _, err = request("PATCH", "/api/v1/findings/"+id, map[string]any{"ownerId": session.User.ID, "workflowState": "in-progress",
+		"disposition": "accepted-risk", "acceptedRiskExpiresAt": now.Add(time.Hour)}, 200, false); err != nil {
+		return err
+	}
+	if _, err = request("POST", "/api/v1/findings/"+id+"/notes", map[string]string{"text": "Actual published-V7 human decision, never model-approved context."}, 201, false); err != nil {
+		return err
+	}
+	profile, err := request("POST", "/api/v1/ai/profiles", map[string]any{"name": "Published V7 encrypted profile", "family": "openai",
+		"endpoint": input.ProviderEndpoint, "model": "operator-selected-model", "deployment": "", "enabled": true, "structuredOutput": true, "apiKey": input.ProviderKey}, 201, false)
+	if err != nil {
+		return err
+	}
+	policy, err := request("PATCH", "/api/v1/ai/policy", map[string]string{"mode": "approved-hosted"}, 200, false)
+	if err != nil {
+		return err
+	}
+	grant, err := request("POST", "/api/v1/ai/grants", map[string]any{"profileId": profile.Profile.ID, "profileRevision": profile.Profile.Revision,
+		"policyRevision": policy.Policy.Revision, "destination": profile.Profile.Endpoint, "task": "finding-validity",
+		"dataClass": "finding-evidence", "expiresAt": now.Add(time.Hour).Format(time.RFC3339Nano)}, 201, false)
+	if err != nil {
+		return err
+	}
+	return json.NewEncoder(os.Stdout).Encode(struct {
+		UserID, WorkspaceID, FindingID, ImportID, AssetID string
+		Cookie                                            *http.Cookie
+		Profile                                           app.AIProfile
+		Policy                                            app.AIPolicy
+		Grant                                             app.AIEgressGrant
+	}{session.User.ID, workspace, id, completed.Import.ID, asset.Asset.ID, cookie, profile.Profile, policy.Policy, grant.Grant})
+}

@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T04:21:13.108Z",
+  "run": {
+    "mode": "Calibration",
+    "run": "successor-runtime-a2-paired-calibration-20260921-01",
+    "exitCode": 0,
+    "tests": [
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context/synthetic-measurement-reject-absent-event",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context/synthetic-measurement-reject-absent-event-even-with-early-stamp",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context/synthetic-measurement-reject-closed-event-zero-stamp",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context/synthetic-measurement-reject-closed-event-late-stamp",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context/synthetic-measurement-accept-exact-deadline-different-zone",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context/synthetic-measurement-accept-early-stamp",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline/Run-context",
+        "action": "pass",
+        "elapsedSeconds": 7.33
+      },
+      {
+        "test": "TestA2DelayedCancellationObserverKeepsOriginalDeadline",
+        "action": "pass",
+        "elapsedSeconds": 7.33
+      }
+    ],
+    "packageElapsedSeconds": 7.924,
+    "inputCount": 1023,
+    "inputTreeSHA256": "f7b4fff1f0026a6c89dc5436f09dde421b6474a4cf9c6ffd5f7bb605fdabf785",
+    "receipt": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01.receipt.json",
+      "bytes": 3080,
+      "sha256": "52cbbebe695cba915b439c0235c3201b9d1b0aca4c113f455fe47881badb016c"
+    },
+    "inputs": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01.inputs.json",
+      "bytes": 198052,
+      "sha256": "cdf6eaafd2aad83c8f02c1fcc33b183b521ade33001076a3dfde404c7216d6f7"
+    },
+    "actualCommand": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01.assessment-worker.owned.exe",
+      "bytes": 22716416,
+      "sha256": "e898eaf4656df7da50c087d125da4700767e3bc79f58b5f722c7e09529b50aa5"
+    },
+    "logs": [
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01-command-build.jsonl",
+        "bytes": 2,
+        "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01-command-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01-tests.jsonl",
+        "bytes": 17592,
+        "sha256": "fc55c64a1e37f8ffc483577a71b86477bf137d52df00c89e390ed0267ac613bf"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01-tests.log",
+        "bytes": 3755,
+        "sha256": "cfcee31411b84435b361b13ee0ce427e93a3cbd73ba5ee0e831bad7377d154d7"
+      }
+    ]
+  },
+  "actualProof": {
+    "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01-Run-context-1fa9213f6680ac0b0c06a861.calibration.json",
+    "bytes": 2507,
+    "sha256": "77d13d5e5767d13082affd33c965a7d61d7507460fb1d24d6e63dc43a2e915cc"
+  },
+  "preservedAssertionsAndTypedBinding": {
+    "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-paired-calibration-20260921-01.calibration-inputs.json",
+    "bytes": 3928,
+    "sha256": "2ef9cea01e230587b6783a51d71d5f5a43f8396e273f801d3e9d600dda62d39d"
+  },
+  "realNativeObservedAt": "2026-09-21T06:13:17.425851+02:00",
+  "originalPreMarkerDeadline": "2026-09-21T06:13:22.3803108+02:00",
+  "delayedObserverArrived": "2026-09-21T06:13:22.3807406+02:00",
+  "realNativeMarginMillis": 4954.459,
+  "observerAfterDeadlineNanos": 429800,
+  "existingRoleShutdownAndListenerAssertionsReached": true,
+  "realBoundValidated": true,
+  "nativePOSTs": 2,
+  "protectedAPICounter": 22,
+  "actualFreshCommand": {
+    "pid": 24036,
+    "exited": true,
+    "selectedPIDKillCalled": true
+  },
+  "originalTailReached": true,
+  "executedTails": [
+    "no old result/resend",
+    "retained immutable dispatch marker and quota configuration/history",
+    "new explicit job succeeds once",
+    "domain/storage unchanged",
+    "real Run returned and selected fresh command exited"
+  ],
+  "syntheticMeasurementNegatives": [
+    {
+      "accepted": false,
+      "actualEvent": false,
+      "case": "reject-absent-event",
+      "expectedAcceptance": false,
+      "originalDeadline": "2026-09-21T06:13:22.3803108+02:00",
+      "productionExecutionClaimed": false,
+      "recordedAt": "0001-01-01T00:00:00Z",
+      "syntheticMeasurementOnly": true
+    },
+    {
+      "accepted": false,
+      "actualEvent": false,
+      "case": "reject-absent-event-even-with-early-stamp",
+      "expectedAcceptance": false,
+      "originalDeadline": "2026-09-21T06:13:22.3803108+02:00",
+      "productionExecutionClaimed": false,
+      "recordedAt": "2026-09-21T06:13:22.380310799+02:00",
+      "syntheticMeasurementOnly": true
+    },
+    {
+      "accepted": false,
+      "actualEvent": true,
+      "case": "reject-closed-event-zero-stamp",
+      "expectedAcceptance": false,
+      "originalDeadline": "2026-09-21T06:13:22.3803108+02:00",
+      "productionExecutionClaimed": false,
+      "recordedAt": "0001-01-01T00:00:00Z",
+      "syntheticMeasurementOnly": true
+    },
+    {
+      "accepted": false,
+      "actualEvent": true,
+      "case": "reject-closed-event-late-stamp",
+      "expectedAcceptance": false,
+      "originalDeadline": "2026-09-21T06:13:22.3803108+02:00",
+      "productionExecutionClaimed": false,
+      "recordedAt": "2026-09-21T06:13:22.380310801+02:00",
+      "syntheticMeasurementOnly": true
+    }
+  ],
+  "syntheticInstantBoundaryPositives": [
+    {
+      "accepted": true,
+      "actualEvent": true,
+      "case": "accept-exact-deadline-different-zone",
+      "expectedAcceptance": true,
+      "originalDeadline": "2026-09-21T06:13:22.3803108+02:00",
+      "productionExecutionClaimed": false,
+      "recordedAt": "2026-09-21T07:13:22.3803108+03:00",
+      "syntheticMeasurementOnly": true
+    },
+    {
+      "accepted": true,
+      "actualEvent": true,
+      "case": "accept-early-stamp",
+      "expectedAcceptance": true,
+      "originalDeadline": "2026-09-21T06:13:22.3803108+02:00",
+      "productionExecutionClaimed": false,
+      "recordedAt": "2026-09-21T06:13:22.380310799+02:00",
+      "syntheticMeasurementOnly": true
+    }
+  ],
+  "syntheticCasesNotProductionPasses": true,
+  "extraExecutionAllowance": false,
+  "productionDelayOrClockMutation": false
+}

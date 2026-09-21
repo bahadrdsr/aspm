@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T00:58:24.549Z",
+  "stage": "Independent backend A2 successor regression authorship",
+  "author": {
+    "id": "independent-backend-regression-successor-20260921",
+    "role": "Fresh successor A2 test author; not originalauthorbeb1de86 or coder6727a036",
+    "inheritedDraftAuthor": "originalauthorbeb1de86",
+    "implementationCoder": false
+  },
+  "status": "FROZEN ACTUAL NATIVE RED - PARENT VERIFY/SEAL, THEN SEPARATE CODER",
+  "signed": false,
+  "independentAcceptance": false,
+  "M11Complete": false,
+  "productionFixImplemented": false,
+  "predecessorProvenance": "tests\\ai_assessments\\reviews\\v1\\PROVENANCE-A2.json",
+  "contract": "tests\\ai_assessments\\reviews\\v1\\CONTRACT-A2.txt",
+  "handoff": "tests\\ai_assessments\\reviews\\v1\\HANDOFF-A2.txt",
+  "heldHandoffSHA256": "019d2817b826563809f8213aaee73ace61139bcfc53b4d199217b42c637fb039",
+  "heldBackendPaths": 19,
+  "currentA1ManifestSHA256": "5d050e1f3f686ed5c59cc20724d34f2f730a12ed78643c6f2db10c3755208421",
+  "unchangedA1Controls": 221,
+  "separateRuntimePacketSHA256": "1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34",
+  "requiredH2CapabilityNotH1Fallback": true,
+  "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+  "runInputCount": 890,
+  "outcome": {
+    "compile": "PASS",
+    "fixtureCalibration": "PASS (2 nested controls)",
+    "unchangedOriginalEight": "PASS (8 top-level + 2 nested)",
+    "newHTTP2": "RED (2 actual POSTs/1 durable attempt)",
+    "newLocalLifetime": "RED (cancel and actual lease expiry both overlap local I/O)"
+  },
+  "unexecutedBranch": "AA10 correct post-termination admission branch is not claimed: the held candidate already admitted the second job before termination.",
+  "guardExclusions": [
+    "web\\**",
+    "README.md"
+  ],
+  "boundaries": [
+    "No production, old control, runtime or UI changes.",
+    "No provider accounts, installations, agents, commits, authority capture or resigning.",
+    "No remote-compute/billing exactly-once or remote concurrency certification."
+  ],
+  "fileCount": 43,
+  "files": [
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CONTRACT-A2.txt",
+      "bytes": 8089,
+      "sha256": "1c9ac040eacc70de6788436048024efcb08d1bfbe6191ab97b0578beb2d04c37"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE-A2.json",
+      "bytes": 53175,
+      "sha256": "cd4545c2fef8a89c19234be065d071620bb517a10f22c8c8df7a9933fcaf38e5"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE-A2-SUCCESSOR.json",
+      "bytes": 227528,
+      "sha256": "658540dad40798d62e8c6c13d3a108613732c6df115945b61d26c3b993857e7e"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\HPACK-TABLES-A2.json",
+      "bytes": 11089,
+      "sha256": "49e13f82d9fac5f35b3783b47e69403074929059049863f9a3bd1f2e90328cdf"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\Test-Native-A2.ps1",
+      "bytes": 12541,
+      "sha256": "77ed3cf7be279d54f005b9b2a1f470911390a8f9171813d16ebfa35cdc59a441"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\calibrate-http2-A2.go.txt",
+      "bytes": 152,
+      "sha256": "92a0aa715986ad06833364ab887a63ff9cbe3d8d6a3e9a0124238675cd9d03f5"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\HANDOFF-A2.txt",
+      "bytes": 7683,
+      "sha256": "9d8a0286c890226037d8384773e451255104e2ed58dafed0d7e236e015a8c6f6"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\freeze-A2.mjs",
+      "bytes": 22076,
+      "sha256": "2ce1a3b2e397f62d30821c18faa1ef64d73cddd8efeb51c8618e5e3d8a92b89f"
+    },
+    {
+      "path": "tests\\ai_assessments\\transport_replay_test.go",
+      "bytes": 25574,
+      "sha256": "06613532946bd69ccd118eb02ce95f98e1ec9e4c15c1dea3962fa0956ed3ab2f"
+    },
+    {
+      "path": "tests\\ai_assessments\\concurrency_lifetime_test.go",
+      "bytes": 17885,
+      "sha256": "5b6b4ffef6f87625b7297c574a88c0aef604f8ecd31f988923abd14eaf3217cc"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\transport_replay_test.go.txt",
+      "bytes": 19939,
+      "sha256": "8b87ed52190ae9fbdb5fbcc5695c8a2f446e8cbe6cbe899db3eadc6e193d717f"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\concurrency_lifetime_test.go.txt",
+      "bytes": 13793,
+      "sha256": "119d3573200fca68f61f5ce01b236bc99ddcbb1421d3853eb0b6e9f67ff02bc6"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\CONTRACT-A2.txt",
+      "bytes": 6186,
+      "sha256": "99a1a438780d31e8580b81719fcb79171c4ed4327feb8c0e524acb4f769d632b"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\Test-Native-A2.ps1",
+      "bytes": 7800,
+      "sha256": "eff738842937e7df9b4e0187917936052246ace70c7b33740ea1db8fbe83be9e"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\PROVENANCE-A2.json",
+      "bytes": 10919,
+      "sha256": "7363626e3d1d9d3f08170b396c5f4c9b3e133bdeee702dd08e665911b2d9b168"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\SOURCE-WITNESSES-A2.json",
+      "bytes": 6583,
+      "sha256": "fbb4f6e68b86b2704764f79188d1b3f8634065c995588a9f45eb72e5c17cb1bd"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION-A2.json",
+      "bytes": 8067,
+      "sha256": "65089610dc1d726f1e376611cf00fbd75d47033cffcdd5e86277c91ca671ebe6"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RED-A2.json",
+      "bytes": 7649,
+      "sha256": "a7121e240fb4328cb9a01a78ddfc7dba94ad65528cf403b759d2323fd47a6b11"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\GUARDS-A2.json",
+      "bytes": 2878,
+      "sha256": "572870fbb388402accba134e4a5a448595796020379e08a551aafdaf0209c06a"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\EVIDENCE-A2.json",
+      "bytes": 11362,
+      "sha256": "eed104d0d6f7c7732efe5117534d7b2ad1e82b9f2fb4119623850a3b4f352862"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.jsonl",
+      "bytes": 801,
+      "sha256": "e03d9938d7216af47eeb355eebde7ad24fdffde6a2bb09002f6a526b998c5b18"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.log",
+      "bytes": 117,
+      "sha256": "f9778c9b7c7342b6cb24df78bae7b9651739025cc01c6185811310ef4f6a9acc"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.receipt.json",
+      "bytes": 1631,
+      "sha256": "306aa22282cdd421d0c94e9f51cafcc0ea101b869e7774fa7127464153db9742"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.inputs.json",
+      "bytes": 167615,
+      "sha256": "3f043bb1d5860bd663b88f29ee129c14be762a11934f7f2a0708deb4876fd6ec"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.jsonl",
+      "bytes": 5722,
+      "sha256": "7eeda77b99c06271ab93dd3c390c0375b695e78dc6f92f430c3eac261a7889f3"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.log",
+      "bytes": 1143,
+      "sha256": "8f05326066d652c7616d387e24ee12c4b36f2b7a7d73df0679c74eeca4ec5130"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.receipt.json",
+      "bytes": 3370,
+      "sha256": "284ffbf74c1bf0073b061a0c2dd058e9f7bef34a01a4d01b1bf7792bcd5676b0"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.inputs.json",
+      "bytes": 167622,
+      "sha256": "48e27334aa99fc727bf6d318cf33088966d2baa73935aa7148995925515f9fdf"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.jsonl",
+      "bytes": 14050,
+      "sha256": "7c90d5e741fe583fc65a494bb924a8c0744fe2b51f818fbe0916afd6b6804e2c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.log",
+      "bytes": 2927,
+      "sha256": "42f0982d155c34e74459c0a8246f74878fbd90a335aefb5bac46ad1d4f4a1b46"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.receipt.json",
+      "bytes": 1667,
+      "sha256": "97b5d0649bb2dd4763696a726ce42c44e10a2e69fabc1c950ac183eb9a9d4d46"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.inputs.json",
+      "bytes": 167622,
+      "sha256": "4c6fce5d1166b2a602dfd3e469b521c78ce84e7918bacc4e4376bede0a698036"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.jsonl",
+      "bytes": 3155,
+      "sha256": "5848ffbc051b232ac022f342683bc7abd80cacaef04e2586cad79673161a4af6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.log",
+      "bytes": 914,
+      "sha256": "2bb1c1d7d8e69e79f158588cdd96d30c3c18dc14b472e6dd127a6de0863a209d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.receipt.json",
+      "bytes": 1691,
+      "sha256": "aed5190941f7548c157c198414460888d1846f83b23799e5e7377e2587186bfb"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.inputs.json",
+      "bytes": 167614,
+      "sha256": "540227512fd29188e5f3be0bd91d4abfb6571117e50487be42608dbaa865c5b1"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.jsonl",
+      "bytes": 7290,
+      "sha256": "5888161288f654c90209b122e75dcab72b757a81cca4e88d486dc82f15f4dee0"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.log",
+      "bytes": 2460,
+      "sha256": "7b74314991baf628375dee0b307b4de176913bc6be95ed984690f0484ce39ff0"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.receipt.json",
+      "bytes": 1696,
+      "sha256": "9bc63fff381744f6b996ec12630781441edba803d6680dca5cbbdb98472c2c62"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.inputs.json",
+      "bytes": 167620,
+      "sha256": "d59adfd79ad94ac37d230447664c6acf361c424dcdf9727e478b5261c0e0972e"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.published-v7-build.json",
+      "bytes": 895,
+      "sha256": "c4e54acde7e25db4d8cb2c9f00b6665d3bf47818630bd5285700f30cea1ac642"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-78a44192a94f2fd6fdb4b777.json",
+      "bytes": 363,
+      "sha256": "5443a081ac60280a0951c8817ba5e1c396d1dc029e410dd6466dabe31468fe1c"
+    }
+  ]
+}

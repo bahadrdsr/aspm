@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T00:58:24.549Z",
+  "runs": {
+    "compile": {
+      "name": "successor-a2-compile-20260921-01",
+      "exitCode": 0,
+      "startedAt": "2026-09-21T00:50:02.2416209+00:00",
+      "finishedAt": "2026-09-21T00:50:43.2710788+00:00",
+      "packageResult": "pass",
+      "packageElapsedSeconds": 0.619,
+      "tests": [],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.jsonl",
+          "bytes": 801,
+          "sha256": "e03d9938d7216af47eeb355eebde7ad24fdffde6a2bb09002f6a526b998c5b18"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.log",
+          "bytes": 117,
+          "sha256": "f9778c9b7c7342b6cb24df78bae7b9651739025cc01c6185811310ef4f6a9acc"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.receipt.json",
+          "bytes": 1631,
+          "sha256": "306aa22282cdd421d0c94e9f51cafcc0ea101b869e7774fa7127464153db9742"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-compile-20260921-01.inputs.json",
+          "bytes": 167615,
+          "sha256": "3f043bb1d5860bd663b88f29ee129c14be762a11934f7f2a0708deb4876fd6ec"
+        }
+      ]
+    },
+    "calibration": {
+      "name": "successor-a2-h2-calibration-20260921-01",
+      "exitCode": 0,
+      "startedAt": "2026-09-21T00:51:02.1182844+00:00",
+      "finishedAt": "2026-09-21T00:51:09.9755519+00:00",
+      "packageResult": "pass",
+      "packageElapsedSeconds": 0.641,
+      "tests": [
+        {
+          "test": "TestA2PinnedHTTP2RefusedStreamCalibration/rewindable-two-streams",
+          "action": "pass",
+          "elapsedSeconds": 0.01
+        },
+        {
+          "test": "TestA2PinnedHTTP2RefusedStreamCalibration/nonrewindable-one-stream-fixture-control",
+          "action": "pass",
+          "elapsedSeconds": 0
+        },
+        {
+          "test": "TestA2PinnedHTTP2RefusedStreamCalibration",
+          "action": "pass",
+          "elapsedSeconds": 0.01
+        }
+      ],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.jsonl",
+          "bytes": 5722,
+          "sha256": "7eeda77b99c06271ab93dd3c390c0375b695e78dc6f92f430c3eac261a7889f3"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.log",
+          "bytes": 1143,
+          "sha256": "8f05326066d652c7616d387e24ee12c4b36f2b7a7d73df0679c74eeca4ec5130"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.receipt.json",
+          "bytes": 3370,
+          "sha256": "284ffbf74c1bf0073b061a0c2dd058e9f7bef34a01a4d01b1bf7792bcd5676b0"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-calibration-20260921-01.inputs.json",
+          "bytes": 167622,
+          "sha256": "48e27334aa99fc727bf6d318cf33088966d2baa73935aa7148995925515f9fdf"
+        }
+      ]
+    },
+    "originalEight": {
+      "name": "successor-a2-original-eight-20260921-01",
+      "exitCode": 0,
+      "startedAt": "2026-09-21T00:51:12.1410147+00:00",
+      "finishedAt": "2026-09-21T00:51:38.1169472+00:00",
+      "packageResult": "pass",
+      "packageElapsedSeconds": 21.846,
+      "tests": [
+        {
+          "test": "TestAA1ReviewedPreviewConsentScopePrivacyAndDeniedWrites",
+          "action": "pass",
+          "elapsedSeconds": 1.44
+        },
+        {
+          "test": "TestAA2ImmutableQueueReplayHistoryAndObservationSnapshotSurviveReopen",
+          "action": "pass",
+          "elapsedSeconds": 1.56
+        },
+        {
+          "test": "TestAA3FourNativeProviderMappingsUsageAndGroundedAdvisory",
+          "action": "pass",
+          "elapsedSeconds": 1.84
+        },
+        {
+          "test": "TestAA4DistinctRejectedOutputAndProviderFailuresNeverRetryOrMutateFindings",
+          "action": "pass",
+          "elapsedSeconds": 5.1
+        },
+        {
+          "test": "TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent",
+          "action": "pass",
+          "elapsedSeconds": 1.2
+        },
+        {
+          "test": "TestAA6CurrentAuthorityChangesActivelyCancelHeldNativeResponses",
+          "action": "pass",
+          "elapsedSeconds": 2.3
+        },
+        {
+          "test": "TestAA7SharedAdmissionExpiredDispatchAndStaleFenceAcrossWorkersAndProfiles",
+          "action": "pass",
+          "elapsedSeconds": 4.45
+        },
+        {
+          "test": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/fresh-v8-and-reopen",
+          "action": "pass",
+          "elapsedSeconds": 1.14
+        },
+        {
+          "test": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/published-v7-upgrade",
+          "action": "pass",
+          "elapsedSeconds": 2.29
+        },
+        {
+          "test": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens",
+          "action": "pass",
+          "elapsedSeconds": 3.43
+        }
+      ],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.jsonl",
+          "bytes": 14050,
+          "sha256": "7c90d5e741fe583fc65a494bb924a8c0744fe2b51f818fbe0916afd6b6804e2c"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.log",
+          "bytes": 2927,
+          "sha256": "42f0982d155c34e74459c0a8246f74878fbd90a335aefb5bac46ad1d4f4a1b46"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.receipt.json",
+          "bytes": 1667,
+          "sha256": "97b5d0649bb2dd4763696a726ce42c44e10a2e69fabc1c950ac183eb9a9d4d46"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.inputs.json",
+          "bytes": 167622,
+          "sha256": "4c6fce5d1166b2a602dfd3e469b521c78ce84e7918bacc4e4376bede0a698036"
+        }
+      ]
+    },
+    "http2": {
+      "name": "successor-a2-h2-red-20260921-01",
+      "exitCode": 1,
+      "startedAt": "2026-09-21T00:51:54.3868572+00:00",
+      "finishedAt": "2026-09-21T00:52:01.5357677+00:00",
+      "packageResult": "fail",
+      "packageElapsedSeconds": 2.066,
+      "tests": [
+        {
+          "test": "TestAA9NativeHTTP2RefusedStreamCannotReplayAssessmentPOST",
+          "action": "fail",
+          "elapsedSeconds": 1.48
+        }
+      ],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.jsonl",
+          "bytes": 3155,
+          "sha256": "5848ffbc051b232ac022f342683bc7abd80cacaef04e2586cad79673161a4af6"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.log",
+          "bytes": 914,
+          "sha256": "2bb1c1d7d8e69e79f158588cdd96d30c3c18dc14b472e6dd127a6de0863a209d"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.receipt.json",
+          "bytes": 1691,
+          "sha256": "aed5190941f7548c157c198414460888d1846f83b23799e5e7377e2587186bfb"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.inputs.json",
+          "bytes": 167614,
+          "sha256": "540227512fd29188e5f3be0bd91d4abfb6571117e50487be42608dbaa865c5b1"
+        }
+      ]
+    },
+    "lifetime": {
+      "name": "successor-a2-lifetime-red-20260921-01",
+      "exitCode": 1,
+      "startedAt": "2026-09-21T00:51:54.3494679+00:00",
+      "finishedAt": "2026-09-21T00:52:03.3948531+00:00",
+      "packageResult": "fail",
+      "packageElapsedSeconds": 4.244,
+      "tests": [
+        {
+          "test": "TestAA10LocalNativeLifetimeRetainsSharedConcurrency/explicit-cancel",
+          "action": "fail",
+          "elapsedSeconds": 1.91
+        },
+        {
+          "test": "TestAA10LocalNativeLifetimeRetainsSharedConcurrency/expired-lease",
+          "action": "fail",
+          "elapsedSeconds": 1.77
+        },
+        {
+          "test": "TestAA10LocalNativeLifetimeRetainsSharedConcurrency",
+          "action": "fail",
+          "elapsedSeconds": 3.68
+        }
+      ],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.jsonl",
+          "bytes": 7290,
+          "sha256": "5888161288f654c90209b122e75dcab72b757a81cca4e88d486dc82f15f4dee0"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.log",
+          "bytes": 2460,
+          "sha256": "7b74314991baf628375dee0b307b4de176913bc6be95ed984690f0484ce39ff0"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.receipt.json",
+          "bytes": 1696,
+          "sha256": "9bc63fff381744f6b996ec12630781441edba803d6680dca5cbbdb98472c2c62"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.inputs.json",
+          "bytes": 167620,
+          "sha256": "d59adfd79ad94ac37d230447664c6acf361c424dcdf9727e478b5261c0e0972e"
+        }
+      ]
+    }
+  },
+  "publishedV7Build": [
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.published-v7-build.json",
+      "bytes": 895,
+      "sha256": "c4e54acde7e25db4d8cb2c9f00b6665d3bf47818630bd5285700f30cea1ac642"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\successor-a2-original-eight-20260921-01.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "populatedUpgrade": {
+    "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-78a44192a94f2fd6fdb4b777.json",
+    "bytes": 363,
+    "sha256": "5443a081ac60280a0951c8817ba5e1c396d1dc029e410dd6466dabe31468fe1c"
+  },
+  "independentSuccessorReproduction": true,
+  "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+  "sourceInputCount": 890,
+  "ownership": "Fresh random schemas and selected legitimate finding-intake prefixes on existing owned PG15432/S318333; owned ephemeral verified-TLS native endpoints; no real providers/accounts.",
+  "tests": [
+    {
+      "path": "tests\\ai_assessments\\transport_replay_test.go",
+      "bytes": 25574,
+      "sha256": "06613532946bd69ccd118eb02ce95f98e1ec9e4c15c1dea3962fa0956ed3ab2f"
+    },
+    {
+      "path": "tests\\ai_assessments\\concurrency_lifetime_test.go",
+      "bytes": 17885,
+      "sha256": "5b6b4ffef6f87625b7297c574a88c0aef604f8ecd31f988923abd14eaf3217cc"
+    }
+  ],
+  "sourceStableRed": true,
+  "behavioralRedNotCompilerFailure": true,
+  "predecessorUnsealedLogsNotUsedForAcceptance": true
+}

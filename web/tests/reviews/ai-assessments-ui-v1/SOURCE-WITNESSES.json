@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T19:47:40.107Z",
+  "author": "independent-ai-assessments-ui-author-20260920",
+  "sources": [
+    {
+      "path": "web\\tests\\ai-assessments-data.ts",
+      "bytes": 11845,
+      "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+    },
+    {
+      "path": "web\\tests\\ai-assessments-fixture.ts",
+      "bytes": 27759,
+      "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+    },
+    {
+      "path": "web\\tests\\ai-assessments-ui.spec.ts",
+      "bytes": 35274,
+      "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+      "bytes": 13109,
+      "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+      "bytes": 1123,
+      "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+      "bytes": 552,
+      "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+    }
+  ],
+  "apiAuthority": [
+    {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    {
+      "path": "tests\\ai_assessments\\contract_test.go",
+      "bytes": 4015,
+      "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3897,
+      "sha256": "ed2f5a7af0abf100d26de0f9981ac37f4031f39fa0271b76aa41d6369ad534ab"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\WINDOW-CLARIFICATION.txt",
+      "bytes": 1488,
+      "sha256": "42428340c83917607a6970ca7f9b2e36986ce581442aa729c43a65c9a02fddd2"
+    }
+  ],
+  "publishedPatternWitnesses": [
+    {
+      "path": "web\\tests\\finding-actions.spec.ts",
+      "bytes": 45348,
+      "sha256": "5e271915cc1814d9786e996e181b941b5dbe2664c1d7d5e88c75b746b008c84b"
+    },
+    {
+      "path": "web\\tests\\finding-history.spec.ts",
+      "bytes": 24526,
+      "sha256": "1d6b1cc67ae46a04e48d315ced800f390a5723ea86931eb6d56133bd52085aaa"
+    },
+    {
+      "path": "web\\tests\\ai-settings-ui.spec.ts",
+      "bytes": 45196,
+      "sha256": "c5eccbdb59b911557a2a971f600f8423e0fb2db6e41d0ae5cb8d3d02d2608cba"
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "bytes": 11895,
+      "sha256": "a3e0e31b11c1cb3ed955b9c08af586490722de9b3eeee2a3713aaf7ef9ec78c5"
+    },
+    {
+      "path": "web\\src\\components\\finding-notifications.tsx",
+      "bytes": 8953,
+      "sha256": "a75aa90a6b687e413c0067b27bf365235c6a871419191a64a709a412aa03ed0d"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+      "bytes": 552,
+      "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+    }
+  ],
+  "mutableBackendProductionCaptured": false,
+  "newHTTPFixtureNotAProviderOrWorkerReplacement": true
+}

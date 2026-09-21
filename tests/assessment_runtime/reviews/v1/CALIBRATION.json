@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T23:31:36.077Z",
+  "author": "independent-assessment-runtime-test-author-20260920",
+  "scope": "Owned fixture and accepted-backend/native calibration ONLY, not new assessment runtime acceptance.",
+  "helperCompile": {
+    "run": "author-runtime-helpers-20260920-03",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "HarnessCompile",
+      "exitCode": 0,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "stages": [
+        {
+          "stage": "helper-compile",
+          "arguments": [
+            "test",
+            "-c",
+            "-tags=integration",
+            "-mod=readonly",
+            "-o",
+            "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03.helpers.test.exe",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\command_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\contract_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\environment_probe_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\environment_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\fixture_calibration_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\fixtures_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\native_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\roles_test.go"
+          ],
+          "startedAt": "2026-09-20T23:29:15.3551403+00:00",
+          "finishedAt": "2026-09-20T23:30:05.6439185+00:00",
+          "exitCode": 0,
+          "events": "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03-helper-compile.jsonl",
+          "log": "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03-helper-compile.log"
+        }
+      ],
+      "commandBinary": "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03.assessment-worker.owned.exe",
+      "helperOrProbeIsNotRuntimeAcceptance": true,
+      "realCommandBuildRequired": false,
+      "privateRuntimeValuesCopied": false,
+      "boundary": "Owned random PG schema, scoped local S3 only for legitimate intake, normal TLS/native synthetic model fixture; no provider account or live model",
+      "dependenciesInstalled": false
+    },
+    "cases": [],
+    "actualOutput": "",
+    "evidence": [
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03.receipt.json",
+        "bytes": 2095,
+        "sha256": "5a3176627ff02d73335bb7fb1a6fb21b9677f2a8c237fa0728aad321afda8456"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03-helper-compile.jsonl",
+        "bytes": 2,
+        "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03-helper-compile.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "fixtureNative": {
+    "run": "author-runtime-fixture-20260920-02",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "FixtureCalibration",
+      "exitCode": 0,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "stages": [
+        {
+          "stage": "fixture-calibration",
+          "arguments": [
+            "test",
+            "-json",
+            "-tags=integration,assessment_runtime_fixture",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=120s",
+            "-run=^TestAssessmentRuntimeOwnedServiceIntakeAndNativeFixtureCalibration$",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\command_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\contract_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\environment_probe_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\environment_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\fixture_calibration_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\fixtures_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\native_test.go",
+            "C:\\bahadr\\serious\\aspm\\tests\\assessment_runtime\\roles_test.go"
+          ],
+          "startedAt": "2026-09-20T23:29:15.3542124+00:00",
+          "finishedAt": "2026-09-20T23:30:07.4687667+00:00",
+          "exitCode": 0,
+          "events": "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02-fixture-calibration.jsonl",
+          "log": "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02-fixture-calibration.log"
+        }
+      ],
+      "commandBinary": "C:\\bahadr\\serious\\aspm\\.artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02.assessment-worker.owned.exe",
+      "helperOrProbeIsNotRuntimeAcceptance": true,
+      "realCommandBuildRequired": false,
+      "privateRuntimeValuesCopied": false,
+      "boundary": "Owned random PG schema, scoped local S3 only for legitimate intake, normal TLS/native synthetic model fixture; no provider account or live model",
+      "dependenciesInstalled": false
+    },
+    "cases": [
+      {
+        "name": "TestAssessmentRuntimeOwnedServiceIntakeAndNativeFixtureCalibration",
+        "status": "pass",
+        "durationSeconds": 1.47
+      }
+    ],
+    "actualOutput": "=== RUN   TestAssessmentRuntimeOwnedServiceIntakeAndNativeFixtureCalibration\n    fixture_calibration_test.go:58: Fixture-only PASS: actual existing core SERVICE/TLS/session/API intake and current empty-scope 503; accepted app backend/native adapter/committed-marker readiness/advisory exactness. New assessment SERVICE/Environment/compiled command forwarding was NOT executed or accepted.\n--- PASS: TestAssessmentRuntimeOwnedServiceIntakeAndNativeFixtureCalibration (1.47s)\nPASS\nok  \tcommand-line-arguments\t2.369s\n",
+    "evidence": [
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02.receipt.json",
+        "bytes": 2136,
+        "sha256": "e6cf38a403a1bf58b8b6b0bea67eceb79fad93c2574ea03badf2ecc556830e65"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02-fixture-calibration.jsonl",
+        "bytes": 1925,
+        "sha256": "4f74bc00cdc5331831561978e628078c19521d8be570fdffe75be761025d559d"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02-fixture-calibration.log",
+        "bytes": 517,
+        "sha256": "153c7b2c921132fa30e2fb66eea1590adbce86ab666561c90bf17ad1bb6b5a91"
+      }
+    ]
+  },
+  "counts": {
+    "fixtureCasesPassed": 1,
+    "fixtureCasesFailed": 0,
+    "normalRuntimeNarrativesExecuted": 0
+  },
+  "actualBoundary": {
+    "existingCoreServiceRun": true,
+    "normalTLSForwarderAndRealSessions": true,
+    "realAssetImportAndIngestion": true,
+    "emptyScope503Observed": true,
+    "acceptedAppBackendUsedOnlyForNativeCalibration": true,
+    "exactNativeAdvisoryAndMarkerReadyAfterProtocolChecks": true,
+    "nativePOSTs": 1,
+    "noRawS3AssessmentFetch": true,
+    "noFindingOrConfigMutation": true
+  },
+  "notQualified": [
+    "service.Environment assessment typed fields",
+    "service.Run assessment role",
+    "core SERVICE nonempty scope forwarding",
+    "actual new assessment-worker command",
+    "runtime role cancellation/restart"
+  ],
+  "testedSources": [
+    {
+      "path": "tests\\assessment_runtime\\CONTRACT.txt",
+      "bytes": 12696,
+      "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+    },
+    {
+      "path": "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+      "bytes": 7513,
+      "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+    },
+    {
+      "path": "tests\\assessment_runtime\\command_test.go",
+      "bytes": 3157,
+      "sha256": "7e82c80db6cda881855d11341f0dc99f818b4c808a0ffa8e97e00fcb07831d62"
+    },
+    {
+      "path": "tests\\assessment_runtime\\contract_test.go",
+      "bytes": 4049,
+      "sha256": "ab5317421df4f0ce478f07d7ba741b02c2373a6e2640ed00e575894c2efe158f"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_probe_test.go",
+      "bytes": 976,
+      "sha256": "9f92ac387c5038ea9a6e32f8889bcae56982162aabfbef8f5a0e73d15a8736e6"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_test.go",
+      "bytes": 4814,
+      "sha256": "46515795b1cfa3ecdd6710ab18b511eb4e1ef00598d7d9a1deb097ae8a9f051d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixture_calibration_test.go",
+      "bytes": 3577,
+      "sha256": "06dd138e1c71a072e4df47f3800db0ccb11a5c24362f16deb7c85115794e4522"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixtures_test.go",
+      "bytes": 25706,
+      "sha256": "2b90db2c6ec5bcda35ad26b88b43bedd98230e11ab8398da659ad4913ad28831"
+    },
+    {
+      "path": "tests\\assessment_runtime\\native_test.go",
+      "bytes": 7490,
+      "sha256": "3ac099f461cf957f15d7e3aae6e9b98ebb7eed10ee39dc87a426e2aeb399b233"
+    },
+    {
+      "path": "tests\\assessment_runtime\\production_bindings_test.go",
+      "bytes": 2861,
+      "sha256": "8c0b88b08fbdaa64f6e1f19c9a057a42285d068121cc723ad1cbec359bb5cbb8"
+    },
+    {
+      "path": "tests\\assessment_runtime\\roles_test.go",
+      "bytes": 19156,
+      "sha256": "8b58de99ca865b736af7a30c6d63cf9524a232d5232e4872274b536c5b8194ff"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+ASSESSMENT A2 - NATIVE ATTEMPT AND LOCAL I/O RESERVATION REGRESSIONS
+================================================================
+
+Fresh successor independent backend test author, 2026-09-21; not
+originalauthorbeb1de86 or coder6727a036. No production fix is authorized here.
+Useful interrupted drafts are retained, not attributed to the successor as
+original authorship or treated as already frozen/validated. BEFORE-A2.json stays
+byte-exact. BEFORE-A2-SUCCESSOR.json records received hashes, inherited unsealed
+run artifacts and the four revised drafts preserved in history\a2-interrupted.
+The original eight cases, A1 readiness ordering, helpers, bindings, contracts,
+limits and historical signatures remain byte-identical. Only two NEW regression
+files and new A2 review/calibration evidence are added.
+The completed assessment_runtime packet stays frozen and unchanged.
+
+Held source authority
+----------------------
+FINAL-HANDOFF-A1 SHA256:
+019d2817b826563809f8213aaee73ace61139bcfc53b4d199217b42c637fb039
+All nineteen listed source/doc paths are held. Review claims are hypotheses
+until owned native/PG evidence confirms them. No acceptance from source trace
+alone, outer Do-call counts, a fake RoundTripper response or altered SQL rows.
+
+A2R1 Actual HTTP/2 native request count
+---------------------------------------
+The existing one-attempt limit covers requests emitted by the entire selected
+transport, including internal HTTP/2 retries, not only entry into an outer
+RoundTrip wrapper. A single job/DB attempt/quota charge must not produce a
+second actual POST request stream after REFUSED_STREAM.
+
+An owned certificate/hostname-verified TLS fixture negotiates h2 and sends real
+bounded HTTP/2 frames. It receives a complete native POST and exact JSON context,
+then emits RST_STREAM REFUSED_STREAM while leaving the connection reusable.
+A second request, if emitted, is counted independently by connection/stream ID
+and gets a bounded native response so the test need not wait through retries.
+The test counts actual decoded HEADERS/POST streams and received body bytes.
+
+Before interpreting the regression, calibrate the UNMODIFIED installed Go1.27.1
+standard Transport with ForceAttemptHTTP2 and bytes.NewReader/GetBody. The same
+owned endpoint must actually exhibit two POST streams after one refused stream.
+No TLS verification bypass, alternate protocol client, installed dependency or
+assumed retry counter establishes that calibration.
+
+Parent clarification, recorded BEFORE successor execution/freeze:
+The regression MUST offer and negotiate HTTP/2 on the accepted H2-capable
+client. The interrupted draft's HTTP/1.1 alternative is withdrawn. An H1-only
+fallback, absent ALPN, constructor rejection or zero native POSTs cannot pass
+this gate or be called HTTP/2 safety. Any intentional product H1 restriction
+requires a separate parent capability decision, not a test-author loophole.
+No particular production prevention algorithm is prescribed. Exactly one
+actual H2 POST is the gate, not an outer wrapper invocation. Both decoded
+HEADERS and completed body observations are counted, including partial retries.
+The fixture is limited to three connections/POST streams, 128 received frames
+and 512 KiB of framed input per connection, 128 KiB per native body, a 2-second
+TLS handshake and a 6-second connection deadline. Normal certificate and
+hostname verification remains enabled. No H1 response path exists.
+REFUSED_STREAM semantics do NOT prove remote processing or billing exactly once.
+No real provider, LLM, account or target is contacted.
+
+A2R2 Local native I/O lifetime reserves concurrency
+---------------------------------------------------
+With MaxConcurrent=1 and RequestsPerWindow>=2, a visible cancelled/uncertain
+job cannot release concurrency while its owner's local provider I/O is still
+active. A terminal public state and resource termination are different facts.
+Admission remains reserved until owner I/O termination is acknowledged or a
+conservative bounded execution deadline settles the resource lifetime.
+
+Use actual owned PG/API-produced previews/jobs and two independent workers.
+The normal TLS native server holds its response and HONORS request cancellation.
+Its ready event follows real protocol/body/context and committed marker checks.
+A transparent net.Conn observer delegates all real I/O and records local socket
+open/Close lifetime; it never manufactures an HTTP response or delays Close.
+Count actual POSTs and maximum simultaneously live local provider sockets.
+Do not infer that remote model compute has stopped from a client disconnect.
+
+A read-only pgx query tracer pauses the first worker's next real authority SELECT
+before execution while its response is held. It observes/coordinates scheduling
+only, respects context cancellation, performs no SQL business write and changes
+no pool/timeout/budget or production cancellation behavior.
+The API cancellation can then commit and become publicly terminal while the
+first local provider socket is demonstrably still live.
+Worker two must not start the second native request in that interval, even
+though request-window capacity remains available.
+
+Also exercise actual lease expiry, if the real bounded tracer/HTTP ordering can
+hold the local operation live through expiry: another worker may terminally
+settle the expired owner uncertain, but cannot recycle its concurrency while
+local I/O remains active or before its conservative execution deadline.
+Use database-clock readonly expiry observations, not lease/business-row rewrites.
+
+After releasing the read-only gate, observe the first actual socket Close,
+cooperative server cancellation and worker return. A genuinely new second job
+must subsequently be processable (allowing the conservative execution deadline),
+with exactly one request per job, no old result, resend, finding mutation or
+retired-owner finalization. Public DTO/constructor vocabulary need not change.
+Tests do not prescribe a new reservation column, table or algorithm.
+The new scenarios keep independent one-slot worker pools, the unchanged
+two-slot fixture pool, the original 3-second request deadline and 25ms
+authorization interval. Only the new scenarios select the already permitted
+250ms lease and request-window capacity 8; the original eight controls and
+their budgets are not changed. Readonly 10ms clock polling observes actual
+expiry; no sleep, injected clock advance or SQL write creates expiry.
+
+Fixture implementation and provenance
+--------------------------------------
+No new module/dependency is installed. The installed Go1.27.1 sources are the
+runtime authority. If no already-selected x/net/http2 package is available,
+bounded standard-library TLS/raw frame handling is used only in the owned test
+SERVER, not as a provider client. HPACK protocol tables may be derived from the
+pinned Go distribution with their source hashes/license, without editing it.
+Original native HTTP/1 fixtures/body/auth/schema/context/privacy checks remain.
+
+Evidence and stop
+-----------------
+Keep actual old eight good cases as a separate run beside the new observed RED.
+Calibration proves only the fixture/installed-transport fact, not product
+acceptance. A failed new assertion is recorded without claiming unexecuted tails.
+The calibration template is intentionally a thin forwarding helper. Its real
+implementation and both test files are compiled by pinned Go before interpreting
+behavior. Successor runs have new labels and source-input hashes; predecessor
+unsealed logs are provenance only. Guards exclude mutable web\** and root
+README.md, while the held 19 backend paths, 221 A1 controls, old compatibility
+controls, dependencies and separate runtime packet remain byte-exact.
+If an actual repro does not support the review claim, report that limit rather
+than forging failure. No production/client/schema/provider fixes occur before
+parent verifies and freezes this A2 evidence. Original oracles are not resigned.

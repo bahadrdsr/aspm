@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 1,
+  "originCommit": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "purpose": "Exact published production app dependency closure for legitimate pre-V8 API/intake seeding only. No historical test/review trees copied.",
+  "files": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038",
+      "gitBlob": "f4442b8d1393fda109b4f4a8ac7ef4063db13f3b"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6",
+      "gitBlob": "b52ada3a233fc2af61802234266d3202343ef78f"
+    },
+    {
+      "path": "internal\\app\\ai_grants.go",
+      "bytes": 5541,
+      "sha256": "3cb4a9fd01e0abd26df9c39a37ade5347dfb00b8b244ae1ac4bd6f3c8b74827a",
+      "gitBlob": "fa9f066de71e7950a9a31cce17735c0822bfa812"
+    },
+    {
+      "path": "internal\\app\\ai_policy.go",
+      "bytes": 1764,
+      "sha256": "2901ebf698bd1310a9dee70e3a6a24705d3075aa841e2011367029c0b696e191",
+      "gitBlob": "faa1667c06317ea773628a8da64161a2cba21f0e"
+    },
+    {
+      "path": "internal\\app\\ai_profiles.go",
+      "bytes": 6932,
+      "sha256": "aab634e887719da18687459a9fab8cd64efe7a98ccb255464de8d17a77a9de96",
+      "gitBlob": "477dc5e240b7a2f61e5fbd33ed8cad3ccc6fad14"
+    },
+    {
+      "path": "internal\\app\\ai_resolver.go",
+      "bytes": 6025,
+      "sha256": "8a4f40efb33604f1084cdfc47c96865199965cd4804934fe3204f9f69906abce",
+      "gitBlob": "ac20342694ff3e978a8e1057fedbd4b734d4aab2"
+    },
+    {
+      "path": "internal\\app\\ai_routes.go",
+      "bytes": 2866,
+      "sha256": "95ef2824cf9eb8c0da9ea41ce10482eb3074ba2403ccf86ea448646fe10078c7",
+      "gitBlob": "4934cf90fe709f210afbcc09399814ed7361e0ef"
+    },
+    {
+      "path": "internal\\app\\ai_schema.go",
+      "bytes": 2180,
+      "sha256": "50f99db94b2eb29160e13f1937ad38d78fc5051d378a96499763e90f7255688c",
+      "gitBlob": "85c767af11e2e5418def6c1c05a3b24d474c7553"
+    },
+    {
+      "path": "internal\\app\\ai_types.go",
+      "bytes": 3527,
+      "sha256": "f968865505e6258779d5e0e62a41bd3bbfea091d557452fb23d0229f5f995bc1",
+      "gitBlob": "c10db26d6813353b3552bc2997900524c2bc3cf5"
+    },
+    {
+      "path": "internal\\app\\ai_validation.go",
+      "bytes": 3239,
+      "sha256": "efcaa7beaa4afe88d61616ca7653a279539f04b7e28563a4263aa800ea369ad1",
+      "gitBlob": "7c5f1510c144b1b5a16eaedccebdce2d48ab14d4"
+    },
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 5897,
+      "sha256": "71c10d298fdb561c2c17ba97f5bf391f23f2efc2e157efd1f33e70e705443147",
+      "gitBlob": "e27bae70ac6a7d69821849229ad148b806461c71"
+    },
+    {
+      "path": "internal\\app\\assets.go",
+      "bytes": 6199,
+      "sha256": "2b85887c4b2851e1631d3666119e0da05ff026b52ca611c0282ccebd8e50c0ac",
+      "gitBlob": "5eb98ca4ef544f7bc7c05f60743e5c3020f8ac11"
+    },
+    {
+      "path": "internal\\app\\auth.go",
+      "bytes": 14449,
+      "sha256": "7d425f995d8eb2145eddd07b6f69fcd52a2bc4846c608a2ffe91b296f0be8cdb",
+      "gitBlob": "e23f007f315b2d6590e17f0557883f87862a7827"
+    },
+    {
+      "path": "internal\\app\\catalog.go",
+      "bytes": 1339,
+      "sha256": "7990bdee861c31f3c1924e1b0c33f73f5ec44ccf110e3f69860775bfc28c9a4e",
+      "gitBlob": "2401f8489ef5fc11bba83817d7a6064ae35e922f"
+    },
+    {
+      "path": "internal\\app\\database.go",
+      "bytes": 2717,
+      "sha256": "9c90aa184044ccdeddc17f88e9ec17e5eda914a38558c39d4be3e995e9c9375b",
+      "gitBlob": "6e43ac9c436bb62edcdc619da6ff5b14ea810687"
+    },
+    {
+      "path": "internal\\app\\doc.go",
+      "bytes": 7402,
+      "sha256": "b87d2b36a9d993fb6bf7c25e6a457d8ba473662be326bad22c195ec8f287f7b8",
+      "gitBlob": "f6ff98b48f5e9ddb2beb81614ca52ab3561374e2"
+    },
+    {
+      "path": "internal\\app\\findings.go",
+      "bytes": 5771,
+      "sha256": "aadd5e679a5637d652264ea3f45401bcf8a6a53376204cb3e6936f2ad22e094e",
+      "gitBlob": "76b52fa04b18b340b4880b651132c1c6f8b9fbf2"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 13578,
+      "sha256": "bf6f3abffd23223a8f2adef5c685996aed171a64e0c839ec0e0e41a131a3df07",
+      "gitBlob": "65de9059a8c37be814b54b2982da33d95c5d1219"
+    },
+    {
+      "path": "internal\\app\\import_authorization.go",
+      "bytes": 3537,
+      "sha256": "b5a04abfdc43b533827989c126a61a4d7ebd55e0cb3ae684a800d8d1b3b63773",
+      "gitBlob": "2c6908edb699c037701f314342877a80d134fd61"
+    },
+    {
+      "path": "internal\\app\\import_security_schema.go",
+      "bytes": 336,
+      "sha256": "e6e98356057ea34bdf86f702b78a39dbbf33a506b11e4c04c56ddfa3aea09d54",
+      "gitBlob": "7811141ea19e0b1a64afe6e099d56eea01ce36ac"
+    },
+    {
+      "path": "internal\\app\\imports.go",
+      "bytes": 9607,
+      "sha256": "78db1963a2e64a81afc2f3d31cac70f8bd1bd025d2c6e23748e878445b985f53",
+      "gitBlob": "8078cbc654db828658c186af882dc514017c4670"
+    },
+    {
+      "path": "internal\\app\\membership.go",
+      "bytes": 3758,
+      "sha256": "999b1ee075f598ccd8b516e4e5cb259bd39302e07510cafec8e550ee7edfdc55",
+      "gitBlob": "098012509a90a8657fe55340cf0ff924be3dbf52"
+    },
+    {
+      "path": "internal\\app\\oidc.go",
+      "bytes": 7378,
+      "sha256": "98d18f89fa07d794a93c2879743b98a693348e67d6fa06fc431ba731061b72db",
+      "gitBlob": "59fa87d1dde42565bb685acff5ca23d864c151d5"
+    },
+    {
+      "path": "internal\\app\\oidc_identity.go",
+      "bytes": 3252,
+      "sha256": "095a1417f6323c960778cd65a58095ab02da9082ee4724bd7834161f5f15ef86",
+      "gitBlob": "950b9b87342a5301124a8bb17b7af7398da77d4a"
+    },
+    {
+      "path": "internal\\app\\oidc_provider.go",
+      "bytes": 7897,
+      "sha256": "cdd10d13e6ad940c1f84ac488fa4dc265ccb276b7ff4b211bae7058add001041",
+      "gitBlob": "6c1b498db51b2ae3d208c681177bdff33a1c4eb4"
+    },
+    {
+      "path": "internal\\app\\oidc_schema.go",
+      "bytes": 1294,
+      "sha256": "df3fa9da88d362f93ce5f7e6f18a8a9f0e3a9ae096de83568aa39b86eb446428",
+      "gitBlob": "796448a2e73e69ee48e0e37a9525d21d174a120a"
+    },
+    {
+      "path": "internal\\app\\reconcile.go",
+      "bytes": 7573,
+      "sha256": "e065af806acb5c19baff30f4ef76bb6f429054c6c95009cc60d18bbb6aa6580b",
+      "gitBlob": "04cf475852601dec8bce4bf1b08567a4dabf9eee"
+    },
+    {
+      "path": "internal\\app\\remediation_connections.go",
+      "bytes": 7663,
+      "sha256": "676955d88687f807981ac2d0ea443ac27ad1acfc5a8bd7ccfa91843ae6c54b6e",
+      "gitBlob": "f1ec04a933a243a3a5bb5b4c049fd1de416df3ff"
+    },
+    {
+      "path": "internal\\app\\remediation_credentials.go",
+      "bytes": 2475,
+      "sha256": "56099196f02a0623e9ba25a9474ed8ecbf05b13c3f3bcdcf9baed7806dca7ada",
+      "gitBlob": "2e80de64a6c5bc1b7382456d19f6fc1b76c5924a"
+    },
+    {
+      "path": "internal\\app\\remediation_deliveries.go",
+      "bytes": 8997,
+      "sha256": "d04bd31f36b1578ec169149a3c06a35eebc9f8e9976f5e6e5118de8959e4a37f",
+      "gitBlob": "ff21d53a213f55fa3d642312ff8713b6cbcd1f02"
+    },
+    {
+      "path": "internal\\app\\remediation_schema.go",
+      "bytes": 2204,
+      "sha256": "96440287edc6c7f77432703abdb6052fdc010603bb999bb52c1200fc27b8f58e",
+      "gitBlob": "7a4d6b31350d0efaaf9ff49e3ee3f055b7af5beb"
+    },
+    {
+      "path": "internal\\app\\remediation_worker.go",
+      "bytes": 12654,
+      "sha256": "21f799978a4f9271bc2372a93c788f5b9a5ef5ed11a60a783309398f5fc7cc23",
+      "gitBlob": "a6868ae4b5b24c888a43cc54f380b76d2fd2b15f"
+    },
+    {
+      "path": "internal\\app\\report_snapshots.go",
+      "bytes": 4581,
+      "sha256": "46152f36be715fc338a60f95216ae026ce25715ec2b93c3015f7af6f6f2be7ac",
+      "gitBlob": "14338a41ef686476ca98e716cc84a3d4fa8bcf45"
+    },
+    {
+      "path": "internal\\app\\report_worker.go",
+      "bytes": 5252,
+      "sha256": "8ba228276f2200c8ed8c1c3585dc7f436332f7601f633c0698450f67d71a5cf5",
+      "gitBlob": "ea468a23cbfabcf29a50e43b48ea62c08f12f756"
+    },
+    {
+      "path": "internal\\app\\reports.go",
+      "bytes": 6430,
+      "sha256": "1610e5a05ca238bdd15035d913fb98c415ad08ac0c4a4372df73acf42d97fed4",
+      "gitBlob": "6e61bf0ae2a38403afc2c4cafd158923ba93daf4"
+    },
+    {
+      "path": "internal\\app\\reports_schema.go",
+      "bytes": 1678,
+      "sha256": "5f665312ddd3306630fc047d828fd8d1fc655050809439d0338dabb7a822a4ef",
+      "gitBlob": "b640d9eaef82635a5a899a946b3475e36cf922e7"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 9852,
+      "sha256": "95f0f20b3dd6ae2dc279aa98993da53de9225f65005fa31bceead85d44b3d823",
+      "gitBlob": "29aaa92fe5196578f90b565b92b60c617ec154a1"
+    },
+    {
+      "path": "internal\\app\\source_collections.go",
+      "bytes": 7372,
+      "sha256": "8a460f5ea51bd15038fb988750af37915001befe9591ccfeed8d442fb41351ee",
+      "gitBlob": "53fa63d3d053b836aa23f247c37dd12150325222"
+    },
+    {
+      "path": "internal\\app\\source_connections.go",
+      "bytes": 7100,
+      "sha256": "d053f7e211387bbe52b70dc9b27d6883809581171f095b458a189906c2c6d7df",
+      "gitBlob": "fb3c9ef4210672f4dade9bc1fea52c476aac9183"
+    },
+    {
+      "path": "internal\\app\\source_finalize.go",
+      "bytes": 8794,
+      "sha256": "44f9130885654b0358dabb64a5c44dd4073cb13158a48c21af1829bde495a84d",
+      "gitBlob": "28c38dcb53b7bc36dadf78d14839d0743c833e0d"
+    },
+    {
+      "path": "internal\\app\\source_process.go",
+      "bytes": 3617,
+      "sha256": "975bc8d9e3a19e2ac84507d202eb8488e350a015ad46977a0511fdd6dbcb568a",
+      "gitBlob": "18d234b965c995c63413775375496bc60c88678a"
+    },
+    {
+      "path": "internal\\app\\source_schema.go",
+      "bytes": 3293,
+      "sha256": "92ad50350f92101a3df59e5808d23154f045dcb980af89b3fce0b7ae0acb26d7",
+      "gitBlob": "bcf3038c1253da573801793d17812ef2583e5eae"
+    },
+    {
+      "path": "internal\\app\\source_storage.go",
+      "bytes": 2551,
+      "sha256": "31c84e0cf73df6d618e638778ac9306fb410ba92bc39a042e84b17fdfd58779b",
+      "gitBlob": "5c1627e975dfb72682d759512cac56863658faad"
+    },
+    {
+      "path": "internal\\app\\source_types.go",
+      "bytes": 5411,
+      "sha256": "2e558f635050fe35492bbb907653e0429ff3cbef2ca54303dd49c25c31fad5ef",
+      "gitBlob": "9fc7dd93af59a3e41397a1117165ba07b2ccd6ff"
+    },
+    {
+      "path": "internal\\app\\source_worker.go",
+      "bytes": 14845,
+      "sha256": "98458bc6ccb884113740675c380ef67dce5d932a80d38bfe5bf8e805565b286c",
+      "gitBlob": "eafcb513bf96b8d13d6a6877c902123e6ae95e1d"
+    },
+    {
+      "path": "internal\\app\\storage.go",
+      "bytes": 7676,
+      "sha256": "737d15a28c546d9151efe5b096b6e775f3bc5f5bc548dc6ee2560ff2ca096253",
+      "gitBlob": "02a310a79c9606fe482b41b0f486a8c2e8471291"
+    },
+    {
+      "path": "internal\\app\\types.go",
+      "bytes": 4768,
+      "sha256": "d37675a41a0591a8dfd762a20b68364e92c362cfb3ef32296a8a6c9deb42321f",
+      "gitBlob": "a391fe80315ec9c5cbf24a4a6aaea014782ee469"
+    },
+    {
+      "path": "internal\\app\\work.go",
+      "bytes": 4785,
+      "sha256": "c9c6fc730ee3f20f518dafdfd00140743561125ceb68167758dcaf2b7db3cf45",
+      "gitBlob": "cb5aa78547608aa011c11d6529fc9eee9e004af5"
+    },
+    {
+      "path": "internal\\app\\worker.go",
+      "bytes": 5226,
+      "sha256": "a86933b34dc015df3d87a835f422211874b6833bffc21e564313e6bcb7ed3e72",
+      "gitBlob": "180c342bcfde0b5abb80689370c31e8e457fbc37"
+    },
+    {
+      "path": "internal\\app\\worker_constructors.go",
+      "bytes": 2505,
+      "sha256": "dd062bcef87ed8e5c273dc551f92600930b2f45f60227b576bf24035f9d9db23",
+      "gitBlob": "1cf764f6cc00220cc9521d03d897bb46a0ed9a77"
+    },
+    {
+      "path": "internal\\connectors\\ado.go",
+      "bytes": 6196,
+      "sha256": "af8727b0213c193e84d192044c7bb233d5a4e96b97e47b89cdbca2e479757936",
+      "gitBlob": "36692c5121dc21880b0f8dcbcd226f3cd3644448"
+    },
+    {
+      "path": "internal\\connectors\\aws.go",
+      "bytes": 11239,
+      "sha256": "19e00c678aaae21586bf075ba9b9228701e6a64f9db6bf5f00a4c9f72f79d5e0",
+      "gitBlob": "f5ac17f6a8712114bce1af22eeee2a9bd3b3e75a"
+    },
+    {
+      "path": "internal\\connectors\\azure.go",
+      "bytes": 7424,
+      "sha256": "e5dfd995cf5532a367fe8ef4eb6c814a9792932d06378b884a499e40dd5b63e5",
+      "gitBlob": "77985fa9e0c9cdcd290dde4271553289e833fe3b"
+    },
+    {
+      "path": "internal\\connectors\\collect.go",
+      "bytes": 4242,
+      "sha256": "93bfbfed6b3cf7cdca6a2fa57db96c1d997676521ac83944de07d43943611ab2",
+      "gitBlob": "a6f49ff34aca4644f66858975c209d61bd067ec4"
+    },
+    {
+      "path": "internal\\connectors\\delivery.go",
+      "bytes": 5769,
+      "sha256": "24076ee8df14b0789bb438f48907129e170073d5b5b0d8bdc518c9a590c74bfd",
+      "gitBlob": "126e98e1ea3919206e0260f80d23088157cb81d4"
+    },
+    {
+      "path": "internal\\connectors\\github.go",
+      "bytes": 6946,
+      "sha256": "95123a1e0b076e68889a127cdcbc249b2655d51a7e5d6a5d66d3bed63b1ce042",
+      "gitBlob": "69673656460367dbaa300be10d6067fce856d513"
+    },
+    {
+      "path": "internal\\connectors\\gitlab.go",
+      "bytes": 4276,
+      "sha256": "6785652d707874ec1ef6ac70048627894eae9a30a0328276b925e22f75fae88c",
+      "gitBlob": "bcfcdacfd93976d96aabfd1fc04338b77cdf7838"
+    },
+    {
+      "path": "internal\\connectors\\http.go",
+      "bytes": 10292,
+      "sha256": "6db2eeaf5c5e1dc4efa4f0b9ef0a95b35baf20611ba44505194c8a0ca4d201b5",
+      "gitBlob": "f51f10feb129caabd4f3e18e4d7776d7ce80004c"
+    },
+    {
+      "path": "internal\\connectors\\jira.go",
+      "bytes": 7162,
+      "sha256": "2412c59505662f0eb55398d618706642a08d7c5954882269e756c46a1b59c157",
+      "gitBlob": "a25d0c1a11da1f1ecc57b6b7fab539919c82d9ff"
+    },
+    {
+      "path": "internal\\connectors\\notifications.go",
+      "bytes": 5684,
+      "sha256": "42157e1f07a28c8a6089c6ecee5e24dcf295a4caaa6a07de1b59e45ab37c85d1",
+      "gitBlob": "1e4e58668112989640cdfcae66207bbf67317227"
+    },
+    {
+      "path": "internal\\connectors\\types.go",
+      "bytes": 4176,
+      "sha256": "0aa06eab951f22794eb767ee3ffe428560ebea5dbc0ee387827b796ffd4836d8",
+      "gitBlob": "2bf42ee3054c1388718b98c45c1a4ee0cc812d78"
+    },
+    {
+      "path": "internal\\evidence\\doc.go",
+      "bytes": 1360,
+      "sha256": "bdb61df3ad6ce1197af6b0028004ad2619300aa32ce848a77a6fc1604b2c980e",
+      "gitBlob": "8987ee02b7b3ce9610070ea6b665ab1178786a3a"
+    },
+    {
+      "path": "internal\\evidence\\reader.go",
+      "bytes": 1299,
+      "sha256": "3e721948e110a26b2d3ad8a78c01827ca824cd336839672a1a9eaf0d5e2f5d62",
+      "gitBlob": "12d874ad2475303abfff54ea42a631f989b2352e"
+    },
+    {
+      "path": "internal\\evidence\\readiness.go",
+      "bytes": 3072,
+      "sha256": "abad00cba6e16394862dfb6b17bacf2c1ea61e7bd5eb803c8bc3664bf9ac08d8",
+      "gitBlob": "d17fc3bd8dfcb9837670b68690095aec8064026b"
+    },
+    {
+      "path": "internal\\evidence\\store.go",
+      "bytes": 8455,
+      "sha256": "821a8d8d7b445afe4af7388d16b9b5492a0ba5f0d3e18334e22e85e5a5a9b60d",
+      "gitBlob": "46e4c54833454a6f7f07d2167a77373ebae0392a"
+    },
+    {
+      "path": "internal\\parsers\\native_reports.go",
+      "bytes": 3856,
+      "sha256": "222259b392fa652d49af8f69ceb06ca043a3a84756ecacffee5b96c990953671",
+      "gitBlob": "80dae65b1d3c8a26a39e2d81e1e762819c794604"
+    },
+    {
+      "path": "internal\\parsers\\parsers.go",
+      "bytes": 6044,
+      "sha256": "7db82b6166ee38332c4e3e014431cfd50ce99fee164b6b404fecc1bcc40a8ca7",
+      "gitBlob": "3581b7ce35539aed3027edea2a6cbc27e2533d1f"
+    },
+    {
+      "path": "internal\\parsers\\portable.go",
+      "bytes": 3484,
+      "sha256": "feef0ffcd8c0755b1f7b745aabb969b38cdb1abf7376777c4393ef531bf7f7df",
+      "gitBlob": "71a2824caf4c1ef82826fd287aaccf9f2a7ad081"
+    },
+    {
+      "path": "internal\\parsers\\sarif.go",
+      "bytes": 2870,
+      "sha256": "aadbeb84f25c41e41c5bb7e09b75e06b9d94bbd37f30e852a918b914595eaafe",
+      "gitBlob": "e03edf91539a81d079521e6a3ca195ceb5c590bb"
+    },
+    {
+      "path": "internal\\providers\\assessor.go",
+      "bytes": 14733,
+      "sha256": "cbb81de861b4df105d80ade8d0b5a86b074201f6c4d7888a32eca0c23fba6ac8",
+      "gitBlob": "c88df0e52fd83f16638b1ad8cbbc02d56362b9fc"
+    },
+    {
+      "path": "internal\\providers\\types.go",
+      "bytes": 2186,
+      "sha256": "da26338e465a8c393863c943ac0464a0fea0b28db40f22afd5364ffe0dc1568d",
+      "gitBlob": "e4fb5a8778cf2cb259f62e0bacd44b73abefca01"
+    }
+  ]
+}

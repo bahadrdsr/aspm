@@ -1,0 +1,447 @@
+{
+  "schemaVersion": 1,
+  "scope": "ai-assessments-a1-native-observation-readiness",
+  "phase": "frozen-original-author-coordination-amendment",
+  "frozenAt": "2026-09-20T20:34:49.348Z",
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "author": {
+    "id": "independent-ai-assessments-test-author-20260920",
+    "role": "Original independent backend test author, reviewing AA5 fixture observation ordering only",
+    "implementationCoder": false,
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "status": "Locally verified coordination-only correction; HOLD for parent new current seal and independent review.",
+  "sealAuthority": "Unsigned original test-author A1 packet only. Original manifests/signatures remain historical; this author captures/signs no oracle.",
+  "payloadFileCount": 12,
+  "addedPayloadCount": 11,
+  "files": [
+    {
+      "path": "tests\\ai_assessments\\native_test.go",
+      "bytes": 13115,
+      "sha256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\AMENDMENT-A1.txt",
+      "bytes": 5808,
+      "sha256": "e6cccd2531220c83bd1d9e935d5097a7560c78beb62e0b301643d38472df77d7"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE-A1.json",
+      "bytes": 47740,
+      "sha256": "73caac5e77567c787c56edb8783aab404ea6d3642ceca8951b04aa1bc56dfd90"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION-A1.json",
+      "bytes": 19791,
+      "sha256": "52df7aa63724be0e06d4ce57032f43d48427fe4da7bd81fdf602f5b132e3ddfd"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 12494,
+      "sha256": "a2df1fc40d1cea03f2da5f0cda6bc089e6258855c26ab235102c324632f9396a"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 6643,
+      "sha256": "8e97534c20f64dda7b41fed2c833e9be0ac2099bf729256fc389bf2ef7be71d7"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RED-A1.json",
+      "bytes": 8024,
+      "sha256": "58a1c947d5166cf1ecea09a139560f700d5e4249c4f2c0936000e443435e59dd"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RESULTS-A1.json",
+      "bytes": 15849,
+      "sha256": "29fd555336bec0765b933aaf6e658f33835f4db8bc30197d6ba7987090aa56ea"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\Test-AA5-A1.ps1",
+      "bytes": 8028,
+      "sha256": "5ef1dca2af0631721b9609ef125abcf318823b9f179b51756e58fb672074a3c3"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+      "bytes": 9383,
+      "sha256": "3c2cc92e17f08aa9b521816109627c94f6d928a069f53a91f662306a1f6e54ee"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a1\\REFERENCES.json",
+      "bytes": 1386,
+      "sha256": "b9c19b2a7b1a4dadf0d9f75646dc79054ff248e8095883e7d1e40df3eb3cc02d"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a1\\native_test.go.v1",
+      "bytes": 13115,
+      "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+    }
+  ],
+  "ownedFiles": [
+    "tests\\ai_assessments\\native_test.go",
+    "tests\\ai_assessments\\reviews\\v1\\AMENDMENT-A1.txt",
+    "tests\\ai_assessments\\reviews\\v1\\BEFORE-A1.json",
+    "tests\\ai_assessments\\reviews\\v1\\CALIBRATION-A1.json",
+    "tests\\ai_assessments\\reviews\\v1\\GUARDS-A1.json",
+    "tests\\ai_assessments\\reviews\\v1\\HANDOFF-A1.txt",
+    "tests\\ai_assessments\\reviews\\v1\\PACKET-A1.json",
+    "tests\\ai_assessments\\reviews\\v1\\PACKET-A1.sha256",
+    "tests\\ai_assessments\\reviews\\v1\\RED-A1.json",
+    "tests\\ai_assessments\\reviews\\v1\\RESULTS-A1.json",
+    "tests\\ai_assessments\\reviews\\v1\\Test-AA5-A1.ps1",
+    "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+    "tests\\ai_assessments\\reviews\\v1\\history\\a1\\REFERENCES.json",
+    "tests\\ai_assessments\\reviews\\v1\\history\\a1\\native_test.go.v1"
+  ],
+  "exactMinimalDelta": {
+    "path": "tests\\ai_assessments\\native_test.go",
+    "operation": "Relocate one existing close(s.entered) readiness statement to after all unchanged native protocol/privacy checks and actual committed-marker SQL/check, before held-response wait.",
+    "original": {
+      "path": "tests\\ai_assessments\\native_test.go",
+      "bytes": 13115,
+      "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+    },
+    "archive": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\history\\a1\\native_test.go.v1",
+      "bytes": 13115,
+      "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+    },
+    "amended": {
+      "path": "tests\\ai_assessments\\native_test.go",
+      "bytes": 13115,
+      "sha256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec"
+    },
+    "exactRelocationReconstruction": true,
+    "allOtherNativeFixtureBytesUnchanged": true,
+    "eightCaseBodiesBindingsOtherChecksUnchanged": true,
+    "rawArrivalCountersUnchanged": true,
+    "poolDeadlineRequestTestBudgetsUnchanged": true,
+    "productionCancellationDelayAdded": false
+  },
+  "independentEvidence": {
+    "normalActualRED": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RED-A1.json",
+      "bytes": 8024,
+      "sha256": "58a1c947d5166cf1ecea09a139560f700d5e4249c4f2c0936000e443435e59dd"
+    },
+    "pairedCalibration": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION-A1.json",
+      "bytes": 19791,
+      "sha256": "52df7aa63724be0e06d4ce57032f43d48427fe4da7bd81fdf602f5b132e3ddfd"
+    },
+    "actualAcceptance": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RESULTS-A1.json",
+      "bytes": 15849,
+      "sha256": "29fd555336bec0765b933aaf6e658f33835f4db8bc30197d6ba7987090aa56ea"
+    },
+    "fromCoderTraceAlone": false,
+    "observed": "Committed dispatching/attempt1/non-null marker and single-slot worker Ping passed while the old fixture marker acquisition waited. Old readiness was premature; cancellation cancelled its observation. Corrected readiness follows real observation completion."
+  },
+  "qualification": {
+    "normalAA5Before": {
+      "passed": 0,
+      "failed": 1
+    },
+    "oldOrderCalibrationExpectedFailure": 1,
+    "correctedOrderingCalibrationPassed": 1,
+    "genuineAbsentAndQueuedMarkerExpectedFailures": 2,
+    "normalAA5After": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullEightAfter": {
+      "selected": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "blockedNormalTails": 0,
+    "newlyExposedProductionFailures": 0,
+    "calibrationIsSeparateFromAcceptance": true
+  },
+  "heldSource": {
+    "coderHandoff": {
+      "path": ".cache\\ai-assessments-coder\\HANDOFF.json",
+      "bytes": 36411,
+      "sha256": "eb02ef085b1ae3decf5c44e4ad0b06f83bf9433543eb98037744c2e776feb86a"
+    },
+    "productionPathCount": 17,
+    "productionPaths": [
+      {
+        "path": "internal\\app\\ai_resolver.go",
+        "bytes": 7087,
+        "sha256": "698242e9e9132fc664149a95744de70cc24541bd6a5f54ef4890edf15e24b7f8"
+      },
+      {
+        "path": "internal\\app\\ai_routes.go",
+        "bytes": 3352,
+        "sha256": "32a41698edcce2ec2e1cfea598509908323ae59374cd053b02186c017a075d80"
+      },
+      {
+        "path": "internal\\app\\app.go",
+        "bytes": 6237,
+        "sha256": "acfcaf45f8f6a5b7dd578309f8ff14bb9285c2167020aaa555762ba0ba47565c"
+      },
+      {
+        "path": "internal\\app\\assessment_admission.go",
+        "bytes": 2271,
+        "sha256": "e3a404ad054b20bcac5d750b2d67d47db678651216a4e57ea5920b440534c44f"
+      },
+      {
+        "path": "internal\\app\\assessment_claim.go",
+        "bytes": 10840,
+        "sha256": "67d0d0796157c596e8ca5b92c317beff1343bacccfdef2e0fb7b4907869ef551"
+      },
+      {
+        "path": "internal\\app\\assessment_client.go",
+        "bytes": 3217,
+        "sha256": "25baae23592741130df6620c3bede42423dc27e404b4bbdc8d50342d91538061"
+      },
+      {
+        "path": "internal\\app\\assessment_finalize.go",
+        "bytes": 8477,
+        "sha256": "bf78e92352e2ff7d43388f1407bd3e1fb9b17b8cd4c87e916d57b8695cfb4263"
+      },
+      {
+        "path": "internal\\app\\assessment_jobs.go",
+        "bytes": 7242,
+        "sha256": "4c72d2e47040410e0c8d09083ce3f58464d8d0709e65cf1eb6feef5eead03d51"
+      },
+      {
+        "path": "internal\\app\\assessment_previews.go",
+        "bytes": 5256,
+        "sha256": "b369fbf8d97e4a82e7f0bcefc0937ec75c39b6e004114a0372c0d5eb1fffa7ad"
+      },
+      {
+        "path": "internal\\app\\assessment_schema.go",
+        "bytes": 5834,
+        "sha256": "ea817d937cda55f8961632d44b56cb012f1b394ac0773532137e295b232a8ebe"
+      },
+      {
+        "path": "internal\\app\\assessment_types.go",
+        "bytes": 5452,
+        "sha256": "2f9c6d87fce902af1f0e346ecd66f9695217baa3f29ff09cadf5d43f11f718cc"
+      },
+      {
+        "path": "internal\\app\\assessment_validation.go",
+        "bytes": 4575,
+        "sha256": "c249a19e7ba3fd0593e1873a7d77d72653b18692a4b6c6da31c212fa1c7500c3"
+      },
+      {
+        "path": "internal\\app\\assessment_worker.go",
+        "bytes": 7545,
+        "sha256": "82330d25f74da7187c541ee647745f5447a48aba63acca67a470b0662cca220b"
+      },
+      {
+        "path": "internal\\app\\http.go",
+        "bytes": 14244,
+        "sha256": "8536cfd5c88d532970639d5e42aa6c7c691e85707ada186091cfeac5dfc09468"
+      },
+      {
+        "path": "internal\\app\\schema.go",
+        "bytes": 10284,
+        "sha256": "e32b488f0bcb689dc138a39355f504e8c603b4805ef4f8c19d1c49859b0a61da"
+      },
+      {
+        "path": "internal\\providers\\assessor.go",
+        "bytes": 15388,
+        "sha256": "4dd2dd1c2408c5eb00f993637c2645965d41c9b0b37d3a89530247ee498bddde"
+      },
+      {
+        "path": "internal\\providers\\types.go",
+        "bytes": 2960,
+        "sha256": "51dccdd23bb98e2f5c90edffe926a3bd23eb01cd42b7688c3f9a529eb9f51e8f"
+      }
+    ],
+    "allStillByteIdentical": true
+  },
+  "preservation": {
+    "oldControls": 206,
+    "authorizedOldControlDelta": 1,
+    "otherOldControlsUnchanged": 205,
+    "originalPacket": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\PACKET.json",
+      "bytes": 14478,
+      "sha256": "1587210a575f3405ec6a19d998fe339737a3d1a9eefa13967e2b5704f70e3c6c"
+    },
+    "originalChecksum": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "5c1c3410c8dde6e92316daa6c67eae5b630f87e372bb30a7e26a21a1f9bd87e9"
+    },
+    "originalRED": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RED.json",
+      "bytes": 26390,
+      "sha256": "95304278066d1574efb412a72178764ba5bef1183e6733243bb7c9a74074bc1e"
+    },
+    "manifest": {
+      "path": ".oracles\\ai-assessments-v1.json",
+      "bytes": 39579,
+      "sha256": "96274b0dcc9ef6b89b12b11715a5ff55d4de712a4dfb8d49096a906e0e3933b0"
+    },
+    "signature": {
+      "path": ".oracles\\ai-assessments-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c7a394f113a44836282084f6bdd945807c006ac9161d0de2fd997b7c66b979db"
+    },
+    "originalSealCoversAmendedFixture": false,
+    "completedUIStagePacket": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\PACKET.json",
+      "bytes": 15023,
+      "sha256": "c40209a79be09268e2b4ba09f8e4f941aedb17b4aaec4ab0c8e84915ff25fca6"
+    },
+    "completedUIStageUnchanged": true,
+    "guards": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 12494,
+      "sha256": "a2df1fc40d1cea03f2da5f0cda6bc089e6258855c26ab235102c324632f9396a"
+    }
+  },
+  "archivePolicy": "Only actual old native fixture plus hash references; no recursive history copy. Calibration cache copies of actual helpers were byte-identical and removed.",
+  "rawEvidenceFiles": [
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-original-red-20260920-01.jsonl",
+      "bytes": 2398,
+      "sha256": "803ea1f3f83259c19c2cddefaba330bf19af214d10237f096de925880474ba11"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-original-red-20260920-01.log",
+      "bytes": 482,
+      "sha256": "d760b90965c3ddf6a10187ca4814735e02f5d30482f2db189c91e647d52a7da5"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-original-red-20260920-01.receipt.json",
+      "bytes": 919,
+      "sha256": "e09c3badbea42d0b27cb5298b754d586047a97a1d23d98756e5707c29cb4ebe2"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.jsonl",
+      "bytes": 3498,
+      "sha256": "d9cc846b2d21670e83cd0a484688afa215ca4501f0e4a86636c11c7acb1427ae"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.log",
+      "bytes": 879,
+      "sha256": "f3f62c7a11798d6aa3b890c3a4756812a8cb4502385202897a473d3714cb27cb"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.receipt.json",
+      "bytes": 2362,
+      "sha256": "2dd0ee2b7a68be33b4843ad1da70ef35d7a6305998d29b700c9ba8ceb11ebf9f"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.jsonl",
+      "bytes": 2742,
+      "sha256": "8105471fb1cc29b17ae6090c2e3142c302006e88402697ac9cb5fd5d57b2ea94"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.log",
+      "bytes": 643,
+      "sha256": "55adb1a3b782831dc86b900f53cb6ae4211db62873a74a001300db612c5060f6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.receipt.json",
+      "bytes": 2287,
+      "sha256": "681aac53a323dcfc979c99056dcc389c47b7822c49a12f025afe782b5d7ab70c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.jsonl",
+      "bytes": 3434,
+      "sha256": "ecd61b9615d9822d365cf5a055f9fbd1e013af9a3ecad2352c20df0784837cdc"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.log",
+      "bytes": 826,
+      "sha256": "908001d1e2d15ae32c86a10748da78cd3b6745ca65f8f8036bf376245d18d60d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.receipt.json",
+      "bytes": 2294,
+      "sha256": "fb04297902270ec4669cd1501420e818182da5b7ae1e2de335a1a32f32fbc593"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.jsonl",
+      "bytes": 3439,
+      "sha256": "091cac07dc1aaaa1d63671d273a00124a3b94768301bb4778e7b5fd31f2f7403"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.log",
+      "bytes": 833,
+      "sha256": "b5c179d23eae222c5cfeab99b80f0274f7b60293699ba84e1c4c9963f4c371c2"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.receipt.json",
+      "bytes": 2294,
+      "sha256": "dc1d078d6f8336e0cbfa6bf2f64fb4fc0ac5d105b6552f9578e6ee9c6be10b59"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.jsonl",
+      "bytes": 2036,
+      "sha256": "e8060a333213d94c8590bd1a13e9094d409d47afd9520b20c7dba82ada511452"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.log",
+      "bytes": 382,
+      "sha256": "d6a096a24c3e3da15603085d72b132a8f702dc6e507b8690061a584cefb87766"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.receipt.json",
+      "bytes": 925,
+      "sha256": "ab23240c4b7574a7ef63665f2974468084cb32732eed87a1e7d2d94cde67c263"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.jsonl",
+      "bytes": 14056,
+      "sha256": "644c1092a9c2ace610397aa8867488743f50c7f6ead7194b41584b5c7d650cdf"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.log",
+      "bytes": 2929,
+      "sha256": "b8cd291b87b4620e0b98862c0902c967fd26bfa298aad6356e8bdae66737e0d1"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.receipt.json",
+      "bytes": 881,
+      "sha256": "d863ef548178c7b4600c01f28fce174bd08cba6c298ad894791e93b5911d758d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.published-v7-build.json",
+      "bytes": 887,
+      "sha256": "b64515af1760aabd7197c665af6b2451238ab958f3655343d8198740b195096c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-a73e3aec6f5cc4bc3317a652.json",
+      "bytes": 363,
+      "sha256": "7a1f748ca7d84c7cda3278753155eb69d6980d357eb4d185f3d19fa69964b561"
+    }
+  ],
+  "prohibitions": {
+    "productionModelProtocolSchemaEdits": 0,
+    "workerCancellationWorkarounds": 0,
+    "ignoredSQLerrors": 0,
+    "fakeSQLstatesOrDefaultSuccess": 0,
+    "SQLBusinessRowWritesByCalibration": 0,
+    "markerChecksRemoved": 0,
+    "oldCaseOrBindingEdits": 0,
+    "poolDeadlineBudgetChanges": 0,
+    "dependencyInstallsOrUpgrades": 0,
+    "liveProviderAccountsOrModels": false,
+    "runtimePolicyChanges": false,
+    "privateAuthorityAccess": false,
+    "oracleCaptureOrResign": false,
+    "agents": 0,
+    "commits": 0
+  },
+  "hashPolicy": "Raw SHA256 payloads in files; PACKET-A1.sha256 hashes this unsigned packet. Checksum is non-recursively hashed publication metadata. All 24 raw evidence files are additionally hash-bound.",
+  "parentNext": "Verify exact relocation, independent real RED and negative/positive calibration, held source/control hashes and full8 results; create a new current A1 seal and finish independent review. No live-provider/deployment/publication acceptance is claimed.",
+  "stopStatus": "Original backend test author stops; no further UI/backend implementation work."
+}

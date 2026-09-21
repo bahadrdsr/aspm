@@ -1,0 +1,99 @@
+AI ASSESSMENTS A1 - NATIVE OBSERVATION READINESS ORDERING
+======================================================
+
+Author: independent-ai-assessments-test-author-20260920
+Role: ORIGINAL independent backend test author, not production implementation.
+The separate assessment UI packet was already frozen at
+c40209a79be09268e2b4ba09f8e4f941aedb17b4aaec4ab0c8e84915ff25fca6
+and remains untouched.
+
+Held implementation
+--------------------
+All seventeen production paths match the coder HANDOFF SHA256
+eb02ef085b1ae3decf5c44e4ad0b06f83bf9433543eb98037744c2e776feb86a.
+This author made no production timing, cancellation, protocol, schema, limit,
+pool, API, provider or runtime-policy change.
+
+Independent actual reproduction
+--------------------------------
+The unchanged AA5 failed in author-aa5-original-red-20260920-01 at the native
+fixture's marker assertion. Its separate main-test committed-marker read,
+single-connection worker Ping, actual native cancellation, no-result/no-mutation
+and no-resurrection assertions reached the final completion marker.
+That is a FAILED case, not acceptance from the coder's trace.
+
+author-aa5-ordering-old-red-20260920-01 independently forced the adverse ordering
+with actual owned PostgreSQL/API/worker/native HTTP:
+  - Fixture pool capacity stayed two connections, as in the original fixture.
+  - The original fixture pool was closed before an otherwise identical pool
+    with read-only acquire tracing was opened. No extra pool capacity existed.
+  - Two existing slots were reserved; no SQL business rows were inserted or
+    changed by synchronization. A reserved connection performed SELECT only.
+  - The native marker QueryRow actually attempted acquisition and waited.
+  - Independent SQL saw COMMITTED dispatching / attempts=1 / nonnull marker.
+  - The worker's independent single-connection Ping passed during held I/O.
+  - The old fixture had already signaled entered/readiness.
+  - Immediate consumer cancellation cancelled the native request and its
+    still-waiting fixture marker acquisition. The original assertion failed.
+Exactly one native POST occurred; no finding mutation or result resurrection.
+This directly verifies observation ordering, not an absent/uncommitted marker.
+
+Exact authorized delta
+-----------------------
+tests\ai_assessments\native_test.go moves ONE existing statement:
+  close(s.entered)
+from before body/protocol validation to immediately AFTER all unchanged native
+body/auth/schema/exact-context/privacy checks and the actual marker SQL/check,
+before waiting for release or request-context cancellation.
+
+The same readiness signal is used by the unchanged cancellation test. Raw
+arrival remains separately observable through the existing request counters.
+No protocol check, SQL query, SQL-error check, marker condition, request context,
+deadline, pool size, budget or existing case/binding assertion changes.
+No default success, ignored SQL error, fake SQL state, sleep or worker
+cancellation delay is introduced. File size remains 13115 bytes.
+GUARDS-A1.json verifies exact byte reconstruction by this statement relocation.
+
+Paired actual calibration
+-------------------------
+The corrected ordering run passes the same adverse acquisition scenario:
+readiness stays unpublished while its real marker probe waits; releasing one
+fixture slot lets the unchanged observation/check finish; only then is readiness
+published and the consumer immediately cancels. Marker acquisition has no error,
+the actual native HTTP context cancels, POST count stays one, and no result,
+finding mutation or fresh-worker resubmission occurs.
+
+Two separate expected-negative runs preserve the marker check's discrimination:
+  - A genuinely absent target returns no row.
+  - A second normal API-created job is actually queued, attempts=0, marker=NULL.
+The scripted marker target is deliberately adverse; the actual dispatched job's
+committed marker independently passes. The unchanged native marker assertion
+FAILS before consumer cancellation in both negatives. No SQL error is ignored
+and neither failure is relabelled as product success. Exactly one POST and
+native cancellation are still observed.
+
+Calibration code is a new reviewed .go.txt artifact compiled only in an owned
+cache package with byte-identical fixture/contract/binding copies. It is not an
+extra normal integration case or a provider/worker substitute. Working copies
+are removed after each run. Negative modes return their real exit code 1.
+
+Actual acceptance qualification
+--------------------------------
+The unchanged AA5 passes after the coordination-only move.
+The original full Contract runner then passes ALL EIGHT top-level cases and both
+AA8 nested cases on the same held seventeen-file draft. AA8's fresh/reopen and
+actual populated published-V7 -> V8 paths ran, not inferred from trace evidence.
+No new failure was masked or labelled a fixture issue.
+This does not certify live model quality, provider accounts, token-rate/cost
+budgets, deployment egress isolation, publication readiness or final acceptance.
+
+Preservation and stop
+---------------------
+The old 206-control manifest/signature and original V1 packet/RED remain in place.
+Exactly one old control has the authorized new hash; the other 205 are unchanged.
+All eight-case bodies, binding and other fixture/provider checks remain identical.
+history\a1 contains ONLY the actual old native fixture and hash references.
+No recursive history, oracle capture/re-signing, dependency install, agents,
+commits, private authority access or runtime policy change.
+Parent verifies this A1 evidence, issues a new current control seal and completes
+its independent review. The original test author stops at that handoff.

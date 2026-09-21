@@ -1,0 +1,133 @@
+AI ASSESSMENTS UI V1 - INDEPENDENT TEST-AUTHOR HANDOFF
+===================================================
+
+Status: UNSIGNED NEW UI ACCEPTANCE PACKET; STOP FOR PARENT VERIFY/SEAL/UI CODER.
+Author: independent-ai-assessments-ui-author-20260920
+Role: independent UI test author, not backend or UI implementation coder.
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+Date: September 20, 2026.
+
+Authority and exact authored boundary
+--------------------------------------
+Read CONTRACT.txt and DECISIONS.json first; both preceded the new test source.
+The backend contract/type vocabulary was read before HTTP-fixture design:
+  tests\ai_assessments\CONTRACT.txt
+  tests\ai_assessments\contract_test.go
+The sealed backend oracle has 206 controls, manifest SHA256:
+  96274b0dcc9ef6b89b12b11715a5ff55d4de712a4dfb8d49096a906e0e3933b0
+Its supplied config SHA256 remains:
+  5081640b8c9f5a2e12155e74faa75f7cb0e1650898c0daee4b33e6096fd732d8
+
+Only these new runtime test files and this NEW review directory were written:
+  web\tests\ai-assessments-data.ts
+  web\tests\ai-assessments-fixture.ts
+  web\tests\ai-assessments-ui.spec.ts
+The new review runner imports the original Playwright configuration and changes
+only test/output locations and reporting. Existing tests, fixtures, helpers,
+settings, compiler, dependencies, provenance and signatures are unchanged.
+
+The concurrent internal/app/provider implementation, root README, runtime and
+coder artifacts are explicitly NOT frozen or evaluated by this UI packet.
+Only the frozen backend test/contract/control bytes are witnessed. No real app
+API, PostgreSQL, provider, worker, model or account was contacted.
+
+Proposed UI and six cases
+-------------------------
+An initially CLOSED "AI assessments" entry inside the existing finding dialog
+opens a nonmodal in-context region. No new AI/configuration request precedes
+explicit activation. Five navigation destinations, eight catalog families,
+original finding/filter/selection/history/focus and AI settings are preserved.
+
+AAUI1: lazy open, readonly history, honest configuration failure/disabled/local-only.
+AAUI2: explicit observation/profile/grant and empty user-reviewed context editor,
+       exact UTF-8/newline/space/Unicode preview body/bounds and canonical linkage.
+AAUI3: second consent, exact queue body, lost ACK with same intent or authorized
+       history barrier, opaque-revision/expiry conflict and no automatic retry.
+AAUI4: canonical states, three advisory conclusions, native/unknown usage,
+       safe diagnostics and explicitly confirmed canonical cancellation.
+AAUI5: manual native 100+1 pages, same-cursor retry, 403/404 withholding through
+       503, and current-server write authority overriding stale client role.
+AAUI6: 390px/reduced motion/focus/privacy, pane/finding/workspace/401/logout epochs,
+       actual aborts of held preview/queue ACKs and reads without rollback claims.
+
+No hidden successful provider/worker is substituted. Synthetic API metadata is
+explicitly fixture data, not backend/admission/dispatch/provider acceptance.
+The real application renders and owns every control. Evaluation observes DOM
+or waits for frames only; no React/state/module/DOM/clock injection occurs.
+All undeclared/external HTTP/WebSocket traffic is blocked. Only declared local
+Vite assets/HMR and the synthetic same-origin HTTP boundary are allowed.
+
+Native select options reuse the unchanged native-option-A1.ts measurement.
+No label-retargeted toBeDisabled assertion is applied to an OPTION. Time metadata
+is compared as an instant rather than demanding literal UTC Z representation.
+
+Actual results and honest blocked tails
+----------------------------------------
+author-typecheck-20260920-03:
+  PASS, existing npm typecheck script, exit 0.
+
+author-red-20260920-02:
+  Six selected cases, 0 passed, 6 failed, 0 skipped/retried/flaky.
+  All six failures are the SAME actual missing "AI assessments" entry in the
+  published finding dialog, using the original 5000ms expectation deadline.
+  Existing finding shell/history/filter/selection was reached first.
+  AAUI1 additionally reached the five-nav/eight-family/published-AI-settings shell.
+  Combined API calls: AAUI1=10; AAUI2..6=6 each; AI calls=0.
+  Fixture violations=0; external attempts=0; browser exceptions=0.
+  ALL functional assessment assertions after that missing entry are
+  BLOCKED/NOT RUN. No synthetic response is promoted into product GREEN.
+
+author-compat99-20260920-01:
+  PASS, 99/99 prior cases, 0 failed/skipped/retried/flaky, exit 0.
+  Exact prior case file/line/title multiset was verified, not merely a count.
+  New AAUI cases were filtered out, not skipped or claimed passed.
+
+Original 20s cases, 5s expects, one worker, zero retries/skips, combined 60-API
+cap, serviceWorkers=block, retain-on-failure traces and failure-only screenshots
+are unchanged. New synthetic history has at most 101 records. No force clicks,
+sleeps, selector-index/default-success fallback or raised budget obtains green.
+The owned port 18758 was released after the runs.
+
+Preserved preliminary diagnostics
+----------------------------------
+author-typecheck-20260920-01 found unused imports in NEW files only; corrected.
+author-red-20260920-01 was an initial fixture setup failure, NOT accepted UI RED:
+the new asset allowlist omitted Vite's actual /.cache/vite/deps generated JS.
+Only that explicit local asset class was added, retaining the deny-by-default
+API/external boundary. author-shell-probe-20260920-01 then reached the real missing
+entry cleanly, and the final six-case RED repeated it. Outputs were not overwritten.
+
+Hash guards and artifacts
+-------------------------
+BEFORE.json/GUARDS.json verify:
+  - 786 existing UI controls unchanged.
+  - 206 frozen backend API controls unchanged.
+  - All 559 existing tracked frontend files, including 74 production source
+    files and every prior test, unchanged.
+  - Original native-option helper, runner/dependency bytes and signatures unchanged.
+No mutable backend source closure is captured. SOURCE-WITNESSES.json identifies
+only exact new sources, published UI patterns and frozen API authorities.
+
+RED.json binds final failure messages, reached phases, HTTP ledgers, screenshots,
+error context and traces. TYPECHECK.json and COMPATIBILITY.json are separate.
+PACKET.json hashes all new payloads; PACKET.sha256 hashes that unsigned packet.
+Original control sets remain historical. This author captured/signed no oracle.
+
+Replay from C:\bahadr\serious\aspm\web with fresh unused labels
+-------------------------------------------------------------
+  $env:NODE_USE_SYSTEM_CA = "1"
+  $env:ASPM_WEB_TEST_PORT = "18758"
+  $env:ASPM_AI_ASSESS_UI_RUN = "<fresh-hyphenated-label>"
+  node scripts\playwright.mjs test --config tests\reviews\ai-assessments-ui-v1\playwright.config.ts ai-assessments-ui.spec.ts
+
+For unchanged-99 compatibility, choose another fresh label and use:
+  node scripts\playwright.mjs test --config tests\reviews\ai-assessments-ui-v1\playwright.config.ts --grep-invert "AAUI[1-6] "
+Typecheck:
+  npm.cmd run typecheck -- --pretty false
+
+Do not reuse another process's listener or overwrite evidence labels.
+Parent verifies the explicit surface, protocol, privacy/uncertainty decisions,
+actual RED and unchanged-99 evidence, seals only NEW controls and assigns a
+separate UI coder. No production/UI/backend/runtime/deployment implementation,
+dependency installation, agent, commit, live API/provider/account/DB call or
+private signing-authority access was performed. Stop at this handoff.

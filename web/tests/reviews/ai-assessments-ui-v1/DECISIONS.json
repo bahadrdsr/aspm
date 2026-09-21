@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T19:16:07.570Z",
+  "author": {
+    "id": "independent-ai-assessments-ui-author-20260920",
+    "role": "Independent UI test author only; not UI/backend implementation coder",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "contractBeforeTests": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+    "bytes": 13109,
+    "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+  },
+  "backendAuthority": [
+    {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    {
+      "path": "tests\\ai_assessments\\contract_test.go",
+      "bytes": 4015,
+      "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\DECISIONS.json",
+      "bytes": 3897,
+      "sha256": "ed2f5a7af0abf100d26de0f9981ac37f4031f39fa0271b76aa41d6369ad534ab"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\WINDOW-CLARIFICATION.txt",
+      "bytes": 1488,
+      "sha256": "42428340c83917607a6970ca7f9b2e36986ce581442aa729c43a65c9a02fddd2"
+    }
+  ],
+  "backendManifest": {
+    "path": ".oracles\\ai-assessments-v1.json",
+    "bytes": 39579,
+    "sha256": "96274b0dcc9ef6b89b12b11715a5ff55d4de712a4dfb8d49096a906e0e3933b0"
+  },
+  "backendConfig": {
+    "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-seal-inputs\\ai-assessments-oracle-set.json",
+    "bytes": 11282,
+    "sha256": "5081640b8c9f5a2e12155e74faa75f7cb0e1650898c0daee4b33e6096fd732d8"
+  },
+  "semanticSurface": "Explicit finding-dialog entry, one inline nonmodal assessment region, native explicit observation/profile/grant selection, two acknowledgements, inline cancellation confirmation.",
+  "defaultClosed": true,
+  "noOldFixtureRoutesAdded": true,
+  "context": "Empty editor, exact textarea bytes <=32768 UTF8, user-reviewed-derived not original scanner proof.",
+  "pendingQueue": "Only scoped-memory minimal preview/key identity can survive close; payload drafts clear. Same-intent retry or explicit history barrier, never fresh-key blind duplicate.",
+  "time": "Compare RFC3339 instants, not literal Z or locale representation.",
+  "newCases": 6,
+  "originalCaseTimeoutMs": 20000,
+  "originalExpectTimeoutMs": 5000,
+  "workers": 1,
+  "retries": 0,
+  "combinedRequestCap": 60,
+  "maxHistoryRows": 101,
+  "syntheticHTTPOnly": true,
+  "noReactStateDOMClockWorkerProviderSubstitution": true,
+  "mutableBackendProductionExcluded": true,
+  "parentMustVerifyBeforeSeparateUICoder": true
+}

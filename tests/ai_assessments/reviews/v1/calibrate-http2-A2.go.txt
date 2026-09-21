@@ -1,0 +1,9 @@
+//go:build integration
+
+package ai_assessments
+
+import "testing"
+
+func TestA2PinnedHTTP2RefusedStreamCalibration(t *testing.T) {
+	calibrateA2HTTP2(t)
+}

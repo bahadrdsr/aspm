@@ -1,0 +1,116 @@
+AI ASSESSMENTS A1 - ORIGINAL BACKEND TEST-AUTHOR HANDOFF
+======================================================
+
+Status: COORDINATION CORRECTION VERIFIED; PARENT NEW SEAL/REVIEW PENDING.
+Author: independent-ai-assessments-test-author-20260920
+Role: original independent backend test author, not implementation coder.
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+Date: September 20, 2026.
+
+UI stage is already frozen and unchanged:
+  web\tests\reviews\ai-assessments-ui-v1\PACKET.json
+  c40209a79be09268e2b4ba09f8e4f941aedb17b4aaec4ab0c8e84915ff25fca6
+Its typecheck, six missing-entry RED and unchanged-99 evidence remain historical.
+No new UI work was performed during this AA5 correction.
+
+Held production
+----------------
+All 17 source paths still exactly match:
+  .cache\ai-assessments-coder\HANDOFF.json
+  eb02ef085b1ae3decf5c44e4ad0b06f83bf9433543eb98037744c2e776feb86a
+No production/schema/provider/runtime-policy change or timing workaround.
+The coder's race report was read as supporting evidence, not acceptance.
+
+Exact minimal delta
+---------------------
+Only tests\ai_assessments\native_test.go changes in the original 206 controls.
+ONE close(s.entered) statement moves from before request validation to after
+the unchanged body/auth/schema/exact-context/privacy checks and actual marker
+SQL/check, immediately before the held-response select.
+Raw arrival counters remain distinct and unchanged.
+
+Old native fixture SHA256:
+  2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb
+New native fixture SHA256:
+  0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec
+Size remains 13115 bytes. Exact relocation reconstruction is verified.
+
+No assertion/check/query/error handling, worker cancellation, pool/deadline/
+request/test budget, normal case body, binding or other fixture byte changes.
+No sleep, ignored SQL error, fake marker or default success is introduced.
+
+Actual RED and calibration
+--------------------------
+author-aa5-original-red-20260920-01:
+  Unchanged AA5 FAILED at the native marker check, while its independent marker,
+  single-slot Ping, native cancellation and no-result/mutation/resurrection tail
+  reached completion. This is still a failed original case.
+
+author-aa5-ordering-old-red-20260920-01:
+  Expected-negative calibration FAILED. Real API/worker state had committed
+  dispatching/attempts=1/nonnull marker and worker Ping passed.
+  At unchanged fixture capacity 2/2, its native marker acquisition was waiting
+  while old readiness was already closed. Immediate cancellation cancelled that
+  actual acquisition and produced the unchanged marker failure.
+
+author-aa5-ordering-green-20260920-01:
+  Corrected calibration PASSED. Readiness stayed open until the actual unchanged
+  marker observation finished without error, then cancellation happened.
+  Actual native HTTP cancellation, exactly one POST, no finding mutation,
+  no advisory result and no fresh-worker resurrection all passed.
+
+author-aa5-absent-negative-20260920-01:
+  Expected-negative FAILED: target was genuinely absent; unchanged native marker
+  check rejected BEFORE consumer cancellation.
+author-aa5-queued-negative-20260920-01:
+  Expected-negative FAILED: target was a real API-created queued job, attempts=0,
+  marker=NULL; unchanged native marker check rejected BEFORE cancellation.
+  In both negatives the actual dispatched job's independent marker passed;
+  actual native cancellation and exactly one POST remained observed.
+
+All four paired calibration outcomes matched expectation. Actual calibration
+test statuses are one passed / three expected failures, not four product passes.
+The old fixture pool was closed before a same-size acquire-traced pool opened.
+Synchronization reserved existing slots and issued SELECT only; no SQL business
+row write, fake result or production scheduling change. Cache working copies
+were byte-identical and removed. Negative commands preserve exit code 1.
+
+Normal acceptance after the move
+--------------------------------
+author-aa5-coordination-green-20260920-01:
+  Unchanged AA5 assertions PASSED.
+author-aa5-a1-full8-20260920-01:
+  Original Contract runner: 8/8 top-level cases PASSED, 2/2 AA8 nested PASSED,
+  0 failed/skipped, count=1. Fresh V8/reopen and actual populated published-V7
+  upgrade/reopen assertions actually ran. No normal assertion tails remain blocked.
+  No new production failure was masked or reclassified as a fixture defect.
+
+Full8 is bounded fixture acceptance only, not live provider/model quality,
+account/region token-rate/cost policy, deployment egress or publication approval.
+Other compatibility/readiness work remains the parent/coder's separate scope.
+
+Preservation and evidence
+--------------------------
+BEFORE-A1.json pins all held sources and old 206 controls.
+GUARDS-A1.json proves exactly one authorized old-control delta, other 205
+unchanged, all eight assertions/bindings and all 17 sources unchanged.
+UI packet and its payloads are unchanged.
+RED-A1.json, CALIBRATION-A1.json and RESULTS-A1.json hash all 24 raw evidence files.
+history\a1 contains ONLY the actual old native fixture and REFERENCES.json.
+Original V1 packet, RED, oracle manifest and signature stay in place.
+No old oracle is re-signed. The old seal does not cover this changed fixture or
+new A1 evidence. PACKET-A1.sha256 hashes the unsigned new PACKET-A1.json.
+
+Replay from C:\bahadr\serious\aspm, using fresh labels
+----------------------------------------------------
+  .\tests\ai_assessments\reviews\v1\Test-AA5-A1.ps1 -RuntimeConfig '<private-runtime.json>' -Mode OrderingOld -OutputName '<fresh-label>'
+  .\tests\ai_assessments\reviews\v1\Test-AA5-A1.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Ordering -OutputName '<fresh-label>'
+  .\tests\ai_assessments\reviews\v1\Test-AA5-A1.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Absent -OutputName '<fresh-label>'
+  .\tests\ai_assessments\reviews\v1\Test-AA5-A1.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Queued -OutputName '<fresh-label>'
+  .\tests\ai_assessments\reviews\v1\Test-AA5-A1.ps1 -RuntimeConfig '<private-runtime.json>' -Mode AA5 -OutputName '<fresh-label>'
+  .\tests\ai_assessments\Test-AIAssessments.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+
+No agents, commits, dependencies, live providers/accounts, private signing
+authority, unrelated schemas/volumes/policies or OS/runtime changes.
+Parent verifies, creates a new current A1 seal and completes independent review.
+The original backend test author stops here.

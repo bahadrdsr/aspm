@@ -1,0 +1,86 @@
+ASSESSMENT RUNTIME A1 - SUCCESSOR OBSERVATION CADENCE INVESTIGATION
+================================================================
+
+Author: independent-runtime-test-successor-20260921.
+Not originalruntimeauthorbeb and not runtimecoder0383e852.
+No runtime or backend implementation change is authorized or made.
+The original runtime packet/source witnesses remain historical and byte-exact.
+
+Parent-approved scope
+---------------------
+Only terminal protected-HTTP job polling changes to 100ms. The existing wait
+helper delegates to the same loop with its original 20ms cadence; coreAPI.await
+selects 100ms for that loop. No predicate, assertion, state, first immediate
+observation, 8-second await deadline, 90-second fixture deadline, 220-operation
+total API budget, native POST cap or worker pool changes.
+AR4 still selects request timeout 5s, request window 3s, lease 1s,
+authorization 25ms and requests/window 1. No production sleep, native delay,
+clock advance, SQL business write, lease rewrite or early reservation release.
+history\a1 contains only the byte-exact original fixtures_test.go.txt.
+prepare-A1.mjs reconstructs the exact authorized delta from that archive.
+No normal role/case/binding/native/command/environment/runner bytes change.
+
+Independent root-cause verification BEFORE amendment
+------------------------------------------------------
+The unchanged normal AR4 was run using a newly built actual held assessment
+command. Run-context passed, but actual-command-crash failed at the original
+protected API budget assertion.
+
+Readonly diagnostic replay retained the original AR4 body/assertions exactly,
+using reversible observation-only insertions and byte-exact helper/binding
+copies. The command remained the actual cmd/assessment-worker, not a copied
+service implementation. Existing two-slot fixture and one-slot worker pools
+were unchanged.
+
+Two observed unchanged crash replays attempted protected call 221 with exactly
+one native POST. The retired job was uncertain, attempts=1, possibly-sent,
+io_released_at=NULL and a future real database-clock I/O deadline. The new
+explicit job remained queued, attempts=0. Last observed remaining reservation:
+744.173ms and 756.621ms respectively. Both exact command PIDs terminated in each
+diagnostic. These results corroborate, not merely repeat as authority, the
+coder's separate 734.743ms observation.
+
+The first diagnostic Go run did execute but its new-only runner subsequently
+failed to remove an already-empty working directory (rmSync EISDIR). Its raw
+events and explicit execution note are preserved, not relabelled a complete
+guarded receipt. The empty selected directory was removed. The second diagnostic
+has complete before/after guards, receipt and successful copy cleanup.
+
+The original 20ms polling can spend roughly 250 protected GETs over the legitimate
+5-second unacknowledged reservation, in addition to setup and recovery API calls.
+The 100ms terminal cadence observes that same deadline within the unchanged
+8-second bound without enlarging the budget or changing worker behavior.
+Actual post-amendment outcomes and tails are recorded separately, not inferred
+from this calculation.
+
+Separate cancellation observation - NOT authorized for amendment
+-----------------------------------------------------------------
+The inherited Run-context failure at roles_test.go:330 is retained. A successor
+unchanged three-repeat run also failed there once, then passed twice.
+No successful retry resolves that failure.
+
+Readonly event diagnostics observed actual local socket Close and native request
+context cancellation promptly after stopRole began. In one diagnostic, stopRole
+plus its listener check returned after 5.336s, leaving the SHARED 5-second test
+context already expired by 348.692ms while held.cancelled was also already closed.
+The existing event helper can therefore encounter both ready select cases.
+That particular diagnostic passed by selecting the native event. This is direct
+evidence of the competing-ready measurement window, not yet attribution of every
+historical failure or permission to change the event assertion.
+
+Further bounded event/stack-function-label observations retain this same event
+assertion and shared deadline. No grace period, reset deadline, cancellation
+delay, ignored timeout or altered listener assertion is introduced.
+Any measurement amendment beyond terminal polling needs separate parent approval.
+Production cancellation failure, if actually observed, must be reported rather
+than masked. Full runtime acceptance remains for parent review.
+
+Preservation and stop
+---------------------
+All seven runtime handoff paths remain held. Accepted backend transport,
+reservation, parser, schema and API bytes and 245 backend controls are guarded
+at the current candidate, not compared to obsolete pre-fix source witnesses.
+The original 66-control runtime signature is unchanged historical authority;
+65 controls remain exact and the one helper delta is explicitly reconstructed.
+Web and root README remain outside these byte guards and are not edited.
+Parent verifies this new packet and issues any new seal before coder finalization.

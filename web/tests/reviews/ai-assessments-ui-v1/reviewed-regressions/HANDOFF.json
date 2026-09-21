@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-21T00:08:49.247Z",
+  "status": "FROZEN unsigned reviewed-regression packet. Existing-export UNIT binding explicitly parent-approved; independent reproduction and sealing remain pending.",
+  "author": {
+    "id": "independent-reviewed-ui-regressions-20260920",
+    "agentId": "f93d054c-caa3-4c46-9e3d-e49dbfb1e99e",
+    "role": "New independent regression author, neither original author beb1de86 nor UI coder e2527e33",
+    "agentsLaunched": 0
+  },
+  "publishedHEAD": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "packet": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\PACKET.json",
+    "bytes": 41635,
+    "sha256": "ce7575bb3cb72ce17611b982181e84461e29c454673d2f2d91a204a0d73a88c9"
+  },
+  "packetChecksum": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\PACKET.sha256",
+    "bytes": 78,
+    "sha256": "038ed5a9942b992475548df1b115c44910e0224aedb765698634a144610c6b36"
+  },
+  "readme": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\HANDOFF.txt",
+    "bytes": 8382,
+    "sha256": "0810094e7f0c64cf19a44fe08fda7e50201c614b964a3766b3bed422066d0911"
+  },
+  "qualification": {
+    "typecheck": "passed",
+    "focused": {
+      "selected": 10,
+      "passed": 6,
+      "failed": 4,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0,
+      "browserCases": 6,
+      "browserFailed": 2,
+      "productionHookUnitCases": 4,
+      "productionHookUnitFailed": 2,
+      "maxCombinedAPIRequests": 28
+    },
+    "original105": {
+      "selected": 105,
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0
+    },
+    "original105IdentitiesUnchanged": true,
+    "fullOriginalCompatibilityRuns": 1,
+    "originalAssertionBytesUnchanged": true,
+    "original803Controls": {
+      "unchanged": 802,
+      "authorizedFixtureDeltas": 1,
+      "oracleRecaptured": false
+    },
+    "productionPathsUnchanged": 12,
+    "frontendSourcesUnchanged": 83,
+    "finalValidationInputsHeld": 5802,
+    "holdMode": "FileShare.Read with raw SHA256 verification before and after",
+    "fixedConfigSHA256": "7a837a72b72cf8dfee4d967357e872326a287eb6578ebf6d083ba1c5666f34cd"
+  },
+  "parentApprovalGate": {
+    "status": "APPROVED - exact existing-export production-hook UNIT binding",
+    "record": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\APPROVAL.json",
+      "bytes": 2994,
+      "sha256": "4c1f7a1c3094c10391048e3d72eb16a8a1f051d9eebb8617ddd67b9a7424faae"
+    },
+    "contract": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\CONTRACT.txt",
+      "bytes": 6733,
+      "sha256": "d169b525bd63258bf1764f56fcd769cadfcf06d57042ea893b5bb9096bb4be55"
+    },
+    "harness": {
+      "path": "web\\tests\\harness\\ai-assessment-review\\history-unit.tsx",
+      "bytes": 3482,
+      "sha256": "c1c633691dd30a5010c5577c246daeabded587f0da22c1dd265dd25d31ee4247"
+    },
+    "approvalMessageTimestamp": "2026-09-21T02:04:04.779+02:00",
+    "scope": "Unit invariant only; not proof of a full-app pre-layout race. No new internal API or specific generation implementation is mandated.",
+    "requiredAction": "Binding approval gate resolved. Parent independently reproduces 10 cases and seals current controls before separate UI-coder remediation."
+  },
+  "modifiedExistingFiles": [
+    {
+      "path": "web\\tests\\ai-assessments-fixture.ts",
+      "bytes": 28532,
+      "sha256": "aba53670b320c5285459b842e5a32ca00738240a9a7c940783a52a819fdf5000"
+    }
+  ],
+  "newCodeFiles": [
+    {
+      "path": "web\\tests\\ai-assessment-review-helpers.ts",
+      "bytes": 5587,
+      "sha256": "b4c6654592f6a8f94a83d86c50a943be8c67b8e34c941572d005166ff8581890"
+    },
+    {
+      "path": "web\\tests\\ai-assessment-review-queue.spec.ts",
+      "bytes": 12560,
+      "sha256": "c66dcc8c8ce25b82e854906988600e7e0c6ad5c1f44c6cf761c2819b049b122a"
+    },
+    {
+      "path": "web\\tests\\ai-assessment-review-history.spec.ts",
+      "bytes": 12289,
+      "sha256": "0fd06d0dcf28f1188f17b5e4edbaeb79a89b1db92fc34b81b7d5307b7028c091"
+    },
+    {
+      "path": "web\\tests\\harness\\ai-assessment-review\\history-unit.tsx",
+      "bytes": 3482,
+      "sha256": "c1c633691dd30a5010c5577c246daeabded587f0da22c1dd265dd25d31ee4247"
+    },
+    {
+      "path": "web\\tests\\harness\\ai-assessment-review\\index.html",
+      "bytes": 379,
+      "sha256": "f617ceb4f0c0ae96a748f314faabb5b5832fd43da1a4ce55f454029ca8bddb7d"
+    },
+    {
+      "path": "web\\tests\\harness\\ai-assessment-review\\inputs.ts",
+      "bytes": 265,
+      "sha256": "6f5cc5fa145307896e64e4914af811d12fe3d3688856669aa98ce00a959feaf3"
+    }
+  ],
+  "focusedSourceFiles": [
+    {
+      "path": "web\\tests\\ai-assessment-review-queue.spec.ts",
+      "bytes": 12560,
+      "sha256": "c66dcc8c8ce25b82e854906988600e7e0c6ad5c1f44c6cf761c2819b049b122a"
+    },
+    {
+      "path": "web\\tests\\ai-assessment-review-history.spec.ts",
+      "bytes": 12289,
+      "sha256": "0fd06d0dcf28f1188f17b5e4edbaeb79a89b1db92fc34b81b7d5307b7028c091"
+    }
+  ],
+  "codeHold": {
+    "path": ".cache\\ai-assessments-ui-coder\\HANDOFF.json",
+    "bytes": 117581,
+    "sha256": "e2749ef0cad72f89ead5593701b36c7b701a84cd0a394153764563f8ec558515"
+  },
+  "sourceHold": [
+    {
+      "path": "README.md",
+      "bytes": 31850,
+      "sha256": "0923d6946f421d4cd6c722d7a9f928f2584b3b058b1f4d835cc943542824a3a9",
+      "expected": "0923d6946f421d4cd6c722d7a9f928f2584b3b058b1f4d835cc943542824a3a9"
+    },
+    {
+      "path": "web\\src\\api\\assessment-intents.ts",
+      "bytes": 2374,
+      "sha256": "4dc77209eb02a9a57f35d09a6072d9c1102ef10425b7b5a432662e486b08f946",
+      "expected": "4dc77209eb02a9a57f35d09a6072d9c1102ef10425b7b5a432662e486b08f946"
+    },
+    {
+      "path": "web\\src\\api\\assessment-types.ts",
+      "bytes": 2430,
+      "sha256": "53784960713bcf5d43498cdfbe78a16b953bf90ef1daac4831502f2c436b9b7b",
+      "expected": "53784960713bcf5d43498cdfbe78a16b953bf90ef1daac4831502f2c436b9b7b"
+    },
+    {
+      "path": "web\\src\\api\\assessments.ts",
+      "bytes": 18361,
+      "sha256": "cb3672354a36526b733ca30cf69976ec9629d4b47bf22e9c11e1c035f0d92b61",
+      "expected": "cb3672354a36526b733ca30cf69976ec9629d4b47bf22e9c11e1c035f0d92b61"
+    },
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 34788,
+      "sha256": "e3dbb4bf60ddeea8ab4a898cf35b4a5bbf50ac6379cfdb86d28084984fa5dfb5",
+      "expected": "e3dbb4bf60ddeea8ab4a898cf35b4a5bbf50ac6379cfdb86d28084984fa5dfb5"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\detail.tsx",
+      "bytes": 10052,
+      "sha256": "62b277475d3651c8999d38ff6af0d43847ff6ccf77d2f9566ad6e54c8005e1b3",
+      "expected": "62b277475d3651c8999d38ff6af0d43847ff6ccf77d2f9566ad6e54c8005e1b3"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\draft.tsx",
+      "bytes": 13488,
+      "sha256": "dda129ae7e2f17eb584168c45881671c20e298687aaf30beb96835f728402f01",
+      "expected": "dda129ae7e2f17eb584168c45881671c20e298687aaf30beb96835f728402f01"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\facts.tsx",
+      "bytes": 2917,
+      "sha256": "0fbe4756a6d018756cb121c78588ef0aafeaf811f40b0956b928656a0a137cc1",
+      "expected": "0fbe4756a6d018756cb121c78588ef0aafeaf811f40b0956b928656a0a137cc1"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\finding-assessments.css",
+      "bytes": 3494,
+      "sha256": "0a23b3efeccac995a322e20ca5d5e43d8ea0a7768e8d5a51738799406ca33126",
+      "expected": "0a23b3efeccac995a322e20ca5d5e43d8ea0a7768e8d5a51738799406ca33126"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\finding-assessments.tsx",
+      "bytes": 7279,
+      "sha256": "4c216943fe4ffdbb181dc67b02f125504ccff69898c8bf75497d3f0becbb463d",
+      "expected": "4c216943fe4ffdbb181dc67b02f125504ccff69898c8bf75497d3f0becbb463d"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\history.tsx",
+      "bytes": 6226,
+      "sha256": "8bd692039f7b5ed581cbdf81a404297d0fe0a8b8bec6fd174e7a76249ca4d673",
+      "expected": "8bd692039f7b5ed581cbdf81a404297d0fe0a8b8bec6fd174e7a76249ca4d673"
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "bytes": 12055,
+      "sha256": "66bf9f128aeab920f6f7d01558c81ea4d42fece7bdabb85c2aa2544be67a8a9a",
+      "expected": "66bf9f128aeab920f6f7d01558c81ea4d42fece7bdabb85c2aa2544be67a8a9a"
+    }
+  ],
+  "scopeLimitations": {
+    "afterRedAssertions": "None: soft invariant assertions recorded the defect while reaching close/reopen, 503 withholding and authorized recovery tails.",
+    "optionalSameKeyReplay": "NOT OFFERED by the held app; conditional replay branches were not executed. The current implementation takes the no-replay history barrier path.",
+    "fullAppPreLayoutRace": "NOT DEMONSTRATED. Reachable ordered browser controls passed with original cleanup; isolated hook RED is not promoted to full-app race proof.",
+    "internalBindingFreeze": "RESOLVED by explicit parent approval in APPROVAL.json; final test freeze complete. No executable changes or reruns.",
+    "productionRemediationAndGreen": "NOT RUN; production remains held for a separate UI coder.",
+    "backendRuntimeProviderHTTP2": "OUT OF SCOPE and not executed."
+  },
+  "taskBoundary": "Final regression freeze complete after explicit parent approval of the unchanged existing-export UNIT binding. No new internal API, implementation architecture, app race proof, production fix or authority capture. Parent reproduction/seal precedes UI-coder remediation.",
+  "frozenAt": "2026-09-21T00:08:49.247Z",
+  "metadataOnlyFinalization": {
+    "approvedAt": "2026-09-21T02:04:04.779+02:00",
+    "recordedAt": "2026-09-21T00:08:49.247Z",
+    "executableFiles": [
+      {
+        "path": "web\\tests\\ai-assessment-review-helpers.ts",
+        "bytes": 5587,
+        "sha256": "b4c6654592f6a8f94a83d86c50a943be8c67b8e34c941572d005166ff8581890"
+      },
+      {
+        "path": "web\\tests\\ai-assessment-review-queue.spec.ts",
+        "bytes": 12560,
+        "sha256": "c66dcc8c8ce25b82e854906988600e7e0c6ad5c1f44c6cf761c2819b049b122a"
+      },
+      {
+        "path": "web\\tests\\ai-assessment-review-history.spec.ts",
+        "bytes": 12289,
+        "sha256": "0fd06d0dcf28f1188f17b5e4edbaeb79a89b1db92fc34b81b7d5307b7028c091"
+      },
+      {
+        "path": "web\\tests\\harness\\ai-assessment-review\\history-unit.tsx",
+        "bytes": 3482,
+        "sha256": "c1c633691dd30a5010c5577c246daeabded587f0da22c1dd265dd25d31ee4247"
+      },
+      {
+        "path": "web\\tests\\harness\\ai-assessment-review\\index.html",
+        "bytes": 379,
+        "sha256": "f617ceb4f0c0ae96a748f314faabb5b5832fd43da1a4ce55f454029ca8bddb7d"
+      },
+      {
+        "path": "web\\tests\\harness\\ai-assessment-review\\inputs.ts",
+        "bytes": 265,
+        "sha256": "6f5cc5fa145307896e64e4914af811d12fe3d3688856669aa98ce00a959feaf3"
+      },
+      {
+        "path": "web\\tests\\ai-assessments-fixture.ts",
+        "bytes": 28532,
+        "sha256": "aba53670b320c5285459b842e5a32ca00738240a9a7c940783a52a819fdf5000"
+      }
+    ],
+    "executableFilesUnchanged": 7,
+    "contractBytesUnchanged": true,
+    "originalAssertionSpecFilesVerified": 20,
+    "original105AssertionsUnchanged": true,
+    "fixtureOverrideAndGuardsUnchanged": true,
+    "originalControlsUnchanged": 802,
+    "preexistingAuthorizedFixtureDeltas": 1,
+    "productionPathsStillHeld": 12,
+    "frontendSourcesUnchanged": 83,
+    "testsRun": 0,
+    "typecheckRerun": false,
+    "original105Rerun": false,
+    "qualifiedEvidenceReused": true,
+    "authorityCapture": false,
+    "agentsLaunched": 0,
+    "commits": 0,
+    "scope": "Only approval/publication metadata changed. Historical pending/proposed labels are preserved and resolved by the explicit approval overlay."
+  },
+  "previousCandidate": {
+    "packet": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\PACKET.json",
+      "bytes": 34452,
+      "sha256": "63a0032e03b5c71f9f2912c3d07002aab445d7d16f114bc9988fce277e123abf"
+    },
+    "handoff": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.json",
+      "bytes": 9094,
+      "sha256": "982b61b35a116109a05462696142d06ed422e35d9df971de3ac7e38cd0628ed3"
+    },
+    "handoffText": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.txt",
+      "bytes": 7597,
+      "sha256": "2779499b5d2a9b6b72621b3dba75e1576f20ab8345615d2a87efca3dbe3bcfdd"
+    },
+    "relocationIndex": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\INDEX.json",
+      "bytes": 2145,
+      "sha256": "3df96acbb0e1dedcf422a4d9224af25bb15d2ada695af09a7028ca1bb31edc8a"
+    },
+    "allArchiveFiles": [
+      {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\PACKET.json",
+        "bytes": 34452,
+        "sha256": "63a0032e03b5c71f9f2912c3d07002aab445d7d16f114bc9988fce277e123abf"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\PACKET.sha256",
+        "bytes": 78,
+        "sha256": "5f2d41a1595994fb069b1c25214cc02e859306c311b66e9fb6472a89235e3a8e"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.json",
+        "bytes": 9094,
+        "sha256": "982b61b35a116109a05462696142d06ed422e35d9df971de3ac7e38cd0628ed3"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.sha256",
+        "bytes": 79,
+        "sha256": "bea887fde302c6427cd5f9c99e19c206da847a618fd61919fa82f1da3687cc22"
+      },
+      {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.txt",
+        "bytes": 7597,
+        "sha256": "2779499b5d2a9b6b72621b3dba75e1576f20ab8345615d2a87efca3dbe3bcfdd"
+      }
+    ],
+    "byteExact": true
+  }
+}

@@ -177,5 +177,14 @@ these configuration APIs. A separate owned HTTPS/core/PostgreSQL workflow covere
 four provider families, matching Foundry model/deployment names, finite grants,
 revision invalidation and revocation with zero provider requests and a final
 disabled policy. This is not inference or provider-account qualification.
-There is no prompt, assessment job, tool, source/scan/verification execution or
-finding/workflow mutation in this foundation, and no M11 execution/completion claim.
+Configuration reads alone start no prompt, job, tool or source/scan/verification
+execution and never mutate a finding or workflow.
+
+Durable read-only assessment orchestration is a separate implemented boundary.
+Explicit reviewed-derived context previews and queue consent feed the independent
+AssessmentWorker; results are advisory and do not change finding decisions.
+The service environment and cmd/assessment-worker now consume that boundary.
+See doc.go for immutable snapshots, current authority, one-attempt dispatch,
+local I/O reservations, bounded shared admission and uncertainty semantics.
+Owned native/runtime and UI-to-worker qualification is not live-model quality,
+remote exactly-once processing, deployment isolation or whole-M11 completion.

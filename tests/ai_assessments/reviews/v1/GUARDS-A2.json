@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T00:58:24.549Z",
+  "baseline": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE-A2-SUCCESSOR.json",
+    "bytes": 227528,
+    "sha256": "658540dad40798d62e8c6c13d3a108613732c6df115945b61d26c3b993857e7e"
+  },
+  "unchangedHeldBackendCount": 19,
+  "heldHandoff": {
+    "path": ".cache\\ai-assessments-coder\\FINAL-HANDOFF-A1.json",
+    "bytes": 59156,
+    "sha256": "019d2817b826563809f8213aaee73ace61139bcfc53b4d199217b42c637fb039"
+  },
+  "currentA1Manifest": {
+    "path": ".oracles\\ai-assessments-a1.json",
+    "bytes": 42379,
+    "sha256": "5d050e1f3f686ed5c59cc20724d34f2f730a12ed78643c6f2db10c3755208421"
+  },
+  "currentA1Signature": {
+    "path": ".oracles\\ai-assessments-a1.json.sig",
+    "bytes": 89,
+    "sha256": "a83a3d83431e5a0eafb06d2e9e9961adbdd65a278509537f8101911f24f3c0a4"
+  },
+  "unchangedCurrentA1Controls": 221,
+  "publicOracleConfigSHA256": "1c13cbadc4e44ab5a2a8afbc6194c59bb2839fcc502f89768ec2941c728b441f",
+  "unchangedExistingBackendControlRuntimeCount": 882,
+  "allBeforeAfterHashesEqual": true,
+  "mismatches": [],
+  "exactGuardSet": "BEFORE-A2-SUCCESSOR.json backendAndExistingControls; checked before/after each run and again at packet generation.",
+  "excludedMutablePaths": [
+    "web\\**",
+    "README.md"
+  ],
+  "exclusionsAreNotUIAcceptance": true,
+  "separateRuntimePacket": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET.json",
+    "bytes": 13955,
+    "sha256": "1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34"
+  },
+  "unchangedSeparateRuntimeFiles": 21,
+  "originalEightFixturesBindingsRunnersPoolsBudgetsAndCompatibilityBytesUnchanged": true,
+  "goModAndGoSumUnchanged": [
+    {
+      "path": "go.mod",
+      "bytes": 1389,
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "bytes": 6366,
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    }
+  ],
+  "toolchainAndPinnedSourcesUnchanged": true,
+  "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+  "runInputCount": 890,
+  "canonicalInputTreeEncoding": "SHA256(UTF8(JSON.stringify([{path,bytes,sha256},...] sorted by ordinal path))).",
+  "allFiveRunsUseSameSourceInputTree": true,
+  "authority": {
+    "privateAuthorityAccess": false,
+    "oracleCapture": false,
+    "resigning": false,
+    "commits": false,
+    "agents": false,
+    "productionChanges": false,
+    "runtimeOrOSOrClusterOrPolicyChanges": false
+  },
+  "cleanup": {
+    "perRunCalibrationCopiesRemoved": true,
+    "selectedPerRunPublishedV7CopiesRemoved": true,
+    "unrelatedCachesOrUsersOrSchemasOrVolumesTouched": false
+  },
+  "privacy": {
+    "inMemorySelectedRuntimeCanaryScan": true,
+    "publicRunArtifactsScanned": 23,
+    "privateValuesPersisted": false,
+    "matches": 0
+  }
+}

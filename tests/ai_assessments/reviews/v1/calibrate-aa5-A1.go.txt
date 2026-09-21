@@ -1,0 +1,218 @@
+//go:build integration
+
+package ai_assessments
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"os"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type aa5ProbeContext struct{}
+
+type aa5AcquireObservation struct {
+	armed              atomic.Bool
+	started, completed chan struct{}
+	mu                 sync.Mutex
+	errorType          string
+	contextCancelled   bool
+}
+
+func (a *aa5AcquireObservation) TraceAcquireStart(ctx context.Context, _ *pgxpool.Pool, _ pgxpool.TraceAcquireStartData) context.Context {
+	if a.armed.CompareAndSwap(true, false) {
+		close(a.started)
+		return context.WithValue(ctx, aa5ProbeContext{}, true)
+	}
+	return ctx
+}
+func (a *aa5AcquireObservation) TraceAcquireEnd(ctx context.Context, _ *pgxpool.Pool, data pgxpool.TraceAcquireEndData) {
+	if ctx.Value(aa5ProbeContext{}) != true {
+		return
+	}
+	a.mu.Lock()
+	a.errorType = fmt.Sprintf("%T", data.Err)
+	a.contextCancelled = errors.Is(data.Err, context.Canceled)
+	a.mu.Unlock()
+	close(a.completed)
+}
+func (*aa5AcquireObservation) TraceQueryStart(ctx context.Context, _ *pgx.Conn, _ pgx.TraceQueryStartData) context.Context {
+	return ctx
+}
+func (*aa5AcquireObservation) TraceQueryEnd(context.Context, *pgx.Conn, pgx.TraceQueryEndData) {}
+
+func TestAA5ObservationReadinessCalibration(t *testing.T) {
+	var observedPool *pgxpool.Pool
+	t.Cleanup(func() {
+		if observedPool != nil {
+			observedPool.Close()
+		}
+	})
+	h := newHarness(t, false)
+	finding := h.seed()
+	p, key := h.profile("openai", true)
+	pol, grant := h.approve(p)
+	v := h.preview(h.admin, finding, p, pol, grant, reviewedContext())
+	job := h.enqueue(h.admin, v, "observation-ordering", 202)
+	before, storage := h.domainSnapshot(), h.storageCalls.Load()
+	script := h.native.arm(p, key, v, job.ID, "ok", "supported", true)
+	config := h.configForWorker("observation-ordering")
+	check(t, config.Database.MaxConnections == 1, "worker single-slot limit changed")
+	w := h.worker(config)
+	must(t, "close core before independent worker I/O", h.core.Close())
+
+	trace := &aa5AcquireObservation{started: make(chan struct{}), completed: make(chan struct{})}
+	poolConfig := h.db.Config()
+	check(t, poolConfig.MaxConns == 2 && poolConfig.MinConns == 0, "original fixture pool bounds changed")
+	poolConfig.ConnConfig.Tracer = trace
+	h.db.Close()
+	var err error
+	observedPool, err = pgxpool.NewWithConfig(h.ctx, poolConfig)
+	must(t, "open same-size fixture pool with read-only acquire tracing", err)
+	h.db = observedPool
+	one, err := h.db.Acquire(h.ctx)
+	must(t, "reserve first existing fixture SQL slot", err)
+	defer one.Release()
+	two, err := h.db.Acquire(h.ctx)
+	must(t, "reserve second existing fixture SQL slot", err)
+	defer two.Release()
+	check(t, h.db.Stat().AcquiredConns() == 2 && h.db.Config().MaxConns == 2, "fixture capacity was not held at its unchanged limit")
+	trace.armed.Store(true)
+
+	ctx, cancel := context.WithCancel(h.ctx)
+	defer cancel()
+	done := make(chan error, 1)
+	go func() { _, failure := w.ProcessNext(ctx); done <- failure }()
+	event(t, h.ctx, trace.started, "real native marker QueryRow reaches fixture pool acquisition")
+	check(t, script.requests.Load() == 1 && h.native.count() == 1, "exactly one real native POST must have arrived")
+	var state string
+	var attempts int
+	var started *time.Time
+	must(t, "independent committed marker through a reserved readonly SQL connection",
+		one.QueryRow(h.ctx, "SELECT state,attempts,dispatch_started_at FROM "+h.table("assessment_jobs")+" WHERE id=$1", job.ID).
+			Scan(&state, &attempts, &started))
+	check(t, state == "dispatching" && attempts == 1 && started != nil, "actual production marker is absent, uncommitted or wrong")
+	pingCtx, stop := context.WithTimeout(h.ctx, time.Second)
+	must(t, "unchanged single-slot worker pool responds during held native I/O", w.Ping(pingCtx))
+	stop()
+	premature := false
+	select {
+	case <-script.entered:
+		premature = true
+	default:
+	}
+	t.Logf("A1 adverse ordering: actual native POST=1, fixture slots held=2/2, actual marker=%s/%d/non-null, worker Ping passed, readiness premature=%t",
+		state, attempts, premature)
+	if premature {
+		t.Error("A1 readiness was published before the fixture's actual marker observation completed")
+		cancel()
+	} else {
+		two.Release()
+		event(t, h.ctx, script.entered, "readiness follows unchanged protocol and actual marker checks")
+		event(t, h.ctx, trace.completed, "actual fixture marker acquisition completed")
+		trace.mu.Lock()
+		acquireOK := trace.errorType == "<nil>"
+		trace.mu.Unlock()
+		check(t, acquireOK, "genuine fixture SQL acquisition error must not be ignored")
+		h.native.mu.Lock()
+		observed := h.native.markerReads
+		h.native.mu.Unlock()
+		check(t, observed == 1, "readiness preceded completion of the unchanged marker check")
+		cancel()
+	}
+	cancelCtx, stop := context.WithTimeout(h.ctx, time.Second)
+	event(t, cancelCtx, script.cancelled, "actual native HTTP context cancellation")
+	event(t, cancelCtx, trace.completed, "real fixture pool acquisition finishes")
+	select {
+	case failure := <-done:
+		check(t, failure == nil || errors.Is(failure, context.Canceled), "worker cancellation returned an unrelated failure")
+	case <-cancelCtx.Done():
+		t.Fatal("native operation did not finish after cancellation")
+	}
+	stop()
+	trace.mu.Lock()
+	cancelledAcquire, errorType := trace.contextCancelled, trace.errorType
+	trace.mu.Unlock()
+	if premature {
+		check(t, cancelledAcquire, "old-order negative did not reproduce request-context cancellation of the actual marker acquisition")
+	} else {
+		check(t, !cancelledAcquire, "consumer cancellation preempted the readiness observation")
+	}
+	one.Release()
+	two.Release()
+	h.open()
+	got := h.job(h.admin, job.ID)
+	check(t, (got.State == "cancelled" || got.State == "uncertain") && got.Result == nil && got.Attempts == 1 &&
+		got.DispatchState == "possibly-sent" && got.DispatchStartedAt != nil, "cancellation became a result or an unsent claim")
+	fresh := h.worker(h.configForWorker("observation-fresh-no-repeat"))
+	process(t, h.ctx, fresh, false)
+	check(t, h.native.count() == 1, "fresh worker repeated inference")
+	h.assertReadonly(before, storage)
+	t.Logf("A1 ordering proof complete: readinessPremature=%t markerAcquireCancelled=%t markerAcquireErrorType=%s nativeCancellationObserved=true nativePOSTs=1 findingMutation=false resurrection=false",
+		premature, cancelledAcquire, errorType)
+}
+
+func TestAA5GenuineMarkerRejectionCalibration(t *testing.T) {
+	mode := os.Getenv("ASPM_AA5_ADVERSE_MARKER")
+	check(t, mode == "absent" || mode == "queued", "explicit bounded marker negative required")
+	h := newHarness(t, false)
+	finding := h.seed()
+	p, key := h.profile("openai", true)
+	pol, grant := h.approve(p)
+	v := h.preview(h.admin, finding, p, pol, grant, reviewedContext())
+	actual := h.enqueue(h.admin, v, "negative-marker-dispatched", 202)
+	target := strings.Repeat("f", 32)
+	if mode == "queued" {
+		target = h.enqueue(h.admin, v, "negative-marker-still-queued", 202).ID
+	}
+	var state string
+	var attempts int
+	var started *time.Time
+	err := h.db.QueryRow(h.ctx, "SELECT state,attempts,dispatch_started_at FROM "+h.table("assessment_jobs")+" WHERE id=$1", target).
+		Scan(&state, &attempts, &started)
+	if mode == "absent" {
+		check(t, errors.Is(err, pgx.ErrNoRows), "negative absent target was not actually absent")
+	} else {
+		must(t, "read real API-created queued target", err)
+		check(t, state == "queued" && attempts == 0 && started == nil, "negative target was not genuinely undispatched")
+	}
+	t.Logf("A1 adverse marker input: mode=%s actualAbsent=%t observedState=%s attempts=%d markerNull=%t; no SQL business-row writes",
+		mode, errors.Is(err, pgx.ErrNoRows), state, attempts, started == nil)
+	before, storage := h.domainSnapshot(), h.storageCalls.Load()
+	script := h.native.arm(p, key, v, target, "ok", "supported", true)
+	w := h.worker(h.configForWorker("negative-marker-" + mode))
+	ctx, cancel := context.WithCancel(h.ctx)
+	defer cancel()
+	done := make(chan error, 1)
+	go func() { _, failure := w.ProcessNext(ctx); done <- failure }()
+	event(t, h.ctx, script.entered, "unchanged protocol and actual marker checks finished")
+	h.readMarker(actual.ID)
+	pingCtx, stop := context.WithTimeout(h.ctx, time.Second)
+	must(t, "single-slot worker remains responsive during marker negative", w.Ping(pingCtx))
+	stop()
+	rejected := t.Failed()
+	t.Logf("A1 adverse marker check: nativeCheckRejected=%t beforeConsumerCancellation=true actualDispatchedMarkerPassed=true", rejected)
+	cancel()
+	cancelCtx, stop := context.WithTimeout(h.ctx, time.Second)
+	event(t, cancelCtx, script.cancelled, "native cancellation after negative marker observation")
+	select {
+	case failure := <-done:
+		check(t, failure == nil || errors.Is(failure, context.Canceled), "negative fixture lost the actual cancellation behavior")
+	case <-cancelCtx.Done():
+		t.Fatal("negative fixture worker did not finish")
+	}
+	stop()
+	check(t, rejected, "native marker oracle accepted an absent or genuinely wrong marker")
+	check(t, h.native.count() == 1 && script.requests.Load() == 1, "negative fixture duplicated native POST")
+	check(t, h.job(h.admin, actual.ID).Result == nil, "negative fixture cancellation committed an advisory result")
+	h.assertReadonly(before, storage)
+	t.Logf("A1 expected-negative proof complete: mode=%s originalMarkerCheckFailed=%t actualNativeCancellation=true nativePOSTs=1 findingsUnchanged=true", mode, rejected)
+}

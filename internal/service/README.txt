@@ -114,3 +114,87 @@ Helm/manual Quadlet artifacts are available; their separate owned-cluster and
 native key-permission checks are recorded in docs/m02-runtime.md. Installer
 provisioning/scheduling, native systemd activation, live authority, bearer refresh
 and operational rollout remain separate work.
+
+Assessment runtime and core scope
+=================================
+
+cmd/assessment-worker uses service.Environment("assessment") and service.Run
+with the ordinary interrupt/SIGTERM context. It opens the accepted independent
+app.AssessmentWorker with one DB pool, not a core HTTP application, integrity
+queue, auth/static handler or storage client. MaxConnections defaults to 1.
+The existing database/schema/listen/TLS settings and generated bounded worker
+identity apply. There is no assessment worker-ID environment override.
+
+Core reads only ASPM_ASSESSMENT_SCOPE from the new assessment settings. Absent
+or empty leaves assessments unavailable without disabling ordinary asset,
+import or AI configuration APIs. A nonempty value is forwarded to app.Config,
+after pure validation before schema/DB/listener activity. It must be nonblank,
+valid UTF-8, at most 128 bytes, with no surrounding whitespace or control
+characters. Configuring a scope, profile or grant never starts a core worker.
+Other roles ignore all new assessment settings; core ignores worker-only limits
+and CA settings. Existing core encryption/storage parsing is unchanged.
+
+Assessment requires explicit nonblank ASPM_ASSESSMENT_SCOPE. Its durable scope
+and limits must agree with the accepted backend configuration for that schema.
+ASPM_INTEGRATION_ENCRYPTION_KEY may be absent for local keyless profiles. If
+supplied, including an empty value, it must be canonical standard base64 for
+exactly 32 bytes. A hosted profile without its worker key cannot dispatch.
+No ambient provider/AWS credentials, raw S3 settings, bootstrap/assets,
+readiness preparation, collection storage or static gateway are inherited.
+
+The following ASPM_ASSESSMENT_ settings default only when ABSENT:
+  LEASE_DURATION           15s     range 250ms..1m
+  AUTHORIZATION_INTERVAL   100ms   range 10ms..1s, strictly shorter than lease
+  REQUEST_TIMEOUT          10s     positive, at most 30s
+  REQUEST_WINDOW           1m      range 1s..1h
+  MAX_CONCURRENT           1       range 1..16
+  REQUESTS_PER_WINDOW      30      range 1..1000
+  MAX_INPUT_BYTES          32768   range 1..32768
+  MAX_OUTPUT_TOKENS        1024    range 1..32768
+  MAX_RESPONSE_BYTES       65536   range 1..131072
+Supplied empty, invalid, overflowing or out-of-bound values fail, not clamp or
+fall back. Programmatic Config fields are forwarded directly to the existing
+pure app.ValidateAssessmentWorkerConfig before schema or external I/O. These
+are durable request/concurrency limits, not account/model/token-rate/cost caps.
+
+ASPM_ASSESSMENT_CA_FILE absent/empty uses normal system trust. An explicit
+regular certificate-only PEM file, nonempty and at most 1 MiB, replaces those
+roots. The shared strict PEM reader rejects junk, private keys and invalid
+certificates. TLS/hostname verification stays enabled with TLS 1.2 or newer and
+a supported effective range. No trust-store or OS policy is changed.
+
+The explicit bounded HTTP client has no proxy/cookies/redirect following,
+ServerName override, DialTLS bypass or default-client fallback. Run owns copies
+of the approved client, transport, roots and key, closes its resources and does
+not mutate/close caller-owned transports. The current persisted profile/grant
+selects the endpoint/model/key at dispatch; the accepted worker binds that
+target. ASPM_MODEL_ENDPOINT or caller JSON headers grant no authority.
+
+For environment-created assessment clients, ASPM_ASSESSMENT_REQUEST_TIMEOUT
+bounds both the total request and the response-header wait. Programmatic client
+header policy, the shared 5s connect/TLS handshake bounds and other roles'
+defaults remain unchanged.
+
+The unchanged shared loop waits context-aware for 200ms only after false,nil,
+continues immediately after true,nil and stops visibly on infrastructure error.
+No service retry/backoff, new attempt, resubmission or quota allocation is added.
+Cancellation reaches active native HTTP and owned resources. Dispatched
+uncertainty, current-authority checks and admission history remain durable
+across independent command opens; a restart cannot resend a marked attempt.
+
+/healthz returns apiVersion:aspm/v1alpha1, service:assessment, status:alive.
+/readyz runs actual worker Ping and reports service:assessment, status:ready,
+database:reachable, storage:not-required, admission:configured, the explicit
+scope, provider:not-probed and pipeline:inspect-job-state-separately.
+DB failure returns 503, never a cached ready result. Readiness/startup do not
+probe a model, validate a provider key or promise available quota.
+/api/session, /api/v1/session and / return 404.
+
+The runtime contract exercises actual core Environment/Run, reviewed API jobs,
+an independent assessment service and the compiled command against owned
+synthetic native HTTP/TLS fixtures, including Run cancellation and crash/reopen
+uncertainty with new explicit work. Specific-PID command cleanup is NOT proof
+of graceful OS-signal handling. No live provider/model/account, model quality,
+retention or runtime processing geography is qualified. Images, installers,
+deployment/scheduling and operational rollout remain separate gates. This
+bounded runtime wiring is not whole-M11 completion or release acceptance.

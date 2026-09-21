@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T19:43:39.874Z",
+  "outcome": "passed",
+  "receipt": {
+    "schemaVersion": 1,
+    "label": "author-typecheck-20260920-03",
+    "command": "npm.cmd run typecheck -- --pretty false",
+    "startedAt": "2026-09-20T19:34:10.5533789+00:00",
+    "finishedAt": "2026-09-20T19:34:12.8706915+00:00",
+    "exitCode": 0,
+    "dependenciesInstalled": false
+  },
+  "evidence": [
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-typecheck-20260920-03.receipt.json",
+      "bytes": 289,
+      "sha256": "4d823149a531efa4f125a571554b1a3dde2d3629d4625d17cb830706c6af8340"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-typecheck-20260920-03.log",
+      "bytes": 64,
+      "sha256": "bedf36a08fcb2955be061de34b64d38a37d8995cddb4642c212cb7f87555ff63"
+    }
+  ],
+  "existingCompilerSettingsAndDependenciesUnchanged": true
+}

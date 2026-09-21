@@ -1,0 +1,143 @@
+ASSESSMENT RUNTIME V1 - INDEPENDENT TEST-AUTHOR HANDOFF
+=====================================================
+
+Status: FROZEN UNSIGNED CONTRACT/RED; PARENT VERIFY/SEAL/SEPARATE CODER NEXT.
+Author: independent-assessment-runtime-test-author-20260920
+Role: test author only, not command/service/backend/deployment implementer.
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+
+Exact scope
+-----------
+Only NEW tests\assessment_runtime files were created.
+No production, old tests/fixtures/bindings, signatures, dependencies, UI,
+packaging/installer/Helm, runtime policies, OS or unrelated fixture changes.
+Mutable web/** and root README.md are expressly excluded from byte guards.
+859 existing protected files remain unchanged.
+
+CONTRACT.txt and reviews\v1\DECISIONS.json preceded test authoring.
+They propose the exact service.Config fields, worker role, core optional scope,
+strict defaults/overrides, direct normal-TLS/CA client and health vocabulary.
+The contract is unchanged from its pre-test SHA256 witness.
+
+Chosen wiring
+--------------
+  cmd/assessment-worker
+  service.Environment("assessment")
+  service.Run(ctx,"assessment",Config)
+Reuse accepted app.AssessmentWorker ProcessNext/Ping/Close; no replacement
+outbox, native protocol client, fake success or substitute command binary.
+Default worker pool size 1; optional absent key preserves local-keyless use.
+Core absent/empty scope remains unavailable, while a valid explicit scope must
+reach app.Config.AssessmentScope through actual core SERVICE wiring.
+No endpoint/model/key is inferred from a new environment override.
+
+Important pure-preflight finding
+--------------------------------
+app.ValidateAssessmentWorkerConfig is ALREADY exported and pure in the held
+backend. Reuse it before EnsureSchema/DB/listener/I/O; no new worker-validator
+export is required and no DB-opening constructor stands in for validation.
+The remaining optional-core-scope preflight check must be reused/factored into
+the service boundary before EnsureSchema. The parent decides that narrow
+factoring together with the proposed Config fields before assigning a coder.
+
+Defaults and decisions requiring parent review
+-----------------------------------------------
+Absent worker variables default to 15s lease, 100ms authorization interval,
+10s request timeout, 1m window, concurrency 1, 30 requests/window, 32768 input
+bytes, 1024 output tokens and 65536 response bytes.
+Supplied invalid/empty/overflow values do not silently default or clamp.
+Assessment key absence is optional; a supplied value must be canonical standard
+base64 for exactly 32 bytes, including rejection of a supplied empty value.
+Existing core key parsing and other role behavior remain unchanged.
+
+Optional CA trust is a bounded regular certificate-only PEM <=1MiB with normal
+TLS1.2+/hostname validation, no proxies/cookies/redirects/ServerName/DialTLS bypass.
+The worker still binds each current persisted destination/base.
+Readiness states configured admission/scope and reachable DB, provider:not-probed,
+storage:not-required, never provider/key/quota/geography certification.
+No S3/bootstrap/assets/readiness-prepare capability is given to worker processes.
+
+Four normal narratives
+------------------------
+AR1 real core Environment/Run scope forwarding and actual protected HTTP intake/
+    preview/job -> independent assessment SERVICE and ACTUAL compiled command
+    -> native advisory/provenance/usage, unchanged finding/configuration data.
+AR2 defaults/overrides/legacy parse isolation, local keyless and hosted missing-key
+    denial before provider I/O, truthful role-only health/readiness.
+AR3 supplied scope/key/limit/client/TLS/CA/core-scope invalids fail before owned
+    DB/storage/provider tripwires or listener conflict.
+AR4 actual Run context cancellation and actual command crash/expired dispatch
+    remain possibly-sent/uncertain across a fresh command, with no repeat and a
+    newly reviewed explicit job processable under persisted scope/quota history.
+
+Actual current evidence
+------------------------
+author-runtime-helpers-20260920-03:
+  PASS helper compilation only. No runtime behavior follows from this.
+
+author-runtime-command-red-20260920-02:
+  Actual go build of .\cmd\assessment-worker FAILED: directory not found.
+  No command was substituted, launched or claimed operational.
+
+author-runtime-service-red-20260920-02:
+  Actual typed service binding compilation FAILED on missing service.Config
+  AssessmentScope/AssessmentLeaseDuration/AuthorizationInterval/RequestTimeout/
+  RequestWindow and limit/client/CA fields.
+  Four planned normal cases; ZERO executed; ALL FOUR BLOCKED/NOT RUN.
+
+author-runtime-environment-red-20260920-02:
+  A separate actual service.Environment("assessment") prerequisite probe FAILED
+  on otherwise valid explicit keyless assessment settings. Inspection confirms
+  the existing role whitelist excludes assessment. This is a real Environment
+  observation, not typed-field forwarding or command acceptance.
+
+author-runtime-fixture-20260920-02:
+  One separate fixture/native calibration PASSED.
+  Actual existing core SERVICE/TLS/session APIs and real report ingestion
+  produced a finding/observation; current empty-scope preview returned 503.
+  For native-fixture calibration ONLY, the accepted app API/worker directly
+  created/consumed a real approved job. Owned normal-TLS native POST, exact
+  context/provenance/usage, committed marker and unchanged domain/no S3 fetch
+  were verified. Readiness follows checks/marker observation, as A1 requires.
+  This does NOT qualify new assessment Environment/Run/command/core forwarding.
+
+All later normal runtime assertions remain BLOCKED. No runtime cancellation,
+actual command restart, quota persistence or provider/account quality is claimed
+green until the real missing command/config/role implementation exists.
+No live provider/model/account/tool/target was contacted.
+
+Fixture and ownership notes
+---------------------------
+Random owned assessment_runtime_<24hex> schemas and S3 prefixes only.
+S3 is legitimate intake only; assessment config/process environment has no S3.
+Core TLS forwarder preserves real HTTP and protected session semantics.
+Native readiness occurs after body/auth/schema/exact context/privacy and an
+independent SELECT verifies dispatching/attempt1/nonnull marker.
+No SQL business rows/results are seeded. Actual APIs/ingestion/worker produce them.
+Exact-PID command cleanup is NOT an OS-signal graceful-shutdown claim.
+Actual Run context cancellation is separately required in normal cases.
+
+Earlier fresh labels remain preserved:
+  helpers-01 exposed one unused import in NEW source, corrected there.
+  earlier empty successful helper output produced no readable log; the NEW
+  runner now always writes an explicit empty log artifact. All final stages
+  above were rerun with those final runner/source bytes.
+
+Packet and replay
+-------------------
+reviews\v1\RED.json, CALIBRATION.json, EVIDENCE.json, SOURCE-WITNESSES.json and
+GUARDS.json keep the classifications/hashes separate. PACKET.json binds all new
+payloads; PACKET.sha256 hashes the unsigned packet.
+No old oracle/history is replaced or re-signed.
+
+From C:\bahadr\serious\aspm with fresh output labels:
+  .\tests\assessment_runtime\Test-AssessmentRuntime.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+Modes CommandBuild / ServiceContract isolate real prerequisites;
+HarnessCompile / FixtureCalibration / EnvironmentProbe are separately labelled.
+Contract requires the ACTUAL command build before the four runtime cases.
+Cached Go1.27.1, readonly/offline modules and redacted private runtime only.
+
+Parent verifies these minimal Config/preflight/health choices and actual RED,
+seals only NEW controls and assigns a separate implementation coder.
+No release, whole-M11, live-model quality, processing-geography or deployment
+permission is claimed. The independent test author stops at this handoff.

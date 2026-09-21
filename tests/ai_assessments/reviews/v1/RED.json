@@ -1,0 +1,710 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T18:34:18.646Z",
+  "scope": "Honest pre-implementation RED, not missing-fixture or synthetic assessment success.",
+  "publishedOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "fullSuite": {
+    "run": "author-assess-contract-red-20260920-03",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "Contract",
+      "startedAt": "2026-09-20T18:29:10.5979121+00:00",
+      "finishedAt": "2026-09-20T18:29:13.0168628+00:00",
+      "exitCode": 1,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "arguments": [
+        "test",
+        "-json",
+        "-tags=integration",
+        "-mod=readonly",
+        "-count=1",
+        "-timeout=240s",
+        ".\\tests\\ai_assessments"
+      ],
+      "fullProductionBindingsIncluded": true,
+      "helperOnlyIsNotAssessmentAcceptance": false,
+      "privateRuntimeValuesCopied": false,
+      "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+      "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+      "dependenciesInstalled": false
+    },
+    "counts": {
+      "selectedTopLevel": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 0,
+      "nestedFailed": 0
+    },
+    "cases": [],
+    "nested": [],
+    "evidence": [
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.jsonl",
+        "bytes": 1801,
+        "sha256": "21486f659beeb9fa72cdeee054ce804fc4ea77c992c11f3c91cd0f8af69a35ea"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.log",
+        "bytes": 507,
+        "sha256": "90fca6422e3cd9236dfba303dd6e2eb4c9921ccac89d3fe3295e3f29ef14dc7e"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.receipt.json",
+        "bytes": 881,
+        "sha256": "2ada38b576a9a02d8eec9b536682465bdcbe773f1006832f0ee76b5cc9be977f"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.published-v7-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.published-v7-build.json",
+        "bytes": 894,
+        "sha256": "ca2227dd4185839aadc7b61303bbef17456816493f10c69c2103253970249235"
+      }
+    ],
+    "plannedNarratives": 8,
+    "executedNarratives": 0,
+    "blockedNarratives": 8,
+    "compilerFailures": [
+      "app.Config.AssessmentScope missing",
+      "app.OpenAssessmentWorker missing",
+      "app.AssessmentWorkerConfig missing"
+    ],
+    "actualCompilerOutput": "# github.com/bahadrdsr/aspm/tests/ai_assessments [github.com/bahadrdsr/aspm/tests/ai_assessments.test]\ntests\\ai_assessments\\production_bindings_test.go:13:10: config.AssessmentScope undefined (type app.Config has no field or method AssessmentScope)\ntests\\ai_assessments\\production_bindings_test.go:17:24: undefined: app.OpenAssessmentWorker\ntests\\ai_assessments\\production_bindings_test.go:17:54: undefined: app.AssessmentWorkerConfig\nFAIL\tgithub.com/bahadrdsr/aspm/tests/ai_assessments [build failed]\n",
+    "narratives": [
+      {
+        "name": "TestAA1ReviewedPreviewConsentScopePrivacyAndDeniedWrites",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA2ImmutableQueueReplayHistoryAndObservationSnapshotSurviveReopen",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA3FourNativeProviderMappingsUsageAndGroundedAdvisory",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA4DistinctRejectedOutputAndProviderFailuresNeverRetryOrMutateFindings",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA6CurrentAuthorityChangesActivelyCancelHeldNativeResponses",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA7SharedAdmissionExpiredDispatchAndStaleFenceAcrossWorkersAndProfiles",
+        "source": "tests\\ai_assessments\\assessments_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      },
+      {
+        "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens",
+        "source": "tests\\ai_assessments\\upgrade_test.go",
+        "status": "BLOCKED/NOT RUN in full production-binding suite"
+      }
+    ]
+  },
+  "separateActualUpgradePrerequisite": {
+    "run": "author-assess-v7-upgrade-red-20260920-03",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "UpgradePrerequisite",
+      "startedAt": "2026-09-20T18:29:10.6957181+00:00",
+      "finishedAt": "2026-09-20T18:29:18.3571535+00:00",
+      "exitCode": 1,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "arguments": [
+        "test",
+        "-json",
+        "-tags=integration",
+        "-mod=readonly",
+        "-count=1",
+        "-timeout=120s",
+        "-run=^TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens$/^published-v7-upgrade$",
+        "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\assessments_test.go",
+        "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\contract_test.go",
+        "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixture_calibration_test.go",
+        "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixtures_test.go",
+        "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\native_test.go",
+        "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\upgrade_test.go"
+      ],
+      "fullProductionBindingsIncluded": false,
+      "helperOnlyIsNotAssessmentAcceptance": true,
+      "privateRuntimeValuesCopied": false,
+      "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+      "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+      "dependenciesInstalled": false
+    },
+    "counts": {
+      "selectedTopLevel": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 0,
+      "nestedFailed": 1
+    },
+    "cases": [
+      {
+        "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens",
+        "status": "fail",
+        "durationSeconds": 2.53
+      }
+    ],
+    "nested": [
+      {
+        "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/published-v7-upgrade",
+        "status": "fail",
+        "durationSeconds": 2.53
+      }
+    ],
+    "evidence": [
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.jsonl",
+        "bytes": 3023,
+        "sha256": "a71b5723ed2c94fd1ed8159d4ea11820223ea67d1618e42009a854370cdd6841"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.log",
+        "bytes": 639,
+        "sha256": "2de6d1b0de7aa253e9bb47c34e82dcc1ed4313f947dc2b448adf6659259c37fb"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.receipt.json",
+        "bytes": 1409,
+        "sha256": "6c0e01118f75d632229e87deb0384d8fce07ac425d3dc7063bef02d47582d6b4"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.published-v7-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.published-v7-build.json",
+        "bytes": 896,
+        "sha256": "65e38189573d1c27db7349dfe6e393815b82bf26055943b054f0787e071058f7"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-f151fbb9e666d1cd9bc8adb4.json",
+        "bytes": 359,
+        "sha256": "768ec49d1608033564df97e42137116eb64f8aecb17477322df151b3e1fd8f85"
+      }
+    ],
+    "actualBehavioralFailure": "The actual current constructor leaves the exact populated published-V7 ledger at 1..7; explicit V8 requirement fails.",
+    "laterLegacyAndAssessmentAssertions": "BLOCKED/NOT RUN after the exact-ledger assertion",
+    "notFullAssessmentAcceptance": true
+  },
+  "plannedCompatibility": {
+    "AI7": {
+      "run": "author-assess-v8-ai-compat-red-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Contract",
+        "startedAt": "2026-09-20T18:16:54.2654635+00:00",
+        "finishedAt": "2026-09-20T18:17:09.5295200+00:00",
+        "exitCode": 1,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=180s",
+          ".\\tests\\ai_configuration"
+        ],
+        "fullProductionResolverBindingIncluded": true,
+        "helperOnlyIsNotFullAcceptance": false,
+        "capabilities": "Owned random PG schemas and real API sessions; owned HTTP tripwires with no provider requests. No S3, prompt, inference, source/scan or verification execution.",
+        "privateRuntimeValuesCopied": false,
+        "providerAccountsOrKeysDiscovered": false
+      },
+      "counts": {
+        "selectedTopLevel": 7,
+        "passed": 6,
+        "failed": 1,
+        "skipped": 0,
+        "nestedPassed": 1,
+        "nestedFailed": 1
+      },
+      "cases": [
+        {
+          "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+          "status": "pass",
+          "durationSeconds": 1.2
+        },
+        {
+          "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+          "status": "pass",
+          "durationSeconds": 1.18
+        },
+        {
+          "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+          "status": "pass",
+          "durationSeconds": 1.1
+        },
+        {
+          "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+          "status": "pass",
+          "durationSeconds": 1.56
+        },
+        {
+          "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+          "status": "pass",
+          "durationSeconds": 1.66
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+          "status": "fail",
+          "durationSeconds": 3.04
+        },
+        {
+          "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+          "status": "pass",
+          "durationSeconds": 1.24
+        }
+      ],
+      "nested": [
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/fresh-concurrent-and-credential-compatibility",
+          "status": "pass",
+          "durationSeconds": 1.74
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/published-v6-upgrade",
+          "status": "fail",
+          "durationSeconds": 1.3
+        }
+      ],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.jsonl",
+          "bytes": 13221,
+          "sha256": "372f7d915999d740160a9ca2e0c94fc5f660076e1a495c78718601c244fdec53"
+        },
+        {
+          "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.log",
+          "bytes": 2647,
+          "sha256": "0d8601f9667d43711a51907a6599e484dbed9a116bdbcc5b708055cd638318dd"
+        },
+        {
+          "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.receipt.json",
+          "bytes": 840,
+          "sha256": "7eee0e7d639a76db50c5909f4a42b18531b5343c7282016fe82773c1bce25631"
+        },
+        {
+          "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-415975e43cb28b38bbc2204e.json",
+          "bytes": 765,
+          "sha256": "b6249d2963f05cdad88fe748fd125334757fe4e5ce90d8796fdb2313482a9021"
+        }
+      ]
+    },
+    "Source9": {
+      "run": "author-assess-v8-source-compat-red-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Contract",
+        "startedAt": "2026-09-20T18:16:54.2718616+00:00",
+        "finishedAt": "2026-09-20T18:17:16.9159114+00:00",
+        "exitCode": 1,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-mod=readonly",
+          "-tags=integration",
+          "-json",
+          "-count=1",
+          "-timeout=240s",
+          ".\\tests\\source_collection"
+        ],
+        "fullProductionBindingIncluded": true,
+        "helperOnlyIsNotAcceptance": false,
+        "boundary": "Explicit loopback PG/local S3 and exact owned TLS GitHub protocol fixture only; values withheld",
+        "liveGitHubCloudOrCredentialDiscoveryAuthorized": false
+      },
+      "counts": {
+        "selectedTopLevel": 9,
+        "passed": 8,
+        "failed": 1,
+        "skipped": 0,
+        "nestedPassed": 4,
+        "nestedFailed": 2
+      },
+      "cases": [
+        {
+          "name": "TestSourceCollectionOwnedIOPreflight",
+          "status": "pass",
+          "durationSeconds": 0.1
+        },
+        {
+          "name": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+          "status": "pass",
+          "durationSeconds": 1.95
+        },
+        {
+          "name": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+          "status": "pass",
+          "durationSeconds": 1.48
+        },
+        {
+          "name": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+          "status": "pass",
+          "durationSeconds": 1.65
+        },
+        {
+          "name": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+          "status": "pass",
+          "durationSeconds": 2.14
+        },
+        {
+          "name": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+          "status": "pass",
+          "durationSeconds": 1.98
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+          "status": "pass",
+          "durationSeconds": 4.91
+        },
+        {
+          "name": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+          "status": "pass",
+          "durationSeconds": 2.52
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2",
+          "status": "fail",
+          "durationSeconds": 1.59
+        }
+      ],
+      "nested": [
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-cancel",
+          "status": "pass",
+          "durationSeconds": 1.33
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-revoke",
+          "status": "pass",
+          "durationSeconds": 1.26
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-revoke",
+          "status": "pass",
+          "durationSeconds": 1.14
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-source-revision",
+          "status": "pass",
+          "durationSeconds": 1.18
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2/current-core",
+          "status": "fail",
+          "durationSeconds": 0.86
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2/current-worker",
+          "status": "fail",
+          "durationSeconds": 0.73
+        }
+      ],
+      "evidence": [
+        {
+          "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.jsonl",
+          "bytes": 17913,
+          "sha256": "2d278b6d10671f223f8da7e8c4f9c2970ea396c884e364f2ccc18fca4b32641a"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.log",
+          "bytes": 3254,
+          "sha256": "752aba4007ae7725a9c606db0140b94bc7a8d4f21d2768f20f9f1452ba660279"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.receipt.json",
+          "bytes": 735,
+          "sha256": "ef15446712f0268837b229c450840ea1d3a774efc9000ca9997c68a37c343985"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-20412fae487881c9b5e21f30.json",
+          "bytes": 884,
+          "sha256": "2d55de1fbb014a16b12228d91b259ec14267918b8cf7ee41c55cecd109add435"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-4c5eb72f40698aa1db1c7d74.json",
+          "bytes": 886,
+          "sha256": "3ea157a130330630053316ddeed3851aa5661472db28e20aca94de0b65866085"
+        }
+      ]
+    },
+    "actualObservedLedgers": [
+      {
+        "file": {
+          "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-f151fbb9e666d1cd9bc8adb4.json",
+          "bytes": 359,
+          "sha256": "768ec49d1608033564df97e42137116eb64f8aecb17477322df151b3e1fd8f85"
+        },
+        "observation": {
+          "afterCurrentOpen": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "legacyBusinessRowsCreatedByPublishedAPIs": true,
+          "legacyRelations": 25,
+          "noBusinessSQLSeeds": true,
+          "noLedgerRelabel": true,
+          "oldDataSHA256": "sha256:f33976d7bb0b329b6e29f6fd69683d20f43c376d2a2ee55dee69ad6ab63f2719",
+          "origin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+          "startingVersions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ]
+        }
+      },
+      {
+        "file": {
+          "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-415975e43cb28b38bbc2204e.json",
+          "bytes": 765,
+          "sha256": "b6249d2963f05cdad88fe748fd125334757fe4e5ce90d8796fdb2313482a9021"
+        },
+        "observation": {
+          "Origin": "24556fd41090628f391a728457f9c377ca624983",
+          "Schema": "ai_config_042ed60ebc8a6eba830039fc",
+          "VerifiedStartingVersion": 6,
+          "LegacyRelations": 22,
+          "CurrentCoreOpened": true,
+          "AfterVersions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "AfterTables": [
+            "app_ai_egress_grants",
+            "app_ai_policies",
+            "app_ai_profiles",
+            "app_assets",
+            "app_auth_throttle",
+            "app_bootstrap",
+            "app_coverage",
+            "app_finding_deliveries",
+            "app_findings",
+            "app_imports",
+            "app_integration_connections",
+            "app_memberships",
+            "app_notes",
+            "app_observations",
+            "app_oidc_flows",
+            "app_oidc_identities",
+            "app_report_snapshots",
+            "app_schema_versions",
+            "app_sessions",
+            "app_source_collection_records",
+            "app_source_collections",
+            "app_source_connections",
+            "app_source_repository_assets",
+            "app_users",
+            "app_workspaces"
+          ],
+          "LegacyBusinessRowsSeeded": false
+        }
+      },
+      {
+        "file": {
+          "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-20412fae487881c9b5e21f30.json",
+          "bytes": 884,
+          "sha256": "2d55de1fbb014a16b12228d91b259ec14267918b8cf7ee41c55cecd109add435"
+        },
+        "observation": {
+          "Entrypoint": "current-core",
+          "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+          "OwnedSchema": "source_collection_28123d98e39328a8fce04f82",
+          "LegacyRelations": 18,
+          "VerifiedStartingMaxVersion": 5,
+          "CurrentConstructorSucceeded": true,
+          "AfterOpenVersions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "AfterOpenTables": [
+            "app_ai_egress_grants",
+            "app_ai_policies",
+            "app_ai_profiles",
+            "app_assets",
+            "app_auth_throttle",
+            "app_bootstrap",
+            "app_coverage",
+            "app_finding_deliveries",
+            "app_findings",
+            "app_imports",
+            "app_integration_connections",
+            "app_memberships",
+            "app_notes",
+            "app_observations",
+            "app_oidc_flows",
+            "app_oidc_identities",
+            "app_report_snapshots",
+            "app_schema_versions",
+            "app_sessions",
+            "app_source_collection_records",
+            "app_source_collections",
+            "app_source_connections",
+            "app_source_repository_assets",
+            "app_users",
+            "app_workspaces"
+          ],
+          "PostUpgradeAPITailExecuted": false,
+          "LegacyBusinessDataPreservationClaimed": false
+        }
+      },
+      {
+        "file": {
+          "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-4c5eb72f40698aa1db1c7d74.json",
+          "bytes": 886,
+          "sha256": "3ea157a130330630053316ddeed3851aa5661472db28e20aca94de0b65866085"
+        },
+        "observation": {
+          "Entrypoint": "current-worker",
+          "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+          "OwnedSchema": "source_collection_eaa0485b0a5cb1ed3ee588e0",
+          "LegacyRelations": 18,
+          "VerifiedStartingMaxVersion": 5,
+          "CurrentConstructorSucceeded": true,
+          "AfterOpenVersions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "AfterOpenTables": [
+            "app_ai_egress_grants",
+            "app_ai_policies",
+            "app_ai_profiles",
+            "app_assets",
+            "app_auth_throttle",
+            "app_bootstrap",
+            "app_coverage",
+            "app_finding_deliveries",
+            "app_findings",
+            "app_imports",
+            "app_integration_connections",
+            "app_memberships",
+            "app_notes",
+            "app_observations",
+            "app_oidc_flows",
+            "app_oidc_identities",
+            "app_report_snapshots",
+            "app_schema_versions",
+            "app_sessions",
+            "app_source_collection_records",
+            "app_source_collections",
+            "app_source_connections",
+            "app_source_repository_assets",
+            "app_users",
+            "app_workspaces"
+          ],
+          "PostUpgradeAPITailExecuted": false,
+          "LegacyBusinessDataPreservationClaimed": false
+        }
+      }
+    ],
+    "reason": "Explicit user-planned strict V8 evolution before implementation, not an implementation-driven green patch.",
+    "laterFailedUpgradeTails": "BLOCKED/NOT RUN; unchanged assertions still required."
+  },
+  "fixtureCalibration": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION.json",
+    "bytes": 5514,
+    "sha256": "26c0986c0586eca91ae144df76b1af31098c9e3696aad13c4af45d57d0b9e3c5"
+  },
+  "testedSourceWitnesses": [
+    {
+      "path": "tests\\ai_assessments\\assessments_test.go",
+      "bytes": 22651,
+      "sha256": "88bd4dd295fbcd707e33af476e088cbabbc0ee66cc759f25277e981b2868bfca"
+    },
+    {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    {
+      "path": "tests\\ai_assessments\\contract_test.go",
+      "bytes": 4015,
+      "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+    },
+    {
+      "path": "tests\\ai_assessments\\fixtures_test.go",
+      "bytes": 27313,
+      "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+    },
+    {
+      "path": "tests\\ai_assessments\\fixture_calibration_test.go",
+      "bytes": 2710,
+      "sha256": "b5c553429ac810beef9f2c4a690e690c05949f5035a6ef037872ff977e75da55"
+    },
+    {
+      "path": "tests\\ai_assessments\\native_test.go",
+      "bytes": 13115,
+      "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+    },
+    {
+      "path": "tests\\ai_assessments\\prepare-published-v7.mjs",
+      "bytes": 4083,
+      "sha256": "b2b2e471b8ddf9f0573470c55ff92b92d6359934229a6bbe0fabc3df88c4454a"
+    },
+    {
+      "path": "tests\\ai_assessments\\production_bindings_test.go",
+      "bytes": 1086,
+      "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+    },
+    {
+      "path": "tests\\ai_assessments\\Test-AIAssessments.ps1",
+      "bytes": 7192,
+      "sha256": "678c44ad42514150b89f0138384b7cc0205269871daf8de2a9255b3808387552"
+    },
+    {
+      "path": "tests\\ai_assessments\\upgrade_test.go",
+      "bytes": 11892,
+      "sha256": "4c58962bbbe89327ddb3d22d1e7e48541844d0aa348aa2711256353740583fbe"
+    }
+  ],
+  "claims": {
+    "newDurableBehaviorPassed": false,
+    "liveProviderValidated": false,
+    "productionModified": false,
+    "oldSignaturesModified": false
+  }
+}

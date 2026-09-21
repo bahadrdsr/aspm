@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-20T23:52:17.210Z",
+  "status": "Matched fixed controls and production HOLD, with exactly one explicitly authorized archived fixture delta.",
+  "publishedHEAD": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "publicManifest": {
+    "path": ".oracles\\ai-assessments-ui-v1.json",
+    "bytes": 161717,
+    "sha256": "51c4a284752da31416f3f524439d740362ec54a9909615051ac4c4d02071e55f"
+  },
+  "publicSignature": {
+    "path": ".oracles\\ai-assessments-ui-v1.json.sig",
+    "bytes": 89,
+    "sha256": "c3bcf5208c44c6fdc391b8c0fa2bf3c50922077b5a6d4d7e1a74f8fc293f7daf"
+  },
+  "coderHandoff": {
+    "path": ".cache\\ai-assessments-ui-coder\\HANDOFF.json",
+    "bytes": 117581,
+    "sha256": "e2749ef0cad72f89ead5593701b36c7b701a84cd0a394153764563f8ec558515"
+  },
+  "originalControlCount": 803,
+  "unchangedOriginalControls": 802,
+  "amendedControls": [
+    {
+      "path": "web\\tests\\ai-assessments-fixture.ts",
+      "expected": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202",
+      "actual": "aba53670b320c5285459b842e5a32ca00738240a9a7c940783a52a819fdf5000"
+    }
+  ],
+  "originalAssertionSpecFiles": 20,
+  "oldAssertionSpecBytesUnchanged": true,
+  "productionCandidateCount": 12,
+  "productionCandidateUnchanged": true,
+  "production": [
+    {
+      "path": "README.md",
+      "bytes": 31850,
+      "sha256": "0923d6946f421d4cd6c722d7a9f928f2584b3b058b1f4d835cc943542824a3a9",
+      "expected": "0923d6946f421d4cd6c722d7a9f928f2584b3b058b1f4d835cc943542824a3a9"
+    },
+    {
+      "path": "web\\src\\api\\assessment-intents.ts",
+      "bytes": 2374,
+      "sha256": "4dc77209eb02a9a57f35d09a6072d9c1102ef10425b7b5a432662e486b08f946",
+      "expected": "4dc77209eb02a9a57f35d09a6072d9c1102ef10425b7b5a432662e486b08f946"
+    },
+    {
+      "path": "web\\src\\api\\assessment-types.ts",
+      "bytes": 2430,
+      "sha256": "53784960713bcf5d43498cdfbe78a16b953bf90ef1daac4831502f2c436b9b7b",
+      "expected": "53784960713bcf5d43498cdfbe78a16b953bf90ef1daac4831502f2c436b9b7b"
+    },
+    {
+      "path": "web\\src\\api\\assessments.ts",
+      "bytes": 18361,
+      "sha256": "cb3672354a36526b733ca30cf69976ec9629d4b47bf22e9c11e1c035f0d92b61",
+      "expected": "cb3672354a36526b733ca30cf69976ec9629d4b47bf22e9c11e1c035f0d92b61"
+    },
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 34788,
+      "sha256": "e3dbb4bf60ddeea8ab4a898cf35b4a5bbf50ac6379cfdb86d28084984fa5dfb5",
+      "expected": "e3dbb4bf60ddeea8ab4a898cf35b4a5bbf50ac6379cfdb86d28084984fa5dfb5"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\detail.tsx",
+      "bytes": 10052,
+      "sha256": "62b277475d3651c8999d38ff6af0d43847ff6ccf77d2f9566ad6e54c8005e1b3",
+      "expected": "62b277475d3651c8999d38ff6af0d43847ff6ccf77d2f9566ad6e54c8005e1b3"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\draft.tsx",
+      "bytes": 13488,
+      "sha256": "dda129ae7e2f17eb584168c45881671c20e298687aaf30beb96835f728402f01",
+      "expected": "dda129ae7e2f17eb584168c45881671c20e298687aaf30beb96835f728402f01"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\facts.tsx",
+      "bytes": 2917,
+      "sha256": "0fbe4756a6d018756cb121c78588ef0aafeaf811f40b0956b928656a0a137cc1",
+      "expected": "0fbe4756a6d018756cb121c78588ef0aafeaf811f40b0956b928656a0a137cc1"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\finding-assessments.css",
+      "bytes": 3494,
+      "sha256": "0a23b3efeccac995a322e20ca5d5e43d8ea0a7768e8d5a51738799406ca33126",
+      "expected": "0a23b3efeccac995a322e20ca5d5e43d8ea0a7768e8d5a51738799406ca33126"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\finding-assessments.tsx",
+      "bytes": 7279,
+      "sha256": "4c216943fe4ffdbb181dc67b02f125504ccff69898c8bf75497d3f0becbb463d",
+      "expected": "4c216943fe4ffdbb181dc67b02f125504ccff69898c8bf75497d3f0becbb463d"
+    },
+    {
+      "path": "web\\src\\components\\finding-assessments\\history.tsx",
+      "bytes": 6226,
+      "sha256": "8bd692039f7b5ed581cbdf81a404297d0fe0a8b8bec6fd174e7a76249ca4d673",
+      "expected": "8bd692039f7b5ed581cbdf81a404297d0fe0a8b8bec6fd174e7a76249ca4d673"
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "bytes": 12055,
+      "sha256": "66bf9f128aeab920f6f7d01558c81ea4d42fece7bdabb85c2aa2544be67a8a9a",
+      "expected": "66bf9f128aeab920f6f7d01558c81ea4d42fece7bdabb85c2aa2544be67a8a9a"
+    }
+  ],
+  "frontendSourceCount": 83,
+  "allFrontendSourcesUnchanged": true,
+  "fixed": [
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-seal-inputs\\ai-assessments-ui-oracle-set.json",
+      "bytes": 52291,
+      "sha256": "7a837a72b72cf8dfee4d967357e872326a287eb6578ebf6d083ba1c5666f34cd",
+      "expected": "7a837a72b72cf8dfee4d967357e872326a287eb6578ebf6d083ba1c5666f34cd"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\trusted-oracle-checker\\oracles.mjs",
+      "bytes": 8339,
+      "sha256": "7e6552c5a68da1eefaebd99e313f7ba9c39687410dafce937a7619b190e022dc",
+      "expected": "7e6552c5a68da1eefaebd99e313f7ba9c39687410dafce937a7619b190e022dc"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\trusted-oracle-checker\\oracle-lib.mjs",
+      "bytes": 22538,
+      "sha256": "13ca4348d5307e1ca4b243eeab4d1230df1c92b53323afd0f15a27b3f936c0e5",
+      "expected": "13ca4348d5307e1ca4b243eeab4d1230df1c92b53323afd0f15a27b3f936c0e5"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-public.pem",
+      "bytes": 113,
+      "sha256": "078fcc29ba3f1d9556ce5cc38b0ea7eb849901ad974d5dff15e2e2ee9ef2433a",
+      "expected": "078fcc29ba3f1d9556ce5cc38b0ea7eb849901ad974d5dff15e2e2ee9ef2433a"
+    }
+  ],
+  "fixtureArchive": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\fixture-before.ts.txt",
+    "bytes": 27759,
+    "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+  },
+  "fixtureArchiveMatchesOriginal": true,
+  "amendmentProof": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\AMENDMENT-PROOF.json",
+    "bytes": 2255,
+    "sha256": "496d8303c90d0c44e6096134aa16459a5232c68a718111c2776e9179c765ae40"
+  },
+  "nativeOptionSemanticsUnchanged": {
+    "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+    "bytes": 552,
+    "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+  },
+  "runner": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+    "bytes": 1123,
+    "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+  },
+  "testSettings": {
+    "combinedAPIRequests": 60,
+    "workers": 1,
+    "retries": 0,
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000
+  },
+  "holdMechanism": "FileShare.Read held 5802 fixed/production/test/runtime-execution input files through qualifying runs, raw SHA256 checked before and after.",
+  "authorityBoundary": "No original oracle/checker recapture or new authority. Existing manifest remains unchanged and still names the old fixture bytes. New files and disclosed fixture delta need parent approval/new seal.",
+  "mutableBackendAndRuntimeExcluded": true,
+  "privateSigningAuthorityAccess": false,
+  "productionEdits": 0,
+  "dependencyEditsOrInstalls": 0,
+  "oldAssertionEdits": 0,
+  "agentsLaunched": 0,
+  "commits": 0,
+  "liveAPIProviderDBCalls": 0
+}

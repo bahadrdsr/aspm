@@ -50,6 +50,18 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			runtime = nil
 		}
 	}()
+	if role == "assessment" {
+		worker, openErr := app.OpenAssessmentWorker(ctx, assessmentWorkerConfig(config))
+		if openErr != nil {
+			return runtime, openErr
+		}
+		runtime.closers = append(runtime.closers, worker.Close)
+		runtime.checks = append(runtime.checks, worker.Ping)
+		runtime.workers = append(runtime.workers, func(ctx context.Context) error {
+			return runQueuedWork(ctx, "assessment", worker.ProcessNext)
+		})
+		return runtime, nil
+	}
 	if role == "collection" {
 		worker, openErr := app.OpenCollectionWorker(ctx, collectionWorkerConfig(config))
 		if openErr != nil {
@@ -103,6 +115,7 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			CollectionStorage: config.CollectionStorage,
 			BootstrapToken:    config.BootstrapToken, PublicOrigin: config.PublicOrigin,
 			IntegrationEncryptionKey: config.IntegrationEncryptionKey,
+			AssessmentScope:          config.AssessmentScope,
 			Now:                      db.Now, LogOutput: db.LogOutput, SessionTTL: 8 * time.Hour, MaxUploadBytes: 8 << 20,
 			ManualProcessing: true,
 		})
@@ -138,7 +151,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 		storage := *config.CollectionStorage
 		config.CollectionStorage = &storage
 	}
-	if role == "delivery" || role == "collection" {
+	if role == "delivery" || role == "collection" || role == "assessment" {
 		config.IntegrationEncryptionKey = bytes.Clone(config.IntegrationEncryptionKey)
 		defer clear(config.IntegrationEncryptionKey)
 	}
@@ -162,6 +175,13 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			return err
 		}
 		defer config.CollectionClient.CloseIdleConnections()
+	}
+	if role == "assessment" {
+		config.AssessmentClient, err = ownDirectProviderClient(config.AssessmentClient, config.AssessmentCAFile)
+		if err != nil {
+			return assessmentCAError()
+		}
+		defer config.AssessmentClient.CloseIdleConnections()
 	}
 	startup, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
@@ -190,7 +210,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			}
 		}
 	}
-	if role != "reports" && role != "delivery" && role != "collection" && config.ReadinessKey != "" {
+	if role != "reports" && role != "delivery" && role != "collection" && role != "assessment" && config.ReadinessKey != "" {
 		if config.PrepareReadiness {
 			if err := evidence.PrepareReadiness(startup, config.Evidence, config.ReadinessKey); err != nil {
 				return err
@@ -226,7 +246,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 		if role == "collection" {
 			storage = "configured-not-probed"
 		}
-		if role != "reports" && role != "delivery" && role != "collection" {
+		if role != "reports" && role != "delivery" && role != "collection" && role != "assessment" {
 			storage = "not-probed"
 			if config.ReadinessKey != "" {
 				if err := app.ProbeStorage(check, storageConfig(config.Evidence), config.ReadinessKey); err != nil {
@@ -236,10 +256,16 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 				storage = "scoped-object-accessible"
 			}
 		}
-		jsonResponse(w, http.StatusOK, map[string]string{
+		ready := map[string]string{
 			"service": role, "status": "ready", "database": "reachable", "storage": storage,
 			"pipeline": "inspect-job-state-separately",
-		})
+		}
+		if role == "assessment" {
+			ready["admission"] = "configured"
+			ready["scope"] = config.AssessmentScope
+			ready["provider"] = "not-probed"
+		}
+		jsonResponse(w, http.StatusOK, ready)
 	})
 	if role == "core" {
 		mux.Handle("/api/", runtime.api)

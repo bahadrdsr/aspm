@@ -1,0 +1,126 @@
+import { expect, test } from "./ai-assessments-fixture";
+import { apiVersion, cancelPath, historyPath, jobFor, otherContext, previewFor } from "./ai-assessments-data";
+import { unitCancelId, unitPreviewId } from "./harness/ai-assessment-review/inputs";
+import { arrived, closeFinding, closePane, consent, deliver, details, frames, history, newAssessment,
+  openFinding, openPane, pane, prepare, preparePreview, queue, rows, startDraft } from "./ai-assessment-review-helpers";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+
+for (const [status, code] of [[502, "conflict"], [500, "invalid-input"], [503, "conflict"]] as const) {
+  test(`REPRO ONLY queue commit then ${status}/${code}`, async ({ page, assessments: api }, info) => {
+    await openFinding(page, api); await openPane(page, api); await startDraft(page);
+    await preparePreview(page, api);
+    const first = api.expectWrite(historyPath(), 202, true, false, { status,
+      body: { apiVersion, error: { code, message: "Synthetic ambiguous transport failure.",
+        retryable: false, requestId: "synthetic-reviewed-5xx" } } });
+    await consent(page).check(); await queue(page).click();
+    const call = await arrived(first);
+    expect(api.jobs.size).toBe(1);
+    await deliver(first);
+    await expect(pane(page).getByRole("alert")).toBeVisible();
+    const failedHistory = api.queueRead(historyPath(), 503, true);
+    await history(page).getByRole("button", { name: "Refresh assessment history", exact: true }).click();
+    await arrived(failedHistory); await deliver(failedHistory);
+    await expect(history(page).getByRole("alert")).toBeVisible();
+    const unresolved = await pane(page).getByRole("status").filter({ hasText: /acknowledgement remains unresolved/i }).count();
+    let repeated: Record<string, unknown> | null = null;
+    if (await prepare(page).count() && await pane(page).getByRole("textbox", { name: "Reviewed finding context", exact: true }).isEnabled()) {
+      await preparePreview(page, api, otherContext);
+      const next = api.expectWrite(historyPath(), 202, true);
+      await consent(page).check(); await queue(page).click();
+      repeated = (await arrived(next)).body;
+      await deliver(next);
+      await expect(rows(page)).toHaveCount(1);
+    }
+    await closePane(page, api);
+    api.queueRead(historyPath(), 503);
+    await openPane(page, api);
+    await expect(history(page).getByRole("alert")).toBeVisible();
+    await expect(newAssessment(page)).toBeDisabled();
+    await closeFinding(page, api);
+    api.queueRead(historyPath(), 503);
+    await openFinding(page, api, false); await openPane(page, api);
+    await expect(history(page).getByRole("alert")).toBeVisible();
+    await expect(newAssessment(page)).toBeDisabled();
+    await frames(page);
+    const observed = { status, code, first: call.body, delivered: call.response, unresolvedStatusVisible: unresolved,
+      nextExplicitQueue: repeated, jobs: [...api.jobs.values()].map(({ id, previewId, idempotencyKey }) => ({ id, previewId, idempotencyKey })),
+      posts: api.calls("POST", historyPath()).length, claim: "Independent observational reproduction, not acceptance or a green regression." };
+    api.mark(JSON.stringify(observed));
+    await info.attach("independent-observation", { contentType: "application/json", body: JSON.stringify(observed, null, 2) });
+  });
+}
+
+for (const denial of [403, 404] as const) {
+  test(`REPRO ONLY history ${denial} immediately before held cancel ACK`, async ({ page, assessments: api }, info) => {
+    const job = jobFor(); api.seedJobs([job]);
+    await openFinding(page, api); await openPane(page, api);
+    await rows(page).filter({ hasText: job.id }).getByRole("button", { name: "View assessment", exact: true }).click();
+    await details(page).getByRole("button", { name: "Cancel assessment", exact: true }).click();
+    const cancel = api.expectWrite(cancelPath(job.id), 200, true);
+    await pane(page).getByRole("button", { name: "Confirm cancellation", exact: true }).click();
+    await arrived(cancel);
+    const denied = api.queueRead(historyPath(), denial, true);
+    await history(page).getByRole("button", { name: "Refresh assessment history", exact: true }).click();
+    await arrived(denied);
+    const network: Array<{ path: string; status: number }> = [];
+    page.on("response", (response) => {
+      const path = new URL(response.url()).pathname;
+      if (path === historyPath() || path === cancelPath(job.id)) network.push({ path, status: response.status() });
+    });
+    await deliver(denied);
+    await deliver(cancel);
+    await expect(history(page).getByRole("alert")).toBeVisible();
+    const afterBoth = await rows(page).count();
+    const unavailable = api.queueRead(historyPath(), 503, true);
+    await history(page).getByRole("button", { name: "Retry assessment history", exact: true }).click();
+    await arrived(unavailable); await deliver(unavailable);
+    await expect(history(page).getByRole("alert")).toContainText(/unavailable/i);
+    const afterUnavailable = await rows(page).count();
+    const recovered = api.queueRead(historyPath(), 200, true);
+    await history(page).getByRole("button", { name: "Retry assessment history", exact: true }).click();
+    await arrived(recovered); await deliver(recovered);
+    await expect(rows(page)).toHaveCount(1);
+    const observed = { denial, afterBoth, afterUnavailable, afterAuthorized: await rows(page).count(),
+      cancelRequestFailure: cancel.call!.failure, network, persistedState: api.jobs.get(job.id)!.state,
+      claim: "Ordered route delivery without app/hook/DOM/clock/cleanup substitution. A passing boundary does not falsify the narrower pre-layout-effect race." };
+    api.mark(JSON.stringify(observed));
+    await info.attach("independent-observation", { contentType: "application/json", body: JSON.stringify(observed, null, 2) });
+  });
+}
+
+for (const [denial, operation] of [[403, "queue"], [404, "cancellation"]] as const) {
+  test(`REPRO ONLY production hook ${denial} then ${operation} ACK`, async ({ page, assessments: api }, info) => {
+    const preview = previewFor(), original = jobFor(preview, 2);
+    expect(preview.id).toBe(unitPreviewId); expect(original.id).toBe(unitCancelId);
+    api.previews.set(preview.id, preview); api.seedJobs([original]); api.aiOpen = true;
+    await page.goto("/tests/harness/ai-assessment-review/index.html");
+    const unitHistory = page.getByRole("region", { name: "Assessment history", exact: true });
+    const unitRows = unitHistory.getByRole("table", { name: "Assessment history", exact: true }).locator("tbody tr");
+    await expect(unitRows).toHaveCount(1);
+    const write = api.expectWrite(operation === "queue" ? historyPath() : cancelPath(original.id), operation === "queue" ? 202 : 200, true);
+    await page.getByRole("button", { name: `Unit start ${operation}`, exact: true }).click(); await arrived(write);
+    const denied = api.queueRead(historyPath(), denial, true);
+    await unitHistory.getByRole("button", { name: "Refresh assessment history", exact: true }).click();
+    await arrived(denied); await deliver(denied);
+    await expect(unitHistory.getByRole("alert")).toBeVisible();
+    const afterDenial = await unitRows.count();
+    await deliver(write);
+    await expect(page.getByLabel("Unit write pending", { exact: true })).toHaveText("false");
+    const afterACK = await unitRows.count();
+    const unavailable = api.queueRead(historyPath(), 503, true);
+    await unitHistory.getByRole("button", { name: "Retry assessment history", exact: true }).click(); await arrived(unavailable);
+    const during503 = { rows: await unitRows.count(), authorized: await page.getByLabel("Unit history authorized", { exact: true }).textContent() };
+    await deliver(unavailable);
+    await expect(unitHistory.getByRole("alert")).toContainText(/unavailable/i);
+    const after503 = await unitRows.count();
+    const recovered = api.queueRead(historyPath(), 200, true);
+    await unitHistory.getByRole("button", { name: "Retry assessment history", exact: true }).click();
+    await arrived(recovered); await deliver(recovered);
+    await expect(page.getByLabel("Unit history authorized", { exact: true })).toHaveText("true");
+    const observed = { denial, operation, afterDenial, afterACK, during503, after503, after200: await unitRows.count(),
+      requests: api.requests.length, claim: "Real imported production-hook invariant with React lifecycle and original guarded typed HTTP, not the full application." };
+    api.mark(JSON.stringify(observed));
+    await info.attach("independent-observation", { contentType: "application/json", body: JSON.stringify(observed, null, 2) });
+  });
+}

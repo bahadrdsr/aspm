@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:33:53.438Z",
+  "author": "independent-runtime-header-a3-20260921",
+  "publishedHEAD": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "runtimeHandoff": {
+    "path": ".cache\\assessment-runtime-coder\\HANDOFF.json",
+    "bytes": 62193,
+    "sha256": "ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e"
+  },
+  "heldRuntimeSource7": [
+    {
+      "path": "internal\\app\\assessment_validation.go",
+      "bytes": 4846,
+      "sha256": "784ca3290f507c8de146652aefaf75ac0ebbd9375082ddd6e72b565261c8522a",
+      "expected": "784ca3290f507c8de146652aefaf75ac0ebbd9375082ddd6e72b565261c8522a"
+    },
+    {
+      "path": "internal\\service\\README.txt",
+      "bytes": 11879,
+      "sha256": "f9e41602d84076f89cdaa18c3fdd45f4837761e1d49e0f9ad4e4d912ce47d451",
+      "expected": "f9e41602d84076f89cdaa18c3fdd45f4837761e1d49e0f9ad4e4d912ce47d451"
+    },
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 11466,
+      "sha256": "5b864412f9c84de66bdebe56301d802823c6d8e341ff0c21fed69a551b0cacd1",
+      "expected": "5b864412f9c84de66bdebe56301d802823c6d8e341ff0c21fed69a551b0cacd1"
+    },
+    {
+      "path": "internal\\service\\delivery_client.go",
+      "bytes": 7813,
+      "sha256": "145ddeb5d9a64a79753f37c3d8ea037846b6cf06cad2f0762c4323d1ee1e91c7",
+      "expected": "145ddeb5d9a64a79753f37c3d8ea037846b6cf06cad2f0762c4323d1ee1e91c7"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 13014,
+      "sha256": "1dbdf7b72b76a3874030540a8a82b1bc9a2449a88f6c2c883140ae750d45ee17",
+      "expected": "1dbdf7b72b76a3874030540a8a82b1bc9a2449a88f6c2c883140ae750d45ee17"
+    },
+    {
+      "path": "cmd\\assessment-worker\\main.go",
+      "bytes": 668,
+      "sha256": "09d40e2fe1e35c08fdce360325acac5d2852ce30b257b0cc77f28e6ae16b8342",
+      "expected": "09d40e2fe1e35c08fdce360325acac5d2852ce30b257b0cc77f28e6ae16b8342"
+    },
+    {
+      "path": "internal\\service\\assessment_runtime.go",
+      "bytes": 3925,
+      "sha256": "522aa30acd0c96e3ecb61cfef65025e1dcdded53b9513ee4ffac752abadc0678",
+      "expected": "522aa30acd0c96e3ecb61cfef65025e1dcdded53b9513ee4ffac752abadc0678"
+    }
+  ],
+  "controls": [
+    {
+      "manifest": {
+        "path": ".oracles\\assessment-runtime-a2.json",
+        "bytes": 19491,
+        "sha256": "b7f2a64bde7c6b1ad9f519675b78d6cec5c32c424a764778721b8e10c99bdbf6"
+      },
+      "signature": {
+        "path": ".oracles\\assessment-runtime-a2.json.sig",
+        "bytes": 89,
+        "sha256": "4cc6e19f4395399abea48c54075c00ef416fc5681b943e017e183bda20d0e796"
+      },
+      "count": 100,
+      "matched": 100
+    },
+    {
+      "manifest": {
+        "path": ".oracles\\ai-assessments-a2.json",
+        "bytes": 47205,
+        "sha256": "35236e2452ddd2080ddfc1f512eab9296e29b64c1e065bcf106073881df9f2a7"
+      },
+      "signature": {
+        "path": ".oracles\\ai-assessments-a2.json.sig",
+        "bytes": 89,
+        "sha256": "990118e7474b730c727c09af5b957c06e50935110b91a2973231d0341fd851d2"
+      },
+      "count": 245,
+      "matched": 245
+    },
+    {
+      "manifest": {
+        "path": ".oracles\\ai-assessments-ui-a1.json",
+        "bytes": 169367,
+        "sha256": "b5f0fad08a3c67fad16b4bece75c99bc8f6ae5814d739b09ed48a9861f356d73"
+      },
+      "signature": {
+        "path": ".oracles\\ai-assessments-ui-a1.json.sig",
+        "bytes": 89,
+        "sha256": "caecffef30d4a504b27b151a1b826eb5ed592897c26ce565f96f2f44b91369ef"
+      },
+      "count": 838,
+      "matched": 838
+    }
+  ],
+  "fixedRuntimeConfig": {
+    "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-seal-inputs\\assessment-runtime-a2-oracle-set.json",
+    "bytes": 5732,
+    "sha256": "416614fa7bed167badc241e52dd8253a0c5c8353ca79dc03222b0358cb7b3d8e"
+  },
+  "oldRuntimeFiles": [
+    {
+      "path": "tests\\assessment_runtime\\command_test.go",
+      "bytes": 3157,
+      "sha256": "7e82c80db6cda881855d11341f0dc99f818b4c808a0ffa8e97e00fcb07831d62"
+    },
+    {
+      "path": "tests\\assessment_runtime\\CONTRACT.txt",
+      "bytes": 12696,
+      "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+    },
+    {
+      "path": "tests\\assessment_runtime\\contract_test.go",
+      "bytes": 4049,
+      "sha256": "ab5317421df4f0ce478f07d7ba741b02c2373a6e2640ed00e575894c2efe158f"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_probe_test.go",
+      "bytes": 976,
+      "sha256": "9f92ac387c5038ea9a6e32f8889bcae56982162aabfbef8f5a0e73d15a8736e6"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_test.go",
+      "bytes": 4814,
+      "sha256": "46515795b1cfa3ecdd6710ab18b511eb4e1ef00598d7d9a1deb097ae8a9f051d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixtures_test.go",
+      "bytes": 27242,
+      "sha256": "0a26266c38ff6f79c4b7f6c5e66c9a735c5dbf0ad5a5f8fe09519bf829345041"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixture_calibration_test.go",
+      "bytes": 3577,
+      "sha256": "06dd138e1c71a072e4df47f3800db0ccb11a5c24362f16deb7c85115794e4522"
+    },
+    {
+      "path": "tests\\assessment_runtime\\HANDOFF.txt",
+      "bytes": 8093,
+      "sha256": "e3c11e1cf7369e4b3108321c6019bf762c9d1b190cae6a02ce66c3ec6ff8670d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\native_test.go",
+      "bytes": 7557,
+      "sha256": "5cb21aa728c37a988027f8275fce8ac3ec661a5692b3b6cee7010d9b4ae8867a"
+    },
+    {
+      "path": "tests\\assessment_runtime\\production_bindings_test.go",
+      "bytes": 2861,
+      "sha256": "8c0b88b08fbdaa64f6e1f19c9a057a42285d068121cc723ad1cbec359bb5cbb8"
+    },
+    {
+      "path": "tests\\assessment_runtime\\roles_test.go",
+      "bytes": 19159,
+      "sha256": "d4c01ff47a7a6acc62f125d587947b848640c6fab9ca0e4c6826fa55e965a886"
+    },
+    {
+      "path": "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+      "bytes": 7513,
+      "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+    }
+  ],
+  "oldReviewHistory": [
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\AMENDMENT-A1.txt",
+      "bytes": 5246,
+      "sha256": "8d7bc4b6cb09bbbe22f54ad9e8f209402b707c25089c3efab9eb1ea0b18a5ba7"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A1.json",
+      "bytes": 241515,
+      "sha256": "0dfc6df61bea16d63f256b67629e33b951c38341776f022d9259b5b998d81552"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A2.json",
+      "bytes": 264984,
+      "sha256": "8a49237299b24cf5851c3078527d9d0da85ae329ef3b54806bf55042c66c43ed"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE.json",
+      "bytes": 158435,
+      "sha256": "1b7fab2b625f380fdb3190a8f149456d0349e0c325852884fa100f11f59f8db5"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\calibrate-A2.go.txt",
+      "bytes": 5463,
+      "sha256": "d605e5cac4440eaca4738f686ff60a4bad1cbf5f7bed22549783ae9a013425a6"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION-A1.json",
+      "bytes": 11631,
+      "sha256": "cea2f4d9d028e645bad93bf5e33fc4fe354237d69d3b80fa81bab68a3e61da9d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION-A2.json",
+      "bytes": 7326,
+      "sha256": "ba40aaaa5d7d4c6e92aa0de2a32a168e6ac817cccd55e9a4dd6a9d8882d3936a"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION.json",
+      "bytes": 9878,
+      "sha256": "9ac6fcfc58459af26d8740c413da71927cb52a215ddf6aeff37a0e3f81b7d510"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CANCELLATION-A1.json",
+      "bytes": 10785,
+      "sha256": "88d2546854b028e01346f269db1f855d6a7e0e815e4eeb8f322c3216034d0975"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A2.txt",
+      "bytes": 5309,
+      "sha256": "09ca8a4632e82310a4592ce7598dcd583b1cf108e471ee2780f4321661ec1449"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\DECISIONS.json",
+      "bytes": 4272,
+      "sha256": "7e138ae61fd97cc850aa9bb2da2be220946abac6cfce21751a35dba3c525e634"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\EVIDENCE-A1.json",
+      "bytes": 54006,
+      "sha256": "1a34d2c2ea362a8d4e4cd1e0cae075ac73e8e9025c50c8c692cec75b4888bceb"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\EVIDENCE-A2.json",
+      "bytes": 19506,
+      "sha256": "06b34b2571ecde8ca3bfd2d0c30c697f3d81d9715f1d461bb2e9bbdfef3fe696"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 6747,
+      "sha256": "6401d397ff1a717c5c75069833f968df1bef9a6883ebbaf4e50b0f13a028f928"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\freeze-A1.mjs",
+      "bytes": 19878,
+      "sha256": "d708779553f83c70807f9e4bd329a3f32350dde155e2bc91d35d49405ece8d75"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\freeze-A2.mjs",
+      "bytes": 17001,
+      "sha256": "406f6dd0c48501788bd57c6b8533ad111affc4143ccbfe7c126d2141f8b92609"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\GUARDS-A1.json",
+      "bytes": 3777,
+      "sha256": "4ac9bd3fa6e49579634bb251596e494c5d6acbb032b7c809e7e16ad4596635b9"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\GUARDS-A2.json",
+      "bytes": 5647,
+      "sha256": "4f8e680295646d037e759626e6c4b0a3ab58a87f74ece0b19d6369e7c75f9769"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\GUARDS.json",
+      "bytes": 3361,
+      "sha256": "7d286ebd18e26407d113b68aa7de3d99edd5bdefcf3d6759ab8f5685e1f3a9a7"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 8075,
+      "sha256": "50b812d447907514512cbf9008749668b44f1f0382c9861e7f2e86289cf8b683"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A2.txt",
+      "bytes": 7034,
+      "sha256": "bc3787f918e6db9d38293e2f6bc317c93f3404cb08378a1d2282aad3ee8f76d2"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\HISTORY-A2.json",
+      "bytes": 2253,
+      "sha256": "6ff4bc55967e6faf6afd2e877ad5246c2c248f2ea0e0bf5e0502125b093bec6e"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\observe-A1.go.txt",
+      "bytes": 7539,
+      "sha256": "38aea7170c429a9d804db080f0b6c4d10a7557a461f2318191d93e1d38cb3951"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A1.json",
+      "bytes": 25017,
+      "sha256": "e611e3beab298cddb53e4187c5507793893ad1751191ae44cfc9fa393b0501ac"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A1.sha256",
+      "bytes": 81,
+      "sha256": "79f12399ab5e95557c4634e43ebf2dfb3f9887c0c68dcbd7fee2fbd98529d5e3"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A2.json",
+      "bytes": 10778,
+      "sha256": "b7fcec83e2fec940b059e517a853166edb6bcac08704322e59bcbff8dddc4b5d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A2.sha256",
+      "bytes": 81,
+      "sha256": "7b38d935a4e86c5adee366e9b887fdcef0b0fae1e7bb535275a5f3e63e825231"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET.json",
+      "bytes": 13955,
+      "sha256": "1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "84e4a8e198d84f280638394c04329dac1858b3b7762a61bb4611eda3fa4f5480"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\prepare-A1.mjs",
+      "bytes": 7017,
+      "sha256": "2bfacba82e0b9079f301bb25cffb44f2f02457c7a202fcaf57d4c34e4630aade"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\prepare-A2.mjs",
+      "bytes": 6520,
+      "sha256": "41bc6cbb8d807065522a4819140441f457ca62b60a1b491b6910ad5be55c48a1"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\RED-A1.json",
+      "bytes": 16688,
+      "sha256": "d04e68d11861e53d4d58f74da511dda1bef83070d859e66dcdade155886afab5"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\RED.json",
+      "bytes": 15047,
+      "sha256": "beaf486f7f7aecc1832cb3bf717b47c12f0840f0a691a4a4021a35007af12fbc"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\RESULTS-A2.json",
+      "bytes": 9355,
+      "sha256": "1eeea31f2f1771e2ef6f21ad0d5687f218e5e361d09f2052f0370867c19b176f"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\SOURCE-WITNESSES.json",
+      "bytes": 4701,
+      "sha256": "43950e2d747bb945e2fb5f3660eff80e4bb124e5116c749cad5ed7c59f4279ad"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\Test-Runtime-A1.ps1",
+      "bytes": 10656,
+      "sha256": "ef0370d2782f1605d608756cb5d8d1eab1f84e0937d599ca3f3946517d47d8fe"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\Test-Runtime-A2.ps1",
+      "bytes": 10342,
+      "sha256": "4c742253fc0013d8b5f3ad898171538d545a9bcc6dd93584cf889761c6e5893f"
+    }
+  ],
+  "toolchain": [
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\gofmt.exe",
+      "bytes": 3392000,
+      "sha256": "ab730b8446c0c2369be901f263fb7433ea0d2d053d3a3584ca543aaff3b667cc"
+    }
+  ],
+  "originalRunner": {
+    "path": "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+    "bytes": 7513,
+    "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+  },
+  "contractBeforeTest": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+    "bytes": 6219,
+    "sha256": "fd7597dfcba2a4bfb752de93bb6891fecce1473adc8bb9bcab25271264b870b3"
+  },
+  "privateRuntimeConfig": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\runtime.json",
+  "privateRuntimeValuesReadOrCopied": false,
+  "sourceHoldPolicy": "Guard the seven held runtime files, fixed manifests/config/compiler and only actual Go dependency inputs reported for assessment_runtime plus assessment-worker. Exclude unrelated future packaging author files; no broad cmd/internal source freeze.",
+  "newExecutableScope": [
+    "tests\\assessment_runtime\\header_timeout_test.go"
+  ],
+  "existingFileEditsAuthorized": []
+}

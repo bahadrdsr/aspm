@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:50:40.064Z",
+  "status": "FRESH OWNED RUNTIME RED before source fix; short-budget discrimination control passed.",
+  "author": "independent-runtime-header-a3-20260921",
+  "commandRunner": {
+    "path": "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+    "bytes": 7513,
+    "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+  },
+  "mode": "Contract",
+  "goVersion": "go1.27.1 windows/amd64",
+  "selectedTopLevelCases": 5,
+  "newTopLevelCases": 1,
+  "newSubcases": 2,
+  "originalFourPassed": true,
+  "originalFour": [
+    {
+      "test": "TestAR1CoreServiceScopeAndActualAssessmentServiceAndCommand",
+      "status": "pass",
+      "elapsedSeconds": 2.34
+    },
+    {
+      "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation",
+      "status": "pass",
+      "elapsedSeconds": 8.08
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO",
+      "status": "pass",
+      "elapsedSeconds": 0.03
+    },
+    {
+      "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota",
+      "status": "pass",
+      "elapsedSeconds": 10.74
+    }
+  ],
+  "caseOutcomes": [
+    {
+      "test": "TestAR5EnvironmentRequestBudgetIncludesHeldNativeHeaders/20s-budget-12s-headers",
+      "status": "fail",
+      "elapsedSeconds": 13.08
+    },
+    {
+      "test": "TestAR5EnvironmentRequestBudgetIncludesHeldNativeHeaders/3s-budget-held-headers",
+      "status": "pass",
+      "elapsedSeconds": 4.51
+    },
+    {
+      "test": "TestAR5EnvironmentRequestBudgetIncludesHeldNativeHeaders",
+      "status": "fail",
+      "elapsedSeconds": 17.59
+    },
+    {
+      "test": "TestAR1CoreServiceScopeAndActualAssessmentServiceAndCommand",
+      "status": "pass",
+      "elapsedSeconds": 2.34
+    },
+    {
+      "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation/environment-and-local-keyless",
+      "status": "pass",
+      "elapsedSeconds": 1.46
+    },
+    {
+      "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation/hosted-without-worker-key",
+      "status": "pass",
+      "elapsedSeconds": 6.61
+    },
+    {
+      "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation",
+      "status": "pass",
+      "elapsedSeconds": 8.08
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_SCOPE",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_SCOPE#01",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_SCOPE#02",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_INTEGRATION_ENCRYPTION_KEY",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_INTEGRATION_ENCRYPTION_KEY#01",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_INTEGRATION_ENCRYPTION_KEY#02",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_LEASE_DURATION",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_AUTHORIZATION_INTERVAL",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_REQUEST_TIMEOUT",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_REQUEST_WINDOW",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_CONCURRENT",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_REQUESTS_PER_WINDOW",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_INPUT_BYTES",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_RESPONSE_BYTES",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_CA_FILE",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO",
+      "status": "pass",
+      "elapsedSeconds": 0.03
+    },
+    {
+      "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/Run-context",
+      "status": "pass",
+      "elapsedSeconds": 4.33
+    },
+    {
+      "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/actual-command-crash",
+      "status": "pass",
+      "elapsedSeconds": 6.4
+    },
+    {
+      "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota",
+      "status": "pass",
+      "elapsedSeconds": 10.74
+    }
+  ],
+  "repeatCount": 1,
+  "skipped": 0,
+  "retries": 0,
+  "newCaseTraces": [
+    {
+      "test": "TestAR5EnvironmentRequestBudgetIncludesHeldNativeHeaders/20s-budget-12s-headers",
+      "status": "fail",
+      "trace": {
+        "advisoryAssertionsReached": false,
+        "blockedTails": [
+          "successful canonical advisory/provenance/usage checks: no succeeded receipt"
+        ],
+        "cancellationAfterReadyObservationMillis": 9995,
+        "cancellationAfterRoleStartMillis": 10083,
+        "cancellationBeforeRelease": true,
+        "case": "20s-budget-12s-headers",
+        "clientTimeout": "20s",
+        "completedAt": "2026-09-21T07:41:51.600371+02:00",
+        "dispatchStartedAt": "2026-09-21T07:41:41.564238+02:00",
+        "dispatchState": "possibly-sent",
+        "failureCode": "timeout",
+        "headerGateDeadline": "2026-09-21T07:41:53.5878236+02:00",
+        "headerGateElapsedMillis": 12000,
+        "jobID": "276bc4e4bf0fa04dbda6b9197e6f9133",
+        "lease": "30s",
+        "nativeCancellationObserved": true,
+        "nativeCancelledAt": "2026-09-21T07:41:51.5837549+02:00",
+        "nativePOSTs": 1,
+        "parsedBudget": "20s",
+        "protectedAPICalls": 16,
+        "reached": [
+          "actual-core-intake-profile-policy-grant",
+          "selected-environment-client-normal-TLS",
+          "actual-assessment-Run",
+          "validated-native-ready-and-API-marker",
+          "12s-header-gate-without-API-polling",
+          "existing-native-response-gate-released",
+          "original-8s-terminal-await-after-release",
+          "one-POST-unchanged-marker-domain-storage-privacy",
+          "bounded-actual-role-stop"
+        ],
+        "readyObservedAt": "2026-09-21T07:41:41.5878236+02:00",
+        "releasedAt": "2026-09-21T07:41:53.5884289+02:00",
+        "roleStartedAt": "2026-09-21T07:41:41.4999212+02:00",
+        "selectedBudget": "20s",
+        "terminalAwaitStartedAfterRelease": true,
+        "terminalState": "uncertain"
+      }
+    },
+    {
+      "test": "TestAR5EnvironmentRequestBudgetIncludesHeldNativeHeaders/3s-budget-held-headers",
+      "status": "pass",
+      "trace": {
+        "advisoryAssertionsReached": false,
+        "blockedTails": null,
+        "cancellationAfterReadyObservationMillis": 2963,
+        "cancellationAfterRoleStartMillis": 3084,
+        "cancellationBeforeRelease": true,
+        "case": "3s-budget-held-headers",
+        "clientTimeout": "3s",
+        "completedAt": "2026-09-21T07:41:57.959087+02:00",
+        "dispatchStartedAt": "2026-09-21T07:41:54.944217+02:00",
+        "dispatchState": "possibly-sent",
+        "failureCode": "timeout",
+        "headerGateElapsedMillis": 2963,
+        "jobID": "dd1b771519f1c03277b4729cf11af4cd",
+        "lease": "30s",
+        "nativeCancellationObserved": true,
+        "nativeCancelledAt": "2026-09-21T07:41:57.9428292+02:00",
+        "nativePOSTs": 1,
+        "originalCancellationObservationDeadline": "2026-09-21T07:41:59.9790018+02:00",
+        "parsedBudget": "3s",
+        "protectedAPICalls": 17,
+        "reached": [
+          "actual-core-intake-profile-policy-grant",
+          "selected-environment-client-normal-TLS",
+          "actual-assessment-Run",
+          "validated-native-ready-and-API-marker",
+          "original-A2-occurrence-and-timestamp-cancellation-check",
+          "existing-native-response-gate-released",
+          "original-8s-terminal-await-after-release",
+          "one-POST-unchanged-marker-domain-storage-privacy",
+          "bounded-actual-role-stop",
+          "selected-short-timeout-without-result-or-unsent-claim"
+        ],
+        "readyObservedAt": "2026-09-21T07:41:54.9790018+02:00",
+        "releasedAt": "2026-09-21T07:41:57.9428292+02:00",
+        "roleStartedAt": "2026-09-21T07:41:54.8584513+02:00",
+        "selectedBudget": "3s",
+        "terminalAwaitStartedAfterRelease": true,
+        "terminalState": "uncertain"
+      }
+    }
+  ],
+  "evidence": {
+    "selected20s": "Actual Environment fields and generated Client.Timeout were 20s, lease 30s; owned normal-TLS native headers stayed gated. Actual context cancellation was recorded 9.9959313s after observed validated readiness and 10.0838337s after role start; gate opened after 12.0006053s.",
+    "actualFailure": "Real persisted terminal state uncertain, dispatchState possibly-sent, failure code timeout, one native POST. No transport error text or upstream body is invented.",
+    "short3s": "Same actual environment/client with 3s budget; native timestamp observed 2.9638274s after verified-ready observation and 3.0843779s after role start, within the unchanged A2 original observation-deadline criterion.",
+    "beforeTerminalAwait": "No protected API polling while headers were held. Existing 8s terminal await started only after gate release.",
+    "privacy": "Original method/auth/model/schema/context/privacy/marker fixture checks, original noSecrets/ambient-network checks and owned cleanup executed; all non-advisory guards passed.",
+    "blocked": "Successful delayed-header advisory/provenance/usage assertions were BLOCKED because no succeeded receipt existed. Releasing a gate after the request already cancelled is not a response-delivery/success claim.",
+    "notClaimed": [
+      "production fix or runtime acceptance",
+      "live provider/account/model quality",
+      "HTTP/2-specific proof or OS-signal certification",
+      "any explanation for earlier historical cancellation failures"
+    ]
+  },
+  "holds": {
+    "allHeldInputsStable": true,
+    "heldInputCount": 3306,
+    "actualCompilerInputCount": 2120,
+    "mode": "FileShare.Read"
+  },
+  "rawArtifacts": [
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01.hold.json",
+      "bytes": 979,
+      "sha256": "b1f7d8dedd71e78de11074466ace5eb9c26f08bdc43b2cef703407b2b259366b"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01.receipt.json",
+      "bytes": 2130,
+      "sha256": "c866a6c6af34ca3b22175202db0508957d4e3645cd7f413078d976c52dad2f47"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01.inputs-before.json",
+      "bytes": 759915,
+      "sha256": "87f2b107ce122ffad5d81fa7f0bdf8d57e498ecfb4344bf9ffefaf37e998250d"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01.compiler-paths.txt",
+      "bytes": 233754,
+      "sha256": "ccfca37e18534087c8714d69436f4357767019f6e2ce079166ac9b238be0bbe0"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01-command-build.jsonl",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01-command-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01-service-contract.jsonl",
+      "bytes": 39365,
+      "sha256": "d853aa6afde3c756ce46a2b461619672bdfa9dbf042ed749994690d9b53460fe"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01-service-contract.log",
+      "bytes": 9831,
+      "sha256": "3a37f42e07d97c4471916be8b4556d9b7e50d06e07ff0001beb402a13270ef92"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\independent-runtime-a3-headers-20260921-01.assessment-worker.owned.exe",
+      "bytes": 22716416,
+      "sha256": "e898eaf4656df7da50c087d125da4700767e3bc79f58b5f722c7e09529b50aa5"
+    }
+  ],
+  "privateRuntimeValuesCopied": false,
+  "providerAccountsUsed": 0,
+  "productionEdits": 0
+}

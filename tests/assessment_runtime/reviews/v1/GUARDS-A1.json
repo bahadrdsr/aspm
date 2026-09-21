@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T03:52:28.774Z",
+  "baseline": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A1.json",
+    "bytes": 241515,
+    "sha256": "0dfc6df61bea16d63f256b67629e33b951c38341776f022d9259b5b998d81552"
+  },
+  "heldRuntimeSource7": [
+    {
+      "path": "internal\\app\\assessment_validation.go",
+      "bytes": 4846,
+      "sha256": "784ca3290f507c8de146652aefaf75ac0ebbd9375082ddd6e72b565261c8522a"
+    },
+    {
+      "path": "internal\\service\\README.txt",
+      "bytes": 11879,
+      "sha256": "f9e41602d84076f89cdaa18c3fdd45f4837761e1d49e0f9ad4e4d912ce47d451"
+    },
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 11466,
+      "sha256": "5b864412f9c84de66bdebe56301d802823c6d8e341ff0c21fed69a551b0cacd1"
+    },
+    {
+      "path": "internal\\service\\delivery_client.go",
+      "bytes": 7813,
+      "sha256": "145ddeb5d9a64a79753f37c3d8ea037846b6cf06cad2f0762c4323d1ee1e91c7"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 13014,
+      "sha256": "1dbdf7b72b76a3874030540a8a82b1bc9a2449a88f6c2c883140ae750d45ee17"
+    },
+    {
+      "path": "cmd\\assessment-worker\\main.go",
+      "bytes": 668,
+      "sha256": "09d40e2fe1e35c08fdce360325acac5d2852ce30b257b0cc77f28e6ae16b8342"
+    },
+    {
+      "path": "internal\\service\\assessment_runtime.go",
+      "bytes": 3925,
+      "sha256": "522aa30acd0c96e3ecb61cfef65025e1dcdded53b9513ee4ffac752abadc0678"
+    }
+  ],
+  "handoff": {
+    "path": ".cache\\assessment-runtime-coder\\HANDOFF.json",
+    "bytes": 62193,
+    "sha256": "ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e"
+  },
+  "totalExistingNonWebInputs": 916,
+  "unchangedInputs": 915,
+  "intentionalChangedInput": {
+    "before": {
+      "path": "tests\\assessment_runtime\\fixtures_test.go",
+      "bytes": 25706,
+      "sha256": "2b90db2c6ec5bcda35ad26b88b43bedd98230e11ab8398da659ad4913ad28831"
+    },
+    "after": {
+      "path": "tests\\assessment_runtime\\fixtures_test.go",
+      "bytes": 25886,
+      "sha256": "57bfad32c9ef83fec68e33ee316e946da18c1d727c7a3ffa2474e875e87bf0dc"
+    },
+    "exactReconstructionVerified": true
+  },
+  "originalRuntimeControls": 66,
+  "unchangedOriginalRuntimeControls": 65,
+  "intentionalRuntimeControlChanges": 1,
+  "originalRuntimeManifest": {
+    "path": ".oracles\\assessment-runtime-v1.json",
+    "bytes": 12838,
+    "sha256": "7d82cbd166cab3be1be9549064c1e0545515eaf52dcb7331df3091b0d2264405"
+  },
+  "originalRuntimeSignature": {
+    "path": ".oracles\\assessment-runtime-v1.json.sig",
+    "bytes": 89,
+    "sha256": "4a8acda924ef033f126fb973a3140be30433c3a02b618b11f42c9d012f10fab6"
+  },
+  "originalSignatureNowHistoricalForAmendedHelper": true,
+  "publicOracleConfigSHA256": "fa65da4f5d70eee70418026317a50b276d7b6bf1da56cb48bf914fde3728d839",
+  "originalRuntimePacket": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET.json",
+    "bytes": 13955,
+    "sha256": "1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34"
+  },
+  "frozenBackendControlsUnchanged": 245,
+  "frozenBackendPacket": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\PACKET-A2.json",
+    "bytes": 10910,
+    "sha256": "1fb49f7f943ac528f39534da003a3ec3d854c629c2dcb878e3a2c75276ae0938"
+  },
+  "currentProductionSourceCapturedRatherThanHistoricalPreFixSource": true,
+  "productionGoFileSetUnchanged": 123,
+  "productionCodeShadowsAdded": false,
+  "diagnosticCopiesRemoved": true,
+  "actualCommandBinarySHA256": "e898eaf4656df7da50c087d125da4700767e3bc79f58b5f722c7e09529b50aa5",
+  "allCompleteRunReceiptsStable": true,
+  "redactionCanaryScanPassed": true,
+  "excludedPaths": [
+    "web\\**",
+    "README.md"
+  ],
+  "noAgentsCommitsDependenciesProductionOracleAuthorityOSClusterPolicyVolumeOrUIChanges": true
+}

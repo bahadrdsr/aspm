@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T20:27:00.987Z",
+  "author": "independent-ai-assessments-test-author-20260920",
+  "scope": "Actual PG/API/worker/native HTTP measurement calibration, separate from normal eight-case acceptance.",
+  "pairedChecks": [
+    {
+      "name": "Old ordering reproduces premature readiness and cancelled fixture observation",
+      "expectedExitCode": 1,
+      "run": "author-aa5-ordering-old-red-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "OrderingOld",
+        "run": "author-aa5-ordering-old-red-20260920-01",
+        "startedAt": "2026-09-20T20:15:05.6739598+00:00",
+        "finishedAt": "2026-09-20T20:15:10.3534330+00:00",
+        "exitCode": 1,
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=240s",
+          "-run=^TestAA5ObservationReadinessCalibration$",
+          ".\\.cache\\ai-assessments-a1\\author-aa5-ordering-old-red-20260920-01"
+        ],
+        "nativeFixture": "tests\\ai_assessments\\reviews\\v1\\history\\a1\\native_test.go.v1",
+        "nativeFixtureSHA256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb",
+        "unchangedCopies": [
+          {
+            "source": "tests\\ai_assessments\\contract_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-old-red-20260920-01\\contract_test.go",
+            "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+          },
+          {
+            "source": "tests\\ai_assessments\\fixtures_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-old-red-20260920-01\\fixtures_test.go",
+            "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+          },
+          {
+            "source": "tests\\ai_assessments\\production_bindings_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-old-red-20260920-01\\production_bindings_test.go",
+            "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+          },
+          {
+            "source": "tests\\ai_assessments\\reviews\\v1\\history\\a1\\native_test.go.v1",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-old-red-20260920-01\\native_test.go",
+            "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+          },
+          {
+            "source": "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-old-red-20260920-01\\observation_ordering_test.go",
+            "sha256": "3c2cc92e17f08aa9b521816109627c94f6d928a069f53a91f662306a1f6e54ee"
+          }
+        ],
+        "workingCopiesRemoved": true,
+        "originalEightAssertionsOrBindingsEdited": false,
+        "poolLimitsOrDeadlinesChanged": false,
+        "privateRuntimeValuesCopied": false,
+        "calibrationNotFullAcceptance": true,
+        "negativeModesReturnTheirActualFailure": true
+      },
+      "topLevel": [
+        {
+          "name": "TestAA5ObservationReadinessCalibration",
+          "status": "fail",
+          "durationSeconds": 1.62
+        }
+      ],
+      "nested": [],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.jsonl",
+          "bytes": 3498,
+          "sha256": "d9cc846b2d21670e83cd0a484688afa215ca4501f0e4a86636c11c7acb1427ae"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.log",
+          "bytes": 879,
+          "sha256": "f3f62c7a11798d6aa3b890c3a4756812a8cb4502385202897a473d3714cb27cb"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.receipt.json",
+          "bytes": 2362,
+          "sha256": "2dd0ee2b7a68be33b4843ad1da70ef35d7a6305998d29b700c9ba8ceb11ebf9f"
+        }
+      ],
+      "actualOutput": "=== RUN   TestAA5ObservationReadinessCalibration\n    observation_ordering_test.go:112: A1 adverse ordering: actual native POST=1, fixture slots held=2/2, actual marker=dispatching/1/non-null, worker Ping passed, readiness premature=true\n    observation_ordering_test.go:115: A1 readiness was published before the fixture's actual marker observation completed\n    native_test.go:95: owned native boundary: dispatch marker must be committed before native POST\n    observation_ordering_test.go:159: A1 ordering proof complete: readinessPremature=true markerAcquireCancelled=true markerAcquireErrorType=*errors.errorString nativeCancellationObserved=true nativePOSTs=1 findingMutation=false resurrection=false\n--- FAIL: TestAA5ObservationReadinessCalibration (1.62s)\nFAIL\nFAIL\tgithub.com/bahadrdsr/aspm/.cache/ai-assessments-a1/author-aa5-ordering-old-red-20260920-01\t2.137s\n"
+    },
+    {
+      "name": "Corrected ordering observes the marker before consumer cancellation",
+      "expectedExitCode": 0,
+      "run": "author-aa5-ordering-green-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Ordering",
+        "run": "author-aa5-ordering-green-20260920-01",
+        "startedAt": "2026-09-20T20:16:54.8629990+00:00",
+        "finishedAt": "2026-09-20T20:17:04.1463971+00:00",
+        "exitCode": 0,
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=240s",
+          "-run=^TestAA5ObservationReadinessCalibration$",
+          ".\\.cache\\ai-assessments-a1\\author-aa5-ordering-green-20260920-01"
+        ],
+        "nativeFixture": "tests\\ai_assessments\\native_test.go",
+        "nativeFixtureSHA256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec",
+        "unchangedCopies": [
+          {
+            "source": "tests\\ai_assessments\\contract_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-green-20260920-01\\contract_test.go",
+            "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+          },
+          {
+            "source": "tests\\ai_assessments\\fixtures_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-green-20260920-01\\fixtures_test.go",
+            "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+          },
+          {
+            "source": "tests\\ai_assessments\\production_bindings_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-green-20260920-01\\production_bindings_test.go",
+            "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+          },
+          {
+            "source": "tests\\ai_assessments\\native_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-green-20260920-01\\native_test.go",
+            "sha256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec"
+          },
+          {
+            "source": "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-ordering-green-20260920-01\\observation_ordering_test.go",
+            "sha256": "3c2cc92e17f08aa9b521816109627c94f6d928a069f53a91f662306a1f6e54ee"
+          }
+        ],
+        "workingCopiesRemoved": true,
+        "originalEightAssertionsOrBindingsEdited": false,
+        "poolLimitsOrDeadlinesChanged": false,
+        "privateRuntimeValuesCopied": false,
+        "calibrationNotFullAcceptance": true,
+        "negativeModesReturnTheirActualFailure": true
+      },
+      "topLevel": [
+        {
+          "name": "TestAA5ObservationReadinessCalibration",
+          "status": "pass",
+          "durationSeconds": 2.5
+        }
+      ],
+      "nested": [],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.jsonl",
+          "bytes": 2742,
+          "sha256": "8105471fb1cc29b17ae6090c2e3142c302006e88402697ac9cb5fd5d57b2ea94"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.log",
+          "bytes": 643,
+          "sha256": "55adb1a3b782831dc86b900f53cb6ae4211db62873a74a001300db612c5060f6"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.receipt.json",
+          "bytes": 2287,
+          "sha256": "681aac53a323dcfc979c99056dcc389c47b7822c49a12f025afe782b5d7ab70c"
+        }
+      ],
+      "actualOutput": "=== RUN   TestAA5ObservationReadinessCalibration\n    observation_ordering_test.go:112: A1 adverse ordering: actual native POST=1, fixture slots held=2/2, actual marker=dispatching/1/non-null, worker Ping passed, readiness premature=false\n    observation_ordering_test.go:159: A1 ordering proof complete: readinessPremature=false markerAcquireCancelled=false markerAcquireErrorType=<nil> nativeCancellationObserved=true nativePOSTs=1 findingMutation=false resurrection=false\n--- PASS: TestAA5ObservationReadinessCalibration (2.50s)\nPASS\nok  \tgithub.com/bahadrdsr/aspm/.cache/ai-assessments-a1/author-aa5-ordering-green-20260920-01\t3.360s\n"
+    },
+    {
+      "name": "Genuinely absent target still fails the unchanged marker check",
+      "expectedExitCode": 1,
+      "run": "author-aa5-absent-negative-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Absent",
+        "run": "author-aa5-absent-negative-20260920-01",
+        "startedAt": "2026-09-20T20:16:54.8910837+00:00",
+        "finishedAt": "2026-09-20T20:17:02.4973790+00:00",
+        "exitCode": 1,
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=240s",
+          "-run=^TestAA5GenuineMarkerRejectionCalibration$",
+          ".\\.cache\\ai-assessments-a1\\author-aa5-absent-negative-20260920-01"
+        ],
+        "nativeFixture": "tests\\ai_assessments\\native_test.go",
+        "nativeFixtureSHA256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec",
+        "unchangedCopies": [
+          {
+            "source": "tests\\ai_assessments\\contract_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-absent-negative-20260920-01\\contract_test.go",
+            "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+          },
+          {
+            "source": "tests\\ai_assessments\\fixtures_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-absent-negative-20260920-01\\fixtures_test.go",
+            "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+          },
+          {
+            "source": "tests\\ai_assessments\\production_bindings_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-absent-negative-20260920-01\\production_bindings_test.go",
+            "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+          },
+          {
+            "source": "tests\\ai_assessments\\native_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-absent-negative-20260920-01\\native_test.go",
+            "sha256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec"
+          },
+          {
+            "source": "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-absent-negative-20260920-01\\observation_ordering_test.go",
+            "sha256": "3c2cc92e17f08aa9b521816109627c94f6d928a069f53a91f662306a1f6e54ee"
+          }
+        ],
+        "workingCopiesRemoved": true,
+        "originalEightAssertionsOrBindingsEdited": false,
+        "poolLimitsOrDeadlinesChanged": false,
+        "privateRuntimeValuesCopied": false,
+        "calibrationNotFullAcceptance": true,
+        "negativeModesReturnTheirActualFailure": true
+      },
+      "topLevel": [
+        {
+          "name": "TestAA5GenuineMarkerRejectionCalibration",
+          "status": "fail",
+          "durationSeconds": 2.05
+        }
+      ],
+      "nested": [],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.jsonl",
+          "bytes": 3434,
+          "sha256": "ecd61b9615d9822d365cf5a055f9fbd1e013af9a3ecad2352c20df0784837cdc"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.log",
+          "bytes": 826,
+          "sha256": "908001d1e2d15ae32c86a10748da78cd3b6745ca65f8f8036bf376245d18d60d"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.receipt.json",
+          "bytes": 2294,
+          "sha256": "fb04297902270ec4669cd1501420e818182da5b7ae1e2de335a1a32f32fbc593"
+        }
+      ],
+      "actualOutput": "=== RUN   TestAA5GenuineMarkerRejectionCalibration\n    observation_ordering_test.go:187: A1 adverse marker input: mode=absent actualAbsent=true observedState= attempts=0 markerNull=true; no SQL business-row writes\n    native_test.go:95: owned native boundary: dispatch marker must be committed before native POST\n    observation_ordering_test.go:202: A1 adverse marker check: nativeCheckRejected=true beforeConsumerCancellation=true actualDispatchedMarkerPassed=true\n    observation_ordering_test.go:217: A1 expected-negative proof complete: mode=absent originalMarkerCheckFailed=true actualNativeCancellation=true nativePOSTs=1 findingsUnchanged=true\n--- FAIL: TestAA5GenuineMarkerRejectionCalibration (2.05s)\nFAIL\nFAIL\tgithub.com/bahadrdsr/aspm/.cache/ai-assessments-a1/author-aa5-absent-negative-20260920-01\t2.911s\n"
+    },
+    {
+      "name": "Real API-created queued target still fails the unchanged marker check",
+      "expectedExitCode": 1,
+      "run": "author-aa5-queued-negative-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Queued",
+        "run": "author-aa5-queued-negative-20260920-01",
+        "startedAt": "2026-09-20T20:16:54.8602719+00:00",
+        "finishedAt": "2026-09-20T20:17:02.4704761+00:00",
+        "exitCode": 1,
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=240s",
+          "-run=^TestAA5GenuineMarkerRejectionCalibration$",
+          ".\\.cache\\ai-assessments-a1\\author-aa5-queued-negative-20260920-01"
+        ],
+        "nativeFixture": "tests\\ai_assessments\\native_test.go",
+        "nativeFixtureSHA256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec",
+        "unchangedCopies": [
+          {
+            "source": "tests\\ai_assessments\\contract_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-queued-negative-20260920-01\\contract_test.go",
+            "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+          },
+          {
+            "source": "tests\\ai_assessments\\fixtures_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-queued-negative-20260920-01\\fixtures_test.go",
+            "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+          },
+          {
+            "source": "tests\\ai_assessments\\production_bindings_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-queued-negative-20260920-01\\production_bindings_test.go",
+            "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+          },
+          {
+            "source": "tests\\ai_assessments\\native_test.go",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-queued-negative-20260920-01\\native_test.go",
+            "sha256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec"
+          },
+          {
+            "source": "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+            "copy": ".cache\\ai-assessments-a1\\author-aa5-queued-negative-20260920-01\\observation_ordering_test.go",
+            "sha256": "3c2cc92e17f08aa9b521816109627c94f6d928a069f53a91f662306a1f6e54ee"
+          }
+        ],
+        "workingCopiesRemoved": true,
+        "originalEightAssertionsOrBindingsEdited": false,
+        "poolLimitsOrDeadlinesChanged": false,
+        "privateRuntimeValuesCopied": false,
+        "calibrationNotFullAcceptance": true,
+        "negativeModesReturnTheirActualFailure": true
+      },
+      "topLevel": [
+        {
+          "name": "TestAA5GenuineMarkerRejectionCalibration",
+          "status": "fail",
+          "durationSeconds": 2.05
+        }
+      ],
+      "nested": [],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.jsonl",
+          "bytes": 3439,
+          "sha256": "091cac07dc1aaaa1d63671d273a00124a3b94768301bb4778e7b5fd31f2f7403"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.log",
+          "bytes": 833,
+          "sha256": "b5c179d23eae222c5cfeab99b80f0274f7b60293699ba84e1c4c9963f4c371c2"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.receipt.json",
+          "bytes": 2294,
+          "sha256": "dc1d078d6f8336e0cbfa6bf2f64fb4fc0ac5d105b6552f9578e6ee9c6be10b59"
+        }
+      ],
+      "actualOutput": "=== RUN   TestAA5GenuineMarkerRejectionCalibration\n    observation_ordering_test.go:187: A1 adverse marker input: mode=queued actualAbsent=false observedState=queued attempts=0 markerNull=true; no SQL business-row writes\n    native_test.go:95: owned native boundary: dispatch marker must be committed before native POST\n    observation_ordering_test.go:202: A1 adverse marker check: nativeCheckRejected=true beforeConsumerCancellation=true actualDispatchedMarkerPassed=true\n    observation_ordering_test.go:217: A1 expected-negative proof complete: mode=queued originalMarkerCheckFailed=true actualNativeCancellation=true nativePOSTs=1 findingsUnchanged=true\n--- FAIL: TestAA5GenuineMarkerRejectionCalibration (2.05s)\nFAIL\nFAIL\tgithub.com/bahadrdsr/aspm/.cache/ai-assessments-a1/author-aa5-queued-negative-20260920-01\t2.899s\n"
+    }
+  ],
+  "qualification": {
+    "pairedChecks": 4,
+    "expectedOutcomesObserved": 4,
+    "actualGoTestsPassed": 1,
+    "actualGoTestsFailedExpected": 3,
+    "skipped": 0,
+    "nativePOSTsPerRun": 1,
+    "unignoredSQLOrWrongStateNegatives": 2
+  },
+  "synchronization": {
+    "fixtureMaxConnections": 2,
+    "workerMaxConnections": 1,
+    "originalFixturePoolClosedBeforeEquivalentTracedPoolOpened": true,
+    "readOnlyReservedConnections": true,
+    "readOnlyAcquireTracing": true,
+    "SQLBusinessRowWritesByCalibration": false,
+    "workerCancellationDelayed": false,
+    "sleeps": false,
+    "deadlinesBroadened": false,
+    "poolLimitsBroadened": false,
+    "workingCopiesRemoved": true
+  },
+  "adverseTargets": "Only the fixture observation target differs in negatives: an absent ID or another genuine API-created queued row. Actual dispatched job, protocol/auth/context checks and production SQL state are not faked.",
+  "sources": [
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\Test-AA5-A1.ps1",
+      "bytes": 8028,
+      "sha256": "5ef1dca2af0631721b9609ef125abcf318823b9f179b51756e58fb672074a3c3"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\calibrate-aa5-A1.go.txt",
+      "bytes": 9383,
+      "sha256": "3c2cc92e17f08aa9b521816109627c94f6d928a069f53a91f662306a1f6e54ee"
+    }
+  ],
+  "nativeAfter": {
+    "path": "tests\\ai_assessments\\native_test.go",
+    "bytes": 13115,
+    "sha256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec"
+  }
+}

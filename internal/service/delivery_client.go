@@ -109,13 +109,23 @@ func newProviderClient(endpoint, caFile string) (*http.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	client, err := newDirectProviderClient(caFile)
+	if err != nil {
+		return nil, err
+	}
+	transport := client.Transport.(*http.Transport)
+	transport.DialContext = deliveryOriginDial(origin, transport.DialContext)
+	return client, nil
+}
+
+func newDirectProviderClient(caFile string) (*http.Client, error) {
 	roots, err := deliveryRoots(caFile)
 	if err != nil {
 		return nil, err
 	}
 	dialer := &net.Dialer{Timeout: 5 * time.Second, KeepAlive: 30 * time.Second}
 	transport := &http.Transport{
-		Proxy: nil, DialContext: deliveryOriginDial(origin, dialer.DialContext),
+		Proxy: nil, DialContext: dialer.DialContext,
 		TLSClientConfig:     &tls.Config{MinVersion: tls.VersionTLS12, RootCAs: roots},
 		TLSHandshakeTimeout: 5 * time.Second, ResponseHeaderTimeout: 10 * time.Second,
 		IdleConnTimeout: 30 * time.Second, MaxIdleConns: 2, MaxIdleConnsPerHost: 1,
@@ -183,6 +193,16 @@ func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Cli
 	if err != nil {
 		return nil, err
 	}
+	client, err := ownDirectProviderClient(supplied, caFile)
+	if err != nil {
+		return nil, err
+	}
+	transport := client.Transport.(*http.Transport)
+	transport.DialContext = deliveryOriginDial(origin, transport.DialContext)
+	return client, nil
+}
+
+func ownDirectProviderClient(supplied *http.Client, caFile string) (*http.Client, error) {
 	transport := supplied.Transport.(*http.Transport).Clone()
 	if transport.TLSClientConfig == nil {
 		transport.TLSClientConfig = &tls.Config{MinVersion: tls.VersionTLS12}
@@ -194,6 +214,9 @@ func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Cli
 		if transport.TLSClientConfig.RootCAs != nil {
 			transport.TLSClientConfig.RootCAs = transport.TLSClientConfig.RootCAs.Clone()
 		}
+		if transport.TLSClientConfig.ClientCAs != nil {
+			transport.TLSClientConfig.ClientCAs = transport.TLSClientConfig.ClientCAs.Clone()
+		}
 	}
 	if caFile != "" {
 		roots, err := deliveryRoots(caFile)
@@ -202,11 +225,9 @@ func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Cli
 		}
 		transport.TLSClientConfig.RootCAs = roots
 	}
-	dial := transport.DialContext
-	if dial == nil {
-		dial = (&net.Dialer{Timeout: 5 * time.Second, KeepAlive: 30 * time.Second}).DialContext
+	if transport.DialContext == nil {
+		transport.DialContext = (&net.Dialer{Timeout: 5 * time.Second, KeepAlive: 30 * time.Second}).DialContext
 	}
-	transport.DialContext = deliveryOriginDial(origin, dial)
 	client := *supplied
 	client.Transport = transport
 	client.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }

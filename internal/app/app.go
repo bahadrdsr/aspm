@@ -29,9 +29,10 @@ type Config struct {
 	Schema, ApplicationName  string
 	MaxConnections           int32
 	Storage                  StorageConfig
-	CollectionStorage        *StorageConfig   `json:"-"`
-	BootstrapToken           string           `json:"-"`
-	IntegrationEncryptionKey []byte           `json:"-"`
+	CollectionStorage        *StorageConfig `json:"-"`
+	BootstrapToken           string         `json:"-"`
+	IntegrationEncryptionKey []byte         `json:"-"`
+	AssessmentScope          string
 	Now                      func() time.Time `json:"-"`
 	LogOutput                io.Writer        `json:"-"`
 	SessionTTL               time.Duration
@@ -93,6 +94,7 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		config.MaxConnections < 1 || config.MaxConnections > 100 ||
 		config.SessionTTL < time.Second || config.SessionTTL > 30*24*time.Hour ||
 		config.MaxUploadBytes < 1024 || config.MaxUploadBytes > 32<<20 ||
+		(config.AssessmentScope != "" && !validAssessmentIdentity(config.AssessmentScope)) ||
 		(config.BootstrapToken != "" && len(config.BootstrapToken) < 32) {
 		return nil, errors.New("invalid application configuration")
 	}
@@ -136,6 +138,14 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		a.collectionEvidence.close()
 		a.storage.close()
 		return nil, err
+	}
+	if config.AssessmentScope != "" {
+		if err = a.registerAssessmentScope(ctx, config.AssessmentScope, nil); err != nil {
+			a.collectionEvidence.close()
+			a.storage.close()
+			_ = a.database.close()
+			return nil, err
+		}
 	}
 	a.imports = &ImportWorker{database: a.database, reader: a.storage.reader,
 		storage: a.storage.config, maxUploadBytes: config.MaxUploadBytes}

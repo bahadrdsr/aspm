@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-20T23:25:49.167Z",
+  "purpose": "Observed before normative regression assertions, not a green acceptance result.",
+  "report": {
+    "path": ".artifacts\\ai-assessments-ui-v1-author\\reviewed-independent-repro-v1\\results.json",
+    "sha256": "b17551d12a94ad07f3be1e720d896c0a1c9eab402c9ecd9056325563999166d5",
+    "bytes": 306223
+  },
+  "probe": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\reproduction-browser-v1.spec.ts.txt",
+    "sha256": "f816a05dc2b78aee2caea26cd80322d4267184baaea381d930129c63f41406a7",
+    "bytes": 5850
+  },
+  "cases": [
+    {
+      "title": "REPRO ONLY queue commit then 502/conflict",
+      "status": "passed",
+      "durationMs": 6847,
+      "retry": 0,
+      "observed": {
+        "status": 502,
+        "code": "conflict",
+        "first": {
+          "previewId": "ea0000000000000000000000000003e9",
+          "idempotencyKey": "6875706b-0005-40db-a884-bfc2281856bc",
+          "consent": true
+        },
+        "delivered": {
+          "apiVersion": "aspm/v1alpha1",
+          "error": {
+            "code": "conflict",
+            "message": "Synthetic ambiguous transport failure.",
+            "retryable": false,
+            "requestId": "synthetic-reviewed-5xx"
+          }
+        },
+        "unresolvedStatusVisible": 0,
+        "nextExplicitQueue": {
+          "previewId": "ea0000000000000000000000000003eb",
+          "idempotencyKey": "111e2d17-2be0-4f40-b2d4-539cb2cb819e",
+          "consent": true
+        },
+        "jobs": [
+          {
+            "id": "fa0000000000000000000000000003ea",
+            "previewId": "ea0000000000000000000000000003e9",
+            "idempotencyKey": "6875706b-0005-40db-a884-bfc2281856bc"
+          },
+          {
+            "id": "fa0000000000000000000000000003ec",
+            "previewId": "ea0000000000000000000000000003eb",
+            "idempotencyKey": "111e2d17-2be0-4f40-b2d4-539cb2cb819e"
+          }
+        ],
+        "posts": 2,
+        "claim": "Independent observational reproduction, not acceptance or a green regression."
+      },
+      "guards": {
+        "requests": 25,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    },
+    {
+      "title": "REPRO ONLY queue commit then 500/invalid-input",
+      "status": "passed",
+      "durationMs": 3392,
+      "retry": 0,
+      "observed": {
+        "status": 500,
+        "code": "invalid-input",
+        "first": {
+          "previewId": "ea0000000000000000000000000003e9",
+          "idempotencyKey": "555586eb-da2a-4b5f-8fc3-bde79d379a7c",
+          "consent": true
+        },
+        "delivered": {
+          "apiVersion": "aspm/v1alpha1",
+          "error": {
+            "code": "invalid-input",
+            "message": "Synthetic ambiguous transport failure.",
+            "retryable": false,
+            "requestId": "synthetic-reviewed-5xx"
+          }
+        },
+        "unresolvedStatusVisible": 0,
+        "nextExplicitQueue": {
+          "previewId": "ea0000000000000000000000000003eb",
+          "idempotencyKey": "3ddbf3e3-9fe3-4826-99ca-792e5202f86b",
+          "consent": true
+        },
+        "jobs": [
+          {
+            "id": "fa0000000000000000000000000003ea",
+            "previewId": "ea0000000000000000000000000003e9",
+            "idempotencyKey": "555586eb-da2a-4b5f-8fc3-bde79d379a7c"
+          },
+          {
+            "id": "fa0000000000000000000000000003ec",
+            "previewId": "ea0000000000000000000000000003eb",
+            "idempotencyKey": "3ddbf3e3-9fe3-4826-99ca-792e5202f86b"
+          }
+        ],
+        "posts": 2,
+        "claim": "Independent observational reproduction, not acceptance or a green regression."
+      },
+      "guards": {
+        "requests": 25,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    },
+    {
+      "title": "REPRO ONLY queue commit then 503/conflict",
+      "status": "passed",
+      "durationMs": 2893,
+      "retry": 0,
+      "observed": {
+        "status": 503,
+        "code": "conflict",
+        "first": {
+          "previewId": "ea0000000000000000000000000003e9",
+          "idempotencyKey": "00b3256e-0c49-4f5e-8fd7-366bc6504221",
+          "consent": true
+        },
+        "delivered": {
+          "apiVersion": "aspm/v1alpha1",
+          "error": {
+            "code": "conflict",
+            "message": "Synthetic ambiguous transport failure.",
+            "retryable": false,
+            "requestId": "synthetic-reviewed-5xx"
+          }
+        },
+        "unresolvedStatusVisible": 1,
+        "nextExplicitQueue": null,
+        "jobs": [
+          {
+            "id": "fa0000000000000000000000000003ea",
+            "previewId": "ea0000000000000000000000000003e9",
+            "idempotencyKey": "00b3256e-0c49-4f5e-8fd7-366bc6504221"
+          }
+        ],
+        "posts": 1,
+        "claim": "Independent observational reproduction, not acceptance or a green regression."
+      },
+      "guards": {
+        "requests": 23,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    },
+    {
+      "title": "REPRO ONLY history 403 immediately before held cancel ACK",
+      "status": "passed",
+      "durationMs": 1865,
+      "retry": 0,
+      "observed": {
+        "denial": 403,
+        "afterBoth": 0,
+        "afterUnavailable": 0,
+        "afterAuthorized": 1,
+        "cancelRequestFailure": "net::ERR_ABORTED",
+        "network": [
+          {
+            "path": "/api/v1/findings/5a000000000000000000000000000001/assessments",
+            "status": 403
+          },
+          {
+            "path": "/api/v1/ai/assessments/fa000000000000000000000000000001/cancel",
+            "status": 200
+          },
+          {
+            "path": "/api/v1/findings/5a000000000000000000000000000001/assessments",
+            "status": 503
+          },
+          {
+            "path": "/api/v1/findings/5a000000000000000000000000000001/assessments",
+            "status": 200
+          }
+        ],
+        "persistedState": "cancelled",
+        "claim": "Ordered route delivery without app/hook/DOM/clock/cleanup substitution. A passing boundary does not falsify the narrower pre-layout-effect race."
+      },
+      "guards": {
+        "requests": 15,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    },
+    {
+      "title": "REPRO ONLY history 404 immediately before held cancel ACK",
+      "status": "passed",
+      "durationMs": 2017,
+      "retry": 0,
+      "observed": {
+        "denial": 404,
+        "afterBoth": 0,
+        "afterUnavailable": 0,
+        "afterAuthorized": 1,
+        "cancelRequestFailure": "net::ERR_ABORTED",
+        "network": [
+          {
+            "path": "/api/v1/findings/5a000000000000000000000000000001/assessments",
+            "status": 404
+          },
+          {
+            "path": "/api/v1/ai/assessments/fa000000000000000000000000000001/cancel",
+            "status": 200
+          },
+          {
+            "path": "/api/v1/findings/5a000000000000000000000000000001/assessments",
+            "status": 503
+          },
+          {
+            "path": "/api/v1/findings/5a000000000000000000000000000001/assessments",
+            "status": 200
+          }
+        ],
+        "persistedState": "cancelled",
+        "claim": "Ordered route delivery without app/hook/DOM/clock/cleanup substitution. A passing boundary does not falsify the narrower pre-layout-effect race."
+      },
+      "guards": {
+        "requests": 15,
+        "violations": [],
+        "pageErrors": [],
+        "externalAttempts": 0
+      }
+    }
+  ],
+  "issue2Limit": "No deterministic full-app pre-layout-cleanup race was reached. The existing HTTP schedule aborted the old write even when the browser received its 200. Isolated real-hook invariant coverage is proposed separately and must not be labeled browser app race proof.",
+  "parentBindingApproval": "Pending. Parent agent is not addressable from this author session; no child/sibling work or agents launched."
+}

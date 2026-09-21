@@ -17,6 +17,36 @@ var (
 	ErrCapability  = errors.New("provider capability is not approved")
 )
 
+type OutputErrorKind string
+
+const (
+	OutputSchema     OutputErrorKind = "schema"
+	OutputRefusal    OutputErrorKind = "refusal"
+	OutputGrounding  OutputErrorKind = "grounding"
+	OutputIncomplete OutputErrorKind = "incomplete"
+)
+
+// OutputError classifies rejected structured output without retaining model
+// text. Existing callers can still use errors.Is(err, ErrOutput).
+type OutputError struct {
+	Kind OutputErrorKind
+}
+
+func (e *OutputError) Error() string {
+	switch e.Kind {
+	case OutputRefusal:
+		return "assessment refused"
+	case OutputGrounding:
+		return "assessment references unapproved evidence"
+	case OutputIncomplete:
+		return "assessment incomplete"
+	default:
+		return "assessment schema rejected"
+	}
+}
+
+func (*OutputError) Unwrap() error { return ErrOutput }
+
 type Profile struct {
 	ID, Family, Endpoint, Model, Deployment, Revision string
 	APIKey                                            string `json:"-"`

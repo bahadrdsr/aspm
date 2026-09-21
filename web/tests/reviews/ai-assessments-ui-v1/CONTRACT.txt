@@ -1,0 +1,205 @@
+AI ASSESSMENTS UI V1 - INDEPENDENT ACCEPTANCE BEFORE UI IMPLEMENTATION
+====================================================================
+
+Authority and boundary
+----------------------
+Frozen backend authority is tests\ai_assessments\CONTRACT.txt,
+contract_test.go and reviews\v1 decisions/window clarification. Its sealed
+206-file control manifest and configuration are witnesses, not editable here.
+The concurrently changing internal/app and provider implementation is expressly
+EXCLUDED from this UI packet's byte guards. No backend/runtime/DB/provider or
+real application API is contacted. Local Vite assets and same-origin synthetic
+protocol-shaped HTTP responses are the only execution boundary.
+
+Only NEW web\tests\ai-assessments-* and this review directory are authored.
+No production/UI/backend/dependency/old test/fixture/helper/runner/oracle edits,
+agents, commits or old-history copies. Existing 99 cases remain byte-identical.
+No React/module/hook/state/DOM/clock/provider/worker substitution. Browser
+evaluate observes state or synchronizes animation frames only.
+
+Opt-in finding context and shared surface
+-----------------------------------------
+Exactly five Primary navigation links and eight Native integrations families,
+Connections/Sources and the published opt-in AI settings remain unchanged.
+The existing finding dialog gains one button "AI assessments", initially
+aria-expanded=false. No assessment OR new AI configuration read is issued until
+that explicit entry is activated. Opening findings/filters/history alone does
+not preload AI. A new finding, workspace or session begins with the area closed.
+
+Activation opens a nonmodal region "AI assessments" INSIDE the existing finding
+dialog, not another dialog or navigation destination. It includes regions
+"Assessment history" and, when selected, "Assessment details".
+"Close AI assessments" clears sensitive UI state, aborts reads/writes and
+returns focus to the entry. The existing finding close/Escape returns to its
+existing row trigger and preserves filter, selection and existing histories.
+Nested profile/preview/cancel dialogs are not part of this surface.
+
+"Refresh assessment history", "Retry assessment history" and
+"Load more assessments" are explicit manual controls as appropriate. The table
+is named "Assessment history"; each row contains its server assessment ID.
+Row action is "View assessment". Details have "Refresh assessment",
+"Retry assessment" and "Close assessment details".
+Pending reads show an accessible loading status; errors show an alert.
+"No assessments" is only an authorized empty-success heading.
+Default native pages are 100; the fixture has at most 101 jobs. No timers,
+automatic draining, polling or reads that enqueue a job.
+
+Preparing a reviewed derived context
+-------------------------------------
+Admins/analysts have "New assessment", which opens the inline form
+"Prepare AI assessment". Viewers have no enabled prepare/queue/cancel action.
+Actual current role and server denials govern writes, not cosmetic styling.
+
+Existing AI config GET profiles/policy/grants supplies metadata only. Read them
+after AI entry or explicit form activation; never before the entry. Controls
+"Refresh assessment configuration" / "Retry assessment configuration" perform
+manual recovery. Labelled status "Current assessment policy" contains only an
+authorized mode/revision, not a fabricated disabled/default value after 503.
+Disabled, local-only, capability/grant/expiry/revision failures are explained.
+Stored profile or credentialConfigured is NOT ready/verified/allowed execution.
+
+Native select labels are "Observation", "AI profile", "AI grant".
+Observation and profile start unselected. Observation value is an explicitly
+chosen actual observation ID already returned by the existing finding endpoint.
+Do not infer the latest observation or invent an observations endpoint.
+Existing manual observationsCursor reads may supply more observations.
+Ineligible profiles/grants may be omitted or truly natively disabled. Eligible
+choices remain usable. Disabled OPTION is measured using the unchanged native
+option-only helper, not Playwright's label-retargeted toBeDisabled assertion.
+Approved-hosted requires an explicit exact current grant. Local-only permits
+only local family and no grant: grant selector absent/disabled and body grantId="".
+No endpoint/model/prompt/grant authority is entered by the browser.
+
+Textarea "Reviewed finding context" starts EMPTY, not assembled from original
+evidence, notes, unmapped fields, keys or configuration. Optional copying must
+itself be an explicit user action; this packet does not activate one.
+Preserve the exact browser textarea value: newlines, spaces and Unicode.
+Reject nonblank/NUL violations and >32768 UTF-8 bytes. Local validation or an
+explicit native 400/413 response may explain rejection, never a successful
+preview. UI must not silently trim, truncate or split Unicode to get under cap.
+Checkbox "I reviewed and redacted this derived context" is initially unchecked.
+"Prepare assessment preview" requires explicit choices, valid context and
+review acknowledgement. An edited field clears prior preview/queue consent.
+"Discard assessment draft" removes the draft; no write is inferred from opening.
+
+Preview POST is EXACTLY:
+  POST /api/v1/findings/{findingId}/assessment-previews
+  {observationId,profileId,grantId,context,reviewed:true}
+No actorId, endpoint, headers, model, revisions, source digest, prompt revision,
+ApprovalRef or result is browser authority. A pending preview is not approval.
+
+Canonical preview and SECOND consent
+------------------------------------
+201 {apiVersion,preview} enables region "Assessment preview".
+Show actual server IDs, finding/observation/source linkage, selected profile ID,
+family/model/deployment, exact destination, profile/policy revisions, grant ID,
+task/dataClass, server prompt revision, contextRef and both different digests.
+The exact context is an inert pre/readonly text region labelled "Approved context".
+Semantic terms include "Context digest" and "Source evidence digest".
+time[datetime] labelled "Preview expires at" preserves the server instant; an
+equivalent RFC3339 offset is acceptable, not a mandatory literal Z.
+Explain user-reviewed DERIVED context, not original scanner bytes or proof,
+credential exclusion without a universal-regex guarantee, and advisory-only
+model output that cannot verify/close/classify a finding.
+
+Checkbox "Approve this exact preview for queueing" is a SECOND explicit unchecked
+consent. Button "Queue assessment" submits ONLY:
+  POST /api/v1/findings/{findingId}/assessments
+  {previewId,idempotencyKey,consent:true}
+Use a bounded nonempty fresh key for a genuinely new resolved intent; no key in
+URLs/storage. 202 means queued, never completed assessment. Busy actions prevent
+duplicate activation and show truthful pending status without optimistic rows.
+
+Changed finding/observation/profile/grant/context, a changed/denied authorized
+metadata receipt, or 409 expiry/stale binding invalidates old queue consent.
+AI revisions are opaque, including lexically decreasing strings. Current facts
+must be reviewed again explicitly. No automatic preview, queue or retry.
+
+Lost ACK and uncertainty
+------------------------
+A queue request may commit before a lost/aborted ACK. Preserve the same minimal
+unresolved {workspace/requester/finding,previewId,idempotencyKey} intent in scoped
+memory across pane/finding close OR block any new attempt until authorized
+history reconciliation. Do not retain editable context/preview/result drafts
+just to preserve that safety marker, and never use browser persistent storage.
+An optional explicit "Retry pending queue" must reuse BOTH exact original key
+and previewId. Alternatively block "New assessment" and reconcile through the
+manual authorized history/retry read. A matching server idempotency receipt can
+resolve uncertainty. Absence on an incomplete/denied/failed page cannot.
+Close/reopen and failed history do not authorize a fresh-key blind duplicate.
+Scope/session loss clears UI context; later authorized history must handle any
+uncertain prior dispatch safely, not offer automatic resend.
+409 never automatically re-previews/resubmits. Any new run requires new explicit
+review after unresolved history has been safely handled.
+
+Job detail, outcome and cancellation truth
+------------------------------------------
+Read ONLY GET /api/v1/findings/{id}/assessments and
+GET /api/v1/ai/assessments/{id} with native bound ID cursors.
+Render canonical states queued/dispatching/succeeded/failed/cancelled/
+invalidated/uncertain, dispatchState not-started/possibly-sent/response-received,
+attempts 0..1 and advisoryOnly=true. Labels may humanize hyphens without changing
+meaning. Details use semantic terms "State", "Dispatch state", "Attempts",
+"Requested model", "Returned model", "Deployment", "Request ID", "Stop reason",
+"Input tokens", "Output tokens", "Cached input tokens", "Cache write tokens".
+
+Succeeded renders region "Advisory result": supported/contradicted/inconclusive,
+nonblank uncertainty and exact approved context references. It never becomes
+Verified/Reproduced/FalsePositive, closed workflow or source verification.
+Unknown usage is visibly UNKNOWN, not 0 tokens/zero cost. Known native counts
+and cache reads/writes are preserved, alongside model/deployment/request/stop/
+retry observations. Returned model is not immutable model certification.
+Failure code/message is bounded service diagnostic, not model-generated success.
+All metadata/context/result text is inert; no URL in it is fetched.
+
+"Cancel assessment" opens inline region "Cancel assessment confirmation".
+"Keep assessment" dismisses without I/O. "Confirm cancellation" sends:
+  POST /api/v1/ai/assessments/{id}/cancel with {}
+Only canonical 200 {apiVersion,assessment} changes the displayed state.
+No optimistic rollback, terminal status, refund or guarantee that sent data was
+unsent. Possibly-sent/uncertain jobs have no blind resend/retry-assessment action.
+The original finding/source/evidence/workflow/owner/risk/notes remain unchanged.
+
+Denial, privacy and lifetime
+----------------------------
+403/404 detail denial clears protected details and stays withheld through 503
+until a later authorized 200. Transient next-page failure retains confirmed
+rows and retries the identical cursor/limit. Server 401, stale-admin 403 and
+newly received roles are authoritative.
+No context, preview, grant, job, credential or intent in localStorage,
+sessionStorage, URLs, console or readable cookies. Only existing aspm.theme
+may persist. HTTP-only session cookie is not a secret readback channel.
+Close AI pane/finding/workspace/logout/401 abort old reads/writes and clear
+AI context/preview/result/drafts. Released old responses cannot reappear.
+An aborted write is never described as server rollback. Minimal unresolved
+intent safety above does not permit stale visible payloads or cross-scope use.
+Native workspace/logout controls outside the modal are used after normal
+finding close; no forced clicks through modal inertness.
+
+390px, reduced motion, busy/keyboard focus, entry/finding return focus, inert long
+source IDs/context and no document-wide horizontal overflow are required.
+Keep native visibility/shadow-root semantics and semantic role/name locators.
+The old AI-settings UTC-input policy is not altered by assessment display.
+
+Six coherent cases and evidence
+-------------------------------
+AAUI1 lazy open, published shell/history/settings, viewer reads, config failure.
+AAUI2 explicit derived context/observation/profile/grant, exact preview body,
+      UTF-8/NUL/nonblank bounds, canonical linkage/privacy and second consent.
+AAUI3 exact queue consent, lost ACK/close/reopen, same intent or history barrier,
+      opaque revision/expiry conflicts, no automatic re-preview/resubmit.
+AAUI4 canonical job states/advisory/usage/diagnostics and explicit cancel truth.
+AAUI5 real manual 100+1 history, same-cursor retry, detail denial across 503,
+      and stale-client/current-server write denial.
+AAUI6 390px/reduced-motion/focus/privacy, pane/finding/workspace/logout/401 and
+      aborted held preview/queue ACK/read epochs.
+
+Exactly six new top-level cases; original 20s cases, 5s expectations, one worker,
+zero retries/skips, combined 60 application API calls per case, blocked service
+workers, retain-on-failure traces and failure-only screenshots are unchanged.
+No sleeps, force clicks, budget increase, selector-index/default-success
+fallbacks or application substitution to obtain green.
+Typecheck, actual current missing-controls RED and unchanged-99 compatibility
+are recorded separately. All later assertions after missing UI are honestly
+BLOCKED/NOT RUN. Synthetic API success is fixture metadata, not hidden provider/
+worker/backend acceptance. Parent verifies/seals before a separate UI coder.

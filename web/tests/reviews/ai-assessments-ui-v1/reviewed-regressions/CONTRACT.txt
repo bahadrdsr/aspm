@@ -1,0 +1,111 @@
+REVIEWED ASSESSMENT UI REGRESSIONS
+================================
+
+Independent author: independent-reviewed-ui-regressions-20260920.
+Parent verification/seal and separate UI-coder remediation are required.
+Neither previously authored 105-case assertion bytes nor production bytes
+are changed. The only existing-file delta is AMENDMENT.txt's opt-in fixture
+response override. Original manifest/config remain untouched.
+
+Evidence before assertions
+--------------------------
+INDEPENDENT-BROWSER-REPRO.json records the first actual browser investigation.
+The real app and typed client queued two distinct jobs for 502/conflict and
+500/invalid-input after the first job committed and history returned 503.
+503/conflict preserved the barrier. Original fixture ledgers, privacy checks,
+epoch handling, request accounting and network guards executed in all probes.
+
+Ordered 403/404 history denial followed immediately by a held cancel-200
+delivery left no app rows and stayed empty through 503. The browser received
+the 200 but real cleanup aborted the old action. This is NOT proof that the
+smaller pre-layout-cleanup race is impossible, and NOT a browser RED for it.
+No app state/DOM/hook replacement, synthetic cleanup delay or clock change
+was used to force that race.
+
+Group AAR1: ambiguous queue response, browser-level requirement
+--------------------------------------------------------------
+Prepare and consent using the real app's native controls and exact typed
+request bodies. The fixture must validate normally and persist one queue job
+before replying 502/conflict or 500/invalid-input. A recognized JSON code is
+not proof that an unexpected 5xx status rejected a write before persistence.
+503/conflict is the existing safe normalization control.
+
+Hold then fail history so no authorized matching receipt can clear doubt.
+No automatic preview, queue, replay or history polling is allowed. Explicit
+retry is optional, but if offered it must preserve BOTH original preview ID
+and idempotency key. Otherwise edits/new consent must not enable a fresh queue.
+A retained minimal in-memory intent OR an effective reconciliation barrier
+is acceptable; no required error-message wording or state-storage design.
+
+Close/reopen the pane and the whole finding while history keeps failing.
+No stale context/preview, automatic POST or fresh-key queue may result.
+Only after explicit authorized history returns the matching receipt may a
+genuinely new preview and key be created with separate review and consent.
+A separate initial definitive 409 control has no persisted first job and
+permits a newly reviewed intent without permanent lockout. This prevents
+a fix that treats every failed request as permanently ambiguous.
+
+Group AAR2: denial latch and canonical receipt independence
+----------------------------------------------------------
+Actual-app ordered-response controls cover 403/404, old cancel-200, 503 and
+authorized 200. They protect the reachable cleanup boundary, not the smaller
+race's reachability. Denied history remains empty; stale actions cannot restore
+write authority. A synthetic committed cancellation is not server rollback.
+
+PROPOSED INTERNAL UNIT BINDING - PARENT APPROVAL REQUIRED BEFORE TEST FREEZE
+-----------------------------------------------------------------------
+The isolated document is explicitly titled a production-hook invariant, NOT
+the app, and never replaces or mutates the app DOM. Its normal React root
+imports the real existing production exports:
+  components\finding-assessments\history: useAssessmentHistory, AssessmentHistory
+  lib\use-scoped-action: useScopedAction
+  lib\preferences: Preferences (normal provider required by ActionButton)
+  api\assessments: assessmentsApi
+  api\assessment-intents: beginAssessment, pendingAssessment
+  api\client: api.session
+  api\authorization: setRequestWorkspace
+
+The last two establish the unit's workspace from an actual typed synthetic
+session response, not a forged app state. Fixed synthetic native IDs are test
+inputs. The same original guarded HTTP fixture validates/counts EVERY request.
+The new standalone document lives beneath the already allowed tests/harness
+asset prefix; no fixture asset/network allowlist is broadened.
+The only test consumer wiring is starting a queue/cancel through useScopedAction
+and passing a parsed receipt to the real history.accept. No copied decision
+logic, ref inspection, source-regex assertion, hook stub or module replacement.
+
+The hook stays mounted normally. The production parent pane is deliberately
+NOT included, so no parent cleanup is postponed or simulated. This isolates
+the exported hook's invariant rather than asserting a browser interleaving.
+Start a held write before history denial; observe rows cleared; deliver the
+old canonical receipt; retry history with a held 503; recover only on 200.
+Rows must remain empty and authority false across the denied epoch, including
+the loading gap. A minimal old receipt/pending identity is not authorization.
+If uncertainty remains, it must match the old intent, not authorize a new one.
+Authorized recovery may reconcile it. No mandatory generation/ref architecture.
+
+Positive unit controls require canonical queue and cancel ACKs to update
+confirmed history immediately when no history denial occurred, without an
+extra history read. A blanket suppression of every action ACK is invalid.
+
+This proposed existing-export binding is not accepted/frozen authority merely
+because its candidate source and evidence are hashed. The parent must approve
+it explicitly or replace it with equivalent observable coverage before sealing.
+
+Unchanged execution constraints
+-------------------------------
+20-second cases, 5-second expectations, one worker, zero retries/skips, combined
+60 application requests per case, blocked service workers, retained failure
+traces and failure-only screenshots. Reuse the original runner/config.
+Native OPTION eligibility and RFC3339 instant semantics remain unchanged.
+No sleeps, forced actions, browser clocks, API/provider/DB calls, agents,
+production edits, dependency edits/installs, old-spec edits or oracle writes.
+
+Failure reporting
+-----------------
+Fresh RED records identify the precise failed assertions, all reached phases
+and blocked downstream phases. Observational probes are not green acceptance.
+Controls and all held production inputs are hashed/locked before and after
+each run. The original 105-case compatibility set is run separately once after
+the new fixture and focused regressions compile and their expected RED is
+coherent. A packet checksum is not a signature or parent approval.

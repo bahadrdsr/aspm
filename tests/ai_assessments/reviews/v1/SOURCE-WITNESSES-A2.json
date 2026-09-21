@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T00:58:24.549Z",
+  "heldHandoff": {
+    "path": ".cache\\ai-assessments-coder\\FINAL-HANDOFF-A1.json",
+    "bytes": 59156,
+    "sha256": "019d2817b826563809f8213aaee73ace61139bcfc53b4d199217b42c637fb039"
+  },
+  "heldSource19": [
+    {
+      "path": "internal\\app\\ai_resolver.go",
+      "bytes": 7087,
+      "sha256": "698242e9e9132fc664149a95744de70cc24541bd6a5f54ef4890edf15e24b7f8"
+    },
+    {
+      "path": "internal\\app\\ai_routes.go",
+      "bytes": 3352,
+      "sha256": "32a41698edcce2ec2e1cfea598509908323ae59374cd053b02186c017a075d80"
+    },
+    {
+      "path": "internal\\app\\app.go",
+      "bytes": 6237,
+      "sha256": "acfcaf45f8f6a5b7dd578309f8ff14bb9285c2167020aaa555762ba0ba47565c"
+    },
+    {
+      "path": "internal\\app\\assessment_admission.go",
+      "bytes": 2271,
+      "sha256": "e3a404ad054b20bcac5d750b2d67d47db678651216a4e57ea5920b440534c44f"
+    },
+    {
+      "path": "internal\\app\\assessment_claim.go",
+      "bytes": 10840,
+      "sha256": "67d0d0796157c596e8ca5b92c317beff1343bacccfdef2e0fb7b4907869ef551"
+    },
+    {
+      "path": "internal\\app\\assessment_client.go",
+      "bytes": 3217,
+      "sha256": "25baae23592741130df6620c3bede42423dc27e404b4bbdc8d50342d91538061"
+    },
+    {
+      "path": "internal\\app\\assessment_finalize.go",
+      "bytes": 8477,
+      "sha256": "bf78e92352e2ff7d43388f1407bd3e1fb9b17b8cd4c87e916d57b8695cfb4263"
+    },
+    {
+      "path": "internal\\app\\assessment_jobs.go",
+      "bytes": 7242,
+      "sha256": "4c72d2e47040410e0c8d09083ce3f58464d8d0709e65cf1eb6feef5eead03d51"
+    },
+    {
+      "path": "internal\\app\\assessment_previews.go",
+      "bytes": 5256,
+      "sha256": "b369fbf8d97e4a82e7f0bcefc0937ec75c39b6e004114a0372c0d5eb1fffa7ad"
+    },
+    {
+      "path": "internal\\app\\assessment_schema.go",
+      "bytes": 5834,
+      "sha256": "ea817d937cda55f8961632d44b56cb012f1b394ac0773532137e295b232a8ebe"
+    },
+    {
+      "path": "internal\\app\\assessment_types.go",
+      "bytes": 5452,
+      "sha256": "2f9c6d87fce902af1f0e346ecd66f9695217baa3f29ff09cadf5d43f11f718cc"
+    },
+    {
+      "path": "internal\\app\\assessment_validation.go",
+      "bytes": 4575,
+      "sha256": "c249a19e7ba3fd0593e1873a7d77d72653b18692a4b6c6da31c212fa1c7500c3"
+    },
+    {
+      "path": "internal\\app\\assessment_worker.go",
+      "bytes": 7545,
+      "sha256": "82330d25f74da7187c541ee647745f5447a48aba63acca67a470b0662cca220b"
+    },
+    {
+      "path": "internal\\app\\doc.go",
+      "bytes": 13799,
+      "sha256": "77117f4bb21ffc97702c017fc34bd4dffd7ba7ec03db0fb5a63f34ee57bd2ce2"
+    },
+    {
+      "path": "internal\\app\\http.go",
+      "bytes": 14244,
+      "sha256": "8536cfd5c88d532970639d5e42aa6c7c691e85707ada186091cfeac5dfc09468"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "bytes": 10284,
+      "sha256": "e32b488f0bcb689dc138a39355f504e8c603b4805ef4f8c19d1c49859b0a61da"
+    },
+    {
+      "path": "internal\\providers\\README.txt",
+      "bytes": 4650,
+      "sha256": "2dbc0af4a8f3ce274638dd861dd95d21b64918e4a6f27f677445c5d40cbeb94a"
+    },
+    {
+      "path": "internal\\providers\\assessor.go",
+      "bytes": 15388,
+      "sha256": "4dd2dd1c2408c5eb00f993637c2645965d41c9b0b37d3a89530247ee498bddde"
+    },
+    {
+      "path": "internal\\providers\\types.go",
+      "bytes": 2960,
+      "sha256": "51dccdd23bb98e2f5c90edffe926a3bd23eb01cd42b7688c3f9a529eb9f51e8f"
+    }
+  ],
+  "pinnedGoVersion": "go1.27.1 windows/amd64",
+  "toolchain": {
+    "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "bytes": 17508352,
+    "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+  },
+  "pinnedGoSources": [
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\net\\http\\internal\\http2\\transport.go",
+      "bytes": 92980,
+      "sha256": "fdc011e4b8c763e580070b6082560769967e8bf681024bc3dd64ceed75b8879b"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\net\\http\\http2.go",
+      "bytes": 18351,
+      "sha256": "62166149f89e1a1b85f587777ac28c0500f45c5dc465fc0ce97e134eccfedbc4"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\net\\http\\request.go",
+      "bytes": 51543,
+      "sha256": "c3257079994b4e4f74f01cef72508919983ba31f91fcf599d348e9d52cec1540"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\net\\http\\transport.go",
+      "bytes": 106326,
+      "sha256": "b3c0ef6ea21d8bfa3d8ee4d6f53e3f5e5982c5d6bfcd14536437adeb214a6933"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\LICENSE",
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    }
+  ],
+  "protocolTables": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\HPACK-TABLES-A2.json",
+    "bytes": 11089,
+    "sha256": "49e13f82d9fac5f35b3783b47e69403074929059049863f9a3bd1f2e90328cdf"
+  },
+  "tableSources": [
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\vendor\\golang.org\\x\\net\\http2\\hpack\\tables.go",
+      "bytes": 7719,
+      "sha256": "6e8ce01dfb4d5e9e02a982581988621d2bc84b5e90708e1ffd3ef988cf8b2d5c"
+    },
+    {
+      "path": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\vendor\\golang.org\\x\\net\\http2\\hpack\\static_table.go",
+      "bytes": 8943,
+      "sha256": "c3d863a43ea29e6f03db930eb2556664eeeda22a4ac0b8bcbd9e31bde499eed1"
+    }
+  ],
+  "tableVerification": {
+    "codesEqualPinnedSource": true,
+    "lengthsEqualPinnedSource": true,
+    "dimensions": [
+      256,
+      256,
+      61
+    ],
+    "licenseExactlyMatchesPinnedGoLicense": true
+  },
+  "sourceHypothesesConfirmedBySeparateNativeRuns": [
+    {
+      "issue": "A2R1",
+      "traces": [
+        "internal\\app\\assessment_client.go:54-63",
+        "internal\\providers\\assessor.go:93",
+        "net\\http\\http2.go:329",
+        "net\\http\\internal\\http2\\transport.go:426-428,507-542"
+      ],
+      "run": "successor-a2-h2-red-20260921-01"
+    },
+    {
+      "issue": "A2R2",
+      "traces": [
+        "internal\\app\\assessment_jobs.go:189-192",
+        "internal\\app\\assessment_claim.go:70-84,126-134,197-281"
+      ],
+      "run": "successor-a2-lifetime-red-20260921-01"
+    }
+  ],
+  "sourceTraceAloneIsNotAcceptance": true,
+  "installedTransportUnmodified": true,
+  "addedDependencies": []
+}

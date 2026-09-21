@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T23:31:37.211Z",
+  "author": "independent-assessment-runtime-test-author-20260920",
+  "outcome": "passed",
+  "baseline": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE.json",
+    "bytes": 158435,
+    "sha256": "1b7fab2b625f380fdb3190a8f149456d0349e0c325852884fa100f11f59f8db5"
+  },
+  "existingProtectedFiles": 859,
+  "unchangedExistingFiles": 859,
+  "changedExistingFiles": 0,
+  "orderedCurrentInventorySHA256": "9a7f96416a9eb127eaf1d477186c02ecfe8698dde11b462bd8fa3a06af7e4667",
+  "fullInventoryReference": "BEFORE.json protectedFiles",
+  "preTestContractUnchanged": {
+    "path": "tests\\assessment_runtime\\CONTRACT.txt",
+    "bytes": 12696,
+    "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+  },
+  "excluded": "Mutable web/** and root README.md, private runtime values and unrelated concurrent artifacts are not frozen.",
+  "sources": [
+    {
+      "path": "tests\\assessment_runtime\\CONTRACT.txt",
+      "bytes": 12696,
+      "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+    },
+    {
+      "path": "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+      "bytes": 7513,
+      "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+    },
+    {
+      "path": "tests\\assessment_runtime\\command_test.go",
+      "bytes": 3157,
+      "sha256": "7e82c80db6cda881855d11341f0dc99f818b4c808a0ffa8e97e00fcb07831d62"
+    },
+    {
+      "path": "tests\\assessment_runtime\\contract_test.go",
+      "bytes": 4049,
+      "sha256": "ab5317421df4f0ce478f07d7ba741b02c2373a6e2640ed00e575894c2efe158f"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_probe_test.go",
+      "bytes": 976,
+      "sha256": "9f92ac387c5038ea9a6e32f8889bcae56982162aabfbef8f5a0e73d15a8736e6"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_test.go",
+      "bytes": 4814,
+      "sha256": "46515795b1cfa3ecdd6710ab18b511eb4e1ef00598d7d9a1deb097ae8a9f051d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixture_calibration_test.go",
+      "bytes": 3577,
+      "sha256": "06dd138e1c71a072e4df47f3800db0ccb11a5c24362f16deb7c85115794e4522"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixtures_test.go",
+      "bytes": 25706,
+      "sha256": "2b90db2c6ec5bcda35ad26b88b43bedd98230e11ab8398da659ad4913ad28831"
+    },
+    {
+      "path": "tests\\assessment_runtime\\native_test.go",
+      "bytes": 7490,
+      "sha256": "3ac099f461cf957f15d7e3aae6e9b98ebb7eed10ee39dc87a426e2aeb399b233"
+    },
+    {
+      "path": "tests\\assessment_runtime\\production_bindings_test.go",
+      "bytes": 2861,
+      "sha256": "8c0b88b08fbdaa64f6e1f19c9a057a42285d068121cc723ad1cbec359bb5cbb8"
+    },
+    {
+      "path": "tests\\assessment_runtime\\roles_test.go",
+      "bytes": 19156,
+      "sha256": "8b58de99ca865b736af7a30c6d63cf9524a232d5232e4872274b536c5b8194ff"
+    }
+  ],
+  "prohibitions": {
+    "productionEdits": 0,
+    "oldTestsFixturesBindingsEdits": 0,
+    "oracleOrSignatureWrites": 0,
+    "UIEdits": 0,
+    "packagingInstallerHelmEdits": 0,
+    "dependencyInstalls": 0,
+    "runtimePolicyOrOSChanges": 0,
+    "SQLBusinessSeeds": 0,
+    "liveModelProviderAccountCalls": 0,
+    "agents": 0,
+    "commits": 0,
+    "privateAuthorityAccess": false
+  },
+  "noNewRuntimeAcceptanceClaimed": true
+}

@@ -13,6 +13,7 @@ export class APIError extends Error {
     readonly code: "unauthorized" | "forbidden" | "not-found" | "unavailable" | "network" | "invalid-response" | "invalid-input" | "conflict" | "replay-expired" | "too-large" | "unsupported-format" | "method-not-allowed",
     readonly retryable: boolean,
     readonly requestId: string | null = null,
+    readonly httpStatus: number | null = null,
   ) {
     super(message);
     this.name = "APIError";
@@ -481,6 +482,7 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
       choice(error.code, ["unauthorized", "forbidden", "not-found", "unavailable", "invalid-input", "conflict", "replay-expired", "too-large", "unsupported-format", "method-not-allowed"], "error code"),
       boolean(error.retryable, "retry policy"),
       text(error.requestId, "request identifier"),
+      response.status,
     );
   }
   if (scoped && authority.revision !== requestAuthority().revision) throw new DOMException("Workspace changed", "AbortError");

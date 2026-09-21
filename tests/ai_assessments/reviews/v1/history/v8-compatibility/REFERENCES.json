@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "publishedOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "amended": [
+    {
+      "original": {
+        "path": "tests\\source_collection\\upgrade_test.go",
+        "bytes": 10731,
+        "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+      },
+      "archive": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\source-collection-upgrade_test.go.v7",
+        "bytes": 10731,
+        "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+      }
+    },
+    {
+      "original": {
+        "path": "tests\\ai_configuration\\upgrade_test.go",
+        "bytes": 7136,
+        "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+      },
+      "archive": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\ai-configuration-upgrade_test.go.v7",
+        "bytes": 7136,
+        "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+      }
+    }
+  ],
+  "originalAuthority": [
+    {
+      "path": ".oracles\\ai-configuration-a3.json",
+      "bytes": 33678,
+      "sha256": "355f7d60feeb446a67a3a6db9a220d9e1f42dcbe1bf0adb67268e815a1e15407"
+    },
+    {
+      "path": ".oracles\\ai-configuration-a3.json.sig",
+      "bytes": 89,
+      "sha256": "03f8b239471a8c89f2be120ca7602f535f763be32d609add0b0da140d220a6ae"
+    },
+    {
+      "path": ".oracles\\publication-ai-configuration-v11.json",
+      "bytes": 235268,
+      "sha256": "b714b470a6065871e5d90f420aad322b03fa41f441500ea619fc67e9d5efae68"
+    },
+    {
+      "path": ".oracles\\publication-ai-configuration-v11.json.sig",
+      "bytes": 89,
+      "sha256": "66c7eef8738f88a4ad3cd3722ccb0d91c3df58b50ac53a3b6df9b275e9dce62b"
+    }
+  ],
+  "onlyActuallyAmendedFilesArchived": true,
+  "recursiveHistoryCopies": false
+}

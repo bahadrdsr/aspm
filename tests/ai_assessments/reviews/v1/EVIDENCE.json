@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T18:34:23.401Z",
+  "qualification": {
+    "finalFixtureCalibration": {
+      "selectedTopLevel": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 0,
+      "nestedFailed": 0
+    },
+    "fullNewSuite": {
+      "planned": 8,
+      "executed": 0,
+      "blocked": 8,
+      "compileFailed": true
+    },
+    "actualPopulatedV7Upgrade": {
+      "selectedTopLevel": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 0,
+      "nestedFailed": 1
+    },
+    "plannedAI7Compatibility": {
+      "selectedTopLevel": 7,
+      "passed": 6,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 1,
+      "nestedFailed": 1
+    },
+    "plannedSource9Compatibility": {
+      "selectedTopLevel": 9,
+      "passed": 8,
+      "failed": 1,
+      "skipped": 0,
+      "nestedPassed": 4,
+      "nestedFailed": 2
+    }
+  },
+  "finalRuns": [
+    {
+      "run": "author-assess-contract-red-20260920-03",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Contract",
+        "startedAt": "2026-09-20T18:29:10.5979121+00:00",
+        "finishedAt": "2026-09-20T18:29:13.0168628+00:00",
+        "exitCode": 1,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=240s",
+          ".\\tests\\ai_assessments"
+        ],
+        "fullProductionBindingsIncluded": true,
+        "helperOnlyIsNotAssessmentAcceptance": false,
+        "privateRuntimeValuesCopied": false,
+        "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+        "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+        "dependenciesInstalled": false
+      },
+      "counts": {
+        "selectedTopLevel": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "nestedPassed": 0,
+        "nestedFailed": 0
+      },
+      "cases": [],
+      "nested": [],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.jsonl",
+          "bytes": 1801,
+          "sha256": "21486f659beeb9fa72cdeee054ce804fc4ea77c992c11f3c91cd0f8af69a35ea"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.log",
+          "bytes": 507,
+          "sha256": "90fca6422e3cd9236dfba303dd6e2eb4c9921ccac89d3fe3295e3f29ef14dc7e"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.receipt.json",
+          "bytes": 881,
+          "sha256": "2ada38b576a9a02d8eec9b536682465bdcbe773f1006832f0ee76b5cc9be977f"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.published-v7-build.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.published-v7-build.json",
+          "bytes": 894,
+          "sha256": "ca2227dd4185839aadc7b61303bbef17456816493f10c69c2103253970249235"
+        }
+      ]
+    },
+    {
+      "run": "author-assess-fixture-20260920-04",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "FixtureCalibration",
+        "startedAt": "2026-09-20T18:29:10.7261601+00:00",
+        "finishedAt": "2026-09-20T18:29:20.1514978+00:00",
+        "exitCode": 0,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration,ai_assessments_fixture",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=120s",
+          "-run=^TestAIAssessmentOwnedIntakeNativeAndPublishedV7Fixture$",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\assessments_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\contract_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixture_calibration_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixtures_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\native_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\upgrade_test.go"
+        ],
+        "fullProductionBindingsIncluded": false,
+        "helperOnlyIsNotAssessmentAcceptance": true,
+        "privateRuntimeValuesCopied": false,
+        "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+        "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+        "dependenciesInstalled": false
+      },
+      "counts": {
+        "selectedTopLevel": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "nestedPassed": 0,
+        "nestedFailed": 0
+      },
+      "cases": [
+        {
+          "name": "TestAIAssessmentOwnedIntakeNativeAndPublishedV7Fixture",
+          "status": "pass",
+          "durationSeconds": 4.35
+        }
+      ],
+      "nested": [],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.jsonl",
+          "bytes": 1775,
+          "sha256": "34b07fa1cdf7b248ccfe11cb650f56de8526001421cc32ab387d1fc001386960"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.log",
+          "bytes": 424,
+          "sha256": "a66aae7a67c4b2f121712379ebd989895c8551fbaf8291e79799dd386fcdafc4"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.receipt.json",
+          "bytes": 1412,
+          "sha256": "ef021096a4daebbc15f17bddb3d8d1e548aefb382816396b8e21938698a653d6"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.published-v7-build.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.published-v7-build.json",
+          "bytes": 889,
+          "sha256": "10f239e7f22539838808a91d5e4f04085cbf5c9ac82e490af7db257b13995a0a"
+        }
+      ]
+    },
+    {
+      "run": "author-assess-v7-upgrade-red-20260920-03",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "UpgradePrerequisite",
+        "startedAt": "2026-09-20T18:29:10.6957181+00:00",
+        "finishedAt": "2026-09-20T18:29:18.3571535+00:00",
+        "exitCode": 1,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=120s",
+          "-run=^TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens$/^published-v7-upgrade$",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\assessments_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\contract_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixture_calibration_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixtures_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\native_test.go",
+          "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\upgrade_test.go"
+        ],
+        "fullProductionBindingsIncluded": false,
+        "helperOnlyIsNotAssessmentAcceptance": true,
+        "privateRuntimeValuesCopied": false,
+        "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+        "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+        "dependenciesInstalled": false
+      },
+      "counts": {
+        "selectedTopLevel": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "nestedPassed": 0,
+        "nestedFailed": 1
+      },
+      "cases": [
+        {
+          "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens",
+          "status": "fail",
+          "durationSeconds": 2.53
+        }
+      ],
+      "nested": [
+        {
+          "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/published-v7-upgrade",
+          "status": "fail",
+          "durationSeconds": 2.53
+        }
+      ],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.jsonl",
+          "bytes": 3023,
+          "sha256": "a71b5723ed2c94fd1ed8159d4ea11820223ea67d1618e42009a854370cdd6841"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.log",
+          "bytes": 639,
+          "sha256": "2de6d1b0de7aa253e9bb47c34e82dcc1ed4313f947dc2b448adf6659259c37fb"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.receipt.json",
+          "bytes": 1409,
+          "sha256": "6c0e01118f75d632229e87deb0384d8fce07ac425d3dc7063bef02d47582d6b4"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.published-v7-build.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.published-v7-build.json",
+          "bytes": 896,
+          "sha256": "65e38189573d1c27db7349dfe6e393815b82bf26055943b054f0787e071058f7"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-f151fbb9e666d1cd9bc8adb4.json",
+          "bytes": 359,
+          "sha256": "768ec49d1608033564df97e42137116eb64f8aecb17477322df151b3e1fd8f85"
+        }
+      ]
+    },
+    {
+      "run": "author-assess-v8-ai-compat-red-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Contract",
+        "startedAt": "2026-09-20T18:16:54.2654635+00:00",
+        "finishedAt": "2026-09-20T18:17:09.5295200+00:00",
+        "exitCode": 1,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-json",
+          "-tags=integration",
+          "-mod=readonly",
+          "-count=1",
+          "-timeout=180s",
+          ".\\tests\\ai_configuration"
+        ],
+        "fullProductionResolverBindingIncluded": true,
+        "helperOnlyIsNotFullAcceptance": false,
+        "capabilities": "Owned random PG schemas and real API sessions; owned HTTP tripwires with no provider requests. No S3, prompt, inference, source/scan or verification execution.",
+        "privateRuntimeValuesCopied": false,
+        "providerAccountsOrKeysDiscovered": false
+      },
+      "counts": {
+        "selectedTopLevel": 7,
+        "passed": 6,
+        "failed": 1,
+        "skipped": 0,
+        "nestedPassed": 1,
+        "nestedFailed": 1
+      },
+      "cases": [
+        {
+          "name": "TestAIConfigurationDefaultKeylessDisabledAndLocalOnly",
+          "status": "pass",
+          "durationSeconds": 1.2
+        },
+        {
+          "name": "TestAIConfigurationProfilesPersistSparseUpdatesAADAndSecretRedaction",
+          "status": "pass",
+          "durationSeconds": 1.18
+        },
+        {
+          "name": "TestAIConfigurationFourFamiliesAndEndpointReviewWithoutProviderIO",
+          "status": "pass",
+          "durationSeconds": 1.1
+        },
+        {
+          "name": "TestAIConfigurationPersistedGrantBindingExpiryRevocationAndRevisions",
+          "status": "pass",
+          "durationSeconds": 1.56
+        },
+        {
+          "name": "TestAIConfigurationMetadataRBACForeignScopeAndForgedAuthority",
+          "status": "pass",
+          "durationSeconds": 1.66
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade",
+          "status": "fail",
+          "durationSeconds": 3.04
+        },
+        {
+          "name": "TestAIConfigurationFoundryEqualNamesPreserveIndependentFieldsAndGrantRevisions",
+          "status": "pass",
+          "durationSeconds": 1.24
+        }
+      ],
+      "nested": [
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/fresh-concurrent-and-credential-compatibility",
+          "status": "pass",
+          "durationSeconds": 1.74
+        },
+        {
+          "name": "TestAIConfigurationPersistenceConcurrentUpdatesAndPublishedV6Upgrade/published-v6-upgrade",
+          "status": "fail",
+          "durationSeconds": 1.3
+        }
+      ],
+      "evidence": [
+        {
+          "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.jsonl",
+          "bytes": 13221,
+          "sha256": "372f7d915999d740160a9ca2e0c94fc5f660076e1a495c78718601c244fdec53"
+        },
+        {
+          "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.log",
+          "bytes": 2647,
+          "sha256": "0d8601f9667d43711a51907a6599e484dbed9a116bdbcc5b708055cd638318dd"
+        },
+        {
+          "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.receipt.json",
+          "bytes": 840,
+          "sha256": "7eee0e7d639a76db50c5909f4a42b18531b5343c7282016fe82773c1bce25631"
+        },
+        {
+          "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-415975e43cb28b38bbc2204e.json",
+          "bytes": 765,
+          "sha256": "b6249d2963f05cdad88fe748fd125334757fe4e5ce90d8796fdb2313482a9021"
+        }
+      ]
+    },
+    {
+      "run": "author-assess-v8-source-compat-red-20260920-01",
+      "receipt": {
+        "schemaVersion": 1,
+        "mode": "Contract",
+        "startedAt": "2026-09-20T18:16:54.2718616+00:00",
+        "finishedAt": "2026-09-20T18:17:16.9159114+00:00",
+        "exitCode": 1,
+        "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "arguments": [
+          "test",
+          "-mod=readonly",
+          "-tags=integration",
+          "-json",
+          "-count=1",
+          "-timeout=240s",
+          ".\\tests\\source_collection"
+        ],
+        "fullProductionBindingIncluded": true,
+        "helperOnlyIsNotAcceptance": false,
+        "boundary": "Explicit loopback PG/local S3 and exact owned TLS GitHub protocol fixture only; values withheld",
+        "liveGitHubCloudOrCredentialDiscoveryAuthorized": false
+      },
+      "counts": {
+        "selectedTopLevel": 9,
+        "passed": 8,
+        "failed": 1,
+        "skipped": 0,
+        "nestedPassed": 4,
+        "nestedFailed": 2
+      },
+      "cases": [
+        {
+          "name": "TestSourceCollectionOwnedIOPreflight",
+          "status": "pass",
+          "durationSeconds": 0.1
+        },
+        {
+          "name": "TestSourceCollectionConnectionRBACEncryptionAndRequiredCapabilities",
+          "status": "pass",
+          "durationSeconds": 1.95
+        },
+        {
+          "name": "TestSourceCollectionScopedImmutableQueueReplayAndPaging",
+          "status": "pass",
+          "durationSeconds": 1.48
+        },
+        {
+          "name": "TestSourceCollectionIndependentNativeEvidenceAndAtomicAssetCommit",
+          "status": "pass",
+          "durationSeconds": 1.65
+        },
+        {
+          "name": "TestSourceCollectionStableAssetPreservesHumanEditsAndRejectsIdentityRebind",
+          "status": "pass",
+          "durationSeconds": 2.14
+        },
+        {
+          "name": "TestSourceCollectionPartialNativeFailuresAndSafeRetryMetadata",
+          "status": "pass",
+          "durationSeconds": 1.98
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability",
+          "status": "pass",
+          "durationSeconds": 4.91
+        },
+        {
+          "name": "TestSourceCollectionExpiredFinalizationCannotCommitAssetOrSnapshot",
+          "status": "pass",
+          "durationSeconds": 2.52
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2",
+          "status": "fail",
+          "durationSeconds": 1.59
+        }
+      ],
+      "nested": [
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-cancel",
+          "status": "pass",
+          "durationSeconds": 1.33
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/native-revoke",
+          "status": "pass",
+          "durationSeconds": 1.26
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-revoke",
+          "status": "pass",
+          "durationSeconds": 1.14
+        },
+        {
+          "name": "TestSourceCollectionCancellationRevocationAndIOPoolAvailability/storage-source-revision",
+          "status": "pass",
+          "durationSeconds": 1.18
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2/current-core",
+          "status": "fail",
+          "durationSeconds": 0.86
+        },
+        {
+          "name": "TestSourceCollectionPublishedV5UpgradeA2/current-worker",
+          "status": "fail",
+          "durationSeconds": 0.73
+        }
+      ],
+      "evidence": [
+        {
+          "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.jsonl",
+          "bytes": 17913,
+          "sha256": "2d278b6d10671f223f8da7e8c4f9c2970ea396c884e364f2ccc18fca4b32641a"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.log",
+          "bytes": 3254,
+          "sha256": "752aba4007ae7725a9c606db0140b94bc7a8d4f21d2768f20f9f1452ba660279"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.receipt.json",
+          "bytes": 735,
+          "sha256": "ef15446712f0268837b229c450840ea1d3a774efc9000ca9997c68a37c343985"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-20412fae487881c9b5e21f30.json",
+          "bytes": 884,
+          "sha256": "2d55de1fbb014a16b12228d91b259ec14267918b8cf7ee41c55cecd109add435"
+        },
+        {
+          "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-4c5eb72f40698aa1db1c7d74.json",
+          "bytes": 886,
+          "sha256": "3ea157a130330630053316ddeed3851aa5661472db28e20aca94de0b65866085"
+        }
+      ]
+    }
+  ],
+  "rawFiles": [
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.jsonl",
+      "bytes": 1801,
+      "sha256": "21486f659beeb9fa72cdeee054ce804fc4ea77c992c11f3c91cd0f8af69a35ea"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.log",
+      "bytes": 507,
+      "sha256": "90fca6422e3cd9236dfba303dd6e2eb4c9921ccac89d3fe3295e3f29ef14dc7e"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.receipt.json",
+      "bytes": 881,
+      "sha256": "2ada38b576a9a02d8eec9b536682465bdcbe773f1006832f0ee76b5cc9be977f"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-contract-red-20260920-03.published-v7-build.json",
+      "bytes": 894,
+      "sha256": "ca2227dd4185839aadc7b61303bbef17456816493f10c69c2103253970249235"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.jsonl",
+      "bytes": 1775,
+      "sha256": "34b07fa1cdf7b248ccfe11cb650f56de8526001421cc32ab387d1fc001386960"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.log",
+      "bytes": 424,
+      "sha256": "a66aae7a67c4b2f121712379ebd989895c8551fbaf8291e79799dd386fcdafc4"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.receipt.json",
+      "bytes": 1412,
+      "sha256": "ef021096a4daebbc15f17bddb3d8d1e548aefb382816396b8e21938698a653d6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.published-v7-build.json",
+      "bytes": 889,
+      "sha256": "10f239e7f22539838808a91d5e4f04085cbf5c9ac82e490af7db257b13995a0a"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.jsonl",
+      "bytes": 3023,
+      "sha256": "a71b5723ed2c94fd1ed8159d4ea11820223ea67d1618e42009a854370cdd6841"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.log",
+      "bytes": 639,
+      "sha256": "2de6d1b0de7aa253e9bb47c34e82dcc1ed4313f947dc2b448adf6659259c37fb"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.receipt.json",
+      "bytes": 1409,
+      "sha256": "6c0e01118f75d632229e87deb0384d8fce07ac425d3dc7063bef02d47582d6b4"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-v7-upgrade-red-20260920-03.published-v7-build.json",
+      "bytes": 896,
+      "sha256": "65e38189573d1c27db7349dfe6e393815b82bf26055943b054f0787e071058f7"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-f151fbb9e666d1cd9bc8adb4.json",
+      "bytes": 359,
+      "sha256": "768ec49d1608033564df97e42137116eb64f8aecb17477322df151b3e1fd8f85"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.jsonl",
+      "bytes": 13221,
+      "sha256": "372f7d915999d740160a9ca2e0c94fc5f660076e1a495c78718601c244fdec53"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.log",
+      "bytes": 2647,
+      "sha256": "0d8601f9667d43711a51907a6599e484dbed9a116bdbcc5b708055cd638318dd"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\author-assess-v8-ai-compat-red-20260920-01.receipt.json",
+      "bytes": 840,
+      "sha256": "7eee0e7d639a76db50c5909f4a42b18531b5343c7282016fe82773c1bce25631"
+    },
+    {
+      "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-415975e43cb28b38bbc2204e.json",
+      "bytes": 765,
+      "sha256": "b6249d2963f05cdad88fe748fd125334757fe4e5ce90d8796fdb2313482a9021"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.jsonl",
+      "bytes": 17913,
+      "sha256": "2d278b6d10671f223f8da7e8c4f9c2970ea396c884e364f2ccc18fca4b32641a"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.log",
+      "bytes": 3254,
+      "sha256": "752aba4007ae7725a9c606db0140b94bc7a8d4f21d2768f20f9f1452ba660279"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\author-assess-v8-source-compat-red-20260920-01.receipt.json",
+      "bytes": 735,
+      "sha256": "ef15446712f0268837b229c450840ea1d3a774efc9000ca9997c68a37c343985"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-20412fae487881c9b5e21f30.json",
+      "bytes": 884,
+      "sha256": "2d55de1fbb014a16b12228d91b259ec14267918b8cf7ee41c55cecd109add435"
+    },
+    {
+      "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-4c5eb72f40698aa1db1c7d74.json",
+      "bytes": 886,
+      "sha256": "3ea157a130330630053316ddeed3851aa5661472db28e20aca94de0b65866085"
+    }
+  ],
+  "sourceWitnesses": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\SOURCE-WITNESSES.json",
+    "bytes": 4076,
+    "sha256": "6bd16790a9682a5678bfaa15210c67ffe63feffac864065a12799db05d7423b7"
+  },
+  "earlierRunLabelsPreservedButNotFinal": [
+    "author-assess-helpers-20260920-01",
+    "author-assess-fixture-20260920-01",
+    "author-assess-fixture-20260920-02",
+    "author-assess-fixture-20260920-03",
+    "author-assess-contract-red-20260920-01",
+    "author-assess-contract-red-20260920-02",
+    "author-assess-v7-upgrade-red-20260920-01",
+    "author-assess-v7-upgrade-red-20260920-02"
+  ],
+  "noBlockedFunctionalAssertionIsClaimedPassed": true
+}

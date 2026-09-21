@@ -1,0 +1,50 @@
+diff --git "a/web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\fixture-before.ts.txt" "b/web\\tests\\ai-assessments-fixture.ts"
+index 1b07293..5eedc10 100644
+--- "a/web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\fixture-before.ts.txt"
++++ "b/web\\tests\\ai-assessments-fixture.ts"
+@@ -21,7 +21,8 @@ export interface AssessmentCall {
+ }
+ export interface AssessmentControl { call: AssessmentCall | null; delivered: Promise<void>; release: () => void }
+ interface Gate extends AssessmentControl { wait: Promise<void>; complete: () => void }
+-interface Scheduled { status: Status; gate: Gate; loseACK: boolean }
++export interface AssessmentResponseOverride { status: 500 | 502 | 503; body: Record<string, unknown> }
++interface Scheduled { status: Status; gate: Gate; loseACK: boolean; responseOverride?: AssessmentResponseOverride }
+ const workspaces = [alpha, beta];
+ const authorFiles = [
+   "ai-assessments-data.ts", "ai-assessments-fixture.ts", "ai-assessments-ui.spec.ts",
+@@ -99,16 +100,20 @@ export class AssessmentHTTP {
+     this.gates.add(gate);
+     return gate;
+   }
+-  private queue(key: string, status: Status, held: boolean, loseACK = false) {
++  private queue(key: string, status: Status, held: boolean, loseACK = false, responseOverride?: AssessmentResponseOverride) {
+     const gate = this.control(held);
+-    this.scheduled.set(key, [...this.scheduled.get(key) ?? [], { status, gate, loseACK }]);
++    this.scheduled.set(key, [...this.scheduled.get(key) ?? [], { status, gate, loseACK, responseOverride }]);
+     return gate;
+   }
+   queueRead(path: string, status: Status = 200, held = false, workspace = alpha.id, cursor = "*") {
+     return this.queue(`GET ${path} ${workspace} ${cursor}`, status, held);
+   }
+-  expectWrite(path: string, status: Status, held = false, loseACK = false) {
+-    return this.queue(`POST ${path}`, status, held, loseACK);
++  expectWrite(path: string, status: Status, held = false, loseACK = false, responseOverride?: AssessmentResponseOverride) {
++    if (responseOverride && (!/^\/api\/v1\/findings\/[a-f0-9]{32}\/assessments$/.test(path) ||
++      ![200, 202].includes(status) || loseACK || ![500, 502, 503].includes(responseOverride.status))) {
++      throw new Error("Response overrides require a successful declared queue and an explicit ambiguous 5xx response.");
++    }
++    return this.queue(`POST ${path}`, status, held, loseACK, responseOverride);
+   }
+   discardUnsent(control: AssessmentControl) {
+     if (control.call) throw new Error("An arrived request cannot be discarded.");
+@@ -130,6 +135,10 @@ export class AssessmentHTTP {
+     requestId: "synthetic-assessment-ui-request", retryable: false } };
+   }
+   private async deliver(route: Route, call: AssessmentCall, status: number, value: object, scheduled?: Scheduled) {
++    if (status < 400 && scheduled?.responseOverride) {
++      value = scheduled.responseOverride.body;
++      status = scheduled.responseOverride.status;
++    }
+     call.status = status;
+     call.response = structuredClone(value) as Record<string, unknown>;
+     try {

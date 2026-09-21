@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T18:34:18.644Z",
+  "scope": "Fixture-only, not durable assessment/preview/worker/V8 acceptance.",
+  "run": "author-assess-fixture-20260920-04",
+  "receipt": {
+    "schemaVersion": 1,
+    "mode": "FixtureCalibration",
+    "startedAt": "2026-09-20T18:29:10.7261601+00:00",
+    "finishedAt": "2026-09-20T18:29:20.1514978+00:00",
+    "exitCode": 0,
+    "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "arguments": [
+      "test",
+      "-json",
+      "-tags=integration,ai_assessments_fixture",
+      "-mod=readonly",
+      "-count=1",
+      "-timeout=120s",
+      "-run=^TestAIAssessmentOwnedIntakeNativeAndPublishedV7Fixture$",
+      "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\assessments_test.go",
+      "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\contract_test.go",
+      "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixture_calibration_test.go",
+      "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\fixtures_test.go",
+      "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\native_test.go",
+      "C:\\bahadr\\serious\\aspm\\tests\\ai_assessments\\upgrade_test.go"
+    ],
+    "fullProductionBindingsIncluded": false,
+    "helperOnlyIsNotAssessmentAcceptance": true,
+    "privateRuntimeValuesCopied": false,
+    "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+    "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+    "dependenciesInstalled": false
+  },
+  "counts": {
+    "selectedTopLevel": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "nestedPassed": 0,
+    "nestedFailed": 0
+  },
+  "cases": [
+    {
+      "name": "TestAIAssessmentOwnedIntakeNativeAndPublishedV7Fixture",
+      "status": "pass",
+      "durationSeconds": 4.35
+    }
+  ],
+  "nested": [],
+  "evidence": [
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.jsonl",
+      "bytes": 1775,
+      "sha256": "34b07fa1cdf7b248ccfe11cb650f56de8526001421cc32ab387d1fc001386960"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.log",
+      "bytes": 424,
+      "sha256": "a66aae7a67c4b2f121712379ebd989895c8551fbaf8291e79799dd386fcdafc4"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.receipt.json",
+      "bytes": 1412,
+      "sha256": "ef021096a4daebbc15f17bddb3d8d1e548aefb382816396b8e21938698a653d6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-assess-fixture-20260920-04.published-v7-build.json",
+      "bytes": 889,
+      "sha256": "10f239e7f22539838808a91d5e4f04085cbf5c9ac82e490af7db257b13995a0a"
+    }
+  ],
+  "fixtureFacts": {
+    "realOwnedPGAndS3": true,
+    "realAssetImportAndIngestion": true,
+    "realFindingAndObservation": true,
+    "nativeFamilies": [
+      "openai",
+      "azure-foundry",
+      "anthropic",
+      "local"
+    ],
+    "nativeHTTPRequests": 4,
+    "realExistingAdapterCalls": 4,
+    "liveProviderOrModelCalls": 0,
+    "pinnedPublishedV7APISeed": true,
+    "SQLBusinessRowsSeeded": false,
+    "fakeJobOrAssessmentResults": false
+  },
+  "helperCompilation": "All helper/narrative sources compile without the missing forward-only production bindings; they do not thereby execute.",
+  "testedSourceWitnesses": [
+    {
+      "path": "tests\\ai_assessments\\assessments_test.go",
+      "bytes": 22651,
+      "sha256": "88bd4dd295fbcd707e33af476e088cbabbc0ee66cc759f25277e981b2868bfca"
+    },
+    {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    },
+    {
+      "path": "tests\\ai_assessments\\contract_test.go",
+      "bytes": 4015,
+      "sha256": "18c608dce98009023ed08202c10ff2d5a9f2c73fefbda8a3da797ba79b738370"
+    },
+    {
+      "path": "tests\\ai_assessments\\fixtures_test.go",
+      "bytes": 27313,
+      "sha256": "0089084614e38e191fdb5b677d908c058bcec2fcc796f6082927aee543e4da2b"
+    },
+    {
+      "path": "tests\\ai_assessments\\fixture_calibration_test.go",
+      "bytes": 2710,
+      "sha256": "b5c553429ac810beef9f2c4a690e690c05949f5035a6ef037872ff977e75da55"
+    },
+    {
+      "path": "tests\\ai_assessments\\native_test.go",
+      "bytes": 13115,
+      "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+    },
+    {
+      "path": "tests\\ai_assessments\\prepare-published-v7.mjs",
+      "bytes": 4083,
+      "sha256": "b2b2e471b8ddf9f0573470c55ff92b92d6359934229a6bbe0fabc3df88c4454a"
+    },
+    {
+      "path": "tests\\ai_assessments\\production_bindings_test.go",
+      "bytes": 1086,
+      "sha256": "586cdf6420f3bd405f9deb9b613f0e116d6fe29a66ecbad6de5087132f0235ae"
+    },
+    {
+      "path": "tests\\ai_assessments\\Test-AIAssessments.ps1",
+      "bytes": 7192,
+      "sha256": "678c44ad42514150b89f0138384b7cc0205269871daf8de2a9255b3808387552"
+    },
+    {
+      "path": "tests\\ai_assessments\\upgrade_test.go",
+      "bytes": 11892,
+      "sha256": "4c58962bbbe89327ddb3d22d1e7e48541844d0aa348aa2711256353740583fbe"
+    }
+  ],
+  "fullNewNarrativesExecuted": 0,
+  "blockedNewNarratives": 8
+}

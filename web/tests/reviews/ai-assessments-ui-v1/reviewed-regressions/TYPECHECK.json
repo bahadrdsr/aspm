@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "label": "reviewed-final-types-v1",
+  "execution": {
+    "path": ".artifacts\\ai-assessment-review-author\\reviewed-final-types-v1\\execution.json",
+    "bytes": 1095,
+    "sha256": "8da8dfdfb58c95e852ba979b936a57175fdbb06faf5b1fefbca3e015c2122de9"
+  },
+  "heldInputs": {
+    "path": ".artifacts\\ai-assessment-review-author\\reviewed-final-types-v1\\held-inputs.json",
+    "bytes": 1276666,
+    "sha256": "ff11d50f909439ab46c2e539f031ee5f1d14bfac6bbbeeabc94eedff4442f324"
+  },
+  "log": null,
+  "output": "Compiler was silent; Tee-Object creates no log when the command emits no output.",
+  "exitCode": 0,
+  "currentSpecInputsMatch": true,
+  "sourceHold": "all-held-bytes-match-before-and-after",
+  "heldCount": 5802
+}

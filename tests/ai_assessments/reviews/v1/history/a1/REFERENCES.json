@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "archived": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\history\\a1\\native_test.go.v1",
+    "bytes": 13115,
+    "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+  },
+  "original": {
+    "path": "tests\\ai_assessments\\native_test.go",
+    "bytes": 13115,
+    "sha256": "2a6587e71e02134c952079442329fd7af7333bf42b15d50441b64c7c762b7ecb"
+  },
+  "references": [
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\PACKET.json",
+      "bytes": 14478,
+      "sha256": "1587210a575f3405ec6a19d998fe339737a3d1a9eefa13967e2b5704f70e3c6c"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "5c1c3410c8dde6e92316daa6c67eae5b630f87e372bb30a7e26a21a1f9bd87e9"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\RED.json",
+      "bytes": 26390,
+      "sha256": "95304278066d1574efb412a72178764ba5bef1183e6733243bb7c9a74074bc1e"
+    },
+    {
+      "path": ".oracles\\ai-assessments-v1.json",
+      "bytes": 39579,
+      "sha256": "96274b0dcc9ef6b89b12b11715a5ff55d4de712a4dfb8d49096a906e0e3933b0"
+    },
+    {
+      "path": ".oracles\\ai-assessments-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c7a394f113a44836282084f6bdd945807c006ac9161d0de2fd997b7c66b979db"
+    }
+  ],
+  "onlyChangedNativeFixtureArchived": true,
+  "noRecursiveHistoryCopy": true
+}

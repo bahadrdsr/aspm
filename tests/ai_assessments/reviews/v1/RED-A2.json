@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T00:58:24.549Z",
+  "status": "ACTUAL NATIVE RED - HELD CANDIDATE NOT ACCEPTED",
+  "compilerBlocked": false,
+  "http2": {
+    "run": {
+      "name": "successor-a2-h2-red-20260921-01",
+      "exitCode": 1,
+      "startedAt": "2026-09-21T00:51:54.3868572+00:00",
+      "finishedAt": "2026-09-21T00:52:01.5357677+00:00",
+      "packageResult": "fail",
+      "packageElapsedSeconds": 2.066,
+      "tests": [
+        {
+          "test": "TestAA9NativeHTTP2RefusedStreamCannotReplayAssessmentPOST",
+          "action": "fail",
+          "elapsedSeconds": 1.48
+        }
+      ],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.jsonl",
+          "bytes": 3155,
+          "sha256": "5848ffbc051b232ac022f342683bc7abd80cacaef04e2586cad79673161a4af6"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.log",
+          "bytes": 914,
+          "sha256": "2bb1c1d7d8e69e79f158588cdd96d30c3c18dc14b472e6dd127a6de0863a209d"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.receipt.json",
+          "bytes": 1691,
+          "sha256": "aed5190941f7548c157c198414460888d1846f83b23799e5e7377e2587186bfb"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-h2-red-20260921-01.inputs.json",
+          "bytes": 167614,
+          "sha256": "540227512fd29188e5f3be0bd91d4abfb6571117e50487be42608dbaa865c5b1"
+        }
+      ]
+    },
+    "actual": {
+      "verifiedTLS": true,
+      "negotiatedProtocol": "h2",
+      "actualPOSTHeaders": 2,
+      "completePOSTBodies": 2,
+      "refusedStreams": 1,
+      "databaseAttempts": 1,
+      "durableWindowCharges": 1,
+      "publicState": "succeeded"
+    },
+    "failedAssertions": [
+      "One durable attempt/window charge must emit exactly one actual h2 POST.",
+      "A refused one-attempt job must not commit successful internal-retry output."
+    ],
+    "executedTails": [
+      "Later ProcessNext(false,nil) with no additional HEADERS/body.",
+      "No finding/domain mutation or assessment S3 access."
+    ],
+    "blockedTails": [],
+    "notClaimed": [
+      "Exactly-once remote compute or billing",
+      "Safety inferred from an outer RoundTrip counter",
+      "H1-only capability accepted"
+    ]
+  },
+  "localLifetime": {
+    "run": {
+      "name": "successor-a2-lifetime-red-20260921-01",
+      "exitCode": 1,
+      "startedAt": "2026-09-21T00:51:54.3494679+00:00",
+      "finishedAt": "2026-09-21T00:52:03.3948531+00:00",
+      "packageResult": "fail",
+      "packageElapsedSeconds": 4.244,
+      "tests": [
+        {
+          "test": "TestAA10LocalNativeLifetimeRetainsSharedConcurrency/explicit-cancel",
+          "action": "fail",
+          "elapsedSeconds": 1.91
+        },
+        {
+          "test": "TestAA10LocalNativeLifetimeRetainsSharedConcurrency/expired-lease",
+          "action": "fail",
+          "elapsedSeconds": 1.77
+        },
+        {
+          "test": "TestAA10LocalNativeLifetimeRetainsSharedConcurrency",
+          "action": "fail",
+          "elapsedSeconds": 3.68
+        }
+      ],
+      "inputCount": 890,
+      "inputTreeSHA256": "a9b56aa39e819f60f4764e50409dffb431aa3fba0785ac943a6a1e6e51e7cfdc",
+      "files": [
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.jsonl",
+          "bytes": 7290,
+          "sha256": "5888161288f654c90209b122e75dcab72b757a81cca4e88d486dc82f15f4dee0"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.log",
+          "bytes": 2460,
+          "sha256": "7b74314991baf628375dee0b307b4de176913bc6be95ed984690f0484ce39ff0"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.receipt.json",
+          "bytes": 1696,
+          "sha256": "9bc63fff381744f6b996ec12630781441edba803d6680dca5cbbdb98472c2c62"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-v1\\successor-a2-lifetime-red-20260921-01.inputs.json",
+          "bytes": 167620,
+          "sha256": "d59adfd79ad94ac37d230447664c6acf361c424dcdf9727e478b5261c0e0972e"
+        }
+      ]
+    },
+    "maxConcurrent": 1,
+    "requestsPerWindow": 8,
+    "requestTimeoutMillis": 3000,
+    "authorizationMillis": 25,
+    "leaseMillis": 250,
+    "fixturePoolSlots": 2,
+    "eachIndependentWorkerPoolSlots": 1,
+    "queryGate": "Real first worker SELECT app_workspaces ... FOR SHARE before query execution; scheduling/read-only observation only.",
+    "scenarios": [
+      {
+        "name": "explicit-cancel",
+        "committedPublicState": "cancelled",
+        "preAdmissionWindowCharges": 1,
+        "actualNativePOSTs": 2,
+        "simultaneousLocalSockets": 2,
+        "closedSocketsAtOverlap": 0,
+        "firstSocketAndRequestContextLive": true,
+        "secondSocketAndRequestContextLive": true,
+        "firstQueryStillGated": true,
+        "beforeConservativeRequestDeadline": true,
+        "failedAssertion": "Second complete native POST must not start while the retired first operation still occupies local I/O capacity.",
+        "executedTails": [
+          "Gate released.",
+          "First real net.Conn.Close delegated and observed.",
+          "Cooperative native server sees request cancellation.",
+          "First worker returns.",
+          "Already-admitted second held request completes once after first Close.",
+          "Old receipt unchanged, result absent, attempts=1.",
+          "Later scheduling does not resend either terminal job.",
+          "Both sockets close; domain/storage unchanged."
+        ],
+        "blockedTails": [
+          "Success-path post-termination admission of a still-queued second job was not run because RED already admitted it before termination."
+        ]
+      },
+      {
+        "name": "expired-lease",
+        "committedPublicState": "uncertain",
+        "actualDatabaseClockExpiry": true,
+        "injectedClockOrLeaseWrite": false,
+        "preAdmissionWindowCharges": 1,
+        "actualNativePOSTs": 2,
+        "simultaneousLocalSockets": 2,
+        "closedSocketsAtOverlap": 0,
+        "firstSocketAndRequestContextLive": true,
+        "secondSocketAndRequestContextLive": true,
+        "firstQueryStillGated": true,
+        "beforeConservativeRequestDeadline": true,
+        "failedAssertion": "Second complete native POST must not start while the retired first operation still occupies local I/O capacity.",
+        "executedTails": [
+          "Gate released.",
+          "First real net.Conn.Close delegated and observed.",
+          "Cooperative native server sees request cancellation.",
+          "First worker returns.",
+          "Already-admitted second held request completes once after first Close.",
+          "Old receipt unchanged, result absent, attempts=1.",
+          "Later scheduling does not resend either terminal job.",
+          "Both sockets close; domain/storage unchanged."
+        ],
+        "blockedTails": [
+          "Success-path post-termination admission of a still-queued second job was not run because RED already admitted it before termination."
+        ]
+      }
+    ],
+    "notClaimed": [
+      "Remote compute termination or concurrency",
+      "Cancellation-ignoring native fixture",
+      "A new schema column, API or reservation algorithm prescribed"
+    ]
+  },
+  "backendCoderRemainsHold": true,
+  "parentMustVerifyAndSealBeforeSeparateFix": true
+}

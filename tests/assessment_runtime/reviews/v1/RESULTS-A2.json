@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T04:21:13.108Z",
+  "compile": {
+    "mode": "Compile",
+    "run": "successor-runtime-a2-compile-20260921-01",
+    "exitCode": 0,
+    "tests": [],
+    "packageElapsedSeconds": 0.703,
+    "inputCount": 1023,
+    "inputTreeSHA256": "f7b4fff1f0026a6c89dc5436f09dde421b6474a4cf9c6ffd5f7bb605fdabf785",
+    "receipt": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01.receipt.json",
+      "bytes": 2864,
+      "sha256": "0ff685415efdaee3d6a5effb02b7d8b328941c61947126beedca40057fe8cc39"
+    },
+    "inputs": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01.inputs.json",
+      "bytes": 198041,
+      "sha256": "4bafaa6bcef854448d920dd4ca35856ebbf6dfd524657cdef343f271dcb1f2ff"
+    },
+    "actualCommand": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01.assessment-worker.owned.exe",
+      "bytes": 22716416,
+      "sha256": "e898eaf4656df7da50c087d125da4700767e3bc79f58b5f722c7e09529b50aa5"
+    },
+    "logs": [
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01-command-build.jsonl",
+        "bytes": 2,
+        "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01-command-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01-tests.jsonl",
+        "bytes": 827,
+        "sha256": "31c1da6efc1a2de6e0ea15e9954409992f71bcabd7893e859a062b67c7ad1dc0"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-compile-20260921-01-tests.log",
+        "bytes": 121,
+        "sha256": "f9b5897cf918faaca5b375e7d060331de42788f7ed329512a9e8f4648ce43b6d"
+      }
+    ]
+  },
+  "normalFour": {
+    "mode": "Contract",
+    "run": "successor-runtime-a2-normal-four-20260921-01",
+    "exitCode": 0,
+    "tests": [
+      {
+        "test": "TestAR1CoreServiceScopeAndActualAssessmentServiceAndCommand",
+        "action": "pass",
+        "elapsedSeconds": 2.17
+      },
+      {
+        "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation/environment-and-local-keyless",
+        "action": "pass",
+        "elapsedSeconds": 1.24
+      },
+      {
+        "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation/hosted-without-worker-key",
+        "action": "pass",
+        "elapsedSeconds": 6.41
+      },
+      {
+        "test": "TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation",
+        "action": "pass",
+        "elapsedSeconds": 7.65
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_SCOPE",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_SCOPE#01",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_SCOPE#02",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_INTEGRATION_ENCRYPTION_KEY",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_INTEGRATION_ENCRYPTION_KEY#01",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_INTEGRATION_ENCRYPTION_KEY#02",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_LEASE_DURATION",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_AUTHORIZATION_INTERVAL",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_REQUEST_TIMEOUT",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_REQUEST_WINDOW",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_CONCURRENT",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_REQUESTS_PER_WINDOW",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_INPUT_BYTES",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_MAX_RESPONSE_BYTES",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO/parse-ASPM_ASSESSMENT_CA_FILE",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "test": "TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO",
+        "action": "pass",
+        "elapsedSeconds": 0.03
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/Run-context",
+        "action": "pass",
+        "elapsedSeconds": 4.36
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/actual-command-crash",
+        "action": "pass",
+        "elapsedSeconds": 6.58
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota",
+        "action": "pass",
+        "elapsedSeconds": 10.94
+      }
+    ],
+    "packageElapsedSeconds": 21.368,
+    "inputCount": 1023,
+    "inputTreeSHA256": "f7b4fff1f0026a6c89dc5436f09dde421b6474a4cf9c6ffd5f7bb605fdabf785",
+    "receipt": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01.receipt.json",
+      "bytes": 2907,
+      "sha256": "8643167af84ec98d6837b7dffd9e6573fd045889fa966c725ee04b57ea9fa2ce"
+    },
+    "inputs": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01.inputs.json",
+      "bytes": 198045,
+      "sha256": "11b9eb805006eb237074285f84a44c28f8b014515f509b90077eb969a263e91e"
+    },
+    "actualCommand": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01.assessment-worker.owned.exe",
+      "bytes": 22716416,
+      "sha256": "e898eaf4656df7da50c087d125da4700767e3bc79f58b5f722c7e09529b50aa5"
+    },
+    "logs": [
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01-command-build.jsonl",
+        "bytes": 2,
+        "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01-command-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01-tests.jsonl",
+        "bytes": 30916,
+        "sha256": "a4db4c019f39b20be3409bf33f88392d1bf4772dac39c25bfbabe68f0e6d7bc0"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a2-normal-four-20260921-01-tests.log",
+        "bytes": 5967,
+        "sha256": "7c9e3d5ec2d19e32b713380b190468d56d2055a52d6d9333bf77b029d986600a"
+      }
+    ]
+  },
+  "normalNativeCancellationMeasurements": [
+    {
+      "scenario": "Run-context",
+      "observedAt": "2026-09-21T06:14:13.1045455+02:00",
+      "originalDeadline": "2026-09-21T06:14:18.0959466+02:00",
+      "marginMillis": 4991.401,
+      "observerContextDone": false
+    },
+    {
+      "scenario": "actual-command-crash",
+      "observedAt": "2026-09-21T06:14:17.6075559+02:00",
+      "originalDeadline": "2026-09-21T06:14:22.5903756+02:00",
+      "marginMillis": 4982.819,
+      "observerContextDone": false
+    }
+  ],
+  "originalCaseBodiesExceptAuthorizedPostStopObserverCallUnchanged": true,
+  "allNewNormalTailsReached": true,
+  "blockedNewNormalTails": [],
+  "realLateOrAbsentNativeCancellationObserved": false,
+  "repeatedRetriesUsedForAcceptance": false,
+  "producerTimeoutsOrReservationsChanged": false,
+  "notClaimed": [
+    "every historical failure attributed",
+    "StateNew hypothesis established",
+    "remote compute or billing termination",
+    "graceful OS signal handling",
+    "whole-M11 or final runtime acceptance"
+  ]
+}

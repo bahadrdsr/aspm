@@ -290,7 +290,7 @@ type responseEnvelope struct {
 func parseResponse(data []byte, family string, result *Result) (string, error) {
 	var response responseEnvelope
 	if err := json.Unmarshal(data, &response); err != nil {
-		return "", ErrOutput
+		return "", &OutputError{Kind: OutputSchema}
 	}
 	result.ReturnedModel = response.Model
 	usage, err := parseUsage(response, family)
@@ -308,18 +308,21 @@ func parseResponse(data []byte, family string, result *Result) (string, error) {
 			}
 			if item.Type == "message" {
 				if item.Role != "assistant" {
-					return "", ErrOutput
+					return "", &OutputError{Kind: OutputSchema}
 				}
 				for _, content := range item.Content {
+					if content.Type == "refusal" {
+						return "", &OutputError{Kind: OutputRefusal}
+					}
 					if content.Type != "output_text" {
-						return "", ErrOutput
+						return "", &OutputError{Kind: OutputSchema}
 					}
 					text.WriteString(content.Text)
 				}
 			}
 		}
 		if response.Status != "completed" {
-			return "", ErrOutput
+			return "", &OutputError{Kind: OutputIncomplete}
 		}
 	case "anthropic":
 		result.StopReason = response.StopReason
@@ -332,11 +335,14 @@ func parseResponse(data []byte, family string, result *Result) (string, error) {
 			}
 		}
 		if response.StopReason != "end_turn" {
-			return "", ErrOutput
+			if response.StopReason == "refusal" {
+				return "", &OutputError{Kind: OutputRefusal}
+			}
+			return "", &OutputError{Kind: OutputIncomplete}
 		}
 	case "local":
 		if len(response.Choices) != 1 {
-			return "", ErrOutput
+			return "", &OutputError{Kind: OutputSchema}
 		}
 		choice := response.Choices[0]
 		result.StopReason = choice.FinishReason
@@ -344,9 +350,14 @@ func parseResponse(data []byte, family string, result *Result) (string, error) {
 			choice.FinishReason == "tool_calls" || choice.FinishReason == "function_call" {
 			return "", ErrToolOutput
 		}
-		if choice.FinishReason != "stop" || choice.Message.Role != "assistant" ||
-			(choice.Message.Refusal != nil && *choice.Message.Refusal != "") {
-			return "", ErrOutput
+		if choice.Message.Refusal != nil && *choice.Message.Refusal != "" {
+			return "", &OutputError{Kind: OutputRefusal}
+		}
+		if choice.FinishReason != "stop" {
+			return "", &OutputError{Kind: OutputIncomplete}
+		}
+		if choice.Message.Role != "assistant" {
+			return "", &OutputError{Kind: OutputSchema}
 		}
 		text.WriteString(choice.Message.Content)
 	}
@@ -364,16 +375,16 @@ func parseUsage(response responseEnvelope, family string) (Usage, error) {
 			cached, writes = u.CacheReadTokens, u.CacheCreationTokens
 		}
 		if cached < 0 || writes < 0 {
-			return Usage{}, ErrOutput
+			return Usage{}, &OutputError{Kind: OutputSchema}
 		}
 		if input != nil && output != nil {
 			if *input < 0 || *output < 0 {
-				return Usage{}, ErrOutput
+				return Usage{}, &OutputError{Kind: OutputSchema}
 			}
 			total := *input
 			if family == "anthropic" {
 				if total > math.MaxInt64-cached || total+cached > math.MaxInt64-writes {
-					return Usage{}, ErrOutput
+					return Usage{}, &OutputError{Kind: OutputSchema}
 				}
 				total += cached + writes
 			}
@@ -391,11 +402,11 @@ func presentJSON(raw json.RawMessage) bool {
 func parseAssessment(text, evidenceID string) (Assessment, error) {
 	var fields map[string]json.RawMessage
 	if json.Unmarshal([]byte(text), &fields) != nil || len(fields) != 3 {
-		return Assessment{}, ErrOutput
+		return Assessment{}, &OutputError{Kind: OutputSchema}
 	}
 	for _, key := range []string{"conclusion", "uncertainty", "evidenceRefs"} {
 		if fields[key] == nil || bytes.Equal(bytes.TrimSpace(fields[key]), []byte("null")) {
-			return Assessment{}, ErrOutput
+			return Assessment{}, &OutputError{Kind: OutputSchema}
 		}
 	}
 	var value Assessment
@@ -403,14 +414,14 @@ func parseAssessment(text, evidenceID string) (Assessment, error) {
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&value); err != nil ||
 		!slices.Contains([]string{"supported", "contradicted", "inconclusive"}, value.Conclusion) {
-		return Assessment{}, ErrOutput
+		return Assessment{}, &OutputError{Kind: OutputSchema}
 	}
 	if strings.TrimSpace(value.Uncertainty) == "" || len(value.EvidenceRefs) == 0 {
-		return Assessment{}, ErrOutput
+		return Assessment{}, &OutputError{Kind: OutputSchema}
 	}
 	for _, ref := range value.EvidenceRefs {
 		if ref != evidenceID {
-			return Assessment{}, ErrOutput
+			return Assessment{}, &OutputError{Kind: OutputGrounding}
 		}
 	}
 	return value, nil

@@ -1,0 +1,24 @@
+PRE-IMPLEMENTATION SHARED-WINDOW INTERPRETATION
+==============================================
+
+The initial CONTRACT.txt was written before the tests and remains unchanged.
+During test-author review, its "conservative ... requests/window" wording is
+made precise here for parent approval: at most RequestsPerWindow dispatch-start
+markers in any trailing RequestWindow, measured using the database clock, for
+the one configured scope across all profiles and replicas.
+
+This is a conservative sliding-window bound, not an epoch-bucket allowance to
+double the burst at an interval boundary. The storage/scheduling algorithm is
+not prescribed. Completed, rejected, cancelled and uncertain dispatched
+attempts still consume their one request until that window passes. Capacity
+checks or expired-dispatch settlement are not additional provider requests.
+
+AA7 intentionally verifies that a second profile/worker does not reset that
+shared allowance when the first lease expires. Pending work owns no waiting
+SQL slot. A later eligible window can admit the still-unattempted second job.
+No token-rate, pricing, account/model/region quota guarantee is added.
+
+This clarification precedes implementation and any new worker GREEN. Current
+production has no assessment worker. It is not an implementation-driven green
+patch. Parent must approve this exact contract interpretation before assigning
+the separate coder; no old contract, signature or production code is modified.

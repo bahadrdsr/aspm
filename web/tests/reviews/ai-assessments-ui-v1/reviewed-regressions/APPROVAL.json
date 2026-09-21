@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "status": "APPROVED - existing-export production-hook UNIT binding",
+  "approvalMessageTimestamp": "2026-09-21T02:04:04.779+02:00",
+  "approvalSource": "Explicit parent approval in this conversation, not inferred from hashes or test outcomes.",
+  "recordedBy": "independent-reviewed-ui-regressions-20260920",
+  "verbatimApproval": "Parent APPROVES the proposed EXISTING-EXPORT production-hook UNIT binding exactly as CONTRACT.txt/history-unit.tsx: realReactroot +realuseAssessmentHistory/AssessmentHistory/useScopedAction/typedAPI/intentregistry, actualtypedsyntheticsession+workspace, no appDOM replacement/ref-inspection/copiedbusinesslogic or delayedparentcleanup. This is a UNIT INVARIANT, notproof full-app pre-layout race.",
+  "approvedBindings": [
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\CONTRACT.txt",
+      "bytes": 6733,
+      "sha256": "d169b525bd63258bf1764f56fcd769cadfcf06d57042ea893b5bb9096bb4be55"
+    },
+    {
+      "path": "web\\tests\\harness\\ai-assessment-review\\history-unit.tsx",
+      "bytes": 3482,
+      "sha256": "c1c633691dd30a5010c5577c246daeabded587f0da22c1dd265dd25d31ee4247"
+    }
+  ],
+  "priorCandidate": {
+    "packetSHA256": "63a0032e03b5c71f9f2912c3d07002aab445d7d16f114bc9988fce277e123abf",
+    "handoffSHA256": "982b61b35a116109a05462696142d06ed422e35d9df971de3ac7e38cd0628ed3",
+    "archive": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1"
+  },
+  "scope": {
+    "unitInvariantOnly": true,
+    "fullAppPreLayoutRaceProven": false,
+    "actualBrowserOrderedDenialControls": "403/404, late cancel ACK and 503 remain separate passing browser controls; no observed full-app history leak is claimed.",
+    "issue1BrowserRED": "The two actual-browser 5xx regressions reproduced distinct duplicate jobs before authorized history reconciliation.",
+    "implementationFreedom": "No new internal API or specific generation implementation is required. A stale-start callback generation/barrier can be implemented through the existing export.",
+    "positiveControlsRetained": "Immediate canonical queue/cancel ACK display without prior history denial remains required."
+  },
+  "metadataOnlyFinalization": {
+    "testBodyChanges": 0,
+    "harnessChanges": 0,
+    "fixtureChanges": 0,
+    "productionChanges": 0,
+    "testReruns": 0,
+    "original105Evidence": "Reuse the already qualified identical executable bytes and single 105/105 compatibility run.",
+    "historicalPendingLabels": "Leave original CONTRACT, test titles and evidence bytes unchanged. This explicit approval resolves only their prior binding-freeze gate."
+  },
+  "productionCodeControl": "All 12 held coder paths remain HOLD.",
+  "nextOwner": "Parent independently reproduces the 10 cases and seals current controls before separate UI-coder remediation.",
+  "signatureOrAuthorityCapture": false,
+  "agentsLaunched": 0,
+  "commits": 0
+}

@@ -1,0 +1,123 @@
+//go:build integration
+
+package assessment_runtime
+
+import (
+	"context"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+)
+
+type a2CancellationCalibration struct {
+	t                                   *testing.T
+	f                                   *fixture
+	kind                                string
+	core                                *coreAPI
+	native                              *nativeFixture
+	held                                *nativeRequest
+	role                                *runningRole
+	fresh                               *commandRole
+	deadline, stopStarted, stopReturned time.Time
+	waitStarted, observerArrived        time.Time
+	realBoundValidated                  bool
+	originalTailReached                 bool
+	synthetic                           []map[string]any
+}
+
+func newA2CancellationCalibration(t *testing.T, f *fixture, kind string) *a2CancellationCalibration {
+	p := &a2CancellationCalibration{t: t, f: f, kind: kind}
+	t.Cleanup(p.finish)
+	return p
+}
+func (p *a2CancellationCalibration) setOriginalDeadline(ctx context.Context) {
+	var ok bool
+	p.deadline, ok = ctx.Deadline()
+	check(p.t, ok, "calibration lost original pre-marker deadline")
+}
+func (p *a2CancellationCalibration) delayOnlyObserver(ctx context.Context) {
+	p.waitStarted = time.Now()
+	<-ctx.Done()
+	p.observerArrived = time.Now()
+	deadline, ok := ctx.Deadline()
+	check(p.t, ok && deadline.Equal(p.deadline) && ctx.Err() == context.DeadlineExceeded &&
+		!p.observerArrived.Before(p.deadline), "observer did not wait on the unchanged original deadline")
+	p.t.Log("A2 actual Run observer deliberately gated on the original ctx.Done after unchanged stopRole/listener checks; no production or native delay")
+}
+func (p *a2CancellationCalibration) syntheticCases(ctx context.Context) {
+	p.t.Helper()
+	check(p.t, ctx.Err() == context.DeadlineExceeded, "synthetic measurement cases require the SAME already-expired original deadline")
+	for _, row := range []struct {
+		name  string
+		stamp time.Time
+		event bool
+		want  bool
+	}{
+		{"reject-absent-event", time.Time{}, false, false},
+		{"reject-absent-event-even-with-early-stamp", p.deadline.Add(-time.Nanosecond), false, false},
+		{"reject-closed-event-zero-stamp", time.Time{}, true, false},
+		{"reject-closed-event-late-stamp", p.deadline.Add(time.Nanosecond), true, false},
+		{"accept-exact-deadline-different-zone", p.deadline.In(time.FixedZone("synthetic-offset", 3*60*60)), true, true},
+		{"accept-early-stamp", p.deadline.Add(-time.Nanosecond), true, true},
+	} {
+		p.t.Run("synthetic-measurement-"+row.name, func(t *testing.T) {
+			record := &nativeRequest{cancelled: make(chan struct{}), cancelledAt: row.stamp}
+			if row.event {
+				close(record.cancelled)
+			}
+			err := cancellationBeforeDeadline(ctx, record)
+			pass := err == nil
+			p.synthetic = append(p.synthetic, map[string]any{"case": row.name, "accepted": pass,
+				"expectedAcceptance": row.want, "actualEvent": row.event, "recordedAt": row.stamp,
+				"originalDeadline": p.deadline, "syntheticMeasurementOnly": true, "productionExecutionClaimed": false})
+			check(t, pass == row.want, "strict timestamp/event validator accepted an invalid measurement or rejected the exact boundary")
+			t.Logf("SYNTHETIC measurement case=%s accepted=%t expected=%t; not a production cancellation pass", row.name, pass, row.want)
+		})
+	}
+}
+func a2ChannelClosed(channel <-chan struct{}) bool {
+	select {
+	case <-channel:
+		return true
+	default:
+		return false
+	}
+}
+func (p *a2CancellationCalibration) finish() {
+	report := map[string]any{"schemaVersion": 1, "kind": p.kind, "failed": p.t.Failed(),
+		"originalDeadline": p.deadline, "stopStarted": p.stopStarted, "stopReturned": p.stopReturned,
+		"observerWaitStarted": p.waitStarted, "observerArrived": p.observerArrived,
+		"realBoundValidated": p.realBoundValidated, "originalTailReached": p.originalTailReached,
+		"syntheticMeasurements": p.synthetic, "onlyObserverDelayed": true, "newDeadlineOrAllowance": false,
+		"productionChanges": false, "calibrationNotWholeRuntimeAcceptance": true}
+	if p.held != nil && a2ChannelClosed(p.held.cancelled) {
+		stamp := p.held.cancelledAt
+		report["nativeCancellationOccurred"] = true
+		report["nativeObservedAt"] = stamp
+		report["nativeWithinOriginalDeadline"] = !stamp.IsZero() && (stamp.Before(p.deadline) || stamp.Equal(p.deadline))
+		report["nativeMarginMillis"] = float64(p.deadline.Sub(stamp).Microseconds()) / 1000
+		report["nativeAfterStopStartedMillis"] = float64(stamp.Sub(p.stopStarted).Microseconds()) / 1000
+	}
+	if p.core != nil {
+		report["protectedAPICounter"] = p.core.calls
+	}
+	if p.native != nil {
+		report["actualNativePOSTs"] = p.native.calls.Load()
+	}
+	if p.role != nil {
+		report["actualRunReturned"] = a2ChannelClosed(p.role.done)
+	}
+	if p.fresh != nil {
+		report["freshActualCommandPID"] = p.fresh.command.Process.Pid
+		report["freshActualCommandExited"] = a2ChannelClosed(p.fresh.role.done)
+		report["selectedPIDKillCalled"] = p.fresh.killed
+	}
+	data := encoded(p.t, report)
+	p.f.noSecrets(data)
+	path := filepath.Join(required(p.t, "ASPM_ASSESSMENT_RUNTIME_ARTIFACT_DIR"),
+		required(p.t, "ASPM_ASSESSMENT_RUNTIME_A2_LABEL")+"-"+p.kind+"-"+nonce(p.t)+".calibration.json")
+	must(p.t, "persist bounded actual/synthetic measurement distinctions", os.WriteFile(path, data, 0600))
+	p.t.Logf("A2 paired calibration: realBoundValidated=%t originalTailReached=%t failed=%t; evidence=%s",
+		p.realBoundValidated, p.originalTailReached, p.t.Failed(), filepath.Base(path))
+}

@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T03:52:28.774Z",
+  "status": "OPEN QUALIFICATION - NO CANCELLATION TEST OR PRODUCTION AMENDMENT AUTHORIZED",
+  "inheritedFailure": [
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\coder-runtime-contract-20260921-01-service-contract.jsonl",
+      "bytes": 30749,
+      "sha256": "b38f6ff06040743fc8c5290923e7a508b714f2e0ef58c9ad84d33df6d2c786ea"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\coder-runtime-contract-20260921-01-service-contract.log",
+      "bytes": 5730,
+      "sha256": "eb236fd2233fd321b3de96680427d1918562963cdd16bbf1774efca35b56e04d"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\coder-runtime-contract-20260921-01.receipt.json",
+      "bytes": 2082,
+      "sha256": "f757b49f5f3631b14e9aaadaaa91d4c36907afedb31d64a6d23be8fe74ade36b"
+    }
+  ],
+  "independentUnchangedReproduction": {
+    "run": "successor-runtime-a1-unchanged-context-20260921-01",
+    "mode": "RunContext",
+    "repeatCount": 3,
+    "fixtureSHA256": "2b90db2c6ec5bcda35ad26b88b43bedd98230e11ab8398da659ad4913ad28831",
+    "diagnosticOnly": false,
+    "exitCode": 1,
+    "packageResult": "fail",
+    "packageElapsedSeconds": 16.715,
+    "tests": [
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/Run-context",
+        "action": "fail",
+        "elapsedSeconds": 6.8
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota",
+        "action": "fail",
+        "elapsedSeconds": 6.8
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/Run-context",
+        "action": "pass",
+        "elapsedSeconds": 4.61
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota",
+        "action": "pass",
+        "elapsedSeconds": 4.61
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota/Run-context",
+        "action": "pass",
+        "elapsedSeconds": 4.63
+      },
+      {
+        "test": "TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota",
+        "action": "pass",
+        "elapsedSeconds": 4.63
+      }
+    ],
+    "receipt": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01.receipt.json",
+      "bytes": 3063,
+      "sha256": "e542d678fc60739253c8dee794e71dc2786be095c0efc190cee2797dffa7ea5a"
+    },
+    "inputs": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01.inputs.json",
+      "bytes": 173321,
+      "sha256": "28c4572fec425d1d69c7e88b8a01f85338440f0f588f316f5451307c61f74531"
+    },
+    "actualCommand": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01.assessment-worker.owned.exe",
+      "bytes": 22716416,
+      "sha256": "e898eaf4656df7da50c087d125da4700767e3bc79f58b5f722c7e09529b50aa5"
+    },
+    "stageArtifacts": [
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01-command-build.jsonl",
+        "bytes": 2,
+        "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01-command-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01-tests.jsonl",
+        "bytes": 9077,
+        "sha256": "a11ad7c3ff7aa9f0a424efbf1a52fe6deb2d6bd79c72632e362a9e9480da2f0d"
+      },
+      {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-unchanged-context-20260921-01-tests.log",
+        "bytes": 1872,
+        "sha256": "496af54b4c644f47c443e88a56d86a5e95b12e52d9c8c627b8ae097095bd321c"
+      }
+    ]
+  },
+  "observedCompetingReadyWindow": {
+    "evidence": {
+      "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-02-Run-context-661c688f7ebecce03813fde2.observation.json",
+      "bytes": 5316,
+      "sha256": "f4092a3361fd254b1884f619a1d85174aa7ad20b35990833e6971ed12e06c93c"
+    },
+    "beforeStop": {
+      "elapsedMillis": 1047.149,
+      "event": "before-stopRole",
+      "heldCancelled": false,
+      "heldReady": true,
+      "sharedContextDone": false,
+      "sharedDeadlineRemainingMillis": 4987.294
+    },
+    "actualClose": {
+      "elapsedMillis": 1047.693,
+      "event": "actual-local-native-conn-Close-returned",
+      "heldCancelled": false,
+      "heldReady": true,
+      "sharedContextDone": false,
+      "sharedDeadlineRemainingMillis": 4986.749
+    },
+    "nativeContextDone": {
+      "elapsedMillis": 1047.693,
+      "event": "native-request-context-done",
+      "heldCancelled": false,
+      "heldReady": true,
+      "sharedContextDone": false,
+      "sharedDeadlineRemainingMillis": 4986.749
+    },
+    "afterStopAndListenerCheck": {
+      "elapsedMillis": 6383.135,
+      "event": "after-stopRole-and-listener-check",
+      "heldCancelled": true,
+      "heldReady": true,
+      "sharedContextDone": true,
+      "sharedDeadlineRemainingMillis": -348.692
+    },
+    "beforeEvent": {
+      "elapsedMillis": 6383.135,
+      "event": "before-native-cancel-event",
+      "heldCancelled": true,
+      "heldReady": true,
+      "sharedContextDone": true,
+      "sharedDeadlineRemainingMillis": -348.692
+    },
+    "selectedNativeCaseAndPassed": true
+  },
+  "observations": [
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-02-Run-context-143499d908418a20344e3193.observation.json",
+        "bytes": 6656,
+        "sha256": "0174680f51380073530f4667b6491976b7876d52b593b15ac95eb26412a24de6"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 170
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-02-Run-context-661c688f7ebecce03813fde2.observation.json",
+        "bytes": 5316,
+        "sha256": "f4092a3361fd254b1884f619a1d85174aa7ad20b35990833e6971ed12e06c93c"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 28
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-02-Run-context-78d985228093647bc4cb1587.observation.json",
+        "bytes": 6670,
+        "sha256": "99b07ea7c81f352cb1cc3494f49a6db8057628be07d38638fc53875bd753cb32"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 169
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-03-Run-context-01b6550699ac6d6bb72bdb33.observation.json",
+        "bytes": 6730,
+        "sha256": "a819e109e76e714335581dd651517cbc6a6fef116f0cf5a8a75ec3fd625c80cd"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 41
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-03-Run-context-24edde25fb33833ff1a1bfa5.observation.json",
+        "bytes": 6595,
+        "sha256": "99045e70229b3b9439b99280271e7b0f151f7b8597a308ac08afbc29428c6565"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 47
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-diagnostic-20260921-03-Run-context-8676e7d93c21634f28ef6315.observation.json",
+        "bytes": 6690,
+        "sha256": "20c5517d6cccf8ec93730aed0621162960144d7f46375615253167b0765ed6cd"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 47
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-final-bounded-20260921-04-Run-context-4e1f52b3c027714587dd6313.observation.json",
+        "bytes": 6597,
+        "sha256": "8a44df55e5d4a232352f03d4d5e385ec9f1bfab04b4d1e5144c379126ec696c4"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 45
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-final-bounded-20260921-04-Run-context-6ecc1471f7a13d1478ab9aac.observation.json",
+        "bytes": 6685,
+        "sha256": "4ebe4a557e31e015bd98d958ef718c2f6871f6df07a51562a6524df8543b24f1"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 49
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-context-final-bounded-20260921-04-Run-context-cd7d071d5e6f35066a24d5cb.observation.json",
+        "bytes": 6590,
+        "sha256": "b351f7251393f15776a735db2020158457545a70d746bff5b42c0875f02c4853"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 49
+    },
+    {
+      "witness": {
+        "path": ".artifacts\\assessment-runtime-v1\\successor-runtime-a1-original-diagnostic-20260921-01-Run-context-113327f46ccb77603f2f0bc7.observation.json",
+        "bytes": 6653,
+        "sha256": "5d1ccb77bab80a1cb4e5961a9e2b0c0aeca02360477ebdfa20625f67ec317e2d"
+      },
+      "failed": false,
+      "nativePOSTs": 2,
+      "apiCounter": 137
+    }
+  ],
+  "established": [
+    "An unchanged normal Run-context failure was independently reproduced.",
+    "In one diagnostic, native socket/context ended promptly but stopRole returned after the shared five-second context expired.",
+    "The unchanged event helper entered with both its channels already ready."
+  ],
+  "inference": "The unprioritized select can report a missing cancellation despite timely native cancellation when both channels are ready. This mechanism was observed, but no failing instrumented run tied every historical failure to it.",
+  "languageAuthority": "Go1.27 language specification, Select statements, multiple-ready-case selection; consulted official Go specification on 2026-09-21.",
+  "notEstablished": [
+    "Cause of the long stopRole delay.",
+    "Definitive attribution of each uninstrumented/historical failure.",
+    "A production cancellation defect.",
+    "Resolution from repeated passing trials."
+  ],
+  "boundedTraceLimit": "Final six diagnostic repeats included read-only stack-function-label capture on shared deadline; none hit that deadline, so no delay-attribution stack labels were collected.",
+  "noEventAssertionDeadlineOrCancelDelayChanged": true,
+  "separateParentApprovalRequiredForAnyMeasurementAmendment": true,
+  "furtherRetriesStopped": true
+}

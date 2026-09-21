@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/cipher"
 	"errors"
+	"time"
 
 	"github.com/bahadrdsr/aspm/internal/providers"
 	"github.com/jackc/pgx/v5"
@@ -70,78 +71,21 @@ func (r *AIConfigurationResolver) Resolve(ctx context.Context, request AIConfigu
 	if err := ctx.Err(); err != nil {
 		return AIConfiguration{}, err
 	}
-	if !validID(request.WorkspaceID) || !validID(request.ActorID) || !validID(request.ProfileID) ||
-		request.GrantID != "" && !validID(request.GrantID) ||
-		request.Task != aiTask || request.DataClass != aiDataClass {
-		return AIConfiguration{}, providers.ErrPolicy
-	}
 	tx, err := r.pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
 	if err != nil {
 		return AIConfiguration{}, aiLookupError(ctx, err)
 	}
 	defer rollback(tx)
-	var workspace, role string
-	if err = tx.QueryRow(ctx, `SELECT id FROM `+r.table("workspaces")+` WHERE id=$1`,
-		request.WorkspaceID).Scan(&workspace); err != nil {
-		return AIConfiguration{}, aiLookupError(ctx, err)
-	}
-	if err = tx.QueryRow(ctx, `SELECT role FROM `+r.table("memberships")+`
-		WHERE workspace_id=$1 AND user_id=$2`, workspace, request.ActorID).Scan(&role); err != nil {
-		return AIConfiguration{}, aiLookupError(ctx, err)
-	}
-	if role != "admin" && role != "analyst" {
-		return AIConfiguration{}, providers.ErrPolicy
-	}
-	profile, err := scanAIProfile(tx.QueryRow(ctx, `SELECT `+aiProfileColumns+
-		` FROM `+r.table("ai_profiles")+` WHERE workspace_id=$1 AND id=$2`, workspace, request.ProfileID))
+	resolved, err := r.readAIConfiguration(ctx, tx, r.credentials, request, false)
 	if err != nil {
-		return AIConfiguration{}, aiLookupError(ctx, err)
-	}
-	if !profile.Enabled || !validAIProfile(profile.AIProfile) || profile.Revision == "" {
-		return AIConfiguration{}, providers.ErrPolicy
-	}
-	if !profile.StructuredOutput {
-		return AIConfiguration{}, providers.ErrCapability
-	}
-	policy, err := scanAIPolicy(tx.QueryRow(ctx, `SELECT `+aiPolicyColumns+
-		` FROM `+r.table("ai_policies")+` WHERE workspace_id=$1`, workspace), workspace)
-	if err != nil {
-		return AIConfiguration{}, aiLookupError(ctx, err)
-	}
-	if policy.Revision == "" || policy.Revision == "0" || policy.UpdatedAt == nil || policy.UpdatedBy == nil {
-		return AIConfiguration{}, providers.ErrPolicy
-	}
-	var grant AIEgressGrant
-	switch policy.Mode {
-	case "local-only":
-		if profile.Family != "local" || request.GrantID != "" {
+		switch {
+		case errors.Is(err, providers.ErrPolicy), errors.Is(err, providers.ErrCapability):
+			return AIConfiguration{}, err
+		case errors.Is(err, errAICredential):
 			return AIConfiguration{}, providers.ErrPolicy
-		}
-	case "approved-hosted":
-		if request.GrantID == "" {
-			return AIConfiguration{}, providers.ErrPolicy
-		}
-		grant, err = scanAIGrant(tx.QueryRow(ctx, `SELECT `+aiGrantColumns+
-			` FROM `+r.table("ai_egress_grants")+` WHERE workspace_id=$1 AND id=$2`, workspace, request.GrantID))
-		if err != nil {
+		default:
 			return AIConfiguration{}, aiLookupError(ctx, err)
 		}
-		if grant.ProfileID != profile.ID || grant.ProfileRevision != profile.Revision ||
-			grant.PolicyRevision != policy.Revision || grant.Destination != profile.Endpoint ||
-			grant.Task != request.Task || grant.DataClass != request.DataClass ||
-			grant.RevokedAt != nil || grant.RevokedBy != nil || !grant.ExpiresAt.After(r.now().UTC()) {
-			return AIConfiguration{}, providers.ErrPolicy
-		}
-	default:
-		return AIConfiguration{}, providers.ErrPolicy
-	}
-	var plain []byte
-	if profile.CredentialConfigured {
-		plain, err = openCredential(r.credentials, aiCredentialAAD(workspace, profile.ID), profile.ciphertext)
-		if err != nil {
-			return AIConfiguration{}, providers.ErrPolicy
-		}
-		defer clear(plain)
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return AIConfiguration{}, aiLookupError(ctx, err)
@@ -149,10 +93,98 @@ func (r *AIConfigurationResolver) Resolve(ctx context.Context, request AIConfigu
 	if err = ctx.Err(); err != nil {
 		return AIConfiguration{}, err
 	}
-	if grant.ID != "" && !grant.ExpiresAt.After(r.now().UTC()) {
+	if resolved.grantExpiresAt != nil && !resolved.grantExpiresAt.After(r.now().UTC()) {
 		return AIConfiguration{}, providers.ErrPolicy
 	}
-	return AIConfiguration{
+	return resolved.configuration, nil
+}
+
+type aiResolution struct {
+	configuration  AIConfiguration
+	grantExpiresAt *time.Time
+}
+
+var errAICredential = errors.New("AI credential is unavailable")
+
+// Callers own the snapshot and transaction. Execution callers also lock in
+// workspace, membership, profile, policy, grant order, before quota or job rows.
+func (db *database) readAIConfiguration(ctx context.Context, q queryRower, credentials cipher.AEAD, request AIConfigurationRequest, lock bool) (aiResolution, error) {
+	if !validID(request.WorkspaceID) || !validID(request.ActorID) || !validID(request.ProfileID) ||
+		request.GrantID != "" && !validID(request.GrantID) ||
+		request.Task != aiTask || request.DataClass != aiDataClass {
+		return aiResolution{}, providers.ErrPolicy
+	}
+	suffix := ""
+	if lock {
+		suffix = " FOR SHARE"
+	}
+	var workspace, role string
+	if err := q.QueryRow(ctx, `SELECT id FROM `+db.table("workspaces")+` WHERE id=$1`+suffix,
+		request.WorkspaceID).Scan(&workspace); err != nil {
+		return aiResolution{}, err
+	}
+	if err := q.QueryRow(ctx, `SELECT role FROM `+db.table("memberships")+`
+		WHERE workspace_id=$1 AND user_id=$2`+suffix, workspace, request.ActorID).Scan(&role); err != nil {
+		return aiResolution{}, err
+	}
+	if role != "admin" && role != "analyst" {
+		return aiResolution{}, providers.ErrPolicy
+	}
+	profile, err := scanAIProfile(q.QueryRow(ctx, `SELECT `+aiProfileColumns+
+		` FROM `+db.table("ai_profiles")+` WHERE workspace_id=$1 AND id=$2`+suffix, workspace, request.ProfileID))
+	if err != nil {
+		return aiResolution{}, err
+	}
+	if !profile.Enabled || !validAIProfile(profile.AIProfile) || profile.Revision == "" {
+		return aiResolution{}, providers.ErrPolicy
+	}
+	if !profile.StructuredOutput {
+		return aiResolution{}, providers.ErrCapability
+	}
+	policy, err := scanAIPolicy(q.QueryRow(ctx, `SELECT `+aiPolicyColumns+
+		` FROM `+db.table("ai_policies")+` WHERE workspace_id=$1`+suffix, workspace), workspace)
+	if err != nil {
+		return aiResolution{}, err
+	}
+	if policy.Revision == "" || policy.Revision == "0" || policy.UpdatedAt == nil || policy.UpdatedBy == nil {
+		return aiResolution{}, providers.ErrPolicy
+	}
+	var grant AIEgressGrant
+	switch policy.Mode {
+	case "local-only":
+		if profile.Family != "local" || request.GrantID != "" {
+			return aiResolution{}, providers.ErrPolicy
+		}
+	case "approved-hosted":
+		if request.GrantID == "" {
+			return aiResolution{}, providers.ErrPolicy
+		}
+		grant, err = scanAIGrant(q.QueryRow(ctx, `SELECT `+aiGrantColumns+
+			` FROM `+db.table("ai_egress_grants")+` WHERE workspace_id=$1 AND id=$2`+suffix, workspace, request.GrantID))
+		if err != nil {
+			return aiResolution{}, err
+		}
+		if grant.ProfileID != profile.ID || grant.ProfileRevision != profile.Revision ||
+			grant.PolicyRevision != policy.Revision || grant.Destination != profile.Endpoint ||
+			grant.Task != request.Task || grant.DataClass != request.DataClass ||
+			grant.RevokedAt != nil || grant.RevokedBy != nil || !grant.ExpiresAt.After(db.now().UTC()) {
+			return aiResolution{}, providers.ErrPolicy
+		}
+	default:
+		return aiResolution{}, providers.ErrPolicy
+	}
+	var plain []byte
+	if profile.CredentialConfigured {
+		plain, err = openCredential(credentials, aiCredentialAAD(workspace, profile.ID), profile.ciphertext)
+		if err != nil {
+			return aiResolution{}, errAICredential
+		}
+		defer clear(plain)
+	}
+	if err = ctx.Err(); err != nil {
+		return aiResolution{}, err
+	}
+	resolved := aiResolution{configuration: AIConfiguration{
 		Profile: providers.Profile{
 			ID: profile.ID, Revision: profile.Revision, Family: profile.Family, Endpoint: profile.Endpoint,
 			Model: profile.Model, Deployment: profile.Deployment, APIKey: string(plain),
@@ -163,5 +195,9 @@ func (r *AIConfigurationResolver) Resolve(ctx context.Context, request AIConfigu
 			Workspaces: []string{workspace}, Tasks: []string{request.Task},
 			DataClasses: []string{request.DataClass}, AllowedDestinations: []string{profile.Endpoint},
 		},
-	}, nil
+	}}
+	if grant.ID != "" {
+		resolved.grantExpiresAt = &grant.ExpiresAt
+	}
+	return resolved, nil
 }

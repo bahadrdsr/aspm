@@ -1,0 +1,57 @@
+REVIEWED UI REGRESSIONS - ADDITIVE FIXTURE AMENDMENT
+==================================================
+
+Author: independent-reviewed-ui-regressions-20260920.
+This author is neither the original six-case author nor the held UI coder.
+Status: declared before editing the assessment fixture or authoring regression
+assertions. No production correction, backend execution, oracle recapture,
+signature or new authority is provided by this packet.
+
+Original fixture
+----------------
+web\tests\ai-assessments-fixture.ts
+SHA256 e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202
+27759 bytes. Archive: fixture-before.ts.txt in this directory.
+
+Inspected limitation
+--------------------
+expectWrite schedules a status and optional lost ACK. A scheduled status >=400
+returns before the queue body, preview binding and durable synthetic intent
+logic. A successful queue can lose its ACK, but cannot currently commit and
+then return a selected error status/body. Changing only its scheduled status
+would not reproduce the reviewed ambiguity.
+
+Authorized minimal change
+-------------------------
+Add one OPTIONAL response override to the assessment-specific expectWrite
+control, carried through its existing schedule and deliver path. Permit it
+only for a declared queue POST scheduled with canonical 200/202 and without
+loseACK. Permit transport statuses 500, 502 and 503 with an explicit JSON body.
+Apply it only when normal validation produced a successful response, after
+the existing intent/job persistence. Guard failures are never overridden.
+The existing request ledger records the actual delivered status and body.
+The pre-existing jobs map witnesses the separately persisted receipt.
+
+No new route, replacement handler, fetch stub, API bypass, business policy or
+weakened body/role/workspace check. Default calls take the identical old path.
+Existing status scheduling, gate release, abort behavior, privacy assertions,
+request counting, external blocks and 60 combined API limit remain intact.
+No existing spec/assertion, old-99 fixture, runner, dependency or config edits.
+
+Required proof
+--------------
+Archive exact original bytes before change and verify their SHA256. Independently
+reproduce the two findings or explicitly bound them before freezing tests.
+Run scoped typecheck and coherent focused cases before at most one original
+105-case compatibility run. Verify the original 803 public controls, allowing
+only this disclosed fixture delta; preserve the public manifest/config bytes.
+Verify the held 12 production paths against the coder handoff, not a recapture.
+
+Issue 2 boundary
+----------------
+Try the real application with held denial/write HTTP responses first. Do not
+inject app state/DOM, replace hooks, delay cleanup, alter clocks or use a copied
+callback as browser proof. If only the production-hook invariant is reachable,
+label that scope explicitly and propose the smallest existing-export binding
+to the parent. Such an internal binding is not frozen authority without parent
+approval, even if an unsigned candidate test and its evidence are supplied.

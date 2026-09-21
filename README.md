@@ -18,20 +18,23 @@ server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, and Slack connections with explicit
 finding-notification previews and delivery history, plus selected GitHub source
 configuration, explicit collection intents and raw record/evidence views, plus
-opt-in persistent AI profile, policy and grant configuration. Other integration setup remains
-unfinished. Reports and finding triage have independent source acceptance and
-owned HTTPS workflow qualification.
+opt-in persistent AI profile, policy and grant configuration, with an in-finding
+assessment preview, explicit queue consent and read-only advisory history.
+Other integration setup remains unfinished. Reports, finding triage and the
+assessment workflow have separate owned HTTPS qualification.
 
 Core API, ingestion and reporting run as separate processes. Core and ingestion
-use distinct scoped storage identities; reporting is database-only. Real local
-flows have been exercised, but further backend authorization/concurrency,
+use distinct scoped storage identities; reporting is database-only. The separate
+assessment worker uses database state and approved provider requests, without
+raw-storage credentials. Real local flows have been exercised, but further backend authorization/concurrency,
 deployment, recovery and capacity gates remain open. PostgreSQL role separation
 and production network isolation are not yet qualified.
 
 Eight native integration families and four configurable AI provider adapters
 exist as libraries. Slack notifications and selected GitHub repository collection
-have durable application workflows; orchestration for the other native families,
-persistent AI assessment jobs and live vendor/model qualification remain incomplete.
+have durable application workflows, as do explicitly reviewed AI assessments.
+Orchestration for the other native families, assessment image/deployment wiring
+and live vendor/model qualification remain incomplete.
 Verification supports
 approved deterministic synthetic evidence only, not exploit execution or
 autonomous offensive tools.
@@ -180,6 +183,103 @@ signing out or losing the session aborts requests and clears metadata, credentia
 and consent drafts. No AI metadata or secrets are stored in browser storage.
 This is configuration only: no provider requests, model discovery, connection
 tests, evidence access, inference or assessment jobs are started.
+
+In a finding dialog, **AI assessments** is also initially closed. Opening a
+finding, filtering or selecting Work rows does not read assessment or AI
+configuration metadata. Explicit activation opens an inline area within the
+same dialog, with manual history/detail reads and no polling or provider probes.
+History uses native ID cursors, 100 records per request, with explicit
+**Load more assessments** and exact-cursor retry. Transient continuation errors
+retain confirmed rows. A denied detail stays withheld through unavailable
+retries until a new authorized detail read succeeds.
+History denial also synchronously fences receipts from older queue/cancel
+requests. Those receipts cannot restore protected rows or history authority,
+even during a loading gap or after an unavailable retry. A later authorized
+history read is required; without denial, canonical write receipts still update
+the visible history immediately without an extra GET.
+
+Current workspace admins and analysts can choose **New assessment**. The
+observation and AI profile start unselected, and **Reviewed finding context**
+starts empty. Choose an actual observation already loaded by the existing
+finding history. No raw report, scanner evidence, notes, unmapped fields or
+configuration is assembled into the editor. Context must be nonblank, NUL-free,
+and at most 32,768 UTF-8 bytes; spaces, newlines and Unicode are not trimmed or
+truncated. Review/redact it explicitly before **Prepare assessment preview**.
+Secret exclusion is not a universal redaction guarantee.
+
+Only authorized profile, policy and grant receipts supply configuration.
+`local-only` permits family `local` and an empty grant ID; `approved-hosted`
+requires an explicit, unexpired grant matching the exact destination, task,
+data class and opaque revisions. Stored credentials and capability-review flags
+are not ready/verified-provider claims. Disabled or unavailable policy never
+becomes an invented default. The browser cannot supply actor, endpoint, model,
+prompt revision or digest authority in either write.
+
+The canonical preview shows its server identity, source/observation linkage,
+separate context and source-evidence digests, exact derived context, destination,
+model/deployment, revisions and expiry. A second, initially unchecked
+**Approve this exact preview for queueing** acknowledgement is required before
+**Queue assessment**. A 202 receipt means queued, not completed. Edits, changed
+or denied metadata, expiry and conflicts invalidate consent; there is no
+automatic re-preview, resend or fresh-key retry.
+
+An unconfirmed queue may already have committed. Only a minimal unresolved
+workspace/requester/finding, preview ID and idempotency key remains in scoped
+memory across close or scope/session changes. It is never replayed in another
+scope or stored in the browser. New queue intentions for that same scope remain
+blocked until authorized history returns a matching receipt; absent, incomplete,
+failed or denied pages do not silently resolve uncertainty. If no matching
+receipt can be recovered, this UI deliberately offers no blind resend.
+Every 5xx or unexpected response remains uncertain regardless of a recognized
+JSON rejection code. Only a valid, matching definitive HTTP rejection can
+retire a rejected intent, so a genuine initial 409 can permit a fresh explicitly
+reviewed attempt. A positive canonical receipt can settle the minimal intent
+identity without bypassing a history-denial fence.
+
+Details preserve the canonical job/dispatch states, single-attempt count,
+advisory conclusion/uncertainty and approved context references. Unknown usage
+stays unknown, not zero spending. Requested/returned model, separate Foundry
+deployment, native request/stop/retry metadata and known token/cache counts are
+observations, not immutable model certification. Bounded failure diagnostics
+are not successful inconclusive results. All context, result and URL-like
+metadata renders as inert text.
+
+**Cancel assessment** requires inline confirmation and changes visible state
+only after a canonical receipt. Cancellation, closing or aborting cannot undo
+context already sent, guarantee an unsent request or promise a refund. Viewers
+are read only; current service denials override cached writer roles. Closing the
+AI pane/finding, workspace changes, logout or 401 clear private payloads and
+abort old requests; late responses cannot restore them. Only the minimal
+unresolved safety marker survives. Advisory output never changes finding
+workflow, ownership, risk, evidence, notes or source fields. Browser validation
+uses a synthetic HTTP boundary, not live provider/worker/account qualification.
+
+The separate **`cmd\assessment-worker`** consumes these durable jobs. Configure
+the same explicit `ASPM_ASSESSMENT_SCOPE` in core and assessment processes, with
+the appropriate database configuration and matching shared admission limits.
+An absent core scope leaves assessment writes unavailable. The worker needs no
+S3, bootstrap or static-UI credentials. Encrypted provider profiles use the same
+protected independent `ASPM_INTEGRATION_ENCRYPTION_KEY`; keyless local profiles
+can run without it. See `internal\service\README.txt` for exact defaults, strict
+environment parsing and optional `ASPM_ASSESSMENT_CA_FILE` trust configuration.
+From the source checkout, start this role with `go run .\cmd\assessment-worker`.
+Image, Helm, manual Quadlet and installer provisioning are separate gates;
+the current assessment increment does not install or start that role for you.
+
+The worker commits a single-attempt marker before provider I/O, prevents
+transport-level HTTP/2 replay and keeps local I/O admission reserved through
+cancellation or expired ownership until acknowledged termination or its bounded
+deadline. This is not an exactly-once remote-computation or billing guarantee.
+Shared trailing-window request admission and concurrency are implemented;
+account/model/region token-rate and cost policies remain separate work.
+
+A separate owned run used the real HTTPS browser/core, PostgreSQL, scoped
+ingestion and standalone assessment command with a normal-TLS synthetic provider.
+It exercised approved-context advisory output, a dropped response with no retry,
+and explicit cancellation while preserving finding state. The grant was revoked
+and policy disabled afterward. No browser responses were mocked in that run.
+This does not verify a live model, model quality, provider retention or deployment
+isolation.
 
 Workspace administrators choose every profile's family (`openai`,
 `azure-foundry`, `anthropic` or `local`), exact endpoint, model, enabled state and

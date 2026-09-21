@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-20T23:42:48.962Z",
+  "originalArchive": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\fixture-before.ts.txt",
+    "bytes": 27759,
+    "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202",
+    "crlf": 393,
+    "lf": 393
+  },
+  "amended": {
+    "path": "web\\tests\\ai-assessments-fixture.ts",
+    "bytes": 28532,
+    "sha256": "aba53670b320c5285459b842e5a32ca00738240a9a7c940783a52a819fdf5000",
+    "crlf": 402,
+    "lf": 402
+  },
+  "patch": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\fixture-additive.patch",
+    "bytes": 3137,
+    "sha256": "939d841d924f507609e4422ca67e65eeb866c24abd108c377a00ae2fbb455815",
+    "crlf": 43,
+    "lf": 50
+  },
+  "originalControls": 803,
+  "unchangedControls": 802,
+  "disclosedExceptions": [
+    {
+      "before": {
+        "path": "web\\tests\\ai-assessments-fixture.ts",
+        "bytes": 27759,
+        "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+      },
+      "after": {
+        "path": "web\\tests\\ai-assessments-fixture.ts",
+        "bytes": 28532,
+        "sha256": "aba53670b320c5285459b842e5a32ca00738240a9a7c940783a52a819fdf5000",
+        "crlf": 402,
+        "lf": 402
+      }
+    }
+  ],
+  "heldProductionPaths": 12,
+  "productionChanges": [],
+  "defaultPath": "All existing request routing, body/role validation, ledger/privacy/epoch checks, API budget and status scheduling are unchanged. The optional field is undefined for all original calls.",
+  "overridePath": "Only declared successful queue 200/202 may override its post-persistence response with selected 500/502/503 JSON. Normal failures >=400 retain their original status/body.",
+  "positiveProof": "AAR1 definitive initial expired-preview 409 with an enabled override remained 409 and persisted zero jobs. Initial successful committed queues retained their authoritative job while delivering their selected misleading body.",
+  "forbiddenActions": {
+    "productionEdits": 0,
+    "dependencyEdits": 0,
+    "originalSpecEdits": 0,
+    "oracleWrites": 0,
+    "signingAuthorityAccess": false,
+    "agentsLaunched": 0,
+    "commits": 0,
+    "realAPIProviderDBCalls": 0
+  }
+}

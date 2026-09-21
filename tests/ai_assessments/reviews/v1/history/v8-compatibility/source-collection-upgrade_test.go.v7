@@ -1,0 +1,231 @@
+//go:build integration
+
+package source_collection
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"reflect"
+	"regexp"
+	"sort"
+	"testing"
+	"time"
+)
+
+const publishedV5Commit = "7281edf4466c2b940eea7aa95c377d25e7f4c2b0"
+const publishedV5FixtureSHA256 = "fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77"
+
+type publishedSchema struct {
+	OriginCommit string
+	LedgerDDL    string
+	LegacyTables []string
+	Migrations   []struct {
+		Version    int
+		SourcePath string
+		GitBlob    string
+		SQLSHA256  string
+		SQL        string
+	}
+	BusinessRowsSeeded bool
+}
+
+func legacyRows(t *testing.T, f *fixture, query string, args ...any) []string {
+	t.Helper()
+	rows, err := f.db.Query(f.ctx, query, args...)
+	must(t, "inspect actual owned legacy definitions", err)
+	defer rows.Close()
+	result := []string{}
+	for rows.Next() {
+		var value string
+		must(t, "read actual legacy catalog metadata", rows.Scan(&value))
+		result = append(result, value)
+	}
+	must(t, "finish legacy catalog inspection", rows.Err())
+	return result
+}
+
+func legacyDefinitionSnapshot(t *testing.T, f *fixture, names []string) map[string][]string {
+	t.Helper()
+	result := map[string][]string{}
+	for _, name := range names {
+		relation := f.table(name)
+		result[name+"/columns"] = legacyRows(t, f, `SELECT
+			a.attname||'|'||format_type(a.atttypid,a.atttypmod)||'|'||a.attnotnull::text||'|'||
+			COALESCE(pg_get_expr(d.adbin,d.adrelid),'')||'|'||a.attidentity::text||'|'||a.attgenerated::text
+			FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum
+			WHERE a.attrelid=to_regclass($1) AND a.attnum>0 AND NOT a.attisdropped ORDER BY a.attnum`, relation)
+		result[name+"/constraints"] = legacyRows(t, f, `SELECT conname||'|'||contype::text||'|'||pg_get_constraintdef(oid,true)
+			FROM pg_constraint WHERE conrelid=to_regclass($1) ORDER BY conname`, relation)
+		result[name+"/indexes"] = legacyRows(t, f, `SELECT indexname||'|'||indexdef FROM pg_indexes
+			WHERE schemaname=$1 AND tablename=$2 ORDER BY indexname`, f.database.Schema, "app_"+name)
+		require(t, len(result[name+"/columns"]) > 0, "published legacy relation was not actually created")
+	}
+	return result
+}
+
+func versionLedger(t *testing.T, f *fixture) []string {
+	t.Helper()
+	return legacyRows(t, f, "SELECT version::text FROM "+f.table("schema_versions")+" ORDER BY version")
+}
+
+func actualTables(t *testing.T, f *fixture) []string {
+	t.Helper()
+	return legacyRows(t, f, `SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+		WHERE n.nspname=$1 AND c.relkind IN ('r','p') ORDER BY c.relname`, f.database.Schema)
+}
+
+func buildPublishedV5(t *testing.T, f *fixture) (publishedSchema, map[string][]string) {
+	t.Helper()
+	data, err := os.ReadFile(filepath.Join("testdata", "published-7281-schema-v5.json"))
+	must(t, "read exact pinned historical DDL fixture", err)
+	sum := sha256.Sum256(data)
+	require(t, hex.EncodeToString(sum[:]) == publishedV5FixtureSHA256, "historical DDL fixture bytes drifted")
+	var baseline publishedSchema
+	must(t, "decode pinned legacy DDL and provenance", json.Unmarshal(data, &baseline))
+	require(t, baseline.OriginCommit == publishedV5Commit && len(baseline.Migrations) == 5 &&
+		!baseline.BusinessRowsSeeded, "legacy baseline does not match the exact published schema-only origin")
+	require(t, len(actualTables(t, f)) == 0, "upgrade baseline requires a fresh owned schema, not removal of current tables")
+	placeholder := regexp.MustCompile(`\{\{([a-z_]+)\}\}`)
+	render := func(sql string) string {
+		return placeholder.ReplaceAllStringFunc(sql, func(value string) string {
+			return f.table(value[2 : len(value)-2])
+		})
+	}
+	tx, err := f.db.Begin(f.ctx)
+	must(t, "begin owned full historical DDL construction", err)
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+		_ = tx.Rollback(ctx)
+	}()
+	_, err = tx.Exec(f.ctx, render(baseline.LedgerDDL))
+	must(t, "create the actual published version ledger relation", err)
+	for index, migration := range baseline.Migrations {
+		digest := sha256.Sum256([]byte(migration.SQL))
+		require(t, migration.Version == index+1 && migration.SourcePath != "" && migration.GitBlob != "" &&
+			hex.EncodeToString(digest[:]) == migration.SQLSHA256, "published legacy DDL fragment or order differs")
+		_, err = tx.Exec(f.ctx, render(migration.SQL))
+		must(t, "apply complete actual published v1-v5 DDL", err)
+		_, err = tx.Exec(f.ctx, "INSERT INTO "+f.table("schema_versions")+" (version) VALUES ($1)", migration.Version)
+		must(t, "record only the historical migration that actually ran", err)
+	}
+	must(t, "commit real published v5 schema baseline", tx.Commit(f.ctx))
+	expected := make([]string, 0, len(baseline.LegacyTables))
+	for _, name := range baseline.LegacyTables {
+		expected = append(expected, "app_"+name)
+		if name != "schema_versions" {
+			var count int
+			must(t, "confirm schema-only legacy baseline has no claimed business rows", f.db.QueryRow(f.ctx,
+				"SELECT count(*) FROM "+f.table(name)).Scan(&count))
+			require(t, count == 0, "legacy fixture unexpectedly seeded business data")
+		}
+	}
+	sort.Strings(expected)
+	require(t, reflect.DeepEqual(actualTables(t, f), expected) &&
+		reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5"}),
+		"baseline is not actual complete published v5 relations with max schema version 5")
+	return baseline, legacyDefinitionSnapshot(t, f, baseline.LegacyTables)
+}
+
+func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
+	for _, entrypoint := range []string{"current-core", "current-worker"} {
+		t.Run(entrypoint, func(t *testing.T) {
+			f := newFixture(t)
+			baseline, oldDefinitions := buildPublishedV5(t, f)
+			token := secret(t)
+			native := newGitHub(t, token)
+			native.install("ok", "owned-owner/repository", "420001", "")
+			storage := f.selected
+			storage.Endpoint = f.reader.server.URL
+			h := &harness{fixture: f, config: coreConfig{Database: f.database, Storage: f.raw,
+				CollectionStorage: &storage, Key: f.key, Bootstrap: f.bootstrap, Log: &f.log}}
+			t.Cleanup(func() {
+				if h.core.Close != nil {
+					must(t, "close upgraded core before owned schema cleanup", h.core.Close())
+				}
+			})
+			var worker collectionWorker
+			opened := false
+			var afterOpenVersions []string
+			var afterOpenTables []string
+			apiTailExecuted := false
+			defer func() {
+				record := struct {
+					Entrypoint, PublishedOrigin, OwnedSchema string
+					LegacyRelations                          int
+					VerifiedStartingMaxVersion               int
+					CurrentConstructorSucceeded              bool
+					AfterOpenVersions, AfterOpenTables       []string
+					PostUpgradeAPITailExecuted               bool
+					LegacyBusinessDataPreservationClaimed    bool
+				}{entrypoint, publishedV5Commit, f.database.Schema, len(baseline.LegacyTables), 5, opened,
+					afterOpenVersions, afterOpenTables, apiTailExecuted, false}
+				target := filepath.Join(required(t, "ASPM_COLLECTION_ARTIFACT_DIR"), "a2-v5-upgrade-"+entrypoint+"-"+nonce(t)+".json")
+				must(t, "record actual owned migration observation", os.WriteFile(target, encode(t, record), 0600))
+				t.Log("A2 real upgrade observation:", target)
+			}()
+			if entrypoint == "current-core" {
+				h.open()
+			} else {
+				worker = h.openWorker(h.workerConfig(native, "v5-upgrade"))
+			}
+			opened = true
+			afterOpenVersions, afterOpenTables = versionLedger(t, f), actualTables(t, f)
+			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7"}),
+				"current constructor returned success but did not apply and record v6 and v7 exactly once over actual published v5")
+			for _, name := range []string{"source_connections", "source_collections", "source_repository_assets", "source_collection_records"} {
+				found := false
+				for _, table := range afterOpenTables {
+					found = found || table == "app_"+name
+				}
+				require(t, found, "current upgrade omitted a real v6 source relation")
+			}
+			require(t, reflect.DeepEqual(oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables)),
+				"source upgrade changed an existing published legacy table definition")
+			if h.core.Handler == nil {
+				h.open()
+			}
+			password := secret(t)
+			h.remember(password)
+			enrolled := h.json(actor{}, "POST", "/api/v1/bootstrap", map[string]any{
+				"workspaceName": "Owned post-upgrade workspace", "name": "Synthetic upgrade admin",
+				"email": "upgrade@source.invalid", "password": password,
+			}, 201, "X-ASPM-Bootstrap-Token", h.bootstrap)
+			h.admin = h.login("upgrade@source.invalid", password, enrolled.Workspace.ID)
+			source := h.source(h.admin, "owned-owner/repository", token)
+			updated := h.json(h.admin, "PATCH", sourcesPath+"/"+source.ID, map[string]any{"name": "Updated after real v5 upgrade"}, 200).Source
+			require(t, updated.Revision == source.Revision+1, "post-upgrade source PATCH is unavailable")
+			h.json(h.admin, "GET", sourcesPath+"/"+source.ID, nil, 200)
+			require(t, h.json(h.admin, "GET", sourcesPath, nil, 200).Total == 1, "post-upgrade source list is unavailable")
+			job := h.enqueue(h.admin, source.ID, "post-upgrade-collection", 202)
+			require(t, job.State == "queued" && native.count() == 0, "post-upgrade core dispatched or failed to persist queued collection")
+			if worker == nil {
+				worker = h.openWorker(h.workerConfig(native, "after-upgrade"))
+			}
+			process(t, h.ctx, worker, true)
+			collected := h.collection(h.admin, job.ID)
+			require(t, collected.State == "succeeded" && collected.Complete && collected.RecordCount == 3 &&
+				collected.AssetID != nil && native.count() == 3, "source collection is not usable after the actual upgrade")
+			records := h.records(h.admin, job.ID)
+			require(t, len(records) == 3, "post-upgrade record/evidence metadata is unavailable")
+			for _, item := range records {
+				h.request(h.ctx, h.admin, "GET", evidencePath(job.ID, item.ID), nil, 200)
+			}
+			h.reopen()
+			must(t, "close worker before v6 idempotent reopen", worker.Close())
+			fresh := h.openWorker(h.workerConfig(native, "idempotent-v6"))
+			process(t, h.ctx, fresh, false)
+			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7"}) &&
+				reflect.DeepEqual(oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables)),
+				"reopening v7 repeated migration or changed legacy definitions")
+			require(t, h.collection(h.admin, job.ID).State == "succeeded" && len(h.assets(h.admin)) == 1,
+				"current API-produced post-upgrade data did not survive repeat core/worker opens")
+			apiTailExecuted = true
+			t.Log("schema upgrade and post-upgrade API durability proven; no pre-existing legacy business rows were seeded or claimed")
+		})
+	}
+}

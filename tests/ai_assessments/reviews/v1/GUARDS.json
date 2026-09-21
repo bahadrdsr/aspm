@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T18:34:23.405Z",
+  "head": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+  "outcome": "Only the two explicitly authorized existing upgrade files differ.",
+  "baseline": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE.json",
+    "bytes": 259005,
+    "sha256": "8e61ad18a711df8cfcc7400cd71890964b980f3e74a4590e6d28ca4e0ff26186"
+  },
+  "publishedTrackedCount": 1368,
+  "unchangedTrackedCount": 1366,
+  "unchangedOrderedInventorySHA256": "a9c5dac6e1e4f4fb31b4d029f5b9cff945f2241e74b5f1687da8dc23d4a0e945",
+  "fullInventoryReference": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE.json",
+    "property": "trackedFiles"
+  },
+  "authorizedExistingChanges": [
+    {
+      "before": {
+        "path": "tests\\ai_configuration\\upgrade_test.go",
+        "bytes": 7136,
+        "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+      },
+      "after": {
+        "path": "tests\\ai_configuration\\upgrade_test.go",
+        "bytes": 7157,
+        "sha256": "fb67430bb362394d1111038d548e632c8bffe063a37b172a933263bb4fd19801"
+      }
+    },
+    {
+      "before": {
+        "path": "tests\\source_collection\\upgrade_test.go",
+        "bytes": 10731,
+        "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+      },
+      "after": {
+        "path": "tests\\source_collection\\upgrade_test.go",
+        "bytes": 10745,
+        "sha256": "9a9d0702d9ab38dcaf2cf4255d9c87c2532a1b5b50cdc35b83d9afeca4c83a95"
+      }
+    }
+  ],
+  "exactCompatibilityReconstruction": [
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "archived": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\ai-configuration-upgrade_test.go.v7",
+        "bytes": 7136,
+        "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+      },
+      "current": {
+        "path": "tests\\ai_configuration\\upgrade_test.go",
+        "bytes": 7157,
+        "sha256": "fb67430bb362394d1111038d548e632c8bffe063a37b172a933263bb4fd19801"
+      },
+      "exactReconstruction": true,
+      "ledgerAssertions": 2,
+      "from": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "to": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "onlyOtherChanges": [
+        {
+          "from": "CURRENT core startup did not apply AI configuration v7 exactly once over real published v6",
+          "to": "CURRENT core startup did not apply required migrations through v8 exactly once over real published v6"
+        },
+        {
+          "from": "v7 reopen repeated migration or changed old schema definitions",
+          "to": "v8 reopen repeated migration or changed old schema definitions"
+        }
+      ],
+      "allHistoricalDDLDefinitionsAPIGrantEvidenceReopenBytesOtherwiseIdentical": true
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "archived": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\source-collection-upgrade_test.go.v7",
+        "bytes": 10731,
+        "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+      },
+      "current": {
+        "path": "tests\\source_collection\\upgrade_test.go",
+        "bytes": 10745,
+        "sha256": "9a9d0702d9ab38dcaf2cf4255d9c87c2532a1b5b50cdc35b83d9afeca4c83a95"
+      },
+      "exactReconstruction": true,
+      "ledgerAssertions": 2,
+      "from": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "to": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "onlyOtherChanges": [
+        {
+          "from": "current constructor returned success but did not apply and record v6 and v7 exactly once over actual published v5",
+          "to": "current constructor returned success but did not apply and record v6, v7 and v8 exactly once over actual published v5"
+        },
+        {
+          "from": "reopening v7 repeated migration or changed legacy definitions",
+          "to": "reopening v8 repeated migration or changed legacy definitions"
+        }
+      ],
+      "allHistoricalDDLDefinitionsAPIGrantEvidenceReopenBytesOtherwiseIdentical": true
+    }
+  ],
+  "initialContractStillByteIdentical": {
+    "path": "tests\\ai_assessments\\CONTRACT.txt",
+    "bytes": 19325,
+    "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+  },
+  "preImplementationWindowClarification": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\WINDOW-CLARIFICATION.txt",
+    "bytes": 1488,
+    "sha256": "42428340c83917607a6970ca7f9b2e36986ce581442aa729c43a65c9a02fddd2"
+  },
+  "untouchedProductionUIRuntimeDeployDependenciesSignatures": true,
+  "rawFinalEvidenceCount": 25,
+  "oraclesCapturedOrResigned": false,
+  "privateAuthorityAccess": false,
+  "commits": 0,
+  "agents": 0,
+  "dependencyInstalls": 0,
+  "SQLBusinessSeeds": 0,
+  "realLLMProviderAccountCalls": 0
+}

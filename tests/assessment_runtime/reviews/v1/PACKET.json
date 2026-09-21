@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "scope": "assessment-runtime-v1",
+  "phase": "frozen-independent-command-and-service-config-red",
+  "frozenAt": "2026-09-20T23:40:05.457Z",
+  "author": {
+    "id": "independent-assessment-runtime-test-author-20260920",
+    "role": "Independent runtime test author only, not service/command implementation coder",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "hashAlgorithm": "SHA-256",
+  "normalization": "none",
+  "sealAuthority": "Unsigned independent test-author packet only. Parent verifies minimal Config/preflight/health decisions and actual RED before a new control seal and separate coder.",
+  "contractBeforeTests": {
+    "path": "tests\\assessment_runtime\\CONTRACT.txt",
+    "bytes": 12696,
+    "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+  },
+  "decisions": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\DECISIONS.json",
+    "bytes": 4272,
+    "sha256": "7e138ae61fd97cc850aa9bb2da2be220946abac6cfce21751a35dba3c525e634"
+  },
+  "payloadFileCount": 19,
+  "files": [
+    {
+      "path": "tests\\assessment_runtime\\CONTRACT.txt",
+      "bytes": 12696,
+      "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+    },
+    {
+      "path": "tests\\assessment_runtime\\HANDOFF.txt",
+      "bytes": 8093,
+      "sha256": "e3c11e1cf7369e4b3108321c6019bf762c9d1b190cae6a02ce66c3ec6ff8670d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+      "bytes": 7513,
+      "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+    },
+    {
+      "path": "tests\\assessment_runtime\\command_test.go",
+      "bytes": 3157,
+      "sha256": "7e82c80db6cda881855d11341f0dc99f818b4c808a0ffa8e97e00fcb07831d62"
+    },
+    {
+      "path": "tests\\assessment_runtime\\contract_test.go",
+      "bytes": 4049,
+      "sha256": "ab5317421df4f0ce478f07d7ba741b02c2373a6e2640ed00e575894c2efe158f"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_probe_test.go",
+      "bytes": 976,
+      "sha256": "9f92ac387c5038ea9a6e32f8889bcae56982162aabfbef8f5a0e73d15a8736e6"
+    },
+    {
+      "path": "tests\\assessment_runtime\\environment_test.go",
+      "bytes": 4814,
+      "sha256": "46515795b1cfa3ecdd6710ab18b511eb4e1ef00598d7d9a1deb097ae8a9f051d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixture_calibration_test.go",
+      "bytes": 3577,
+      "sha256": "06dd138e1c71a072e4df47f3800db0ccb11a5c24362f16deb7c85115794e4522"
+    },
+    {
+      "path": "tests\\assessment_runtime\\fixtures_test.go",
+      "bytes": 25706,
+      "sha256": "2b90db2c6ec5bcda35ad26b88b43bedd98230e11ab8398da659ad4913ad28831"
+    },
+    {
+      "path": "tests\\assessment_runtime\\native_test.go",
+      "bytes": 7490,
+      "sha256": "3ac099f461cf957f15d7e3aae6e9b98ebb7eed10ee39dc87a426e2aeb399b233"
+    },
+    {
+      "path": "tests\\assessment_runtime\\production_bindings_test.go",
+      "bytes": 2861,
+      "sha256": "8c0b88b08fbdaa64f6e1f19c9a057a42285d068121cc723ad1cbec359bb5cbb8"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE.json",
+      "bytes": 158435,
+      "sha256": "1b7fab2b625f380fdb3190a8f149456d0349e0c325852884fa100f11f59f8db5"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION.json",
+      "bytes": 9878,
+      "sha256": "9ac6fcfc58459af26d8740c413da71927cb52a215ddf6aeff37a0e3f81b7d510"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\DECISIONS.json",
+      "bytes": 4272,
+      "sha256": "7e138ae61fd97cc850aa9bb2da2be220946abac6cfce21751a35dba3c525e634"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 6747,
+      "sha256": "6401d397ff1a717c5c75069833f968df1bef9a6883ebbaf4e50b0f13a028f928"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\GUARDS.json",
+      "bytes": 3361,
+      "sha256": "7d286ebd18e26407d113b68aa7de3d99edd5bdefcf3d6759ab8f5685e1f3a9a7"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\RED.json",
+      "bytes": 15047,
+      "sha256": "beaf486f7f7aecc1832cb3bf717b47c12f0840f0a691a4a4021a35007af12fbc"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\SOURCE-WITNESSES.json",
+      "bytes": 4701,
+      "sha256": "43950e2d747bb945e2fb5f3660eff80e4bb124e5116c749cad5ed7c59f4279ad"
+    },
+    {
+      "path": "tests\\assessment_runtime\\roles_test.go",
+      "bytes": 19156,
+      "sha256": "8b58de99ca865b736af7a30c6d63cf9524a232d5232e4872274b536c5b8194ff"
+    }
+  ],
+  "ownedFiles": [
+    "tests\\assessment_runtime\\CONTRACT.txt",
+    "tests\\assessment_runtime\\HANDOFF.txt",
+    "tests\\assessment_runtime\\Test-AssessmentRuntime.ps1",
+    "tests\\assessment_runtime\\command_test.go",
+    "tests\\assessment_runtime\\contract_test.go",
+    "tests\\assessment_runtime\\environment_probe_test.go",
+    "tests\\assessment_runtime\\environment_test.go",
+    "tests\\assessment_runtime\\fixture_calibration_test.go",
+    "tests\\assessment_runtime\\fixtures_test.go",
+    "tests\\assessment_runtime\\native_test.go",
+    "tests\\assessment_runtime\\production_bindings_test.go",
+    "tests\\assessment_runtime\\reviews\\v1\\BEFORE.json",
+    "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION.json",
+    "tests\\assessment_runtime\\reviews\\v1\\DECISIONS.json",
+    "tests\\assessment_runtime\\reviews\\v1\\EVIDENCE.json",
+    "tests\\assessment_runtime\\reviews\\v1\\GUARDS.json",
+    "tests\\assessment_runtime\\reviews\\v1\\PACKET.json",
+    "tests\\assessment_runtime\\reviews\\v1\\PACKET.sha256",
+    "tests\\assessment_runtime\\reviews\\v1\\RED.json",
+    "tests\\assessment_runtime\\reviews\\v1\\SOURCE-WITNESSES.json",
+    "tests\\assessment_runtime\\roles_test.go"
+  ],
+  "exactBoundary": {
+    "onlyNewTestPackage": "tests\\assessment_runtime",
+    "actualCommand": "cmd\\assessment-worker",
+    "role": "assessment",
+    "environment": "service.Environment(\"assessment\")",
+    "runner": "service.Run(ctx,\"assessment\",Config)",
+    "coreScope": "Optional ASPM_ASSESSMENT_SCOPE, actual app.Config.AssessmentScope forwarding through core SERVICE",
+    "newConfigFields": [
+      "AssessmentScope",
+      "AssessmentLeaseDuration",
+      "AssessmentAuthorizationInterval",
+      "AssessmentRequestTimeout",
+      "AssessmentRequestWindow",
+      "AssessmentMaxConcurrent",
+      "AssessmentRequestsPerWindow",
+      "AssessmentMaxInputBytes",
+      "AssessmentMaxOutputTokens",
+      "AssessmentMaxResponseBytes",
+      "AssessmentClient",
+      "AssessmentCAFile"
+    ]
+  },
+  "purePreflight": {
+    "existingPublicValidator": "app.ValidateAssessmentWorkerConfig",
+    "workerExportAlreadyExists": true,
+    "remainingGap": "Assessment role/service Config/environment wiring plus optional-core-scope validation before EnsureSchema; narrowly reuse/factor pure identity validation, never validate by opening DB."
+  },
+  "qualification": {
+    "normalRuntimeCases": 4,
+    "executedNormalCases": 0,
+    "blockedNormalCases": 4,
+    "commandBuild": "RED actual directory absent",
+    "typedServiceConstructor": "RED new Config fields missing",
+    "actualEnvironment": "RED existing role rejects assessment",
+    "helperCompile": "PASS, not acceptance",
+    "fixtureNativeCalibration": "1 PASS using actual existing core service/intake plus accepted app/native backend only",
+    "newAssessmentRuntimeOrCommandAccepted": false
+  },
+  "actualRED": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\RED.json",
+    "bytes": 15047,
+    "sha256": "beaf486f7f7aecc1832cb3bf717b47c12f0840f0a691a4a4021a35007af12fbc"
+  },
+  "calibration": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION.json",
+    "bytes": 9878,
+    "sha256": "9ac6fcfc58459af26d8740c413da71927cb52a215ddf6aeff37a0e3f81b7d510"
+  },
+  "evidence": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\EVIDENCE.json",
+    "bytes": 6747,
+    "sha256": "6401d397ff1a717c5c75069833f968df1bef9a6883ebbaf4e50b0f13a028f928"
+  },
+  "sourceWitnesses": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\SOURCE-WITNESSES.json",
+    "bytes": 4701,
+    "sha256": "43950e2d747bb945e2fb5f3660eff80e4bb124e5116c749cad5ed7c59f4279ad"
+  },
+  "preservation": {
+    "existingProtectedFiles": 859,
+    "changedExistingFiles": 0,
+    "guards": {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\GUARDS.json",
+      "bytes": 3361,
+      "sha256": "7d286ebd18e26407d113b68aa7de3d99edd5bdefcf3d6759ab8f5685e1f3a9a7"
+    },
+    "mutableExclusions": [
+      "web/**",
+      "README.md",
+      "private runtime values and unrelated concurrent artifacts"
+    ],
+    "heldBackendOldTestsFixturesOraclesDependenciesPreserved": true
+  },
+  "runtimeDecisions": {
+    "explicitDefaultAndStrictSuppliedValues": true,
+    "keylessLocalPreserved": true,
+    "noAmbientProviderCredentials": true,
+    "normalTLSDirectClient": true,
+    "CAFileMaxBytes": 1048576,
+    "noNewModelEndpointOverride": true,
+    "workerStorageBootstrapAssetsReadinessPrepareCapability": false,
+    "readinessProvider": "not-probed",
+    "sharedScopeQuotaNotResetOnRoleRestart": true,
+    "exactPIDCleanupNotOSSignalClaim": true
+  },
+  "prohibitions": {
+    "productionCommandConfigBackendEdits": 0,
+    "oldTestsFixturesBindingsEdits": 0,
+    "oracleCapturesOrSignatureWrites": 0,
+    "UIEdits": 0,
+    "packagingInstallerHelmEdits": 0,
+    "dependenciesInstalledOrUpgraded": 0,
+    "runtimePolicyOSChanges": 0,
+    "SQLBusinessSeeds": 0,
+    "substituteCommandUsed": false,
+    "fakeSuccessfulRuntimeUsed": false,
+    "liveProviderAccountModelOrTargetCalls": false,
+    "privateAuthorityAccess": false,
+    "agents": 0,
+    "commits": 0
+  },
+  "rawEvidenceFiles": [
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03.receipt.json",
+      "bytes": 2095,
+      "sha256": "5a3176627ff02d73335bb7fb1a6fb21b9677f2a8c237fa0728aad321afda8456"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03-helper-compile.jsonl",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03-helper-compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-command-red-20260920-02.receipt.json",
+      "bytes": 1430,
+      "sha256": "1cb15e13219f80894fcf21d24d6ef0d1ea6a39b074e614d1486cd657ca8e306d"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-command-red-20260920-02-command-build.jsonl",
+      "bytes": 73,
+      "sha256": "24445df757f9cc762cbe4f89c99140b91ae981a901a31617e9ddaad42dc7eacd"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-command-red-20260920-02-command-build.log",
+      "bytes": 70,
+      "sha256": "a614a591ee36d6f4eb8c47ff920c297d3741ef60a166a41e9da9ece4c4055668"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-service-red-20260920-02.receipt.json",
+      "bytes": 1384,
+      "sha256": "3fbb6a9ac3530f54ca2525e5e9280f413d5b3581b7147284b383ab9036757a54"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-service-red-20260920-02-service-contract.jsonl",
+      "bytes": 4603,
+      "sha256": "fc30483dba98066626acac6d11a6c88c8e715ad0be5682a90415d81a7f245805"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-service-red-20260920-02-service-contract.log",
+      "bytes": 1939,
+      "sha256": "f56881b551c35ed9ffab61d01b2dc668e867d96b249f472191b975128ab07648"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02.receipt.json",
+      "bytes": 2136,
+      "sha256": "e6cf38a403a1bf58b8b6b0bea67eceb79fad93c2574ea03badf2ecc556830e65"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02-fixture-calibration.jsonl",
+      "bytes": 1925,
+      "sha256": "4f74bc00cdc5331831561978e628078c19521d8be570fdffe75be761025d559d"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-fixture-20260920-02-fixture-calibration.log",
+      "bytes": 517,
+      "sha256": "153c7b2c921132fa30e2fb66eea1590adbce86ab666561c90bf17ad1bb6b5a91"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-environment-red-20260920-02.receipt.json",
+      "bytes": 2133,
+      "sha256": "b53212edffb2974062aa106a906e30873ad381e988220f8da28f51f0c7dabfdd"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-environment-red-20260920-02-environment-probe.jsonl",
+      "bytes": 1987,
+      "sha256": "4e3a58a0fffa4f4bc8c811704c0a0440523acd2670d965a4cbb19fe3e49d8fa6"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-environment-red-20260920-02-environment-probe.log",
+      "bytes": 448,
+      "sha256": "8267206ff8ecca3fdf746d4ec6bb178afc8007563c5588053dd8bb8b4afbb22e"
+    },
+    {
+      "path": ".artifacts\\assessment-runtime-v1\\author-runtime-helpers-20260920-03.helpers.test.exe",
+      "bytes": 24110080,
+      "sha256": "c01d00eea1af477fcec2e2eecf21cb98b44ed328a3799b030f9ee66068d48677"
+    }
+  ],
+  "hashPolicy": "Raw SHA256 payload bytes in files. PACKET.sha256 hashes this unsigned packet; checksum is non-recursively hashed publication metadata. Raw evidence is additionally bound by EVIDENCE.json.",
+  "parentAction": "Verify the proposed minimal Config/defaults/strict-input/keyless/TLS/readiness contract, exact constructor/command/environment RED and separate fixture calibration; seal NEW controls and assign a separate runtime coder. Do not implement Helm/installer or infer release/model-quality/geography/whole-M11 acceptance.",
+  "stopStatus": "Independent test author stops; all four new runtime narratives remain BLOCKED/NOT RUN."
+}

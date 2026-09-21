@@ -1,0 +1,148 @@
+INDEPENDENT REVIEWED UI REGRESSIONS - PARENT HANDOFF
+==================================================
+
+Status: FROZEN unsigned regression packet. Explicit parent approval of the
+existing-export production-hook UNIT binding is recorded in APPROVAL.json.
+Parent independent reproduction and sealing remain separate next steps.
+No production correction, full-app race proof or implementation acceptance
+is claimed. Production/code-control HOLD remains.
+
+Author: independent-reviewed-ui-regressions-20260920
+Agent: f93d054c-caa3-4c46-9e3d-e49dbfb1e99e
+Neither original UI test author beb1de86 nor UI coder e2527e33.
+No child agents, commits, dependency edits/installs or live API/provider/DB calls.
+Backend source, backend/runtime tests and runtime execution were not modified.
+
+Published HEAD: 98a41ced71c09e71c8cc2bd158678fd52268498c
+Held UI coder handoff:
+  .cache\ai-assessments-ui-coder\HANDOFF.json
+  e2749ef0cad72f89ead5593701b36c7b701a84cd0a394153764563f8ec558515
+All 12 named production-candidate paths and all 83 frontend sources still match
+their independently checked BEFORE bytes. Production/code-control HOLD remains.
+
+Two focused groups
+------------------
+web\tests\ai-assessment-review-queue.spec.ts
+  AAR1: four actual-app HTTP cases. 502/conflict and 500/invalid-input each
+  persisted the first job, returned the misleading 5xx, then allowed a second
+  explicitly consented fresh-preview/fresh-key job while history failed.
+  Both are fresh RED. Close/reopen and authorized recovery tails also ran.
+  503/conflict and definitive initial expired-preview 409 are passing controls.
+  The 409 control also proves the opt-in response override cannot conceal an
+  actual pre-commit validation failure. No permanently-block-all-errors fix
+  or automatic retry is accepted.
+
+web\tests\ai-assessment-review-history.spec.ts
+  AAR2: two actual-app ordered-response boundary controls passed. Real cleanup
+  prevented history resurrection across 403/404, old cancel ACK, 503, then 200.
+  This did NOT establish the smaller before-parent-cleanup race in the app.
+  Four explicitly labeled production-hook unit cases use real React lifecycle,
+  real imported history/action/intent/client logic and the original HTTP ledger.
+  Two REDs show rows 0 -> 1 after old queue/cancel ACK -> 1 after 503, plus
+  authorized=true during the held 503 loading gap. Two no-denial positive
+  controls require immediate canonical queue/cancel ACK display without an
+  extra history read. These are NOT full-app race proofs.
+
+Parent binding approval
+-----------------------
+CONTRACT.txt lists every existing production export consumed by the isolated
+unit. It introduces no production export or required generation/ref design.
+APPROVAL.json records the parent's explicit approval of the exact unchanged
+CONTRACT.txt and history-unit.tsx bytes. This is a UNIT INVARIANT, not proof of
+a full-app pre-layout race. No new internal API or specific generation design
+is mandated; a stale-start callback generation/barrier may be implemented
+through the existing export. Positive immediate canonical ACK controls remain.
+Historical PROPOSED/pending labels in untouched test titles, CONTRACT and
+evidence refer to the prior authoring phase. APPROVAL.json resolves that gate
+without rewriting executable test bodies or historical observations.
+
+Validation
+----------
+Final typecheck: exit 0, current spec inputs matched.
+Qualified frozen cases: 10 cases, 6 passed, 4 expected RED, 0 skipped/retried/flaky.
+  Six history cases: reviewed-regression-red-v1, exact current history inputs.
+  Four final queue cases: reviewed-queue-red-v3, exact current queue inputs.
+This aggregation is explicit; it is not a claim of one final ten-case command.
+Approval finalization changed metadata only. No tests were rerun; the exact
+previously qualified executable bytes, fixture and original assertions remain.
+
+Original compatibility ran ONCE:
+  reviewed-original-105-compat-v1: 105/105 passed.
+  Exact original 105-case identity multiset matched the pinned coder-full-v1
+  report. All original 20 spec files/assertion bytes remain unchanged.
+
+Each final validation command held 5802 pinned input files using FileShare.Read and
+verified SHA256 before/after. Original 20s/5s, one worker, zero retries, service
+worker block, traces/screenshots and combined 60-request cap are unchanged.
+New cases used at most 28 combined API requests. No fixture violations, browser
+exceptions or external attempts occurred in the qualifying focused cases.
+Native OPTION and RFC3339-instant semantics remain unchanged.
+
+Independent investigation and diagnostics
+----------------------------------------
+INDEPENDENT-BROWSER-REPRO.json and INDEPENDENT-HOOK-REPRO.json precede normative
+regression assertions. Exact observational probe sources are archived as .txt,
+not active tests. Early hook setup failures (asset prefix, missing real
+Preferences provider) are retained and not claimed as production RED.
+reviewed-queue-red-v2 was excluded from final held evidence because output
+truncation interrupted its post-run guard; v3 completed both checks.
+
+Soft invariant failures let all nonoptional recovery tails execute. No later
+history recovery, close/reopen, 503 or genuine new-intent phase is claimed
+BLOCKED in final RED. The optional same-key replay branch was NOT OFFERED by
+the held UI, so that conditional branch was not executed. The binding approval
+gate is now resolved. App pre-cleanup race, production GREEN and backend/runtime/
+provider acceptance remain unproven or outside this task.
+
+Only existing-file amendment
+----------------------------
+web\tests\ai-assessments-fixture.ts gained one optional queue response override
+after normal successful validation/persistence. No added routes or bypasses.
+AMENDMENT.txt was written first; fixture-before.ts.txt archives exact original
+bytes. fixture-additive.patch and AMENDMENT-PROOF.json disclose the full delta.
+Original fixture SHA256:
+  e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202
+Amended fixture SHA256:
+  aba53670b320c5285459b842e5a32ca00738240a9a7c940783a52a819fdf5000
+
+Original authoritative controls are NOT recaptured. 802/803 original entries
+are byte-identical; the sole exception is the authorized fixture amendment.
+The old public manifest still names the original fixture bytes. New files and
+this delta require the parent's new seal, not a claim that the old oracle
+accepted an amendment.
+Manifest SHA256:
+  51c4a284752da31416f3f524439d740362ec54a9909615051ac4c4d02071e55f
+Fixed config SHA256:
+  7a837a72b72cf8dfee4d967357e872326a287eb6578ebf6d083ba1c5666f34cd
+No signing authority was accessed and no original oracle/signature was edited.
+
+Replay against the still-held candidate only
+-------------------------------------------
+Set-Location C:\bahadr\serious\aspm
+& .\web\tests\reviews\ai-assessments-ui-v1\reviewed-regressions\run-held.ps1 `
+  -Stage typecheck -Label parent-reviewed-types-v1
+& .\web\tests\reviews\ai-assessments-ui-v1\reviewed-regressions\run-held.ps1 `
+  -Stage test -Label parent-reviewed-red-v1 `
+  -Selectors @('ai-assessment-review-queue.spec.ts','ai-assessment-review-history.spec.ts')
+
+Use fresh labels. Do not pipe this command into an early-closing output filter.
+The helper intentionally rejects changes to the held production candidate.
+Remediation validation needs the parent's separately authorized source hold;
+do not rebaseline this packet or edit its assertions to obtain GREEN.
+
+Hashes
+------
+PACKET.json records every payload and raw-evidence SHA256.
+PACKET.sha256 covers PACKET.json without recursive hashing.
+HANDOFF.json summarizes the packet identity; HANDOFF.sha256 covers that summary.
+These are unsigned publication metadata, not a signature. The explicit parent
+binding approval is recorded separately in APPROVAL.json.
+The exact old candidate packet, handoff, checksums and handoff text are retained
+under history\candidate-v1 with an INDEX.json relocation/hash record.
+
+Next owner
+----------
+Parent independently reproduces the 10 frozen cases, verifies the scoped
+evidence and seals current controls, then assigns a separate UI coder.
+This author stops without production edits, a new internal API mandate,
+agents, commits or authority capture.

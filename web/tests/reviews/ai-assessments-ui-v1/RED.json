@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T19:43:39.854Z",
+  "author": "independent-ai-assessments-ui-author-20260920",
+  "scope": "Actual real-rendered missing-controls RED, not fixture setup failure or synthetic provider success.",
+  "run": "author-red-20260920-02",
+  "process": {
+    "schemaVersion": 1,
+    "run": "author-red-20260920-02",
+    "command": "node scripts\\playwright.mjs test --config tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts ai-assessments-ui.spec.ts",
+    "startedAt": "2026-09-20T19:34:12.7864695+00:00",
+    "finishedAt": "2026-09-20T19:35:18.8128148+00:00",
+    "exitCode": 1,
+    "port": 18758,
+    "originalGuardsUnchanged": true,
+    "listenersAfter": []
+  },
+  "report": {
+    "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results.json",
+    "bytes": 177076,
+    "sha256": "1bc652d63200f14fa8cef945aafcdd189966d6671fcdd7744a4878deb0973740"
+  },
+  "consoleLog": {
+    "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02.log",
+    "bytes": 22963,
+    "sha256": "d628b97cde6d778fdf642f0f3c346fe6e154df479aa26b644d13f8592ffe6d86"
+  },
+  "receipt": {
+    "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02.receipt.json",
+    "bytes": 413,
+    "sha256": "23eab2bcb139db20c292a99a16420193abaf2d858583a050da2a34b1ed51b666"
+  },
+  "stats": {
+    "startTime": "2026-09-20T19:34:13.905Z",
+    "duration": 64843.99399999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 6,
+    "flaky": 0
+  },
+  "counts": {
+    "selected": 6,
+    "passed": 0,
+    "failed": 6,
+    "skipped": 0,
+    "retries": 0,
+    "flakes": 0
+  },
+  "cases": [
+    {
+      "title": "AAUI1 Lazy finding entry preserves published shell and readonly history with honest configuration failures",
+      "line": 204,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 9084,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts",
+            "column": 135,
+            "line": 88
+          },
+          "message": "Error: Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog. getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\u001b[22m\n\n\n  86 | }\n  87 | async function openAI(page: Page, api: AssessmentHTTP, f = finding) {\n> 88 |   await expect(entry(page, f), \"Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\").toBeVisible();\n     |                                                                                                                                       ^\n  89 |   await expect(entry(page, f)).toHaveAttribute(\"aria-expanded\", \"false\");\n  90 |   api.aiOpen = true;\n  91 |   await entry(page, f).click();\n    at openAI (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:88:135)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:215:39"
+        }
+      ],
+      "reached": [
+        "closed finding AI: published dialog, observation/note histories, filter/selection, five nav, zero added AI reads"
+      ],
+      "combinedAPIRequests": 10,
+      "aiRequests": 0,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-assessments-data.ts",
+          "bytes": 11845,
+          "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-fixture.ts",
+          "bytes": 27759,
+          "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-ui.spec.ts",
+          "bytes": 35274,
+          "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+          "bytes": 13109,
+          "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+          "bytes": 1123,
+          "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+          "bytes": 552,
+          "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-assessments-http-boundary",
+        "bytes": 23811,
+        "sha256": "a5d8cc29b49a5fb22b1a460d91054688445de7d2257df2b0c3525d4e83ddf51f"
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI1-La-e3ff9-nest-configuration-failures\\test-failed-1.png",
+          "bytes": 97532,
+          "sha256": "c0a54b2e5457ad51fc4d3bb74e2ef60a0554a17d4cc089c9e96569be27bcca09"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI1-La-e3ff9-nest-configuration-failures\\error-context.md",
+          "bytes": 24119,
+          "sha256": "3664ee8657659ebebc68385a87f4de1b53b21d55ee4eea754045da246bfbff71"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI1-La-e3ff9-nest-configuration-failures\\trace.zip",
+          "bytes": 530456,
+          "sha256": "c04ec215e790d3f2a2c567b8dd8f79719e17153242e5e51ad3948de5b50a8ed6"
+        }
+      ]
+    },
+    {
+      "title": "AAUI2 Explicit derived context preserves selected observation, exact UTF8 bytes and canonical preview linkage",
+      "line": 242,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 6664,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts",
+            "column": 135,
+            "line": 88
+          },
+          "message": "Error: Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog. getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\u001b[22m\n\n\n  86 | }\n  87 | async function openAI(page: Page, api: AssessmentHTTP, f = finding) {\n> 88 |   await expect(entry(page, f), \"Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\").toBeVisible();\n     |                                                                                                                                       ^\n  89 |   await expect(entry(page, f)).toHaveAttribute(\"aria-expanded\", \"false\");\n  90 |   api.aiOpen = true;\n  91 |   await entry(page, f).click();\n    at openAI (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:88:135)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:243:39"
+        }
+      ],
+      "reached": [
+        "closed finding AI: published dialog, observation/note histories, filter/selection, five nav, zero added AI reads"
+      ],
+      "combinedAPIRequests": 6,
+      "aiRequests": 0,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-assessments-data.ts",
+          "bytes": 11845,
+          "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-fixture.ts",
+          "bytes": 27759,
+          "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-ui.spec.ts",
+          "bytes": 35274,
+          "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+          "bytes": 13109,
+          "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+          "bytes": 1123,
+          "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+          "bytes": 552,
+          "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-assessments-http-boundary",
+        "bytes": 13716,
+        "sha256": "3a0c63cfeb620bbdc9e1e3c1c4874ad175f22209ebb2385cc764de40b519a558"
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI2-Ex-2e4f3-d-canonical-preview-linkage\\test-failed-1.png",
+          "bytes": 94841,
+          "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI2-Ex-2e4f3-d-canonical-preview-linkage\\error-context.md",
+          "bytes": 25401,
+          "sha256": "b018f369c82c6849ab28dbda0cd6253ef4447224b86dad0b27124a4555e90989"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI2-Ex-2e4f3-d-canonical-preview-linkage\\trace.zip",
+          "bytes": 424688,
+          "sha256": "91e22dc7b9ae55e9ef70a36872d24487f175e9baa72c14b1e383d18aa15d38fe"
+        }
+      ]
+    },
+    {
+      "title": "AAUI3 Queue consent handles lost ACK with same intent or history barrier and invalidates opaque or expired facts",
+      "line": 277,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 6865,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts",
+            "column": 135,
+            "line": 88
+          },
+          "message": "Error: Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog. getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\u001b[22m\n\n\n  86 | }\n  87 | async function openAI(page: Page, api: AssessmentHTTP, f = finding) {\n> 88 |   await expect(entry(page, f), \"Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\").toBeVisible();\n     |                                                                                                                                       ^\n  89 |   await expect(entry(page, f)).toHaveAttribute(\"aria-expanded\", \"false\");\n  90 |   api.aiOpen = true;\n  91 |   await entry(page, f).click();\n    at openAI (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:88:135)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:278:39"
+        }
+      ],
+      "reached": [
+        "closed finding AI: published dialog, observation/note histories, filter/selection, five nav, zero added AI reads"
+      ],
+      "combinedAPIRequests": 6,
+      "aiRequests": 0,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-assessments-data.ts",
+          "bytes": 11845,
+          "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-fixture.ts",
+          "bytes": 27759,
+          "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-ui.spec.ts",
+          "bytes": 35274,
+          "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+          "bytes": 13109,
+          "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+          "bytes": 1123,
+          "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+          "bytes": 552,
+          "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-assessments-http-boundary",
+        "bytes": 13716,
+        "sha256": "80e0759c218f278ade6d8d73ce729ca1b9744c973e96ea73a1f08ee2f061bc4c"
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI3-Qu-5be72-tes-opaque-or-expired-facts\\test-failed-1.png",
+          "bytes": 94841,
+          "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI3-Qu-5be72-tes-opaque-or-expired-facts\\error-context.md",
+          "bytes": 25404,
+          "sha256": "2d4ddef9aad877338acff7eb1f6f7f9293e1233250073ca2793458a793cbfb2c"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI3-Qu-5be72-tes-opaque-or-expired-facts\\trace.zip",
+          "bytes": 425370,
+          "sha256": "d0a3ef61a7d44aad9ba0ea1b31a74c062400b1385888426d7656cd58fe75e89f"
+        }
+      ]
+    },
+    {
+      "title": "AAUI4 Canonical states advisory outcomes unknown usage and cancellation never become verification or unsent claims",
+      "line": 332,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 6642,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts",
+            "column": 135,
+            "line": 88
+          },
+          "message": "Error: Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog. getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\u001b[22m\n\n\n  86 | }\n  87 | async function openAI(page: Page, api: AssessmentHTTP, f = finding) {\n> 88 |   await expect(entry(page, f), \"Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\").toBeVisible();\n     |                                                                                                                                       ^\n  89 |   await expect(entry(page, f)).toHaveAttribute(\"aria-expanded\", \"false\");\n  90 |   api.aiOpen = true;\n  91 |   await entry(page, f).click();\n    at openAI (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:88:135)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:341:39"
+        }
+      ],
+      "reached": [
+        "closed finding AI: published dialog, observation/note histories, filter/selection, five nav, zero added AI reads"
+      ],
+      "combinedAPIRequests": 6,
+      "aiRequests": 0,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-assessments-data.ts",
+          "bytes": 11845,
+          "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-fixture.ts",
+          "bytes": 27759,
+          "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-ui.spec.ts",
+          "bytes": 35274,
+          "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+          "bytes": 13109,
+          "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+          "bytes": 1123,
+          "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+          "bytes": 552,
+          "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-assessments-http-boundary",
+        "bytes": 13716,
+        "sha256": "e22d365a0a4a452ec5847429e0a8e56556282e1e940771d7ebfdbcdbd5bbc5e4"
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI4-Ca-5aa96-rification-or-unsent-claims\\test-failed-1.png",
+          "bytes": 94841,
+          "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI4-Ca-5aa96-rification-or-unsent-claims\\error-context.md",
+          "bytes": 25406,
+          "sha256": "296faa8193f5c71580a72f9603f5a18e114ae21b48450445a1548e75968f0e63"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI4-Ca-5aa96-rification-or-unsent-claims\\trace.zip",
+          "bytes": 392554,
+          "sha256": "eac66f1f8a0ea1cf7b576e5359ce744dc295c0fe97762145062f5dc74c87df10"
+        }
+      ]
+    },
+    {
+      "title": "AAUI5 Manual native history continuation and denial latch retain confirmed pages without stale authority",
+      "line": 404,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 6966,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts",
+            "column": 135,
+            "line": 88
+          },
+          "message": "Error: Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog. getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\u001b[22m\n\n\n  86 | }\n  87 | async function openAI(page: Page, api: AssessmentHTTP, f = finding) {\n> 88 |   await expect(entry(page, f), \"Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\").toBeVisible();\n     |                                                                                                                                       ^\n  89 |   await expect(entry(page, f)).toHaveAttribute(\"aria-expanded\", \"false\");\n  90 |   api.aiOpen = true;\n  91 |   await entry(page, f).click();\n    at openAI (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:88:135)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:408:39"
+        }
+      ],
+      "reached": [
+        "closed finding AI: published dialog, observation/note histories, filter/selection, five nav, zero added AI reads"
+      ],
+      "combinedAPIRequests": 6,
+      "aiRequests": 0,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-assessments-data.ts",
+          "bytes": 11845,
+          "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-fixture.ts",
+          "bytes": 27759,
+          "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-ui.spec.ts",
+          "bytes": 35274,
+          "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+          "bytes": 13109,
+          "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+          "bytes": 1123,
+          "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+          "bytes": 552,
+          "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-assessments-http-boundary",
+        "bytes": 13716,
+        "sha256": "07df9d82b943064aacd5d096dc370d7dac2ff8bbd7f1dcbf69cff49d83b1f9ed"
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI5-Ma-a6604-ges-without-stale-authority\\test-failed-1.png",
+          "bytes": 94841,
+          "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI5-Ma-a6604-ges-without-stale-authority\\error-context.md",
+          "bytes": 25396,
+          "sha256": "8e1fa116cd88f272b0fd487175ce2d74c97c430319c89ee7d453f7ae4f51aaaa"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI5-Ma-a6604-ges-without-stale-authority\\trace.zip",
+          "bytes": 430126,
+          "sha256": "3c5ce2b49e8c8d9276fa2b1836927b88130083beb77e36ee35643e04808bedbd"
+        }
+      ]
+    },
+    {
+      "title": "AAUI6 Mobile focus and private context survive pane finding workspace 401 and logout epochs with held ACKs",
+      "line": 452,
+      "status": "failed",
+      "retry": 0,
+      "durationMs": 6797,
+      "errors": [
+        {
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts",
+            "column": 135,
+            "line": 88
+          },
+          "message": "Error: Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog. getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Assessment Alpha source review', exact: true, includeHidden: true }).getByRole('button', { name: 'AI assessments', exact: true })\u001b[22m\n\n\n  86 | }\n  87 | async function openAI(page: Page, api: AssessmentHTTP, f = finding) {\n> 88 |   await expect(entry(page, f), \"Missing AI assessments controls: add an explicit initially closed entry to the real finding dialog.\").toBeVisible();\n     |                                                                                                                                       ^\n  89 |   await expect(entry(page, f)).toHaveAttribute(\"aria-expanded\", \"false\");\n  90 |   api.aiOpen = true;\n  91 |   await entry(page, f).click();\n    at openAI (C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:88:135)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessments-ui.spec.ts:455:39"
+        }
+      ],
+      "reached": [
+        "closed finding AI: published dialog, observation/note histories, filter/selection, five nav, zero added AI reads"
+      ],
+      "combinedAPIRequests": 6,
+      "aiRequests": 0,
+      "externalAttempts": 0,
+      "fixtureViolations": [],
+      "browserExceptions": [],
+      "sourceWitnesses": [
+        {
+          "path": "web\\tests\\ai-assessments-data.ts",
+          "bytes": 11845,
+          "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-fixture.ts",
+          "bytes": 27759,
+          "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+        },
+        {
+          "path": "web\\tests\\ai-assessments-ui.spec.ts",
+          "bytes": 35274,
+          "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+          "bytes": 13109,
+          "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+          "bytes": 1123,
+          "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+        },
+        {
+          "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+          "bytes": 552,
+          "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+        }
+      ],
+      "boundary": {
+        "attachment": "ai-assessments-http-boundary",
+        "bytes": 13716,
+        "sha256": "b3c42a178483f59ee1fe0bc83abcb4711bc3224bb043f0a47d35c7f2b07d2c10"
+      },
+      "artifacts": [
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI6-Mo-1d28f-ogout-epochs-with-held-ACKs\\test-failed-1.png",
+          "bytes": 35607,
+          "sha256": "d6a6999f2d496e2e35b2c608577a4b05dbb75896733b978c32678478b23f11a6"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI6-Mo-1d28f-ogout-epochs-with-held-ACKs\\error-context.md",
+          "bytes": 25107,
+          "sha256": "96336e2686d701846f7ea7833b89b4b6abe1048b1d2b3bc4e450927bc54aa21e"
+        },
+        {
+          "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI6-Mo-1d28f-ogout-epochs-with-held-ACKs\\trace.zip",
+          "bytes": 225292,
+          "sha256": "010e4b3e7a62bd45823c8983326cd1e6586b81abfb4a9602077f9dacbaeb75bb"
+        }
+      ]
+    }
+  ],
+  "allAssessmentFunctionalTails": "BLOCKED/NOT RUN after the missing explicit finding-dialog AI assessments entry.",
+  "mutableBackendProductionExcluded": true,
+  "earlierDiagnostics": {
+    "initialTypecheck": "author-typecheck-20260920-01 contained new unused imports; corrected in new files only.",
+    "initialBrowser": "author-red-20260920-01 was a fixture-boundary setup failure: generated Vite .cache/vite/deps JS was blocked. It is NOT the accepted missing-controls RED.",
+    "correctedShellProbe": "author-shell-probe-20260920-01 reached the published dialog and missing entry with clean boundaries; preserved separately."
+  },
+  "noBudgetOrOldControlsChanged": true
+}

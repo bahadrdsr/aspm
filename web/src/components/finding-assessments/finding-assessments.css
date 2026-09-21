@@ -1,0 +1,39 @@
+.assessment-entry { min-width: 0; margin-block: 16px; }
+.finding-assessments { display: grid; gap: 16px; min-width: 0; margin-top: 16px; overflow-wrap: anywhere; }
+.finding-assessments button { height: auto; min-height: 40px; max-width: 100%; white-space: normal; }
+.assessment-section, .assessment-draft, .assessment-form, .assessment-preview, .assessment-configuration { min-width: 0; }
+.assessment-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px; }
+.assessment-section > .assessment-heading { border-bottom: 1px solid var(--line); }
+.finding-assessments > .assessment-heading { padding: 0; }
+.assessment-heading > * { min-width: 0; }
+.assessment-content, .assessment-configuration, .assessment-preview, .assessment-result { display: grid; gap: 14px; min-width: 0; padding: 14px; }
+.assessment-configuration, .assessment-preview, .assessment-result { border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); }
+.assessment-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.assessment-draft { display: grid; gap: 16px; }
+.assessment-form { display: grid; gap: 14px; }
+.assessment-form .form-grid { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.assessment-form input, .assessment-form select, .assessment-form textarea { box-sizing: border-box; min-width: 0; max-width: 100%; width: 100%; }
+.assessment-form textarea { resize: vertical; white-space: pre-wrap; overflow-wrap: anywhere; }
+.assessment-form .assessment-checkbox, .assessment-checkbox { display: flex; flex-direction: row; align-items: flex-start; gap: 10px; min-width: 0; font-size: 12px; line-height: 1.65; }
+.assessment-checkbox input { flex-shrink: 0; width: 18px; height: 18px; min-height: 18px; margin-top: 2px; }
+.assessment-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; min-width: 0; margin: 0; font-size: 12px; }
+.assessment-facts > div { min-width: 0; }
+.assessment-facts dt { margin-bottom: 5px; color: var(--muted); }
+.assessment-facts dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.assessment-context { min-width: 0; }
+.assessment-context .evidence-text { max-width: 100%; max-height: 280px; margin-block: 10px; white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; }
+.assessment-literal { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.assessment-result li { margin-left: 18px; font-size: 12px; overflow-wrap: anywhere; }
+.assessment-table-scroll { max-height: 400px; min-width: 0; overflow: auto; }
+.assessment-table-scroll:focus-visible { outline-offset: -3px; }
+.assessment-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 11px; }
+.assessment-table th { padding: 10px; color: var(--muted); background: var(--surface-soft); }
+.assessment-table th:last-child { width: 130px; }
+.assessment-table td { padding: 12px 10px; vertical-align: top; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.assessment-table p { margin-top: 5px; color: var(--muted); }
+@media (max-width: 540px) {
+  .assessment-facts { grid-template-columns: minmax(0, 1fr); }
+  .assessment-heading, .assessment-content, .assessment-preview, .assessment-configuration, .assessment-result { padding: 10px; }
+  .assessment-table th:last-child { width: 92px; }
+  .assessment-table td, .assessment-table th { padding: 9px 6px; }
+}

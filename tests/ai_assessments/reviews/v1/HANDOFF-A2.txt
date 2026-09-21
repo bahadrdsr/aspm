@@ -1,0 +1,127 @@
+ASSESSMENT A2 - SUCCESSOR NATIVE REGRESSION HANDOFF
+=================================================
+
+Author: independent-backend-regression-successor-20260921
+Fresh successor, not originalauthorbeb1de86 or coder6727a036.
+Status: ACTUAL NATIVE RED; STOP FOR PARENT VERIFICATION AND SEAL.
+No production fix, runtime/UI change, dependency install, agent or commit.
+Backend coder remains HOLD. M11 and product acceptance are NOT claimed.
+
+Preserved authorship and clarification
+---------------------------------------
+The interrupted author supplied useful drafts, protocol tables, a thin
+calibration entry point and a before snapshot. Unsealed predecessor run logs
+also existed when inspected; they are inventoried but are not successor proof.
+BEFORE-A2.json, HPACK-TABLES-A2.json and calibrate-http2-A2.go.txt are unchanged.
+Four revised drafts were preserved byte-exact in history\a2-interrupted.
+Go archives use .go.txt to avoid creating unintended integration packages.
+BEFORE-A2-SUCCESSOR.json records the original archive names; PROVENANCE-A2.json
+records that name-only relocation without rewriting the historical baseline.
+
+The received H1 alternative was explicitly withdrawn in CONTRACT-A2.txt BEFORE
+successor execution. AA9 requires actual offered/negotiated verified HTTP2 and
+a complete native POST. H1-only, rejected client, missing ALPN or no request
+cannot pass. An intentional H1 product restriction needs a parent capability
+decision. No specific production replay-prevention algorithm is prescribed.
+
+Changed NEW-only tests
+----------------------
+transport_replay_test.go retains the interrupted bounded HPACK/TLS server
+approach and strengthens it with mandatory h2, normal verified-chain
+observation, decoded HEADERS counts including incomplete retry bodies, explicit
+connection/frame/byte/deadline bounds and nonfatal regression assertions that
+allow honest no-later-resend/domain-observation tails.
+
+concurrency_lifetime_test.go retains the real query-tracer gate, API-created
+jobs and independent workers. It additionally ties each live local connection
+to the actual native server request, checks both live contexts and the real
+database-clock request deadline, verifies unused request-window capacity, and
+continues through real Close, cancellation and unchanged retired receipts.
+The owned server cooperates with cancellation. No remote-compute concurrency
+or termination property is inferred from local socket observations.
+
+Test-Native-A2.ps1 now compiles explicitly, guards 882 existing backend/control/
+runtime inputs before and after, captures 890 stable source inputs per run,
+limits output and process duration, redacts selected private runtime values,
+pins offline Go1.27.1, restricts the requested PG15432/S318333 endpoints and
+removes per-run calibration/V7 working copies. Web and root README are excluded
+from guards because their separate authorized coder is active.
+No original fixture, binding, runner, case, pool, budget or compatibility
+expectation changed. The original two-slot fixture pool and independent
+one-slot worker pools remain. New AA10 uses MaxConcurrent=1, window capacity=8,
+250ms lease, unchanged 25ms authorization interval and 3-second request timeout.
+
+Successor execution, not inferred from predecessor output
+----------------------------------------------------------
+successor-a2-compile-20260921-01:
+  PASS compiler/vet through go test -run=^$. No behavioral claim.
+
+successor-a2-h2-calibration-20260921-01:
+  PASS unmodified installed standard Transport, bytes.NewReader/GetBody:
+  one normally verified TLS connection, h2, distinct streams 1 and 3,
+  two decoded POST HEADERS and two complete identical bodies after one
+  actual RST_STREAM REFUSED_STREAM.
+  PASS separate fixture-only discrimination control: same standard Transport,
+  nonrewindable request, one POST/body and a real transport error after reset.
+  This is not a production fix or an exactly-once compute/billing claim.
+
+successor-a2-original-eight-20260921-01:
+  PASS all original eight top-level cases plus both AA8 nested paths.
+  Package elapsed 21.846 seconds. Real populated published-V7 -> V8 and
+  fresh/reopen paths ran. This is separate from the parent's earlier
+  26.021-second result and does not cover the two new regressions.
+
+successor-a2-h2-red-20260921-01:
+  ACTUAL RED, exit 1. Verified h2, two decoded POST HEADERS and two complete
+  native bodies, one DB attempt, one durable request-window charge, one reset.
+  The job became succeeded after the internal replay. Both the one-native-
+  attempt and no-successful-retry assertions failed.
+  Executed tail: a later ProcessNext did not resubmit; finding/domain/storage
+  stayed unchanged. These observations do not erase the two failed assertions.
+
+successor-a2-lifetime-red-20260921-01:
+  ACTUAL RED, exit 1, explicit-cancel AND actual expired-lease subcases.
+  Public first state was cancelled/uncertain respectively, with one prior
+  window charge and capacity 8. The second complete native POST arrived with
+  both local sockets and request contexts live, no prior Close, maximum live
+  sockets=2 despite MaxConcurrent=1, and before the conservative request
+  deadline. The first real read-only authority query was still gated.
+  Expiry used database clock_timestamp observations, not row writes,
+  artificial sleeps or the fixture clock offset.
+
+  Executed tails in BOTH subcases: release the gate; observe real first socket
+  Close and cooperative server cancellation; first worker returns; the held
+  second request completes once; old receipt stays unchanged/no result; later
+  scheduling does not resend; both sockets close; domain/storage stay unchanged.
+  NOT RUN: the success-path branch that newly admits a still-queued second job
+  only AFTER first termination. In this RED the second job had already been
+  incorrectly admitted. Its eventual success is not proof of that missing gate.
+
+Preservation and authority
+---------------------------
+All nineteen held backend paths still match FINAL-HANDOFF-A1:
+019d2817b826563809f8213aaee73ace61139bcfc53b4d199217b42c637fb039
+All 221 current A1 controls and original signatures remain byte-exact.
+A1 manifest:
+5d050e1f3f686ed5c59cc20724d34f2f730a12ed78643c6f2db10c3755208421
+Public oracle config:
+1c13cbadc4e44ab5a2a8afbc6194c59bb2839fcc502f89768ec2941c728b441f
+Separate runtime packet remains unchanged:
+1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34
+Twenty-one existing runtime files are guarded; no runtime acceptance is added.
+No private signing authority was accessed; no oracle was captured or resigned.
+Existing frozen UI controls were not ours and were not changed or reset.
+
+Evidence and stop
+-----------------
+PACKET-A2.json and PACKET-A2.sha256 bind the contract, successor provenance,
+source witnesses, guards, calibration, actual RED, final tests and run evidence.
+Each actual run has redacted .jsonl/.log, a receipt and its exact source inputs
+under .artifacts\ai-assessments-v1. Existing A1 and runtime packets are untouched.
+Reproduction uses the new bounded runner with explicit private RUNTIME\runtime.json
+and fresh output labels: Compile, H2Calibration, H2Regression, Concurrency or
+OriginalEight. Only owned random PG schemas and selected legitimate intake S3
+prefixes are created/cleaned; assessment processing has no S3 capability.
+Parent verifies and seals this new packet before assigning a separate backend
+coder. Do not turn these failures green by weakening tests, selecting H1-only,
+changing old controls or treating source trace as behavioral proof.

@@ -1,0 +1,946 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-20T23:52:16.509Z",
+  "status": "passed",
+  "fullOriginalCompatibilityInvocations": 1,
+  "selection": [
+    "scripts\\playwright.mjs",
+    "test",
+    "--config",
+    "tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+    "--grep-invert",
+    "AAR[12] "
+  ],
+  "counts": {
+    "selected": 105,
+    "passed": 105,
+    "failed": 0,
+    "skipped": 0,
+    "retried": 0,
+    "flaky": 0
+  },
+  "originalCaseIdentityMultisetUnchanged": true,
+  "referenceReport": {
+    "path": "C:\\bahadr\\serious\\aspm\\.artifacts\\ai-assessments-ui-v1-author\\coder-full-v1\\results.json",
+    "bytes": 26907560,
+    "sha256": "b14511cd282a0c3063244854eda64cfedc932e4a3a6024a0bcdd29866b525a63"
+  },
+  "report": {
+    "path": ".artifacts\\ai-assessments-ui-v1-author\\reviewed-original-105-compat-v1\\results.json",
+    "bytes": 26908090,
+    "sha256": "eb23d369e8fa33940b6b946944b69dd39b6b450737962c0359a453401c87ec53"
+  },
+  "execution": {
+    "path": ".artifacts\\ai-assessment-review-author\\reviewed-original-105-compat-v1\\execution.json",
+    "bytes": 1183,
+    "sha256": "ad33a3b03e4091fb048a8f538e35ed8f568d004a1eec16a4772f88fc4d44d709"
+  },
+  "heldInputs": {
+    "path": ".artifacts\\ai-assessment-review-author\\reviewed-original-105-compat-v1\\held-inputs.json",
+    "bytes": 1276666,
+    "sha256": "ff11d50f909439ab46c2e539f031ee5f1d14bfac6bbbeeabc94eedff4442f324"
+  },
+  "sourceHold": "all-held-bytes-match-before-and-after",
+  "heldCount": 5802,
+  "stats": {
+    "startTime": "2026-09-20T23:43:32.727Z",
+    "duration": 430794.87700000004,
+    "expected": 105,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "settings": {
+    "combinedAPIRequests": 60,
+    "workers": 1,
+    "retries": 0,
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000
+  },
+  "assessmentCases": [
+    {
+      "title": "AAUI1 Lazy finding entry preserves published shell and readonly history with honest configuration failures",
+      "requests": 28,
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AAUI2 Explicit derived context preserves selected observation, exact UTF8 bytes and canonical preview linkage",
+      "requests": 12,
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AAUI3 Queue consent handles lost ACK with same intent or history barrier and invalidates opaque or expired facts",
+      "requests": 23,
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AAUI4 Canonical states advisory outcomes unknown usage and cancellation never become verification or unsent claims",
+      "requests": 23,
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AAUI5 Manual native history continuation and denial latch retain confirmed pages without stale authority",
+      "requests": 20,
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "title": "AAUI6 Mobile focus and private context survive pane finding workspace 401 and logout epochs with held ACKs",
+      "requests": 40,
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    }
+  ],
+  "cases": [
+    {
+      "file": "ai-assessments-ui.spec.ts",
+      "title": "AAUI1 Lazy finding entry preserves published shell and readonly history with honest configuration failures",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5224,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-assessments-ui.spec.ts",
+      "title": "AAUI2 Explicit derived context preserves selected observation, exact UTF8 bytes and canonical preview linkage",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4552,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-assessments-ui.spec.ts",
+      "title": "AAUI3 Queue consent handles lost ACK with same intent or history barrier and invalidates opaque or expired facts",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5461,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-assessments-ui.spec.ts",
+      "title": "AAUI4 Canonical states advisory outcomes unknown usage and cancellation never become verification or unsent claims",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6500,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-assessments-ui.spec.ts",
+      "title": "AAUI5 Manual native history continuation and denial latch retain confirmed pages without stale authority",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3774,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-assessments-ui.spec.ts",
+      "title": "AAUI6 Mobile focus and private context survive pane finding workspace 401 and logout epochs with held ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6331,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-settings-ui.spec.ts",
+      "title": "AIU1 Opt-in setup distinguishes fetched default, loading, failure, keyless local and readonly roles",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3946,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-settings-ui.spec.ts",
+      "title": "AIU2 Four explicit families preserve models, endpoints, sparse keys and authoritative receipts",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 7669,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-settings-ui.spec.ts",
+      "title": "AIU3 Explicit policy and sensitive finite grants retain workspace decisions, expiry and revoke receipts",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5942,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-settings-ui.spec.ts",
+      "title": "AIU4 Authorized current facts and opaque revisions invalidate stale consent without automatic conflict resubmission",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3832,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-settings-ui.spec.ts",
+      "title": "AIU5 Native manual pages and denial retries preserve confirmed data without stale authority",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 9527,
+      "errorCount": 0
+    },
+    {
+      "file": "ai-settings-ui.spec.ts",
+      "title": "AIU6 Mobile reduced-motion focus and privacy survive close, workspace, 401 and logout epochs",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 7997,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "receipt 403 stays hidden through held retry and 503 until authorized recovery",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1920,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "receipt 404 stays hidden through held retry and 503 until authorized recovery",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1858,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "same-ID replay acknowledgement supersedes the old receipt and held status response",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2029,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=false)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2398,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (no-preference, user-moves-focus=true)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2744,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=false)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2146,
+      "errorCount": 0
+    },
+    {
+      "file": "application-review-regressions.spec.ts",
+      "title": "keyboard asset Save retains context/focus (reduce, user-moves-focus=true)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2531,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 authenticated startup uses the session endpoint and logout removes protected context",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2146,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 invalid login is safe and an expired session cannot leave cached findings visible",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2412,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 first-time setup sends the out-of-band token only to bootstrap and then requires sign-in",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1285,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 changing workspace clears filters, selection, details and old rows before the new response",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1377,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M04 assets can be created and edited without leaving their selected workspace",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1568,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M05-M07 local SARIF and JSON files send exact import metadata and show server-controlled progress/failure",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2398,
+      "errorCount": 0
+    },
+    {
+      "file": "application-workflows.spec.ts",
+      "title": "M06 work/detail preserve both observations and distinct freshness without verified-resolution claims",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1669,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination-ack.spec.ts",
+      "title": "AP6 edit: canonical ACK is visible before its NEW post-save GET settles (200)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3824,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination-ack.spec.ts",
+      "title": "AP6 create: canonical ACK is visible before its NEW post-save GET settles (503)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3564,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP1 Native inventory continuation preserves rows and truthful counts through failure, same-cursor retry and overlapping refresh",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2667,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP2 Import selection reaches a server asset beyond its initial page and preserves that exact ID through more pages and form edits",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3930,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP3 Viewer paging has no write authority and workspace, logout and 401 discard every old page and held continuation",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3865,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP4 Canonical edit/create acknowledgements survive old overlapping pages without optimistic rows or loss of loaded context",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4370,
+      "errorCount": 0
+    },
+    {
+      "file": "asset-pagination.spec.ts",
+      "title": "AP5 At 390px manual inventory/selector paging preserves selected IDs, draft caret and reduced-motion keyboard context",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4524,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA1 Assign to me is one activation, preserves context and uses only confirmed server ownership",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3294,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA2 Unassignment preserves other decisions and safely explains a row leaving the current owner filter",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2106,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA3 Human workflow starts, resolves and reopens without overwriting risk, ownership or source verification",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3956,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2954,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4016,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA6 Viewer controls cannot write, stale analyst authority handles 403, and protected 401 removes the workspace",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 7821,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA7 Closing then switching workspace or logging out aborts held PATCH and note requests and discards late ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6281,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-actions.spec.ts",
+      "title": "FA8 At 390px keyboard mutations keep the dialog, draft focus and scrolled Work context through a held background refresh",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 9066,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-history.spec.ts",
+      "title": "FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 12748,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-history.spec.ts",
+      "title": "FH2 A held/503 history continuation keeps both loaded streams and retries the same native cursor without duplicate or reset",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 8052,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-history.spec.ts",
+      "title": "FH3 New note and workflow ACKs survive an older held history page, while later authorized metadata is not permanently frozen",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 10465,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-history.spec.ts",
+      "title": "FH4 Viewer history is read-only; 403/404 latch protected metadata through 503 retry and 401 clears the entire finding scope",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 11351,
+      "errorCount": 0
+    },
+    {
+      "file": "finding-history.spec.ts",
+      "title": "FH5 At 390px user-moved draft focus/scroll survive a history load; workspace/logout abort and discard later held pages",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 8018,
+      "errorCount": 0
+    },
+    {
+      "file": "foundations.spec.ts",
+      "title": "production assets use independently approved source and shared Motion without test fixtures or credential canaries",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1419,
+      "errorCount": 0
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "harness compiles React and exercises real browser keyboard events",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 474,
+      "errorCount": 0
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "harness produces static assets without needing the production UI",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 276,
+      "errorCount": 0
+    },
+    {
+      "file": "harness.spec.ts",
+      "title": "approval guard distinguishes reviewed license candidates from approved components",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 38,
+      "errorCount": 0
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "M01 skip link focuses main without changing any destination or hash",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2379,
+      "errorCount": 0
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "M01 catalog verification is independent of readiness and never trusts synthetic or planned claims",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6009,
+      "errorCount": 0
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5387,
+      "errorCount": 0
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5235,
+      "errorCount": 0
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (no-preference)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5266,
+      "errorCount": 0
+    },
+    {
+      "file": "m01-review-regressions.spec.ts",
+      "title": "scroll lock and all dismissal paths preserve queue context (reduce)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5322,
+      "errorCount": 0
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF1 The import selector names exactly seven implemented profiles with honest JSON/CSV/manual guidance and literal mapping",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1993,
+      "errorCount": 0
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit provenance in one JSON request without mapping or local success",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4314,
+      "errorCount": 0
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays human-authored and plain prose is never converted",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3754,
+      "errorCount": 0
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8, excessive file bytes and JSON-wrapper expansion without truncation",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 8417,
+      "errorCount": 0
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF5 New profiles retain central viewer/current-role authority and surface server 403/415/413/401 without guessing another parser",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3815,
+      "errorCount": 0
+    },
+    {
+      "file": "report-formats.spec.ts",
+      "title": "RF6 At 390px CSV file-read cancellation and held-import scope loss clear old bytes/progress while keeping keyboard asset context",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3308,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports maps exact live totals, severity, coverage and as-of with explicit bounded freshness refresh",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5223,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports separates held loading, unavailable, denied and authorized empty data without fabricated zeroes",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3962,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Snapshot creation acknowledges queued work and renders only actual worker states, diagnostics and completion",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6224,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Saved snapshots use real cursor Load more, preserve rows on errors and reset pagination on scope change",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2450,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Viewer reports are read-only and stale writer controls cannot override a server creation denial",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3817,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Workspace switch aborts held current, history and selected reads before any old report can reappear",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5572,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Logout and protected 401 clear live, saved and selected report context and reject late old responses",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 11952,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Selected snapshot 403 and 404 remain latched through held retries and 503 until authorized detail succeeds",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6191,
+      "errorCount": 0
+    },
+    {
+      "file": "reports-workflows.spec.ts",
+      "title": "Reports dialogs and refresh preserve keyboard context without focus stealing at 390px with reduced motion",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5044,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 390px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1435,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 390px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2799,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 683px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1416,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 683px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2564,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 850px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1450,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 850px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2733,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 851px by pointer",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1578,
+      "errorCount": 0
+    },
+    {
+      "file": "responsive-session-controls.spec.ts",
+      "title": "authenticated session controls remain reachable at 851px by keyboard",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2646,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "primary navigation exposes the five focused destinations",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1539,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "theme follows the system and preserves an explicit light/dark choice",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2124,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "finding details retain filter, selection and keyboard focus (no-preference)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1762,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "finding details retain filter, selection and keyboard focus (reduce)",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1738,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "loading, failure, retry, empty and permission denial are distinct with no sample fallback",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1916,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "the eight native families remain explicitly unverified with synthetic catalog data",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1468,
+      "errorCount": 0
+    },
+    {
+      "file": "shell.spec.ts",
+      "title": "the gallery labels synthetic states instead of presenting them as operational evidence",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1304,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD1 Connections distinguish real loading/error/empty/pages and create an explicitly outbound masked-token connection",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3361,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD2 Admin edits are sparse and server-confirmed; disabled history stays visible and cached roles never override denial",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4209,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD3 Explicit finding preview sends only selected connection and idempotency identity, never evidence or a finding mutation",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4108,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD4 Delivery history and manual refresh preserve actual queued/dispatching/terminal data without resends or invented receipts",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5163,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD5 A lost enqueue ACK retains its intent key for explicit replay or prevents another attempt until history reconciliation",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2138,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD6 Workspace switches clear token drafts, previews and histories, aborting held old reads and committed ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4042,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD7 Detail denials stay withheld across 503 retry, and logout/401 clear protected data and discard late delivery ACKs",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 6154,
+      "errorCount": 0
+    },
+    {
+      "file": "slack-delivery.spec.ts",
+      "title": "SD8 At 390px reduced-motion dialogs keep keyboard focus, wrap long context and preserve scrolled Work after cancel and confirm",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5087,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU1 Sources retain the five-nav/eight-family/Slack surface and distinguish loading, failure, empty, native pages and explicit masked creation",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2970,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU2 Admin source edits are sparse and server-confirmed, blank token preserves it and current role overrides stale controls",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3300,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU3 Explicit collection queues only idempotencyKey; unavailable storage is not success and a lost ACK cannot create a blind new job",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1998,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU4 Manual collection status preserves complete/partial/native failure meaning and displays exact raw records/evidence without normalization or execution",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3962,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU5 Native history/record pagination retries the same cursor and evidence denial stays withheld through unavailable/digest errors",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 4368,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU6 Workspace/logout/401 clear source drafts and abort late collection/evidence/ACK data; viewer reads do not gain write authority",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 5150,
+      "errorCount": 0
+    },
+    {
+      "file": "source-collection-ui.spec.ts",
+      "title": "SU7 At 390px reduced-motion native source/collection controls preserve keyboard context and 401 clears an active token form",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3370,
+      "errorCount": 0
+    },
+    {
+      "file": "source-selection.spec.ts",
+      "title": "ST1 Authorized source refresh updates the selected target before consent; later-page absence and disable do not revive old facts",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 3295,
+      "errorCount": 0
+    },
+    {
+      "file": "source-selection.spec.ts",
+      "title": "ST2 A held authorized refresh updates or invalidates open consent without posting or forgetting a lost-ACK intent",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 2206,
+      "errorCount": 0
+    },
+    {
+      "file": "workspace-reselection.spec.ts",
+      "title": "reselecting the active workspace preserves a pending authenticated Findings read",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1217,
+      "errorCount": 0
+    },
+    {
+      "file": "workspace-reselection.spec.ts",
+      "title": "reselecting the loaded active workspace preserves its filter and selected finding",
+      "status": "passed",
+      "retry": 0,
+      "durationMs": 1311,
+      "errorCount": 0
+    }
+  ]
+}

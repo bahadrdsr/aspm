@@ -310,6 +310,27 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return a.importResource(w, r, membership.ID, parts[1], len(parts) == 3)
 	case "findings":
+		if len(parts) == 3 && parts[2] == "assessment-previews" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.createAssessmentPreview(w, r, membership.ID, session, parts[1])
+		}
+		if len(parts) == 3 && parts[2] == "assessments" {
+			if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+				return err
+			}
+			if r.Method == http.MethodGet {
+				return a.listAssessments(w, r, membership.ID, parts[1])
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.enqueueAssessment(w, r, membership.ID, session, parts[1])
+		}
 		if len(parts) == 3 && parts[2] == "deliveries" {
 			if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
 				return err

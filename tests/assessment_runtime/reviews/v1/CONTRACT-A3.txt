@@ -1,0 +1,97 @@
+ASSESSMENT RUNTIME A3 - SELECTED BUDGET INCLUDES NONSTREAMING HEADERS
+=================================================================
+
+Independent author: independent-runtime-header-a3-20260921.
+This author is neither runtime author beb1de86 nor runtime coder 0383e852.
+Contract written before the new header_timeout_test.go regression.
+This is an additive regression and unsigned review packet, not a source fix.
+
+Frozen starting point and scope
+-------------------------------
+Use the existing actual service.Environment("assessment") and service.Run
+through the unchanged typed production bindings. Keep all four old cases,
+helpers, role/client behavior, native fixture and A1/A2 measurement history
+byte-identical. No new binding, fake RoundTripper, handler replacement, SQL
+business-row seed, source fix, dependency change, oracle edit or agent.
+The seven runtime source/doc paths stay HOLD at coder handoff SHA256:
+  ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e
+Current runtime controls are assessment-runtime-a2, 100 entries; backend 245
+and UI 838 controls also remain unchanged. Do not freeze unrelated mutable
+future packaging-author files or copy earlier review histories.
+
+Proposed timeout meaning, not implementation architecture
+---------------------------------------------------------
+A valid selected ASPM_ASSESSMENT_REQUEST_TIMEOUT is the assessment request's
+end-to-end budget, including waiting for nonstreaming response headers.
+The actual Environment-generated client must retain the parsed budget.
+The assessment's shared transport must not independently cut a 20-second
+request off at the old 10-second default while its approved operation is live.
+A zero ResponseHeaderTimeout with the bounded total request deadline, or a
+header timeout consistent with the selected budget, can both satisfy this
+behavior. No particular field-setting or new internal API is prescribed.
+Do not globally raise delivery/collection timeouts or change their defaults.
+
+Go's net/http documentation distinguishes the complete Client.Timeout budget
+from the transport's header-only wait after the request body is sent. This
+is supporting public terminology only. Actual owned execution, not a field
+inspection or documentation assumption, determines this regression's result.
+
+One coherent top-level case, two isolated owned subcases
+-------------------------------------------------------
+1. Select request timeout 20s and lease 30s through environment variables.
+   Assert the returned request-budget and generated client timeout both equal
+   20s. Use legitimate actual core APIs and ingestion to create the finding,
+   observation, encrypted hosted profile, policy/grant, preview and consented
+   job. Run the actual assessment service with that unmodified generated client.
+   Use the existing owned normal-TLS native Responses fixture.
+
+   Its ready channel closes only after exact method/auth/model/schema/context/
+   privacy checks and independently observed committed dispatching/attempt1/
+   nonnull-marker state. It sends no response headers before its existing
+   release channel is opened. Do not stream or flush headers to evade the bug.
+
+   Hold that gate for 12 seconds after verified readiness is observed, inside
+   the selected 20-second budget with a bounded setup/release precondition.
+   Use one timer/channel wait, not protected API polling during the delay.
+   Record actual role-start, readiness-observation, gate-deadline/release and
+   native cancellation timestamps. Release the ordinary valid bounded advisory.
+   Then, and only then, use the unchanged 8-second terminal await.
+
+   Require no premature native cancellation, exactly one POST, a succeeded
+   canonical advisory with the existing provenance/usage/model assertions,
+   and unchanged finding/configuration/domain state and raw-storage count.
+
+2. Select request timeout 3s and lease 30s through the same actual environment.
+   Hold all response headers. Use the unchanged A2 nativeCancellation helper
+   with an explicit original bounded observation deadline, synchronize on the
+   actual cancelled channel and validate its recorded native timestamp.
+   Require cancellation within a 5-second observation window after verified
+   readiness and no implausibly immediate cancellation before 2 seconds from
+   starting the actual service. These are broad bounds, not exact-ms equality.
+   Release only after the cancellation observation, then use the old terminal
+   await. Expect timeout/possibly-sent uncertainty, no result and one POST.
+   This control rejects disabling the selected total deadline.
+
+Observed readiness time is the test's channel-receive timestamp, not a claim
+to the exact remote request-arrival or Go transport timer-start instant.
+The fixture's cancelledAt is the actual request-context branch observation.
+Compare instants and durations; never require a literal Z spelling. A closed
+channel alone does not excuse a late/missing/zero cancellation timestamp.
+No cancellation deadline, A1 cadence or A2 measurement rule is changed.
+
+Bounds, evidence and stop
+-------------------------
+Keep 90s per real-service fixture, 220 protected API operations, 12 native POSTs,
+all old 8s terminal waits, 100ms terminal cadence and other old waits intact.
+Use the unchanged Test-AssessmentRuntime.ps1 -Mode Contract, private selected
+owned RuntimeConfig and cached offline/readonly Go1.27.1. It includes the new
+case automatically and still builds the actual command for the old cases.
+No live provider/account, unowned DB/store, credential/DSN output or ambient
+credential discovery. Keep the original fixture's privacy/cleanup guards.
+
+On RED, record the actual terminal code/state and event timing. Run nonmutating
+guard tails where possible; label successful-advisory validation BLOCKED when
+no successful receipt exists. Do not infer success from a released fixture or
+attribute unexecuted tails to the candidate. No retry erases a failure.
+The parent verifies the frozen additive packet and issues any new seal before
+a separate runtime coder remediates. No authority capture or self-acceptance.

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "archivedAt": "2026-09-21T00:05:18.772Z",
+  "purpose": "Exact pre-approval candidate publication history. Other referenced payloads and raw evidence remain byte-identical at their original paths. Resolve the prior HANDOFF.txt reference through this relocation map.",
+  "files": [
+    {
+      "original": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\PACKET.json",
+      "archive": {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\PACKET.json",
+        "bytes": 34452,
+        "sha256": "63a0032e03b5c71f9f2912c3d07002aab445d7d16f114bc9988fce277e123abf"
+      }
+    },
+    {
+      "original": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\PACKET.sha256",
+      "archive": {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\PACKET.sha256",
+        "bytes": 78,
+        "sha256": "5f2d41a1595994fb069b1c25214cc02e859306c311b66e9fb6472a89235e3a8e"
+      }
+    },
+    {
+      "original": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\HANDOFF.json",
+      "archive": {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.json",
+        "bytes": 9094,
+        "sha256": "982b61b35a116109a05462696142d06ed422e35d9df971de3ac7e38cd0628ed3"
+      }
+    },
+    {
+      "original": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\HANDOFF.sha256",
+      "archive": {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.sha256",
+        "bytes": 79,
+        "sha256": "bea887fde302c6427cd5f9c99e19c206da847a618fd61919fa82f1da3687cc22"
+      }
+    },
+    {
+      "original": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\HANDOFF.txt",
+      "archive": {
+        "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\reviewed-regressions\\history\\candidate-v1\\HANDOFF.txt",
+        "bytes": 7597,
+        "sha256": "2779499b5d2a9b6b72621b3dba75e1576f20ab8345615d2a87efca3dbe3bcfdd"
+      }
+    }
+  ]
+}

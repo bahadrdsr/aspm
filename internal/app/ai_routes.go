@@ -49,6 +49,24 @@ func (a *Application) routeAIConfiguration(w http.ResponseWriter, r *http.Reques
 	if len(parts) < 2 || !validID(parts[1]) {
 		return errNotFound
 	}
+	if parts[0] == "assessments" {
+		if len(parts) == 2 {
+			if err := requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
+			return a.getAssessment(w, r, membership.ID, parts[1])
+		}
+		if len(parts) == 3 && parts[2] == "cancel" {
+			if err := requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.cancelAssessment(w, r, membership.ID, session, parts[1])
+		}
+		return errNotFound
+	}
 	if len(parts) == 2 && parts[0] == "profiles" {
 		if err := requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
 			return err

@@ -1,0 +1,685 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-20T23:45:01.287Z",
+  "status": "Fresh expected RED against held production, not implementation acceptance.",
+  "aggregation": "Six unchanged history-group cases from reviewed-regression-red-v1 plus four final queue-group cases from reviewed-queue-red-v3. This is not a claim of one final ten-case invocation.",
+  "counts": {
+    "selected": 10,
+    "passed": 6,
+    "failed": 4,
+    "skipped": 0,
+    "retried": 0,
+    "flaky": 0,
+    "browserCases": 6,
+    "browserFailed": 2,
+    "productionHookUnitCases": 4,
+    "productionHookUnitFailed": 2,
+    "maxCombinedAPIRequests": 28
+  },
+  "runs": [
+    {
+      "label": "reviewed-regression-red-v1",
+      "selectedFile": "ai-assessment-review-history.spec.ts",
+      "report": {
+        "path": ".artifacts\\ai-assessments-ui-v1-author\\reviewed-regression-red-v1\\results.json",
+        "bytes": 492936,
+        "sha256": "88c449d1b40b14273d243f2b2b244fb28ba2433d837209dace686c4992581fac"
+      },
+      "execution": {
+        "path": ".artifacts\\ai-assessment-review-author\\reviewed-regression-red-v1\\execution.json",
+        "bytes": 1222,
+        "sha256": "5b1a48f2c87c4f7615e4eb56ca492b2f3e5117bb8e5e78f26ec1463da1c26ebf"
+      },
+      "heldInputs": {
+        "path": ".artifacts\\ai-assessment-review-author\\reviewed-regression-red-v1\\held-inputs.json",
+        "bytes": 1276666,
+        "sha256": "d39ce743abae0a217645eb0f6c151826a426102e96f2c23078e3692020681f05"
+      },
+      "sourceHold": "all-held-bytes-match-before-and-after",
+      "heldCount": 5802,
+      "settings": {
+        "expectTimeoutMs": 5000,
+        "caseTimeoutMs": 20000,
+        "workers": 1,
+        "combinedAPIRequests": 60,
+        "retries": 0
+      },
+      "currentSelectedSpecAndSharedInputsMatch": true
+    },
+    {
+      "label": "reviewed-queue-red-v3",
+      "selectedFile": "ai-assessment-review-queue.spec.ts",
+      "report": {
+        "path": ".artifacts\\ai-assessments-ui-v1-author\\reviewed-queue-red-v3\\results.json",
+        "bytes": 310635,
+        "sha256": "4f5eb65a972cc2d8a106387f764f73ffc94317ce13a29736f7952105dd3473f6"
+      },
+      "execution": {
+        "path": ".artifacts\\ai-assessment-review-author\\reviewed-queue-red-v3\\execution.json",
+        "bytes": 1167,
+        "sha256": "0afe66854cac26e78f3b4f1d90e0fc65963efc6a6bbcc9ffbc831e2578700d18"
+      },
+      "heldInputs": {
+        "path": ".artifacts\\ai-assessment-review-author\\reviewed-queue-red-v3\\held-inputs.json",
+        "bytes": 1276666,
+        "sha256": "ff11d50f909439ab46c2e539f031ee5f1d14bfac6bbbeeabc94eedff4442f324"
+      },
+      "sourceHold": "all-held-bytes-match-before-and-after",
+      "heldCount": 5802,
+      "settings": {
+        "caseTimeoutMs": 20000,
+        "retries": 0,
+        "expectTimeoutMs": 5000,
+        "workers": 1,
+        "combinedAPIRequests": 60
+      },
+      "currentSelectedSpecAndSharedInputsMatch": true
+    }
+  ],
+  "cases": [
+    {
+      "file": "ai-assessment-review-history.spec.ts",
+      "line": 48,
+      "title": "Browser boundary: 403, old cancel 200, 503, then authorized history 200",
+      "run": "reviewed-regression-red-v1",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 5875,
+      "errors": [],
+      "scope": "Real application browser HTTP",
+      "requests": 15,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Actual app remained empty and unwritable after denial, old cancel ACK and 503. This does not prove the smaller pre-cleanup race."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-history-browser-boundary",
+          "value": {
+            "scope": "Actual-app ordered response boundary; NOT a deterministic pre-layout-cleanup race reproduction",
+            "denial": 403,
+            "responseOrder": [
+              403,
+              200,
+              503,
+              200
+            ],
+            "oldWriteFailure": "net::ERR_ABORTED",
+            "persistedCancellation": "cancelled",
+            "afterDenialAndOldACKRows": 0,
+            "after503Rows": 0,
+            "afterAuthorizedRows": 1
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-history.spec.ts",
+      "line": 48,
+      "title": "Browser boundary: 404, old cancel 200, 503, then authorized history 200",
+      "run": "reviewed-regression-red-v1",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 2119,
+      "errors": [],
+      "scope": "Real application browser HTTP",
+      "requests": 15,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Actual app remained empty and unwritable after denial, old cancel ACK and 503. This does not prove the smaller pre-cleanup race."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-history-browser-boundary",
+          "value": {
+            "scope": "Actual-app ordered response boundary; NOT a deterministic pre-layout-cleanup race reproduction",
+            "denial": 404,
+            "responseOrder": [
+              404,
+              200,
+              503,
+              200
+            ],
+            "oldWriteFailure": "net::ERR_ABORTED",
+            "persistedCancellation": "cancelled",
+            "afterDenialAndOldACKRows": 0,
+            "after503Rows": 0,
+            "afterAuthorizedRows": 1
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-history.spec.ts",
+      "line": 103,
+      "title": "PROPOSED production-hook invariant: 403 then old queue ACK stays withheld through 503",
+      "run": "reviewed-regression-red-v1",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 1503,
+      "errors": [
+        {
+          "message": "Error: An old typed write receipt is not a new authorized history read.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n  Object {\n    \"authorized\": \"false\",\n-   \"rows\": 0,\n+   \"rows\": 1,\n  }\n\n  116 |       });\n  117 |       const afterACK = await unitSnapshot(page);\n> 118 |       expect.soft(afterACK, \"An old typed write receipt is not a new authorized history read.\").toEqual({ rows: 0, authorized: \"false\" });\n      |                                                                                                 ^\n  119 |       const unresolved = JSON.parse((await unitValue(page, \"unresolved identity\").textContent())!);\n  120 |       if (unresolved !== null) expect(unresolved).toMatchObject({\n  121 |         previewId: call.body.previewId, idempotencyKey: call.body.idempotencyKey,\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts:118:97",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts",
+            "column": 97,
+            "line": 118
+          }
+        },
+        {
+          "message": "Error: The loading gap after denial must not regain permission from a stale receipt.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 2\n+ Received  + 2\n\n  Object {\n-   \"authorized\": \"false\",\n-   \"rows\": 0,\n+   \"authorized\": \"true\",\n+   \"rows\": 1,\n  }\n\n  129 |       await expect(unitHistory(page).getByRole(\"status\")).toBeVisible();\n  130 |       const during503 = await unitSnapshot(page);\n> 131 |       expect.soft(during503, \"The loading gap after denial must not regain permission from a stale receipt.\").toEqual({ rows: 0, authorized: \"false\" });\n      |                                                                                                               ^\n  132 |       await expect(page.getByRole(\"button\", { name: \"Unit start queue\", exact: true })).toBeDisabled();\n  133 |       await deliver(unavailable);\n  134 |       await expect(unitHistory(page).getByRole(\"alert\")).toContainText(/unavailable/i);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts:131:111",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts",
+            "column": 111,
+            "line": 131
+          }
+        },
+        {
+          "message": "Error: 503 is not authorized recovery; protected receipt summaries stay withheld.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n  Object {\n    \"authorized\": \"false\",\n-   \"rows\": 0,\n+   \"rows\": 1,\n  }\n\n  134 |       await expect(unitHistory(page).getByRole(\"alert\")).toContainText(/unavailable/i);\n  135 |       const after503 = await unitSnapshot(page);\n> 136 |       expect.soft(after503, \"503 is not authorized recovery; protected receipt summaries stay withheld.\").toEqual({ rows: 0, authorized: \"false\" });\n      |                                                                                                           ^\n  137 |       api.mark(\"Held loading gap and delivered 503 were both observed, with no automatic post or authorized recovery.\");\n  138 |       const recovered = api.queueRead(historyPath(), 200, true);\n  139 |       await unitHistory(page).getByRole(\"button\", { name: \"Retry assessment history\", exact: true }).click();\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts:136:107",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts",
+            "column": 107,
+            "line": 136
+          }
+        }
+      ],
+      "scope": "PROPOSED real production-hook unit, NOT full application",
+      "requests": 6,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Real mounted production history hook cleared its visible rows on actual typed HTTP denial.",
+        "Old canonical ACK completed in the isolated real lifecycle; minimal receipt identity was observed separately from history authority.",
+        "Held loading gap and delivered 503 were both observed, with no automatic post or authorized recovery.",
+        "Only a later authorized 200 restored current rows/permission; matching minimal uncertainty reconciled."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-history-hook-invariant",
+          "value": {
+            "scope": "PROPOSED existing-export production-hook unit binding; parent approval before freeze. NOT full-app race proof.",
+            "denial": 403,
+            "operation": "queue",
+            "canonicalIdentity": {
+              "id": "fa0000000000000000000000000003e9",
+              "previewId": "ea000000000000000000000000000001",
+              "idempotencyKey": "e58bddb7-f9fe-43d9-bdce-dc5a654a5bdb"
+            },
+            "afterDenial": {
+              "rows": 0,
+              "authorized": "false"
+            },
+            "afterACK": {
+              "rows": 1,
+              "authorized": "false"
+            },
+            "during503": {
+              "rows": 1,
+              "authorized": "true"
+            },
+            "after503": {
+              "rows": 1,
+              "authorized": "false"
+            },
+            "after200": {
+              "rows": 2,
+              "authorized": "true"
+            },
+            "downstreamBlocked": []
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-history.spec.ts",
+      "line": 103,
+      "title": "PROPOSED production-hook invariant: 404 then old cancellation ACK stays withheld through 503",
+      "run": "reviewed-regression-red-v1",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 1828,
+      "errors": [
+        {
+          "message": "Error: An old typed write receipt is not a new authorized history read.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n  Object {\n    \"authorized\": \"false\",\n-   \"rows\": 0,\n+   \"rows\": 1,\n  }\n\n  116 |       });\n  117 |       const afterACK = await unitSnapshot(page);\n> 118 |       expect.soft(afterACK, \"An old typed write receipt is not a new authorized history read.\").toEqual({ rows: 0, authorized: \"false\" });\n      |                                                                                                 ^\n  119 |       const unresolved = JSON.parse((await unitValue(page, \"unresolved identity\").textContent())!);\n  120 |       if (unresolved !== null) expect(unresolved).toMatchObject({\n  121 |         previewId: call.body.previewId, idempotencyKey: call.body.idempotencyKey,\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts:118:97",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts",
+            "column": 97,
+            "line": 118
+          }
+        },
+        {
+          "message": "Error: The loading gap after denial must not regain permission from a stale receipt.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 2\n+ Received  + 2\n\n  Object {\n-   \"authorized\": \"false\",\n-   \"rows\": 0,\n+   \"authorized\": \"true\",\n+   \"rows\": 1,\n  }\n\n  129 |       await expect(unitHistory(page).getByRole(\"status\")).toBeVisible();\n  130 |       const during503 = await unitSnapshot(page);\n> 131 |       expect.soft(during503, \"The loading gap after denial must not regain permission from a stale receipt.\").toEqual({ rows: 0, authorized: \"false\" });\n      |                                                                                                               ^\n  132 |       await expect(page.getByRole(\"button\", { name: \"Unit start queue\", exact: true })).toBeDisabled();\n  133 |       await deliver(unavailable);\n  134 |       await expect(unitHistory(page).getByRole(\"alert\")).toContainText(/unavailable/i);\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts:131:111",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts",
+            "column": 111,
+            "line": 131
+          }
+        },
+        {
+          "message": "Error: 503 is not authorized recovery; protected receipt summaries stay withheld.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 1\n+ Received  + 1\n\n  Object {\n    \"authorized\": \"false\",\n-   \"rows\": 0,\n+   \"rows\": 1,\n  }\n\n  134 |       await expect(unitHistory(page).getByRole(\"alert\")).toContainText(/unavailable/i);\n  135 |       const after503 = await unitSnapshot(page);\n> 136 |       expect.soft(after503, \"503 is not authorized recovery; protected receipt summaries stay withheld.\").toEqual({ rows: 0, authorized: \"false\" });\n      |                                                                                                           ^\n  137 |       api.mark(\"Held loading gap and delivered 503 were both observed, with no automatic post or authorized recovery.\");\n  138 |       const recovered = api.queueRead(historyPath(), 200, true);\n  139 |       await unitHistory(page).getByRole(\"button\", { name: \"Retry assessment history\", exact: true }).click();\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts:136:107",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-history.spec.ts",
+            "column": 107,
+            "line": 136
+          }
+        }
+      ],
+      "scope": "PROPOSED real production-hook unit, NOT full application",
+      "requests": 7,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Real mounted production history hook cleared its visible rows on actual typed HTTP denial.",
+        "Old canonical ACK completed in the isolated real lifecycle; minimal receipt identity was observed separately from history authority.",
+        "Held loading gap and delivered 503 were both observed, with no automatic post or authorized recovery.",
+        "Only a later authorized 200 restored current rows/permission; matching minimal uncertainty reconciled."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-history-hook-invariant",
+          "value": {
+            "scope": "PROPOSED existing-export production-hook unit binding; parent approval before freeze. NOT full-app race proof.",
+            "denial": 404,
+            "operation": "cancellation",
+            "canonicalIdentity": {
+              "id": "fa000000000000000000000000000002",
+              "previewId": "ea000000000000000000000000000001",
+              "idempotencyKey": "synthetic-explicit-intent-2"
+            },
+            "afterDenial": {
+              "rows": 0,
+              "authorized": "false"
+            },
+            "afterACK": {
+              "rows": 1,
+              "authorized": "false"
+            },
+            "during503": {
+              "rows": 1,
+              "authorized": "true"
+            },
+            "after503": {
+              "rows": 1,
+              "authorized": "false"
+            },
+            "after200": {
+              "rows": 1,
+              "authorized": "true"
+            },
+            "downstreamBlocked": []
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-history.spec.ts",
+      "line": 160,
+      "title": "PROPOSED production-hook positive control: immediate queue ACK without history denial",
+      "run": "reviewed-regression-red-v1",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 1069,
+      "errors": [],
+      "scope": "PROPOSED real production-hook unit, NOT full application",
+      "requests": 3,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Real history hook immediately accepted canonical queue ACK without an extra history read when no denial occurred."
+      ],
+      "evidence": [],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-history.spec.ts",
+      "line": 160,
+      "title": "PROPOSED production-hook positive control: immediate cancellation ACK without history denial",
+      "run": "reviewed-regression-red-v1",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 935,
+      "errors": [],
+      "scope": "PROPOSED real production-hook unit, NOT full application",
+      "requests": 4,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Real history hook immediately accepted canonical cancellation ACK without an extra history read when no denial occurred."
+      ],
+      "evidence": [],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-queue.spec.ts",
+      "line": 60,
+      "title": "502/conflict: committed first job, failed history, close/reopen and authorized recovery",
+      "run": "reviewed-queue-red-v3",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 8154,
+      "errors": [
+        {
+          "message": "Error: History is still failed: another explicit action cannot create a fresh preview/key queue.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 2\n+ Received  + 2\n\n  Object {\n    \"consent\": true,\n-   \"idempotencyKey\": \"91494a75-69c9-4cfe-a18f-1e4f38c765b9\",\n-   \"previewId\": \"ea0000000000000000000000000003e9\",\n+   \"idempotencyKey\": \"40233184-a0e0-4b1d-964d-896e08b46786\",\n+   \"previewId\": \"ea0000000000000000000000000003eb\",\n  }\n\n  111 |             attempted = await arrived(pendingResponse);\n  112 |             expect.soft(attempted.body, \"History is still failed: another explicit action cannot create a fresh preview/key queue.\")\n> 113 |               .toEqual(first.body);\n      |                ^\n  114 |             mark(\"A second explicit queue reached the guarded HTTP boundary before any authorized reconciliation.\");\n  115 |           }\n  116 |         }\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts:113:16",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts",
+            "column": 16,
+            "line": 113
+          }
+        },
+        {
+          "message": "Error: An unresolved committed queue cannot become a second fixture job.\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 1\nReceived: 2\n\n  116 |         }\n  117 |       }\n> 118 |       expect.soft(api.jobs.size, \"An unresolved committed queue cannot become a second fixture job.\").toBe(1);\n      |                                                                                                       ^\n  119 |       const beforeClose = api.calls(\"POST\", historyPath()).length;\n  120 |       await closePane(page, api);\n  121 |       if (pendingResponse) {\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts:118:103",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts",
+            "column": 103,
+            "line": 118
+          }
+        },
+        {
+          "message": "Error: Only the first reconciled job and one genuinely new consented job may exist.\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 2\nReceived: 3\n\n  159 |       expect(later.body.previewId).not.toBe(first.body.previewId);\n  160 |       expect(later.body.idempotencyKey).not.toBe(first.body.idempotencyKey);\n> 161 |       expect.soft(api.jobs.size, \"Only the first reconciled job and one genuinely new consented job may exist.\").toBe(2);\n      |                                                                                                                  ^\n  162 |       await deliver(allowed);\n  163 |       await expect(rows(page).filter({ hasText: receipt(api, later).id })).toBeVisible();\n  164 |       mark(\"Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt.\");\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts:161:114",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts",
+            "column": 114,
+            "line": 161
+          }
+        }
+      ],
+      "scope": "Real application browser HTTP",
+      "requests": 28,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "One original guarded queue committed before its misleading 5xx response; no optimistic row.",
+        "503 history supplied no matching receipt and no automatic preview/queue occurred.",
+        "A second explicit queue reached the guarded HTTP boundary before any authorized reconciliation.",
+        "Pane close/reopen cleared payloads, preserved focus, made no automatic POST and failed history still blocked new work.",
+        "Finding close/reopen remained blocked through a further 503 without an authorized matching receipt.",
+        "Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-queue-evidence",
+          "value": {
+            "scope": "Real application UI and typed client over original guarded synthetic HTTP",
+            "status": 502,
+            "code": "conflict",
+            "first": {
+              "previewId": "ea0000000000000000000000000003e9",
+              "idempotencyKey": "91494a75-69c9-4cfe-a18f-1e4f38c765b9",
+              "consent": true
+            },
+            "attemptedBeforeReconciliation": {
+              "previewId": "ea0000000000000000000000000003eb",
+              "idempotencyKey": "40233184-a0e0-4b1d-964d-896e08b46786",
+              "consent": true
+            },
+            "authorizedLater": {
+              "previewId": "ea0000000000000000000000000003ed",
+              "idempotencyKey": "4861882f-d628-4251-a822-eb5436374b75",
+              "consent": true
+            },
+            "jobs": [
+              {
+                "id": "fa0000000000000000000000000003ea",
+                "previewId": "ea0000000000000000000000000003e9",
+                "idempotencyKey": "91494a75-69c9-4cfe-a18f-1e4f38c765b9"
+              },
+              {
+                "id": "fa0000000000000000000000000003ec",
+                "previewId": "ea0000000000000000000000000003eb",
+                "idempotencyKey": "40233184-a0e0-4b1d-964d-896e08b46786"
+              },
+              {
+                "id": "fa0000000000000000000000000003ee",
+                "previewId": "ea0000000000000000000000000003ed",
+                "idempotencyKey": "4861882f-d628-4251-a822-eb5436374b75"
+              }
+            ],
+            "phases": [
+              "One original guarded queue committed before its misleading 5xx response; no optimistic row.",
+              "503 history supplied no matching receipt and no automatic preview/queue occurred.",
+              "A second explicit queue reached the guarded HTTP boundary before any authorized reconciliation.",
+              "Pane close/reopen cleared payloads, preserved focus, made no automatic POST and failed history still blocked new work.",
+              "Finding close/reopen remained blocked through a further 503 without an authorized matching receipt.",
+              "Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt."
+            ],
+            "downstreamBlocked": []
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-queue.spec.ts",
+      "line": 60,
+      "title": "500/invalid-input: committed first job, failed history, close/reopen and authorized recovery",
+      "run": "reviewed-queue-red-v3",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 5649,
+      "errors": [
+        {
+          "message": "Error: History is still failed: another explicit action cannot create a fresh preview/key queue.\n\nexpect(received).toEqual(expected) // deep equality\n\n- Expected  - 2\n+ Received  + 2\n\n  Object {\n    \"consent\": true,\n-   \"idempotencyKey\": \"666ac36c-acde-4e3b-9d39-ae5c5c900340\",\n-   \"previewId\": \"ea0000000000000000000000000003e9\",\n+   \"idempotencyKey\": \"3c5fa265-04fa-4e9f-8ffd-205645400144\",\n+   \"previewId\": \"ea0000000000000000000000000003eb\",\n  }\n\n  111 |             attempted = await arrived(pendingResponse);\n  112 |             expect.soft(attempted.body, \"History is still failed: another explicit action cannot create a fresh preview/key queue.\")\n> 113 |               .toEqual(first.body);\n      |                ^\n  114 |             mark(\"A second explicit queue reached the guarded HTTP boundary before any authorized reconciliation.\");\n  115 |           }\n  116 |         }\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts:113:16",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts",
+            "column": 16,
+            "line": 113
+          }
+        },
+        {
+          "message": "Error: An unresolved committed queue cannot become a second fixture job.\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 1\nReceived: 2\n\n  116 |         }\n  117 |       }\n> 118 |       expect.soft(api.jobs.size, \"An unresolved committed queue cannot become a second fixture job.\").toBe(1);\n      |                                                                                                       ^\n  119 |       const beforeClose = api.calls(\"POST\", historyPath()).length;\n  120 |       await closePane(page, api);\n  121 |       if (pendingResponse) {\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts:118:103",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts",
+            "column": 103,
+            "line": 118
+          }
+        },
+        {
+          "message": "Error: Only the first reconciled job and one genuinely new consented job may exist.\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 2\nReceived: 3\n\n  159 |       expect(later.body.previewId).not.toBe(first.body.previewId);\n  160 |       expect(later.body.idempotencyKey).not.toBe(first.body.idempotencyKey);\n> 161 |       expect.soft(api.jobs.size, \"Only the first reconciled job and one genuinely new consented job may exist.\").toBe(2);\n      |                                                                                                                  ^\n  162 |       await deliver(allowed);\n  163 |       await expect(rows(page).filter({ hasText: receipt(api, later).id })).toBeVisible();\n  164 |       mark(\"Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt.\");\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts:161:114",
+          "location": {
+            "file": "C:\\bahadr\\serious\\aspm\\web\\tests\\ai-assessment-review-queue.spec.ts",
+            "column": 114,
+            "line": 161
+          }
+        }
+      ],
+      "scope": "Real application browser HTTP",
+      "requests": 28,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "One original guarded queue committed before its misleading 5xx response; no optimistic row.",
+        "503 history supplied no matching receipt and no automatic preview/queue occurred.",
+        "A second explicit queue reached the guarded HTTP boundary before any authorized reconciliation.",
+        "Pane close/reopen cleared payloads, preserved focus, made no automatic POST and failed history still blocked new work.",
+        "Finding close/reopen remained blocked through a further 503 without an authorized matching receipt.",
+        "Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-queue-evidence",
+          "value": {
+            "scope": "Real application UI and typed client over original guarded synthetic HTTP",
+            "status": 500,
+            "code": "invalid-input",
+            "first": {
+              "previewId": "ea0000000000000000000000000003e9",
+              "idempotencyKey": "666ac36c-acde-4e3b-9d39-ae5c5c900340",
+              "consent": true
+            },
+            "attemptedBeforeReconciliation": {
+              "previewId": "ea0000000000000000000000000003eb",
+              "idempotencyKey": "3c5fa265-04fa-4e9f-8ffd-205645400144",
+              "consent": true
+            },
+            "authorizedLater": {
+              "previewId": "ea0000000000000000000000000003ed",
+              "idempotencyKey": "3a14f3ec-9f45-412d-ba7d-fa8089270749",
+              "consent": true
+            },
+            "jobs": [
+              {
+                "id": "fa0000000000000000000000000003ea",
+                "previewId": "ea0000000000000000000000000003e9",
+                "idempotencyKey": "666ac36c-acde-4e3b-9d39-ae5c5c900340"
+              },
+              {
+                "id": "fa0000000000000000000000000003ec",
+                "previewId": "ea0000000000000000000000000003eb",
+                "idempotencyKey": "3c5fa265-04fa-4e9f-8ffd-205645400144"
+              },
+              {
+                "id": "fa0000000000000000000000000003ee",
+                "previewId": "ea0000000000000000000000000003ed",
+                "idempotencyKey": "3a14f3ec-9f45-412d-ba7d-fa8089270749"
+              }
+            ],
+            "phases": [
+              "One original guarded queue committed before its misleading 5xx response; no optimistic row.",
+              "503 history supplied no matching receipt and no automatic preview/queue occurred.",
+              "A second explicit queue reached the guarded HTTP boundary before any authorized reconciliation.",
+              "Pane close/reopen cleared payloads, preserved focus, made no automatic POST and failed history still blocked new work.",
+              "Finding close/reopen remained blocked through a further 503 without an authorized matching receipt.",
+              "Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt."
+            ],
+            "downstreamBlocked": []
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-queue.spec.ts",
+      "line": 60,
+      "title": "503/conflict: committed first job, failed history, close/reopen and authorized recovery",
+      "run": "reviewed-queue-red-v3",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 4232,
+      "errors": [],
+      "scope": "Real application browser HTTP",
+      "requests": 26,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "One original guarded queue committed before its misleading 5xx response; no optimistic row.",
+        "503 history supplied no matching receipt and no automatic preview/queue occurred.",
+        "Pane close/reopen cleared payloads, preserved focus, made no automatic POST and failed history still blocked new work.",
+        "Finding close/reopen remained blocked through a further 503 without an authorized matching receipt.",
+        "Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt."
+      ],
+      "evidence": [
+        {
+          "name": "reviewed-queue-evidence",
+          "value": {
+            "scope": "Real application UI and typed client over original guarded synthetic HTTP",
+            "status": 503,
+            "code": "conflict",
+            "first": {
+              "previewId": "ea0000000000000000000000000003e9",
+              "idempotencyKey": "3f3fdb86-bcec-44e9-b915-bdf4eee2a2ea",
+              "consent": true
+            },
+            "attemptedBeforeReconciliation": null,
+            "authorizedLater": {
+              "previewId": "ea0000000000000000000000000003eb",
+              "idempotencyKey": "d24a8aad-4d71-4c9f-bedd-44e6a2464beb",
+              "consent": true
+            },
+            "jobs": [
+              {
+                "id": "fa0000000000000000000000000003ea",
+                "previewId": "ea0000000000000000000000000003e9",
+                "idempotencyKey": "3f3fdb86-bcec-44e9-b915-bdf4eee2a2ea"
+              },
+              {
+                "id": "fa0000000000000000000000000003ec",
+                "previewId": "ea0000000000000000000000000003eb",
+                "idempotencyKey": "d24a8aad-4d71-4c9f-bedd-44e6a2464beb"
+              }
+            ],
+            "phases": [
+              "One original guarded queue committed before its misleading 5xx response; no optimistic row.",
+              "503 history supplied no matching receipt and no automatic preview/queue occurred.",
+              "Pane close/reopen cleared payloads, preserved focus, made no automatic POST and failed history still blocked new work.",
+              "Finding close/reopen remained blocked through a further 503 without an authorized matching receipt.",
+              "Authorized matching history permitted a genuinely new separately reviewed preview/key and canonical queue receipt."
+            ],
+            "downstreamBlocked": []
+          }
+        }
+      ],
+      "downstreamBlocked": []
+    },
+    {
+      "file": "ai-assessment-review-queue.spec.ts",
+      "line": 176,
+      "title": "Definitive initial 409 persists no job and allows a new explicit reviewed intent",
+      "run": "reviewed-queue-red-v3",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "retry": 0,
+      "durationMs": 2808,
+      "errors": [],
+      "scope": "Real application browser HTTP",
+      "requests": 14,
+      "violations": [],
+      "externalAttempts": 0,
+      "pageErrors": [],
+      "reached": [
+        "Actual initial expiry 409, not a misleading 5xx: no job, no permanent ambiguity latch, no automatic POST, fresh explicit consent succeeded."
+      ],
+      "evidence": [],
+      "downstreamBlocked": []
+    }
+  ],
+  "blocked": {
+    "afterRedAssertions": "None: soft invariant assertions recorded the defect while reaching close/reopen, 503 withholding and authorized recovery tails.",
+    "optionalSameKeyReplay": "NOT OFFERED by the held app; conditional replay branches were not executed. The current implementation takes the no-replay history barrier path.",
+    "fullAppPreLayoutRace": "NOT DEMONSTRATED. Reachable ordered browser controls passed with original cleanup; isolated hook RED is not promoted to full-app race proof.",
+    "internalBindingFreeze": "BLOCKED pending explicit parent approval of CONTRACT.txt existing-export unit binding.",
+    "productionRemediationAndGreen": "NOT RUN; production remains held for a separate UI coder.",
+    "backendRuntimeProviderHTTP2": "OUT OF SCOPE and not executed."
+  },
+  "diagnostics": [
+    {
+      "run": "reviewed-queue-red-v2",
+      "qualification": "Do not use as final held evidence: output truncation interrupted post-run guard verification. Raw test results are retained; rerun v3 completed both guards."
+    }
+  ],
+  "newSources": [
+    {
+      "path": "web\\tests\\ai-assessment-review-history.spec.ts",
+      "bytes": 12289,
+      "sha256": "0fd06d0dcf28f1188f17b5e4edbaeb79a89b1db92fc34b81b7d5307b7028c091"
+    },
+    {
+      "path": "web\\tests\\ai-assessment-review-queue.spec.ts",
+      "bytes": 12560,
+      "sha256": "c66dcc8c8ce25b82e854906988600e7e0c6ad5c1f44c6cf761c2819b049b122a"
+    }
+  ]
+}

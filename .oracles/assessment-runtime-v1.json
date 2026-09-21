@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "scope": "standalone-assessment-runtime-v1",
+  "phase": "pre-code-red",
+  "author": "independent-runtime-test-author-recovered-handoff",
+  "capturedAt": "2026-09-21T02:09:06.505Z",
+  "redEvidence": {
+    "sha256": "097c32c7a56b7f01e7605ee37a7b2c93bef1b42e5307637e3d9ef2b4ca70692e",
+    "exitCode": 1
+  },
+  "protectedRoots": [
+    "tests/assessment_runtime"
+  ],
+  "bindingPaths": [],
+  "files": [
+    {
+      "path": "go.mod",
+      "normalization": "none",
+      "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"
+    },
+    {
+      "path": "go.sum",
+      "normalization": "none",
+      "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"
+    },
+    {
+      "path": "tests/assessment_runtime/command_test.go",
+      "normalization": "none",
+      "sha256": "7e82c80db6cda881855d11341f0dc99f818b4c808a0ffa8e97e00fcb07831d62"
+    },
+    {
+      "path": "tests/assessment_runtime/contract_test.go",
+      "normalization": "none",
+      "sha256": "ab5317421df4f0ce478f07d7ba741b02c2373a6e2640ed00e575894c2efe158f"
+    },
+    {
+      "path": "tests/assessment_runtime/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+    },
+    {
+      "path": "tests/assessment_runtime/environment_probe_test.go",
+      "normalization": "none",
+      "sha256": "9f92ac387c5038ea9a6e32f8889bcae56982162aabfbef8f5a0e73d15a8736e6"
+    },
+    {
+      "path": "tests/assessment_runtime/environment_test.go",
+      "normalization": "none",
+      "sha256": "46515795b1cfa3ecdd6710ab18b511eb4e1ef00598d7d9a1deb097ae8a9f051d"
+    },
+    {
+      "path": "tests/assessment_runtime/fixture_calibration_test.go",
+      "normalization": "none",
+      "sha256": "06dd138e1c71a072e4df47f3800db0ccb11a5c24362f16deb7c85115794e4522"
+    },
+    {
+      "path": "tests/assessment_runtime/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "2b90db2c6ec5bcda35ad26b88b43bedd98230e11ab8398da659ad4913ad28831"
+    },
+    {
+      "path": "tests/assessment_runtime/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "e3c11e1cf7369e4b3108321c6019bf762c9d1b190cae6a02ce66c3ec6ff8670d"
+    },
+    {
+      "path": "tests/assessment_runtime/native_test.go",
+      "normalization": "none",
+      "sha256": "3ac099f461cf957f15d7e3aae6e9b98ebb7eed10ee39dc87a426e2aeb399b233"
+    },
+    {
+      "path": "tests/assessment_runtime/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "8c0b88b08fbdaa64f6e1f19c9a057a42285d068121cc723ad1cbec359bb5cbb8"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "1b7fab2b625f380fdb3190a8f149456d0349e0c325852884fa100f11f59f8db5"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/CALIBRATION.json",
+      "normalization": "none",
+      "sha256": "9ac6fcfc58459af26d8740c413da71927cb52a215ddf6aeff37a0e3f81b7d510"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/DECISIONS.json",
+      "normalization": "none",
+      "sha256": "7e138ae61fd97cc850aa9bb2da2be220946abac6cfce21751a35dba3c525e634"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "6401d397ff1a717c5c75069833f968df1bef9a6883ebbaf4e50b0f13a028f928"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "7d286ebd18e26407d113b68aa7de3d99edd5bdefcf3d6759ab8f5685e1f3a9a7"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "84e4a8e198d84f280638394c04329dac1858b3b7762a61bb4611eda3fa4f5480"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "beaf486f7f7aecc1832cb3bf717b47c12f0840f0a691a4a4021a35007af12fbc"
+    },
+    {
+      "path": "tests/assessment_runtime/reviews/v1/SOURCE-WITNESSES.json",
+      "normalization": "none",
+      "sha256": "43950e2d747bb945e2fb5f3660eff80e4bb124e5116c749cad5ed7c59f4279ad"
+    },
+    {
+      "path": "tests/assessment_runtime/roles_test.go",
+      "normalization": "none",
+      "sha256": "8b58de99ca865b736af7a30c6d63cf9524a232d5232e4872274b536c5b8194ff"
+    },
+    {
+      "path": "tests/assessment_runtime/Test-AssessmentRuntime.ps1",
+      "normalization": "none",
+      "sha256": "9973c2305645d60dd7f9c64a95d629e76d50582a07fae874322668cf00453454"
+    },
+    {
+      "path": "tests/collection_runtime/contract_test.go",
+      "normalization": "none",
+      "sha256": "7cb729f73f8adaacb7bdc451d445a1df1797b4225689a99855a8077e9872edbf"
+    },
+    {
+      "path": "tests/collection_runtime/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "0374269448cb623eaac25a3a1d89fa4044ca318e2dd96d8c2863fa4048c798db"
+    },
+    {
+      "path": "tests/collection_runtime/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "b77370299237c1f889ea88f8ee11fc4ab36e1a816f18a3f3c52370f4bd95099e"
+    },
+    {
+      "path": "tests/collection_runtime/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "44584fc1dfd467650b25baeee33ebadaf2d6370b0859bb63a4c4fff39425ddb6"
+    },
+    {
+      "path": "tests/collection_runtime/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "9d711cb8145c562958a299824bbcc92b2f4e5c6df5fb617491600a1756a38ffc"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "51c6cdea596bbc10714ba4b538ee1c060a6aede3819546ec83b75d8526f9b7e2"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/DECISIONS.json",
+      "normalization": "none",
+      "sha256": "4afa83a074f42e5f6b89345489a19343cb1cc49885ac09e2031ca2141d2cf1ae"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "c4baba8c533d43b439c65312b26b448271e28481be44696215bdf878f8f90c3d"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "12fc1da8403abf4897e278477658233bef72372f4b17d6979c62b0ff9bdc7421"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "ece8595b164a9596fae71a1c7e42459925a1b173ef16945f3711b77c7339cc91"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "80792c33bd13c30a14d219667b0bc0c9994d0c133b89b5fdf1830a8afbaf2dfc"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "5c31f9e94a5ac53e8b0ad60a25619f767d10851cf8ed52dc63bc5e8f2872d7d0"
+    },
+    {
+      "path": "tests/collection_runtime/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "ff37577ae5055e4242b76978d58f7bf90198cf36fec36c0b42c6390acf92878e"
+    },
+    {
+      "path": "tests/collection_runtime/rights_calibration_test.go",
+      "normalization": "none",
+      "sha256": "00e03fafd9f28d5184df33d00f1a33e89e02fe052d7ca740e31a046ab3bec1d6"
+    },
+    {
+      "path": "tests/collection_runtime/roles_test.go",
+      "normalization": "none",
+      "sha256": "efec6cd742ddcbba5c1055967ed203798852dc3724e18c0fbc21aaa104ef189f"
+    },
+    {
+      "path": "tests/collection_runtime/Test-CollectionRuntime.ps1",
+      "normalization": "none",
+      "sha256": "e7546dff6417c13eb891029b7051dadddc92a45de77e32f188f002142834b1ad"
+    },
+    {
+      "path": "tests/delivery_runtime/contract_test.go",
+      "normalization": "none",
+      "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"
+    },
+    {
+      "path": "tests/delivery_runtime/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "fdcef55a75e24400db4dceb3d355aeaa49c320a9c160fb3b433bc08928f00029"
+    },
+    {
+      "path": "tests/delivery_runtime/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"
+    },
+    {
+      "path": "tests/delivery_runtime/HANDOFF.txt",
+      "normalization": "none",
+      "sha256": "5b9571f97e8c81a2cb30d14e8feeae85c03714dfaa818b3f2a6f929544c146f6"
+    },
+    {
+      "path": "tests/delivery_runtime/production_bindings_test.go",
+      "normalization": "none",
+      "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/BEFORE.json",
+      "normalization": "none",
+      "sha256": "f3bef3f55ea21280bc591c133e666d51f7de87a850d88eee4ea666e2fecd7a7c"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/EVIDENCE.json",
+      "normalization": "none",
+      "sha256": "636c447278eb6fc4bd6e2a3a3a18ff726704c97ae88f7a7a41ebde52f8f158fa"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/GUARDS-A1.json",
+      "normalization": "none",
+      "sha256": "525cd924fa404ab9ea216239f25029ffca145ac62fddc3048fe2cd27cb343638"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/GUARDS.json",
+      "normalization": "none",
+      "sha256": "973a327fce537d56c4ad9f3401a3cf4a3b261fd6ce2e0ee8742081d788d58e25"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/HANDOFF-A1.json",
+      "normalization": "none",
+      "sha256": "44fd8929c13b168b0f000a4569c927430fd0e11f21525066c6853923660a98cb"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/HANDOFF-A1.txt",
+      "normalization": "none",
+      "sha256": "4cbd1f4c9caa026bd7b226c5dec8c9ddb54e2d66eb1313310379aeee069e8f6f"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/HANDOFF.json",
+      "normalization": "none",
+      "sha256": "6ab157d8a045800fc5e48979ce1843de9503f3ccd17cf4916d163022a72bc102"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET-A1.json",
+      "normalization": "none",
+      "sha256": "8059d53a9e8a264e30a2d49e8c6bbd98516daf583ec433abdc63b7d376c7faed"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET-A1.sha256",
+      "normalization": "none",
+      "sha256": "04d00c1413d0b40955758155db3a5ae3ac738e9bfe879dc5c675a81b2a4d3542"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET.json",
+      "normalization": "none",
+      "sha256": "1c06494b330c64103478c0cd4b65eb6cdd17322f54cde5ca2f9abb300644fa69"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/PACKET.sha256",
+      "normalization": "none",
+      "sha256": "6f2a25922855161c501da88e241a85c110d7589d2476de52259235bff851a5ba"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/RED-A1.json",
+      "normalization": "none",
+      "sha256": "ba114795c1791c6d54d88e4e6cbc82bc2abfe0ff75893d9451ff810d969d5b18"
+    },
+    {
+      "path": "tests/delivery_runtime/reviews/v1/RED.json",
+      "normalization": "none",
+      "sha256": "6077f5b4b34974bf667e13b6c8df722ae90fdcce6bab7c348a885402a61dc2ea"
+    },
+    {
+      "path": "tests/delivery_runtime/roles_test.go",
+      "normalization": "none",
+      "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"
+    },
+    {
+      "path": "tests/delivery_runtime/Test-DeliveryRuntime.ps1",
+      "normalization": "none",
+      "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"
+    },
+    {
+      "path": "tests/delivery_runtime/tls_range_test.go",
+      "normalization": "none",
+      "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"
+    },
+    {
+      "path": "tests/runtime_roles/bindings_test.go",
+      "normalization": "none",
+      "sha256": "ec5e14d31a26d0ae29a1bf74e3a198123e86ff078e322ad9c8a7df3aa2f18c55"
+    },
+    {
+      "path": "tests/runtime_roles/CONTRACT.txt",
+      "normalization": "none",
+      "sha256": "76d190e54ca3cdc66b9376fed14b27318fb219402d2164dd442f7b32039032ee"
+    },
+    {
+      "path": "tests/runtime_roles/fixtures_test.go",
+      "normalization": "none",
+      "sha256": "8255591dca603b9a1da9eabd2ce76c8aeaf200d2bda39d828cfe3dc3e8a610cf"
+    },
+    {
+      "path": "tests/runtime_roles/FROZEN.sha256",
+      "normalization": "none",
+      "sha256": "bcc63e95af0cc3686fb5d99f85dc75c72246e46c734df8de926c049d765d38d5"
+    },
+    {
+      "path": "tests/runtime_roles/roles_test.go",
+      "normalization": "none",
+      "sha256": "ad7a1972c99d74fb91a8c5efbf796bece828d5842f2d529386213c87f9052bf1"
+    },
+    {
+      "path": "tests/runtime_roles/Test-RuntimeRoles.ps1",
+      "normalization": "none",
+      "sha256": "69cb370026c78b22262e278311914560e70426993a0429ed891f89d49efdcf54"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+AI ASSESSMENTS V1 - INDEPENDENT TEST-AUTHOR HANDOFF
+=================================================
+
+Status: FROZEN UNSIGNED CONTRACT/RED PACKET; STOP FOR PARENT REVIEW/SEAL/CODER.
+Author: independent-ai-assessments-test-author-20260920
+Session: 2c52af96-fb91-4017-8ee3-b2f684c354d7
+Published HEAD remains 98a41ced71c09e71c8cc2bd158678fd52268498c.
+This author did not implement production, UI, worker commands or deployment.
+
+Read first
+----------
+CONTRACT.txt was written before the tests and remains byte-identical to the
+initial contract witness. reviews\v1\DECISIONS.json records its explicit choices.
+reviews\v1\WINDOW-CLARIFICATION.txt makes the conservative trailing-window
+interpretation precise during pre-implementation author review; parent must
+approve it with the contract. It is not a product-driven green patch.
+
+Parent decision points include:
+  - Explicit <=32-KiB user-reviewed derived context, real finding/observation
+    linkage, exact bytes/digest, no claim that edited context is scanner proof.
+  - Requester-bound immutable preview, five-minute consent bounded by grant
+    expiry, second explicit consent, no automatic raw report/notes upload.
+  - Current authority at preview/queue/pre-I/O/during-held-I/O/fenced finalization.
+  - One trusted durable scope across profiles/workspaces/replicas, coherent
+    conservative concurrency and trailing request-window limits.
+  - Single dispatch attempt and committed marker; expired dispatch never retries.
+  - Explicit direct normal-TLS client, no storage capability on the worker,
+    and no claim that loopback proves downstream locality or geography.
+  - An existing-parser subtype extension is required: the published adapter
+    currently folds schema/refusal/grounding into ErrOutput. Keep old
+    errors.Is(ErrOutput) compatibility, expose bounded distinctions there, and
+    do not build a second protocol client in the worker.
+
+Small exact surfaces
+--------------------
+Finding-scoped assessment-previews and assessments enqueue/history;
+workspace-scoped /api/v1/ai/assessments/{id} detail/cancel.
+New app.Config.AssessmentScope and app.OpenAssessmentWorker with the exact
+AssessmentWorkerConfig/ProcessNext/Ping/Close vocabulary in CONTRACT.txt.
+production_bindings_test.go only constructs and forwards these public values.
+
+Eight normal integration narratives
+-----------------------------------
+AA1 reviewed preview/consent/RBAC/privacy and denied writes/current pre-dispatch;
+AA2 immutable queue/replay/history/reopen and an old approved observation/context;
+AA3 four existing native adapters, grounded advisory/provenance/actual usage;
+AA4 distinct safe schema/refusal/grounding/tools/auth/rate/provider/bounds/timeout;
+AA5 held native I/O, committed marker, responsive one-slot independent pool;
+AA6 active grant expiry/revoke/profile/policy/requester changes and issuer control;
+AA7 two-worker/profile shared admission, expired dispatch and stale fencing;
+AA8 exact published-V7/fresh/reopen migration with genuine legacy API-created data.
+
+All results remain advisory. Finding/source/workflow/owner/risk/notes/intake
+snapshots must not change because of assessment. Native HTTP fixtures respond
+to the real existing adapters; no queue, resolver permission or successful
+assessment is implemented in a test binding.
+
+Actual evidence, not inferred green
+-----------------------------------
+author-assess-contract-red-20260920-03:
+  Full production-binding package fails compilation on:
+    app.Config.AssessmentScope
+    app.OpenAssessmentWorker
+    app.AssessmentWorkerConfig
+  Eight planned normal narratives, ZERO executed, ALL EIGHT BLOCKED/NOT RUN.
+  This is honest constructor/compile RED, not behavioral failure of eight cases.
+
+author-assess-fixture-20260920-04:
+  One separate fixture-only case PASSED.
+  Real owned PG/API/S3 asset/import ingestion produced a finding and observation.
+  Four real existing provider-adapter calls exercised owned native HTTP/TLS
+  Responses, Messages and compatible Chat fixtures. No live model/account.
+  Exact published-V7 production dependency closure plus a new API/intake-only
+  helper populated real pre-upgrade users/assets/findings/observations/notes and
+  encrypted AI profile/policy/grant data. No SQL business-row seeds.
+  No preview, queue, assessment worker, fencing/quota or V8 acceptance ran.
+
+author-assess-v7-upgrade-red-20260920-03:
+  Actual populated published-V7 -> current-core prerequisite FAILED.
+  The actual ledger remains exactly 1..7; required exact 1..8 is absent.
+  One selected top-level prerequisite and one nested upgrade failed.
+  Assertions after that exact-ledger failure are BLOCKED/NOT RUN.
+  This is real migration RED, not current-table deletion/version relabelling.
+
+Planned existing-test compatibility RED
+---------------------------------------
+Only two current-ledger assertions in EACH existing upgrade file now require
+exact 1..8 rather than exact 1..7, with minimal necessary messages:
+  tests\source_collection\upgrade_test.go
+  tests\ai_configuration\upgrade_test.go
+Historical V5/V6 DDL, old version baselines, legacy definitions and ALL
+source/API/grant/evidence/reopen assertions are otherwise byte-identical.
+COMPATIBILITY-V8.json proves exact reconstruction, not a >= relaxation.
+
+author-assess-v8-ai-compat-red-20260920-01:
+  AI7: 6 top-level passed, 1 failed; nested 1 passed, 1 failed; no skips.
+  Only the planned V8 upgrade requirement fails; its later tails are blocked.
+author-assess-v8-source-compat-red-20260920-01:
+  Source9: 8 top-level passed, 1 failed; nested 4 passed, 2 failed; no skips.
+  Current-core/current-worker upgrade branches fail the planned V8 ledger;
+  their later unchanged API/source/evidence/reopen assertions are blocked.
+
+There is NO new durable-job GREEN, live-provider evaluation, quality/retention/
+geography guarantee, token-rate/cost ceiling, full M11g or complete M11 claim.
+The small shared pool scope is not full account/model/region quota mapping.
+
+Preservation and provenance
+---------------------------
+All 1368 published tracked files were snapshotted. Exactly the two authorized
+upgrade files differ; the other 1366 remain byte-identical, including production,
+UI, runtime/deploy controls, dependencies and historical manifests/signatures.
+Only those two truly amended files and hash references are archived under
+reviews\v1\history\v8-compatibility. No recursive review-history copies.
+
+testdata\published-98a41ce-schema-v7.json contains seven exact committed DDL
+fragments with source/blob/value hashes and 25 legacy relations.
+testdata\published-v7-source-inputs.json pins 71 production app dependency inputs.
+The pinned fixture build copies only that production closure into an isolated
+per-run project cache, never old test/review trees. Its seed helper uses actual
+published API/session/intake operations; private input/output stays in process
+pipes and is not public evidence. Fixture namespaces/prefixes are owned/cleaned.
+
+New helper sources, bindings, exact provider request/prompt/privacy checks and
+old-file compatibility deltas are hash-bound by reviews\v1\PACKET.json.
+reviews\v1\PACKET.sha256 hashes that unsigned packet. RED, CALIBRATION, EVIDENCE,
+SOURCE-WITNESSES, COMPATIBILITY-V8 and GUARDS contain the actual receipts/hashes.
+Earlier unique exploratory labels remain in place, not overwritten or promoted
+to final evidence.
+
+Reproduce from C:\bahadr\serious\aspm with unused labels
+------------------------------------------------------
+  .\tests\ai_assessments\Test-AIAssessments.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-hyphenated-label>'
+  .\tests\ai_assessments\Test-AIAssessments.ps1 -RuntimeConfig '<private-runtime.json>' -Mode FixtureCalibration -OutputName '<fresh-hyphenated-label>'
+  .\tests\ai_assessments\Test-AIAssessments.ps1 -RuntimeConfig '<private-runtime.json>' -Mode UpgradePrerequisite -OutputName '<fresh-hyphenated-label>'
+  .\tests\ai_configuration\Test-AIConfiguration.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+  .\tests\source_collection\Test-SourceCollection.ps1 -RuntimeConfig '<private-runtime.json>' -Mode Contract -OutputName '<fresh-label>'
+
+Cached Go 1.27.1, readonly/offline modules, owned PG/S3 and native fixtures only.
+No dependencies, provider accounts, unrelated schemas/volumes/policies, cluster
+or OS settings were changed. No agents, commits or private signing authority.
+Old signatures remain historical. Parent verifies the contract decisions,
+planned V8 evolution, exact RED and bytes, creates the new control seal, then
+assigns a SEPARATE implementation coder. This independent author stops here.

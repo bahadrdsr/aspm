@@ -1,0 +1,352 @@
+//go:build integration
+
+package assessment_runtime
+
+import (
+	"context"
+	"crypto/tls"
+	"encoding/base64"
+	"errors"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/bahadrdsr/aspm/internal/evidence"
+)
+
+func TestAR1CoreServiceScopeAndActualAssessmentServiceAndCommand(t *testing.T) {
+	f := newFixture(t)
+	n := newNative(f)
+	core := f.coreService("", f.key, false)
+	finding := core.seed()
+	p, pol, g, key := core.profile(n, false)
+	core.json(core.admin, "POST", "/api/v1/findings/"+finding.ID+"/assessment-previews", map[string]any{
+		"observationId": finding.Observations[0].ID, "profileId": p.ID, "grantId": g.ID, "context": reviewedText, "reviewed": true}, 503)
+	check(t, n.calls.Load() == 0, "empty core scope enabled/probed an assessment")
+	stopRole(t, core.role)
+	t.Setenv("ASPM_ASSESSMENT_SCOPE", f.scope)
+	coreConfig, err := Production.Environment("core")
+	must(t, "parse explicitly enabled core assessment scope", err)
+	check(t, coreConfig.Scope == f.scope, "core environment discarded explicit assessment scope")
+	core.role = startRole(t, f.ctx, "core", coreConfig)
+	job := core.enqueue(finding, p, pol, g, "real-service")
+	before, storage := f.domainSnapshot(), f.storeCalls.Load()
+	n.arm(job, key, false)
+	config := workerEnvironment(t, f, n, f.key)
+	check(t, defaults(config), "chosen runtime defaults differ")
+	workerOnly(t, config)
+	assertClient(t, config)
+	role := startRole(t, f.ctx, "assessment", config)
+	assessmentHealth(t, role, f.scope)
+	got := core.await(job.ID, "succeeded")
+	core.assertAdvisory(got, job)
+	check(t, reflect.DeepEqual(before, f.domainSnapshot()) && f.storeCalls.Load() == storage, "assessment SERVICE changed finding/configuration data or read raw S3")
+	stopRole(t, role)
+
+	next := core.enqueue(finding, p, pol, g, "actual-compiled-command")
+	n.arm(next, key, false)
+	command := startCommand(t, f, config)
+	assessmentHealth(t, command.role, f.scope)
+	core.assertAdvisory(core.await(next.ID, "succeeded"), next)
+	check(t, n.calls.Load() == 2, "service/actual command retried, fell back or called a provider before explicit work")
+	check(t, reflect.DeepEqual(before, f.domainSnapshot()) && f.storeCalls.Load() == storage, "actual command mutated source/human/configuration state or gained raw storage")
+	command.kill(t)
+	t.Log("AR1 real core Environment/Run scope forwarding, actual SERVICE and compiled assessment-worker advisory completed; no live-model claim")
+}
+
+func TestAR2DefaultsOverridesKeylessLocalAndLegacyRoleIsolation(t *testing.T) {
+	t.Run("environment-and-local-keyless", func(t *testing.T) {
+		f := newFixture(t)
+		n := newNative(f)
+		config := workerEnvironment(t, f, n, nil)
+		check(t, defaults(config) && len(config.Key) == 0 && config.Database.MaxConnections == 1 && config.WorkerID != "", "optional keyless/default role inputs differ")
+		workerOnly(t, config)
+		assertClient(t, config)
+		for name, value := range map[string]string{
+			"ASPM_S3_ENDPOINT": "malformed-unrelated", "ASPM_COLLECTION_S3_ENDPOINT": "malformed-unrelated",
+			"ASPM_BOOTSTRAP_TOKEN": "unrelated", "ASPM_ASSETS": "missing-unrelated", "ASPM_S3_PREPARE_READINESS": "not-a-boolean",
+			"ASPM_MODEL_ENDPOINT": "https://unapproved.synthetic.invalid/never", "OPENAI_API_KEY": secret(t), "AZURE_OPENAI_API_KEY": secret(t), "ANTHROPIC_API_KEY": secret(t),
+		} {
+			t.Setenv(name, value)
+		}
+		isolated, err := Production.Environment("assessment")
+		must(t, "assessment ignores unrelated capability/ambient provider inputs", err)
+		t.Cleanup(isolated.Client.CloseIdleConnections)
+		workerOnly(t, isolated)
+		assertClient(t, isolated)
+		check(t, len(isolated.Key) == 0 && isolated.Scope == f.scope && n.calls.Load() == 0, "environment inferred a credential/scope or endpoint probe")
+		selected := config
+		selected.Lease = 2 * time.Second
+		selected.AuthorizationInterval = 50 * time.Millisecond
+		selected.RequestTimeout = 4 * time.Second
+		selected.Window = 10 * time.Second
+		selected.MaxConcurrent = 2
+		selected.RequestsPerWindow = 7
+		selected.MaxInput = 4096
+		selected.MaxOutput = 256
+		selected.MaxResponse = 16384
+		selectedLimitsEnvironment(t, selected)
+		overrides, err := Production.Environment("assessment")
+		must(t, "parse explicit assessment overrides", err)
+		t.Cleanup(overrides.Client.CloseIdleConnections)
+		check(t, overrides.Lease == selected.Lease && overrides.AuthorizationInterval == selected.AuthorizationInterval &&
+			overrides.RequestTimeout == selected.RequestTimeout && overrides.Window == selected.Window && overrides.MaxConcurrent == 2 &&
+			overrides.RequestsPerWindow == 7 && overrides.MaxInput == 4096 && overrides.MaxOutput == 256 && overrides.MaxResponse == 16384,
+			"supplied duration/numeric bounds were clamped, defaulted or remapped")
+		for _, role := range []string{"core", "ingestion", "reports", "delivery", "collection"} {
+			baseEnvironment(t, f.database)
+			rawEnvironment(t, f.raw)
+			t.Setenv("ASPM_ASSETS", required(t, "ASPM_ASSESSMENT_RUNTIME_ARTIFACT_DIR"))
+			t.Setenv("ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS", "invalid-worker-only")
+			t.Setenv("ASPM_ASSESSMENT_CA_FILE", "unreadable-worker-only")
+			t.Setenv("ASPM_ASSESSMENT_SCOPE", f.scope)
+			t.Setenv("ASPM_INTEGRATION_ENCRYPTION_KEY", base64.StdEncoding.EncodeToString(f.key))
+			for name, value := range map[string]string{"ASPM_COLLECTION_S3_ENDPOINT": f.raw.Endpoint, "ASPM_COLLECTION_S3_BUCKET": f.raw.Bucket,
+				"ASPM_COLLECTION_S3_PREFIX": f.raw.Prefix, "ASPM_COLLECTION_S3_REGION": f.raw.Region,
+				"ASPM_COLLECTION_S3_ACCESS_KEY": f.raw.AccessKey, "ASPM_COLLECTION_S3_SECRET_KEY": f.raw.SecretKey} {
+				t.Setenv(name, value)
+			}
+			legacy, err := Production.Environment(role)
+			must(t, "legacy role parse isolation", err)
+			if legacy.DeliveryClient != nil {
+				legacy.DeliveryClient.CloseIdleConnections()
+			}
+			if legacy.CollectionClient != nil {
+				legacy.CollectionClient.CloseIdleConnections()
+			}
+			check(t, legacy.Client == nil, "legacy role built an assessment client")
+			if role == "core" {
+				check(t, legacy.Scope == f.scope, "core optional scope was not selected")
+			} else {
+				check(t, legacy.Scope == "", "legacy role inherited assessment scope")
+			}
+		}
+		core := f.coreService(f.scope, nil, false)
+		finding := core.seed()
+		p, pol, g, key := core.profile(n, true)
+		check(t, key == "" && !p.CredentialConfigured, "local keyless metadata invented stored credentials")
+		job := core.enqueue(finding, p, pol, g, "keyless-local-runtime")
+		n.arm(job, key, false)
+		config = workerEnvironment(t, f, n, nil)
+		role := startRole(t, f.ctx, "assessment", config)
+		assessmentHealth(t, role, f.scope)
+		core.assertAdvisory(core.await(job.ID, "succeeded"), job)
+		check(t, n.calls.Load() == 1, "local keyless execution guessed hosted credentials or fallback")
+		stopRole(t, role)
+	})
+	t.Run("hosted-without-worker-key", func(t *testing.T) {
+		f := newFixture(t)
+		n := newNative(f)
+		core := f.coreService(f.scope, f.key, false)
+		finding := core.seed()
+		p, pol, g, _ := core.profile(n, false)
+		job := core.enqueue(finding, p, pol, g, "hosted-key-not-in-worker")
+		config := workerEnvironment(t, f, n, nil)
+		role := startRole(t, f.ctx, "assessment", config)
+		assessmentHealth(t, role, f.scope)
+		got := core.await(job.ID, "invalidated", "failed")
+		check(t, got.Result == nil && got.Attempts == 0 && got.DispatchState == "not-started" && n.calls.Load() == 0,
+			"missing hosted decryption key caused a provider call, fallback key or success")
+		stopRole(t, role)
+	})
+	t.Log("AR2 explicit defaults/overrides, local-keyless preservation, no hosted key fallback and legacy parse isolation completed")
+}
+
+func TestAR3InvalidScopeKeyLimitsClientTLSAndCAFailBeforeIO(t *testing.T) {
+	check(t, Production.Run != nil && Production.Environment != nil, "actual runtime binding missing")
+	database, err := net.Listen("tcp", "127.0.0.1:0")
+	must(t, "open owned DB preflight detector", err)
+	var databaseCalls, nativeCalls, storageCalls atomic.Int32
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		for {
+			conn, err := database.Accept()
+			if err != nil {
+				return
+			}
+			databaseCalls.Add(1)
+			conn.Close()
+		}
+	}()
+	t.Cleanup(func() { database.Close(); <-done })
+	reserved, err := net.Listen("tcp", "127.0.0.1:0")
+	must(t, "reserve owned listener-conflict witness", err)
+	t.Cleanup(func() { reserved.Close() })
+	native := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) { nativeCalls.Add(1); http.Error(w, "must not probe", 503) }))
+	t.Cleanup(native.Close)
+	storage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		storageCalls.Add(1)
+		http.Error(w, "must not probe storage", 503)
+	}))
+	t.Cleanup(storage.Close)
+	client := native.Client()
+	client.Timeout = 10 * time.Second
+	tr := client.Transport.(*http.Transport)
+	tr.Proxy = nil
+	tr.TLSClientConfig.MinVersion = tls.VersionTLS12
+	config := runtimeConfig{Database: app.DatabaseConfig{DatabaseURL: "postgres://synthetic:" + nonce(t) + "@" + database.Addr().String() + "/fixture?sslmode=disable",
+		Schema: "assessment_runtime_preflight", ApplicationName: "assessment-preflight", MaxConnections: 1},
+		Listen: reserved.Addr().String(), WorkerID: "owned-preflight", Scope: "explicit-scope", Key: random(t, 32), Client: client,
+		Lease: 15 * time.Second, AuthorizationInterval: 100 * time.Millisecond, RequestTimeout: 10 * time.Second, Window: time.Minute,
+		MaxConcurrent: 1, RequestsPerWindow: 30, MaxInput: 32768, MaxOutput: 1024, MaxResponse: 65536}
+	dir := filepath.Join(required(t, "ASPM_ASSESSMENT_RUNTIME_ARTIFACT_DIR"), "invalid-ca-"+nonce(t))
+	must(t, "create only owned synthetic CA files", os.MkdirAll(dir, 0700))
+	empty, bad, large := filepath.Join(dir, "empty.pem"), filepath.Join(dir, "bad.pem"), filepath.Join(dir, "large.pem")
+	must(t, "write empty CA rejection input", os.WriteFile(empty, nil, 0600))
+	must(t, "write malformed CA rejection input", os.WriteFile(bad, []byte("not a certificate"), 0600))
+	must(t, "write bounded oversize CA rejection input", os.WriteFile(large, []byte(strings.Repeat("x", (1<<20)+1)), 0600))
+	t.Cleanup(func() { _ = os.Remove(empty); _ = os.Remove(bad); _ = os.Remove(large); _ = os.Remove(dir) })
+	for _, row := range []struct {
+		name, role string
+		change     func(*runtimeConfig)
+	}{
+		{"scope-empty", "assessment", func(c *runtimeConfig) { c.Scope = "" }},
+		{"scope-whitespace", "assessment", func(c *runtimeConfig) { c.Scope = " padded " }},
+		{"scope-control", "assessment", func(c *runtimeConfig) { c.Scope = "bad\nscope" }},
+		{"key-length", "assessment", func(c *runtimeConfig) { c.Key = make([]byte, 31) }},
+		{"lease", "assessment", func(c *runtimeConfig) { c.Lease = 0 }},
+		{"authorization", "assessment", func(c *runtimeConfig) { c.AuthorizationInterval = c.Lease }},
+		{"timeout", "assessment", func(c *runtimeConfig) { c.RequestTimeout = 31 * time.Second }},
+		{"window", "assessment", func(c *runtimeConfig) { c.Window = 0 }},
+		{"concurrency", "assessment", func(c *runtimeConfig) { c.MaxConcurrent = 17 }},
+		{"requests", "assessment", func(c *runtimeConfig) { c.RequestsPerWindow = 1001 }},
+		{"input", "assessment", func(c *runtimeConfig) { c.MaxInput = 32769 }},
+		{"output", "assessment", func(c *runtimeConfig) { c.MaxOutput = 32769 }},
+		{"response", "assessment", func(c *runtimeConfig) { c.MaxResponse = (128 << 10) + 1 }},
+		{"client", "assessment", func(c *runtimeConfig) { c.Client = nil }},
+		{"default-client", "assessment", func(c *runtimeConfig) { c.Client = http.DefaultClient }},
+		{"proxy", "assessment", func(c *runtimeConfig) {
+			c.Client = &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}, Timeout: time.Second}
+		}},
+		{"TLS", "assessment", func(c *runtimeConfig) {
+			c.Client = &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}, Timeout: time.Second}
+		}},
+		{"TLS-range", "assessment", func(c *runtimeConfig) {
+			c.Client = &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{MinVersion: tls.VersionTLS13, MaxVersion: tls.VersionTLS12}}, Timeout: time.Second}
+		}},
+		{"ServerName", "assessment", func(c *runtimeConfig) {
+			c.Client = &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{ServerName: "spoof.invalid"}}, Timeout: time.Second}
+		}},
+		{"DialTLS", "assessment", func(c *runtimeConfig) {
+			c.Client = &http.Client{Transport: &http.Transport{DialTLS: func(string, string) (net.Conn, error) { return nil, errors.New("unreviewed bypass") }}, Timeout: time.Second}
+		}},
+		{"CA-missing", "assessment", func(c *runtimeConfig) { c.CAFile = filepath.Join(dir, "does-not-exist.pem") }},
+		{"CA-empty", "assessment", func(c *runtimeConfig) { c.CAFile = empty }},
+		{"CA-invalid", "assessment", func(c *runtimeConfig) { c.CAFile = bad }},
+		{"CA-oversize", "assessment", func(c *runtimeConfig) { c.CAFile = large }},
+		{"core-scope", "core", func(c *runtimeConfig) {
+			c.Scope = " invalid "
+			c.Database.MaxConnections = 3
+			c.Assets = dir
+			c.Raw = evidence.Config{Endpoint: storage.URL, Bucket: "owned", Prefix: "raw/", Region: "us-east-1", AccessKey: "synthetic-key", SecretKey: secret(t), Timeout: time.Second}
+		}},
+	} {
+		c := config
+		row.change(&c)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		err := Production.Run(ctx, row.role, c)
+		cancel()
+		check(t, err != nil && !errors.Is(err, context.DeadlineExceeded) && !strings.Contains(strings.ToLower(err.Error()), "unsupported service role") &&
+			!strings.Contains(strings.ToLower(err.Error()), "listen") && !strings.Contains(err.Error(), config.Database.DatabaseURL),
+			"invalid "+row.name+" did not fail in pure role preflight")
+		check(t, databaseCalls.Load() == 0 && nativeCalls.Load() == 0 && storageCalls.Load() == 0, "invalid input reached I/O before preflight")
+	}
+	baseEnvironment(t, config.Database)
+	unset(t, "ASPM_DB_MAX_CONNECTIONS")
+	t.Setenv("ASPM_LISTEN", reserved.Addr().String())
+	t.Setenv("ASPM_ASSESSMENT_SCOPE", config.Scope)
+	unset(t, "ASPM_INTEGRATION_ENCRYPTION_KEY")
+	for _, row := range []struct{ name, value string }{
+		{"ASPM_ASSESSMENT_SCOPE", ""}, {"ASPM_ASSESSMENT_SCOPE", " bad "}, {"ASPM_ASSESSMENT_SCOPE", strings.Repeat("界", 43)},
+		{"ASPM_INTEGRATION_ENCRYPTION_KEY", ""}, {"ASPM_INTEGRATION_ENCRYPTION_KEY", "not-base64"},
+		{"ASPM_INTEGRATION_ENCRYPTION_KEY", base64.StdEncoding.EncodeToString(make([]byte, 31))},
+		{"ASPM_ASSESSMENT_LEASE_DURATION", ""}, {"ASPM_ASSESSMENT_AUTHORIZATION_INTERVAL", "bad"},
+		{"ASPM_ASSESSMENT_REQUEST_TIMEOUT", "31s"}, {"ASPM_ASSESSMENT_REQUEST_WINDOW", "0s"},
+		{"ASPM_ASSESSMENT_MAX_CONCURRENT", "0"}, {"ASPM_ASSESSMENT_REQUESTS_PER_WINDOW", "1.5"},
+		{"ASPM_ASSESSMENT_MAX_INPUT_BYTES", "32769"}, {"ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS", "not-an-integer"},
+		{"ASPM_ASSESSMENT_MAX_RESPONSE_BYTES", "9223372036854775808"}, {"ASPM_ASSESSMENT_CA_FILE", empty},
+	} {
+		t.Run("parse-"+row.name, func(t *testing.T) {
+			t.Setenv(row.name, row.value)
+			c, err := Production.Environment("assessment")
+			if c.Client != nil {
+				c.Client.CloseIdleConnections()
+			}
+			check(t, err != nil && !strings.Contains(strings.ToLower(err.Error()), "unsupported service role"), "supplied invalid environment defaulted or failed only because role is missing")
+			check(t, databaseCalls.Load() == 0 && nativeCalls.Load() == 0 && storageCalls.Load() == 0, "environment validation performed I/O")
+		})
+	}
+	t.Log("AR3 explicit invalid scope/key/limits/client/TLS/CA rejected before DB/schema/listener/provider/storage I/O")
+}
+
+func TestAR4ContextCancellationAndFreshCommandPreserveDispatchUncertaintyAndQuota(t *testing.T) {
+	for _, kind := range []string{"Run-context", "actual-command-crash"} {
+		t.Run(kind, func(t *testing.T) {
+			f := newFixture(t)
+			n := newNative(f)
+			core := f.coreService(f.scope, f.key, false)
+			finding := core.seed()
+			p, pol, g, key := core.profile(n, false)
+			job := core.enqueue(finding, p, pol, g, "held-"+kind)
+			held := n.arm(job, key, true)
+			config := workerEnvironment(t, f, n, f.key)
+			config.Lease = time.Second
+			config.AuthorizationInterval = 25 * time.Millisecond
+			config.RequestTimeout = 5 * time.Second
+			config.Window = 3 * time.Second
+			config.RequestsPerWindow = 1
+			before, storage := f.domainSnapshot(), f.storeCalls.Load()
+			var run *runningRole
+			var command *commandRole
+			if kind == "Run-context" {
+				run = startRole(t, f.ctx, "assessment", config)
+				assessmentHealth(t, run, f.scope)
+			} else {
+				command = startCommand(t, f, config)
+				assessmentHealth(t, command.role, f.scope)
+			}
+			ctx, cancel := context.WithTimeout(f.ctx, 5*time.Second)
+			event(t, ctx, held.ready, "native protocol and real committed marker readiness")
+			var originalMarker time.Time
+			var attempts int
+			must(t, "readonly committed dispatch snapshot", f.db.QueryRow(f.ctx, "SELECT dispatch_started_at,attempts FROM "+f.table("assessment_jobs")+" WHERE id=$1", job.ID).Scan(&originalMarker, &attempts))
+			check(t, attempts == 1, "native dispatch marker was not persisted once")
+			var quotaBefore string
+			must(t, "readonly shared configured quota snapshot", f.db.QueryRow(f.ctx, "SELECT to_jsonb(q)::text FROM "+f.table("assessment_quotas")+" q").Scan(&quotaBefore))
+			if run != nil {
+				stopRole(t, run)
+			} else {
+				command.kill(t)
+			}
+			nativeCancellation(t, ctx, held, "actual native HTTP context cancellation")
+			cancel()
+			fresh := startCommand(t, f, config)
+			assessmentHealth(t, fresh.role, f.scope)
+			prior := core.await(job.ID, "cancelled", "uncertain")
+			check(t, prior.Result == nil && prior.Attempts == 1 && prior.DispatchState == "possibly-sent" && prior.DispatchStartedAt != nil &&
+				prior.DispatchStartedAt.Equal(originalMarker) && n.calls.Load() == 1, "fresh real command repeated/claimed-unsent/resurrected prior dispatch")
+			var quotaAfter string
+			must(t, "readonly reopened shared quota snapshot", f.db.QueryRow(f.ctx, "SELECT to_jsonb(q)::text FROM "+f.table("assessment_quotas")+" q").Scan(&quotaAfter))
+			check(t, quotaBefore == quotaAfter, "role restart reset or privately reallocated shared quota configuration")
+			var retained int
+			must(t, "readonly admission history retention", f.db.QueryRow(f.ctx, "SELECT count(*) FROM "+f.table("assessment_jobs")+" WHERE id=$1 AND dispatch_started_at=$2 AND attempts=1", job.ID, originalMarker).Scan(&retained))
+			check(t, retained == 1, "restart erased previously consumed dispatch history")
+			next := core.enqueue(finding, p, pol, g, "new-explicit-"+kind)
+			n.arm(next, key, false)
+			core.assertAdvisory(core.await(next.ID, "succeeded"), next)
+			check(t, n.calls.Load() == 2 && core.job(job.ID).Result == nil, "new explicit work repeated or rewrote the old uncertain job")
+			check(t, reflect.DeepEqual(before, f.domainSnapshot()) && f.storeCalls.Load() == storage, "cancellation/restart mutated findings/configuration or fetched raw S3")
+			fresh.kill(t)
+		})
+	}
+	t.Log("AR4 actual Run context stop and actual command lease recovery, persistent scope/history and new explicit job completed; PID cleanup is not OS-signal proof")
+}

@@ -5,11 +5,126 @@
 // termination. BootstrapToken is an out-of-band, at-least-32-byte credential;
 // no default account or password is created.
 //
-// M11 configuration-only routes persist AI profiles, workspace policy and
-// explicit administrator egress grants. OpenAIConfigurationResolver owns a
-// separate DB-only pool and resolves current actor/profile/policy/grant state
-// in a read-only snapshot. Its private provider configuration is not an HTTP
-// DTO or an execution reservation. No AI inference or jobs are started.
+// M11 configuration routes persist AI profiles, workspace policy and explicit
+// administrator egress grants. OpenAIConfigurationResolver owns a separate
+// DB-only pool and resolves current actor/profile/policy/grant state in a
+// read-only snapshot. Its private provider configuration is not an HTTP DTO or
+// an execution reservation. Configuration APIs and resolution do no provider I/O.
+//
+// Config.AssessmentScope explicitly enables reviewed assessment preview, queue
+// and cancellation writes. Empty leaves those writes unavailable while legacy
+// APIs and historical assessment reads remain available. No scope is inferred
+// from an API key. Schema V8 adds immutable previews, jobs and one durable quota
+// scope; it does not rewrite V1-V7 definitions or legacy business records.
+// Independently opened workers must use that same scope and coherent limits.
+// Core construction, HTTP handlers and ProcessImports never dispatch assessments.
+//
+// POST /api/v1/findings/{id}/assessment-previews requires an explicit existing
+// observationId, profileId, grantId, context and reviewed:true. A current admin
+// or analyst must review/redact the derived UTF-8 context, which is nonblank,
+// NUL-free and at most 32768 bytes. Its exact bytes are retained, not trimmed or
+// repaired; the JSON body is separately capped at 256 KiB for escaped text.
+// The original observation's evidence digest is source linkage, not the digest
+// of that edited context. No raw report, note, unmapped field or S3 content is
+// appended. Direct inclusion of the selected provider key is rejected, not
+// silently redacted. This is not universal detection of unknown or encoded
+// credentials; operator review and deployment data-processing approval remain
+// necessary.
+//
+// The server fixes task finding-validity, data class finding-evidence, prompt
+// revision finding-validity-reviewed-context/v1 and the reviewed-context ID.
+// Context is untrusted data, never provider routing, instructions or approval.
+// Preview consent lasts at most five minutes, shortened to the selected grant's
+// expiry. POST /api/v1/findings/{id}/assessments requires previewId, an explicit
+// bounded idempotencyKey and consent:true from that same current writer.
+// Workspace/key replay retains the original requester/preview binding and
+// receipt, but still requires current authority and unexpired consent.
+// A later scan never replaces the approved context or selected observation.
+//
+// GET finding assessment history and GET /api/v1/ai/assessments/{id} expose
+// workspace-scoped historical receipts to readers, including viewers, without
+// granting execution permission. History uses native-ID pagination, default
+// 100 and maximum 500. POST /api/v1/ai/assessments/{id}/cancel with {} is an
+// idempotent current-writer operation, not permission to rewrite a terminal
+// receipt. All routes use the existing cookie, Origin and workspace boundary.
+//
+// OpenAssessmentWorker accepts explicit Database, EncryptionKey, WorkerID,
+// Scope, Client and execution limits. It owns an independent database pool
+// and copied HTTP transport, not an Application, handler or S3 capability.
+// Keyless local profiles need no encryption key; encrypted lookup never uses
+// ambient credentials. The client must have a direct *http.Transport, no proxy
+// or cookies, a positive timeout at most 30 seconds, and verified TLS 1.2+
+// without hostname or DialTLS bypasses. Root CA ownership is copied. Each
+// dispatch is constrained to the current approved origin/base; redirects,
+// fallback and additional attempts are refused. The assessment-only request
+// copy removes GetBody rewind authority before entering http.Transport, so
+// internal HTTP/2 REFUSED_STREAM handling cannot replay its POST. HTTP/2 remains
+// supported; standalone provider callers retain their existing behavior.
+//
+// Worker limits have no implicit defaults: input 1..32768 bytes, output
+// 1..32768 tokens, response 1..128 KiB, request timeout positive and at most
+// 30 seconds, lease 250ms..1 minute, authorization interval 10ms..1 second and
+// shorter than the lease, concurrency 1..16, and 1..1000 requests in a trailing
+// window of 1 second..1 hour. Scope/limit conflicts reject construction rather
+// than create a second private budget. This is shared concurrency and request
+// admission across profiles, workspaces and replicas, not token-rate, pricing,
+// cost, account, model or region quota management.
+//
+// ProcessNext performs one scheduling step. Admission denial returns false,nil
+// promptly; denied queued jobs and expired dispatches can instead be terminally
+// settled without a request. Workspace authority precedes quota/job locks.
+// The current requester role and exact profile/policy/grant revisions,
+// capability, destination and expiry are checked before dispatch, during held
+// I/O and at fenced finalization. Issuer demotion alone does not revoke a
+// durable grant. Database clock_timestamp governs leases and admission; an
+// earlier Resolve does not reserve either permission or capacity.
+//
+// Before the single native POST, a transaction commits attempts=1 and a
+// dispatch-start marker. No connection is retained while awaiting inference
+// or capacity. Completed, rejected, cancelled and uncertain marked attempts
+// consume the trailing-window allowance once, without refunds or hidden retry.
+// Concurrency instead follows a separate durable owner/attempt-token reservation,
+// not public job state or the result lease. Cancel/expiry may retire a receipt
+// while its local I/O is still alive. Only acknowledgment after response-body,
+// socket and pending-dial cleanup releases that reservation early; an old token
+// cannot finalize a retired receipt or release another attempt's capacity.
+//
+// The request's monotonic deadline starts before the dispatch-marker SQL, not
+// after a delayed commit or Do call. The marker persists the same bounded budget
+// using the database clock. Each attempt owns a copied transport and its sockets,
+// enforces that fixed deadline on dialing and socket I/O, and fences late dials
+// and resumed writes. Dial hooks must honor context; context-free custom Dial
+// without DialContext is rejected. No SQL is held while draining/closing I/O.
+// A dead owner's reservation stops consuming capacity at its persisted deadline;
+// normally progressing database/local clocks and the trusted direct transport
+// are required. That recovery bound does not assert remote compute or billing
+// has stopped. Acknowledgment never refunds the marked request-window charge.
+// These reservation columns are part of the unpublished V8 definition, not an
+// upgrade from an earlier development V8 schema. Published V7 upgrade is additive.
+//
+// Before that marker, cancellation is known not-started; afterwards it is
+// possibly-sent unless a response was received. Active authority loss cancels
+// native HTTP and denies an advisory commit. Expired dispatches settle uncertain
+// without resending; stale owners cannot overwrite terminal receipts. Close
+// cancels owned operations and performs bounded finalization before pool cleanup.
+//
+// The existing providers.Assessor performs the native parsing. Schema, refusal,
+// grounding, incomplete, tool, auth, rate, provider, timeout and bound failures
+// are failures, never successful inconclusive fallbacks. Receipts retain safe
+// native request/model/deployment/stop/retry metadata and actual usage when
+// available, including cached input and cache writes. Missing or lost usage
+// stays unknown, not zero spending. Native metadata is capped at 512 bytes,
+// diagnostics at 1024, uncertainty at 8192 and context references at 16.
+// Known credential echoes are rejected or omitted; raw envelopes are not saved.
+//
+// Supported, contradicted and inconclusive are advisory conclusions about the
+// approved snapshot only. They never update findings, workflow, ownership, risk,
+// notes, observations, assets or source state. There is no scanner, model tool,
+// shell, target probe or execution proof. Owned native HTTP/TLS fixtures do not
+// certify live model quality, retention, geography, an account or deployment
+// egress. A local endpoint or proxy cannot prove local downstream processing.
+// UI, worker command/packaging, deployment gates and broader M11 budgets remain
+// separate integrations; this package does not claim complete M11.
 //
 // Optional Config.OIDC enables /api/v1/auth/oidc/start and /callback using
 // go-oidc and oauth2. Discovery is lazy, HTTPS-only, endpoint-scoped, and bounded;

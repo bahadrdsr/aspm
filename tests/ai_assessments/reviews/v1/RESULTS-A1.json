@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T20:27:00.991Z",
+  "author": "independent-ai-assessments-test-author-20260920",
+  "status": "Coordination-only correction validated locally; HOLD for parent new seal and independent review.",
+  "normalAA5After": {
+    "run": "author-aa5-coordination-green-20260920-01",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "AA5",
+      "run": "author-aa5-coordination-green-20260920-01",
+      "startedAt": "2026-09-20T20:16:54.6834127+00:00",
+      "finishedAt": "2026-09-20T20:17:02.9962882+00:00",
+      "exitCode": 0,
+      "arguments": [
+        "test",
+        "-json",
+        "-tags=integration",
+        "-mod=readonly",
+        "-count=1",
+        "-timeout=240s",
+        "-run=^TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent$",
+        ".\\tests\\ai_assessments"
+      ],
+      "nativeFixture": "tests\\ai_assessments\\native_test.go",
+      "nativeFixtureSHA256": "0c027d937ffe2077aa4bea2586313a6126bd94f80cf2c19df93981d99b45feec",
+      "unchangedCopies": [],
+      "workingCopiesRemoved": true,
+      "originalEightAssertionsOrBindingsEdited": false,
+      "poolLimitsOrDeadlinesChanged": false,
+      "privateRuntimeValuesCopied": false,
+      "calibrationNotFullAcceptance": false,
+      "negativeModesReturnTheirActualFailure": true
+    },
+    "topLevel": [
+      {
+        "name": "TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent",
+        "status": "pass",
+        "durationSeconds": 2.2
+      }
+    ],
+    "nested": [],
+    "evidence": [
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.jsonl",
+        "bytes": 2036,
+        "sha256": "e8060a333213d94c8590bd1a13e9094d409d47afd9520b20c7dba82ada511452"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.log",
+        "bytes": 382,
+        "sha256": "d6a096a24c3e3da15603085d72b132a8f702dc6e507b8690061a584cefb87766"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.receipt.json",
+        "bytes": 925,
+        "sha256": "ab23240c4b7574a7ef63665f2974468084cb32732eed87a1e7d2d94cde67c263"
+      }
+    ],
+    "actualOutput": "=== RUN   TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent\n    assessments_test.go:266: AA5 committed dispatch marker, independent one-slot responsiveness and truthful native cancellation completed\n--- PASS: TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent (2.20s)\nPASS\nok  \tgithub.com/bahadrdsr/aspm/tests/ai_assessments\t3.076s\n"
+  },
+  "fullEightAfter": {
+    "run": "author-aa5-a1-full8-20260920-01",
+    "receipt": {
+      "schemaVersion": 1,
+      "mode": "Contract",
+      "startedAt": "2026-09-20T20:18:42.7506683+00:00",
+      "finishedAt": "2026-09-20T20:19:08.1743612+00:00",
+      "exitCode": 0,
+      "goExecutable": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "arguments": [
+        "test",
+        "-json",
+        "-tags=integration",
+        "-mod=readonly",
+        "-count=1",
+        "-timeout=240s",
+        ".\\tests\\ai_assessments"
+      ],
+      "fullProductionBindingsIncluded": true,
+      "helperOnlyIsNotAssessmentAcceptance": false,
+      "privateRuntimeValuesCopied": false,
+      "boundary": "Owned random PG schemas, scoped local S3 for real intake, owned native HTTP/TLS adapter responses only; no live provider/model account or target.",
+      "publishedFixtureOrigin": "98a41ced71c09e71c8cc2bd158678fd52268498c",
+      "dependenciesInstalled": false
+    },
+    "topLevel": [
+      {
+        "name": "TestAA1ReviewedPreviewConsentScopePrivacyAndDeniedWrites",
+        "status": "pass",
+        "durationSeconds": 1.65
+      },
+      {
+        "name": "TestAA2ImmutableQueueReplayHistoryAndObservationSnapshotSurviveReopen",
+        "status": "pass",
+        "durationSeconds": 2.09
+      },
+      {
+        "name": "TestAA3FourNativeProviderMappingsUsageAndGroundedAdvisory",
+        "status": "pass",
+        "durationSeconds": 1.76
+      },
+      {
+        "name": "TestAA4DistinctRejectedOutputAndProviderFailuresNeverRetryOrMutateFindings",
+        "status": "pass",
+        "durationSeconds": 5.4
+      },
+      {
+        "name": "TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent",
+        "status": "pass",
+        "durationSeconds": 1.32
+      },
+      {
+        "name": "TestAA6CurrentAuthorityChangesActivelyCancelHeldNativeResponses",
+        "status": "pass",
+        "durationSeconds": 2.56
+      },
+      {
+        "name": "TestAA7SharedAdmissionExpiredDispatchAndStaleFenceAcrossWorkersAndProfiles",
+        "status": "pass",
+        "durationSeconds": 4.29
+      },
+      {
+        "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens",
+        "status": "pass",
+        "durationSeconds": 3.67
+      }
+    ],
+    "nested": [
+      {
+        "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/fresh-v8-and-reopen",
+        "status": "pass",
+        "durationSeconds": 1.24
+      },
+      {
+        "name": "TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/published-v7-upgrade",
+        "status": "pass",
+        "durationSeconds": 2.43
+      }
+    ],
+    "evidence": [
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.jsonl",
+        "bytes": 14056,
+        "sha256": "644c1092a9c2ace610397aa8867488743f50c7f6ead7194b41584b5c7d650cdf"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.log",
+        "bytes": 2929,
+        "sha256": "b8cd291b87b4620e0b98862c0902c967fd26bfa298aad6356e8bdae66737e0d1"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.receipt.json",
+        "bytes": 881,
+        "sha256": "d863ef548178c7b4600c01f28fce174bd08cba6c298ad894791e93b5911d758d"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.published-v7-build.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.published-v7-build.json",
+        "bytes": 887,
+        "sha256": "b64515af1760aabd7197c665af6b2451238ab958f3655343d8198740b195096c"
+      },
+      {
+        "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-a73e3aec6f5cc4bc3317a652.json",
+        "bytes": 363,
+        "sha256": "7a1f748ca7d84c7cda3278753155eb69d6980d357eb4d185f3d19fa69964b561"
+      }
+    ],
+    "actualOutput": "=== RUN   TestAA1ReviewedPreviewConsentScopePrivacyAndDeniedWrites\n    assessments_test.go:99: AA1 reviewed derived-context consent/scope/privacy and denied writes completed; no provider I/O\n--- PASS: TestAA1ReviewedPreviewConsentScopePrivacyAndDeniedWrites (1.65s)\n=== RUN   TestAA2ImmutableQueueReplayHistoryAndObservationSnapshotSurviveReopen\n    assessments_test.go:139: AA2 immutable queue/replay/history/reopen and old-observation context retained without source mutations\n--- PASS: TestAA2ImmutableQueueReplayHistoryAndObservationSnapshotSurviveReopen (2.09s)\n=== RUN   TestAA3FourNativeProviderMappingsUsageAndGroundedAdvisory\n    assessments_test.go:177: AA3 actual four-family protocol/advisory/usage mappings and unknown usage completed; no live-model certification\n--- PASS: TestAA3FourNativeProviderMappingsUsageAndGroundedAdvisory (1.76s)\n=== RUN   TestAA4DistinctRejectedOutputAndProviderFailuresNeverRetryOrMutateFindings\n    assessments_test.go:224: AA4 explicit distinct failures, retained safe usage/provenance and single-attempt/no-mutation behavior completed\n--- PASS: TestAA4DistinctRejectedOutputAndProviderFailuresNeverRetryOrMutateFindings (5.40s)\n=== RUN   TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent\n    assessments_test.go:266: AA5 committed dispatch marker, independent one-slot responsiveness and truthful native cancellation completed\n--- PASS: TestAA5HeldNativeIOReleasesSingleSQLPoolAndCancellationIsPotentiallySent (1.32s)\n=== RUN   TestAA6CurrentAuthorityChangesActivelyCancelHeldNativeResponses\n    assessments_test.go:335: AA6 actual grant revoke/expiry/profile/policy/requester changes cancelled held HTTP and denied final success\n--- PASS: TestAA6CurrentAuthorityChangesActivelyCancelHeldNativeResponses (2.56s)\n=== RUN   TestAA7SharedAdmissionExpiredDispatchAndStaleFenceAcrossWorkersAndProfiles\n    assessments_test.go:414: AA7 shared cross-profile/replica concurrency+window, lease recovery and stale-fence rejection completed\n--- PASS: TestAA7SharedAdmissionExpiredDispatchAndStaleFenceAcrossWorkersAndProfiles (4.29s)\n=== RUN   TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens\n=== RUN   TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/fresh-v8-and-reopen\n--- PASS: TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/fresh-v8-and-reopen (1.24s)\n=== RUN   TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/published-v7-upgrade\n    upgrade_test.go:197: actual published-v7 upgrade observation: C:\\bahadr\\serious\\aspm\\.artifacts\\ai-assessments-v1\\published-v7-upgrade-a73e3aec6f5cc4bc3317a652.json\n    upgrade_test.go:222: AA8 exact populated published-V7 -> V8 and legacy contracts/reopen verified\n--- PASS: TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens/published-v7-upgrade (2.43s)\n--- PASS: TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens (3.67s)\nPASS\nok  \tgithub.com/bahadrdsr/aspm/tests/ai_assessments\t23.317s\n"
+  },
+  "counts": {
+    "AA5": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "full": {
+      "selected": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "nestedPassed": 2,
+      "nestedFailed": 0
+    },
+    "newlyExposedProductionFailures": 0,
+    "blockedNormalTails": 0
+  },
+  "fullSuiteUsedOriginalRunner": true,
+  "allEightAssertionsAndBindingsByteIdentical": true,
+  "production17Held": true,
+  "UIStageStillFrozen": true,
+  "rawEvidenceFiles": [
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-original-red-20260920-01.jsonl",
+      "bytes": 2398,
+      "sha256": "803ea1f3f83259c19c2cddefaba330bf19af214d10237f096de925880474ba11"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-original-red-20260920-01.log",
+      "bytes": 482,
+      "sha256": "d760b90965c3ddf6a10187ca4814735e02f5d30482f2db189c91e647d52a7da5"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-original-red-20260920-01.receipt.json",
+      "bytes": 919,
+      "sha256": "e09c3badbea42d0b27cb5298b754d586047a97a1d23d98756e5707c29cb4ebe2"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.jsonl",
+      "bytes": 3498,
+      "sha256": "d9cc846b2d21670e83cd0a484688afa215ca4501f0e4a86636c11c7acb1427ae"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.log",
+      "bytes": 879,
+      "sha256": "f3f62c7a11798d6aa3b890c3a4756812a8cb4502385202897a473d3714cb27cb"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-old-red-20260920-01.receipt.json",
+      "bytes": 2362,
+      "sha256": "2dd0ee2b7a68be33b4843ad1da70ef35d7a6305998d29b700c9ba8ceb11ebf9f"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.jsonl",
+      "bytes": 2742,
+      "sha256": "8105471fb1cc29b17ae6090c2e3142c302006e88402697ac9cb5fd5d57b2ea94"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.log",
+      "bytes": 643,
+      "sha256": "55adb1a3b782831dc86b900f53cb6ae4211db62873a74a001300db612c5060f6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-ordering-green-20260920-01.receipt.json",
+      "bytes": 2287,
+      "sha256": "681aac53a323dcfc979c99056dcc389c47b7822c49a12f025afe782b5d7ab70c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.jsonl",
+      "bytes": 3434,
+      "sha256": "ecd61b9615d9822d365cf5a055f9fbd1e013af9a3ecad2352c20df0784837cdc"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.log",
+      "bytes": 826,
+      "sha256": "908001d1e2d15ae32c86a10748da78cd3b6745ca65f8f8036bf376245d18d60d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-absent-negative-20260920-01.receipt.json",
+      "bytes": 2294,
+      "sha256": "fb04297902270ec4669cd1501420e818182da5b7ae1e2de335a1a32f32fbc593"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.jsonl",
+      "bytes": 3439,
+      "sha256": "091cac07dc1aaaa1d63671d273a00124a3b94768301bb4778e7b5fd31f2f7403"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.log",
+      "bytes": 833,
+      "sha256": "b5c179d23eae222c5cfeab99b80f0274f7b60293699ba84e1c4c9963f4c371c2"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-queued-negative-20260920-01.receipt.json",
+      "bytes": 2294,
+      "sha256": "dc1d078d6f8336e0cbfa6bf2f64fb4fc0ac5d105b6552f9578e6ee9c6be10b59"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.jsonl",
+      "bytes": 2036,
+      "sha256": "e8060a333213d94c8590bd1a13e9094d409d47afd9520b20c7dba82ada511452"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.log",
+      "bytes": 382,
+      "sha256": "d6a096a24c3e3da15603085d72b132a8f702dc6e507b8690061a584cefb87766"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-coordination-green-20260920-01.receipt.json",
+      "bytes": 925,
+      "sha256": "ab23240c4b7574a7ef63665f2974468084cb32732eed87a1e7d2d94cde67c263"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.jsonl",
+      "bytes": 14056,
+      "sha256": "644c1092a9c2ace610397aa8867488743f50c7f6ead7194b41584b5c7d650cdf"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.log",
+      "bytes": 2929,
+      "sha256": "b8cd291b87b4620e0b98862c0902c967fd26bfa298aad6356e8bdae66737e0d1"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.receipt.json",
+      "bytes": 881,
+      "sha256": "d863ef548178c7b4600c01f28fce174bd08cba6c298ad894791e93b5911d758d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-aa5-a1-full8-20260920-01.published-v7-build.json",
+      "bytes": 887,
+      "sha256": "b64515af1760aabd7197c665af6b2451238ab958f3655343d8198740b195096c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\published-v7-upgrade-a73e3aec6f5cc4bc3317a652.json",
+      "bytes": 363,
+      "sha256": "7a1f748ca7d84c7cda3278753155eb69d6980d357eb4d185f3d19fa69964b561"
+    }
+  ],
+  "RED": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\RED-A1.json",
+    "bytes": 8024,
+    "sha256": "58a1c947d5166cf1ecea09a139560f700d5e4249c4f2c0936000e443435e59dd"
+  },
+  "calibration": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\CALIBRATION-A1.json",
+    "bytes": 19791,
+    "sha256": "52df7aa63724be0e06d4ce57032f43d48427fe4da7bd81fdf602f5b132e3ddfd"
+  },
+  "limits": {
+    "newProviderAccounts": false,
+    "newDependencies": false,
+    "runtimePolicyChanges": false,
+    "newSealCreated": false,
+    "publicationAcceptance": false,
+    "compatibilityReadinessOutsideThisAuthorScope": true
+  }
+}

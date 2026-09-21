@@ -1,0 +1,393 @@
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { isDeepStrictEqual } from "node:util";
+import { expect, test as base } from "@playwright/test";
+import type { Page, Request, Route } from "@playwright/test";
+import { catalogResponse } from "./fixtures";
+import { workItem } from "./finding-actions-data";
+import { emptySlackNavigation } from "./slack-navigation";
+import {
+  alpha, apiVersion, backendID, beta, betaFinding, betaProfile, cookie, credentialCanary,
+  disabledProfile, exactKeys, finding, grantFor, grantsPath, jobFor,
+  localProfile, pageOf, pageParameters, password, policy, policyPath, previewFields,
+  previewFor, primaryProfile, profilesPath, queueFields, reviewedContext, unreviewedProfile, user, validContext,
+} from "./ai-assessments-data";
+import type { ActionFinding, AIGrant, AIPolicy, AIProfile, AssessmentJob, AssessmentPreview, Role } from "./ai-assessments-data";
+
+type Status = 200 | 201 | 202 | 400 | 401 | 403 | 404 | 409 | 413 | 503;
+export interface AssessmentCall {
+  method: string; path: string; workspace: string | undefined; query: Record<string, string>;
+  body: Record<string, unknown>; status: number | null; response: Record<string, unknown> | null; failure: string | null;
+}
+export interface AssessmentControl { call: AssessmentCall | null; delivered: Promise<void>; release: () => void }
+interface Gate extends AssessmentControl { wait: Promise<void>; complete: () => void }
+interface Scheduled { status: Status; gate: Gate; loseACK: boolean }
+const workspaces = [alpha, beta];
+const authorFiles = [
+  "ai-assessments-data.ts", "ai-assessments-fixture.ts", "ai-assessments-ui.spec.ts",
+  "reviews/ai-assessments-ui-v1/CONTRACT.txt", "reviews/ai-assessments-ui-v1/playwright.config.ts",
+  "reviews/ai-settings-ui-v1/native-option-A1.ts",
+];
+function sourceWitnesses() {
+  return authorFiles.map((path) => {
+    const bytes = readFileSync(new URL(path, import.meta.url));
+    return { path: `web\\tests\\${path.replaceAll("/", "\\")}`, bytes: bytes.length, sha256: createHash("sha256").update(bytes).digest("hex") };
+  });
+}
+
+export class AssessmentHTTP {
+  authenticated = true;
+  aiOpen = false;
+  serverOffsetMs = 0;
+  readonly roles = new Map<string, Role>([[alpha.id, "admin"], [beta.id, "analyst"]]);
+  readonly serverRoles = new Map(this.roles);
+  readonly findings = new Map<string, ActionFinding>();
+  readonly profiles = new Map<string, AIProfile>();
+  readonly policies = new Map<string, AIPolicy>();
+  readonly grants = new Map<string, AIGrant>();
+  readonly previews = new Map<string, AssessmentPreview>();
+  readonly jobs = new Map<string, AssessmentJob>();
+  readonly requests: AssessmentCall[] = [];
+  readonly reached: string[] = [];
+  readonly violations: string[] = [];
+  readonly pageErrors: string[] = [];
+  readonly consoleText: string[] = [];
+  readonly payloadTexts = new Set<string>([reviewedContext]);
+  readonly pages: Array<{ call: AssessmentCall; response: Record<string, unknown> }> = [];
+  externalAttempts = 0;
+  private readonly originalFindings: Array<[string, ActionFinding]>;
+  private readonly scheduled = new Map<string, Scheduled[]>();
+  private readonly gates = new Set<Gate>();
+  private readonly byRequest = new Map<Request, AssessmentCall>();
+  private readonly intents = new Map<string, { previewId: string; jobId: string }>();
+  private sessionCompleted = false;
+  private sequence = 1000;
+
+  constructor() {
+    for (const f of [finding, betaFinding]) this.findings.set(f.id, structuredClone(f));
+    this.originalFindings = structuredClone([...this.findings]);
+    for (const p of [primaryProfile, localProfile, disabledProfile, unreviewedProfile, betaProfile]) this.profiles.set(p.id, structuredClone(p));
+    this.policies.set(alpha.id, structuredClone(policy));
+    this.policies.set(beta.id, { workspaceId: beta.id, mode: "local-only", revision: "beta-policy/opaque", updatedAt: policy.updatedAt, updatedBy: user.id });
+    for (const g of [grantFor(), grantFor(primaryProfile, policy, 2, new Date(Date.now() - 60_000).toISOString()),
+      { ...grantFor(primaryProfile, policy, 3), revokedAt: policy.updatedAt, revokedBy: user.id }]) this.grants.set(g.id, g);
+  }
+  now() { return Date.now() + this.serverOffsetMs; }
+  mark(phase: string) { this.reached.push(phase); }
+  calls(method: string, path: string) { return this.requests.filter((call) => call.method === method && call.path === path); }
+  aiCalls() {
+    return this.requests.filter((call) => call.path.startsWith("/api/v1/ai/") || /\/assessment(?:s|-previews)$/.test(call.path));
+  }
+  writes() { return this.aiCalls().filter((call) => call.method !== "GET"); }
+  seedJobs(jobs: AssessmentJob[]) {
+    if (jobs.length > 101) throw new Error("Only 101 synthetic history items are permitted.");
+    this.jobs.clear();
+    for (const job of jobs) this.seedJob(job);
+  }
+  seedJob(job: AssessmentJob) {
+    if (!backendID(job.id) || !this.findings.has(job.findingId) || job.attempts < 0 || job.attempts > 1 || !job.advisoryOnly) {
+      throw new Error("Only bounded protocol-shaped advisory metadata is permitted.");
+    }
+    this.jobs.set(job.id, structuredClone(job));
+    this.payloadTexts.add(job.context);
+  }
+  private control(held: boolean): Gate {
+    let release!: () => void, complete!: () => void;
+    const gate: Gate = { call: null, wait: new Promise<void>((resolve) => { release = resolve; }),
+      delivered: new Promise<void>((resolve) => { complete = resolve; }), release: () => release(), complete: () => complete() };
+    if (!held) release();
+    this.gates.add(gate);
+    return gate;
+  }
+  private queue(key: string, status: Status, held: boolean, loseACK = false) {
+    const gate = this.control(held);
+    this.scheduled.set(key, [...this.scheduled.get(key) ?? [], { status, gate, loseACK }]);
+    return gate;
+  }
+  queueRead(path: string, status: Status = 200, held = false, workspace = alpha.id, cursor = "*") {
+    return this.queue(`GET ${path} ${workspace} ${cursor}`, status, held);
+  }
+  expectWrite(path: string, status: Status, held = false, loseACK = false) {
+    return this.queue(`POST ${path}`, status, held, loseACK);
+  }
+  discardUnsent(control: AssessmentControl) {
+    if (control.call) throw new Error("An arrived request cannot be discarded.");
+    for (const [key, values] of this.scheduled) this.scheduled.set(key, values.filter((item) => item.gate !== control));
+    control.release();
+  }
+  async releaseResponses() {
+    const arrived = [...this.gates].filter((gate) => gate.call !== null);
+    for (const gate of this.gates) gate.release();
+    await Promise.all(arrived.map((gate) => gate.delivered));
+  }
+  private failure(status: number) {
+    const codes: Record<number, string> = { 400: "invalid-input", 401: "unauthorized", 403: "forbidden", 404: "not-found",
+      409: "conflict", 413: "too-large", 429: "unavailable", 503: "unavailable" };
+    return { apiVersion, error: { code: codes[status], message: status === 409
+      ? "Preview expired or configuration changed. Review current facts and consent again; no automatic retry."
+      : status === 403 ? "The current service role does not permit this operation."
+        : status === 400 ? "The reviewed assessment input is invalid." : "Synthetic assessment metadata is unavailable or denied.",
+    requestId: "synthetic-assessment-ui-request", retryable: false } };
+  }
+  private async deliver(route: Route, call: AssessmentCall, status: number, value: object, scheduled?: Scheduled) {
+    call.status = status;
+    call.response = structuredClone(value) as Record<string, unknown>;
+    try {
+      if (scheduled) { scheduled.gate.call = call; await scheduled.gate.wait; }
+      if (status === 401) { this.authenticated = false; this.aiOpen = false; }
+      if (scheduled?.loseACK) await route.abort("failed");
+      else await route.fulfill({ status, json: call.response });
+    } finally { scheduled?.gate.complete(); }
+  }
+  private work(workspace: string, url: URL) {
+    if ([...url.searchParams.keys()].some((key) => !["q", "limit", "cursor"].includes(key))) throw new Error("Undeclared Work query.");
+    const query = url.searchParams.get("q") ?? "";
+    const entries = [...this.findings.values()].filter((f) => f.workspaceId === workspace &&
+      `${f.title}\n${f.assetName}\n${f.ownerName ?? ""}`.toLowerCase().includes(query.toLowerCase()));
+    const pageURL = new URL(url); pageURL.searchParams.delete("q");
+    return { ...pageOf(entries.map(workItem), pageURL), dataOrigin: "synthetic" };
+  }
+  private detail(f: ActionFinding, url: URL) {
+    if ([...url.searchParams.keys()].some((key) => !["observationsCursor", "notesCursor"].includes(key))) throw new Error("No invented observation endpoint/filter.");
+    for (const name of ["observationsCursor", "notesCursor"]) {
+      const cursor = url.searchParams.get(name);
+      if (cursor !== null && cursor !== "" && !backendID(cursor)) throw new Error("Invalid native finding history cursor.");
+    }
+    return { apiVersion, dataOrigin: "synthetic", finding: { ...structuredClone(f),
+      observations: f.observations.filter((o) => o.id > (url.searchParams.get("observationsCursor") ?? "")),
+      notes: f.notes.filter((n) => n.id > (url.searchParams.get("notesCursor") ?? "")),
+    } };
+  }
+  private current(workspace: string, profileId: string, grantId: string) {
+    const p = this.profiles.get(profileId), pol = this.policies.get(workspace);
+    if (!p || p.workspaceId !== workspace || !p.enabled || !p.structuredOutput || !pol) return null;
+    if (pol.mode === "local-only") return p.family === "local" && grantId === "" ? { p, pol, grant: null } : null;
+    const grant = this.grants.get(grantId);
+    if (pol.mode !== "approved-hosted" || !grant || grant.workspaceId !== workspace || grant.profileId !== p.id ||
+      grant.profileRevision !== p.revision || grant.policyRevision !== pol.revision || grant.destination !== p.endpoint ||
+      grant.revokedAt !== null || Date.parse(grant.expiresAt) <= this.now()) return null;
+    return { p, pol, grant };
+  }
+  async assertPrivate(page: Page, cleared = false) {
+    if (page.isClosed() || !page.url().startsWith("http://127.0.0.1:")) return;
+    const observed = await page.evaluate(() => ({
+      text: document.body.textContent ?? "", cookie: document.cookie,
+      storage: [...Object.entries(localStorage), ...Object.entries(sessionStorage)],
+      values: [...document.querySelectorAll("input,textarea")].map((node) => (node as HTMLInputElement).value),
+    }));
+    for (const [key, value] of observed.storage) { expect(key).toBe("aspm.theme"); expect(["light", "dark"]).toContain(value); }
+    const publicLocation = page.url() + observed.cookie + JSON.stringify(observed.storage) + this.consoleText.join("\n");
+    for (const text of this.payloadTexts) {
+      if (text.trim() === "") continue;
+      for (const value of [text, encodeURIComponent(text), Buffer.from(text).toString("base64")]) {
+        expect(publicLocation, "Context is memory-only, never URL/readable cookie/storage/console data.").not.toContain(value);
+      }
+      for (const id of [...this.grants.keys(), ...this.previews.keys(), ...this.jobs.keys()]) {
+        expect(publicLocation, "Grant/preview/job identities stay out of browser storage, location, readable cookies and console.").not.toContain(id);
+      }
+      for (const call of this.writes()) {
+        if (typeof call.body.idempotencyKey === "string") expect(publicLocation).not.toContain(call.body.idempotencyKey);
+      }
+      if (cleared) {
+        expect(observed.text).not.toContain(text);
+        expect(observed.values).not.toContain(text);
+      }
+    }
+    for (const secret of [cookie, password, credentialCanary]) {
+      expect(publicLocation + observed.text, "No credential readback or diagnostic echo.").not.toContain(secret);
+    }
+  }
+  async install(page: Page, origin: string) {
+    if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error("Only local Vite is authorized.");
+    await page.context().addCookies([{ name: "aspm_session", value: cookie, url: origin, httpOnly: true, sameSite: "Lax" }]);
+    page.on("pageerror", (error) => this.pageErrors.push(error.message));
+    page.on("console", (message) => this.consoleText.push(message.text()));
+    page.on("requestfailed", (request) => {
+      const call = this.byRequest.get(request);
+      if (call) call.failure = request.failure()?.errorText ?? "request failed";
+    });
+    await page.context().routeWebSocket("**/*", (socket) => {
+      const url = new URL(socket.url());
+      if (url.protocol !== "ws:" || `http://${url.host}` !== origin || url.pathname !== "/") {
+        this.externalAttempts++; this.violations.push("Undeclared or foreign WebSocket denied."); socket.close(); return;
+      }
+      socket.connectToServer();
+    });
+    await page.context().route("**/*", async (route) => {
+      const request = route.request(), url = new URL(request.url()), method = request.method(), path = url.pathname;
+      if (url.origin !== origin) { this.externalAttempts++; this.violations.push("Foreign/provider URL blocked before I/O."); await route.abort(); return; }
+      if (!path.startsWith("/api/")) {
+        const asset = path === "/" || path === "/index.html" || /^\/(?:src\/|node_modules\/|\.cache\/vite\/deps\/|@vite\/|@react-refresh$|@fs\/|@id\/|tests\/harness\/)/.test(path);
+        if (method !== "GET" || !asset) { this.violations.push(`Undeclared non-API URL denied: ${path}`); await route.abort(); return; }
+        await route.continue(); return;
+      }
+      const headers = await request.allHeaders();
+      const call: AssessmentCall = { method, path, workspace: headers["x-aspm-workspace-id"], query: Object.fromEntries(url.searchParams),
+        body: {}, status: null, response: null, failure: null };
+      this.requests.push(call); this.byRequest.set(request, call);
+      if (this.requests.length > 60) { this.violations.push("Original combined 60-API budget exceeded."); await this.deliver(route, call, 429, this.failure(429)); return; }
+      if (headers.authorization || headers["api-key"] || headers["x-api-key"] || headers["x-aspm-bootstrap-token"]) this.violations.push("Only session-cookie/workspace authority may cross this UI boundary.");
+      const previewID = /^\/api\/v1\/findings\/([a-f0-9]{32})\/assessment-previews$/.exec(path)?.[1];
+      const historyID = /^\/api\/v1\/findings\/([a-f0-9]{32})\/assessments$/.exec(path)?.[1];
+      const detailID = /^\/api\/v1\/ai\/assessments\/([a-f0-9]{32})$/.exec(path)?.[1];
+      const cancelID = /^\/api\/v1\/ai\/assessments\/([a-f0-9]{32})\/cancel$/.exec(path)?.[1];
+      const ai = path.startsWith("/api/v1/ai/") || !!previewID || !!historyID;
+      if (ai && !this.aiOpen) this.violations.push("AI request while explicit finding entry was closed.");
+      const write = method === "POST" && (!!previewID || !!historyID || !!cancelID || ["/api/v1/login", "/api/v1/logout"].includes(path));
+      if (method !== "GET" && !write) { this.violations.push("Undeclared write or finding/source mutation."); await route.abort(); return; }
+      if (write) {
+        if (headers.origin !== origin || url.search) this.violations.push("Writes require exact same-origin JSON, never URL authority.");
+        if (path !== "/api/v1/logout") {
+          try {
+            const body: unknown = request.postDataJSON();
+            if (body === null || typeof body !== "object" || Array.isArray(body) || !headers["content-type"]?.startsWith("application/json")) throw new Error();
+            call.body = body as Record<string, unknown>;
+          } catch { this.violations.push("Write was not a JSON object."); await route.abort(); return; }
+          if (Buffer.byteLength(request.postData() ?? "") > (previewID ? 256 << 10 : 4 << 10)) {
+            await this.deliver(route, call, 413, this.failure(413)); return;
+          }
+        }
+      }
+      const hasCookie = headers.cookie?.split(";").some((part) => part.trim() === `aspm_session=${cookie}`);
+      const session = () => ({ apiVersion, user, expiresAt: new Date(Date.now() + 3_600_000).toISOString(),
+        workspaces: workspaces.map((w) => ({ ...w, role: this.roles.get(w.id)! })) });
+      if (method === "GET" && path === "/api/v1/session" && !url.search) {
+        if (this.authenticated && hasCookie) { await this.deliver(route, call, 200, session()); this.sessionCompleted = true; }
+        else await this.deliver(route, call, 401, this.failure(401));
+        return;
+      }
+      if (method === "POST" && path === "/api/v1/login") {
+        if (!isDeepStrictEqual(call.body, { email: user.email, password })) { await this.deliver(route, call, 401, this.failure(401)); return; }
+        this.authenticated = true; this.aiOpen = false; call.status = 200; call.response = session();
+        await route.fulfill({ status: 200, json: call.response, headers: { "set-cookie": `aspm_session=${cookie}; Path=/; HttpOnly; SameSite=Lax` } });
+        this.sessionCompleted = true; return;
+      }
+      if (!this.sessionCompleted) this.violations.push("Protected requests preceded verified session completion.");
+      if (!this.authenticated || !hasCookie) { await this.deliver(route, call, 401, this.failure(401)); return; }
+      if (method === "POST" && path === "/api/v1/logout") {
+        this.authenticated = false; this.sessionCompleted = false; this.aiOpen = false; call.status = 204;
+        await route.fulfill({ status: 204, headers: { "set-cookie": "aspm_session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax" } }); return;
+      }
+      const workspace = call.workspace;
+      if (!workspace || !this.roles.has(workspace)) { this.violations.push("Missing/unverified selected workspace."); await this.deliver(route, call, 403, this.failure(403)); return; }
+      const scheduled = (method === "GET"
+        ? this.scheduled.get(`GET ${path} ${workspace} ${url.searchParams.get("cursor") ?? ""}`)?.shift()
+          ?? this.scheduled.get(`GET ${path} ${workspace} *`)?.shift()
+        : this.scheduled.get(`POST ${path}`)?.shift());
+      if (ai && write && !scheduled) { this.violations.push("Assessment write lacked a declared explicit user action."); await route.abort(); return; }
+      if (write && !["admin", "analyst"].includes(this.serverRoles.get(workspace)!)) {
+        await this.deliver(route, call, 403, this.failure(403), scheduled); return;
+      }
+      try {
+        if (method === "GET" && path === "/api/v1/work") { await this.deliver(route, call, scheduled?.status ?? 200, this.work(workspace, url), scheduled); return; }
+        if (method === "GET" && path === "/api/v1/integrations/catalog" && !url.search) { await this.deliver(route, call, 200, catalogResponse); return; }
+        if (method === "GET" && path === "/api/v1/sources") { pageParameters(url); await this.deliver(route, call, 200, { apiVersion, items: [], total: 0, nextCursor: null }); return; }
+        const slack = emptySlackNavigation(url, method, workspace, new Map(workspaces.map((w) => [w.id,
+          [...this.findings.values()].filter((f) => f.workspaceId === w.id).map((f) => f.id)])));
+        if (slack) { await this.deliver(route, call, 200, slack); return; }
+        const selectedID = /^\/api\/v1\/findings\/([a-f0-9]{32})$/.exec(path)?.[1];
+        if (method === "GET" && selectedID) {
+          const f = this.findings.get(selectedID);
+          const status = !f || f.workspaceId !== workspace ? 404 : scheduled?.status ?? 200;
+          await this.deliver(route, call, status, status === 200 ? this.detail(f!, url) : this.failure(status), scheduled); return;
+        }
+        let metadata: object | undefined;
+        if (method === "GET" && [profilesPath, grantsPath].includes(path)) {
+          const items = path === profilesPath ? [...this.profiles.values()] : [...this.grants.values()];
+          metadata = pageOf(items.filter((value) => value.workspaceId === workspace), url);
+        } else if (method === "GET" && path === policyPath && !url.search) metadata = { apiVersion, policy: this.policies.get(workspace) };
+        else if (method === "GET" && (path.startsWith(profilesPath + "/") || path.startsWith(grantsPath + "/")) && !url.search) {
+          const profile = this.profiles.get(path.slice(profilesPath.length + 1));
+          const grant = this.grants.get(path.slice(grantsPath.length + 1));
+          metadata = profile?.workspaceId === workspace ? { apiVersion, profile } : grant?.workspaceId === workspace ? { apiVersion, grant } : undefined;
+        } else if (method === "GET" && historyID) {
+          const f = this.findings.get(historyID);
+          if (!f || f.workspaceId !== workspace) { await this.deliver(route, call, 404, this.failure(404), scheduled); return; }
+          metadata = pageOf([...this.jobs.values()].filter((j) => j.workspaceId === workspace && j.findingId === historyID), url);
+        } else if (method === "GET" && detailID && !url.search) {
+          const job = this.jobs.get(detailID);
+          if (job?.workspaceId === workspace) metadata = { apiVersion, assessment: job };
+          else { await this.deliver(route, call, 404, this.failure(404), scheduled); return; }
+        }
+        if (metadata) {
+          const status = scheduled?.status ?? 200;
+          if (status === 200 && historyID) this.pages.push({ call, response: structuredClone(metadata) as Record<string, unknown> });
+          await this.deliver(route, call, status, status === 200 ? metadata : this.failure(status), scheduled); return;
+        }
+        if (scheduled && scheduled.status >= 400) { await this.deliver(route, call, scheduled.status, this.failure(scheduled.status), scheduled); return; }
+        if (method === "POST" && previewID) {
+          if (!exactKeys(call.body, previewFields)) this.violations.push("Preview body added client authority or omitted an exact contract field.");
+          const f = this.findings.get(previewID);
+          const p = this.profiles.get(String(call.body.profileId));
+          const current = this.current(workspace, String(call.body.profileId), String(call.body.grantId));
+          let status = 201;
+          if (!f || f.workspaceId !== workspace || !p || p.workspaceId !== workspace) status = 404;
+          else if (!exactKeys(call.body, previewFields) || call.body.reviewed !== true || !validContext(call.body.context) ||
+            String(call.body.context).includes(credentialCanary)) status = Buffer.byteLength(String(call.body.context)) > 32768 ? 413 : 400;
+          else if (!f.observations.some((o) => o.id === call.body.observationId)) status = 404;
+          else if (!current) status = 409;
+          if (status !== 201) { await this.deliver(route, call, status, this.failure(status), scheduled); return; }
+          const preview = previewFor(f!, p!, current!.pol, current!.grant, String(call.body.context), ++this.sequence, String(call.body.observationId), this.now());
+          this.previews.set(preview.id, preview); this.payloadTexts.add(preview.context);
+          await this.deliver(route, call, 201, { apiVersion, preview }, scheduled); return;
+        }
+        if (method === "POST" && historyID) {
+          if (!exactKeys(call.body, queueFields)) this.violations.push("Queue body added client authority or missed explicit consent.");
+          const preview = this.previews.get(String(call.body.previewId)), key = call.body.idempotencyKey;
+          if (!exactKeys(call.body, queueFields) || call.body.consent !== true || typeof key !== "string" || key.trim() === "" || key.includes("\0") || Buffer.byteLength(key) > 128) {
+            await this.deliver(route, call, 400, this.failure(400), scheduled); return;
+          }
+          if (!preview || preview.workspaceId !== workspace || preview.findingId !== historyID) { await this.deliver(route, call, 404, this.failure(404), scheduled); return; }
+          const current = this.current(workspace, preview.profileId, preview.grantId);
+          if (Date.parse(preview.expiresAt) <= this.now() || !current || current.p.revision !== preview.profileRevision ||
+            current.pol.revision !== preview.policyRevision || current.p.endpoint !== preview.destination) {
+            await this.deliver(route, call, 409, this.failure(409), scheduled); return;
+          }
+          const identity = `${workspace} ${user.id} ${key}`, prior = this.intents.get(identity);
+          if (prior && prior.previewId !== preview.id) { await this.deliver(route, call, 409, this.failure(409), scheduled); return; }
+          const job = prior ? this.jobs.get(prior.jobId)! : { ...jobFor(preview, ++this.sequence), idempotencyKey: key };
+          if (!prior) { this.seedJob(job); this.intents.set(identity, { previewId: preview.id, jobId: job.id }); }
+          await this.deliver(route, call, prior ? 200 : 202, { apiVersion, assessment: job }, scheduled); return;
+        }
+        if (method === "POST" && cancelID) {
+          if (!exactKeys(call.body, [])) this.violations.push("Cancel body must be the exact empty JSON object.");
+          const prior = this.jobs.get(cancelID);
+          if (!prior || prior.workspaceId !== workspace) { await this.deliver(route, call, 404, this.failure(404), scheduled); return; }
+          const terminal = !["queued", "dispatching"].includes(prior.state);
+          const job: AssessmentJob = terminal ? prior : { ...prior, state: "cancelled", completedAt: new Date(this.now()).toISOString(),
+            result: null, failure: null, dispatchState: prior.attempts === 0 ? "not-started" : "possibly-sent" };
+          this.jobs.set(job.id, job);
+          await this.deliver(route, call, 200, { apiVersion, assessment: job }, scheduled); return;
+        }
+        throw new Error(`Undeclared assessment UI boundary: ${method} ${path}`);
+      } catch (error) {
+        this.violations.push(String(error)); await route.abort();
+      }
+    });
+  }
+  assertFindingsUnchanged() { expect([...this.findings]).toEqual(this.originalFindings); }
+}
+
+export const test = base.extend<{ assessments: AssessmentHTTP }>({
+  assessments: async ({ page, baseURL }, use, testInfo) => {
+    if (!baseURL) throw new Error("The unchanged local browser server must provide baseURL.");
+    const assessments = new AssessmentHTTP();
+    await assessments.install(page, new URL(baseURL).origin);
+    try { await use(assessments); }
+    finally {
+      await assessments.releaseResponses();
+      assessments.assertFindingsUnchanged();
+      await assessments.assertPrivate(page);
+      expect.soft(assessments.violations).toEqual([]);
+      expect.soft(assessments.pageErrors).toEqual([]);
+      expect.soft(assessments.externalAttempts).toBe(0);
+      expect.soft(assessments.requests.length).toBeLessThanOrEqual(60);
+      let body = JSON.stringify({ sourceWitnesses: sourceWitnesses(), reached: assessments.reached, requests: assessments.requests,
+        combinedAPIRequests: assessments.requests.length, aiRequests: assessments.aiCalls().length,
+        externalAttempts: assessments.externalAttempts, violations: assessments.violations, pageErrors: assessments.pageErrors }, null, 2);
+      for (const value of [cookie, password, credentialCanary]) body = body.replaceAll(value, "[synthetic credential redacted]");
+      await testInfo.attach("ai-assessments-http-boundary", { contentType: "application/json", body });
+    }
+  },
+});
+export { expect } from "@playwright/test";

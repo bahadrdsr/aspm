@@ -1,0 +1,570 @@
+//go:build integration
+
+package assessment_runtime
+
+import (
+	"bytes"
+	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"log"
+	"log/slog"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"net/http/httputil"
+	"net/url"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/bahadrdsr/aspm/internal/evidence"
+	"github.com/bahadrdsr/aspm/internal/jobs"
+	"github.com/bahadrdsr/aspm/internal/service"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+func must(t *testing.T, label string, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("%s failed (%T; private details withheld)", label, err)
+	}
+}
+func check(t *testing.T, ok bool, label string) {
+	t.Helper()
+	if !ok {
+		t.Fatal(label)
+	}
+}
+func random(t *testing.T, n int) []byte {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	must(t, "generate owned synthetic input", err)
+	return b
+}
+func nonce(t *testing.T) string { return hex.EncodeToString(random(t, 12)) }
+func secret(t *testing.T) string {
+	return "synthetic-assessment-runtime-" + base64.RawURLEncoding.EncodeToString(random(t, 24))
+}
+func encoded(t *testing.T, value any) []byte {
+	b, err := json.Marshal(value)
+	must(t, "encode owned API data", err)
+	return b
+}
+func digest(b []byte) string { return fmt.Sprintf("sha256:%x", sha256.Sum256(b)) }
+func required(t *testing.T, name string) string {
+	value := os.Getenv(name)
+	check(t, value != "", "BLOCKED: required owned fixture setting missing: "+name)
+	return value
+}
+
+type safeLog struct {
+	mu sync.Mutex
+	b  bytes.Buffer
+}
+
+func (l *safeLog) Write(b []byte) (int, error) { l.mu.Lock(); defer l.mu.Unlock(); return l.b.Write(b) }
+func (l *safeLog) data() []byte                { l.mu.Lock(); defer l.mu.Unlock(); return bytes.Clone(l.b.Bytes()) }
+
+type fixture struct {
+	t                *testing.T
+	ctx              context.Context
+	database         app.DatabaseConfig
+	db               *pgxpool.Pool
+	raw              evidence.Config
+	s3               *s3.Client
+	key              []byte
+	bootstrap, scope string
+	log              safeLog
+	mu               sync.Mutex
+	secrets          []string
+	allowed          map[string]bool
+	violations       []string
+	storeCalls       atomic.Int32
+}
+
+func (f *fixture) remember(value string) {
+	if value == "" {
+		return
+	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.secrets = append(f.secrets, value, url.QueryEscape(value), base64.StdEncoding.EncodeToString([]byte(value)))
+}
+func (f *fixture) noSecrets(data []byte) {
+	f.t.Helper()
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	for _, value := range f.secrets {
+		check(f.t, !bytes.Contains(data, []byte(value)), "private runtime/session/provider input escaped into metadata or logs")
+	}
+}
+func (f *fixture) allow(address string) { f.mu.Lock(); f.allowed[address] = true; f.mu.Unlock() }
+func (f *fixture) table(name string) string {
+	return pgx.Identifier{f.database.Schema, "app_" + name}.Sanitize()
+}
+
+func newFixture(t *testing.T) *fixture {
+	id := nonce(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	t.Cleanup(cancel)
+	f := &fixture{t: t, ctx: ctx, key: random(t, 32), bootstrap: secret(t), scope: "owned-assessment-runtime", allowed: map[string]bool{}}
+	f.database = app.DatabaseConfig{DatabaseURL: required(t, "ASPM_ASSESSMENT_RUNTIME_DATABASE_URL"), Schema: "assessment_runtime_" + id,
+		ApplicationName: "assessment-runtime-" + id, MaxConnections: 3}
+	f.raw = evidence.Config{Endpoint: required(t, "ASPM_ASSESSMENT_RUNTIME_S3_ENDPOINT"), Bucket: required(t, "ASPM_ASSESSMENT_RUNTIME_S3_BUCKET"),
+		Prefix: "assessment-runtime/" + id + "/", Region: "us-east-1", AccessKey: required(t, "ASPM_ASSESSMENT_RUNTIME_S3_ACCESS_KEY"),
+		SecretKey: required(t, "ASPM_ASSESSMENT_RUNTIME_S3_SECRET_KEY"), Timeout: 4 * time.Second}
+	dbURL, err := url.Parse(f.database.DatabaseURL)
+	must(t, "parse selected private PG", err)
+	check(t, dbURL.Hostname() == "127.0.0.1" && dbURL.Port() != "" && dbURL.User != nil && (dbURL.Scheme == "postgres" || dbURL.Scheme == "postgresql"), "only owned loopback PG permitted")
+	password, present := dbURL.User.Password()
+	check(t, present && password != "", "owned PG authentication required")
+	store, err := url.Parse(f.raw.Endpoint)
+	must(t, "parse owned intake store", err)
+	check(t, store.Hostname() == "127.0.0.1" && store.Port() != "" && (store.Scheme == "http" || store.Scheme == "https") && store.User == nil && store.RawQuery == "" && store.Fragment == "", "only existing owned loopback S3 permitted")
+	f.allow(store.Host)
+	for _, value := range []string{f.database.DatabaseURL, password, f.raw.AccessKey, f.raw.SecretKey, f.bootstrap, string(f.key), hex.EncodeToString(f.key), base64.StdEncoding.EncodeToString(f.key)} {
+		f.remember(value)
+	}
+	original, logger := http.DefaultTransport, slog.Default()
+	guard := original.(*http.Transport).Clone()
+	guard.Proxy = nil
+	guard.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		f.mu.Lock()
+		allowed := f.allowed[address]
+		if !allowed {
+			f.violations = append(f.violations, "unowned ambient network denied")
+		}
+		f.mu.Unlock()
+		if !allowed {
+			return nil, errors.New("owned runtime fixture denied destination")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+	}
+	http.DefaultTransport = guard
+	slog.SetDefault(slog.New(slog.NewTextHandler(&f.log, nil)))
+	t.Cleanup(func() {
+		http.DefaultTransport = original
+		slog.SetDefault(logger)
+		guard.CloseIdleConnections()
+		f.noSecrets(f.log.data())
+		f.mu.Lock()
+		count := len(f.violations)
+		f.mu.Unlock()
+		check(t, count == 0, "unowned runtime network or credential discovery attempted")
+	})
+	pc, err := pgxpool.ParseConfig(f.database.DatabaseURL)
+	must(t, "parse actual PG pool", err)
+	pc.MaxConns, pc.MinConns = 2, 0
+	pc.ConnConfig.ConnectTimeout = 3 * time.Second
+	pc.ConnConfig.RuntimeParams["application_name"] = f.database.ApplicationName + "-fixture"
+	f.db, err = pgxpool.NewWithConfig(ctx, pc)
+	must(t, "open owned actual PG", err)
+	t.Cleanup(f.db.Close)
+	must(t, "authenticate actual PG fixture", f.db.Ping(ctx))
+	_, err = f.db.Exec(ctx, "CREATE SCHEMA "+pgx.Identifier{f.database.Schema}.Sanitize())
+	must(t, "create only random owned schema", err)
+	transport := guard.Clone()
+	t.Cleanup(transport.CloseIdleConnections)
+	f.s3 = s3.New(s3.Options{Region: f.raw.Region, BaseEndpoint: aws.String(f.raw.Endpoint), UsePathStyle: true, RetryMaxAttempts: 1,
+		Credentials:                credentials.NewStaticCredentialsProvider(f.raw.AccessKey, f.raw.SecretKey, ""),
+		HTTPClient:                 &http.Client{Transport: transport, Timeout: 4 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("fixture redirect denied") }},
+		RequestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired, ResponseChecksumValidation: aws.ResponseChecksumValidationWhenRequired})
+	_, err = f.s3.HeadBucket(ctx, &s3.HeadBucketInput{Bucket: aws.String(f.raw.Bucket)})
+	must(t, "authenticate existing owned intake bucket", err)
+	t.Cleanup(f.cleanup)
+	proxy := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		f.storeCalls.Add(1)
+		forward := r.Clone(r.Context())
+		target := *r.URL
+		target.Scheme, target.Host = store.Scheme, store.Host
+		forward.URL, forward.RequestURI = &target, ""
+		response, err := transport.RoundTrip(forward)
+		if err != nil {
+			http.Error(w, "owned intake unavailable", 503)
+			return
+		}
+		defer response.Body.Close()
+		for key, values := range response.Header {
+			for _, value := range values {
+				w.Header().Add(key, value)
+			}
+		}
+		w.WriteHeader(response.StatusCode)
+		_, _ = io.Copy(w, io.LimitReader(response.Body, 512<<10))
+	}))
+	t.Cleanup(proxy.Close)
+	address, err := url.Parse(proxy.URL)
+	must(t, "parse owned intake tap", err)
+	f.allow(address.Host)
+	f.raw.Endpoint = proxy.URL
+	return f
+}
+func (f *fixture) cleanup() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	check(f.t, strings.HasPrefix(f.database.Schema, "assessment_runtime_") && f.raw.Prefix == "assessment-runtime/"+strings.TrimPrefix(f.database.Schema, "assessment_runtime_")+"/", "refusing unowned cleanup")
+	page, err := f.s3.ListObjectsV2(ctx, &s3.ListObjectsV2Input{Bucket: aws.String(f.raw.Bucket), Prefix: aws.String(f.raw.Prefix), MaxKeys: aws.Int32(100)})
+	must(f.t, "list only owned intake prefix", err)
+	check(f.t, !aws.ToBool(page.IsTruncated), "owned fixture object bound exceeded")
+	for _, object := range page.Contents {
+		check(f.t, strings.HasPrefix(aws.ToString(object.Key), f.raw.Prefix), "unowned object cleanup denied")
+		_, err = f.s3.DeleteObject(ctx, &s3.DeleteObjectInput{Bucket: aws.String(f.raw.Bucket), Key: object.Key})
+		must(f.t, "delete only owned intake object", err)
+	}
+	_, err = f.db.Exec(ctx, "DROP SCHEMA "+pgx.Identifier{f.database.Schema}.Sanitize()+" CASCADE")
+	must(f.t, "drop only owned schema", err)
+}
+
+func ownedAddress(t *testing.T) string {
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	must(t, "reserve owned ephemeral address", err)
+	address := listener.Addr().String()
+	must(t, "release owned address reservation", listener.Close())
+	return address
+}
+func ownedClient(t *testing.T, address string) *http.Client {
+	tr := &http.Transport{Proxy: nil, DialContext: func(ctx context.Context, network, target string) (net.Conn, error) {
+		if target != address {
+			return nil, errors.New("unowned service dial denied")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, target)
+	}}
+	t.Cleanup(tr.CloseIdleConnections)
+	return &http.Client{Transport: tr, Timeout: time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("redirect denied") }}
+}
+
+type runningRole struct {
+	cancel  context.CancelFunc
+	done    chan struct{}
+	err     error
+	address string
+	client  *http.Client
+}
+
+func startRole(t *testing.T, ctx context.Context, role string, c runtimeConfig) *runningRole {
+	check(t, Production.Run != nil, "BLOCKED: actual service binding missing")
+	return startActual(t, ctx, c.Listen, func(ctx context.Context) error { return Production.Run(ctx, role, c) })
+}
+func startActual(t *testing.T, parent context.Context, address string, run func(context.Context) error) *runningRole {
+	ctx, cancel := context.WithCancel(parent)
+	r := &runningRole{cancel: cancel, done: make(chan struct{}), address: address, client: ownedClient(t, address)}
+	t.Cleanup(func() { stopRole(t, r) })
+	go func() { r.err = run(ctx); close(r.done) }()
+	awaitReady(t, r)
+	return r
+}
+func awaitReady(t *testing.T, r *runningRole) {
+	timer := time.NewTimer(8 * time.Second)
+	defer timer.Stop()
+	ticker := time.NewTicker(25 * time.Millisecond)
+	defer ticker.Stop()
+	for {
+		response, err := r.client.Get("http://" + r.address + "/readyz")
+		if err == nil {
+			status := response.StatusCode
+			response.Body.Close()
+			if status == 200 {
+				return
+			}
+		}
+		select {
+		case <-r.done:
+			t.Fatalf("actual role exited before ready (%T; private details withheld)", r.err)
+		case <-timer.C:
+			t.Fatal("actual role did not become ready within bound")
+		case <-ticker.C:
+		}
+	}
+}
+func stopRole(t *testing.T, r *runningRole) {
+	t.Helper()
+	r.cancel()
+	select {
+	case <-r.done:
+		check(t, r.err == nil || errors.Is(r.err, context.Canceled), "actual Run context shutdown failed")
+	case <-time.After(6 * time.Second):
+		t.Fatal("actual Run context did not stop owned resources")
+	}
+	response, err := r.client.Get("http://" + r.address + "/healthz")
+	if response != nil {
+		response.Body.Close()
+	}
+	check(t, err != nil, "service listener remained alive after Run cancellation")
+}
+func health(t *testing.T, r *runningRole, route string, status int) map[string]string {
+	response, err := r.client.Get("http://" + r.address + route)
+	must(t, "read actual role health", err)
+	defer response.Body.Close()
+	check(t, response.StatusCode == status, "unexpected role HTTP capability")
+	result := map[string]string{}
+	if status == 200 {
+		must(t, "decode truthful health metadata", json.NewDecoder(io.LimitReader(response.Body, 8192)).Decode(&result))
+	}
+	return result
+}
+func assessmentHealth(t *testing.T, r *runningRole, scope string) {
+	a := health(t, r, "/healthz", 200)
+	check(t, a["service"] == "assessment" && a["status"] == "alive" && a["apiVersion"] == apiVersion, "assessment health identity differs")
+	b := health(t, r, "/readyz", 200)
+	check(t, b["service"] == "assessment" && b["status"] == "ready" && b["database"] == "reachable" && b["storage"] == "not-required" &&
+		b["admission"] == "configured" && b["scope"] == scope && b["provider"] == "not-probed" && b["pipeline"] == "inspect-job-state-separately",
+		"readiness must distinguish configured scope/DB from unprobed provider/key/quota availability")
+	for _, route := range []string{"/api/session", "/api/v1/session", "/"} {
+		health(t, r, route, 404)
+	}
+}
+func wait(t *testing.T, ctx context.Context, label string, ready func() bool) {
+	t.Helper()
+	waitAt(t, ctx, label, 20*time.Millisecond, ready)
+}
+func waitAt(t *testing.T, ctx context.Context, label string, cadence time.Duration, ready func() bool) {
+	t.Helper()
+	tick := time.NewTicker(cadence)
+	defer tick.Stop()
+	for {
+		if ready() {
+			return
+		}
+		select {
+		case <-tick.C:
+		case <-ctx.Done():
+			t.Fatal("bounded actual observation missing: " + label)
+		}
+	}
+}
+func event(t *testing.T, ctx context.Context, ch <-chan struct{}, label string) {
+	t.Helper()
+	select {
+	case <-ch:
+	case <-ctx.Done():
+		t.Fatal("actual event not reached: " + label)
+	}
+}
+
+type coreAPI struct {
+	f      *fixture
+	role   *runningRole
+	server *httptest.Server
+	client *http.Client
+	admin  actor
+	calls  int
+}
+
+func (f *fixture) coreService(scope string, key []byte, fixtureOnly bool) *coreAPI {
+	t := f.t
+	address := ownedAddress(t)
+	f.allow(address)
+	target, _ := url.Parse("http://" + address)
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	proxy.ErrorLog = log.New(io.Discard, "", 0)
+	proxy.Transport = ownedClient(t, address).Transport
+	server := httptest.NewTLSServer(proxy)
+	t.Cleanup(server.Close)
+	client := server.Client()
+	client.Timeout = 2 * time.Second
+	t.Cleanup(client.CloseIdleConnections)
+	assets := filepath.Join(required(t, "ASPM_ASSESSMENT_RUNTIME_ARTIFACT_DIR"), "empty-core-assets-"+nonce(t))
+	must(t, "create owned API-only core fixture directory", os.MkdirAll(assets, 0700))
+	t.Cleanup(func() { _ = os.Remove(assets) })
+	c := &coreAPI{f: f, server: server, client: client}
+	if fixtureOnly {
+		raw := f.raw
+		direct := service.Config{Listen: address, Assets: assets, PublicOrigin: server.URL, BootstrapToken: f.bootstrap, IntegrationEncryptionKey: key,
+			Evidence: raw, Jobs: jobs.Config{DatabaseURL: f.database.DatabaseURL, Schema: f.database.Schema, ApplicationName: f.database.ApplicationName,
+				MaxConnections: 3, MaxLease: time.Second, MaxAttempts: 3, RetryDelay: time.Second, MaxRetryDelay: 2 * time.Second}}
+		c.role = startActual(t, f.ctx, address, func(ctx context.Context) error { return service.Run(ctx, "core", direct) })
+	} else {
+		baseEnvironment(t, f.database)
+		rawEnvironment(t, f.raw)
+		t.Setenv("ASPM_LISTEN", address)
+		t.Setenv("ASPM_ASSETS", assets)
+		t.Setenv("ASPM_PUBLIC_ORIGIN", server.URL)
+		t.Setenv("ASPM_BOOTSTRAP_TOKEN", f.bootstrap)
+		if key == nil {
+			unset(t, "ASPM_INTEGRATION_ENCRYPTION_KEY")
+		} else {
+			t.Setenv("ASPM_INTEGRATION_ENCRYPTION_KEY", base64.StdEncoding.EncodeToString(key))
+		}
+		t.Setenv("ASPM_ASSESSMENT_SCOPE", scope)
+		config, err := Production.Environment("core")
+		must(t, "parse actual core scope environment", err)
+		check(t, config.Scope == scope, "actual core environment lost explicit assessment scope")
+		c.role = startRole(t, f.ctx, "core", config)
+	}
+	password := secret(t)
+	f.remember(password)
+	enrolled := c.json(actor{}, "POST", "/api/v1/bootstrap", map[string]any{"workspaceName": "Owned assessment runtime", "name": "Synthetic runtime admin", "email": "runtime@assessment.invalid", "password": password}, 201, "X-ASPM-Bootstrap-Token", f.bootstrap)
+	c.admin = c.login("runtime@assessment.invalid", password, enrolled.Workspace.ID)
+	return c
+}
+func (c *coreAPI) request(who actor, method, route string, body any, status int, headers ...string) ([]byte, []*http.Cookie) {
+	c.f.t.Helper()
+	c.calls++
+	check(c.f.t, c.calls <= 220, "runtime API request budget exceeded")
+	var data []byte
+	if body != nil {
+		data = encoded(c.f.t, body)
+	}
+	request, err := http.NewRequestWithContext(c.f.ctx, method, c.server.URL+route, bytes.NewReader(data))
+	must(c.f.t, "create actual protected core request", err)
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Origin", c.server.URL)
+	if who.Workspace != "" {
+		request.Header.Set("X-ASPM-Workspace-ID", who.Workspace)
+	}
+	if who.Cookie != nil {
+		request.AddCookie(who.Cookie)
+	}
+	for i := 0; i < len(headers); i += 2 {
+		request.Header.Set(headers[i], headers[i+1])
+	}
+	response, err := c.client.Do(request)
+	must(c.f.t, "call actual core SERVICE", err)
+	defer response.Body.Close()
+	result, err := io.ReadAll(io.LimitReader(response.Body, (256<<10)+1))
+	must(c.f.t, "read bounded actual core response", err)
+	check(c.f.t, len(result) <= 256<<10, "unbounded core response")
+	if response.StatusCode != status {
+		c.f.t.Fatalf("actual core %s %s returned %d, want %d; body withheld", method, route, response.StatusCode, status)
+	}
+	c.f.noSecrets(result)
+	return result, response.Cookies()
+}
+func (c *coreAPI) json(who actor, method, route string, body any, status int, headers ...string) reply {
+	data, _ := c.request(who, method, route, body, status, headers...)
+	var r reply
+	must(c.f.t, "decode real core API DTO", json.Unmarshal(data, &r))
+	check(c.f.t, r.APIVersion == apiVersion, "API version changed")
+	return r
+}
+func (c *coreAPI) login(email, password, workspace string) actor {
+	data, cookies := c.request(actor{}, "POST", "/api/v1/login", map[string]string{"email": email, "password": password}, 200)
+	var result reply
+	must(c.f.t, "decode real login", json.Unmarshal(data, &result))
+	for _, cookie := range cookies {
+		if cookie.Name == "aspm_session" {
+			check(c.f.t, cookie.HttpOnly && cookie.Secure, "real protected cookie required")
+			c.f.remember(cookie.Value)
+			return actor{result.User.ID, workspace, cookie}
+		}
+	}
+	c.f.t.Fatal("real login did not return cookie")
+	return actor{}
+}
+func (c *coreAPI) seed() app.Finding {
+	asset := c.json(c.admin, "POST", "/api/v1/assets", map[string]any{"name": "Owned runtime repository", "kind": "repository", "environment": "test", "criticality": "medium", "tags": []string{"synthetic"}, "ownerId": c.admin.ID}, 201).Asset
+	report := map[string]any{"version": "2.1.0", "runs": []any{map[string]any{"tool": map[string]any{"driver": map[string]any{"name": "Owned runtime SARIF", "rules": []any{map[string]any{"id": "RUNTIME-SYN-1", "shortDescription": map[string]string{"text": "Synthetic runtime finding"}}}}},
+		"results": []any{map[string]any{"ruleId": "RUNTIME-SYN-1", "guid": "11111111-1111-4111-8111-111111111111", "level": "warning",
+			"message": map[string]string{"text": "RAW-RUNTIME-REPORT-NOT-APPROVED"}, "locations": []any{map[string]any{"physicalLocation": map[string]any{"artifactLocation": map[string]string{"uri": "synthetic/config.txt"}, "region": map[string]int{"startLine": 9}}}}}}}}}
+	now := time.Now().UTC()
+	job := c.json(c.admin, "POST", "/api/v1/imports", map[string]any{"apiVersion": apiVersion, "assetId": asset.ID, "format": "sarif", "report": string(encoded(c.f.t, report)),
+		"sourceId": "owned-assessment-runtime", "scanId": "initial-scan", "scope": app.Scope{ID: "owned-repository", Revision: "1", Branch: "main"},
+		"sourceScanAt": now.Add(-time.Minute), "collectedAt": now, "sourceStatus": "succeeded", "scanKind": "full", "completeness": "complete"}, 202).Import
+	db := c.f.database
+	db.MaxConnections = 1
+	db.ApplicationName = "runtime-intake-" + nonce(c.f.t)
+	worker, err := app.OpenImportWorker(c.f.ctx, app.ImportWorkerConfig{Database: db, Storage: app.StorageConfig{Endpoint: c.f.raw.Endpoint, Bucket: c.f.raw.Bucket,
+		Prefix: c.f.raw.Prefix, Region: c.f.raw.Region, AccessKey: c.f.raw.AccessKey, SecretKey: c.f.raw.SecretKey, Timeout: 4 * time.Second},
+		NormalizedPrefix: "assessment-runtime-normalized/" + nonce(c.f.t) + "/", MaxUploadBytes: 256 << 10})
+	must(c.f.t, "open accepted real ingestion worker for legitimate intake only", err)
+	must(c.f.t, "ingest actual queued report", worker.ProcessImports(c.f.ctx))
+	must(c.f.t, "close intake-only worker", worker.Close())
+	check(c.f.t, c.json(c.admin, "GET", "/api/v1/imports/"+job.ID, nil, 200).Import.State == "succeeded", "real report intake did not finish")
+	rows := c.json(c.admin, "GET", "/api/v1/work", nil, 200)
+	check(c.f.t, len(rows.Items) == 1, "actual ingestion did not create one finding")
+	id := rows.Items[0]["id"].(string)
+	c.json(c.admin, "PATCH", "/api/v1/findings/"+id, map[string]any{"ownerId": c.admin.ID, "workflowState": "in-progress", "disposition": "accepted-risk", "acceptedRiskExpiresAt": time.Now().Add(time.Hour)}, 200)
+	c.json(c.admin, "POST", "/api/v1/findings/"+id+"/notes", map[string]string{"text": "HUMAN-RUNTIME-NOTE-NOT-APPROVED"}, 201)
+	f := c.finding(id)
+	check(c.f.t, len(f.Observations) == 1 && !f.VerifiedResolution, "actual finding/observation contract missing")
+	return f
+}
+func (c *coreAPI) finding(id string) app.Finding {
+	return c.json(c.admin, "GET", "/api/v1/findings/"+id, nil, 200).Finding
+}
+func (c *coreAPI) profile(n *nativeFixture, keyless bool) (app.AIProfile, app.AIPolicy, app.AIEgressGrant, string) {
+	key, family, endpoint, mode := secret(c.f.t), "openai", n.tls.URL, "approved-hosted"
+	if keyless {
+		key, family, endpoint, mode = "", "local", n.local.URL, "local-only"
+	}
+	c.f.remember(key)
+	body := map[string]any{"name": "Synthetic runtime profile", "family": family, "endpoint": endpoint, "model": "operator-runtime-model", "deployment": "", "enabled": true, "structuredOutput": true}
+	if key != "" {
+		body["apiKey"] = key
+	}
+	p := c.json(c.admin, "POST", "/api/v1/ai/profiles", body, 201).Profile
+	pol := c.json(c.admin, "PATCH", "/api/v1/ai/policy", map[string]string{"mode": mode}, 200).Policy
+	var grant app.AIEgressGrant
+	if !keyless {
+		grant = c.json(c.admin, "POST", "/api/v1/ai/grants", map[string]any{"profileId": p.ID, "profileRevision": p.Revision, "policyRevision": pol.Revision,
+			"destination": p.Endpoint, "task": "finding-validity", "dataClass": "finding-evidence", "expiresAt": time.Now().Add(time.Hour)}, 201).Grant
+	}
+	return p, pol, grant, key
+}
+func (c *coreAPI) enqueue(f app.Finding, p app.AIProfile, pol app.AIPolicy, g app.AIEgressGrant, identity string) assessment {
+	v := c.json(c.admin, "POST", "/api/v1/findings/"+f.ID+"/assessment-previews", map[string]any{"observationId": f.Observations[0].ID,
+		"profileId": p.ID, "grantId": g.ID, "context": reviewedText, "reviewed": true}, 201).Preview
+	check(c.f.t, v.Context == reviewedText && v.ContextDigest == digest([]byte(reviewedText)) && v.ObservationID == f.Observations[0].ID && v.ProfileRevision == p.Revision && v.PolicyRevision == pol.Revision && v.GrantID == g.ID && v.PromptRevision == promptRevision, "actual preview lost exact reviewed binding")
+	job := c.json(c.admin, "POST", "/api/v1/findings/"+f.ID+"/assessments", map[string]any{"previewId": v.ID, "idempotencyKey": identity, "consent": true}, 202).Assessment
+	check(c.f.t, job.State == "queued" && job.Attempts == 0 && job.DispatchState == "not-started" && job.Result == nil && job.Scope == c.f.scope, "core SERVICE did not forward scope/queue truthfully")
+	return job
+}
+func (c *coreAPI) job(id string) assessment {
+	return c.json(c.admin, "GET", "/api/v1/ai/assessments/"+id, nil, 200).Assessment
+}
+func (c *coreAPI) await(id string, states ...string) assessment {
+	c.f.t.Helper()
+	ctx, cancel := context.WithTimeout(c.f.ctx, 8*time.Second)
+	defer cancel()
+	var result assessment
+	waitAt(c.f.t, ctx, "real durable assessment terminal state", 100*time.Millisecond, func() bool {
+		result = c.job(id)
+		for _, state := range states {
+			if result.State == state {
+				return true
+			}
+		}
+		return false
+	})
+	return result
+}
+func (c *coreAPI) assertAdvisory(job assessment, want assessment) {
+	check(c.f.t, job.State == "succeeded" && job.Result != nil && job.Failure == nil && job.AdvisoryOnly && job.Attempts == 1 && job.DispatchState == "response-received" &&
+		job.DispatchStartedAt != nil && job.CompletedAt != nil && reflect.DeepEqual(job.binding, want.binding), "service/command lost exact advisory/dispatch/provenance")
+	check(c.f.t, job.Result.Conclusion == "inconclusive" && job.Result.Uncertainty != "" && reflect.DeepEqual(job.Result.EvidenceRefs, []string{want.ContextRef}) &&
+		job.Usage.Known && job.Usage.InputTokens == 11 && job.Usage.OutputTokens == 7 && job.Usage.CachedInputTokens == 3 && job.Usage.CacheWriteTokens == 0 &&
+		job.RequestedModel == want.Model && job.ReturnedModel == "owned-runtime-returned-model" && job.RequestID == "owned-runtime-request" && job.PromptRevision == promptRevision,
+		"actual native advisory/usage/model/request metadata differs")
+}
+func (f *fixture) domainSnapshot() []string {
+	var result []string
+	for _, table := range []string{"assets", "findings", "observations", "notes", "imports", "coverage", "ai_profiles", "ai_policies", "ai_egress_grants"} {
+		rows, err := f.db.Query(f.ctx, "SELECT to_jsonb(v)::text FROM "+f.table(table)+" v ORDER BY to_jsonb(v)::text")
+		must(f.t, "read-only runtime domain snapshot", err)
+		for rows.Next() {
+			var row string
+			must(f.t, "read domain row", rows.Scan(&row))
+			result = append(result, table+":"+row)
+		}
+		must(f.t, "finish domain snapshot", rows.Err())
+		rows.Close()
+	}
+	return result
+}

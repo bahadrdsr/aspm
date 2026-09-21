@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "name": "ai-assessments-ui-v1",
+  "status": "Frozen unsigned independent UI acceptance packet; actual missing-controls RED, not implemented UI acceptance.",
+  "frozenAt": "2026-09-20T19:51:35.159Z",
+  "author": {
+    "id": "independent-ai-assessments-ui-author-20260920",
+    "role": "Independent UI test author only; not UI/backend implementation coder",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "contractWrittenBeforeTests": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+    "bytes": 13109,
+    "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+  },
+  "controlledFiles": [
+    {
+      "path": "web\\tests\\ai-assessments-data.ts",
+      "bytes": 11845,
+      "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+    },
+    {
+      "path": "web\\tests\\ai-assessments-fixture.ts",
+      "bytes": 27759,
+      "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+    },
+    {
+      "path": "web\\tests\\ai-assessments-ui.spec.ts",
+      "bytes": 35274,
+      "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\BEFORE.json",
+      "bytes": 313571,
+      "sha256": "09847e59b62d755bb65b63ad32f4cfac7da8b0786d30d29551de197b77e0d25c"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\COMPATIBILITY.json",
+      "bytes": 28104,
+      "sha256": "b9b64aa8f8695aaf4b336f03ac5893df2248e4cf1977862bca11560646af7929"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+      "bytes": 13109,
+      "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\DECISIONS.json",
+      "bytes": 2718,
+      "sha256": "0759483af7c0c24ba983009d820c7e33a7ae83375949680e95590015d7a0fda0"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\GUARDS.json",
+      "bytes": 4292,
+      "sha256": "0d63ea10da41f94c3519e07815da1419954a529b7707c61f1de3a165052cf07c"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\HANDOFF.txt",
+      "bytes": 7656,
+      "sha256": "2fb9605fd153e9c7f985d2fa5bd9637cf896a2004d7a1b85a9fcd3c39e2f074d"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\RED.json",
+      "bytes": 31573,
+      "sha256": "ff70ba08db771529ab56897e7f9dee35c8c1f9583ee68e56b725ab6a395bdc67"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\SOURCE-WITNESSES.json",
+      "bytes": 3198,
+      "sha256": "e805741c1705e87e00b9cc73c903ef53ea165550e26f11f25416945ee706ca5b"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\TYPECHECK.json",
+      "bytes": 904,
+      "sha256": "b51c8fafe14c7beb3d4ce8f7a3ba52fe048ac6faa278c0119fc8426a31c16280"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+      "bytes": 1123,
+      "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+    }
+  ],
+  "payloadFileCount": 13,
+  "publicationMetadata": [
+    "web\\tests\\reviews\\ai-assessments-ui-v1\\PACKET.json",
+    "web\\tests\\reviews\\ai-assessments-ui-v1\\PACKET.sha256"
+  ],
+  "backendAuthority": {
+    "frozenAPIContractAndTestControls": 206,
+    "manifest": {
+      "path": ".oracles\\ai-assessments-v1.json",
+      "bytes": 39579,
+      "sha256": "96274b0dcc9ef6b89b12b11715a5ff55d4de712a4dfb8d49096a906e0e3933b0"
+    },
+    "signature": {
+      "path": ".oracles\\ai-assessments-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c7a394f113a44836282084f6bdd945807c006ac9161d0de2fd997b7c66b979db"
+    },
+    "config": {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-seal-inputs\\ai-assessments-oracle-set.json",
+      "bytes": 11282,
+      "sha256": "5081640b8c9f5a2e12155e74faa75f7cb0e1650898c0daee4b33e6096fd732d8"
+    },
+    "productionImplementationCaptured": false,
+    "concurrentImplementationExplicitlyExcluded": true
+  },
+  "qualification": {
+    "typecheck": "passed",
+    "newTopLevelCases": 6,
+    "actualMissingEntryFailures": 6,
+    "newPassed": 0,
+    "newFunctionalTails": "BLOCKED/NOT RUN after missing opt-in entry",
+    "unchangedPriorCasesPassed": 99,
+    "priorCaseIdentityMultisetVerified": true,
+    "skips": 0,
+    "retries": 0,
+    "flakes": 0,
+    "externalAttempts": 0,
+    "fixtureViolations": 0,
+    "browserExceptions": 0,
+    "actualAIRouteRequestsBeforeMissingEntry": 0
+  },
+  "results": {
+    "RED": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\RED.json",
+      "bytes": 31573,
+      "sha256": "ff70ba08db771529ab56897e7f9dee35c8c1f9583ee68e56b725ab6a395bdc67"
+    },
+    "typecheck": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\TYPECHECK.json",
+      "bytes": 904,
+      "sha256": "b51c8fafe14c7beb3d4ce8f7a3ba52fe048ac6faa278c0119fc8426a31c16280"
+    },
+    "compatibility": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\COMPATIBILITY.json",
+      "bytes": 28104,
+      "sha256": "b9b64aa8f8695aaf4b336f03ac5893df2248e4cf1977862bca11560646af7929"
+    }
+  },
+  "guards": {
+    "oldUIControlsUnchanged": 786,
+    "frozenBackendAPIControlsUnchanged": 206,
+    "existingFrontendFilesUnchanged": 559,
+    "frontendProductionSourceFilesUnchanged": 74,
+    "old99FilesAndFixturesUnchanged": true,
+    "details": {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\GUARDS.json",
+      "bytes": 4292,
+      "sha256": "0d63ea10da41f94c3519e07815da1419954a529b7707c61f1de3a165052cf07c"
+    },
+    "mutableBackendProductionExcluded": true
+  },
+  "testSettingsUnchanged": {
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000,
+    "workers": 1,
+    "retries": 0,
+    "combinedAPIRequestCap": 60,
+    "maxSyntheticHistoryItems": 101,
+    "serviceWorkers": "block",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure"
+  },
+  "fixtureBoundary": {
+    "realApplicationRendersOwnControls": true,
+    "substitution": "Declared same-origin protocol-shaped HTTP responses only",
+    "unknownOrExternalHTTPAndWebSocketBlocked": true,
+    "localViteAssetsAndHMROnly": true,
+    "ReactStateDOMClockModuleWorkerProviderSubstitution": false,
+    "liveAPIProviderAccountDatabaseCalls": false,
+    "noOldFixtureAIRoutesAdded": true,
+    "nativeOptionHelperReusedUnchanged": true
+  },
+  "rawEvidenceFiles": [
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-compat99-20260920-01.log",
+      "bytes": 16088,
+      "sha256": "22921b6b6794128d6485e3fe7403c09bdd59d1ba4103688b6ae13b133be04123"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-compat99-20260920-01.receipt.json",
+      "bytes": 421,
+      "sha256": "8fd9dab0467a76659973db43c82479650d8c4fe4c2c7bc280ef854b738089aba"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-compat99-20260920-01\\results.json",
+      "bytes": 26017632,
+      "sha256": "2011ba95e263bfc075406ada6f3e266ce9a9633b3d2f97433beabd00591c144d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-compat99-20260920-01\\results\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02.log",
+      "bytes": 22963,
+      "sha256": "d628b97cde6d778fdf642f0f3c346fe6e154df479aa26b644d13f8592ffe6d86"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02.receipt.json",
+      "bytes": 413,
+      "sha256": "23eab2bcb139db20c292a99a16420193abaf2d858583a050da2a34b1ed51b666"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results.json",
+      "bytes": 177076,
+      "sha256": "1bc652d63200f14fa8cef945aafcdd189966d6671fcdd7744a4878deb0973740"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\.last-run.json",
+      "bytes": 341,
+      "sha256": "581ac888ee7562ac0faa2dffe10b1820f3f7fb0493c1571cc4920cdaf4648dc8"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI1-La-e3ff9-nest-configuration-failures\\error-context.md",
+      "bytes": 24119,
+      "sha256": "3664ee8657659ebebc68385a87f4de1b53b21d55ee4eea754045da246bfbff71"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI1-La-e3ff9-nest-configuration-failures\\test-failed-1.png",
+      "bytes": 97532,
+      "sha256": "c0a54b2e5457ad51fc4d3bb74e2ef60a0554a17d4cc089c9e96569be27bcca09"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI1-La-e3ff9-nest-configuration-failures\\trace.zip",
+      "bytes": 530456,
+      "sha256": "c04ec215e790d3f2a2c567b8dd8f79719e17153242e5e51ad3948de5b50a8ed6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI2-Ex-2e4f3-d-canonical-preview-linkage\\error-context.md",
+      "bytes": 25401,
+      "sha256": "b018f369c82c6849ab28dbda0cd6253ef4447224b86dad0b27124a4555e90989"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI2-Ex-2e4f3-d-canonical-preview-linkage\\test-failed-1.png",
+      "bytes": 94841,
+      "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI2-Ex-2e4f3-d-canonical-preview-linkage\\trace.zip",
+      "bytes": 424688,
+      "sha256": "91e22dc7b9ae55e9ef70a36872d24487f175e9baa72c14b1e383d18aa15d38fe"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI3-Qu-5be72-tes-opaque-or-expired-facts\\error-context.md",
+      "bytes": 25404,
+      "sha256": "2d4ddef9aad877338acff7eb1f6f7f9293e1233250073ca2793458a793cbfb2c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI3-Qu-5be72-tes-opaque-or-expired-facts\\test-failed-1.png",
+      "bytes": 94841,
+      "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI3-Qu-5be72-tes-opaque-or-expired-facts\\trace.zip",
+      "bytes": 425370,
+      "sha256": "d0a3ef61a7d44aad9ba0ea1b31a74c062400b1385888426d7656cd58fe75e89f"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI4-Ca-5aa96-rification-or-unsent-claims\\error-context.md",
+      "bytes": 25406,
+      "sha256": "296faa8193f5c71580a72f9603f5a18e114ae21b48450445a1548e75968f0e63"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI4-Ca-5aa96-rification-or-unsent-claims\\test-failed-1.png",
+      "bytes": 94841,
+      "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI4-Ca-5aa96-rification-or-unsent-claims\\trace.zip",
+      "bytes": 392554,
+      "sha256": "eac66f1f8a0ea1cf7b576e5359ce744dc295c0fe97762145062f5dc74c87df10"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI5-Ma-a6604-ges-without-stale-authority\\error-context.md",
+      "bytes": 25396,
+      "sha256": "8e1fa116cd88f272b0fd487175ce2d74c97c430319c89ee7d453f7ae4f51aaaa"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI5-Ma-a6604-ges-without-stale-authority\\test-failed-1.png",
+      "bytes": 94841,
+      "sha256": "81e1d9b80f57b4d664fdd1379af9df7f2522ab456747bb7957819a5bd6533c98"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI5-Ma-a6604-ges-without-stale-authority\\trace.zip",
+      "bytes": 430126,
+      "sha256": "3c5ce2b49e8c8d9276fa2b1836927b88130083beb77e36ee35643e04808bedbd"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI6-Mo-1d28f-ogout-epochs-with-held-ACKs\\error-context.md",
+      "bytes": 25107,
+      "sha256": "96336e2686d701846f7ea7833b89b4b6abe1048b1d2b3bc4e450927bc54aa21e"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI6-Mo-1d28f-ogout-epochs-with-held-ACKs\\test-failed-1.png",
+      "bytes": 35607,
+      "sha256": "d6a6999f2d496e2e35b2c608577a4b05dbb75896733b978c32678478b23f11a6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-red-20260920-02\\results\\ai-assessments-ui-AAUI6-Mo-1d28f-ogout-epochs-with-held-ACKs\\trace.zip",
+      "bytes": 225292,
+      "sha256": "010e4b3e7a62bd45823c8983326cd1e6586b81abfb4a9602077f9dacbaeb75bb"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-typecheck-20260920-03.log",
+      "bytes": 64,
+      "sha256": "bedf36a08fcb2955be061de34b64d38a37d8995cddb4642c212cb7f87555ff63"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-ui-v1-author\\author-typecheck-20260920-03.receipt.json",
+      "bytes": 289,
+      "sha256": "4d823149a531efa4f125a571554b1a3dde2d3629d4625d17cb830706c6af8340"
+    }
+  ],
+  "preliminaryDiagnosticsPreserved": {
+    "unusedImportTypecheck": "author-typecheck-20260920-01",
+    "initialAssetAllowlistFailure": "author-red-20260920-01, NOT accepted missing-controls RED",
+    "correctedShellProbe": "author-shell-probe-20260920-01",
+    "olderPassingTypecheck": "author-typecheck-20260920-02"
+  },
+  "prohibitions": {
+    "productionUIBackendRuntimeDeploymentEdits": 0,
+    "oldTestsFixturesBindingsHelpersSettingsEdited": 0,
+    "dependencyInstallsOrUpgrades": 0,
+    "oraclesCapturedOrSigned": 0,
+    "privateAuthorityAccess": false,
+    "agents": 0,
+    "commits": 0
+  },
+  "hashPolicy": "Raw SHA256 bytes, no normalization. controlledFiles covers every new payload; PACKET.sha256 hashes this unsigned packet. The checksum is non-recursively hashed publication metadata.",
+  "parentAction": "Verify the exact frozen API/UI contract, synthetic-boundary qualification, actual six-case missing-entry RED and unchanged-99 results; seal NEW controls and assign a separate UI coder. Do not treat seeded API outcomes as backend/provider/worker acceptance.",
+  "stopStatus": "Independent author stops. No implementation, new UI GREEN, live model/provider certification or runtime/deployment claim."
+}

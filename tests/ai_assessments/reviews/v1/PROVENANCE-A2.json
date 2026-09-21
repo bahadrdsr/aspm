@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T00:58:24.549Z",
+  "author": {
+    "id": "independent-backend-regression-successor-20260921",
+    "role": "Fresh successor A2 test author; not originalauthorbeb1de86 or coder6727a036",
+    "inheritedDraftAuthor": "originalauthorbeb1de86",
+    "implementationCoder": false
+  },
+  "successorBaseline": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE-A2-SUCCESSOR.json",
+    "bytes": 227528,
+    "sha256": "658540dad40798d62e8c6c13d3a108613732c6df115945b61d26c3b993857e7e"
+  },
+  "inheritedDrafts": [
+    {
+      "path": "tests\\ai_assessments\\transport_replay_test.go",
+      "bytes": 19939,
+      "sha256": "8b87ed52190ae9fbdb5fbcc5695c8a2f446e8cbe6cbe899db3eadc6e193d717f"
+    },
+    {
+      "path": "tests\\ai_assessments\\concurrency_lifetime_test.go",
+      "bytes": 13793,
+      "sha256": "119d3573200fca68f61f5ce01b236bc99ddcbb1421d3853eb0b6e9f67ff02bc6"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CONTRACT-A2.txt",
+      "bytes": 6186,
+      "sha256": "99a1a438780d31e8580b81719fcb79171c4ed4327feb8c0e524acb4f769d632b"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\BEFORE-A2.json",
+      "bytes": 53175,
+      "sha256": "cd4545c2fef8a89c19234be065d071620bb517a10f22c8c8df7a9933fcaf38e5"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\HPACK-TABLES-A2.json",
+      "bytes": 11089,
+      "sha256": "49e13f82d9fac5f35b3783b47e69403074929059049863f9a3bd1f2e90328cdf"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\Test-Native-A2.ps1",
+      "bytes": 7800,
+      "sha256": "eff738842937e7df9b4e0187917936052246ace70c7b33740ea1db8fbe83be9e"
+    },
+    {
+      "path": "tests\\ai_assessments\\reviews\\v1\\calibrate-http2-A2.go.txt",
+      "bytes": 152,
+      "sha256": "92a0aa715986ad06833364ab887a63ff9cbe3d8d6a3e9a0124238675cd9d03f5"
+    }
+  ],
+  "archivedDrafts": [
+    {
+      "predecessorSource": {
+        "path": "tests\\ai_assessments\\transport_replay_test.go",
+        "bytes": 19939,
+        "sha256": "8b87ed52190ae9fbdb5fbcc5695c8a2f446e8cbe6cbe899db3eadc6e193d717f"
+      },
+      "recordedArchiveAtSuccessorStart": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\transport_replay_test.go",
+        "bytes": 19939,
+        "sha256": "8b87ed52190ae9fbdb5fbcc5695c8a2f446e8cbe6cbe899db3eadc6e193d717f"
+      },
+      "finalArchive": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\transport_replay_test.go.txt",
+        "bytes": 19939,
+        "sha256": "8b87ed52190ae9fbdb5fbcc5695c8a2f446e8cbe6cbe899db3eadc6e193d717f"
+      },
+      "nameOnlyRelocation": true,
+      "reason": "Preserve exact bytes without creating another Go integration package",
+      "successorSource": {
+        "path": "tests\\ai_assessments\\transport_replay_test.go",
+        "bytes": 25574,
+        "sha256": "06613532946bd69ccd118eb02ce95f98e1ec9e4c15c1dea3962fa0956ed3ab2f"
+      }
+    },
+    {
+      "predecessorSource": {
+        "path": "tests\\ai_assessments\\concurrency_lifetime_test.go",
+        "bytes": 13793,
+        "sha256": "119d3573200fca68f61f5ce01b236bc99ddcbb1421d3853eb0b6e9f67ff02bc6"
+      },
+      "recordedArchiveAtSuccessorStart": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\concurrency_lifetime_test.go",
+        "bytes": 13793,
+        "sha256": "119d3573200fca68f61f5ce01b236bc99ddcbb1421d3853eb0b6e9f67ff02bc6"
+      },
+      "finalArchive": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\concurrency_lifetime_test.go.txt",
+        "bytes": 13793,
+        "sha256": "119d3573200fca68f61f5ce01b236bc99ddcbb1421d3853eb0b6e9f67ff02bc6"
+      },
+      "nameOnlyRelocation": true,
+      "reason": "Preserve exact bytes without creating another Go integration package",
+      "successorSource": {
+        "path": "tests\\ai_assessments\\concurrency_lifetime_test.go",
+        "bytes": 17885,
+        "sha256": "5b6b4ffef6f87625b7297c574a88c0aef604f8ecd31f988923abd14eaf3217cc"
+      }
+    },
+    {
+      "predecessorSource": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\CONTRACT-A2.txt",
+        "bytes": 6186,
+        "sha256": "99a1a438780d31e8580b81719fcb79171c4ed4327feb8c0e524acb4f769d632b"
+      },
+      "recordedArchiveAtSuccessorStart": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\CONTRACT-A2.txt",
+        "bytes": 6186,
+        "sha256": "99a1a438780d31e8580b81719fcb79171c4ed4327feb8c0e524acb4f769d632b"
+      },
+      "finalArchive": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\CONTRACT-A2.txt",
+        "bytes": 6186,
+        "sha256": "99a1a438780d31e8580b81719fcb79171c4ed4327feb8c0e524acb4f769d632b"
+      },
+      "nameOnlyRelocation": false,
+      "reason": "Unchanged archive",
+      "successorSource": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\CONTRACT-A2.txt",
+        "bytes": 8089,
+        "sha256": "1c9ac040eacc70de6788436048024efcb08d1bfbe6191ab97b0578beb2d04c37"
+      }
+    },
+    {
+      "predecessorSource": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\Test-Native-A2.ps1",
+        "bytes": 7800,
+        "sha256": "eff738842937e7df9b4e0187917936052246ace70c7b33740ea1db8fbe83be9e"
+      },
+      "recordedArchiveAtSuccessorStart": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\Test-Native-A2.ps1",
+        "bytes": 7800,
+        "sha256": "eff738842937e7df9b4e0187917936052246ace70c7b33740ea1db8fbe83be9e"
+      },
+      "finalArchive": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\a2-interrupted\\Test-Native-A2.ps1",
+        "bytes": 7800,
+        "sha256": "eff738842937e7df9b4e0187917936052246ace70c7b33740ea1db8fbe83be9e"
+      },
+      "nameOnlyRelocation": false,
+      "reason": "Unchanged archive",
+      "successorSource": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\Test-Native-A2.ps1",
+        "bytes": 12541,
+        "sha256": "77ed3cf7be279d54f005b9b2a1f470911390a8f9171813d16ebfa35cdc59a441"
+      }
+    }
+  ],
+  "inheritedUnsealedRuns": [
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-combined-red-20260921-01.jsonl",
+      "bytes": 21392,
+      "sha256": "2b514f82569f602cd087c7ca334570e2b0cfb9a5b7034441c046abce58335fea"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-combined-red-20260921-01.log",
+      "bytes": 5147,
+      "sha256": "32156c96047921be729b79401d9ce575e22c5faa85c2bec4460ed8060d8e87a3"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-combined-red-20260921-01.published-v7-build.json",
+      "bytes": 890,
+      "sha256": "18595a8d50266eb08ed294b0ca8ae46eefed8d0de24dc3b3624add544c430b60"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-combined-red-20260921-01.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-combined-red-20260921-01.receipt.json",
+      "bytes": 673,
+      "sha256": "4d0232fbc2d98adc68e087b919e1825902687814c6a3bae62c88534b61147ebe"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-h2-calibration-20260921-01.jsonl",
+      "bytes": 2319,
+      "sha256": "102b1c1393b06393558eb1b84e43b2b9df162d71e0091185094be0abf6b591cf"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-h2-calibration-20260921-01.log",
+      "bytes": 454,
+      "sha256": "46a92f3d9d225f126fdf98eab35a0f86cf9c7a96e1344af876f5ce4e52d3561a"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-h2-calibration-20260921-01.receipt.json",
+      "bytes": 2373,
+      "sha256": "bd0c750198ce7f3fc009e1d226985658b8a97b3c7f5a1becf685fa2439a78d74"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-h2-red-20260921-01.jsonl",
+      "bytes": 2384,
+      "sha256": "22c0fbb5c83da00b9bdd1ef66f10c46d1404d41058199b07c508b2e345e2dd89"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-h2-red-20260921-01.log",
+      "bytes": 558,
+      "sha256": "e6b4bb71010c1d1036d6cf81a4d2688413c441766a30513d852882b89d9d5acd"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-h2-red-20260921-01.receipt.json",
+      "bytes": 723,
+      "sha256": "bc6293505675bce7a7a7b7050e5d0fe47b3b6c29689f2f06d2a1efc5ad76478d"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-lifetime-red-20260921-01.jsonl",
+      "bytes": 6205,
+      "sha256": "fd7a6744eacda3bda9dcdf3b904cd4d87564bc632cb8f67bfce775933c4fe4a6"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-lifetime-red-20260921-01.log",
+      "bytes": 1790,
+      "sha256": "286e1faeca637318bd96de1d3b69bfe0a641bffe413c5016796b1f3535207b75"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-lifetime-red-20260921-01.receipt.json",
+      "bytes": 722,
+      "sha256": "1f93eb19a660c45f88d2bd858788a60088652346be542ccd166d9b4d7c958319"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-original-eight-20260921-01.jsonl",
+      "bytes": 14054,
+      "sha256": "7505f1eb31e947a380a2b0d3236a23b5adef59362ab04e5ef7dd37828a450a5c"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-original-eight-20260921-01.log",
+      "bytes": 2927,
+      "sha256": "9ea719c20f30275300368b00140d0e5f685f05b526baf614a6ee0b07520e3adb"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-original-eight-20260921-01.published-v7-build.json",
+      "bytes": 892,
+      "sha256": "c14c9ed919d770b9bca2dfbc72c82da21a1dd5b49f489c6a8d4e06120c240ba7"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-original-eight-20260921-01.published-v7-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\ai-assessments-v1\\author-a2-original-eight-20260921-01.receipt.json",
+      "bytes": 691,
+      "sha256": "fc1b5ba032d6a3e86d2a1c05f745245c44958ddde303fd64218dfcbf209a8f40"
+    }
+  ],
+  "predecessorEvidenceIsNotSuccessorProof": true,
+  "predecessorPacketA2DidNotExistAtSuccessorStart": true,
+  "preservation": "Original BEFORE-A2, tables and thin calibration wrapper remain exact; successor does not claim original draft authorship.",
+  "clarification": {
+    "recordedBeforeSuccessorExecution": true,
+    "contract": {
+      "path": "tests\\ai_assessments\\reviews\\v1\\CONTRACT-A2.txt",
+      "bytes": 8089,
+      "sha256": "1c9ac040eacc70de6788436048024efcb08d1bfbe6191ab97b0578beb2d04c37"
+    },
+    "h1AlternativeWithdrawn": true,
+    "requiredCapability": "Offered and negotiated certificate/hostname-verified h2 with actual POST HEADERS/body observations.",
+    "h1OnlyRestrictionRequiresParentDecision": true,
+    "productionAlgorithmPrescribed": false
+  }
+}

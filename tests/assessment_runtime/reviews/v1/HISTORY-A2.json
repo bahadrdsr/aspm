@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T04:21:13.108Z",
+  "author": "independent-runtime-test-successor-20260921",
+  "originalRuntimeAuthorOrCoder": false,
+  "parentVerifiedA1Packet": {
+    "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A1.json",
+    "bytes": 25017,
+    "sha256": "e611e3beab298cddb53e4187c5507793893ad1751191ae44cfc9fa393b0501ac"
+  },
+  "preservedHistoricalRecords": [
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\RED-A1.json",
+      "bytes": 16688,
+      "sha256": "d04e68d11861e53d4d58f74da511dda1bef83070d859e66dcdade155886afab5"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CANCELLATION-A1.json",
+      "bytes": 10785,
+      "sha256": "88d2546854b028e01346f269db1f855d6a7e0e815e4eeb8f322c3216034d0975"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\CALIBRATION-A1.json",
+      "bytes": 11631,
+      "sha256": "cea2f4d9d028e645bad93bf5e33fc4fe354237d69d3b80fa81bab68a3e61da9d"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A1.txt",
+      "bytes": 8075,
+      "sha256": "50b812d447907514512cbf9008749668b44f1f0382c9861e7f2e86289cf8b683"
+    }
+  ],
+  "acceptedA1CadenceRetained": true,
+  "oldFailuresRetainedUnexplained": true,
+  "noAttributionOfEveryPastFailureOrStateNewHypothesis": true,
+  "archivedOnlyActuallyChangedA1Files": [
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\history\\a2\\fixtures_test.go.txt",
+      "bytes": 25886,
+      "sha256": "57bfad32c9ef83fec68e33ee316e946da18c1d727c7a3ffa2474e875e87bf0dc"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\history\\a2\\roles_test.go.txt",
+      "bytes": 19156,
+      "sha256": "8b58de99ca865b736af7a30c6d63cf9524a232d5232e4872274b536c5b8194ff"
+    },
+    {
+      "path": "tests\\assessment_runtime\\reviews\\v1\\history\\a2\\native_test.go.txt",
+      "bytes": 7490,
+      "sha256": "3ac099f461cf957f15d7e3aae6e9b98ebb7eed10ee39dc87a426e2aeb399b233"
+    }
+  ],
+  "currentProof": "Actual native timestamp within the original deadline, deliberately later observer, strict synthetic rejection controls, then four normal cases on unchanged held production.",
+  "parentMustIssueNewSealAndRereview": true,
+  "selfAccepted": false
+}

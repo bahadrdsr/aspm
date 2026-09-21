@@ -1,0 +1,108 @@
+ASSESSMENT RUNTIME A3 - INDEPENDENT HEADER-TIMEOUT REGRESSION
+===========================================================
+
+Status: FROZEN unsigned regression packet, fresh owned-service RED.
+Parent verifies and seals new controls before a separate runtime coder fixes
+source. No self-acceptance or production fix. Runtime source 7 remains HOLD.
+Author: independent-runtime-header-a3-20260921, not beb1de86 or 0383e852.
+
+New executable test
+-------------------
+tests\assessment_runtime\header_timeout_test.go
+TestAR5EnvironmentRequestBudgetIncludesHeldNativeHeaders
+One top-level case, two isolated owned subcases. Existing tests, helper,
+native fixture, production bindings, original runner and A1/A2 history are
+byte-identical. No helper seam or new production API was needed.
+
+Actual result, first and only Contract invocation
+------------------------------------------------
+Run: independent-runtime-a3-headers-20260921-01
+Original Test-AssessmentRuntime.ps1 -Mode Contract, cached Go1.27.1,
+offline/readonly modules, actual command build succeeded.
+
+20s-budget-12s-headers: RED.
+  Actual Environment returned request timeout 20s and Client.Timeout 20s;
+  selected lease was 30s. Actual service.Run processed the real API-created
+  finding/profile/grant/preview/job through the normal-TLS native fixture.
+  Native cancellation: 9.9959313s after observed validated readiness,
+  10.0838337s after starting the actual role.
+  Intended header release: 12s after observed readiness.
+  Actual gate release: 12.0006053s after observed readiness, inside 20s.
+  Actual durable outcome: uncertain, possibly-sent, failure code timeout.
+  One native POST; 16 protected API calls. No API polling during the gate.
+
+3s-budget-held-headers: PASS.
+  Actual Environment/client timeout 3s, lease 30s.
+  Native cancellation: 2.9638274s after observed validated readiness,
+  3.0843779s after role start. The unchanged A2 occurrence/timestamp helper
+  verified the event before its original 5-second observation deadline.
+  Outcome: uncertain, possibly-sent, timeout, no result or retry.
+  One native POST; 17 protected API calls.
+
+The four original runtime top-level cases ALL PASSED in this same invocation.
+No retry, skip, production workaround or fixture correction was used.
+Their actual-command paths remain covered; the NEW timeout case itself uses
+actual service.Run, not a claim that it launched another assessment command.
+
+Reached and blocked
+--------------------
+Both new subcases reached actual API intake, selected Environment/client,
+native auth/body/model/schema/context/privacy checks, independent committed
+marker observation, header gate, original terminal await AFTER release,
+exact single POST, unchanged domain/storage, privacy and bounded role stop.
+The 20s case's successful canonical advisory/provenance/usage assertions are
+BLOCKED because no succeeded receipt existed. Releasing the native gate after
+the request had cancelled is not proof that a response was sent or received.
+The short-budget control is not a delayed-response success substitute.
+
+RED-A3.json contains the actual timestamp traces, failure code, reached/blocked
+tails and exact raw log/receipt hashes. Timestamps are instants; no literal Z
+spelling or exact-ms equality is required. No full-request timer-start instant
+is inferred from the later test observation of the fixture's ready channel.
+
+Guards and footprint
+--------------------
+100 runtime A2, 245 backend and 838 UI controls all match their original bytes.
+Seven held runtime source/doc paths match coder handoff:
+  ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e
+Runtime manifest:
+  b7f2a64bde7c6b1ad9f519675b78d6cec5c32c424a764778721b8e10c99bdbf6
+Fixed runtime config:
+  416614fa7bed167badc241e52dd8253a0c5c8353ca79dc03222b0358cb7b3d8e
+
+The A3 wrapper held 3306 inputs with FileShare.Read, checked before/after,
+including 2120 actual Go dependency input files. It enumerates only
+assessment_runtime and assessment-worker dependencies, not broad cmd/internal
+trees; unrelated future packaging-author source files were not frozen.
+The wrapper invokes the ORIGINAL safe command runner with full bindings.
+Private RuntimeConfig is consumed only by that unchanged runner; values are
+never copied to this packet or argv/logs.
+
+Original 90s fixture, 220 protected API operations, 12 native POSTs, 8s terminal
+awaits, A1 100ms terminal cadence and A2 cancellation measurement stay intact.
+No source/UI/dependency/oracle edits, authority capture, agents, commits,
+provider accounts or live model calls. Only owned PG/S3 and TLS/native fixtures
+were used. Existing owned cleanup ran; no unrelated resource was targeted.
+
+Contract and implementation freedom
+------------------------------------
+CONTRACT-A3.txt was written before the new test. The selected budget includes
+nonstreaming headers. A zero header timeout with a bounded total deadline or
+a header timeout consistent with the selected budget can both be correct.
+Do not globally increase delivery/collection/default timeouts. No implementation
+field, new internal API, scheduler or replacement native client is mandated.
+Prior A1/A2 failures and measurements remain unchanged, without new attribution.
+
+Reproduction and hashes
+-----------------------
+From C:\bahadr\serious\aspm:
+  tests\assessment_runtime\reviews\v1\Test-Runtime-A3.ps1
+    -RuntimeConfig <same private owned runtime.json>
+    -OutputName <fresh bounded label>
+The wrapper runs the original Contract mode and includes all five top-level
+cases. Expect the new long-header subcase RED until separately reviewed source
+remediation. Do not change old bodies, waits, budgets or binding behavior.
+
+PACKET-A3.json and PACKET-A3.sha256 bind the new source/packet and raw evidence.
+HANDOFF-A3.json and HANDOFF-A3.sha256 link the exact final packet.
+Checksums are unsigned, not a seal, authority capture or runtime acceptance.

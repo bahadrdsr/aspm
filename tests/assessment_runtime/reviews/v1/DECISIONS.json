@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T22:01:09.114Z",
+  "author": {
+    "id": "independent-assessment-runtime-test-author-20260920",
+    "role": "Independent runtime test author only, not service/command implementation coder",
+    "session": "2c52af96-fb91-4017-8ee3-b2f684c354d7"
+  },
+  "contractBeforeTests": {
+    "path": "tests\\assessment_runtime\\CONTRACT.txt",
+    "bytes": 12696,
+    "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+  },
+  "role": "assessment",
+  "command": "cmd\\assessment-worker",
+  "requiredSurfaces": [
+    "service.Environment(\"assessment\")",
+    "service.Run(ctx,\"assessment\",service.Config)"
+  ],
+  "configFields": [
+    "AssessmentScope",
+    "AssessmentLeaseDuration",
+    "AssessmentAuthorizationInterval",
+    "AssessmentRequestTimeout",
+    "AssessmentRequestWindow",
+    "AssessmentMaxConcurrent",
+    "AssessmentRequestsPerWindow",
+    "AssessmentMaxInputBytes",
+    "AssessmentMaxOutputTokens",
+    "AssessmentMaxResponseBytes",
+    "AssessmentClient",
+    "AssessmentCAFile"
+  ],
+  "scope": {
+    "core": "absent/empty optional; nonempty forwarded through real core SERVICE",
+    "worker": "explicit required matching durable scope; not derived from key/DB"
+  },
+  "key": {
+    "absent": "allowed for local keyless",
+    "supplied": "canonical 32-byte standard base64, including reject supplied empty",
+    "hostedMissing": "must fail before provider, no startup fallback"
+  },
+  "defaults": {
+    "lease": "15s",
+    "authorizationInterval": "100ms",
+    "requestTimeout": "10s",
+    "requestWindow": "1m",
+    "maxConcurrent": 1,
+    "requestsPerWindow": 30,
+    "maxInputBytes": 32768,
+    "maxOutputTokens": 1024,
+    "maxResponseBytes": 65536
+  },
+  "purePreflight": {
+    "worker": "Existing app.ValidateAssessmentWorkerConfig already exported and pure; reuse before EnsureSchema/I/O.",
+    "core": "Service must validate optional scope before EnsureSchema; may narrowly factor/reuse current pure identity check, never call DB-opening constructor as validation.",
+    "newBackendWorkerExportNeeded": false
+  },
+  "client": {
+    "explicitDirectTransport": true,
+    "normalTLS12Plus": true,
+    "CAFileMaxBytes": 1048576,
+    "noStaticModelEndpointKnob": true,
+    "perRequestBinding": "accepted backend persisted profile/grant destination"
+  },
+  "readiness": {
+    "service": "assessment",
+    "status": "ready",
+    "database": "reachable",
+    "storage": "not-required",
+    "admission": "configured",
+    "scope": "explicit configured scope",
+    "provider": "not-probed",
+    "pipeline": "inspect-job-state-separately"
+  },
+  "actualCommandRequired": true,
+  "ownedPIDCleanupNotOSSignalEvidence": true,
+  "assessmentWorkerStorageCapability": false,
+  "normalNarratives": 4,
+  "liveAccountsModelsTargets": false,
+  "legacyRoleBehaviorUnchanged": true,
+  "parentMustVerifyBeforeCoder": true,
+  "witnesses": [
+    {
+      "path": "internal\\service\\config.go",
+      "bytes": 10143,
+      "sha256": "031b22d4b642c329bee2de30f7c629d0434ad34121456e0be2347f1bc209e93c"
+    },
+    {
+      "path": "internal\\service\\run.go",
+      "bytes": 12033,
+      "sha256": "7f8e5b90681c30006e41def3b5ed690c3f3bdd730a6d9069783bdb88296e9911"
+    },
+    {
+      "path": "internal\\service\\delivery_client.go",
+      "bytes": 7122,
+      "sha256": "7830c432a575f93bc93b0790eea9227c503530767d7b3624d21c3acb2082c13f"
+    },
+    {
+      "path": "internal\\service\\delivery_runtime.go",
+      "bytes": 2222,
+      "sha256": "c5e376290c2a683bdbbf4d975ca8cce621538cefc79cea7175fad0fad103d711"
+    },
+    {
+      "path": "internal\\service\\collection_runtime.go",
+      "bytes": 2917,
+      "sha256": "c18180df6dc2b290b7709639f57ec1f76ec00d13b1f565f23def9660cc47e072"
+    },
+    {
+      "path": "internal\\app\\assessment_worker.go",
+      "bytes": 7545,
+      "sha256": "82330d25f74da7187c541ee647745f5447a48aba63acca67a470b0662cca220b"
+    },
+    {
+      "path": "internal\\app\\assessment_validation.go",
+      "bytes": 4575,
+      "sha256": "c249a19e7ba3fd0593e1873a7d77d72653b18692a4b6c6da31c212fa1c7500c3"
+    },
+    {
+      "path": "tests\\ai_assessments\\CONTRACT.txt",
+      "bytes": 19325,
+      "sha256": "f30ca9b974911d6d679b41681e06413d25bd8c966430e66cdddb6d9e1d51273f"
+    }
+  ]
+}

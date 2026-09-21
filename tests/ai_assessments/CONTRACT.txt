@@ -1,0 +1,299 @@
+AI ASSESSMENTS V1 - DURABLE READ-ONLY ADVISORY JOBS
+================================================
+
+Authority and scope, BEFORE tests
+--------------------------------
+Published baseline: 98a41ced71c09e71c8cc2bd158678fd52268498c, schema V7.
+Roadmap: ASPM_IMPLEMENTATION_PLAN.md 408-465 and 827-843.
+Read existing tests/analysis and tests/ai_configuration contracts. This adds
+bounded durable assessment orchestration using the existing providers.Assessor,
+not another native protocol client or a fake successful assessment implementation.
+It is not complete M11, live-model evaluation, a runtime/deployment/egress gate,
+Ollama native /api/chat support, or a finding-verification/exploitation service.
+
+Only NEW tests/ai_assessments controls and the specifically authorized V8
+compatibility expectations are authored. Production, UI, runtimes, worker CLI,
+Helm/deploy, old fixtures/bindings, dependencies, agents, commits and signatures
+are untouched. Parent verifies this contract and actual RED before a coder acts.
+
+Explicit reviewed context, provenance and consent
+-------------------------------------------------
+An authenticated workspace admin/analyst supplies a nonblank UTF-8 context
+string, maximum 32768 UTF-8 bytes, and explicitly reviewed=true. NUL is invalid;
+newlines/Unicode are permitted and bytes are preserved, not trimmed/rebuilt.
+The context is operator-reviewed/redacted, derived text, NOT original scanner
+bytes and NOT cryptographic proof of the source. No regex promises universal
+credential removal. Unknown sensitive material remains the operator's review
+responsibility; deployment/account data-processing policy remains a later gate.
+
+The selected finding and observation must genuinely exist in that workspace;
+the observation must belong to that finding. Do not choose an implicit/latest
+observation. The trusted API snapshots these IDs and the original observation
+evidence digest as linkage, not as the digest of edited context. No automatic
+notes, unmapped fields, raw reports, source code, runtime/configuration secrets
+or retrieved evidence are appended to the prompt. Only the exact approved text,
+its server context identifier/digest and the adapter's fixed instructions go out.
+The worker has NO StorageConfig/S3/operator-storage capability.
+
+Preview rejects direct inclusion of the selected nonempty provider credential.
+Known configured service credentials must not be assembled into context, logs,
+DTOs or job rows. At minimum direct selected-key inclusion is rejected before
+queue, and configured runtime secrets are never sourced from configuration or
+raw reports into prompts. Successful/native error metadata must not echo keys.
+This is not a claim that arbitrary encodings/unknown credentials can be found.
+
+The server owns prompt revision "finding-validity-reviewed-context/v1".
+It identifies the existing fixed provider instructions/schema, not caller text.
+Task is finding-validity; dataClass is finding-evidence. Both are fixed here.
+ContextDigest = "sha256:" + lower-hex SHA256 of EXACT context UTF-8 bytes.
+ContextRef = "reviewed-context:" + server-generated preview ID.
+ContextOrigin is exactly "user-reviewed-derived".
+
+Preview is immutable and requester-bound. Its consent lifetime is five minutes
+from server time, shortened to the grant expiry in approved-hosted mode.
+Queue requires a second explicit consent=true. The resulting job retains this
+consent expiry. A queue/dispatch must not revive an expired preview. Later
+scanner/source changes do not rewrite the approved text, observation ID or
+digest. The result describes that snapshot, never silently the latest scan.
+
+Exact API vocabulary
+--------------------
+Use aspm/v1alpha1, real session cookie, matching Origin and selected workspace.
+Server IDs are native 32 lowercase hex. Bodies reject unknown fields.
+
+POST /api/v1/findings/{findingID}/assessment-previews
+  {observationId, profileId, grantId, context, reviewed:true}
+  grantId is explicitly "" for local-only; no invented hosted grant.
+  201 {apiVersion,preview}
+  Preview: id,workspaceId,findingId,observationId,sourceEvidenceDigest,
+    requestedBy,profileId,profileRevision,policyRevision,grantId,destination,
+    family,model,deployment,task,dataClass,promptRevision,contextRef,
+    contextDigest,contextOrigin,context,createdAt,expiresAt.
+
+POST /api/v1/findings/{findingID}/assessments
+  {previewId,idempotencyKey,consent:true}
+  New job: 202 {apiVersion,assessment}; identical replay: 200 same receipt.
+  Idempotency keys are explicit, nonblank, bounded to 128 UTF-8 bytes.
+  Binding includes requester and preview ID, which identifies the immutable
+  snapshot. Same workspace/key/requester/preview returns the original job/result.
+  Any changed binding, including another preview, is 409, not a second job.
+  All write/current-authority preconditions still apply to replay. Historical
+  receipts remain readable through GET after authority for new execution ends.
+
+GET /api/v1/findings/{findingID}/assessments
+GET /api/v1/ai/assessments/{assessmentID}
+POST /api/v1/ai/assessments/{assessmentID}/cancel with {}
+  List: {apiVersion,items,total,nextCursor}; default 100, max 500, native ID
+  cursor only, workspace/finding scope, no automatic draining.
+  Detail/cancel: 200 {apiVersion,assessment}.
+  Cancel requires current workspace writer membership; it is idempotent.
+  Viewer may read scoped history/detail, never preview/enqueue/cancel.
+
+Assessment metadata: id,workspaceId,findingId,observationId,sourceEvidenceDigest,
+  previewId,requestedBy,idempotencyKey,scope,profileId,profileRevision,
+  policyRevision,grantId,destination,family,model,deployment,task,dataClass,
+  promptRevision,contextRef,contextDigest,contextOrigin,context,consentExpiresAt,
+  state,attempts,dispatchState,advisoryOnly,createdAt,dispatchStartedAt,
+  completedAt,result,failure,usage,requestId,requestedModel,returnedModel,
+  stopReason,retryAfterMillis.
+  IDs/bindings/context are immutable. advisoryOnly is true.
+  Timestamps are RFC3339 instants, nullable where pending, not mandatory Z
+  lexical encoding. No secret/ciphertext/provider headers/raw envelope fields.
+  result is null or exactly {conclusion,uncertainty,evidenceRefs}.
+  Conclusion: supported|contradicted|inconclusive; nonblank uncertainty;
+  references point ONLY at contextRef. No finding mutations accompany results.
+  usage: known,inputTokens,outputTokens,cachedInputTokens,cacheWriteTokens.
+  Missing usage means known=false, not a zero-use or zero-cost assertion.
+  failure: null or {code,message,retryable:false}; safe bounded diagnostics.
+  Native request/model/stop/usage/retry metadata is retained when available,
+  including rejected output. Requested model and Foundry deployment stay
+  separate even when their string values are equal.
+
+Unauthenticated 401; viewer write 403; missing/foreign scoped identity 404.
+Malformed/unknown body, false/missing review/consent or credential context: 400.
+Over-limit context: 413. A denied/stale profile/policy/grant/preview binding:
+409 conflict, never implicit approval or automatic refresh. Unavailable service
+configuration remains explicit 503. No client ActorID, endpoint, headers,
+promptRevision, policy/revision override, ApprovalRef, result or success object.
+The preview JSON body itself is capped at 256 KiB to allow bounded JSON escaping
+of a valid 32-KiB context. Queue/cancel bodies remain bounded small JSON.
+
+Trusted API/worker construction
+-------------------------------
+New explicit app.Config.AssessmentScope string selects this one assessment
+pool's durable scope. Empty leaves the assessment feature unavailable; it must
+not infer a scope from credentials or start background assessment work.
+Existing core functionality stays usable. Scope is coherent per database
+schema: a conflicting second nonempty scope is rejected, not another full quota.
+
+app.AssessmentWorkerConfig {
+  Database app.DatabaseConfig
+  EncryptionKey []byte
+  WorkerID, Scope string
+  Client *http.Client
+  LeaseDuration, AuthorizationInterval, RequestTimeout, RequestWindow time.Duration
+  MaxConcurrent, RequestsPerWindow, MaxInputBytes, MaxOutputTokens int
+  MaxResponseBytes int64
+}
+app.OpenAssessmentWorker(ctx, config) (*app.AssessmentWorker,error)
+worker.ProcessNext(ctx) (bool,error)
+worker.Ping(ctx) error
+worker.Close() error
+
+Forwarding bindings only construct/forward these public values, preserve errors
+and normalize nil concrete pointers. They never implement policy, jobs, quota,
+native JSON parsing, simulated successful results or automatic fallback.
+Construction owns an independent database pool, no app HTTP/S3 component.
+Encryption follows the existing resolver: no ambient keys; local keyless use
+does not invent a credential. Hosted encrypted lookup without its key fails.
+All input/response/token/deadline/lease/window/concurrency bounds are explicit,
+positive and bounded; no private full quota in each process. MaxInputBytes
+cannot exceed 32768, MaxOutputTokens cannot exceed the adapter's 32768 bound,
+MaxResponseBytes cannot exceed 128 KiB, RequestTimeout is at most 30 seconds,
+LeaseDuration is 250ms..1 minute, AuthorizationInterval is 10ms..1 second and
+shorter than the lease; concurrency is 1..16; requests/window is 1..1000.
+RequestWindow is 1 second..1 hour.
+
+Require an explicit trusted direct *http.Transport client with bounded timeout,
+Proxy=nil, no cookie jar, normal hostname/TLS verification (TLS >=1.2), no
+InsecureSkipVerify, ServerName override, DialTLS or DialTLSContext bypass.
+No nil/default-client/ambient-proxy fallback. A fixture root CA is normal trust,
+not disabled TLS. Copy ownership safely; reject redirects before forwarding keys.
+Restrict each dispatch to the exact current approved profile destination/base.
+Existing resolver EXACT destination binding is not relaxed by adapter URL/path
+handling. No constructor, preview or queue provider probe/catalog/model request.
+Local-only is local FAMILY only, not hosted-on-loopback. A loopback proxy does
+not prove local downstream processing, geography, licensing or runtime egress.
+
+Durability, fencing, authority and dispatch uncertainty
+------------------------------------------------------
+Queued records persist the complete immutable binding/context above. Independently
+reopened workers consume real PostgreSQL state, not a shared in-memory app.
+The current actor must still be a writer and profile enabled/reviewed, same
+profile/policy revisions and destination, valid policy mode and exact current
+unexpired/nonrevoked grant at preview, queue, before I/O, during a held response
+and final commit. For local-only there is no grant and no hosted fallback.
+Issuer demotion alone does not revoke an existing durable grant; requesting
+actor membership does. Reuse the published resolver, but never treat one earlier
+Resolve result as a reservation. Re-check snapshot identities as well as current
+resolver permission; do not reroute to a changed profile or silently re-review.
+
+States: queued, dispatching, succeeded, failed, cancelled, invalidated, uncertain.
+dispatchState: not-started, possibly-sent, response-received.
+attempts is 0 before dispatch, at most 1 after. Before the ONE native POST,
+transactionally validate current authority/lease and persist dispatch_started_at,
+attempts=1 and dispatching state, then COMMIT and release the connection.
+No SQL transaction/slot is held while waiting for inference or admission.
+Database clock_timestamp, leases and monotonically increasing fences govern
+scheduling, not a process-private quota or injected permission clock.
+Pending capacity denial returns ProcessNext(false,nil) promptly without
+dispatch/admission consumption or waiting while owning a connection.
+
+Once dispatch is marked, retries/fallback/resubmission are forbidden, including
+SDK/service retries, close/crash/expired lease and identical queue replay.
+An expired dispatch can be terminally settled by another fenced worker, never
+re-sent. Old owners/fences cannot overwrite the resulting state/receipt.
+Active authority loss cancels context-honoring HTTP, invalidates the job, denies
+success commit and records possibly-sent honestly. Explicit cancel before marker
+is known not-started; after marker it is not claimed unsent. Caller/worker close
+or lost response after marker is cancelled/uncertain with no advisory result.
+A completed response can retain bounded usage/diagnostics even when rejected;
+lost/uncommitted responses have unknown usage, not invented zero spending.
+Close cancels owned operations; Ping uses the independent pool while I/O waits.
+
+One durable explicit scope shares max concurrency and request-window admission
+across ALL profiles/workspaces/replicas assigned to this pool, not per API key.
+Opening another instance with conflicting scope limits rejects rather than
+silently changing them or creating another full allocation. Persist/coordinate
+admission and its dispatch consumption. A request rejected by the provider still
+consumes that one admitted attempt; no automatic retry at Retry-After.
+This is conservative concurrency/request admission only. Token-rate, account/
+model/region limit configuration, cost ceilings/pricing and live quality are
+NOT claimed and remain separately bounded M11g work.
+
+Native adapters and explicit failure distinctions
+------------------------------------------------
+Use existing OpenAI/Foundry Responses, Anthropic Messages and local compatible
+Chat profiles with exact existing header/body/schema/usage mappings, MaxAttempts=1,
+stream=false and no registered tools. store=false is a request, not a universal
+retention guarantee. No model/deployment catalog defaults or native Ollama claim.
+Keep auth, rate-limited, provider/unavailable, timeout, response-limit, capability,
+schema, refusal, grounding and tool-output distinguishable. These are failure
+codes, not successful inconclusive assessments. Valid inconclusive is a
+structured advisory with uncertainty and exact approved context references.
+
+Inspection identified an explicit required adapter contract evolution: the
+published provider parser currently collapses schema, refusal and grounding into
+ErrOutput. The separate coder must expose a bounded structured subtype from
+THAT existing parser, preserving errors.Is(..., providers.ErrOutput) for old
+callers. The worker must not reimplement native response parsing. The new native
+fixtures demand these distinct public failure codes; old analysis controls are
+unchanged. Actual usage/request/model/stop metadata must survive rejected output.
+
+Read-only advisory, privacy and bounded storage
+----------------------------------------------
+Never close/classify/reprioritize findings or change observations/source state,
+workflow/owner/risk/notes/assets/import evidence. A supported model statement is
+not source verification or reproduced proof. No shell, tools, probes, code,
+targets or automatic notes. Provider tool proposals are rejected data.
+Persist only bounded context/advisory/provenance and safe metadata, not raw
+provider envelopes. Uncertainty is bounded to 8192 UTF-8 bytes, references to 16
+bounded context refs, other native metadata strings to 512 UTF-8 bytes, safe
+failure messages to 1024 bytes. Reject/redact known credential echoes safely.
+
+Minimal readonly SQL probes name app_assessment_previews, app_assessment_jobs
+and app_assessment_quotas. Job scheduling probes use id,workspace_id,state,
+attempts,dispatch_started_at,lease_until,worker_id,fence. No SQL business-row
+seed, forged job/result, ledger relabel or deletion of current tables is allowed.
+Real pgx query tracers may pause a real query before execution to expose fencing
+races; they never fabricate results or implement a scheduler.
+
+Eight integration narratives
+----------------------------
+AA1 Real intake -> explicit reviewed preview/consent, scope/RBAC/privacy, no I/O.
+AA2 Immutable queue/idempotency/history/reopen and old-context snapshot after
+    a legitimate later scan; viewer readonly and no finding decision mutation.
+AA3 Four native protocols, exact grounded advisory/provenance and actual usage,
+    including cache reads/writes and missing usage; no catalog claims.
+AA4 Schema/refusal/grounding/tools/auth/rate/provider/bounds failures stay distinct,
+    safe and single-attempt; no fallback or finding mutations.
+AA5 Held native request leaves a one-connection worker pool responsive; marker
+    is committed before native I/O and caller cancellation is truthful.
+AA6 During held responses, real revoke/expiry/profile/policy/requester-role
+    changes actively cancel and deny success commit; no stale approved result.
+AA7 Two workers/profiles share admission, reject incoherent limits; expired
+    dispatch recovery never repeats inference and a stale fence cannot finalize.
+AA8 Fresh/reopen plus actual published-V7 to V8 migration with exact historical
+    DDL, legacy definitions and legitimate API-created data preserved.
+
+Migration and planned compatibility BEFORE implementation
+----------------------------------------------------------
+V8 is a new explicit requirement. Pin exact V1..V7 DDL at published 98a41ce with
+source/blob/value hashes. Use a fresh owned schema, never relabel a current
+ledger/delete tables. Legacy business data, where claimed, is created through
+real published-V7 asset/import/auth/config APIs and ingestion, not SQL inserts.
+Schema-only evidence is labelled separately. Repeated current open has exactly
+versions 1..8 and preserves legacy contracts and immutable data.
+
+The user authorizes ONLY the two current-ledger expectations in EACH existing
+tests/source_collection/upgrade_test.go and tests/ai_configuration/upgrade_test.go
+to extend exact 1..7 to exact 1..8, with necessary minimal messages. Historical
+V5/V6 DDL, version baselines, definitions and every source/API/grant/evidence/
+reopen assertion remain byte-identical. No >= weakening or unknown versions.
+Archive only those truly amended files and hash references in this new packet.
+Their current V7 failures are planned compatibility RED, not implementation-led
+green patches. Old signatures remain historical and are not re-signed.
+
+Evidence, fixture and stop boundary
+-----------------------------------
+Real loopback PG/S3 and owned normal-TLS/native model HTTP fixtures only.
+S3 is used for legitimate report intake, not assessment context retrieval.
+No real LLM/provider account/target, dependency install, deployment or OS change.
+Cached Go 1.27.1 with offline/read-only modules and redacted private runtime.
+Exactly eight normal integration cases; fixture-only calibration is separate.
+Per-fixture deadline 90s, <=220 API operations, <=32 owned native calls; worker
+request/response/deadline limits remain smaller and explicit.
+Full missing-constructor/compiler RED means ALL eight narratives BLOCKED/NOT RUN.
+Separate fixture/native/historical calibration proves only its stated boundary.
+Record actual failures, hashes and these decisions honestly. Parent reviews/
+seals the new contract/RED and assigns a separate coder. This author stops.

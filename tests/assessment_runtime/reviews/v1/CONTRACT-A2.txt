@@ -1,0 +1,85 @@
+ASSESSMENT RUNTIME A2 - ORIGINAL-DEADLINE NATIVE CANCELLATION MEASUREMENT
+=====================================================================
+
+Parent authorization and historical authority
+----------------------------------------------
+Author: independent-runtime-test-successor-20260921, not the original author
+and not runtimecoder0383e852. This is a separate narrowly authorized A2
+measurement correction. No production change or oracle/signature edit.
+Parent verified runtime A1 packet
+e611e3beab298cddb53e4187c5507793893ad1751191ae44cfc9fa393b0501ac
+and accepted its terminal-HTTP 100ms cadence amendment for sealing.
+That cadence, its actual evidence and all historical RED stay unchanged.
+No attribution of every historical cancellation failure or the unproven
+StateNew shutdown hypothesis is asserted by this new proof.
+
+Required measurement, not a new execution allowance
+---------------------------------------------------
+AR4 still creates the SAME 5-second context before the native-marker wait.
+Its actual protocol/context/committed-marker readiness ordering is unchanged.
+Marker/quota reads, original stopRole six-second wait, production-error check
+and actual listener-shutdown check are all unchanged.
+The post-stop cancellation assertion must require:
+  1. The actual native cancelled channel has occurred.
+  2. A nonzero timestamp was recorded by the owned native fixture inside its
+     real request.Context().Done branch, BEFORE closing that channel.
+  3. That observed timestamp is Before or Equal to the ORIGINAL context
+     deadline. Compare instants, not time structs or a required Z spelling.
+The channel receive provides synchronization before reading the timestamp.
+
+If the observer returns from stopRole after that deadline, a recorded early
+event must still pass even when both the event and context channels are ready.
+A late event, missing event (even with a supplied timestamp) or zero timestamp
+MUST fail. Giving a closed channel priority without timestamp validation is
+not adequate. No deadline is reset, extended or started after stopRole.
+Any real late or absent cancellation is a production-bound failure to report,
+not a reason for another timing amendment or producer delay.
+The timestamp measures observed native request-context cancellation only.
+It does not measure remote model computation or billing termination.
+
+Exact intended existing-file delta
+-----------------------------------
+native_test.go: one time.Time field on nativeRequest and one time.Now assignment
+in the existing request-context cancellation branch before close(cancelled).
+No request parsing/body/marker/response/release behavior changes.
+fixtures_test.go: one strict occurrence/timestamp validator plus its testing
+wrapper. Existing event helper, A1 100ms terminal polling, all 20ms other waits,
+8s await, 90s fixture, 220 API budget and other helpers remain byte-identical.
+roles_test.go: only AR4's post-stop cancelled-channel observation call selects
+the strict timestamp helper. All other case text/assertions remain exact.
+Archive only those three actual A1 inputs under history\a2, not prior histories.
+
+Paired calibration BEFORE interpreting normal results
+------------------------------------------------------
+Use real core/API/PG-created jobs, actual service.Run, verified owned native
+HTTP/TLS and the ACTUAL compiled fresh command through unchanged typed bindings.
+Copy the amended AR4 assertion body exactly into an isolated calibration
+package with reversible observation-only insertions. Select Run-context.
+After the original stopRole/listener checks, deliberately hold ONLY the test
+observer on the original ctx.Done channel. No production sleep, cancellation
+delay, fake native response, SQL business write or injected clock.
+The real native cancellation timestamp must precede/equal that same original
+deadline, while the post-stop observer is at/after it. Existing no-result,
+no-resend, exact native POST counts, new explicit job, quota/history/domain
+assertions and selected actual-child cleanup must still execute.
+
+Separately use explicitly SYNTHETIC measurement records with that SAME expired
+deadline to prove rejection of late, missing-event and zero timestamps.
+Include equal-instant/different-zone and early-boundary positives to validate
+instant comparison. These are validator discrimination checks, not provider,
+service or production execution passes.
+
+Run all FOUR normal runtime cases on the identical held production source.
+Record real observed timestamps/deadlines and exact run-input hashes. If real
+late/absent native cancellation occurs, stop and preserve the failure without
+loosening this measurement. No passing retry erases a failure.
+
+Guards and stop
+----------------
+All seven runtime source/doc paths remain HOLD at handoff
+ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e.
+Accepted backend reservation/client/parser/schema/API source and all 245
+backend controls remain unchanged. UI/root README are not edited and remain
+excluded from this author's guards. No agents, commits, dependencies, real
+accounts, authority keys, policies, volumes, cluster or OS changes.
+Parent verifies the new A2 proof and any new seal before runtime re-review.

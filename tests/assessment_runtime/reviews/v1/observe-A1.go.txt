@@ -1,0 +1,233 @@
+//go:build integration
+
+package assessment_runtime
+
+import (
+	"context"
+	"fmt"
+	"net"
+	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+)
+
+type a1Observation struct {
+	t        *testing.T
+	f        *fixture
+	kind     string
+	start    time.Time
+	mu       sync.Mutex
+	shared   context.Context
+	held     *nativeRequest
+	core     *coreAPI
+	n        *nativeFixture
+	events   []map[string]any
+	samples  []map[string]any
+	commands map[int]*commandRole
+	overflow bool
+}
+
+func newA1Observation(t *testing.T, f *fixture, kind string) *a1Observation {
+	o := &a1Observation{t: t, f: f, kind: kind, start: time.Now(), commands: map[int]*commandRole{}}
+	t.Cleanup(o.finish)
+	return o
+}
+func closedA1(c <-chan struct{}) bool {
+	select {
+	case <-c:
+		return true
+	default:
+		return false
+	}
+}
+func (o *a1Observation) setShared(ctx context.Context) {
+	o.mu.Lock()
+	o.shared = ctx
+	o.mu.Unlock()
+	context.AfterFunc(ctx, func() {
+		if ctx.Err() == context.DeadlineExceeded {
+			o.mark("shared-five-second-deadline-fired")
+			buffer := make([]byte, 256<<10)
+			size := runtime.Stack(buffer, true)
+			var functions []string
+			for _, line := range strings.Split(string(buffer[:size]), "\n") {
+				for _, function := range []string{"net/http.(*Server).Shutdown", "internal/service.Run", "internal/app.(*AssessmentWorker).ProcessNext"} {
+					if strings.Contains(line, function) {
+						functions = append(functions, function)
+					}
+				}
+			}
+			o.mu.Lock()
+			o.events = append(o.events, map[string]any{"event": "readonly-shared-deadline-stack-function-labels",
+				"elapsedMillis": float64(time.Since(o.start).Microseconds()) / 1000, "functions": functions, "stackBufferFull": size == len(buffer)})
+			o.mu.Unlock()
+		}
+	})
+}
+func (o *a1Observation) mark(name string) {
+	o.mu.Lock()
+	defer o.mu.Unlock()
+	if len(o.events) >= 256 {
+		o.overflow = true
+		return
+	}
+	entry := map[string]any{"event": name, "elapsedMillis": float64(time.Since(o.start).Microseconds()) / 1000}
+	if o.shared != nil {
+		deadline, ok := o.shared.Deadline()
+		if ok {
+			entry["sharedDeadlineRemainingMillis"] = float64(time.Until(deadline).Microseconds()) / 1000
+		}
+		entry["sharedContextDone"] = o.shared.Err() != nil
+		switch o.shared.Err() {
+		case context.DeadlineExceeded:
+			entry["sharedContextStatus"] = "deadline-exceeded"
+		case context.Canceled:
+			entry["sharedContextStatus"] = "cancelled"
+		default:
+			entry["sharedContextStatus"] = "active"
+		}
+	}
+	if o.held != nil {
+		entry["heldReady"] = closedA1(o.held.ready)
+		entry["heldCancelled"] = closedA1(o.held.cancelled)
+	}
+	o.events = append(o.events, entry)
+}
+func (o *a1Observation) native(n *nativeFixture) {
+	o.n = n
+	for _, server := range []*http.Server{n.tls.Config, n.local.Config} {
+		original := server.Handler
+		server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			o.mark("native-handler-entry")
+			done := context.AfterFunc(r.Context(), func() { o.mark("native-request-context-done") })
+			defer done()
+			defer o.mark("native-handler-return")
+			original.ServeHTTP(w, r)
+		})
+	}
+}
+
+type a1Conn struct {
+	net.Conn
+	observe *a1Observation
+	once    sync.Once
+}
+
+func (c *a1Conn) Close() error {
+	err := c.Conn.Close()
+	c.once.Do(func() { c.observe.mark("actual-local-native-conn-Close-returned") })
+	return err
+}
+func (o *a1Observation) transport(client *http.Client) {
+	tr := client.Transport.(*http.Transport)
+	dial := tr.DialContext
+	tr.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		conn, err := dial(ctx, network, address)
+		if err != nil {
+			return nil, err
+		}
+		o.mark("actual-local-native-conn-opened")
+		return &a1Conn{Conn: conn, observe: o}, nil
+	}
+}
+
+type a1APITransport struct {
+	inner   http.RoundTripper
+	observe *a1Observation
+}
+
+func (tr *a1APITransport) CloseIdleConnections() {
+	if closer, ok := tr.inner.(interface{ CloseIdleConnections() }); ok {
+		closer.CloseIdleConnections()
+	}
+}
+func (tr *a1APITransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	response, err := tr.inner.RoundTrip(r)
+	o := tr.observe
+	if r.Method == "GET" && strings.HasPrefix(r.URL.Path, "/api/v1/ai/assessments/") &&
+		(o.core.calls == 40 || o.core.calls == 120 || o.core.calls == 200 || o.core.calls == 220) {
+		o.snapshot("protected-terminal-GET")
+	}
+	return response, err
+}
+func (o *a1Observation) api(core *coreAPI) {
+	o.core = core
+	core.client.Transport = &a1APITransport{inner: core.client.Transport, observe: o}
+}
+func (o *a1Observation) snapshot(stage string) {
+	ctx, cancel := context.WithTimeout(o.f.ctx, time.Second)
+	defer cancel()
+	rows, err := o.f.db.Query(ctx, "SELECT id,state,attempts,dispatch_state,dispatch_started_at,lease_until,io_deadline,io_released_at,clock_timestamp() FROM "+o.f.table("assessment_jobs")+" ORDER BY created_at,id")
+	sample := map[string]any{"stage": stage, "elapsedMillis": float64(time.Since(o.start).Microseconds()) / 1000, "apiCalls": o.core.calls}
+	var values []map[string]any
+	if err == nil {
+		for rows.Next() {
+			var id, state, dispatch string
+			var attempts int
+			var started, lease, deadline, released *time.Time
+			var now time.Time
+			err = rows.Scan(&id, &state, &attempts, &dispatch, &started, &lease, &deadline, &released, &now)
+			if err != nil {
+				break
+			}
+			row := map[string]any{"id": id, "state": state, "attempts": attempts, "dispatchState": dispatch,
+				"dispatchStartedAt": started, "leaseUntil": lease, "ioDeadline": deadline, "ioReleasedAt": released, "databaseNow": now}
+			if deadline != nil {
+				row["ioDeadlineRemainingMillis"] = float64(deadline.Sub(now).Microseconds()) / 1000
+			}
+			values = append(values, row)
+		}
+		if err == nil {
+			err = rows.Err()
+		}
+		rows.Close()
+	}
+	if err != nil {
+		sample["queryErrorType"] = fmt.Sprintf("%T", err)
+	}
+	sample["rows"] = values
+	o.mu.Lock()
+	o.samples = append(o.samples, sample)
+	o.mu.Unlock()
+}
+func (o *a1Observation) pid(stage string, child *commandRole) {
+	id := child.command.Process.Pid
+	o.commands[id] = child
+	o.mark(fmt.Sprintf("%s-pid-%d-exited-%t", stage, id, closedA1(child.role.done)))
+}
+func (o *a1Observation) bodyDone() {
+	o.mark("original-subcase-body-return")
+	if o.core != nil {
+		o.snapshot("body-return-before-cleanup")
+	}
+}
+func (o *a1Observation) finish() {
+	o.mark("owned-role-command-native-cleanup-finished")
+	cleaned := []map[string]any{}
+	for id, child := range o.commands {
+		cleaned = append(cleaned, map[string]any{"pid": id, "exited": closedA1(child.role.done), "killCalled": child.killed})
+	}
+	o.mu.Lock()
+	report := map[string]any{"schemaVersion": 1, "kind": o.kind, "failed": o.t.Failed(), "events": o.events, "samples": o.samples,
+		"eventOverflow": o.overflow, "childCleanup": cleaned, "readonlySQL": true, "businessWrites": false,
+		"assertionsAndWorkerPoolsAndTimeoutsUnchanged": true, "diagnosticNotNormalAcceptance": true}
+	if o.core != nil {
+		report["totalProtectedAPICalls"] = o.core.calls
+	}
+	if o.n != nil {
+		report["nativePOSTs"] = o.n.calls.Load()
+	}
+	data := encoded(o.t, report)
+	o.mu.Unlock()
+	o.f.noSecrets(data)
+	path := filepath.Join(required(o.t, "ASPM_ASSESSMENT_RUNTIME_ARTIFACT_DIR"),
+		required(o.t, "ASPM_ASSESSMENT_RUNTIME_A1_LABEL")+"-"+o.kind+"-"+nonce(o.t)+".observation.json")
+	must(o.t, "persist bounded nonsecret readonly diagnostic", os.WriteFile(path, data, 0600))
+	o.t.Logf("A1 readonly %s diagnostic: APIcalls=%v nativePOSTs=%v failed=%t eventOverflow=%t; observation=%s",
+		o.kind, report["totalProtectedAPICalls"], report["nativePOSTs"], o.t.Failed(), o.overflow, filepath.Base(path))
+}

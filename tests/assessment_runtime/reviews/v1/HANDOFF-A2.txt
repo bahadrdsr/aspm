@@ -1,0 +1,121 @@
+ASSESSMENT RUNTIME A2 - STRICT CANCELLATION MEASUREMENT HANDOFF
+=============================================================
+
+Author: independent-runtime-test-successor-20260921.
+Not the original runtime author or runtimecoder0383e852.
+Status: NARROW A2 PROOF COMPLETE; STOP FOR PARENT NEW SEAL AND RE-REVIEW.
+No production change, self-acceptance, signature edit or whole-M11 claim.
+
+Authorized exact delta
+-----------------------
+native_test.go: one nativeRequest.cancelledAt time.Time field, assigned
+time.Now() in the real request.Context().Done branch before close(cancelled).
+The receive synchronizes the observer before it reads the timestamp.
+No protocol/body/auth/context/marker/readiness/release/response change.
+
+fixtures_test.go: a strict validator and its testing wrapper. The validator
+requires the original context's existing deadline, the actual cancellation
+channel occurrence, a nonzero recorded observation and Time.Before/Time.Equal
+against that deadline. It never constructs another deadline or allowance.
+If ctx.Done is already ready, it still requires the cancellation occurrence
+and valid original-deadline timestamp. Closed-channel priority alone is not
+the criterion. Actual late, absent or zero observations fail.
+
+roles_test.go: only AR4's post-stop cancellation observation call uses this
+validator. The 5-second context is still selected BEFORE the marker wait.
+The 6-second role wait, production-error and actual listener-shutdown checks
+are unchanged, as are all remaining case assertions.
+prepare-A2.mjs reconstructs the exact A1 bytes after removing only these edits.
+history\a2 contains only these three actually changed A1 files as .go.txt.
+
+Unchanged bounds
+-----------------
+A1 100ms terminal HTTP polling and all other 20ms waits; 8s job await;
+90s fixture; total API budget 220; native POST cap 12; existing worker pools.
+AR4 still maps request timeout 5s, request window 3s, lease 1s,
+authorization interval 25ms and requests/window 1.
+Generic event helpers and AR1-3 are byte-identical.
+There is no production sleep, delayed producer cancellation, clock injection,
+business SQL write, early reservation release or shortened mapped timeout.
+
+Actual paired calibration
+---------------------------
+successor-runtime-a2-paired-calibration-20260921-01:
+  Actual service.Run/native HTTP cancellation, real API/PG jobs, normal verified
+  fixture TLS and the actual compiled fresh assessment-worker command.
+  Typed bindings/helpers copied byte-exact; the current AR4 assertion body is
+  preserved under reversible calibration-only insertions.
+  Original role/listener stop checks ran before delaying ONLY the observer on
+  the original ctx.Done channel. No new deadline was created.
+
+  Actual recorded cancellation: September 21, 2026 06:13:17.425851 +02:00
+  Original pre-marker deadline: September 21, 2026 06:13:22.3803108 +02:00
+  Delayed observer arrival:      September 21, 2026 06:13:22.3807406 +02:00
+  Native observation was 4954.459ms before the original deadline, while the
+  observer arrived AFTER it. The original-deadline measurement passed.
+
+  The original no-result/no-resend/receipt/history/quota/domain assertions then
+  completed, including a genuinely new explicitly queued job, exactly TWO
+  actual native POSTs and protected API counter 22. Actual Run returned;
+  the selected fresh child PID 24036 was killed/waited and confirmed exited.
+  These are reached tails, not acceptance inferred from source trace.
+
+  Four separately labelled SYNTHETIC measurement negatives all rejected:
+    - absent event
+    - absent event despite an early timestamp
+    - closed event with zero timestamp
+    - closed event recorded one nanosecond after the original deadline
+  Two synthetic boundaries accepted:
+    - exact deadline represented in a different time zone
+    - one nanosecond before the deadline
+  These share the SAME already-expired original context/deadline and exercise
+  the exact validator used by AR4. They are not production cancellation passes
+  and do not manufacture any provider response or production execution.
+
+Actual normal execution
+------------------------
+successor-runtime-a2-compile-20260921-01:
+  PASS actual command build plus test-package compilation; no behavior claim.
+successor-runtime-a2-normal-four-20260921-01:
+  PASS all FOUR top-level normal cases plus all 20 nested cases.
+  Package elapsed 21.367s. Full original AR1-3/native/preflight/default/key/TLS/
+  readonly-role/actual-command assertions and both AR4 workflows executed.
+  Run-context native timestamp preceded its original deadline by 4991.401ms.
+  Actual-command-crash native timestamp preceded its deadline by 4982.819ms.
+  Fresh command, uncertainty, no result/resend, new job, quota/history/domain
+  invariants and exact owned child cleanup all reached the existing assertions.
+  No real late/absent/zero cancellation was observed or relabelled a pass.
+No repeated trial was used to turn a failing new measurement green.
+
+History and limits
+-------------------
+Parent-verified A1 packet remains byte-exact:
+e611e3beab298cddb53e4187c5507793893ad1751191ae44cfc9fa393b0501ac
+A1 cadence and past RED/failed-run artifacts remain. Its OPEN qualification
+record is historical and is not rewritten as an explanation or acceptance.
+This A2 proves the required current measurement directly. It does NOT identify
+every historical failure's cause or assert the unproven StateNew hypothesis.
+Timestamp evidence concerns observed native request-context cancellation,
+not remote LLM compute or billing termination. PID kill is not graceful OS
+signal handling evidence. Live account/model quality/geography are not claimed.
+
+Preservation and stop
+---------------------
+All seven runtime source/doc paths remain HOLD at:
+ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e
+Accepted backend reservation/client/parser/schema/API and all 245 backend
+controls are unchanged; frozen backend A2 packet remains unchanged.
+All 1018 pre-amendment guard entries differ only at the three authorized test
+paths; 1015 remain exact. The production Go file set is unchanged.
+Original runtime manifest/signature, original runtime packet and all review
+history remain byte-exact. Old signatures are historical for amended tests;
+no private authority was accessed and no new seal was manufactured.
+Web/root README are excluded from guards and were not edited/reset.
+No agents, commits, dependencies, live accounts, keys, policies, volumes,
+OS/cluster changes or production edits. Only selected owned PG/S3 intake,
+synthetic native fixtures and exact child PIDs were used.
+
+PACKET-A2.json/checksum binds the exact current tests, three old-file archives,
+contract, strict paired calibration, normal results, source holds and guards.
+Parent verifies, issues the new current seal and performs runtime re-review.
+This author stops without changing producer/reservation/shutdown behavior.

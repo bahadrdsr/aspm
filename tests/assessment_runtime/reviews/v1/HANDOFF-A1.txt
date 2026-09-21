@@ -1,0 +1,133 @@
+ASSESSMENT RUNTIME A1 - INDEPENDENT SUCCESSOR HANDOFF
+====================================================
+
+Author: independent-runtime-test-successor-20260921, not originalruntimeauthorbeb
+and not runtimecoder0383e852. Bounded investigation finished; stop for parent.
+Status: POLLING AMENDMENT VERIFIED; CANCELLATION QUALIFICATION STILL OPEN.
+No runtime acceptance, self-seal, whole-M11 claim or production correction.
+
+The only existing-file delta
+-----------------------------
+tests\assessment_runtime\fixtures_test.go: six inserted lines, two removed.
+The existing wait helper passes its unchanged 20ms cadence to the extracted
+identical loop. Only coreAPI.await passes 100ms for protected terminal HTTP GETs.
+Its 8-second deadline, immediate first observation and every predicate remain.
+Fixture deadline 90s, API budget 220, native POST bound 12, worker pools and
+AR4's 5s request / 3s window / 1s lease / 25ms authorization remain unchanged.
+No event, cancellation, native, command, role, forwarding binding, old runner,
+environment assertion or production byte was changed.
+The sole archived old helper is history\a1\fixtures_test.go.txt.
+prepare-A1.mjs independently reconstructs exactly this authorized delta.
+
+Independent primary-cause proof
+--------------------------------
+Original normal AR4: actual-command-crash failed at the unchanged API budget.
+Original diagnostic crash replays: counter reached attempted call 221, which
+the existing guard rejected BEFORE sending HTTP. Actual protected calls stayed
+bounded at 220. One actual native POST occurred. The old job was uncertain,
+attempts=1, possibly-sent, io_released_at=NULL, with 744.173ms / 756.621ms of
+real database-clock reservation still remaining. The new job was queued,
+attempts=0. No synthetic clock, business SQL write or timeout reduction.
+
+The first diagnostic's Go execution was real, but its new-only cleanup code
+then failed removing an already-empty directory. Raw evidence and an execution
+note preserve that tool failure; it has no fabricated completed runner receipt.
+Only that exact empty directory was removed. A second guarded diagnostic
+reproduced the same API-budget cause and completed all selected-copy cleanup.
+
+After the approved cadence change, an actual fresh compiled command completed
+the second job with API counter 67 and exactly two native POSTs total. Readonly
+DB observations place its dispatch 15.643ms AFTER the old 5-second io_deadline.
+The old owner still had no release acknowledgment. The old attempt was not
+resent; old result stayed absent; quota configuration and dispatch history were
+preserved; domain/storage comparisons passed. Both observed owned child PIDs
+were killed/waited and confirmed exited. These are actual reached tails.
+
+Normal suite and evidence classification
+-----------------------------------------
+successor-runtime-a1-amended-contract-20260921-01:
+  All FOUR top-level normal cases passed, including both AR4 subcases,
+  on the held seven-file source. Package elapsed: 18.294 seconds.
+  The original AR1-3/default/key/TLS/preflight/core/readonly-role and actual
+  command assertions ran. This pass is NOT cancellation-flake resolution.
+
+Before amendment:
+  successor-runtime-a1-original-ar4-20260921-01:
+    Run-context PASS; command-crash API-budget RED.
+  successor-runtime-a1-unchanged-context-20260921-01, count=3:
+    Run-context FAIL at unchanged roles_test.go:330, then PASS, PASS.
+    The failed run did not reach fresh-command startup, quota/new-job/domain
+    completion tails. The enclosing case's unconditional completion log is
+    not proof of those blocked tails.
+
+Readonly diagnostic counts:
+  original-diagnostic-01: Run-context PASS; crash RED; cleanup-tool failure.
+  crash-diagnostic-02: crash RED, complete guarded receipt.
+  context-diagnostic-02: three PASS, one with the competing-ready window below.
+  context-diagnostic-03: three PASS; unchanged cancellation assertion/deadline.
+  amended-crash-01: PASS, actual retained-deadline/new-job proof above.
+  context-final-bounded-04: final bounded three PASS; no further retries used.
+Every result and all inherited coder failures remain in RED-A1/EVIDENCE-A1.
+Prior coder compatibility passes are historical, not successor reacceptance.
+
+Cancellation: observed order versus unresolved attribution
+-----------------------------------------------------------
+The original coder's first line330 failure is retained, and the successor
+reproduced the same uninstrumented failure once in three unchanged runs.
+It is NOT resolved by the subsequent full-suite pass or diagnostic passes.
+
+A readonly Run-context diagnostic directly observed:
+  before-stopRole:                         1047.149ms from fixture observation
+  real native socket Close returned:       1047.693ms
+  native HTTP request context cancelled:   1047.693ms
+  held.cancelled closed / handler returned:1047.693ms
+  stopRole + listener check returned:      6383.135ms
+  then existing event helper entered with BOTH held.cancelled closed and the
+  shared 5-second context already expired by 348.692ms.
+That run selected the native event and passed. The unmodified select has no
+priority between two ready receive cases. This is concrete evidence that this
+measurement window can misreport a timely native cancellation.
+
+Limits of attribution:
+  No failing INSTRUMENTED cancellation run was captured.
+  Historical/uninstrumented failures therefore cannot all be conclusively
+  assigned to this window. No failed native Close or late request-context
+  cancellation was observed in the instrumented runs.
+  The source of the approximately 5.336-second stopRole delay was not isolated.
+  Pinned net/http contains a 5-second StateNew shutdown condition, but no
+  corresponding connection-state proof was collected. That is only a compatible
+  hypothesis, not a production defect finding.
+  A bounded in-memory stack-label observer was present in the final six context
+  diagnostic repeats; none exceeded the shared deadline, so it did not provide
+  delay-attribution evidence. No raw goroutine stacks or secret data were saved.
+
+No cancellation assertion, event priority, timing allowance, shared deadline,
+listener check or provider cancel delay was amended. A separate measurement
+proposal and parent approval are still required. Do not finalize the runtime
+coder merely because this one amended normal suite passed.
+
+Guards, provenance and stop
+---------------------------
+Runtime HANDOFF unchanged:
+ff88930fd9e138ae966e720fa77c54e883e475e1a022158e575131d3d5e5d61e
+All seven runtime paths held; current accepted backend implementation and all
+245 backend controls unchanged. The frozen backend A2 packet is untouched.
+Of the 66 original runtime controls, 65 remain exact and only the archived
+helper has the explicitly reconstructed cadence delta.
+Original runtime manifest/signature/oracle config are untouched; the old
+signature is historical, not falsely asserted to seal the amended helper.
+Original runtime packet remains:
+1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34
+Current guards cover 916 non-web inputs with only this helper exception, plus
+the unchanged production Go file set. No new production shadow code.
+Mutable web/root README are excluded and were not edited/reset.
+
+New evidence includes real Go build/test logs, exact actual-command hashes,
+per-run source witnesses, readonly native/PG/event records and selected child
+cleanup observations. Diagnostic copies contain tests only, are assertion-
+preserving and removed; production source and actual command are never copied
+or substituted. Only selected private runtime PG15432/S318333 is used.
+No agents, commits, dependency installs, live accounts, authority access,
+oracle edits, OS/cluster/policy/volume changes or production edits.
+Parent verifies PACKET-A1.json/checksum, assesses the remaining cancellation
+qualification and issues any new seal before runtime coder finalization.

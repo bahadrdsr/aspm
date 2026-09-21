@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T19:47:40.132Z",
+  "outcome": "passed",
+  "scope": "UI/frontend controls plus frozen backend API test/contract witnesses only; concurrent backend production excluded.",
+  "before": {
+    "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\BEFORE.json",
+    "bytes": 313571,
+    "sha256": "09847e59b62d755bb65b63ad32f4cfac7da8b0786d30d29551de197b77e0d25c"
+  },
+  "oldUIControls": {
+    "count": 786,
+    "matched": 786,
+    "orderedInventorySHA256": "d3d460d365670c5573dde775fced0697fdbd1059a13c7cdac8dbbb4afc49200c",
+    "fullInventoryReference": "BEFORE.json ui786.files"
+  },
+  "frozenBackendAPIControls": {
+    "count": 206,
+    "matched": 206,
+    "orderedInventorySHA256": "11d618392337ff8f7de3d8254e273d379c77a4ec2b901cbff284b2980c2c614e",
+    "fullInventoryReference": "BEFORE.json backendFrozen206.files"
+  },
+  "existingFrontend": {
+    "count": 559,
+    "sourceCount": 74,
+    "matched": 559,
+    "orderedInventorySHA256": "756a7ab321bd4ad7bbbf51e36a27978d2e984da6f5fb0f952fbfb84d401f1541",
+    "fullInventoryReference": "BEFORE.json existingFrontendFiles"
+  },
+  "preservedReferences": [
+    {
+      "path": ".oracles\\ai-settings-ui-a1.json",
+      "bytes": 158358,
+      "sha256": "ee488edab2496bcce4ab2e24e696bf19fc8be5d28af90994dcf11e888332303a"
+    },
+    {
+      "path": ".oracles\\ai-settings-ui-a1.json.sig",
+      "bytes": 89,
+      "sha256": "4ee2076a72aeed966d3e00f1bf295b708d3a025aaec0594dbde2e576eda18455"
+    },
+    {
+      "path": ".oracles\\ai-assessments-v1.json",
+      "bytes": 39579,
+      "sha256": "96274b0dcc9ef6b89b12b11715a5ff55d4de712a4dfb8d49096a906e0e3933b0"
+    },
+    {
+      "path": ".oracles\\ai-assessments-v1.json.sig",
+      "bytes": 89,
+      "sha256": "c7a394f113a44836282084f6bdd945807c006ac9161d0de2fd997b7c66b979db"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\oracle-seal-inputs\\ai-assessments-oracle-set.json",
+      "bytes": 11282,
+      "sha256": "5081640b8c9f5a2e12155e74faa75f7cb0e1650898c0daee4b33e6096fd732d8"
+    },
+    {
+      "path": "web\\node_modules\\playwright-core\\lib\\coreBundle.js",
+      "bytes": 3477183,
+      "sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+      "bytes": 13109,
+      "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+    }
+  ],
+  "newSources": [
+    {
+      "path": "web\\tests\\ai-assessments-data.ts",
+      "bytes": 11845,
+      "sha256": "bbb3920e3f23d81b0a45562fba374415726a230c01071c732b04f1c97954fdaf"
+    },
+    {
+      "path": "web\\tests\\ai-assessments-fixture.ts",
+      "bytes": 27759,
+      "sha256": "e71653d23c44a4b35011fe0846413e91ec89c85ea13f3f5af8d7bb7bb8bda202"
+    },
+    {
+      "path": "web\\tests\\ai-assessments-ui.spec.ts",
+      "bytes": 35274,
+      "sha256": "ec431bfe566782845e4fd4cad673d999225457eaca4109d7756cc89533149f7f"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\CONTRACT.txt",
+      "bytes": 13109,
+      "sha256": "8e033aa311c4182b375d47608d8a54c98a440f5edc5aad30e9c7603374a390e3"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-assessments-ui-v1\\playwright.config.ts",
+      "bytes": 1123,
+      "sha256": "c12a4f261c22e2e5b56158c45d7db4d21ef47a1eec462f48016cfdb2f34ae4d4"
+    },
+    {
+      "path": "web\\tests\\reviews\\ai-settings-ui-v1\\native-option-A1.ts",
+      "bytes": 552,
+      "sha256": "7185ce6dfbd5a823d04a88c7926055213af13ed196e6f86168ba0bcc23c0bb1a"
+    }
+  ],
+  "old99BytesUnchanged": true,
+  "noOldFixturesHelpersSettingsModulesProvenanceChanges": true,
+  "backendImplementationExcluded": "internal/app, internal/providers, root README and all concurrent implementation/runtime artifacts are deliberately not frozen or reviewed.",
+  "prohibitionCompliance": {
+    "productionEdits": 0,
+    "backendControlEdits": 0,
+    "dependencyInstallsOrUpgrades": 0,
+    "oldUIControlsEdited": 0,
+    "oracleCaptureOrSignatureWrites": 0,
+    "privateAuthorityAccess": false,
+    "realAPIProviderDBCalls": 0,
+    "agents": 0,
+    "commits": 0
+  },
+  "newFunctionalUITails": "BLOCKED/NOT RUN; no green inference from HTTP fixture data."
+}

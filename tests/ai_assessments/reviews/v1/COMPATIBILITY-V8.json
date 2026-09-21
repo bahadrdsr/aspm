@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T18:34:18.663Z",
+  "scope": "Planned explicit V8 compatibility evolution, not production implementation or old-oracle replacement.",
+  "declaredBeforeTests": {
+    "path": "tests\\ai_assessments\\reviews\\v1\\DECISIONS.json",
+    "bytes": 3897,
+    "sha256": "ed2f5a7af0abf100d26de0f9981ac37f4031f39fa0271b76aa41d6369ad534ab"
+  },
+  "changes": [
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "archived": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\ai-configuration-upgrade_test.go.v7",
+        "bytes": 7136,
+        "sha256": "dba4fba407d0849b4d58a26ec6ade9be7c0b71cb5617544dcddfeba6eba33158"
+      },
+      "current": {
+        "path": "tests\\ai_configuration\\upgrade_test.go",
+        "bytes": 7157,
+        "sha256": "fb67430bb362394d1111038d548e632c8bffe063a37b172a933263bb4fd19801"
+      },
+      "exactReconstruction": true,
+      "ledgerAssertions": 2,
+      "from": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "to": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "onlyOtherChanges": [
+        {
+          "from": "CURRENT core startup did not apply AI configuration v7 exactly once over real published v6",
+          "to": "CURRENT core startup did not apply required migrations through v8 exactly once over real published v6"
+        },
+        {
+          "from": "v7 reopen repeated migration or changed old schema definitions",
+          "to": "v8 reopen repeated migration or changed old schema definitions"
+        }
+      ],
+      "allHistoricalDDLDefinitionsAPIGrantEvidenceReopenBytesOtherwiseIdentical": true
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "archived": {
+        "path": "tests\\ai_assessments\\reviews\\v1\\history\\v8-compatibility\\source-collection-upgrade_test.go.v7",
+        "bytes": 10731,
+        "sha256": "e1ff7943105e4f2e58e800d8d00b108f6cfac72bf941e60c6c9f8a947a08fdac"
+      },
+      "current": {
+        "path": "tests\\source_collection\\upgrade_test.go",
+        "bytes": 10745,
+        "sha256": "9a9d0702d9ab38dcaf2cf4255d9c87c2532a1b5b50cdc35b83d9afeca4c83a95"
+      },
+      "exactReconstruction": true,
+      "ledgerAssertions": 2,
+      "from": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "to": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "onlyOtherChanges": [
+        {
+          "from": "current constructor returned success but did not apply and record v6 and v7 exactly once over actual published v5",
+          "to": "current constructor returned success but did not apply and record v6, v7 and v8 exactly once over actual published v5"
+        },
+        {
+          "from": "reopening v7 repeated migration or changed legacy definitions",
+          "to": "reopening v8 repeated migration or changed legacy definitions"
+        }
+      ],
+      "allHistoricalDDLDefinitionsAPIGrantEvidenceReopenBytesOtherwiseIdentical": true
+    }
+  ],
+  "oldSignaturesRemainHistorical": true,
+  "newSignatureCreated": false,
+  "AI7": {
+    "selectedTopLevel": 7,
+    "passed": 6,
+    "failed": 1,
+    "skipped": 0,
+    "nestedPassed": 1,
+    "nestedFailed": 1
+  },
+  "Source9": {
+    "selectedTopLevel": 9,
+    "passed": 8,
+    "failed": 1,
+    "skipped": 0,
+    "nestedPassed": 4,
+    "nestedFailed": 2
+  },
+  "actualLedgers": [
+    {
+      "file": {
+        "path": ".artifacts\\ai-configuration-v1\\published-v6-upgrade-415975e43cb28b38bbc2204e.json",
+        "bytes": 765,
+        "sha256": "b6249d2963f05cdad88fe748fd125334757fe4e5ce90d8796fdb2313482a9021"
+      },
+      "observation": {
+        "Origin": "24556fd41090628f391a728457f9c377ca624983",
+        "Schema": "ai_config_042ed60ebc8a6eba830039fc",
+        "VerifiedStartingVersion": 6,
+        "LegacyRelations": 22,
+        "CurrentCoreOpened": true,
+        "AfterVersions": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "AfterTables": [
+          "app_ai_egress_grants",
+          "app_ai_policies",
+          "app_ai_profiles",
+          "app_assets",
+          "app_auth_throttle",
+          "app_bootstrap",
+          "app_coverage",
+          "app_finding_deliveries",
+          "app_findings",
+          "app_imports",
+          "app_integration_connections",
+          "app_memberships",
+          "app_notes",
+          "app_observations",
+          "app_oidc_flows",
+          "app_oidc_identities",
+          "app_report_snapshots",
+          "app_schema_versions",
+          "app_sessions",
+          "app_source_collection_records",
+          "app_source_collections",
+          "app_source_connections",
+          "app_source_repository_assets",
+          "app_users",
+          "app_workspaces"
+        ],
+        "LegacyBusinessRowsSeeded": false
+      }
+    },
+    {
+      "file": {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-core-20412fae487881c9b5e21f30.json",
+        "bytes": 884,
+        "sha256": "2d55de1fbb014a16b12228d91b259ec14267918b8cf7ee41c55cecd109add435"
+      },
+      "observation": {
+        "Entrypoint": "current-core",
+        "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+        "OwnedSchema": "source_collection_28123d98e39328a8fce04f82",
+        "LegacyRelations": 18,
+        "VerifiedStartingMaxVersion": 5,
+        "CurrentConstructorSucceeded": true,
+        "AfterOpenVersions": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "AfterOpenTables": [
+          "app_ai_egress_grants",
+          "app_ai_policies",
+          "app_ai_profiles",
+          "app_assets",
+          "app_auth_throttle",
+          "app_bootstrap",
+          "app_coverage",
+          "app_finding_deliveries",
+          "app_findings",
+          "app_imports",
+          "app_integration_connections",
+          "app_memberships",
+          "app_notes",
+          "app_observations",
+          "app_oidc_flows",
+          "app_oidc_identities",
+          "app_report_snapshots",
+          "app_schema_versions",
+          "app_sessions",
+          "app_source_collection_records",
+          "app_source_collections",
+          "app_source_connections",
+          "app_source_repository_assets",
+          "app_users",
+          "app_workspaces"
+        ],
+        "PostUpgradeAPITailExecuted": false,
+        "LegacyBusinessDataPreservationClaimed": false
+      }
+    },
+    {
+      "file": {
+        "path": ".artifacts\\source-collection-v1\\a2-v5-upgrade-current-worker-4c5eb72f40698aa1db1c7d74.json",
+        "bytes": 886,
+        "sha256": "3ea157a130330630053316ddeed3851aa5661472db28e20aca94de0b65866085"
+      },
+      "observation": {
+        "Entrypoint": "current-worker",
+        "PublishedOrigin": "7281edf4466c2b940eea7aa95c377d25e7f4c2b0",
+        "OwnedSchema": "source_collection_eaa0485b0a5cb1ed3ee588e0",
+        "LegacyRelations": 18,
+        "VerifiedStartingMaxVersion": 5,
+        "CurrentConstructorSucceeded": true,
+        "AfterOpenVersions": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "AfterOpenTables": [
+          "app_ai_egress_grants",
+          "app_ai_policies",
+          "app_ai_profiles",
+          "app_assets",
+          "app_auth_throttle",
+          "app_bootstrap",
+          "app_coverage",
+          "app_finding_deliveries",
+          "app_findings",
+          "app_imports",
+          "app_integration_connections",
+          "app_memberships",
+          "app_notes",
+          "app_observations",
+          "app_oidc_flows",
+          "app_oidc_identities",
+          "app_report_snapshots",
+          "app_schema_versions",
+          "app_sessions",
+          "app_source_collection_records",
+          "app_source_collections",
+          "app_source_connections",
+          "app_source_repository_assets",
+          "app_users",
+          "app_workspaces"
+        ],
+        "PostUpgradeAPITailExecuted": false,
+        "LegacyBusinessDataPreservationClaimed": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+ASSESSMENT RUNTIME V1 - ACTUAL COMMAND AND CORE SCOPE WIRING
+===========================================================
+
+Authority and authoring boundary
+-------------------------------
+This contract precedes four NEW tests/assessment_runtime narratives.
+Use frozen tests/ai_assessments/CONTRACT.txt and the accepted A1 native-ready
+ordering. Existing app.AssessmentWorker remains the one queue/admission/
+authority/provider implementation. This is service/command wiring, not a new
+scheduler, protocol client, successful-result fixture, UI or deployment feature.
+No production, old test/fixture/binding/oracle, dependency, UI, Helm/installer/
+packaging, agent, commit, storage policy, volume, cluster or OS change is made.
+Mutable web and root README are expressly excluded from byte guards.
+
+Exact production surface
+------------------------
+  cmd/assessment-worker
+  service.Environment("assessment") (service.Config,error)
+  service.Run(ctx,"assessment",service.Config) error
+Use actual app.OpenAssessmentWorker/ProcessNext/Ping/Close, one independent
+database pool, no core/auth/static handler, S3 reader/publisher or integrity queue.
+Default MaxConnections=1 is valid. No pool splitting for this role.
+
+Proposed minimal NEW service.Config fields:
+  AssessmentScope string
+  AssessmentLeaseDuration time.Duration
+  AssessmentAuthorizationInterval time.Duration
+  AssessmentRequestTimeout time.Duration
+  AssessmentRequestWindow time.Duration
+  AssessmentMaxConcurrent int
+  AssessmentRequestsPerWindow int
+  AssessmentMaxInputBytes int
+  AssessmentMaxOutputTokens int
+  AssessmentMaxResponseBytes int64
+  AssessmentClient *http.Client
+  AssessmentCAFile string
+Existing Jobs supplies database/schema/application name/pool, WorkerID and
+Listen retain ordinary service configuration, and IntegrationEncryptionKey is
+the existing key field. Programmatic values map directly to the accepted
+AssessmentWorkerConfig. No hidden per-process allowance or default clamping.
+Forwarding bindings construct/forward typed values only, preserve errors and
+normalize nil concrete pointers; they contain no runtime/queue/HTTP success logic.
+
+Core environment forwarding
+----------------------------
+For core, absent or empty ASPM_ASSESSMENT_SCOPE means empty AssessmentScope and
+assessment preview/enqueue remains explicitly unavailable, without disabling
+ordinary asset/import/configuration APIs. Nonempty scope must exactly satisfy
+the backend identity rule: nonblank, no surrounding whitespace/control, valid
+UTF-8, at most 128 UTF-8 bytes.
+Actual service.Run("core") MUST forward it to app.Config.AssessmentScope.
+No profile/grant presence or empty scope triggers background assessment.
+Malformed worker-only assessment limits/CA settings do not affect core parsing.
+Core's existing key/raw/optional collection configuration behavior is unchanged.
+Other roles ignore these new assessment-only settings, including scope.
+
+Worker environment, defaults and strict presence
+------------------------------------------------
+ASPM_DATABASE_URL, ASPM_SCHEMA, ASPM_DB_MAX_CONNECTIONS, ASPM_LISTEN and the
+standard generated bounded WorkerID retain the existing service conventions.
+No unrelated new worker-ID environment override is introduced.
+AssessmentScope must come from explicit nonblank ASPM_ASSESSMENT_SCOPE.
+Never derive it from a database, bootstrap/API key, endpoint or another role.
+
+The existing ASPM_INTEGRATION_ENCRYPTION_KEY is OPTIONAL when absent, for local
+keyless use. If supplied it must be canonical standard base64 for exactly 32
+bytes; a supplied empty, malformed, noncanonical or wrong-length value fails.
+Hosted lookup with no worker key cannot reach the provider or invent a key.
+No ambient OpenAI/Azure/Anthropic/AWS/provider credential is consumed.
+
+Explicit defaults when the corresponding variable is ABSENT:
+  ASPM_ASSESSMENT_LEASE_DURATION           15s
+  ASPM_ASSESSMENT_AUTHORIZATION_INTERVAL   100ms
+  ASPM_ASSESSMENT_REQUEST_TIMEOUT          10s
+  ASPM_ASSESSMENT_REQUEST_WINDOW           1m
+  ASPM_ASSESSMENT_MAX_CONCURRENT           1
+  ASPM_ASSESSMENT_REQUESTS_PER_WINDOW      30
+  ASPM_ASSESSMENT_MAX_INPUT_BYTES          32768
+  ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS        1024
+  ASPM_ASSESSMENT_MAX_RESPONSE_BYTES       65536
+Supplied empty/malformed/overflow/out-of-bound numbers or durations reject;
+never clamp or silently restore a default. Obey all accepted backend bounds,
+including positive timeout <=30s, lease 250ms..1m, authorization 10ms..1s and
+strictly shorter than lease, window 1s..1h, concurrency 1..16, requests 1..1000,
+input <=32768, output tokens <=32768 and response <=128KiB.
+
+The assessment role has ZERO raw Evidence, nil CollectionStorage, empty
+BootstrapToken/Assets/ReadinessKey/NormalizedPrefix, false PrepareReadiness,
+and no delivery/collection client/gateway capability. Malformed unrelated raw
+storage/bootstrap/readiness values are not inherited. Existing roles' own
+parse/validation rules remain unchanged.
+
+Normal TLS/direct-client selection
+---------------------------------
+ASPM_ASSESSMENT_CA_FILE is optional; absent/empty selects normal system trust.
+A supplied path must be a regular nonempty certificate-only PEM file <=1MiB,
+strictly parsed with at least one valid certificate and no junk/private keys.
+It is explicit trust for an owned/private inference endpoint, not a trust-store
+change or disabled certificate validation. Do not read/download/discover a CA.
+
+Environment constructs a bounded explicit *http.Transport client with Proxy=nil,
+no cookie jar or redirect following, normal hostname/TLS verification and
+effective TLS 1.2 or newer, no InsecureSkipVerify, ServerName override,
+DialTLS/DialTLSContext or default-client fallback. Preserve valid TLS ranges.
+The base client need not guess an endpoint: current persisted profile/grant
+selects endpoint/model/key at dispatch, and the accepted worker binds origin/base
+per request. ASPM_MODEL_ENDPOINT or caller headers are NOT new authority.
+Reuse/factor the existing delivery/collection normal-client and bounded PEM
+building pieces where appropriate, without their static gateway defaults.
+Client timeout must be explicit, positive and <=30s; request deadline is the
+configured AssessmentRequestTimeout. Owned resources close when the role ends.
+
+Pure preflight decision
+-----------------------
+Inspection found app.ValidateAssessmentWorkerConfig ALREADY EXPORTED and pure.
+Reuse it before service EnsureSchema, pool/listener/provider I/O; do not call
+OpenAssessmentWorker as a pretend validator. No new backend worker factoring
+is necessary for this accepted public shape.
+
+The remaining gap is service assessment-role/config/environment wiring plus
+pure validation of core's optional scope before EnsureSchema. Core construction
+currently checks scope through an internal identity helper. Parent may narrowly
+factor/reuse that pure scope check (optionally a small exported scope validator)
+rather than opening a DB to validate it. This author changes no backend source.
+Any programmatic invalid scope/key/limit/client/TLS/CA/listen/DB input must fail
+without a database attempt, schema creation, listener, provider or storage call.
+An occupied owned listen address is only a secondary witness; invalid-input
+preflight must fail before reaching that listener conflict.
+
+Health/readiness and scheduling
+------------------------------
+GET /healthz: apiVersion aspm/v1alpha1, service assessment, status alive.
+GET /readyz after actual worker Ping: service assessment, status ready,
+  database reachable, storage not-required,
+  admission configured, scope the explicit accepted scope,
+  provider not-probed, pipeline inspect-job-state-separately.
+This is configured-scope/DB truth, NOT model reachability, decryption/key
+availability, available quota, token/cost capacity or processing-geography proof.
+Database readiness failure is 503, not a cached ready success.
+GET /api/session, /api/v1/session and / return 404; no app/auth/static capability.
+Startup/health never discovers/probes a provider or consumes a dispatch attempt.
+
+Reuse the accepted ProcessNext loop. Only false,nil can wait in a short
+context-aware idle interval. A true,nil result immediately continues; an
+infrastructure error stops clearly. No extra native retry/backoff/fallback,
+queue resurrection, hidden local worker or alternate quota allocation.
+Scope/limits coherence and admission history persist across independent process
+opens and profiles as already required by the backend contract.
+
+Real Run context cancellation must stop the listener, held context-honoring
+native HTTP and owned resources in a bounded interval. Dispatched cancellation
+stays cancelled/uncertain and possibly-sent with no result, never unsent.
+An actual command crash leaves an expiring dispatched lease. A fresh actual
+command terminally settles it uncertain without repeating inference; a NEW
+explicitly reviewed/queued job can later run subject to the same durable quota.
+Specific-owned-PID cleanup is NOT evidence of graceful OS-signal handling.
+
+Real fixture and command boundary
+--------------------------------
+Core SERVICE is started from real service.Environment("core"), behind an owned
+normal-TLS HTTP forwarder. Protected core HTTP APIs create actual workspace/
+session/asset/import/finding/observation/profile/policy/grant/preview/consent job.
+Real ingestion is used for report intake; no SQL business-row seeds/results.
+Existing owned PG/local S3 comes only from explicit private RuntimeConfig.
+Assessment service/command receives NO S3 credentials, bootstrap or assets.
+
+The native model fixture is owned HTTP/TLS only, using the existing Responses
+protocol. Client response carries a bounded structured advisory, exact approved
+context refs, real native usage/cache/model/request/stop observations. It is not
+a real model, provider account, quality/retention/geography certificate or proof.
+The fixture readiness signal follows actual method/auth/body/schema/context/
+privacy checks AND independent committed dispatching/attempt1/nonnull-marker
+SQL observation, before holding the response. Never signal only raw arrival.
+Only read-only SQL/tracers inspect scheduling/state. Normal APIs/worker write it.
+
+The runner builds the ACTUAL cmd/assessment-worker. Tests launch that exact
+binary, no substitute test binary, handler or service loop. Private environment
+is supplied only to its owned process; no secrets in argv/logs. Cleanup kills
+only the exact owned PID. Separate service.Run context tests prove cancellation.
+All schemas, prefixes, certificates, files, listeners and processes are bounded
+owned fixture resources. Certificates are synthetic public PEM, never private
+keys or system policy. No unrelated schema/volume/policy/cluster/OS changes.
+
+Four coherent narratives
+-------------------------
+AR1 Actual core SERVICE scope forwarding + legitimate intake/preview/job, then
+    independent assessment SERVICE and compiled command native advisory, exact
+    provenance/usage and unchanged finding decisions/source state.
+AR2 Defaults/overrides, keyless local optional key, hosted-without-key no I/O,
+    truthful health/readonly role and legacy environment parse isolation.
+AR3 Supplied invalid scope/key/limits/client/TLS/CA/core scope rejects before
+    DB/listener/native I/O. No default substitution or DB-opening validation.
+AR4 Held-native Run context cancellation and actual command expired-dispatch
+    recovery preserve possibly-sent uncertainty, no repeat/resurrection, and
+    process a new explicitly queued job without resetting shared quota.
+
+Qualification and stop
+----------------------
+Exactly four normal top-level runtime cases; fixture/native calibration and
+existing-service environment probes are separately tagged and classified.
+Per real-service fixture deadline <=90s, <=220 protected API operations and
+<=12 owned native POSTs. Runtime limits remain explicit and smaller as above.
+Cached Go1.27.1, readonly/offline modules; no dependency/toolchain installation.
+Command-build RED, typed service/constructor compile RED, actual unsupported
+role/core-wiring observations and fixture calibration are distinct evidence.
+Any unexecuted runtime narrative is BLOCKED/NOT RUN, never inferred from helper
+compilation or backend acceptance. No release, whole-M11, model-quality or
+runtime processing geography claim.
+Parent verifies this proposed Config/health/preflight contract and actual RED,
+seals only NEW tests and assigns a separate coder. This author stops.
