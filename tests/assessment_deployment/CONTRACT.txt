@@ -1,0 +1,188 @@
+ASSESSMENT DEPLOYMENT V1 - FOUR INDEPENDENT OPT-IN ARTIFACT GATES
+================================================================
+
+Authoring boundary, BEFORE tests
+--------------------------------
+Only NEW tests/assessment_deployment files and owned run artifacts are authored.
+No production, scripts, old tests/helpers, root modules, oracles/signatures,
+installer, runtime/backend/UI, policy/key/volume/OS/cluster change. No agents,
+commits, dependency downloads, image builds, host packager execution, container
+start, cluster apply or systemd activation. Actual artifact output is required.
+Runtime cancellation A2 and A1 cadence are already sealed and are not changed.
+
+Reuse the prior delivery_deployment / collection_deployment conventions:
+an isolated nested module with ONLY already-cached gopkg.in/yaml.v3 v3.0.1 and
+their exact existing go.sum. Root go.mod/go.sum stay exact. Cached Go1.27.1,
+Helm and Podman4.9 native generator are the only selected execution tools.
+Synthetic inputs contain Secret names/keys, never Secret contents. Do not read
+the private runtime.json, credential files, real kubeconfig or protected env.
+
+AD1 - Seven real command targets and actual host inventory
+---------------------------------------------------------
+Source Containerfile adds ./cmd/assessment-worker -> /out/assessment-worker
+beside core-api, ingestion, report-worker, delivery-worker, collection-worker
+and aspmctl, each exactly once. All seven actual command source paths exist.
+Retain full COPY --from=backend /out/ /app/bin/, full runtime COPY bin/ /app/bin/,
+nonroot 10001:10001 and core-api default CMD in both image recipes.
+
+Inspect scripts/package-image.mjs itself: its unique static commands inventory
+must include these seven names exactly once, and the actual for-of build loop
+must consume that inventory to invoke go build into output/bin for ./cmd/name.
+Do not run or replace it with a test-side packager, fake output or empty binary.
+The image's existing core-oriented defaults remain intact; this source/render
+gate does not claim every inherited image environment variable disappears.
+The accepted assessment runtime parser already separates role capabilities.
+
+The missing assessment-worker inventory entry is genuine source RED. Parent,
+not this author or an unrestricted artifact coder, will make/freeze the single
+actual packager inventory entry before implementation as in prior increments.
+The current script is hash-guarded. This is not permission to weaken a scripts
+guard or to substitute a different packaging execution path.
+Image construction and seven-binary runtime inventory remain later proof.
+
+Chosen minimal Helm profile
+---------------------------
+assessment:
+  enabled: false
+  replicas: 1
+  scope: ""
+  leaseDuration: "15s"
+  authorizationInterval: "100ms"
+  requestTimeout: "10s"
+  requestWindow: "1m"
+  maxConcurrent: 1
+  requestsPerWindow: 30
+  maxInputBytes: 32768
+  maxOutputTokens: 1024
+  maxResponseBytes: 65536
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: "1", memory: 512Mi}
+
+AD2 - Real Helm opt-in, core preconfiguration and role isolation
+----------------------------------------------------------------
+Use actual Helm template --dry-run=client against deploy/helm/aspm, an explicit
+empty kubeconfig, plugins disabled and only owned config/cache/data directories.
+Parse every rendered YAML document with the real pinned YAML decoder.
+
+Omitted/default false or explicit false/empty scope leaves assessment off.
+Enabling with valid explicit scope adds exactly ONE independent Deployment,
+component/container/selector role assessment, command
+["/app/bin/assessment-worker"], no shell or credential arguments.
+Default replicas/resources are independent. A single override/coexistence
+case proves selected replicas/resources and every worker limit are forwarded
+without rewriting them or obtaining private per-replica admission.
+
+Only ordinary selected database/listen/schema/pool fields, the required
+existingSecret/database-url reference, scope, the nine exact runtime limit
+variables and an OPTIONAL complete integrationKeySecret{name,key} may appear:
+  ASPM_ASSESSMENT_SCOPE
+  ASPM_ASSESSMENT_LEASE_DURATION
+  ASPM_ASSESSMENT_AUTHORIZATION_INTERVAL
+  ASPM_ASSESSMENT_REQUEST_TIMEOUT
+  ASPM_ASSESSMENT_REQUEST_WINDOW
+  ASPM_ASSESSMENT_MAX_CONCURRENT
+  ASPM_ASSESSMENT_REQUESTS_PER_WINDOW
+  ASPM_ASSESSMENT_MAX_INPUT_BYTES
+  ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS
+  ASPM_ASSESSMENT_MAX_RESPONSE_BYTES
+  optional ASPM_INTEGRATION_ENCRYPTION_KEY
+Durations/scope/numbers render as exact YAML STRING environment values.
+No optional SecretKeyRef, literal encryption key or operator/bootstrap/storage
+fallback. Absence/empty default integrationKeySecret permits a keyless local
+runtime profile; it must not make a chart encryption credential mandatory.
+Rendering keyless does not select a model/profile or authorize hosted access.
+
+Core receives the same nonempty assessment.scope even when worker disabled.
+Its existing optional integrationKeySecret behavior stays intact. It receives
+no assessment worker limits/client fields. Empty/off scope carries no nonempty
+assessment authority. Ingestion/reports/delivery/collection receive NO
+assessment variables. Existing delivery/collection integration/storage keys
+and commands are unchanged, not accidentally removed by role-isolation checks.
+
+The assessment Deployment gets no S3/collection/AWS/bootstrap/assets/readiness
+preparation, envFrom, source gateway/model endpoint, sidecar/init privilege,
+extra Secret or CA-file mount schema. Models/endpoints/keys/grants remain in
+persisted reviewed configuration, never ASPM_MODEL_ENDPOINT or routing knobs.
+Keep nonroot, read-only rootfs, no privilege escalation, drop ALL capabilities,
+RuntimeDefault seccomp, no service-account token, bounded writable /tmp and
+/readyz startup/readiness, /healthz liveness on a declared container port.
+The /tmp string is deployment data; this author writes files only in project
+artifact directories. No Secret/RBAC/Ingress/ServiceAccount is added for this
+worker. Shared scope/readiness is NOT proof of available quota/model/access.
+
+Positive controls cover the existing three roles, independent delivery and
+collection opt-ins, and their combined configuration. Compare parsed existing
+workloads, managed PostgreSQL/S3 resources, services and policy selections
+structurally. Enabling assessment changes no unrelated rendered object.
+
+Private/local TLS CA qualification
+----------------------------------
+This first artifact profile uses ordinary system trust. Optional private CA
+configuration remains EXPLICIT MANUAL operator provisioning through the accepted
+ASPM_ASSESSMENT_CA_FILE runtime input. This chart profile does not provision,
+generate, mount or claim delivery of CA files. No new generic env builder,
+Secret-mount schema, provider endpoint default or disabled TLS verification.
+Protected host-env provisioning and actual trust/permissions are later operator
+actions, not facts proven by rendering. This limit must accompany the handoff.
+
+AD3 - Declared defaults and a finite validation table
+----------------------------------------------------
+Actual values.yaml declares the chosen assessment defaults above.
+assessment.enabled must be a boolean. scope must be a string, valid UTF-8,
+nonblank when enabled, with no surrounding whitespace/control and at most
+128 UTF-8 bytes. A valid nonempty scope remains usable for core-only setup;
+malformed supplied scope rejects even while disabled. A Unicode/slash positive
+and exact 128-byte positive prevent an invented DNS/ASCII-only scope rule.
+
+Each rejection identifies its precise values path, not an unrelated validation
+error. The finite cases cover malformed assessment mapping, flag string/number,
+required scope, padded/control/typed/129-byte Unicode scope, blank/numeric
+duration values, string/fractional concurrency, zero request-window capacity,
+oversize response cap, and both partial integrationKeySecret selectors.
+Supplied invalid values must not silently become false or restore defaults.
+Existing complete-key and absent-key behavior must remain separate.
+The runtime remains authoritative for complete duration grammar, cross-field
+constraints and execution-time bounded validation; this is not another runtime
+policy implementation or a huge Cartesian value matrix.
+
+AD4 - Manual Quadlet, native parser, unchanged installer
+--------------------------------------------------------
+New deploy/quadlet/aspm-assessment.container uses ONLY:
+  EnvironmentFile=/etc/aspm/assessment.env
+  Exec=/app/bin/assessment-worker
+  Network=aspm.network
+  ReadOnly=true
+  NoNewPrivileges=true
+  DropCapability=all
+plus an ordinary image/container identity, bounded /tmp tmpfs and on-failure
+restart. No [Install] section, WantedBy/RequiredBy/Alias, inline Environment,
+PodmanArgs, Secret, credential Volume, environment-host or service environment
+bypass. No storage-service/administrative dependency for this storage-free role.
+
+Actual native validation uses the existing cached Podman4.9.x generator under
+the existing unprivileged WSL user. Invoke ONLY -user -dryrun -no-kmsg-log,
+empty native environment and exact owned QUADLET_UNIT_DIRS/HOME/XDG/TMPDIR.
+Stage only the selected current unit plus current aspm.network. Parse actual
+generated service INI and assert the worker command, protected env file,
+hardening and no autostart. Never guess newer Entrypoint syntax.
+Independently generate the existing collection unit as a positive native-parser
+control, never as a substitute for a missing assessment unit.
+
+Current internal/install/execution/linux.go and bundle.go stay BYTE-IDENTICAL.
+No installer copy/start/bundle list change, installer invocation, protected
+/etc/aspm file creation/read or systemd activation. The new unit is manual opt-in
+only; its referenced protected env file is not proof of actual provisioning.
+
+Bounds, classification and stop
+--------------------------------
+Exactly four top-level gates. At most 32 real Helm renders per package run,
+each <=15s / 2MiB /
+40 parsed documents. Native commands <=20s, Go package <=120s, no retries.
+Keep positive legacy controls distinct from new RED. Missing feature/unit
+assertions are genuine RED; dependent field/probe/new-unit generation assertions
+are BLOCKED/NOT RUN and must not be labelled passing.
+No actual credentials, accounts, live provider, image/container activation,
+cluster, systemd, policy or privilege action. Preserve old tests/helpers/modules,
+seals and current source hashes. Freeze the NEW unsigned packet/evidence and
+stop for parent verification, then separate artifact implementation.

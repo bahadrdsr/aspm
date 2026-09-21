@@ -195,6 +195,24 @@ an independent assessment service and the compiled command against owned
 synthetic native HTTP/TLS fixtures, including Run cancellation and crash/reopen
 uncertainty with new explicit work. Specific-PID command cleanup is NOT proof
 of graceful OS-signal handling. No live provider/model/account, model quality,
-retention or runtime processing geography is qualified. Images, installers,
-deployment/scheduling and operational rollout remain separate gates. This
-bounded runtime wiring is not whole-M11 completion or release acceptance.
+retention or runtime processing geography is qualified.
+
+Source and host image inventories now include this command, retaining the core
+default. Helm deployment is explicitly selected with assessment.enabled=true
+and a valid assessment.scope; a nonempty scope also preconfigures core while
+the worker is disabled. Worker limits remain assessment-only. A complete
+integrationKeySecret is optional for assessment, allowing keyless local
+profiles without changing delivery/collection key requirements.
+This first chart profile uses normal system trust and supplies no CA path,
+Secret mount or model/endpoint knobs. Private CA files and the runtime
+ASPM_ASSESSMENT_CA_FILE setting require explicit manual operator provisioning.
+The manual aspm-assessment.container uses only /etc/aspm/assessment.env.
+The Linux installer does not copy/start this unit or provision that protected
+file. See docs/m02-runtime.md for the artifact profile and its limits.
+Separate September 21 qualification built both seven-command image paths and
+started the actual source-image assessment role in the owned Kubernetes lab.
+The executable hash, explicit shared scope, database readiness, role environment
+isolation and health-only surface were checked. No provider job was submitted
+there, and protected host files/native systemd activation remain operator work.
+Source/render/native-generator checks alone do not activate a worker. This is
+not whole-M11 completion, production network isolation or release acceptance.

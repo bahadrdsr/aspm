@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:56:09.659Z",
+  "before": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\BEFORE.json",
+    "bytes": 309567,
+    "sha256": "f7db6471ff8e985cf0f4005d9c6f9473767edb04b2c0bb185e9e5e2ed097c200"
+  },
+  "unchangedExistingSourceControlFiles": 1567,
+  "oldTestsHelpersRootModulesPoliciesSignaturesRuntimeBackendUIAndInstallerUnchanged": true,
+  "existingSourceFileSetUnchangedByAuthor": true,
+  "productionScriptOrProducerFilesAddedOrEdited": false,
+  "wholeCheckoutSourceSetGuardPassed": false,
+  "finalSourceSetBlocker": {
+    "observedAt": "2026-09-21T05:56:01.343Z",
+    "status": "WHOLE-CHECKOUT SOURCE-SET GUARD BLOCKED",
+    "original1567FilesUnchanged": true,
+    "selectedToolsUnchanged": true,
+    "addedPaths": [
+      "tests\\assessment_runtime\\header_timeout_test.go",
+      "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A3.json",
+      "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+      "tests\\assessment_runtime\\reviews\\v1\\GUARDS-A3.json",
+      "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.txt",
+      "tests\\assessment_runtime\\reviews\\v1\\RED-A3.json",
+      "tests\\assessment_runtime\\reviews\\v1\\Test-Runtime-A3.ps1"
+    ],
+    "additionsOutsideThisAuthorScope": true,
+    "ownerOrApprovalNotInferred": true,
+    "addedContentsNotInspectedCopiedOrTreatedAsFrozenControls": true,
+    "noResetOrGuardExclusionApplied": true,
+    "parentResolutionRequiredBeforeClaimingFinalWholeCheckoutGuardPass": true,
+    "testedInputTreesRemainUnchangedAndWitnessed": true
+  },
+  "exactSourceWitnessSet": "BEFORE.json files remain hash-identical. The original author-check remains strict and currently reports out-of-scope runtime A3 additions; it was not weakened or relabelled PASS.",
+  "perRunSourceSnapshots": [
+    {
+      "run": "author-assessment-deployment-red-20260921-01",
+      "before": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\source-before.json",
+        "bytes": 298272,
+        "sha256": "0ff6674f560753fea8668f5cc648cd327c5f67f7ebf0753e4271b4b6343ae5ec"
+      },
+      "after": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\source-after.json",
+        "bytes": 298271,
+        "sha256": "8696551b53691318bcd155ff271dd460219a8ae16be95f1131852d304e58f619"
+      }
+    },
+    {
+      "run": "author-assessment-deployment-red-20260921-02",
+      "before": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\source-before.json",
+        "bytes": 298462,
+        "sha256": "9e7a1e65f34600e2e9d05a9adeb6f8307038f23d76836cbb807bf9ab87097c69"
+      },
+      "after": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\source-after.json",
+        "bytes": 298461,
+        "sha256": "a00bbc49ba9e685a2ea5c042e4dee3b6a1dca02f747fc7d2bc6fe16f4514e50c"
+      }
+    },
+    {
+      "run": "author-assessment-deployment-red-20260921-03",
+      "before": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\source-before.json",
+        "bytes": 298646,
+        "sha256": "7116a6f71556091fa7cc2473fc90f3eb96ca30143af3ebed7d6d7d8af75366ea"
+      },
+      "after": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\source-after.json",
+        "bytes": 298645,
+        "sha256": "29f3788463f8d8d2898e0032925765f1c639987d2c12d82445d0626e6fec80a4"
+      }
+    }
+  ],
+  "currentProducerStableDuringEachRun": true,
+  "wholeCheckoutSnapshotsDifferBetweenRunsDueToOutOfScopeRuntimeA3Additions": true,
+  "recorderIsNotProducerEditAuthorization": true,
+  "parentTrustedSourceGuardAndScriptsClassificationRemainAuthoritative": true,
+  "sourceTreeSHA256": "d8b22e2442f623bee0d5a81bcea8185a1e84066457ebe0c2a9a7a45554ea1e98",
+  "selectedToolAndCachedYAMLHashesUnchanged": true,
+  "noAgentsCommitsPrivateAuthorityDependencyNetworkInstallPolicyKeyVolumeOSClusterOrImageActions": true
+}

@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "record": "PARENT-CONCURRENCY-RESOLUTION",
+  "recordedAt": "2026-09-21T06:06:36.061Z",
+  "parentAuthorization": {
+    "messageDatetime": "2026-09-21T08:01:39.512+02:00",
+    "independentRuntimeA3Author": "f93d054c",
+    "basis": "Parent explicitly assigned parallel runtime A3 header-timeout regression work before the deployment packet completed."
+  },
+  "historicalAsTestedPacket": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\history\\parent-concurrency-resolution\\PACKET.json",
+    "bytes": 118610,
+    "sha256": "a0168337b3e934dbc9b259555972a2a441d469b2ffa947ffc02896227322bba2"
+  },
+  "historicalChecksum": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\history\\parent-concurrency-resolution\\PACKET.sha256",
+    "bytes": 78,
+    "sha256": "3da8a50eb784929d48fd7c32fe386c65dbd48f653774e4f972bf6bd77b902b8c"
+  },
+  "historicalWholeCheckoutGuard": {
+    "result": "BLOCKED",
+    "preservedWithoutRelabelling": true,
+    "previousFinalWholeCheckoutSourceSetGuardPassed": false,
+    "previousBlockerRecordUnmodified": true,
+    "strictGuardCodeUnmodified": true
+  },
+  "authorizedConcurrentScope": {
+    "exactNewTest": "tests\\assessment_runtime\\header_timeout_test.go",
+    "newReviewFilePattern": "tests\\assessment_runtime\\reviews\\v1\\*-A3.*",
+    "appliesOnlyToPathsAbsentFromOriginalBaseline": true,
+    "existingRuntimeA1A2OriginalAssertionFilesNotExcluded": true,
+    "arbitraryOutsideFilesNotAuthorized": true,
+    "deploymentOwnsOrFreezesA3Payloads": false
+  },
+  "observedAddedPathnames": [
+    "tests\\assessment_runtime\\header_timeout_test.go",
+    "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+    "tests\\assessment_runtime\\reviews\\v1\\GUARDS-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.sha256",
+    "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.txt",
+    "tests\\assessment_runtime\\reviews\\v1\\PACKET-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\PACKET-A3.sha256",
+    "tests\\assessment_runtime\\reviews\\v1\\RED-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\Test-Runtime-A3.ps1"
+  ],
+  "addedPayloadsNotInspectedReadCopiedOrHashedForThisResolution": true,
+  "currentBoundedSelectedInputGuard": {
+    "result": "PASS",
+    "originalBaseline": {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\BEFORE.json",
+      "bytes": 309567,
+      "sha256": "f7db6471ff8e985cf0f4005d9c6f9473767edb04b2c0bb185e9e5e2ed097c200"
+    },
+    "originalFilesVerified": 1567,
+    "allOriginal1567ByteHashesUnchanged": true,
+    "selectedDeploymentRunInputs": {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\source-after.json",
+      "bytes": 298645,
+      "sha256": "29f3788463f8d8d2898e0032925765f1c639987d2c12d82445d0626e6fec80a4"
+    },
+    "selectedDeploymentInputsVerified": 9,
+    "priorFrozenEvidenceFilesVerified": 449,
+    "selectedToolPinsVerified": 5,
+    "toolPins": [
+      {
+        "path": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "bytes": 17508352,
+        "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+      },
+      {
+        "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\tools\\helm.exe",
+        "bytes": 67507712,
+        "sha256": "2f65add9f1d5c96fc70ad70f06f1c47b3ef21bee4a9f086d861bb138429e9c13"
+      },
+      {
+        "path": "C:\\bahadr\\serious\\aspm\\.cache\\podman-validation\\extracted\\usr\\libexec\\podman\\quadlet",
+        "bytes": 1999200,
+        "sha256": "9e95fafe06ef5b630dbb59cbf3630d38931c3fc27ba7c7f9cf472f064d9798b9"
+      },
+      {
+        "path": "C:\\WINDOWS\\System32\\wsl.exe",
+        "bytes": 274432,
+        "sha256": "27cc8dd52be326e138a89f8889241b1d8c51dd1978b22eb70be77036ccdee3c2"
+      },
+      {
+        "path": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\gopkg.in\\yaml.v3@v3.0.1\\yaml.go",
+        "bytes": 20084,
+        "sha256": "447f1c34c1851298028e561e8aaefde8c9c3ebcc2f965ff81f9a603f2d9e4fc5"
+      }
+    ],
+    "unexpectedOutsideAdditions": [],
+    "originalRuntimePacketsVerified": [
+      {
+        "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET.json",
+        "bytes": 13955,
+        "sha256": "1718bd25a829fd3b886f9d5dcef1ba62377bdfa4c86b0d565eb79cc3b154cc34"
+      },
+      {
+        "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A1.json",
+        "bytes": 25017,
+        "sha256": "e611e3beab298cddb53e4187c5507793893ad1751191ae44cfc9fa393b0501ac"
+      },
+      {
+        "path": "tests\\assessment_runtime\\reviews\\v1\\PACKET-A2.json",
+        "bytes": 10778,
+        "sha256": "b7fcec83e2fec940b059e517a853166edb6bcac08704322e59bcbff8dddc4b5d"
+      }
+    ]
+  },
+  "resolution": "Only the unknown-owner additions gate is resolved by explicit parent cross-scope authorization. This is a bounded selected-input verification, not a retroactive whole-checkout file-set PASS.",
+  "unchangedEvidence": {
+    "actualDeploymentGates": "four RED",
+    "positiveLegacyControls": 7,
+    "finalRunHelmRenders": 27,
+    "nativeGenerator": "Podman4.9.3 unprivileged UID1000 dryrun",
+    "asTestedOnly": true,
+    "noImageBuildOrActivationProof": true
+  },
+  "separateRuntimeHeaderBug": {
+    "status": "BLOCK",
+    "coder": "HOLD",
+    "notResolvedByThisRecord": true
+  },
+  "execution": {
+    "testsOrRendersRepeated": false,
+    "assertionsFixturesHelpersBudgetsOrProductionChanged": false,
+    "oldHistoryOrSignatureRewritten": false,
+    "agentsCommitsAuthorityCaptureOrPrivateCredentialAccess": false
+  },
+  "currentHandoff": "Ready for parent sealing/review of the selected deployment test packet under this explicit concurrency authorization. Historical whole-file-set failure remains intact; runtime A3 remains separate."
+}

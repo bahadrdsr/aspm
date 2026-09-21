@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-21T06:11:05.145Z",
+  "status": "SELECTED INPUTS PASS; SUBSEQUENT OUTSIDE-SCOPE ADDITIONS BLOCK CROSS-SCOPE CLEARANCE",
+  "parentAuthorizationRecord": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\PARENT-CONCURRENCY-RESOLUTION.json",
+    "bytes": 6004,
+    "sha256": "7a1407563d10e058c172ca8b3dce463fea2c794be839ebb5f7129a4712535459"
+  },
+  "authorizedRuntimeA3TestAndReviewPathsResolved": true,
+  "authorizedPathsObserved": [
+    "tests\\assessment_runtime\\header_timeout_test.go",
+    "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+    "tests\\assessment_runtime\\reviews\\v1\\GUARDS-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.sha256",
+    "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.txt",
+    "tests\\assessment_runtime\\reviews\\v1\\PACKET-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\PACKET-A3.sha256",
+    "tests\\assessment_runtime\\reviews\\v1\\RED-A3.json",
+    "tests\\assessment_runtime\\reviews\\v1\\Test-Runtime-A3.ps1"
+  ],
+  "additionalPathsOutsideExplicitAuthorization": [
+    ".oracles\\assessment-runtime-a3.json",
+    ".oracles\\assessment-runtime-a3.json.sig"
+  ],
+  "newOutsidePayloadsNotReadHashedCapturedResetOrChanged": true,
+  "ownershipOrAuthorityNotInferredFromNames": true,
+  "selectedInputVerification": {
+    "originalBaselineFiles": 1567,
+    "allOriginalByteHashesUnchanged": true,
+    "selectedDeploymentInputs": 9,
+    "allSelectedInputsUnchanged": true,
+    "toolPins": 5,
+    "allToolPinsUnchanged": true
+  },
+  "historicalWholeFileSetFailureRemainsBlocked": true,
+  "strictGuardAndAllAssertionsHelpersBudgetsUnchanged": true,
+  "testsOrRendersRepeated": false,
+  "productionOrOracleFilesEdited": false,
+  "agentsCommitsAuthorityCapture": false,
+  "handoff": "The parent-authorized header_timeout_test.go and NEW runtime review *-A3.* additions are resolved separately. The newly appeared .oracles runtime-A3 paths are not in that supplied pathname authorization, so final cross-scope clearance is not claimed. Parent must resolve only those additional paths before seal; artifact RED/legacy PASS remain as-tested. Runtime header bug remains separate BLOCK and coder HOLD."
+}

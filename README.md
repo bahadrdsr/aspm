@@ -33,8 +33,10 @@ and production network isolation are not yet qualified.
 Eight native integration families and four configurable AI provider adapters
 exist as libraries. Slack notifications and selected GitHub repository collection
 have durable application workflows, as do explicitly reviewed AI assessments.
-Orchestration for the other native families, assessment image/deployment wiring
-and live vendor/model qualification remain incomplete.
+Orchestration for the other native families and live vendor/model qualification
+remain incomplete. Assessment source/host images and explicit owned-cluster
+startup have separate qualification; Helm is opt-in and native Quadlet
+activation remains operator work.
 Verification supports
 approved deterministic synthetic evidence only, not exploit execution or
 autonomous offensive tools.
@@ -263,8 +265,24 @@ protected independent `ASPM_INTEGRATION_ENCRYPTION_KEY`; keyless local profiles
 can run without it. See `internal\service\README.txt` for exact defaults, strict
 environment parsing and optional `ASPM_ASSESSMENT_CA_FILE` trust configuration.
 From the source checkout, start this role with `go run .\cmd\assessment-worker`.
-Image, Helm, manual Quadlet and installer provisioning are separate gates;
-the current assessment increment does not install or start that role for you.
+The source and host image recipes include the assessment command without changing
+the default core process. Helm keeps `assessment.enabled: false` and
+`assessment.scope: ""` by default. Set an explicit shared scope and boolean
+`assessment.enabled: true` to select the independent worker; a nonempty scope
+also preconfigures core while the worker stays disabled. The optional complete
+`integrationKeySecret` selects the existing encryption-key reference, not a
+chart-generated credential. An absent/empty selector supports keyless local
+profiles. No chart value selects a model, endpoint, policy or grant.
+See `docs\m02-runtime.md` for the worker limits and manual
+`aspm-assessment.container` profile. Its protected `/etc/aspm/assessment.env`
+must be provisioned separately; the installer neither provisions nor starts
+this role. This first chart profile uses normal system trust. Private CA files
+require explicit manual operator provisioning through the runtime's
+`ASPM_ASSESSMENT_CA_FILE`, not a chart CA mount or TLS bypass.
+Artifact validation is separate from the subsequent seven-command source and
+host-image checks and the owned Kubernetes rollout recorded in
+`docs\m02-runtime.md`. That rollout qualified role startup, scope/credential
+wiring and health-only routes, not provider jobs or production isolation.
 
 The worker commits a single-attempt marker before provider I/O, prevents
 transport-level HTTP/2 replay and keeps local I/O admission reserved through

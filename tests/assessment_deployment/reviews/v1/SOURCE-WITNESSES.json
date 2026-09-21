@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:56:09.659Z",
+  "files": [
+    {
+      "path": "Containerfile",
+      "bytes": 1271,
+      "sha256": "c6a05985f7c4702fba099708cb80c42ca0dabcc2fe03200c164ea774475fd64c"
+    },
+    {
+      "path": "deploy\\Containerfile.runtime",
+      "bytes": 354,
+      "sha256": "fe72809ded87e851969407ab585acaab8a1d125f07571177635014c6b58325f2"
+    },
+    {
+      "path": "scripts\\package-image.mjs",
+      "bytes": 2622,
+      "sha256": "7247c24c1cfbcbd03acc1b121d7c3c42d4b4c8965696f5da9c2a70db9e127c44"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\values.yaml",
+      "bytes": 1917,
+      "sha256": "78a6c33e4eaebc669db4f7d5ba650c6b7ddeff08fdef685ed13ed375911db77a"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\application.yaml",
+      "bytes": 3231,
+      "sha256": "7be8eaaf932cfdef5b33df966b9d0957935f6a7deb3b8815a979ee3df7ecc311"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\_helpers.tpl",
+      "bytes": 5594,
+      "sha256": "f4a50374eb87857c87a90acf28d553d38cdfbeccff4f9cf8cb7bfd11b79b8b66"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\_collection.tpl",
+      "bytes": 3801,
+      "sha256": "ca19ce3954b6b00539528dc377b4633e5ea5782dcfa611f6c4b04566a94dcf11"
+    },
+    {
+      "path": "deploy\\helm\\aspm\\templates\\storage.yaml",
+      "bytes": 4385,
+      "sha256": "4e702920807edc775cbfdf56b2789a967df4977406622f7201689b9e04d22657"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm-collection.container",
+      "bytes": 449,
+      "sha256": "fb4bdab0ffd39a48524ed2530aae991f37028b6cedae5a3fafa7c5198afcbae8"
+    },
+    {
+      "path": "deploy\\quadlet\\aspm.network",
+      "bytes": 44,
+      "sha256": "cd5ab9d710e72c6cd5a9efd0c5955f2e58b66dac02e38fba6f288892aa9af231"
+    },
+    {
+      "path": "internal\\install\\execution\\linux.go",
+      "bytes": 6205,
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "internal\\install\\execution\\bundle.go",
+      "bytes": 6385,
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    },
+    {
+      "path": "cmd\\assessment-worker\\main.go",
+      "bytes": 668,
+      "sha256": "09d40e2fe1e35c08fdce360325acac5d2852ce30b257b0cc77f28e6ae16b8342"
+    },
+    {
+      "path": "tests\\assessment_runtime\\CONTRACT.txt",
+      "bytes": 12696,
+      "sha256": "88c29684bdb279aef52c7b8c0cc8fbe77cba8fd9169581917be956b11b49b192"
+    }
+  ],
+  "tools": [
+    {
+      "path": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "bytes": 17508352,
+      "sha256": "d3ccdb604eafa6031133aefe1a3db24f0bb7362b857bc2125ac4e4c178b4b490"
+    },
+    {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\tools\\helm.exe",
+      "bytes": 67507712,
+      "sha256": "2f65add9f1d5c96fc70ad70f06f1c47b3ef21bee4a9f086d861bb138429e9c13"
+    },
+    {
+      "path": "C:\\bahadr\\serious\\aspm\\.cache\\podman-validation\\extracted\\usr\\libexec\\podman\\quadlet",
+      "bytes": 1999200,
+      "sha256": "9e95fafe06ef5b630dbb59cbf3630d38931c3fc27ba7c7f9cf472f064d9798b9"
+    },
+    {
+      "path": "C:\\WINDOWS\\System32\\wsl.exe",
+      "bytes": 274432,
+      "sha256": "27cc8dd52be326e138a89f8889241b1d8c51dd1978b22eb70be77036ccdee3c2"
+    },
+    {
+      "path": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\gopkg.in\\yaml.v3@v3.0.1\\yaml.go",
+      "bytes": 20084,
+      "sha256": "447f1c34c1851298028e561e8aaefde8c9c3ebcc2f965ff81f9a603f2d9e4fc5"
+    }
+  ],
+  "sourceOnlyImageProof": true,
+  "actualHostBuildLoopInspected": true,
+  "actualPackagerExecuted": false,
+  "packagerParentOnlyPlannedAmendment": {
+    "current": {
+      "path": "scripts\\package-image.mjs",
+      "bytes": 2622,
+      "sha256": "7247c24c1cfbcbd03acc1b121d7c3c42d4b4c8965696f5da9c2a70db9e127c44"
+    },
+    "currentInventoryCount": 6,
+    "requiredInventoryCount": 7,
+    "missingEntry": "assessment-worker",
+    "parentWillMakeAndFreezeActualEntryBeforeCoder": true,
+    "scriptsClassificationOrTrustedGuardWeakened": false
+  },
+  "installerUnchanged": [
+    {
+      "path": "internal\\install\\execution\\linux.go",
+      "bytes": 6205,
+      "sha256": "7a0ce5e87bf72773f2988ff7f10511b5599180910abf17cc8c481ecd534e55a3"
+    },
+    {
+      "path": "internal\\install\\execution\\bundle.go",
+      "bytes": 6385,
+      "sha256": "79a576439c0ed0ec175315c2164302228c8260f3b44cf77cdfe314be5ce04958"
+    }
+  ],
+  "actualAssessmentCommandSourceExists": {
+    "path": "cmd\\assessment-worker\\main.go",
+    "bytes": 668,
+    "sha256": "09d40e2fe1e35c08fdce360325acac5d2852ce30b257b0cc77f28e6ae16b8342"
+  },
+  "noImageBuildOrBinaryPresenceInImageClaimed": true
+}

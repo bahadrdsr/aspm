@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:56:09.659Z",
+  "author": "independent-assessment-deployment-test-author-20260921",
+  "baseline": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\BEFORE.json",
+    "bytes": 309567,
+    "sha256": "f7db6471ff8e985cf0f4005d9c6f9473767edb04b2c0bb185e9e5e2ed097c200"
+  },
+  "preTestContractWitness": {
+    "path": "tests\\assessment_deployment\\CONTRACT.txt",
+    "bytes": 10816,
+    "sha256": "e343da910e6a0200806d2ccb7d7cb36ec48fda99371eabd3e84b260bb0399aab"
+  },
+  "frozenContract": {
+    "path": "tests\\assessment_deployment\\CONTRACT.txt",
+    "bytes": 10833,
+    "sha256": "cb1be270e7c9bd749e8bc8265006bf3c064bab31251616744bb63cc0e83835ce"
+  },
+  "onlyContractWordingClarification": "Per-package bound made explicit; initial bytes reconstruct exactly from current contract.",
+  "reusedCurrentPriorArt": [
+    {
+      "path": "tests\\collection_deployment\\go.mod",
+      "bytes": 132,
+      "sha256": "755d05290ec281161a216ec6ae81bf31c0bd19790cdb53c08d483e57af48c0cc"
+    },
+    {
+      "path": "tests\\collection_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\collection_deployment\\helm_helpers_test.go",
+      "bytes": 14482,
+      "sha256": "2205c9931f9897914c72b2283fb94fe6a60a00f72f0a0760214eb4713c4b7c50"
+    },
+    {
+      "path": "tests\\collection_deployment\\artifacts_test.go",
+      "bytes": 10603,
+      "sha256": "e41257fa01571c962e8e23d555a518522676f2ad3b0453ff300386099f148eca"
+    },
+    {
+      "path": "tests\\collection_deployment\\Test-CollectionDeployment.ps1",
+      "bytes": 4940,
+      "sha256": "741eb32bddfe61c6810ff50271469fa6de9f687eb2cd27f4a1c66af0e9e8c626"
+    }
+  ],
+  "noPriorHistoryCopied": true,
+  "nestedModuleDecision": {
+    "module": "github.com/bahadrdsr/aspm/tests/assessment_deployment",
+    "go": "1.27.0",
+    "toolchain": "go1.27.1",
+    "onlyDependency": "gopkg.in/yaml.v3 v3.0.1",
+    "sumSource": "tests\\collection_deployment\\go.sum",
+    "alreadyCached": true,
+    "rootManifestsChanged": false,
+    "networkOrDependencyInstallAuthorized": false
+  },
+  "nestedModule": {
+    "path": "tests\\assessment_deployment\\go.mod",
+    "bytes": 132,
+    "sha256": "92725e579303837b13a94f488ffb887be204689eac34fde9a620280e4795be74"
+  },
+  "identicalReusedSum": {
+    "path": "tests\\assessment_deployment\\go.sum",
+    "bytes": 364,
+    "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+  },
+  "authoringRevisions": [
+    {
+      "run": "author-assessment-deployment-red-20260921-01",
+      "boundary": "Initial compiling four-gate RED and seven positive controls."
+    },
+    {
+      "run": "author-assessment-deployment-red-20260921-02",
+      "boundary": "New-only shared hardening/probe parsing calibrated against actual existing roles; empty entrypoint preserved."
+    },
+    {
+      "run": "author-assessment-deployment-red-20260921-03",
+      "boundary": "Final explicit managed infrastructure comparisons across independent/combined legacy opt-ins."
+    }
+  ],
+  "noAssertionRemovedForProducerGreen": true,
+  "producerUnchangedAcrossAllRuns": true,
+  "wholeCheckoutSnapshotDifferencesRecorded": [
+    {
+      "run": "author-assessment-deployment-red-20260921-01",
+      "count": 1568,
+      "outsideBaselineInputs": [
+        {
+          "path": "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+          "bytes": 6219,
+          "sha256": "fd7597dfcba2a4bfb752de93bb6891fecce1473adc8bb9bcab25271264b870b3"
+        }
+      ]
+    },
+    {
+      "run": "author-assessment-deployment-red-20260921-02",
+      "count": 1569,
+      "outsideBaselineInputs": [
+        {
+          "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A3.json",
+          "bytes": 14553,
+          "sha256": "ae173015737a3b17784bc0ce56ccca408ee051c01668d64fae5f82ac1ba5d56c"
+        },
+        {
+          "path": "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+          "bytes": 6219,
+          "sha256": "fd7597dfcba2a4bfb752de93bb6891fecce1473adc8bb9bcab25271264b870b3"
+        }
+      ]
+    },
+    {
+      "run": "author-assessment-deployment-red-20260921-03",
+      "count": 1570,
+      "outsideBaselineInputs": [
+        {
+          "path": "tests\\assessment_runtime\\header_timeout_test.go",
+          "bytes": 7831,
+          "sha256": "cc66ca85f61f5aedd7b0a12256994d3159f0c36e77c80d7a4c51002acc35b08c"
+        },
+        {
+          "path": "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A3.json",
+          "bytes": 14553,
+          "sha256": "ae173015737a3b17784bc0ce56ccca408ee051c01668d64fae5f82ac1ba5d56c"
+        },
+        {
+          "path": "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+          "bytes": 6219,
+          "sha256": "fd7597dfcba2a4bfb752de93bb6891fecce1473adc8bb9bcab25271264b870b3"
+        }
+      ]
+    }
+  ],
+  "rootDependencyChangesOrNetworkInstalls": false,
+  "privateRuntimeOrCredentialFilesRead": false
+}

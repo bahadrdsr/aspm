@@ -1,0 +1,140 @@
+ASSESSMENT DEPLOYMENT V1 - INDEPENDENT ARTIFACT RED HANDOFF
+=========================================================
+
+Author: independent-assessment-deployment-test-author-20260921.
+Status: FOUR ACTUAL ARTIFACT GATES RED; AS-TESTED BUNDLE FROZEN.
+FINAL WHOLE-CHECKOUT SOURCE-SET GUARD BLOCKED; PARENT RESOLUTION REQUIRED.
+No production, scripts, old tests, installer/runtime/backend/UI, dependencies,
+oracles, policy, key or volume changes. No agents or commits.
+
+Exactly four gates
+-------------------
+AD1: seventh real command in source image and actual host packaging build loop.
+AD2: actual Helm opt-in, core scope, optional key/keyless profile, all limit
+     mappings, role isolation, independent resources/hardening/probes and
+     unchanged existing workloads/managed PostgreSQL/S3/service policy.
+AD3: actual declared defaults plus a finite 17-row validation table.
+AD4: manual protected-env Quadlet, real rootless Podman4.9 generator and
+     byte-identical Linux installer copy/start/bundle inputs.
+
+The new nested module uses only cached gopkg.in/yaml.v3 v3.0.1 and the byte-exact
+existing collection_deployment go.sum. Root manifests are unchanged.
+Actual Helm parses the chart client-only with empty kubeconfig and plugins off.
+Generated YAML is decoded structurally, not scanned as a renderer substitute.
+The native generator ran as existing UID1000, version4.9.3, with only
+-user -dryrun -no-kmsg-log and project-owned HOME/XDG/TMPDIR/unit inputs.
+No generator output command was executed.
+
+Actual final results
+---------------------
+Run: author-assessment-deployment-red-20260921-03
+Real Go process exit 1. All four top-level gates executed and FAILED.
+Seven nested positive controls passed; 21 nested checks failed.
+Go summary 10.855s; structured package event elapsed 10.856s.
+
+27 actual Helm renders: 25 succeeded, two rejected. Of the successful renders,
+15 supplied invalid NEW assessment selections were silently accepted by the
+currently unwired chart. The two existing partial integrationKeySecret
+selectors rejected with their precise paths, including the disabled case.
+All render outputs, diagnostics, synthetic values, empty kubeconfigs and
+per-invocation receipts are retained, bounded and hashed.
+
+Observed source/artifact RED:
+  - Containerfile does not build assessment-worker.
+  - Actual scripts/package-image.mjs inventory has six entries, omitting the
+    assessment command. Its actual go-build loop was inspected, not replaced.
+  - Core-only explicit assessment scope is not forwarded.
+  - Enabled keyed/keyless/coexisting assessment Deployment is absent.
+  - values.yaml has no declared assessment profile/defaults.
+  - Fifteen malformed assessment flag/scope/type/limit selections rendered
+    instead of producing the required precise-path errors.
+  - deploy/quadlet/aspm-assessment.container is genuinely absent.
+
+Executed positive controls:
+  - Existing six command source paths/build entries, both full bin copies,
+    nonroot UID/GID, empty entrypoints and core default commands were checked.
+    These completed within AD1 even though its new inventory assertions failed.
+  - Default/explicit-empty-off legacy resources compare structurally equal.
+    Existing core/ingestion/reports use the shared hardening/probe checker.
+  - Independent delivery, independent collection and their combined opt-ins
+    remain valid, with their existing selected commands/Secret authorities.
+  - Managed PostgreSQL/S3/service/policy objects compare unchanged across those
+    legacy opt-ins. No cluster request or storage/policy operation occurred.
+  - Both partial integration-key rejections passed.
+  - Actual existing collection Quadlet generated successfully with Podman4.9.3
+    under UID1000, retaining the collection command and manual opt-in behavior.
+  - Both complete installer source hashes remained exact.
+
+Blocked/unexecuted tails - NOT called passing
+---------------------------------------------
+Missing assessment Deployment blocks its worker environment/Secret/keyless,
+replicas/resources, scope pairing, hardening/probes and full new-role isolation
+assertions. Valid-looking render exit alone is NOT keyless worker success.
+Missing core scope blocks the final core-only new-feature comparison.
+Missing assessment unit blocks its directive/hardening/environment/autostart
+and actual new-unit native generator assertions.
+No actual image build, seven-binary image inventory, host packager execution,
+rollout, protected /etc/aspm file provisioning, systemd start or model call ran.
+
+Authoring provenance
+---------------------
+Run01 compiled and produced expected RED plus seven positive controls.
+Before freezing, new-only assertions were strengthened to exercise shared
+hardening/probe parsing on actual existing roles and compare managed resources
+across legacy opt-ins. Run02/03 retained the same RED and positive-control
+classifications; no producer or old control changed and no assertion was
+removed to make a failing producer green. All three raw outcomes remain.
+Each run made 27 renders within the 32-per-package bound, so 81 across these
+three explicit authoring revisions, not a hidden retry or Cartesian matrix.
+The only contract wording clarification after its first capture made that
+per-package bound explicit; its exact prior wording/hash is reconstructible.
+
+Packager and future authority
+------------------------------
+scripts/package-image.mjs remains byte-exact at
+7247c24c1cfbcbd03acc1b121d7c3c42d4b4c8965696f5da9c2a70db9e127c44.
+Parent will make/freeze the one actual inventory entry before the artifact
+coder, respecting the existing scripts classification. This author did not
+edit it, introduce a shadow packager or waive any trusted source guard.
+The new recorder snapshots ALL current producer/control inputs per run and
+requires stability during execution. It grants no production-edit authority;
+the parent's trusted source guard remains authoritative.
+Every original 1567 source/control file remains hash-identical and no producer
+file was added by this author. The final whole-checkout author-check, however,
+reported new files under tests\assessment_runtime outside this task:
+header_timeout_test.go and new runtime A3 review inputs/runner/contract.
+Those additions are outside this task. Their owner/approval is not inferred.
+They were not edited, reset, copied or silently excluded from the guard.
+GUARDS.json/PACKET.json preserve this BLOCKED final source-set result, not PASS.
+The strict guard remains unchanged. Persisted per-run snapshots contain
+1568 / 1569 / 1570 paths respectively, including one / two / three new runtime
+A3 inputs already present at those runs. Each full snapshot stayed identical
+before/after its own execution; all ORIGINAL 1567 paths and every actual artifact
+read-source stayed unchanged across all three runs. The final checkout then
+contained additional A3 paths. The guard's console baseline-count line is not
+a claim that these larger captured source sets never changed between runs.
+Completed RED/legacy observations remain verifiable. Parent must resolve the
+concurrent source-set change before asserting a clean final checkout/seal.
+
+Limits carried forward
+-----------------------
+The initial chart profile uses normal system trust. Private/local CA files
+remain EXPLICIT MANUAL operator provisioning using the accepted runtime
+ASPM_ASSESSMENT_CA_FILE input. This profile supplies no CA mount/Secret schema,
+generic env builder, provider endpoint default or TLS bypass.
+Models/endpoints/keys/grants stay in persisted reviewed configuration.
+Scope/configured readiness is not proof of available quota, model/account
+access, deployment isolation or processing geography.
+Image core-oriented defaults remain; this gate does not claim their inherited
+environment disappears. The accepted runtime role parser separates authority.
+
+Freeze and stop
+----------------
+reviews\v1\PACKET.json and checksum bind contract, exact new tests, source/module/
+tool provenance, actual RED, positive controls, blocked tails and guards.
+No private runtime.json, credential/env file, real kubeconfig, signing
+authority or provider account was read.
+Parent resolves the final source-set blocker and verifies/seals this NEW packet
+before separate artifact implementation. This is an as-tested handoff, not
+permission to overlook the guard failure.
+Later real seven-binary image build and owned rollout remain distinct proofs.

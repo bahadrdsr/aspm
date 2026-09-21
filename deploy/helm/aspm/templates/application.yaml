@@ -1,5 +1,6 @@
 {{- include "aspm.validateCollection" . -}}
 {{- include "aspm.validateDelivery" . -}}
+{{- include "aspm.validateAssessment" . -}}
 {{- $root := . -}}
 {{- $roles := list "core" "ingestion" "reports" -}}
 {{- $delivery := .Values.delivery | default dict -}}
@@ -8,6 +9,9 @@
 {{- end -}}
 {{- if .Values.collection.enabled -}}
 {{- $roles = append $roles "collection" -}}
+{{- end -}}
+{{- if .Values.assessment.enabled -}}
+{{- $roles = append $roles "assessment" -}}
 {{- end -}}
 {{- range $role := $roles }}
 {{- $config := index $root.Values $role }}
@@ -40,7 +44,7 @@ spec:
         - name: {{ $role }}
           image: {{ printf "%s:%s" $root.Values.image.repository $root.Values.image.tag | quote }}
           imagePullPolicy: {{ $root.Values.image.pullPolicy }}
-          command: [{{ if eq $role "core" }}"/app/bin/core-api"{{ else if eq $role "reports" }}"/app/bin/report-worker"{{ else if eq $role "delivery" }}"/app/bin/delivery-worker"{{ else if eq $role "collection" }}"/app/bin/collection-worker"{{ else }}"/app/bin/ingestion"{{ end }}]
+          command: [{{ if eq $role "core" }}"/app/bin/core-api"{{ else if eq $role "reports" }}"/app/bin/report-worker"{{ else if eq $role "delivery" }}"/app/bin/delivery-worker"{{ else if eq $role "collection" }}"/app/bin/collection-worker"{{ else if eq $role "assessment" }}"/app/bin/assessment-worker"{{ else }}"/app/bin/ingestion"{{ end }}]
           ports: [{name: http, containerPort: 8080}]
           env:
             {{- include "aspm.environment" (dict "root" $root "role" $role) | nindent 12 }}
@@ -55,7 +59,11 @@ spec:
           startupProbe: {httpGet: {path: /readyz, port: http}, failureThreshold: 30, periodSeconds: 5}
           readinessProbe: {httpGet: {path: /readyz, port: http}, periodSeconds: 10}
           livenessProbe: {httpGet: {path: /healthz, port: http}, periodSeconds: 15}
+      {{- if eq $role "assessment" }}
+      volumes: [{name: tmp, emptyDir: {medium: Memory, sizeLimit: 256Mi}}]
+      {{- else }}
       volumes: [{name: tmp, emptyDir: {sizeLimit: 2Gi}}]
+      {{- end }}
 {{- end }}
 ---
 apiVersion: v1

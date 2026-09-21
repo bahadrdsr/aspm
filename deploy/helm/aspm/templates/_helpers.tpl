@@ -63,13 +63,39 @@
   value: {{ $root.Values.database.schema | quote }}
 - name: ASPM_DB_MAX_CONNECTIONS
   value: {{ $root.Values.database.maxConnectionsPerReplica | quote }}
-{{- if or (eq $role "core") (eq $role "delivery") (eq $role "collection") }}
+{{- if or (eq $role "core") (eq $role "delivery") (eq $role "collection") (eq $role "assessment") }}
 {{- $integrationKey := $root.Values.integrationKeySecret | default dict }}
 {{- if gt (len $integrationKey) 0 }}
 - name: ASPM_INTEGRATION_ENCRYPTION_KEY
   valueFrom:
     secretKeyRef: {name: {{ $integrationKey.name | quote }}, key: {{ $integrationKey.key | quote }}}
 {{- end }}
+{{- end }}
+{{- if and (or (eq $role "core") (eq $role "assessment")) (ne $root.Values.assessment.scope "") }}
+- name: ASPM_ASSESSMENT_SCOPE
+  value: {{ $root.Values.assessment.scope | quote }}
+{{- end }}
+{{- if eq $role "assessment" }}
+- name: ASPM_LISTEN
+  value: "0.0.0.0:8080"
+- name: ASPM_ASSESSMENT_LEASE_DURATION
+  value: {{ $settings.leaseDuration | quote }}
+- name: ASPM_ASSESSMENT_AUTHORIZATION_INTERVAL
+  value: {{ $settings.authorizationInterval | quote }}
+- name: ASPM_ASSESSMENT_REQUEST_TIMEOUT
+  value: {{ $settings.requestTimeout | quote }}
+- name: ASPM_ASSESSMENT_REQUEST_WINDOW
+  value: {{ $settings.requestWindow | quote }}
+- name: ASPM_ASSESSMENT_MAX_CONCURRENT
+  value: {{ $settings.maxConcurrent | quote }}
+- name: ASPM_ASSESSMENT_REQUESTS_PER_WINDOW
+  value: {{ $settings.requestsPerWindow | quote }}
+- name: ASPM_ASSESSMENT_MAX_INPUT_BYTES
+  value: {{ $settings.maxInputBytes | quote }}
+- name: ASPM_ASSESSMENT_MAX_OUTPUT_TOKENS
+  value: {{ $settings.maxOutputTokens | quote }}
+- name: ASPM_ASSESSMENT_MAX_RESPONSE_BYTES
+  value: {{ $settings.maxResponseBytes | quote }}
 {{- end }}
 {{- if eq $role "core" }}
 {{- if not (kindIs "bool" $settings.prepareReadiness) }}

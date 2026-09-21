@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:56:09.659Z",
+  "status": "ACTUAL FOUR-GATE ARTIFACT RED - NOT COMPILER OR TOOL-BLOCKED",
+  "selectedRun": "author-assessment-deployment-red-20260921-03",
+  "actualExitCode": 1,
+  "topLevelGates": [
+    {
+      "test": "TestAD1SevenRealCommandsAndActualHostPackagingLoop",
+      "action": "fail",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAD4ManualQuadletNativeGeneratorAndUnchangedInstaller",
+      "action": "fail",
+      "elapsedSeconds": 4.05
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles",
+      "action": "fail",
+      "elapsedSeconds": 1.62
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation",
+      "action": "fail",
+      "elapsedSeconds": 2.41
+    }
+  ],
+  "failedNested": [
+    {
+      "test": "TestAD4ManualQuadletNativeGeneratorAndUnchangedInstaller/assessment-protected-manual-unit",
+      "action": "fail",
+      "elapsedSeconds": 0.01
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/core-only-explicit-unicode-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/enabled-defaults-with-explicit-key",
+      "action": "fail",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/enabled-keyless-exact-128-byte-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/selected-limits-resources-coexist-with-both-workers",
+      "action": "fail",
+      "elapsedSeconds": 0.14
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/declared-default-profile",
+      "action": "fail",
+      "elapsedSeconds": 0
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/assessment-type",
+      "action": "fail",
+      "elapsedSeconds": 0.16
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/enabled-string-false",
+      "action": "fail",
+      "elapsedSeconds": 0.13
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/enabled-number",
+      "action": "fail",
+      "elapsedSeconds": 0.12
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/enabled-missing-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.13
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/disabled-padded-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/disabled-control-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.13
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/disabled-bool-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/disabled-oversize-utf8-scope",
+      "action": "fail",
+      "elapsedSeconds": 0.14
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/blank-request-timeout",
+      "action": "fail",
+      "elapsedSeconds": 0.13
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/numeric-lease",
+      "action": "fail",
+      "elapsedSeconds": 0.14
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/blank-authorization-interval",
+      "action": "fail",
+      "elapsedSeconds": 0.17
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/string-concurrency",
+      "action": "fail",
+      "elapsedSeconds": 0.13
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/fractional-concurrency",
+      "action": "fail",
+      "elapsedSeconds": 0.16
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/zero-request-capacity",
+      "action": "fail",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/oversize-response-cap",
+      "action": "fail",
+      "elapsedSeconds": 0.13
+    }
+  ],
+  "positiveNested": [
+    {
+      "test": "TestAD4ManualQuadletNativeGeneratorAndUnchangedInstaller/existing-collection-native-positive-control",
+      "action": "pass",
+      "elapsedSeconds": 4.04
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/legacy-default-and-explicit-empty-off",
+      "action": "pass",
+      "elapsedSeconds": 0.17
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/legacy-independent-delivery",
+      "action": "pass",
+      "elapsedSeconds": 0.15
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/legacy-independent-collection",
+      "action": "pass",
+      "elapsedSeconds": 0.18
+    },
+    {
+      "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles/legacy-delivery-and-collection-together",
+      "action": "pass",
+      "elapsedSeconds": 0.18
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/partial-integration-name-only-disabled",
+      "action": "pass",
+      "elapsedSeconds": 0.13
+    },
+    {
+      "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation/partial-integration-key-only",
+      "action": "pass",
+      "elapsedSeconds": 0.17
+    }
+  ],
+  "observedFailures": {
+    "imageSource": "Missing seventh actual assessment build target.",
+    "hostPackager": "Real six-entry inventory omits assessment-worker; real loop remains the inspected one.",
+    "coreScope": "Explicit nonempty assessment scope not forwarded.",
+    "enabledRole": "Keyed, keyless and coexistence renders all lack the assessment Deployment.",
+    "defaults": "Actual values.yaml has no assessment profile.",
+    "validation": "15 new malformed assessment selections were accepted by real Helm; two existing partial-key denials passed.",
+    "quadlet": "Actual assessment.container absent."
+  },
+  "blockedDependentTails": [
+    "New assessment Deployment environment/Secret/keyless mapping, selected scope/limits/replicas/resources, hardening/probes and full new-role isolation.",
+    "Core-only final new-feature resource comparison after its missing scope assertion.",
+    "New assessment unit directive/hardening/protected-env/no-autostart assertions and actual new-unit native generation."
+  ],
+  "outOfScopeNotExecuted": [
+    "Image build",
+    "Actual seven binaries inside final image",
+    "Host packager execution",
+    "Cluster/apply/rollout",
+    "Systemd activation",
+    "Protected env/CA file provisioning",
+    "Provider/account/model requests"
+  ],
+  "earlierAuthoringRunsPreserved": [
+    {
+      "label": "author-assessment-deployment-red-20260921-01",
+      "logs": [
+        {
+          "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\events.jsonl",
+          "bytes": 57571,
+          "sha256": "5c69a8c8b11d11fa3cbbe4809739f95a6602f88726294dedaaa191f45f7df949"
+        },
+        {
+          "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\run.log",
+          "bytes": 14485,
+          "sha256": "6dded75e7b4712108e9f41321960b54277d69f99aa58eb20923deee0cef5c0d6"
+        }
+      ],
+      "receipt": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\receipt.json",
+        "bytes": 1939,
+        "sha256": "c927c783e8a555f59cefdf3d54695be228b124d5c4fd7c3a27777f6f5d816a14"
+      },
+      "topLevelGates": [
+        {
+          "test": "TestAD1SevenRealCommandsAndActualHostPackagingLoop",
+          "action": "fail",
+          "elapsedSeconds": 0.28
+        },
+        {
+          "test": "TestAD4ManualQuadletNativeGeneratorAndUnchangedInstaller",
+          "action": "fail",
+          "elapsedSeconds": 4.82
+        },
+        {
+          "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles",
+          "action": "fail",
+          "elapsedSeconds": 1.78
+        },
+        {
+          "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation",
+          "action": "fail",
+          "elapsedSeconds": 2.45
+        }
+      ]
+    },
+    {
+      "label": "author-assessment-deployment-red-20260921-02",
+      "logs": [
+        {
+          "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\events.jsonl",
+          "bytes": 57567,
+          "sha256": "857ef9fa20f80af352ce9b3ab757db3ef187aad9f182a0c9dd069affeb773d14"
+        },
+        {
+          "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\run.log",
+          "bytes": 14485,
+          "sha256": "6ed6355b31482dd95b2381ee96aec6774f20e200d59561b07404721c745c9f83"
+        }
+      ],
+      "receipt": {
+        "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\receipt.json",
+        "bytes": 1939,
+        "sha256": "f4f0e9af46d6231af2eaff623f932f5f0322cac64c66b4e58c4c9b7cc3f1e610"
+      },
+      "topLevelGates": [
+        {
+          "test": "TestAD1SevenRealCommandsAndActualHostPackagingLoop",
+          "action": "fail",
+          "elapsedSeconds": 0
+        },
+        {
+          "test": "TestAD4ManualQuadletNativeGeneratorAndUnchangedInstaller",
+          "action": "fail",
+          "elapsedSeconds": 3.81
+        },
+        {
+          "test": "TestAD2HelmOptInCoreScopeKeylessAndIndependentRoles",
+          "action": "fail",
+          "elapsedSeconds": 1.43
+        },
+        {
+          "test": "TestAD3HelmDefaultsAndPreciseFiniteValidation",
+          "action": "fail",
+          "elapsedSeconds": 2.41
+        }
+      ]
+    }
+  ],
+  "independentAcceptance": false,
+  "M11Complete": false
+}

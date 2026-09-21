@@ -204,6 +204,97 @@ none of the collection settings or reader/publisher keys; legacy raw storage
 and managed-service policy remain unchanged. The chart rejects non-string or
 blank fields, credential-bearing endpoints and non-HTTPS provider gateways.
 
+Assessment is independently opt-in with `assessment.enabled: false` and an
+empty `assessment.scope` by default. For an explicitly selected shared admission
+scope, the minimal worker override is:
+
+```yaml
+assessment:
+  enabled: true
+  scope: "reviewed-team/assessment"
+```
+
+Enabling requires a nonempty string scope. A nonempty scope is also forwarded
+unchanged to core while `assessment.enabled: false`, allowing core-only
+preconfiguration without starting a worker. Empty/off adds no assessment
+authority. Scopes accept Unicode and slashes, are limited to 128 UTF-8 bytes,
+and cannot have surrounding whitespace or control characters. Malformed
+supplied scopes fail rendering even while disabled; flags must be booleans.
+
+The assessment Deployment runs only `/app/bin/assessment-worker`, independently
+of delivery and collection; all three opt-ins can coexist. It defaults to one
+replica, resource requests of `100m` CPU/`128Mi` memory and limits of `1` CPU/
+`512Mi` memory. `assessment.replicas` and `assessment.resources` control only
+that Deployment. It retains nonroot UID/GID 10001, a read-only root filesystem,
+no privilege escalation, all capabilities dropped, RuntimeDefault seccomp and
+no service-account token. Its sole writable mount is a `256Mi` memory-backed
+`/tmp`. Startup/readiness use `/readyz` and liveness uses `/healthz` on port 8080.
+
+Assessment receives the existing database Secret's required `database-url`
+reference, selected schema/pool settings, listen address, scope and these exact
+worker settings, rendered as string environment values:
+
+| `assessment` value | `ASPM_ASSESSMENT_` suffix | Default |
+| --- | --- | --- |
+| `leaseDuration` | `LEASE_DURATION` | `"15s"` |
+| `authorizationInterval` | `AUTHORIZATION_INTERVAL` | `"100ms"` |
+| `requestTimeout` | `REQUEST_TIMEOUT` | `"10s"` |
+| `requestWindow` | `REQUEST_WINDOW` | `"1m"` |
+| `maxConcurrent` | `MAX_CONCURRENT` | `1` |
+| `requestsPerWindow` | `REQUESTS_PER_WINDOW` | `30` |
+| `maxInputBytes` | `MAX_INPUT_BYTES` | `32768` |
+| `maxOutputTokens` | `MAX_OUTPUT_TOKENS` | `1024` |
+| `maxResponseBytes` | `MAX_RESPONSE_BYTES` | `65536` |
+
+Durations must be nonblank strings. Numeric settings must be positive integer
+numbers, not strings or fractions, with maxima of 16, 1000, 32768, 32768 and
+131072 respectively. Invalid supplied values never restore defaults.
+The runtime remains authoritative for full duration grammar, cross-field
+constraints and execution-time admission. Replicas sharing a scope must use
+matching admission settings; adding replicas does not grant independent quota.
+Core receives only the scope, not worker limits or client settings. Ingestion,
+reports, delivery and collection receive no assessment-specific environment.
+
+Assessment may use the existing complete `integrationKeySecret.name`/`.key`
+selection, shared with core through required, nonoptional Secret references.
+Omission or the default `{}` is valid for keyless local profiles; no encryption
+key environment value is then emitted. Partial selectors fail even when the
+worker is disabled. Delivery/collection still require their existing key
+configuration when enabled. The assessment role receives no storage, AWS,
+bootstrap, assets or readiness-preparation credentials, and adds no Secret,
+Service, service account, RBAC or ingress authority.
+
+This first chart profile uses ordinary system TLS trust. A private/local TLS CA
+requires EXPLICIT MANUAL operator provisioning through the already supported
+`ASPM_ASSESSMENT_CA_FILE` runtime input, including a readable certificate-only
+file in the actual worker environment. The chart does not provision a CA file,
+path setting, Secret mount or generic environment extension. It does not disable
+TLS verification. Persisted reviewed AI profiles, endpoints, keys, policies and
+grants remain application configuration, not chart model-routing knobs.
+Readiness reports configured admission and database availability, not model
+access, available quota, provider-key validity or processing geography.
+Selecting a local profile does not itself certify local inference.
+
+On September 21, 2026, the owned two-node Kubernetes lab explicitly enabled one
+assessment replica using the actual source-built seven-command image. Core and
+assessment received the same selected scope; ingestion, reports, delivery and
+collection received no assessment-specific settings. The existing database,
+integration-key and storage selections were unchanged. All six application roles
+became ready, with two ingestion replicas and one of each other role.
+
+The running assessment executable matched the independently checked source-image
+hash. Its actual `/readyz` reported database reachability, `storage:not-required`,
+the selected admission scope and `provider:not-probed`; three application/auth
+routes returned HTTP 404. No provider job was submitted in this cluster check.
+The inherited image-level assets default is not a worker capability: the role
+parser still opens no static/auth handler or raw storage client.
+
+This is owned-lab rollout and startup evidence, not native systemd activation,
+private-CA or keyless-inference provisioning, available quota, live-model access
+or production NetworkPolicy enforcement. A private PostgreSQL dump was retained
+before the additive upgrade; that is not a coordinated object-store backup or
+tested restore claim.
+
 On September 17, 2026, the owned Kind lab enabled collection using the full
 source-built six-command image. Two new identities were manually provisioned
 for `collections/`: a core reader and a collection publisher. Existing storage
@@ -266,6 +357,20 @@ Existing installer bundle/copy/start behavior is unchanged and does not install,
 provision or start this new unit. Rootless Podman 4.9 generation verifies syntax
 and generated command text, not an existing protected file or service activation.
 
+`aspm-assessment.container` is likewise a manual opt-in, with no `[Install]`,
+autostart or alias directives. It runs the actual assessment command on the
+existing `aspm.network`, using only `/etc/aspm/assessment.env`, a read-only
+filesystem, no-new-privileges, dropped capabilities and bounded `256m` `/tmp`.
+There is no inline environment, additional credential volume or storage-service
+dependency. The operator must separately provision the protected file with
+database settings, the same explicit scope as core, selected limits and, only
+when needed, the matching integration-encryption key. For a keyless profile,
+omit that key variable rather than supplying an empty value. Private CA
+provisioning remains manual as described above. The existing Linux installer
+and bundle lists are unchanged: they neither copy/start assessment nor create
+its env file. Native unprivileged Podman 4.9 dryrun output is syntax evidence
+only; no generated service command is executed by artifact validation.
+
 The core binds loopback by default. The real Ubuntu Quadlet 4.9.3 generator was
 extracted into a project-local ignored tool directory and used without
 administrator installation. It validates the unit syntax and generated commands.
@@ -303,13 +408,30 @@ Podman can consume the same OCI build context. This is host-compiled artifact
 assembly, not a signed-release or reproducibility certificate. The later full
 source-image build is recorded separately as `aspm:0.1.0-source`.
 
-The source and host-build command inventories include `collection-worker` and
-`delivery-worker` alongside core, ingestion, reporting and `aspmctl`. Both image
+The source and host-build command inventories include `assessment-worker`,
+`collection-worker` and `delivery-worker` alongside core, ingestion, reporting
+and `aspmctl`, for seven actual command targets. Both image
 recipes retain the complete
 binary directory and default to `/app/bin/core-api`; adding a worker does not
 change the default process. These recipe changes alone do not prove that a
-current image contains the worker. An explicit reviewed image build and binary
-check remain separate from artifact source/render validation.
+current image contains the worker. Actual image construction and executable
+checks remain separate from artifact source/render/native-generator validation.
+
+The September 21 assessment qualification built the full source Containerfile as
+`aspm:0.1.0-assessment-optin-source` and ran the actual host packager to build
+`aspm:0.1.0-assessment-optin-host`. Both images contained all seven executable
+commands and the static UI, retained UID/GID 10001 and the core default command,
+and passed network-disabled, read-only inventory checks. The host-image binary
+hashes matched the actual packager manifest. Linux/amd64 was exercised; no
+cross-architecture claim is made.
+
+The source build initially failed public-registry TLS negotiation. Its successful
+run selected the previously used HTTPS package mirror through `NPM_REGISTRY`,
+with normal certificate validation and the lockfile unchanged. The default
+registry and repository trust settings were not changed. The source-built image
+was imported into the owned lab as an explicit amd64 archive and used by the
+rollout described above. No image was published to a remote registry or claimed
+as a signed supported release.
 
 The earlier September 17 delivery packaging check built the source Containerfile,
 verified all five executable binaries and the non-root core default, and ran the

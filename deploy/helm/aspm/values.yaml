@@ -53,6 +53,22 @@ collection:
   resources:
     requests: {cpu: 100m, memory: 128Mi}
     limits: {cpu: "1", memory: 512Mi}
+assessment:
+  enabled: false
+  replicas: 1
+  scope: ""
+  leaseDuration: "15s"
+  authorizationInterval: "100ms"
+  requestTimeout: "10s"
+  requestWindow: "1m"
+  maxConcurrent: 1
+  requestsPerWindow: 30
+  maxInputBytes: 32768
+  maxOutputTokens: 1024
+  maxResponseBytes: 65536
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: "1", memory: 512Mi}
 database:
   managed: true
   image: postgres:18.6-alpine

@@ -1,0 +1,2323 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T05:56:09.659Z",
+  "author": "independent-assessment-deployment-test-author-20260921",
+  "stage": "Independent opt-in assessment deployment test authorship",
+  "status": "FROZEN AS-TESTED ARTIFACT RED / PARENT-CONCURRENCY AUTHORIZATION RECORDED / SELECTED-INPUT GUARD PASS - PARENT SEAL PENDING",
+  "signed": false,
+  "independentAcceptance": false,
+  "productionChanges": false,
+  "M11Complete": false,
+  "exactlyFourGates": true,
+  "finalRun": "author-assessment-deployment-red-20260921-03",
+  "actualExitCode": 1,
+  "finalPositiveNestedControls": 7,
+  "finalFailedNestedChecks": 21,
+  "actualClientOnlyHelmRenders": 27,
+  "properYAMLDecoder": true,
+  "actualNativeGenerator": "Podman4.9.3 UID1000 -user -dryrun -no-kmsg-log",
+  "packagerEntryRemainsParentOwnedAndUnchanged": true,
+  "imageBuildClusterSystemdActivationOrCredentialAccess": false,
+  "unchangedExistingSourceControlFiles": 1567,
+  "oldRuntimeCancellationAndCadenceControlsUnchanged": true,
+  "finalWholeCheckoutSourceSetGuardPassed": false,
+  "finalSourceSetBlocker": {
+    "observedAt": "2026-09-21T05:56:01.343Z",
+    "status": "WHOLE-CHECKOUT SOURCE-SET GUARD BLOCKED",
+    "original1567FilesUnchanged": true,
+    "selectedToolsUnchanged": true,
+    "addedPaths": [
+      "tests\\assessment_runtime\\header_timeout_test.go",
+      "tests\\assessment_runtime\\reviews\\v1\\BEFORE-A3.json",
+      "tests\\assessment_runtime\\reviews\\v1\\CONTRACT-A3.txt",
+      "tests\\assessment_runtime\\reviews\\v1\\GUARDS-A3.json",
+      "tests\\assessment_runtime\\reviews\\v1\\HANDOFF-A3.txt",
+      "tests\\assessment_runtime\\reviews\\v1\\RED-A3.json",
+      "tests\\assessment_runtime\\reviews\\v1\\Test-Runtime-A3.ps1"
+    ],
+    "additionsOutsideThisAuthorScope": true,
+    "ownerOrApprovalNotInferred": true,
+    "addedContentsNotInspectedCopiedOrTreatedAsFrozenControls": true,
+    "noResetOrGuardExclusionApplied": true,
+    "parentResolutionRequiredBeforeClaimingFinalWholeCheckoutGuardPass": true,
+    "testedInputTreesRemainUnchangedAndWitnessed": true
+  },
+  "fileCount": 452,
+  "files": [
+    {
+      "path": "tests\\assessment_deployment\\CONTRACT.txt",
+      "bytes": 10833,
+      "sha256": "cb1be270e7c9bd749e8bc8265006bf3c064bab31251616744bb63cc0e83835ce"
+    },
+    {
+      "path": "tests\\assessment_deployment\\HANDOFF.txt",
+      "bytes": 8559,
+      "sha256": "3d953ea024e81029471d3a475bb1a217fa413f65e95074d889ea97c2ec0dce67"
+    },
+    {
+      "path": "tests\\assessment_deployment\\go.mod",
+      "bytes": 132,
+      "sha256": "92725e579303837b13a94f488ffb887be204689eac34fde9a620280e4795be74"
+    },
+    {
+      "path": "tests\\assessment_deployment\\go.sum",
+      "bytes": 364,
+      "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"
+    },
+    {
+      "path": "tests\\assessment_deployment\\helm_helpers_test.go",
+      "bytes": 12624,
+      "sha256": "cbc1a53e80a4741ec387fd3f5cc774acb20f99e7fff561902846f63e3040f053"
+    },
+    {
+      "path": "tests\\assessment_deployment\\helm_test.go",
+      "bytes": 18227,
+      "sha256": "87fb7310e997b3815a09e3313399899864bf953c05025b7876437e49e8258666"
+    },
+    {
+      "path": "tests\\assessment_deployment\\artifacts_test.go",
+      "bytes": 13451,
+      "sha256": "d51f5aa2971f22418e3d16f543e99032076b1921d78099676a678e2bd40102cb"
+    },
+    {
+      "path": "tests\\assessment_deployment\\Test-AssessmentDeployment.ps1",
+      "bytes": 5845,
+      "sha256": "ed68aab1ac0ca74b3c690257b51d87aa7b4e91c94cd132469d0ca07e55d12003"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\BEFORE.json",
+      "bytes": 309567,
+      "sha256": "f7db6471ff8e985cf0f4005d9c6f9473767edb04b2c0bb185e9e5e2ed097c200"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\guard.mjs",
+      "bytes": 4392,
+      "sha256": "5761a0e3cd9ed4896bd9cbd35898d4e3403c30185662c216551f0199e1f06193"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\freeze.mjs",
+      "bytes": 19024,
+      "sha256": "dc668f5053b22aa2e19c3e454268ec26bb2b0cb3dddf6370a12d423a46d242e1"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\PROVENANCE.json",
+      "bytes": 5015,
+      "sha256": "d1438a61f5067e6f8eea3bd81cbcb7e500c5fdfe0c35a2d7e8579dd7090b540a"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\SOURCE-WITNESSES.json",
+      "bytes": 4779,
+      "sha256": "acee0a8f26725214096ef30f43583e96bc61db4e3d43a3adfe76edbe24464a47"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\CALIBRATION.json",
+      "bytes": 2742,
+      "sha256": "80a6638721c651ca93ddc5cb12b6bf41c886eb42d73fb9529fcaee5da855521d"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\RED.json",
+      "bytes": 9696,
+      "sha256": "53ea716cc251ef98fc7963d386df8bf2fe235af53d56de6a2d88ec88de774641"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\GUARDS.json",
+      "bytes": 4087,
+      "sha256": "f84b3a3c0e71129ba526700369a727f3ae8ac1b8ff17186e99a5643fef0b5b30"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\EVIDENCE.json",
+      "bytes": 228925,
+      "sha256": "4683d922bfafbf501dc5fb85658d0c6f2700f1f5fc28be967f50935263b44bec"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\events.jsonl",
+      "bytes": 57571,
+      "sha256": "5c69a8c8b11d11fa3cbbe4809739f95a6602f88726294dedaaa191f45f7df949"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-021418adebf62c02899510dd\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-021418adebf62c02899510dd\\render-receipt.json",
+      "bytes": 590,
+      "sha256": "94bc1b1e95b59ad5505c29888c1b03de952ad5543e6817d0fd3aca821ef034c7"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-021418adebf62c02899510dd\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-021418adebf62c02899510dd\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-021418adebf62c02899510dd\\values.json",
+      "bytes": 955,
+      "sha256": "894ca4951f62db21b648569c18cc5519a4a3df2edab24177e4794a6193eb19b0"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0357c27c4e194e02d1b278b1\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0357c27c4e194e02d1b278b1\\render-receipt.json",
+      "bytes": 602,
+      "sha256": "edf3ad9c2c6775abfb5346ce03d95c998e0f3f36cead235ea600e1a003eb804e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0357c27c4e194e02d1b278b1\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0357c27c4e194e02d1b278b1\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0357c27c4e194e02d1b278b1\\values.json",
+      "bytes": 936,
+      "sha256": "0c7d30888e3272cd4e7f40f8e0556664bf1f77b2318d7eac06aa81fd8f462bf4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0ae69c5fd6db9834d726cff8\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0ae69c5fd6db9834d726cff8\\render-receipt.json",
+      "bytes": 591,
+      "sha256": "86c80776df39214f0f96cb589af2c5560e57a214b746558e4f0fa4ab9f5fb335"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0ae69c5fd6db9834d726cff8\\render.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0ae69c5fd6db9834d726cff8\\stderr.txt",
+      "bytes": 148,
+      "sha256": "1f25180351013ba66ad297340027ff32fb683345da46d7ecaae18ee45e0e4977"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-0ae69c5fd6db9834d726cff8\\values.json",
+      "bytes": 893,
+      "sha256": "aa9f02fd3e1b16564308dde643a0103c23f4a4ac71701daadb0d15f2b9f13609"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1084da6eefe9d49760dfe021\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1084da6eefe9d49760dfe021\\render-receipt.json",
+      "bytes": 567,
+      "sha256": "8c2f55f2898d1dd0c0ded15de0bef30959d240277e6b72883ca9a8a5bfef5978"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1084da6eefe9d49760dfe021\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1084da6eefe9d49760dfe021\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1084da6eefe9d49760dfe021\\values.json",
+      "bytes": 867,
+      "sha256": "593574ffd17aecf59e70f86707be0cfae21fa4a033cf24ed5c56bb5f8af9e326"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1506bee2f2f6b12667072a49\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1506bee2f2f6b12667072a49\\render-receipt.json",
+      "bytes": 601,
+      "sha256": "1e22f007f6e479a003eeb73469904996697052cf83922fc1ba328a8efc5a8856"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1506bee2f2f6b12667072a49\\render.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1506bee2f2f6b12667072a49\\stderr.txt",
+      "bytes": 147,
+      "sha256": "6c809df64149311702585df4d53939313ba448f8967bef65d431a625ca6ead2e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1506bee2f2f6b12667072a49\\values.json",
+      "bytes": 906,
+      "sha256": "e594f9fd2003224b8e93aa8451f34cbd48a727489c3e282963538c64dcf2693e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1633aeb55777619c57cde347\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1633aeb55777619c57cde347\\render-receipt.json",
+      "bytes": 605,
+      "sha256": "4882c8f29b82951fe43e2068ce1a2bd2d3155329e8144c62c08587f347306b36"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1633aeb55777619c57cde347\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1633aeb55777619c57cde347\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-1633aeb55777619c57cde347\\values.json",
+      "bytes": 826,
+      "sha256": "996850bbe70bbe492dcd3cf889cb67f8f718c3a0670b896ab89c253ddde52765"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-17001646b30d9cd2594e3a1f\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-17001646b30d9cd2594e3a1f\\render-receipt.json",
+      "bytes": 567,
+      "sha256": "789186d3e676fb058765aed89807eb2f86cf234b533cdb7bbc66681644124191"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-17001646b30d9cd2594e3a1f\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-17001646b30d9cd2594e3a1f\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-17001646b30d9cd2594e3a1f\\values.json",
+      "bytes": 784,
+      "sha256": "4572d4838c65f4144c53b63c444483bd4b3d0156c6423c5251401ed5fdc54242"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-178bb23647b815735c562970\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-178bb23647b815735c562970\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "379a6438b5686f6a84b15a5324baa7bd3857e23d1e3e7153c01f48a45fde9189"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-178bb23647b815735c562970\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-178bb23647b815735c562970\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-178bb23647b815735c562970\\values.json",
+      "bytes": 867,
+      "sha256": "46dfe89f7a6a3a093e6bacf4ed161fc9bbca3e0509f93baf2e3eecc97c1dabea"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-2663305e73ac272098e3ea4d\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-2663305e73ac272098e3ea4d\\render-receipt.json",
+      "bytes": 584,
+      "sha256": "7df0bc027a5d0083355c1b312a0f895b6dd68f2617af2e59c28e70c917b887d3"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-2663305e73ac272098e3ea4d\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-2663305e73ac272098e3ea4d\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-2663305e73ac272098e3ea4d\\values.json",
+      "bytes": 836,
+      "sha256": "ad813e2e8fd28aeadb026c05487882802412ac42a33b41370459523865b4bbf8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-28a833aa8122c136a9757dd4\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-28a833aa8122c136a9757dd4\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "368bbcf333ea02076e2a4ffc08b3b5bcb0ba74c1d6a88beabf482af852ba1f26"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-28a833aa8122c136a9757dd4\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-28a833aa8122c136a9757dd4\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-28a833aa8122c136a9757dd4\\values.json",
+      "bytes": 865,
+      "sha256": "d44569fa9f4106aa5785e8f4268d8b14651f838558a4b06397dd772253b7a915"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-41baf6b646b828c18674cbb6\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-41baf6b646b828c18674cbb6\\render-receipt.json",
+      "bytes": 575,
+      "sha256": "67e01cba6347872b57bed7e2135c8754290e72ce588c60ffb2490720835bc3a8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-41baf6b646b828c18674cbb6\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-41baf6b646b828c18674cbb6\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-41baf6b646b828c18674cbb6\\values.json",
+      "bytes": 864,
+      "sha256": "6fc10c6d120362b61ed8c87bc0cd80f515cb0d1e916b8e4652ac531fa58716f4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-4b0f61b938f39812c7d97dbf\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-4b0f61b938f39812c7d97dbf\\render-receipt.json",
+      "bytes": 597,
+      "sha256": "d059c34f85e4f1b5ddc80216131ffa7253103ba5298f1380a5a14d4a0d5d11b1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-4b0f61b938f39812c7d97dbf\\render.yaml",
+      "bytes": 17339,
+      "sha256": "bca19e9ab6387d961c068123ab51c9be581e43d3dfd578c220147c45feff8948"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-4b0f61b938f39812c7d97dbf\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-4b0f61b938f39812c7d97dbf\\values.json",
+      "bytes": 1298,
+      "sha256": "0522d60bb22aca73e420f3f36145856b321b16db58d61cc0daa2306113edfcf8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-507e782246ffb9b88253c521\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-507e782246ffb9b88253c521\\render-receipt.json",
+      "bytes": 595,
+      "sha256": "b60e2aa1e6e8806bb2cbdba85747daf502dcb02a14c94d53930a058513e365a6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-507e782246ffb9b88253c521\\render.yaml",
+      "bytes": 15875,
+      "sha256": "117a5cde62c96bdb435e1896712546d6dedfd636f18ee3e082102dd18d437af1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-507e782246ffb9b88253c521\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-507e782246ffb9b88253c521\\values.json",
+      "bytes": 895,
+      "sha256": "db088ecbb0f278297c60f19182e752384814d61e37c4e072efb22ab5c099e8af"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-588cff61fbf047c4f23b923f\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-588cff61fbf047c4f23b923f\\render-receipt.json",
+      "bytes": 607,
+      "sha256": "e463f9a9c1d0fe38526de02bf7f8428d68fb8b3e90f6fee9ee8b6b64c41b973f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-588cff61fbf047c4f23b923f\\render.yaml",
+      "bytes": 20073,
+      "sha256": "bacb7f2d63cd5359639ff836ec635fb63dca69772551b67ffbe10a434ac819e6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-588cff61fbf047c4f23b923f\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-588cff61fbf047c4f23b923f\\values.json",
+      "bytes": 1326,
+      "sha256": "9ba3c3f605ed5668e6db3bf1688d3efc410608a218d6ea80cde3e4e5409757b8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-59614a71d3ec289810f781f8\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-59614a71d3ec289810f781f8\\render-receipt.json",
+      "bytes": 584,
+      "sha256": "1394302faf45445159844f214b01d04bc8b7061086fc290de418d6fbd4aec7f8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-59614a71d3ec289810f781f8\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-59614a71d3ec289810f781f8\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-59614a71d3ec289810f781f8\\values.json",
+      "bytes": 865,
+      "sha256": "810a797a989a6c9ef71f04b321c3261af34ab083911da59e5d3143762412eec4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5af58505cbcc7eedc86cf960\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5af58505cbcc7eedc86cf960\\render-receipt.json",
+      "bytes": 580,
+      "sha256": "5563cefd728121a74219451a3f70b3cbae1fec1c6a384fb12b21bcfbfe49b43f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5af58505cbcc7eedc86cf960\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5af58505cbcc7eedc86cf960\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5af58505cbcc7eedc86cf960\\values.json",
+      "bytes": 865,
+      "sha256": "74260cccc65d80384eee3366871d58c6108e45315f9668a763f7b7b132ebba53"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5c83d3e3f9190c28f1b1c3e0\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5c83d3e3f9190c28f1b1c3e0\\render-receipt.json",
+      "bytes": 619,
+      "sha256": "d61daa30c18c825cdd814d136e023ca49ae11d10f3cc837593ad558e546e1050"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5c83d3e3f9190c28f1b1c3e0\\render.yaml",
+      "bytes": 20073,
+      "sha256": "bacb7f2d63cd5359639ff836ec635fb63dca69772551b67ffbe10a434ac819e6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5c83d3e3f9190c28f1b1c3e0\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5c83d3e3f9190c28f1b1c3e0\\values.json",
+      "bytes": 1701,
+      "sha256": "95ee1ae78407d78a483a4c7eb0a0813d68c284d8e50e9f9e5e22d3f10f892d26"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5d5c406c463866432c227cfd\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5d5c406c463866432c227cfd\\render-receipt.json",
+      "bytes": 604,
+      "sha256": "9cc5c7c33b6565f0470b55c8d970835e1c7966768f002cb337f0d1026a546a4e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5d5c406c463866432c227cfd\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5d5c406c463866432c227cfd\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-5d5c406c463866432c227cfd\\values.json",
+      "bytes": 953,
+      "sha256": "b4c69bcf6bca76c429e98e3f1ba89e106ce12199b8d08f75b3dd0eae83cef32d"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-614bcffc8ae2e0ed86221e34\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-614bcffc8ae2e0ed86221e34\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "b086dfaff92242b1233ac26697864ec8530c36cd4b99941074f8d548a70cb3c8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-614bcffc8ae2e0ed86221e34\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-614bcffc8ae2e0ed86221e34\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-614bcffc8ae2e0ed86221e34\\values.json",
+      "bytes": 834,
+      "sha256": "b25e3f8fa08bc16169761463868fc013a3d22974839a275eef39645ef6bb554e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-679ab1ed6260ea716429f8be\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-679ab1ed6260ea716429f8be\\render-receipt.json",
+      "bytes": 590,
+      "sha256": "98c5bd92757a4ba6aa3753b73c7df5ac91f43e6e433d9e5a1ea3e0041d71863b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-679ab1ed6260ea716429f8be\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-679ab1ed6260ea716429f8be\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-679ab1ed6260ea716429f8be\\values.json",
+      "bytes": 872,
+      "sha256": "e6a9b49e6dbb104f801a65213f16a1929ec63694dfbbba7581214d60321b6ec1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-77b2d7afff60d38145c05ef0\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-77b2d7afff60d38145c05ef0\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "c1e972d568caffe9186107843f9d962ad46f67ef62511c2012aa11320d755c0c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-77b2d7afff60d38145c05ef0\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-77b2d7afff60d38145c05ef0\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-77b2d7afff60d38145c05ef0\\values.json",
+      "bytes": 814,
+      "sha256": "25907e75e8abd19441238ecccfbff7f427e5413ede38749ed2af5fb92c2b1156"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-837c91b26414625ce862f6f7\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-837c91b26414625ce862f6f7\\render-receipt.json",
+      "bytes": 600,
+      "sha256": "7d461cbd9fd789d0d29c92a381b6d2c4b35e5560ff869d3b715556bb34042132"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-837c91b26414625ce862f6f7\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-837c91b26414625ce862f6f7\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-837c91b26414625ce862f6f7\\values.json",
+      "bytes": 928,
+      "sha256": "6de928b9f4ba6b334e55257fdb653e5c1ea2c8eec7cacf2cd2a2a5d984a932a1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-8c952d8f2947fb26cd256be4\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-8c952d8f2947fb26cd256be4\\render-receipt.json",
+      "bytes": 581,
+      "sha256": "18f5f4390f61e3fbc6dd43bc84deef9344a2034af60bbaa2343b4737e4b695b1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-8c952d8f2947fb26cd256be4\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-8c952d8f2947fb26cd256be4\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-8c952d8f2947fb26cd256be4\\values.json",
+      "bytes": 829,
+      "sha256": "20978206f7bc3a1319472592d5fa2f7d731e6c9ef06c47660b36b73ddf4900dc"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-949a75e3dfe4d43a712feb50\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-949a75e3dfe4d43a712feb50\\render-receipt.json",
+      "bytes": 577,
+      "sha256": "f3fceb7b42e1c339958cc9eb11367d4e5d7a30b4b6a86c25fe78bd6ef349284e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-949a75e3dfe4d43a712feb50\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-949a75e3dfe4d43a712feb50\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-949a75e3dfe4d43a712feb50\\values.json",
+      "bytes": 813,
+      "sha256": "4426590560df2faa0f513d5215747f57abb6c97ac70a5da6db938f767a73685c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-95e4aa5b0f2aa60814e68135\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-95e4aa5b0f2aa60814e68135\\render-receipt.json",
+      "bytes": 582,
+      "sha256": "a0205f11e43aec417d4904d2763b85342bae3cd0b82167241b7965b2cb0a0c1c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-95e4aa5b0f2aa60814e68135\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-95e4aa5b0f2aa60814e68135\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-95e4aa5b0f2aa60814e68135\\values.json",
+      "bytes": 848,
+      "sha256": "0b17c324c1cad90358557ed31c270788be02f042a4de91fa9c54febe4142aef7"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-e07789f6df6060a10f5e5d51\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-e07789f6df6060a10f5e5d51\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "19ffe14b39a135192eb973c11dda721259441c83bf4f9baede6b648c69563d88"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-e07789f6df6060a10f5e5d51\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-e07789f6df6060a10f5e5d51\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-e07789f6df6060a10f5e5d51\\values.json",
+      "bytes": 871,
+      "sha256": "ed705e25270c9c4494906afee34234f7f0c1769ced8d15d94c4cd640eba3ac6f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-f98a4ab4e6be447d7f4e39f1\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-f98a4ab4e6be447d7f4e39f1\\render-receipt.json",
+      "bytes": 576,
+      "sha256": "7d9a375ea5eead4271eeed6ef60e0cf10f95f642b7a09159d91e77096273ee07"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-f98a4ab4e6be447d7f4e39f1\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-f98a4ab4e6be447d7f4e39f1\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\helm-f98a4ab4e6be447d7f4e39f1\\values.json",
+      "bytes": 842,
+      "sha256": "ac14a114f8d56e4a671365f9211d7254196faf39609472d3d690a653b8c7695b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\quadlet-acb3b4203f6532dec6cec1ca\\aspm-collection.container",
+      "bytes": 449,
+      "sha256": "fb4bdab0ffd39a48524ed2530aae991f37028b6cedae5a3fafa7c5198afcbae8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\quadlet-acb3b4203f6532dec6cec1ca\\aspm.network",
+      "bytes": 44,
+      "sha256": "cd5ab9d710e72c6cd5a9efd0c5955f2e58b66dac02e38fba6f288892aa9af231"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\quadlet-acb3b4203f6532dec6cec1ca\\generator-receipt.json",
+      "bytes": 170,
+      "sha256": "22ad82a706190e9bcc0292a12ff15ac9b61af87ef2a13cb94481b6c733369c18"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\quadlet-acb3b4203f6532dec6cec1ca\\native-generator.txt",
+      "bytes": 1940,
+      "sha256": "1a24bfd2e1c90070f990bb99084bb586279904e087740a116002b2703d6902e2"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\receipt.json",
+      "bytes": 1939,
+      "sha256": "c927c783e8a555f59cefdf3d54695be228b124d5c4fd7c3a27777f6f5d816a14"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\run.log",
+      "bytes": 14485,
+      "sha256": "6dded75e7b4712108e9f41321960b54277d69f99aa58eb20923deee0cef5c0d6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\source-after.json",
+      "bytes": 298271,
+      "sha256": "8696551b53691318bcd155ff271dd460219a8ae16be95f1131852d304e58f619"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-01\\source-before.json",
+      "bytes": 298272,
+      "sha256": "0ff6674f560753fea8668f5cc648cd327c5f67f7ebf0753e4271b4b6343ae5ec"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\events.jsonl",
+      "bytes": 57567,
+      "sha256": "857ef9fa20f80af352ce9b3ab757db3ef187aad9f182a0c9dd069affeb773d14"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-0a6d62c4afc637e2820befa6\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-0a6d62c4afc637e2820befa6\\render-receipt.json",
+      "bytes": 591,
+      "sha256": "2cacfc28e4390018134caabeb1d48d2d54d21cedf0e4deb6ef6c59fad087b973"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-0a6d62c4afc637e2820befa6\\render.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-0a6d62c4afc637e2820befa6\\stderr.txt",
+      "bytes": 148,
+      "sha256": "1f25180351013ba66ad297340027ff32fb683345da46d7ecaae18ee45e0e4977"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-0a6d62c4afc637e2820befa6\\values.json",
+      "bytes": 893,
+      "sha256": "aa9f02fd3e1b16564308dde643a0103c23f4a4ac71701daadb0d15f2b9f13609"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-1cd5ba6aadde94e60928d563\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-1cd5ba6aadde94e60928d563\\render-receipt.json",
+      "bytes": 580,
+      "sha256": "9574afe8f70284e1d4e348a301172a69f7785a3860b7586f869014de1574b1e2"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-1cd5ba6aadde94e60928d563\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-1cd5ba6aadde94e60928d563\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-1cd5ba6aadde94e60928d563\\values.json",
+      "bytes": 865,
+      "sha256": "74260cccc65d80384eee3366871d58c6108e45315f9668a763f7b7b132ebba53"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2020fe12fc7ad69f1d119456\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2020fe12fc7ad69f1d119456\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "b25eeb815691c4daf90f129996e5b4b53d9edee4c3292690a8d22a544922378d"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2020fe12fc7ad69f1d119456\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2020fe12fc7ad69f1d119456\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2020fe12fc7ad69f1d119456\\values.json",
+      "bytes": 867,
+      "sha256": "46dfe89f7a6a3a093e6bacf4ed161fc9bbca3e0509f93baf2e3eecc97c1dabea"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2360d91360dec35fc1f50ac1\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2360d91360dec35fc1f50ac1\\render-receipt.json",
+      "bytes": 590,
+      "sha256": "5d870ffa2a05c7151aed462fdc0d372b93c416a40a6cbaefb8b040bccde00b6d"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2360d91360dec35fc1f50ac1\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2360d91360dec35fc1f50ac1\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2360d91360dec35fc1f50ac1\\values.json",
+      "bytes": 955,
+      "sha256": "894ca4951f62db21b648569c18cc5519a4a3df2edab24177e4794a6193eb19b0"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-282a05a6a14f986d5203871d\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-282a05a6a14f986d5203871d\\render-receipt.json",
+      "bytes": 575,
+      "sha256": "b1846996db78386773d220f2333cbe5c2566f4984e3246cc1996aa9dd939584e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-282a05a6a14f986d5203871d\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-282a05a6a14f986d5203871d\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-282a05a6a14f986d5203871d\\values.json",
+      "bytes": 864,
+      "sha256": "6fc10c6d120362b61ed8c87bc0cd80f515cb0d1e916b8e4652ac531fa58716f4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2ce1715a2f8f550e8cf67162\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2ce1715a2f8f550e8cf67162\\render-receipt.json",
+      "bytes": 619,
+      "sha256": "a46f33afd9f7ec30a365f6248c0e689e35bc01d42c11e14b84e471360297eb09"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2ce1715a2f8f550e8cf67162\\render.yaml",
+      "bytes": 20073,
+      "sha256": "bacb7f2d63cd5359639ff836ec635fb63dca69772551b67ffbe10a434ac819e6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2ce1715a2f8f550e8cf67162\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2ce1715a2f8f550e8cf67162\\values.json",
+      "bytes": 1701,
+      "sha256": "95ee1ae78407d78a483a4c7eb0a0813d68c284d8e50e9f9e5e22d3f10f892d26"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2f340e8e2a220a4caf1ad33c\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2f340e8e2a220a4caf1ad33c\\render-receipt.json",
+      "bytes": 604,
+      "sha256": "f4ebefcbcc8bd3f64d697c630b80b0f19765768df202474ecf4bce421a6f0294"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2f340e8e2a220a4caf1ad33c\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2f340e8e2a220a4caf1ad33c\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-2f340e8e2a220a4caf1ad33c\\values.json",
+      "bytes": 953,
+      "sha256": "b4c69bcf6bca76c429e98e3f1ba89e106ce12199b8d08f75b3dd0eae83cef32d"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-3bd1cf0d89e2b4659ab9b20d\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-3bd1cf0d89e2b4659ab9b20d\\render-receipt.json",
+      "bytes": 590,
+      "sha256": "f9de93fad67a35fa6084b82780bb538e2a6e32df87e3e6fc6d312f22adc854d9"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-3bd1cf0d89e2b4659ab9b20d\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-3bd1cf0d89e2b4659ab9b20d\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-3bd1cf0d89e2b4659ab9b20d\\values.json",
+      "bytes": 872,
+      "sha256": "e6a9b49e6dbb104f801a65213f16a1929ec63694dfbbba7581214d60321b6ec1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-53ed48b27f23562d2d98d4f0\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-53ed48b27f23562d2d98d4f0\\render-receipt.json",
+      "bytes": 567,
+      "sha256": "0df0666c51ecb5bcb4c50849298900a3c01da660035b8b921903479cef2850c4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-53ed48b27f23562d2d98d4f0\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-53ed48b27f23562d2d98d4f0\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-53ed48b27f23562d2d98d4f0\\values.json",
+      "bytes": 867,
+      "sha256": "593574ffd17aecf59e70f86707be0cfae21fa4a033cf24ed5c56bb5f8af9e326"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-5cc62a796a9124435c1b1fe2\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-5cc62a796a9124435c1b1fe2\\render-receipt.json",
+      "bytes": 581,
+      "sha256": "4fe79e2a6ca02e87252f499ae32138aef1a9325a853c59c3aa580ebff4df79ef"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-5cc62a796a9124435c1b1fe2\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-5cc62a796a9124435c1b1fe2\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-5cc62a796a9124435c1b1fe2\\values.json",
+      "bytes": 829,
+      "sha256": "20978206f7bc3a1319472592d5fa2f7d731e6c9ef06c47660b36b73ddf4900dc"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-6c81040202c0ee2a4ebe6ef9\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-6c81040202c0ee2a4ebe6ef9\\render-receipt.json",
+      "bytes": 567,
+      "sha256": "583ef91f9bda7f5d927b1c9dba0413c00c953e57fd3f22e259927ab9aa47c5e1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-6c81040202c0ee2a4ebe6ef9\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-6c81040202c0ee2a4ebe6ef9\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-6c81040202c0ee2a4ebe6ef9\\values.json",
+      "bytes": 784,
+      "sha256": "4572d4838c65f4144c53b63c444483bd4b3d0156c6423c5251401ed5fdc54242"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-7d909c3e24b7ff08d20be12f\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-7d909c3e24b7ff08d20be12f\\render-receipt.json",
+      "bytes": 602,
+      "sha256": "7847de6690ded8d82a8989b06de937fea2ac45b92748a20706831d5667433e0e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-7d909c3e24b7ff08d20be12f\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-7d909c3e24b7ff08d20be12f\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-7d909c3e24b7ff08d20be12f\\values.json",
+      "bytes": 936,
+      "sha256": "0c7d30888e3272cd4e7f40f8e0556664bf1f77b2318d7eac06aa81fd8f462bf4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-845993ae18f246d5e316b387\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-845993ae18f246d5e316b387\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "877cb33e44c7b5ef5100d6ac022a058fdc6fdf367ea9f3f0ca3dd675081e4888"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-845993ae18f246d5e316b387\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-845993ae18f246d5e316b387\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-845993ae18f246d5e316b387\\values.json",
+      "bytes": 814,
+      "sha256": "25907e75e8abd19441238ecccfbff7f427e5413ede38749ed2af5fb92c2b1156"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8854e96452294241a23a201a\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8854e96452294241a23a201a\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "05fb8acc9ceee207bda4d0fd91bbc3aab528f566489c44031274641856342c92"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8854e96452294241a23a201a\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8854e96452294241a23a201a\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8854e96452294241a23a201a\\values.json",
+      "bytes": 871,
+      "sha256": "ed705e25270c9c4494906afee34234f7f0c1769ced8d15d94c4cd640eba3ac6f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8976e73691a522d358c8cf04\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8976e73691a522d358c8cf04\\render-receipt.json",
+      "bytes": 577,
+      "sha256": "925ce89ae58ad29b908411a6fd5f19ee7acd315eadbc51238e609b1afbb2fb13"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8976e73691a522d358c8cf04\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8976e73691a522d358c8cf04\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8976e73691a522d358c8cf04\\values.json",
+      "bytes": 813,
+      "sha256": "4426590560df2faa0f513d5215747f57abb6c97ac70a5da6db938f767a73685c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8d9d82a9a39fd9f8cce865e4\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8d9d82a9a39fd9f8cce865e4\\render-receipt.json",
+      "bytes": 576,
+      "sha256": "036cf729b570d6d868bb285ca522a2a99cc642f54199f45c70cb3b6442d15d9f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8d9d82a9a39fd9f8cce865e4\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8d9d82a9a39fd9f8cce865e4\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-8d9d82a9a39fd9f8cce865e4\\values.json",
+      "bytes": 842,
+      "sha256": "ac14a114f8d56e4a671365f9211d7254196faf39609472d3d690a653b8c7695b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9080669539fad25a6df2eaa3\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9080669539fad25a6df2eaa3\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "516329de85f97f1977e86adffad1292ba2ced74637b07d9b0fe0dd5545fe0c1a"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9080669539fad25a6df2eaa3\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9080669539fad25a6df2eaa3\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9080669539fad25a6df2eaa3\\values.json",
+      "bytes": 834,
+      "sha256": "b25e3f8fa08bc16169761463868fc013a3d22974839a275eef39645ef6bb554e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9c7f421f3ec6b169233bd273\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9c7f421f3ec6b169233bd273\\render-receipt.json",
+      "bytes": 584,
+      "sha256": "ed724856173bb866fa0e3f19894a6378d83b20a46f2da2f3ba68ac937562c56c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9c7f421f3ec6b169233bd273\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9c7f421f3ec6b169233bd273\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-9c7f421f3ec6b169233bd273\\values.json",
+      "bytes": 865,
+      "sha256": "810a797a989a6c9ef71f04b321c3261af34ab083911da59e5d3143762412eec4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a0af6e0c38cd711fec19f8a3\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a0af6e0c38cd711fec19f8a3\\render-receipt.json",
+      "bytes": 605,
+      "sha256": "01c20602eee2caf1e3ae7aec26fedaec0bd044a7a3da4e6eb4216312fe0bbd53"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a0af6e0c38cd711fec19f8a3\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a0af6e0c38cd711fec19f8a3\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a0af6e0c38cd711fec19f8a3\\values.json",
+      "bytes": 826,
+      "sha256": "996850bbe70bbe492dcd3cf889cb67f8f718c3a0670b896ab89c253ddde52765"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a458771de5c7ec43dd04df66\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a458771de5c7ec43dd04df66\\render-receipt.json",
+      "bytes": 584,
+      "sha256": "4d5ef7ece161a13f85b731ed9ba53a915540d1832616a01dcd5b64fbc5121c99"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a458771de5c7ec43dd04df66\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a458771de5c7ec43dd04df66\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-a458771de5c7ec43dd04df66\\values.json",
+      "bytes": 836,
+      "sha256": "ad813e2e8fd28aeadb026c05487882802412ac42a33b41370459523865b4bbf8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-aa6b8e5950a5b8ee54de0435\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-aa6b8e5950a5b8ee54de0435\\render-receipt.json",
+      "bytes": 597,
+      "sha256": "724f2843899b51b8df302aa3b868cdb7a74a3ab90432d30d9924f65173bc4296"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-aa6b8e5950a5b8ee54de0435\\render.yaml",
+      "bytes": 17339,
+      "sha256": "bca19e9ab6387d961c068123ab51c9be581e43d3dfd578c220147c45feff8948"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-aa6b8e5950a5b8ee54de0435\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-aa6b8e5950a5b8ee54de0435\\values.json",
+      "bytes": 1298,
+      "sha256": "0522d60bb22aca73e420f3f36145856b321b16db58d61cc0daa2306113edfcf8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-b54799fe04153fe128de0641\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-b54799fe04153fe128de0641\\render-receipt.json",
+      "bytes": 607,
+      "sha256": "6aee6ef2ad097202871adeeb367aec09a652b087180db8790a8eb6b3c2c30dc0"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-b54799fe04153fe128de0641\\render.yaml",
+      "bytes": 20073,
+      "sha256": "bacb7f2d63cd5359639ff836ec635fb63dca69772551b67ffbe10a434ac819e6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-b54799fe04153fe128de0641\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-b54799fe04153fe128de0641\\values.json",
+      "bytes": 1326,
+      "sha256": "9ba3c3f605ed5668e6db3bf1688d3efc410608a218d6ea80cde3e4e5409757b8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-bdac6cc3fd63a2a964842c58\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-bdac6cc3fd63a2a964842c58\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "c91ce32c180544255ec9df1f6c09c3a31e99f60ef913f322b37ef4214abc7c1f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-bdac6cc3fd63a2a964842c58\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-bdac6cc3fd63a2a964842c58\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-bdac6cc3fd63a2a964842c58\\values.json",
+      "bytes": 865,
+      "sha256": "d44569fa9f4106aa5785e8f4268d8b14651f838558a4b06397dd772253b7a915"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cd0c625c6ed069d2a8440218\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cd0c625c6ed069d2a8440218\\render-receipt.json",
+      "bytes": 600,
+      "sha256": "df9f6fdc94fb77086d360c67f3fab87de3a3af1d21f9391525a422ea1714a741"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cd0c625c6ed069d2a8440218\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cd0c625c6ed069d2a8440218\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cd0c625c6ed069d2a8440218\\values.json",
+      "bytes": 928,
+      "sha256": "6de928b9f4ba6b334e55257fdb653e5c1ea2c8eec7cacf2cd2a2a5d984a932a1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cdba0c441ba946e5d1db9850\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cdba0c441ba946e5d1db9850\\render-receipt.json",
+      "bytes": 601,
+      "sha256": "d7cbcda62a7001fd4ac118ff6d3f67257f257b9499de7dcb68a372c22a1831af"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cdba0c441ba946e5d1db9850\\render.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cdba0c441ba946e5d1db9850\\stderr.txt",
+      "bytes": 147,
+      "sha256": "6c809df64149311702585df4d53939313ba448f8967bef65d431a625ca6ead2e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-cdba0c441ba946e5d1db9850\\values.json",
+      "bytes": 906,
+      "sha256": "e594f9fd2003224b8e93aa8451f34cbd48a727489c3e282963538c64dcf2693e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-ce265c814af8fc7cf593f556\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-ce265c814af8fc7cf593f556\\render-receipt.json",
+      "bytes": 582,
+      "sha256": "5ef0cfae0b97b998c323fc230bf00885ae5f790d4246252bffd89dcfe0f04d40"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-ce265c814af8fc7cf593f556\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-ce265c814af8fc7cf593f556\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-ce265c814af8fc7cf593f556\\values.json",
+      "bytes": 848,
+      "sha256": "0b17c324c1cad90358557ed31c270788be02f042a4de91fa9c54febe4142aef7"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-f61cb4bba1e126d11da7ed3c\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-f61cb4bba1e126d11da7ed3c\\render-receipt.json",
+      "bytes": 595,
+      "sha256": "9f332c96e97204ebe2dc6794199a7b6e1419c52d15e2fea31d72b5e5ac07cbad"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-f61cb4bba1e126d11da7ed3c\\render.yaml",
+      "bytes": 15875,
+      "sha256": "117a5cde62c96bdb435e1896712546d6dedfd636f18ee3e082102dd18d437af1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-f61cb4bba1e126d11da7ed3c\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\helm-f61cb4bba1e126d11da7ed3c\\values.json",
+      "bytes": 895,
+      "sha256": "db088ecbb0f278297c60f19182e752384814d61e37c4e072efb22ab5c099e8af"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\quadlet-90199417353c6b613bec4a4d\\aspm-collection.container",
+      "bytes": 449,
+      "sha256": "fb4bdab0ffd39a48524ed2530aae991f37028b6cedae5a3fafa7c5198afcbae8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\quadlet-90199417353c6b613bec4a4d\\aspm.network",
+      "bytes": 44,
+      "sha256": "cd5ab9d710e72c6cd5a9efd0c5955f2e58b66dac02e38fba6f288892aa9af231"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\quadlet-90199417353c6b613bec4a4d\\generator-receipt.json",
+      "bytes": 170,
+      "sha256": "22ad82a706190e9bcc0292a12ff15ac9b61af87ef2a13cb94481b6c733369c18"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\quadlet-90199417353c6b613bec4a4d\\native-generator.txt",
+      "bytes": 1940,
+      "sha256": "046d71814120778f7ea09c328c38c9f4d9140c640d29c0d6bb063d0eeff2cd78"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\receipt.json",
+      "bytes": 1939,
+      "sha256": "f4f0e9af46d6231af2eaff623f932f5f0322cac64c66b4e58c4c9b7cc3f1e610"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\run.log",
+      "bytes": 14485,
+      "sha256": "6ed6355b31482dd95b2381ee96aec6774f20e200d59561b07404721c745c9f83"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\source-after.json",
+      "bytes": 298461,
+      "sha256": "a00bbc49ba9e685a2ea5c042e4dee3b6a1dca02f747fc7d2bc6fe16f4514e50c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-02\\source-before.json",
+      "bytes": 298462,
+      "sha256": "9e7a1e65f34600e2e9d05a9adeb6f8307038f23d76836cbb807bf9ab87097c69"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\events.jsonl",
+      "bytes": 57575,
+      "sha256": "a77a890be8bc8fba062659c090c6d0c410d9c461d1550959e1d87e33fff9904b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-062e38efad2722485d46b561\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-062e38efad2722485d46b561\\render-receipt.json",
+      "bytes": 591,
+      "sha256": "02779d1f12e1f43e087b4e684d706f8f44c97a3bf5940c6c7c849d6d90d444d6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-062e38efad2722485d46b561\\render.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-062e38efad2722485d46b561\\stderr.txt",
+      "bytes": 148,
+      "sha256": "1f25180351013ba66ad297340027ff32fb683345da46d7ecaae18ee45e0e4977"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-062e38efad2722485d46b561\\values.json",
+      "bytes": 893,
+      "sha256": "aa9f02fd3e1b16564308dde643a0103c23f4a4ac71701daadb0d15f2b9f13609"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-0a04b7e50bfdc8efca9d1874\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-0a04b7e50bfdc8efca9d1874\\render-receipt.json",
+      "bytes": 602,
+      "sha256": "469d4d837af4e6f3443a5f897c8f4eeb2fe6af2dc63f351ccf67ce7f8bfab960"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-0a04b7e50bfdc8efca9d1874\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-0a04b7e50bfdc8efca9d1874\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-0a04b7e50bfdc8efca9d1874\\values.json",
+      "bytes": 936,
+      "sha256": "0c7d30888e3272cd4e7f40f8e0556664bf1f77b2318d7eac06aa81fd8f462bf4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1921d6f206c62340d82502ea\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1921d6f206c62340d82502ea\\render-receipt.json",
+      "bytes": 604,
+      "sha256": "401b1460a6c71ce29c93c645567511d0d6e2cb10516e125d82d4cd7e8271ea15"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1921d6f206c62340d82502ea\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1921d6f206c62340d82502ea\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1921d6f206c62340d82502ea\\values.json",
+      "bytes": 953,
+      "sha256": "b4c69bcf6bca76c429e98e3f1ba89e106ce12199b8d08f75b3dd0eae83cef32d"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1d8fc79307588c3084ff0010\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1d8fc79307588c3084ff0010\\render-receipt.json",
+      "bytes": 584,
+      "sha256": "7a8ade6ad608a8e2850471b4b7a6161833d75a9d9cb76e4bd3bfc9258bebd538"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1d8fc79307588c3084ff0010\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1d8fc79307588c3084ff0010\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-1d8fc79307588c3084ff0010\\values.json",
+      "bytes": 865,
+      "sha256": "810a797a989a6c9ef71f04b321c3261af34ab083911da59e5d3143762412eec4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2253ef704448bc891a0dbcd4\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2253ef704448bc891a0dbcd4\\render-receipt.json",
+      "bytes": 597,
+      "sha256": "c440c9bbcfdbb4a312d1574f18952c8ed3dd6e29564fd29f4ffa4eb0f337b46c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2253ef704448bc891a0dbcd4\\render.yaml",
+      "bytes": 17339,
+      "sha256": "bca19e9ab6387d961c068123ab51c9be581e43d3dfd578c220147c45feff8948"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2253ef704448bc891a0dbcd4\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2253ef704448bc891a0dbcd4\\values.json",
+      "bytes": 1298,
+      "sha256": "0522d60bb22aca73e420f3f36145856b321b16db58d61cc0daa2306113edfcf8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-22c0c0b7ae1b65d8d7fda62d\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-22c0c0b7ae1b65d8d7fda62d\\render-receipt.json",
+      "bytes": 600,
+      "sha256": "0e3b28d96a0c9e78a6e799542c78b0f7287af17fc8d124552c2dfeb1bfdd92d6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-22c0c0b7ae1b65d8d7fda62d\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-22c0c0b7ae1b65d8d7fda62d\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-22c0c0b7ae1b65d8d7fda62d\\values.json",
+      "bytes": 928,
+      "sha256": "6de928b9f4ba6b334e55257fdb653e5c1ea2c8eec7cacf2cd2a2a5d984a932a1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-25102590b6521a54e5d2d99c\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-25102590b6521a54e5d2d99c\\render-receipt.json",
+      "bytes": 590,
+      "sha256": "723a49c2a40c5baec975afbacc0023dc6f7874112f6f6bc6b74ad0c0326091f7"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-25102590b6521a54e5d2d99c\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-25102590b6521a54e5d2d99c\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-25102590b6521a54e5d2d99c\\values.json",
+      "bytes": 872,
+      "sha256": "e6a9b49e6dbb104f801a65213f16a1929ec63694dfbbba7581214d60321b6ec1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2c74434cce8c8deb62fc64e5\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2c74434cce8c8deb62fc64e5\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "7fe304eb7ce2ccf1132a34a177eeb278a734e68653b13261a9144439fa911c4b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2c74434cce8c8deb62fc64e5\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2c74434cce8c8deb62fc64e5\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-2c74434cce8c8deb62fc64e5\\values.json",
+      "bytes": 834,
+      "sha256": "b25e3f8fa08bc16169761463868fc013a3d22974839a275eef39645ef6bb554e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-45dbe231af9401b6094f0e66\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-45dbe231af9401b6094f0e66\\render-receipt.json",
+      "bytes": 576,
+      "sha256": "8352223dfe668b0d1db57413d5a3d95a7ba51e3955cc054b446515f8505df88f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-45dbe231af9401b6094f0e66\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-45dbe231af9401b6094f0e66\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-45dbe231af9401b6094f0e66\\values.json",
+      "bytes": 842,
+      "sha256": "ac14a114f8d56e4a671365f9211d7254196faf39609472d3d690a653b8c7695b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-5416826c1ae797ffcfaecd88\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-5416826c1ae797ffcfaecd88\\render-receipt.json",
+      "bytes": 605,
+      "sha256": "25f65fd1cdd6b2eef924b94e758ba274e392f037c4f08d9085f0ce1b10806cf7"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-5416826c1ae797ffcfaecd88\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-5416826c1ae797ffcfaecd88\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-5416826c1ae797ffcfaecd88\\values.json",
+      "bytes": 826,
+      "sha256": "996850bbe70bbe492dcd3cf889cb67f8f718c3a0670b896ab89c253ddde52765"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-72d6d283a348185d51e0f870\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-72d6d283a348185d51e0f870\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "85110fb0e3c73fb8c377d9d99e07f44e736b463f9cdf05b1c364accad62f4666"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-72d6d283a348185d51e0f870\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-72d6d283a348185d51e0f870\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-72d6d283a348185d51e0f870\\values.json",
+      "bytes": 867,
+      "sha256": "46dfe89f7a6a3a093e6bacf4ed161fc9bbca3e0509f93baf2e3eecc97c1dabea"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-73703a61487986ee3d5de3f1\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-73703a61487986ee3d5de3f1\\render-receipt.json",
+      "bytes": 567,
+      "sha256": "c3004fe3bbf5b93a956a36809e80637a79dbe9c926b21606a01e25386043a793"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-73703a61487986ee3d5de3f1\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-73703a61487986ee3d5de3f1\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-73703a61487986ee3d5de3f1\\values.json",
+      "bytes": 784,
+      "sha256": "4572d4838c65f4144c53b63c444483bd4b3d0156c6423c5251401ed5fdc54242"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-7d830ae94b656e5f4438b5c7\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-7d830ae94b656e5f4438b5c7\\render-receipt.json",
+      "bytes": 590,
+      "sha256": "98be7031b7a7fbcfb0c68ffb95c003aa2371d2e970cc7bf4503ee47229dcaf32"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-7d830ae94b656e5f4438b5c7\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-7d830ae94b656e5f4438b5c7\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-7d830ae94b656e5f4438b5c7\\values.json",
+      "bytes": 955,
+      "sha256": "894ca4951f62db21b648569c18cc5519a4a3df2edab24177e4794a6193eb19b0"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8b124c937da9cd1d39eecaf8\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8b124c937da9cd1d39eecaf8\\render-receipt.json",
+      "bytes": 595,
+      "sha256": "227034d7a1534bb2a24b12adb45fa448d2a0878dca6c0829a6c40c8cf8b9a08b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8b124c937da9cd1d39eecaf8\\render.yaml",
+      "bytes": 15875,
+      "sha256": "117a5cde62c96bdb435e1896712546d6dedfd636f18ee3e082102dd18d437af1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8b124c937da9cd1d39eecaf8\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8b124c937da9cd1d39eecaf8\\values.json",
+      "bytes": 895,
+      "sha256": "db088ecbb0f278297c60f19182e752384814d61e37c4e072efb22ab5c099e8af"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8cedfe50b6e857cb24090c09\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8cedfe50b6e857cb24090c09\\render-receipt.json",
+      "bytes": 575,
+      "sha256": "bd701e2e905824dbcbc43fa8c13099675d42ccc5e056bda67c251f7fbe2dd949"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8cedfe50b6e857cb24090c09\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8cedfe50b6e857cb24090c09\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-8cedfe50b6e857cb24090c09\\values.json",
+      "bytes": 864,
+      "sha256": "6fc10c6d120362b61ed8c87bc0cd80f515cb0d1e916b8e4652ac531fa58716f4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-91f320f8dafe13160abb2edd\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-91f320f8dafe13160abb2edd\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "4524d2f8696e03d72e50c1a0c5e6c8b5e492ec84b78fd5ebccca4e8b1ffe3a12"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-91f320f8dafe13160abb2edd\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-91f320f8dafe13160abb2edd\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-91f320f8dafe13160abb2edd\\values.json",
+      "bytes": 871,
+      "sha256": "ed705e25270c9c4494906afee34234f7f0c1769ced8d15d94c4cd640eba3ac6f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ae7d9b102c462ce586fb0c36\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ae7d9b102c462ce586fb0c36\\render-receipt.json",
+      "bytes": 601,
+      "sha256": "c34689cb07108215f3d377f7bbe3d2d61c0da2510172c0c1306ecd3b37c4d7a5"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ae7d9b102c462ce586fb0c36\\render.yaml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ae7d9b102c462ce586fb0c36\\stderr.txt",
+      "bytes": 147,
+      "sha256": "6c809df64149311702585df4d53939313ba448f8967bef65d431a625ca6ead2e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ae7d9b102c462ce586fb0c36\\values.json",
+      "bytes": 906,
+      "sha256": "e594f9fd2003224b8e93aa8451f34cbd48a727489c3e282963538c64dcf2693e"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-af4753bf13ff92f2e35bd8fb\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-af4753bf13ff92f2e35bd8fb\\render-receipt.json",
+      "bytes": 567,
+      "sha256": "53d235b4b3cdb733c2d2a67386aa81dfe5ac33c492fd0f3d3a51b4e7cbd13929"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-af4753bf13ff92f2e35bd8fb\\render.yaml",
+      "bytes": 13141,
+      "sha256": "c77ab5bcdd6d7624152218ed83642842f78de4999a36ef48c0cd1e70c57d3fc6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-af4753bf13ff92f2e35bd8fb\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-af4753bf13ff92f2e35bd8fb\\values.json",
+      "bytes": 867,
+      "sha256": "593574ffd17aecf59e70f86707be0cfae21fa4a033cf24ed5c56bb5f8af9e326"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-b535e3354b82674ec8f3c918\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-b535e3354b82674ec8f3c918\\render-receipt.json",
+      "bytes": 577,
+      "sha256": "b46442cd002a06a672934d85c065123eeeb7d42edbfc43b8d18133d9a4526e1d"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-b535e3354b82674ec8f3c918\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-b535e3354b82674ec8f3c918\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-b535e3354b82674ec8f3c918\\values.json",
+      "bytes": 813,
+      "sha256": "4426590560df2faa0f513d5215747f57abb6c97ac70a5da6db938f767a73685c"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ba40e04fb8bfcabcae789c7f\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ba40e04fb8bfcabcae789c7f\\render-receipt.json",
+      "bytes": 619,
+      "sha256": "4d79fd77d862231c68a1b1ac468a299ef648b867e5049b423604755ba37d4aa5"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ba40e04fb8bfcabcae789c7f\\render.yaml",
+      "bytes": 20073,
+      "sha256": "bacb7f2d63cd5359639ff836ec635fb63dca69772551b67ffbe10a434ac819e6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ba40e04fb8bfcabcae789c7f\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-ba40e04fb8bfcabcae789c7f\\values.json",
+      "bytes": 1701,
+      "sha256": "95ee1ae78407d78a483a4c7eb0a0813d68c284d8e50e9f9e5e22d3f10f892d26"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-bd4b0e325de4911fed98420b\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-bd4b0e325de4911fed98420b\\render-receipt.json",
+      "bytes": 584,
+      "sha256": "109ac75d31e981b362af1b86b803dad5d9218a68255a2d1b60ec25018708f457"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-bd4b0e325de4911fed98420b\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-bd4b0e325de4911fed98420b\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-bd4b0e325de4911fed98420b\\values.json",
+      "bytes": 836,
+      "sha256": "ad813e2e8fd28aeadb026c05487882802412ac42a33b41370459523865b4bbf8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c43ef6ec4a9fb9ea079762a0\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c43ef6ec4a9fb9ea079762a0\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "eab6fb7aac82919f086216dcf71810cd10c79d88621e91f597ae3bc31ec88576"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c43ef6ec4a9fb9ea079762a0\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c43ef6ec4a9fb9ea079762a0\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c43ef6ec4a9fb9ea079762a0\\values.json",
+      "bytes": 865,
+      "sha256": "d44569fa9f4106aa5785e8f4268d8b14651f838558a4b06397dd772253b7a915"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c9501a2848d458dd91e743ef\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c9501a2848d458dd91e743ef\\render-receipt.json",
+      "bytes": 583,
+      "sha256": "d6424a1795c54a2dde0da9fc938244b8fef566a40ea5c51bc1a4c211b1911003"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c9501a2848d458dd91e743ef\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c9501a2848d458dd91e743ef\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-c9501a2848d458dd91e743ef\\values.json",
+      "bytes": 814,
+      "sha256": "25907e75e8abd19441238ecccfbff7f427e5413ede38749ed2af5fb92c2b1156"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-cc7dfed2297a248ea6434d1f\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-cc7dfed2297a248ea6434d1f\\render-receipt.json",
+      "bytes": 607,
+      "sha256": "55213c7715254678bc7de8912c9f866b7444939fc613d8a9c70872cc4c2ffbd5"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-cc7dfed2297a248ea6434d1f\\render.yaml",
+      "bytes": 20073,
+      "sha256": "bacb7f2d63cd5359639ff836ec635fb63dca69772551b67ffbe10a434ac819e6"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-cc7dfed2297a248ea6434d1f\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-cc7dfed2297a248ea6434d1f\\values.json",
+      "bytes": 1326,
+      "sha256": "9ba3c3f605ed5668e6db3bf1688d3efc410608a218d6ea80cde3e4e5409757b8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-db0866107646c5b97a8440a3\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-db0866107646c5b97a8440a3\\render-receipt.json",
+      "bytes": 581,
+      "sha256": "7c4e4cd08cf654fa9afa34d3b6702d010985c5caf5991abc766aa22e49d0870a"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-db0866107646c5b97a8440a3\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-db0866107646c5b97a8440a3\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-db0866107646c5b97a8440a3\\values.json",
+      "bytes": 829,
+      "sha256": "20978206f7bc3a1319472592d5fa2f7d731e6c9ef06c47660b36b73ddf4900dc"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e0e9d7cb7a3f99b7ada678a2\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e0e9d7cb7a3f99b7ada678a2\\render-receipt.json",
+      "bytes": 582,
+      "sha256": "456c338f21a85eec1c902295cdce5f01ecbe19f40b0d9d3c69652ed28b007bde"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e0e9d7cb7a3f99b7ada678a2\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e0e9d7cb7a3f99b7ada678a2\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e0e9d7cb7a3f99b7ada678a2\\values.json",
+      "bytes": 848,
+      "sha256": "0b17c324c1cad90358557ed31c270788be02f042a4de91fa9c54febe4142aef7"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e2ee382e28c501d1847cba90\\empty-kubeconfig.json",
+      "bytes": 95,
+      "sha256": "34d5230f551d4c2a57dc74722626a5ca7c0a4e1ca856a7510f338b69a15f481b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e2ee382e28c501d1847cba90\\render-receipt.json",
+      "bytes": 580,
+      "sha256": "24ee2a04ea92bac5541f8a8f7348530933c8a35c9c2c12e4a2ca3b138f9ec3df"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e2ee382e28c501d1847cba90\\render.yaml",
+      "bytes": 12972,
+      "sha256": "01059ae85553fafc8f0ba0fcf3c77d57aa099051d3900889b80733d7d359b73b"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e2ee382e28c501d1847cba90\\stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\helm-e2ee382e28c501d1847cba90\\values.json",
+      "bytes": 865,
+      "sha256": "74260cccc65d80384eee3366871d58c6108e45315f9668a763f7b7b132ebba53"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\quadlet-3f747bd4cdc39c1fbc4d87e1\\aspm-collection.container",
+      "bytes": 449,
+      "sha256": "fb4bdab0ffd39a48524ed2530aae991f37028b6cedae5a3fafa7c5198afcbae8"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\quadlet-3f747bd4cdc39c1fbc4d87e1\\aspm.network",
+      "bytes": 44,
+      "sha256": "cd5ab9d710e72c6cd5a9efd0c5955f2e58b66dac02e38fba6f288892aa9af231"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\quadlet-3f747bd4cdc39c1fbc4d87e1\\generator-receipt.json",
+      "bytes": 170,
+      "sha256": "22ad82a706190e9bcc0292a12ff15ac9b61af87ef2a13cb94481b6c733369c18"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\quadlet-3f747bd4cdc39c1fbc4d87e1\\native-generator.txt",
+      "bytes": 1940,
+      "sha256": "b7469c759a41227fb390b8923256bf57be1be1f826a0f65fc466acb0da18a78f"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\receipt.json",
+      "bytes": 1939,
+      "sha256": "d5e704b8758fa3695ccb2ab3bad8398f5d514ccf34343fa6d5dfc2416335ddc1"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\run.log",
+      "bytes": 14485,
+      "sha256": "f0891ae2d4cf0dd5f42e66b73a24c2d863311928b6faae8254ea10f9207c9786"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\source-after.json",
+      "bytes": 298645,
+      "sha256": "29f3788463f8d8d2898e0032925765f1c639987d2c12d82445d0626e6fec80a4"
+    },
+    {
+      "path": ".artifacts\\assessment-deployment-v1\\author-assessment-deployment-red-20260921-03\\source-before.json",
+      "bytes": 298646,
+      "sha256": "7116a6f71556091fa7cc2473fc90f3eb96ca30143af3ebed7d6d7d8af75366ea"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\history\\parent-concurrency-resolution\\PACKET.json",
+      "bytes": 118610,
+      "sha256": "a0168337b3e934dbc9b259555972a2a441d469b2ffa947ffc02896227322bba2"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\history\\parent-concurrency-resolution\\PACKET.sha256",
+      "bytes": 78,
+      "sha256": "3da8a50eb784929d48fd7c32fe386c65dbd48f653774e4f972bf6bd77b902b8c"
+    },
+    {
+      "path": "tests\\assessment_deployment\\reviews\\v1\\PARENT-CONCURRENCY-RESOLUTION.json",
+      "bytes": 6004,
+      "sha256": "7a1407563d10e058c172ca8b3dce463fea2c794be839ebb5f7129a4712535459"
+    }
+  ],
+  "metadataUpdatedAt": "2026-09-21T06:06:36.061Z",
+  "priorAsTestedPacket": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\history\\parent-concurrency-resolution\\PACKET.json",
+    "bytes": 118610,
+    "sha256": "a0168337b3e934dbc9b259555972a2a441d469b2ffa947ffc02896227322bba2"
+  },
+  "parentConcurrencyResolution": {
+    "path": "tests\\assessment_deployment\\reviews\\v1\\PARENT-CONCURRENCY-RESOLUTION.json",
+    "bytes": 6004,
+    "sha256": "7a1407563d10e058c172ca8b3dce463fea2c794be839ebb5f7129a4712535459"
+  },
+  "currentHandoff": "tests\\assessment_deployment\\reviews\\v1\\PARENT-CONCURRENCY-RESOLUTION.json",
+  "currentBoundedSelectedInputGuardPassed": true,
+  "concurrentAdditionOwnershipGateResolvedByParent": true,
+  "historicalWholeCheckoutGuardFailurePreserved": true
+}
