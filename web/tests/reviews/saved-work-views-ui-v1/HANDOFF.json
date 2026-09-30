@@ -1,0 +1,176 @@
+{
+  "slice": "Personal saved Work views UI v1",
+  "status": "FROZEN_UNSIGNED_RED",
+  "date": "2026-09-30",
+  "producer": "fc189fbcdb86562325e6a3cebc4a15ed0df9454d",
+  "role": "TEST/UAT author only",
+  "authorLabel": "GPT-6 Astra; requested author label, not model-identity attestation or acceptance proof",
+  "workflow": "Astra tests, GPT-6.1 Sol implementation, no reviewer",
+  "contractWrittenBeforeTests": true,
+  "authoredFiles": [
+    {
+      "path": "web\\tests\\reviews\\saved-work-views-ui-v1\\CONTRACT.txt",
+      "bytes": 8950,
+      "sha256": "80ad6a75f818d201a1392e2a6ae77c707683ac5d760b96318c108ef081fee995"
+    },
+    {
+      "path": "web\\tests\\reviews\\saved-work-views-ui-v1\\playwright.config.ts",
+      "bytes": 1311,
+      "sha256": "6cd8f4ed7d4252299bb844117d2345587ae41bcd12e1eb07560d0700811c4023"
+    },
+    {
+      "path": "web\\tests\\saved-work-views-data.ts",
+      "bytes": 1949,
+      "sha256": "4ded145c177d811b79526c8f8ea9dd82e865f04f0c7d155ead7081f4b2b5bd95"
+    },
+    {
+      "path": "web\\tests\\saved-work-views-fixture.ts",
+      "bytes": 13944,
+      "sha256": "1667be595493e4cf5263b2af3a8eb017111dd5bd3be0e8b63247cc02c8fb9895"
+    },
+    {
+      "path": "web\\tests\\saved-work-views-ui.spec.ts",
+      "bytes": 54381,
+      "sha256": "566fff91e71ba06c0649c4f066488e99a3542f595940b9615d47aae38568274d"
+    }
+  ],
+  "implementationBoundary": {
+    "readFirst": "CONTRACT.txt in this directory; backend tests\\saved_work_views\\CONTRACT.txt and published internal\\app\\work_views.go/http.go were inspected.",
+    "priorArt": "Current WorkPage, use-work-pages, App WorkContext, Work search/pagination fixtures, Settings/Preferences and canonical sparse editor conventions.",
+    "choice": "One closed-by-default inline toggle. Explicit Apply reads current owned detail, then uses existing q-only Work search (empty means bare GET) with loaded-row sort. Confirmed query remains a snapshot, not a revision-bound response or live subscription.",
+    "fixture": "SavedViewsAPI extends unchanged WorkSearchAPI. Only explicit saved-view protocol replies and their own ledger are added; inherited session, finding ACK, scope, network and storage guards share one 60-call budget.",
+    "notIncluded": "No backend changes, public membership-removal workflow, viewId Work selector UI, CSV download UI, sharing, admin override or finding grants."
+  },
+  "unchangedBoundary": {
+    "manifest": ".artifacts\\saved-work-views-ui-v1\\boundary-before.json",
+    "verification": ".artifacts\\saved-work-views-ui-v1\\boundary-after.json",
+    "capturedFiles": 678,
+    "unchangedFiles": 678,
+    "frozenBrowserInputs": 551,
+    "existingCases": 126,
+    "existingSpecFiles": 23,
+    "combinedDiscovery": "132 cases in 24 files",
+    "oldCaseIdentityDifferences": 0,
+    "oldCasesRerun": false,
+    "trackedWorktreeDiff": [],
+    "heldDuringValidation": "683 FileShare.Read inputs: 678 original paths plus the five authored inputs. Post-run hashes matched.",
+    "scope": "All previously tracked web files, saved-view backend tests/contract, published work_views.go/work.go/http.go, go.mod/go.sum. Git diff against unchanged HEAD also confirmed no tracked edits."
+  },
+  "validation": {
+    "cwd": "C:\\bahadr\\serious\\aspm\\web",
+    "commands": [
+      "node node_modules\\typescript\\bin\\tsc --noEmit --pretty false",
+      "node scripts\\playwright.mjs test --config tests\\reviews\\saved-work-views-ui-v1\\playwright.config.ts",
+      "node scripts\\playwright.mjs test --list --reporter=list"
+    ],
+    "environment": {
+      "ASPM_WEB_TEST_PORT": "18826",
+      "ASPM_SAVED_VIEWS_RUN": "red-01",
+      "NODE_USE_SYSTEM_CA": "1",
+      "node": "C:\\Program Files\\nodejs\\node.exe",
+      "nodeVersion": "v22.20.0",
+      "browserCache": "web\\.cache\\playwright\\chromium_headless_shell-1243",
+      "tls": "normal",
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "workers": 1,
+      "retries": 0,
+      "combinedAPICapPerCase": 60,
+      "serviceWorkers": "block",
+      "failureArtifacts": "screenshot and retained trace"
+    },
+    "typecheckExit": 0,
+    "typecheckNotes": "Initial author typecheck found one unused import, corrected before RED. The locked run passed silently. A same-input successful typecheck was recaptured with Out-File because Tee-Object does not create an empty log; see typecheck-capture.json.",
+    "browserExit": 1,
+    "browserDurationMs": 68573.913,
+    "failed": 6,
+    "passed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "globalErrors": 0,
+    "commonFailure": "Published Work is missing the closed-by-default Saved views toggle.",
+    "failureLocation": "web\\tests\\saved-work-views-ui.spec.ts:103",
+    "cases": [
+      {
+        "id": "SV1", "durationMs": 9334, "apiCalls": 4, "workEntryCalls": 2, "savedViewCalls": 0,
+        "unreached": "Closed control/navigation, list loading/100+3/native retry/invalid cursors/duplicate identities, confirmed-not-draft save, canonical 201, current-detail apply, loaded sort, q continuation and empty bare apply."
+      },
+      {
+        "id": "SV2", "durationMs": 6979, "apiCalls": 4, "workEntryCalls": 2, "savedViewCalls": 0,
+        "unreached": "Canonical edit/cancel, sparse PATCH and wrong status, 409/new canonical read/new revision/no-op, delete confirmation and wrong status, unchanged applied snapshot, lost POST uncertainty and manual inspection before another intent."
+      },
+      {
+        "id": "SV3", "durationMs": 7007, "apiCalls": 4, "workEntryCalls": 2, "savedViewCalls": 0,
+        "unreached": "Apply detail/query supersession by manual search, another Apply and Clear; newer draft, page/selection reset, native query continuation and pre-ACK Work read fencing."
+      },
+      {
+        "id": "SV4", "durationMs": 6983, "apiCalls": 4, "workEntryCalls": 2, "savedViewCalls": 0,
+        "unreached": "Viewer personal CRUD/no finding writes; detail 403/404 plus 503 latches; metadata versus Work authority; existing Retry search; list denial plus late PATCH receipt and authorized recovery."
+      },
+      {
+        "id": "SV5", "durationMs": 7016, "apiCalls": 4, "workEntryCalls": 2, "savedViewCalls": 0,
+        "unreached": "Closed-panel receipt/draft clearing, true reload, workspace switch, actual global-401 response-event proof, fresh login/logout and late private CRUD receipts."
+      },
+      {
+        "id": "SV6", "durationMs": 6914, "apiCalls": 4, "workEntryCalls": 2, "savedViewCalls": 0,
+        "unreached": "Keyboard/focus/reduced-motion geometry, UTF-8/NUL boundaries, strict sort and metadata parser, stale-known detail, wrong/malformed creation receipts, invalid versus authorized-empty list."
+      }
+    ],
+    "reached": "All six rendered the actual App and verified authorized native Work entry, 100 loaded/207 reported, 50 display rows, five navigation links, closed bounded Work cohorts and zero saved-view HTTP. SV4's session was configured as viewer and SV6's viewport as 390px before the common stop.",
+    "unreachedBoundary": "The toggle was absent. Its expanded-state checks and every post-toggle assertion remain UNREACHED, including the authored actual-401 and saved-view protocol scenarios. Their runtime behavior and eventual full-tail 20s timing are not qualified by this RED.",
+    "fixtureViolations": 0,
+    "browserPageErrors": 0,
+    "externalAttempts": 0,
+    "server": {
+      "portFreeBefore": true,
+      "readiness": "Observed HTTP 200 from owned local Vite on port 18826; PID 16336 and command line recorded.",
+      "ownedViteStopped": true,
+      "portFreeAfter": true
+    }
+  },
+  "evidenceRoot": ".artifacts\\saved-work-views-ui-v1",
+  "evidenceInventory": {
+    "path": ".artifacts\\saved-work-views-ui-v1\\evidence-inventory.json",
+    "sha256": "41694ca6e60ab06af74b0c1f6d91e49c9392d65baa57bafb8621845a3ef0b4a5",
+    "files": 33,
+    "description": "Unsigned hashes of normal evidence, including all six screenshots, traces and error contexts; not a signature or seal."
+  },
+  "keyEvidence": [
+    {
+      "path": "boundary-before.json",
+      "sha256": "c9b3b137688a971dad6777ecec5fdc0c4f461bfb7f8af9ce249a1ecc9366a23d"
+    },
+    {
+      "path": "boundary-after.json",
+      "sha256": "5e73900d0a637a1f5ba0eae4894e86eb1d4a729b689fee008a5d65a3562167e7"
+    },
+    {
+      "path": "red-01\\tested-inputs.json",
+      "sha256": "a24ff943f0fb8aa3755af9d94147f48edaa360e17665973acf9188a4beef5376"
+    },
+    {
+      "path": "red-01\\browser.log",
+      "sha256": "5f8b8c52457125e82e09a9ae77930ec6983c776f4c363c59c1ec9b1da3428a1d"
+    },
+    {
+      "path": "red-01\\results.json",
+      "sha256": "a97aecfb3f5fdc1e0f5e172e1495a4d3bad5dcf17c62707c43d860eea00ee186"
+    },
+    {
+      "path": "red-01\\execution.json",
+      "sha256": "ba448f3d2cf7b1085c41e11c0c5f07cd8318fa4b92177faea4df295e74078594"
+    },
+    {
+      "path": "red-01\\typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "limits": [
+    "This is producer RED, not UI completion or passing saved-view acceptance. All feature tails are explicitly unreached.",
+    "The saved-view route fixture supplies protocol metadata only. Synthetic browser replies do not requalify backend ownership, persistence, revision races, shared CSV semantics or live PG/S3.",
+    "The original 126 cases and frozen inputs were byte/identity checked, not rerun. Model-author labels are not proof.",
+    "No production, dependency, original-test or signature edits; no agents, reviewer, commit, private signing authority, seal or publication.",
+    "No provider traffic, automatic list draining, fake App/hooks/DOM/handler logic or saved-view API business implementation was added."
+  ],
+  "next": "Parent verifies this single unsigned handoff and its hashes. Stop here for GPT-6.1 Sol implementation of CONTRACT.txt, preserving all original 126 cases and limits. No reviewer stage."
+}

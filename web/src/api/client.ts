@@ -20,8 +20,8 @@ export class APIError extends Error {
   }
 }
 
-function invalid(field: string): never {
-  throw new APIError(`The service returned an invalid ${field}. No replacement data was loaded.`, "invalid-response", true);
+function invalid(field: string, httpStatus: number | null = null): never {
+  throw new APIError(`The service returned an invalid ${field}. No replacement data was loaded.`, "invalid-response", true, null, httpStatus);
 }
 
 function object(value: unknown, field: string): Record<string, unknown> {
@@ -447,7 +447,7 @@ interface RequestOptions {
   body?: unknown;
   scoped?: boolean;
   headers?: Record<string, string>;
-  expectedStatus?: 200 | 201 | 202 | readonly (200 | 201 | 202)[];
+  expectedStatus?: 200 | 201 | 202 | 204 | readonly (200 | 201 | 202 | 204)[];
   decodeBody?: (response: Response) => Promise<unknown>;
 }
 
@@ -477,7 +477,7 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
   if (response.status === 401 && scoped) rejectSession(authority.revision);
   if (response.ok && options.expectedStatus !== undefined) {
     const accepted = typeof options.expectedStatus === "number" ? [options.expectedStatus] : options.expectedStatus;
-    if (!accepted.some((status) => status === response.status)) return invalid("HTTP response status");
+    if (!accepted.some((status) => status === response.status)) return invalid("HTTP response status", response.status);
   }
   if (response.status === 204) return parse(null, response.status);
   if (response.ok && options.decodeBody) {
@@ -491,19 +491,26 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
   try {
     payload = await response.json();
   } catch {
-    throw new APIError("The data service did not return JSON. Check that the API is running, then retry.", "invalid-response", true);
+    throw new APIError("The data service did not return JSON. Check that the API is running, then retry.", "invalid-response", true, null, response.status);
   }
   if (!response.ok) {
-    const body = object(payload, "error response");
-    if (body.apiVersion !== apiVersion) return invalid("error API version");
-    const error = object(body.error, "error detail");
-    throw new APIError(
-      text(error.message, "error message"),
-      choice(error.code, ["unauthorized", "forbidden", "not-found", "unavailable", "invalid-input", "conflict", "replay-expired", "too-large", "unsupported-format", "method-not-allowed"], "error code"),
-      boolean(error.retryable, "retry policy"),
-      text(error.requestId, "request identifier"),
-      response.status,
-    );
+    try {
+      const body = object(payload, "error response");
+      if (body.apiVersion !== apiVersion) return invalid("error API version", response.status);
+      const error = object(body.error, "error detail");
+      throw new APIError(
+        text(error.message, "error message"),
+        choice(error.code, ["unauthorized", "forbidden", "not-found", "unavailable", "invalid-input", "conflict", "replay-expired", "too-large", "unsupported-format", "method-not-allowed"], "error code"),
+        boolean(error.retryable, "retry policy"),
+        text(error.requestId, "request identifier"),
+        response.status,
+      );
+    } catch (cause) {
+      if (cause instanceof APIError && cause.httpStatus === null) {
+        throw new APIError(cause.message, cause.code, cause.retryable, cause.requestId, response.status);
+      }
+      throw cause;
+    }
   }
   if (scoped && authority.revision !== requestAuthority().revision) throw new DOMException("Workspace changed", "AbortError");
   return parse(payload, response.status);

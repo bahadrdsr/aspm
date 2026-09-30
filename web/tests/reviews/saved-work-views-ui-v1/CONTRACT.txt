@@ -1,0 +1,132 @@
+PERSONAL SAVED WORK VIEWS UI V1
+2026-09-30. Read first. TEST/UAT author input, unsigned.
+Published baseline: fc189fbcdb86562325e6a3cebc4a15ed0df9454d.
+Author label: GPT-6 Astra (label, not model identity or acceptance proof).
+Next: GPT-6.1 Sol implementation. No agents, reviewer, commit or seal here.
+This contract precedes the new fixture/spec/config. Original 126 cases frozen.
+
+Bounded real-App surface
+One "Saved views" button in Work, aria-expanded false initially, controls an
+inline region named "Saved views". No new navigation, second search panel,
+CSV download UI, shared/team views, administrator override or finding grants.
+Initial Work, local typing/sorting/paging and Settings navigation do not read
+view metadata. Only opening the region reads the current owner's selected-
+workspace list. Label it Personal. Keep the existing Work search and counts.
+
+The region contains a list named "Personal saved views", with one listitem per
+native ID and scoped Apply, Edit and Delete buttons. Duplicate names are legal;
+identity is never the name. "Refresh saved views", "Load more saved views" and
+"Retry saved views" are explicit. Initial/refresh GET is bare /work/views;
+continuation is exactly limit=100 and its native cursor. No auto-drain, polling,
+prefetch of details, per-keystroke IO or automatic mutation retry. Loading,
+empty, transient failure and denied metadata are distinct. Safe parsers reject
+invalid envelopes/fields, duplicate/out-of-order IDs, oversized pages, invalid
+counts and nonadvancing or nonterminal-item cursors, without appending bad data.
+Retry repeats the exact failed read, not a new cursor or edited draft.
+
+Save and snapshot apply
+"Save current view" opens an inline form with that accessible name, a "View
+name" textbox, a "View snapshot" region showing the EXACT confirmed server
+query and current loaded sort, "Save view" and "Cancel". Empty query is labeled
+"All findings (empty query)". Snapshot the confirmed server query, never a new
+unsaved local filter. Show the snapshot before explicit Save. No row/selection,
+cursor, owner/user/workspace authority or revision is sent in POST.
+Only a valid canonical 201 adds the returned ID. Pending, malformed, wrong-
+status or lost receipts do not fabricate a successful creation. A lost POST
+acknowledgement explicitly says creation is uncertain/may have reached the
+service; no automatic repeat and no invented idempotency guarantee. Prefer
+manual Refresh and inspection before a new explicit save, not a large registry.
+
+One Apply activation reads CURRENT authorized canonical detail, then submits
+that query snapshot through EXISTING Work search: nonempty q ONLY, empty query
+a bare Work GET. Apply saved sort only to loaded rows. No mixed q/viewId,
+backend changes or parallel query queue. Work/CSV viewId is API-only in this
+cut; shared backend/CSV filtering was qualified separately.
+Explain "query snapshot": this is a preference, not saved results, additional
+access or a live subscription. Later edit/delete of a template does not change
+already confirmed Work query/rows/sort. Work returns no view revision, so no
+atomic view-revision binding claim. Keep loaded/global-sort and count limits.
+
+Only a canonical detail with the requested ID, valid fields and no regression
+behind an already observed revision may start a query. 403/404/invalid/stale
+detail does not search. "Retry saved view" explicitly retries a failed detail
+action. Pending detail/query leaves confirmed Work labels/rows untouched.
+Manual Search, Clear search or another Apply supersedes older apply intents.
+Late generations/scopes cannot start old searches, overwrite newer text or
+replace confirmed results. Successful apply resets display page/selection and
+sets saved sort plus query/draft, except text typed AFTER apply began survives.
+Use existing Work ACK fences and independent Work/metadata denial contexts;
+metadata never supplies finding rows or grants Work authority.
+
+Edit/delete and exact published HTTP
+GET/POST /api/v1/work/views: 200 {items,total,nextCursor} / 201 {view}.
+GET/PATCH/DELETE /api/v1/work/views/{id}: 200 {view} / 200 {view} / 204 empty.
+JSON envelopes have apiVersion "aspm/v1alpha1", NOT dataOrigin. Canonical
+fields are id,name,query,sort,revision,createdAt,updatedAt. IDs/cursors are
+32 lowercase hex; timestamps are server-owned; revision is a canonical
+positive decimal string (not a JSON number). Session plus selected workspace
+is authority, including for viewers' own preferences. No admin-only gating.
+
+Edit/Delete first read authorized current detail. Inline "Edit saved view"
+form: "View name", "View query", "Loaded sort", "Save changes", "Cancel".
+Inputs initialize from detail, not the possibly old list. Sort options are
+exactly source-order, severity, title. Trim name/query. Name is nonempty,
+NUL-free, <=256 UTF-8 bytes; query may be empty, NUL-free, <=512 UTF-8 bytes.
+Reject invalid drafts accessibly (aria-invalid + alert), preserving text and
+sending nothing. Do not silently truncate. PATCH sends required revision and
+ONLY changed fields. A clear no-op may close without writing.
+"Delete saved view" is an inline confirmation form with "Confirm delete" and
+"Cancel"; DELETE sends revision ONLY. Cancel/close is not mutation or rollback.
+No optimistic rename/removal/success before canonical 200/204.
+409 remains explicit. "Reload saved view" obtains new authorized detail before
+a different revision can be submitted; no silent rebase or blind overwrite.
+
+Privacy and receipt lifetime
+Missing/denied metadata withholds its private fields; a subsequent 503 cannot
+restore cached values or masquerade as empty. Only a new authorized 200 read
+recovers that metadata. Other authorized Work queries can stay usable.
+Late CRUD receipts cannot restore a closed/scope-denied private panel. Closing
+clears form drafts and aborts reads. Workspace/logout/global 401 clears private
+view context; reopening requires authorized reads. Nothing private persists
+in browser storage, readable cookies, console or URLs. Theme is the only
+browser-storage exception. No public membership-removal UI or backend work.
+
+Six bounded real-App narratives
+SV1 Closed/no IO, in-app navigation, loading/list native 100-ID pages, exact
+    retry and duplicate/nonadvancing rejection; save confirmed-not-draft;
+    one-activation current-detail/q snapshot, loaded sort and empty apply.
+SV2 Canonical edit/cancel/sparse PATCH, 409/reload/no-op, inline deletion;
+    template mutations leave applied Work snapshot unchanged; uncertain
+    creation, manual inspection and another explicit intent.
+SV3 Detail/query supersession by manual search/another apply/clear; draft
+    after apply, native query pagination, page/selection reset, late ACK fence.
+SV4 Metadata 403/404 then 503 latches, separate Work denial, late mutation
+    receipt after list denial; viewers manage personal CRUD, no finding writes.
+SV5 Closed-panel receipt, real reload, workspace scope, actual global 401
+    header event, login/logout and late private metadata.
+SV6 390px keyboard/reduced-motion/focus, UTF-8/NUL name/query boundaries,
+    exact sort options, invalid/current-detail parser and canonical receipts.
+
+Execution and evidence boundary
+Use the real App/hooks/client. New saved-view route fixture extends existing
+WorkSearchAPI, has its own view ledger, and shares the inherited 60 combined
+API cap, cookie/origin/scope/no-provider/storage guards. It only supplies
+explicit protocol metadata, never application/handler/CRUD business logic.
+Register calls before async allHeaders; observe response/requestfinished/
+requestfailed. StrictMode entry cohorts admit at most TWO declared calls,
+at least one completed 200. A global 401 needs an actual response event before
+failure and real Sign in, not a scheduled-status assertion. Superseded reads
+may abort or finish; neither restores old state. Use page.reload for reload.
+
+Keep original 20s case / 5s expect / one worker / zero retries, blocked service
+workers, retained failure traces/screenshots and normal TLS. Cached Node and
+Playwright only. Port 18826 via ASPM_WEB_TEST_PORT: verify free before, observe
+owned Vite readiness, ensure it stops afterward. No dependency, production,
+old-test or signature edits. Run typecheck + only the six new real missing-
+toggle/control RED cases. Discovery/byte checks are not an old-126 rerun.
+All post-toggle tails are authored but UNREACHED until implementation; neither
+typecheck nor RED proves their eventual timing or behavioral acceptance.
+Normal evidence stays in .artifacts\saved-work-views-ui-v1. ONE unsigned
+HANDOFF records files/hashes, baseline/frozen-126 boundary, raw RED, commands,
+limits and unreached tails. No private signing authority. Parent verifies.
+Stop for Sol implementation, without a UI completion or backend proof claim.

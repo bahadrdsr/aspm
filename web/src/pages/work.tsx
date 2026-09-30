@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import { motion } from "motion/react";
 import type { WorkItem } from "@/api/types";
 import { APIError, workSearchQuery } from "@/api/client";
+import type { SavedWorkView } from "@/api/work-views";
 import { useWorkPages } from "@/lib/use-work-pages";
 import type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
 import { usePreferences } from "@/lib/preferences";
@@ -11,6 +12,7 @@ import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import { ActionButton } from "@/components/action-button";
 import { FormError } from "@/components/form-dialog";
+import { SavedWorkViews } from "@/components/saved-work-views";
 import { DataNotice, EmptyState, ErrorState, LoadingState, SeverityBadge, WorkflowBadge } from "@/components/states";
 
 export type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
@@ -39,6 +41,9 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
   const confirmQuery = useCallback((confirmedQuery: string) => setContext((previous) => previous.confirmedQuery === confirmedQuery
     ? previous : { ...previous, confirmedQuery, selected: new Set(), page: 0 }), [setContext]);
   const resource = useWorkPages(confirmed, context.confirmedQuery, confirmQuery);
+  const applyRequest = useRef<AbortController | null>(null);
+  const draftRevision = useRef(0);
+  useLayoutEffect(() => () => { applyRequest.current?.abort(); }, []);
   const data = resource.data;
   const [searchError, setSearchError] = useState<APIError | null>(null);
   const { reducedMotion } = usePreferences();
@@ -63,15 +68,46 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
     }
   }, [resource.error, setContext]);
   const updateQuery = (value: string) => {
+    draftRevision.current++;
     setSearchError(null);
     setContext((previous) => ({ ...previous, query: value, page: 0 }));
   };
+  const cancelApply = () => {
+    if (!applyRequest.current) return;
+    applyRequest.current.abort();
+    applyRequest.current = null;
+    resource.suspend();
+  };
+  const beginApply = () => {
+    cancelApply();
+    resource.suspend();
+    const controller = new AbortController(), startedDraft = draftRevision.current;
+    applyRequest.current = controller;
+    setSearchError(null);
+    return {
+      signal: controller.signal,
+      submit: (view: SavedWorkView) => {
+        if (controller.signal.aborted || applyRequest.current !== controller) return;
+        const snapshot = { query: view.query, sort: view.sort };
+        resource.search(snapshot.query, () => {
+          if (controller.signal.aborted || applyRequest.current !== controller) return;
+          applyRequest.current = null;
+          setContext((previous) => ({
+            ...previous, confirmedQuery: snapshot.query, sort: snapshot.sort, page: 0, selected: new Set(),
+            query: draftRevision.current === startedDraft ? snapshot.query : previous.query,
+          }));
+        });
+      },
+    };
+  };
   const clearSearch = () => {
+    cancelApply();
     updateQuery("");
     resource.search("");
     filterRef.current?.focus();
   };
   const submitSearch = () => {
+    cancelApply();
     try {
       const submitted = workSearchQuery(query);
       setSearchError(null);
@@ -93,6 +129,8 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
       <div><p className="eyebrow">Your security work, in context</p><h1 tabIndex={-1} id="work-heading">Work</h1><p className="page-description">Understand the evidence. Keep the next step clear.</p></div>
       <div className="heading-actions">{data && <DataNotice origin={data.dataOrigin} />}<ActionButton variant="outline" onClick={resource.reload} disabled={resource.status === "loading"}><Icon name="refresh" />Refresh</ActionButton></div>
     </header>
+
+    <SavedWorkViews snapshot={{ query: context.confirmedQuery, sort }} beginApply={beginApply} cancelApply={cancelApply} />
 
     {data && <div className="work-summary" aria-label="Current result summary">
       <div><span className="summary-label"><Icon name="layers" size={16} />Findings in view</span><strong>{matching.length.toLocaleString()}</strong><span>of {data.total.toLocaleString()} returned by the API at the last read</span></div>

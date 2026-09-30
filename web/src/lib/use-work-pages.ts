@@ -10,7 +10,9 @@ export interface ConfirmedWorkUpdates {
 }
 
 export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQueryConfirmed: (query: string) => void) {
-  const [read, setRead] = useState({ query, cursor: "", sequence: 0, search: false });
+  const [read, setRead] = useState<{
+    query: string; cursor: string; sequence: number; search: boolean; suspended: boolean; complete?: () => void;
+  }>({ query, cursor: "", sequence: 0, search: false, suspended: false });
   const rows = useRef(new Map<string, { revision: number; item: WorkItem }>());
   const lastPage = useRef<(WorkResponse & { query: string }) | null>(null);
   const currentRevision = useRef(confirmed.revision);
@@ -31,6 +33,7 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
   }, [clear]);
   const load = useCallback(async (signal: AbortSignal) => {
     scheduled.current = false;
+    if (read.suspended) return null;
     const authority = requestAuthority();
     const controller = new AbortController();
     activeRequest.current = controller;
@@ -54,6 +57,7 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
     rows.current = merged;
     lastPage.current = { ...page, query: read.query };
     onQueryConfirmed(read.query);
+    read.complete?.();
     return page;
   }, [read, clear, onQueryConfirmed]);
   const resource = useResource(load);
@@ -71,23 +75,31 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
     });
     return { ...page, items, membershipNeedsRefresh };
   }, [resource.data, resource.status, resource.error, confirmed]);
-  function requestPage(query: string, cursor: string, search = false) {
-    if ((resource.status === "loading" || scheduled.current) &&
-      (!search || (query === read.query && cursor === read.cursor))) return;
+  function requestPage(query: string, cursor: string, search = false, complete?: () => void) {
+    if (((resource.status === "loading" && !read.suspended) || scheduled.current) &&
+      (!search || (!complete && !read.complete && query === read.query && cursor === read.cursor))) return;
     scheduled.current = true;
     activeRequest.current?.abort();
     sequence.current += 1;
-    setRead({ query, cursor, search, sequence: sequence.current });
+    setRead({ query, cursor, search, sequence: sequence.current, suspended: false, complete });
+  }
+  function suspend() {
+    if (resource.status !== "loading" && !scheduled.current) return;
+    activeRequest.current?.abort();
+    scheduled.current = false;
+    sequence.current += 1;
+    setRead((previous) => ({ ...previous, sequence: sequence.current, suspended: true, complete: undefined }));
   }
   function loadMore() {
     const page = lastPage.current;
     if (page?.nextCursor != null) requestPage(page.query, page.nextCursor);
   }
   return {
-    data, error: resource.error, status: resource.status, pending: resource.status === "loading",
-    continuation: read.cursor !== "", searching: read.search || read.query !== "", loadMore,
-    search: (query: string) => requestPage(query, "", true),
+    data, error: read.suspended ? null : resource.error, status: read.suspended ? "ready" : resource.status,
+    pending: !read.suspended && resource.status === "loading",
+    continuation: read.cursor !== "", searching: read.search || read.query !== "", loadMore, suspend,
+    search: (query: string, complete?: () => void) => requestPage(query, "", true, complete),
     reload: () => requestPage(lastPage.current?.query ?? query, ""),
-    retry: () => requestPage(read.query, read.cursor, read.search),
+    retry: () => requestPage(read.query, read.cursor, read.search, read.complete),
   };
 }

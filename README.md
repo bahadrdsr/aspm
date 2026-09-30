@@ -116,6 +116,38 @@ Canonical owner changes preserve acknowledged fields on loaded rows and mark
 server search membership as needing refresh until a later authorized read
 establishes membership. They do not invent results for unloaded findings.
 
+**Saved views** is one closed-by-default inline panel in Work. Only explicitly
+opening it reads your personal preferences in the selected workspace. Every
+member role, including viewer, can manage their own templates without gaining
+finding write access. Refresh starts from the bare list endpoint; Load more
+uses `limit=100` and its native ID cursor. Retries repeat the exact failed read.
+There is no polling, automatic page drain, shared view or administrator override.
+
+**Save current view** previews the confirmed server query and current loaded
+sort, never an unsaved local filter, rows, selection or a cursor. Only a valid
+canonical 201 confirms creation. A lost or invalid receipt is uncertain: inspect
+the list with Refresh before another explicit Save. No automatic duplicate
+creation or idempotency guarantee is offered. Names and queries are trimmed,
+NUL-free and limited to 256 and 512 UTF-8 bytes respectively, without truncation.
+
+One **Apply** reads the current authorized detail, rejects older observed
+revisions, then submits its query through the existing q-only Work search
+(a bare GET for empty query). Saved sort applies only to loaded rows. Manual
+Search, Clear or another Apply supersedes pending apply reads. A successful
+apply clears selection and resets the display page but preserves text typed
+after activation. This is a query snapshot, not saved results, additional access,
+a live subscription or an atomic view-revision binding. Editing or deleting
+the template later does not change an already confirmed Work snapshot.
+
+Edit and inline Delete confirmation first read current detail. PATCH includes
+the required revision and only changed fields; DELETE includes only the revision.
+There are no optimistic changes. A 409 requires explicit Reload before submitting
+again. Metadata denials withhold private fields through transient failures until
+an authorized metadata read succeeds, independently of Work authorization.
+Closing, workspace changes, logout and session rejection discard private panel
+drafts and abort old reads; late receipts cannot restore them. Nothing is saved
+in browser storage, cookies, console output or URLs.
+
 In **Assets**, create an asset or edit a returned inventory row. The owner
 selector supports unassigned, yourself, or preserving its existing owner;
 the service verifies membership and write authority. Viewer controls are
