@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-21T11:24:25.251Z",
+  "status": "all current published frontend and shared execution bytes unchanged",
+  "publishedHEAD": "c1783cf778c3277b68dac8dd9ea747b293c7e56c",
+  "trackedFrontendFiles": 616,
+  "frontendSources": 83,
+  "originalSpecFiles": 21,
+  "original115AssertionAndFixtureBytesUnchanged": true,
+  "trackedFrontendInventoryReference": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\BEFORE.json",
+    "bytes": 126804,
+    "sha256": "92e0c19400a5d2f135e2c23da4c594ba0f40ed68ab245cef83a952af8a58bbb4"
+  },
+  "runtimeExecutionClosure": {
+    "path": ".cache\\ai-assessments-ui-coder\\execution-files.json",
+    "bytes": 1134599,
+    "sha256": "8fa14d069c4b337399320ab8d020198486906d373308e636035b2b307d1ba428"
+  },
+  "executionDependencyCount": 5150,
+  "allExecutionDependenciesMatch": true,
+  "originalRunner": {
+    "path": "web\\scripts\\playwright.mjs",
+    "bytes": 1080,
+    "sha256": "4df69b83a466c18e625c8729d510d30d934d7b00607e868ac6d7c8da7e5e25a1"
+  },
+  "originalConfiguration": {
+    "path": "web\\playwright.config.ts",
+    "bytes": 1481,
+    "sha256": "9c610d438ef4c7b57c9a176de9095666bd7f7ceaeabed6ed2ba81b73f06b5b1e"
+  },
+  "dependencies": [
+    {
+      "path": "web\\package.json",
+      "bytes": 1588,
+      "sha256": "fd862a4bd142e0864ddeeff049c739d2485b99995acae64aa6b78ccaade19b93"
+    },
+    {
+      "path": "web\\package-lock.json",
+      "bytes": 62150,
+      "sha256": "def182f3fbccb232bcb2411a6b387e6ac0152c9860e65f6cc2670543009e9825"
+    }
+  ],
+  "historicalUIOracleUnedited": {
+    "path": ".oracles\\ai-assessments-ui-a1.json",
+    "bytes": 169367,
+    "sha256": "b5f0fad08a3c67fad16b4bece75c99bc8f6ae5814d739b09ed48a9861f356d73"
+  },
+  "historicalUIOracleSignatureUnedited": {
+    "path": ".oracles\\ai-assessments-ui-a1.json.sig",
+    "bytes": 89,
+    "sha256": "caecffef30d4a504b27b151a1b826eb5ed592897c26ce565f96f2f44b91369ef"
+  },
+  "historicalFrontendControlsUnchanged": 778,
+  "publishedNonFrontendSupersessions": [
+    {
+      "path": "scripts\\package-image.mjs",
+      "historical": "7247c24c1cfbcbd03acc1b121d7c3c42d4b4c8965696f5da9c2a70db9e127c44",
+      "published": "0e4aa9ee1741ff064ad4267734bef5fb04c465b2eb8f98f0fdeafc7c46d2fe2d",
+      "qualification": "Outside frontend scope; already published at c1783cf. Original oracle bytes remain unchanged, not recaptured."
+    }
+  ],
+  "sourceScope": "Current published web frontend and shared Node/Playwright/compiler inputs. No unrelated backend or future packaging work is frozen.",
+  "holdCount": 5775,
+  "holdMode": "FileShare.Read throughout qualifying commands, SHA256 before/after verified",
+  "settings": {
+    "retries": 0,
+    "port": 18824,
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000,
+    "combinedAPIRequests": 60,
+    "workers": 1
+  },
+  "productionEdits": 0,
+  "oldTestFixtureHelperEdits": 0,
+  "dependencyInstallsOrEdits": 0,
+  "oracleOrSignatureWrites": 0,
+  "authorityAccess": false,
+  "agentsLaunched": 0,
+  "commits": 0,
+  "liveAPIProviderDBCalls": 0
+}

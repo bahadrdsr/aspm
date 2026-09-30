@@ -1,0 +1,123 @@
+WORK PAGINATION V1 - INDEPENDENT TEST-AUTHOR HANDOFF
+==================================================
+
+Status: FROZEN unsigned browser regression packet, actual missing-control RED.
+Parent verifies/seals before separate implementation and independent review.
+Author: independent-work-pagination-author-20260921.
+Published baseline: c1783cf778c3277b68dac8dd9ea747b293c7e56c.
+No production/backend/dependency/old test/helper/fixture/control edits, agents,
+commits, authority capture or live API/DB/provider calls.
+
+Bounded M05 cut
+--------------
+Manual native Work continuation only. Initial/refresh GET remains bare.
+Explicit Load more findings consumes native cursor with limit=100.
+Filter and Finding/Severity sorting remain local to LOADED findings.
+Existing 50-row display pagination, selected IDs, finding context and human
+actions remain. Counts distinguish loaded rows from last returned server total.
+Source/request ordering fences canonical PATCH ACKs; unrelated later pages
+cannot roll back older loaded-page ACK overlays. No phantom rows from ACKs.
+Work denial is route-scoped and latched through transient failure, not a new
+global permission rule for independently authorized finding detail.
+Server search/sort, saved views and broader M05 completion remain OPEN.
+
+New files and prior-art reuse
+----------------------------
+web\tests\work-pagination-data.ts
+web\tests\work-pagination-fixture.ts
+web\tests\work-pagination-ui.spec.ts
+The isolated fixture reuses published native ID, page-parameter, finding DTO,
+Work projection and synthetic credential helpers. It supplies metadata, not
+UI state/hooks/DOM/merging/permission implementation. No old fixture changes.
+CONTRACT.txt and DECISIONS.json specify routes, status/cursor cases, refresh
+and reconciliation semantics. The contract was written before the tests.
+
+Six cases
+---------
+WP1 Native 100+100+7; separate 50-row display pages; local filter/title/severity
+    sorting, native source order, loaded/reported counts and selected identity.
+WP2 503/network/invalid/repeated-cursor exact retries; authorized empty null
+    tail; invalid unused first-page cursor rejected only when consumed.
+WP3 Held page vs canonical owner/workflow ACK; later page starting after ACK;
+    stale refresh, filter exit/focus, unloaded ACK/no phantom, server role denial.
+WP4 Refresh resets Work frontier; 403/404 withholding through 503; independent
+    detail ACK cannot authorize Work; later Work 200 recovers.
+WP5 Workspace/401/logout epochs abort old pages and prevent cross-scope append.
+WP6 390px/reduced motion, busy state, focus/filter/selection/display-page context.
+
+Actual qualification
+--------------------
+typecheck-v3: PASS on the exact final executable sources.
+missing-control-red-v2: six selected, six failed, zero passed/skipped/retries/
+flakes. Every case rendered the REAL App's authorized 100-item first response
+as 50 display rows and five navigation links. Every failure was ONLY the
+missing "Load more findings" button. No fixture violation, external attempt
+or browser exception. All four API calls per case were counted, including
+the actual aborted initial Work mount request.
+
+ALL assertions after that missing button are BLOCKED/NOT RUN. In particular,
+native continuation, count/status labels, errors/retry, patch reconciliation,
+denial, epoch and mobile-arrival tails have NO claimed GREEN. The HTTP fixture's
+scheduled metadata is not proof that the unimplemented UI handles those tails.
+RED.json records this qualification and the reached/blocked phases explicitly.
+
+original-115-compat-v1 ran ONCE: 115/115 PASS, zero failed/skipped/retries/flakes.
+Its full case-identity multiset matches the pre-authoring before-list-v1
+enumeration. The enumeration's skipped=115 is list-only bookkeeping, NOT
+skipped compatibility cases. COMPATIBILITY.json records both references.
+
+Preserved settings and bytes
+----------------------------
+Original 20s cases, 5s expectations, one worker, zero retries, 60 combined API
+calls, blocked service workers and retained failure evidence remain unchanged.
+Owned port 18824; no change to normal TLS.
+616 published frontend files, including all 83 source files and 21 original
+browser spec files, remain byte-identical. All 115 original assertions and
+fixtures are preserved. 5150 cached execution dependencies also match.
+Qualifying runs held 5775 frontend/shared inputs with FileShare.Read and
+verified SHA256 before/after. The original Playwright wrapper/config/deps
+were not changed. New config only selects a fresh artifact location.
+
+Current-HEAD authority and scope
+-------------------------------
+The historical UI A1 oracle still references an older scripts/package-image.mjs.
+Its replacement is ALREADY COMMITTED in the requested c1783cf publication,
+is packaging-only and is outside this frontend cut. BEFORE/GUARDS record both
+hashes and the clean published status. All historical FRONTEND control bytes
+match; no old oracle/signature was edited, resigned or recaptured.
+Current published frontend bytes, not an obsolete packaging reference, are
+the task's source baseline. No unrelated future backend work is frozen.
+
+Development diagnostics, not acceptance
+--------------------------------------
+typecheck-v1 found an unused new-test import; the actual PATCH-path assertion
+now uses it. missing-control-red-v1 exposed an overly narrow NEW fixture boot
+admission: the published StrictMode lifecycle aborted one bare Work GET and
+then issued the usable read. Neither run is called a production RED.
+
+The corrected NEW fixture explicitly admits a bounded entry/scope/login cohort
+of at most two bare initial reads, requires exactly one non-aborted completion,
+checks any extra was actually aborted, then closes that admission. Every call
+still hits the ledger and cap. Every subsequent refresh/continuation is declared.
+No arbitrary fallback, relaxed route, disabled StrictMode or cleanup delay.
+
+Reproduction
+------------
+From C:\bahadr\serious\aspm, use a fresh label for each command:
+  web\tests\reviews\work-pagination-v1\run-held.ps1
+    -Stage typecheck -Label parent-work-types-v1
+  web\tests\reviews\work-pagination-v1\run-held.ps1
+    -Stage focused -Label parent-work-red-v1
+
+The guard intentionally pins the published production source. A later coder
+needs the parent's separately authorized source hold; do not rebaseline old
+assertions or alter budgets to obtain GREEN. All requests remain metadata-only
+at the explicit synthetic browser boundary.
+
+Hashes and next owner
+--------------------
+PACKET.json / PACKET.sha256 cover exact new payload and raw evidence hashes.
+HANDOFF.json / HANDOFF.sha256 link that packet without recursive hashes.
+Checksums are unsigned metadata, not approval or a new authority seal.
+Parent verifies this frozen six-case RED and old-115 compatibility, seals new
+controls, and assigns separate coder/reviewer. This author stops here.

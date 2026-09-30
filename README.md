@@ -81,6 +81,23 @@ Do not share an operator S3 credential across those processes.
 
 ### Application UI workflows
 
+In **Work**, **Load more findings** explicitly requests the service's native
+cursor with `limit=100`. Entry and **Refresh** keep the bare Work GET; there is
+no automatic page drain or server search/sort. Native rows merge by ID in source
+order. Filtering and Finding/Severity sorting apply only to loaded findings,
+even after continuation ends. Previous/Next still shows separate 50-row display
+pages. The **Finding pagination** status reports loaded rows and the last
+returned server total, which can change between pages and is not one snapshot.
+
+Failed continuation reads retain confirmed rows and metadata; **Retry more
+findings** repeats the exact cursor. A successful **Refresh** replaces the
+loaded set and resets continuation to that first page while preserving local
+filter, sort, selection and usable display context. Work permission/missing-view
+denials withhold its rows and selection through transient failures until a Work
+read is authorized again. Independently authorized finding detail or PATCH
+responses cannot restore Work access. Workspace/session changes abort old reads
+and discard the scoped pages; nothing is stored in browser storage.
+
 In **Assets**, create an asset or edit a returned inventory row. The owner
 selector supports unassigned, yourself, or preserving its existing owner;
 the service verifies membership and write authority. Viewer controls are
@@ -138,7 +155,9 @@ Admins and analysts can **Assign to me** with one activation, explicitly
 **Unassign**, or select a workflow and **Save workflow** in the same dialog.
 Confirmed facts and matching loaded Work rows use the full PATCH response,
 including the service's owner display name. Earlier Work reads cannot undo that
-acknowledgement; a subsequent explicit refresh can receive newer server facts.
+acknowledgement; starting a different page later does not remove protection from
+older loaded rows. A subsequent read can reconcile its own rows with newer server
+facts. An ACK for an unloaded finding does not create a Work row.
 An owner change that removes a row from the current filter is explained, with
 a safe Work focus fallback rather than an invented matching row.
 

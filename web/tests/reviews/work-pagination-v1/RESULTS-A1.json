@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "status": "Six actual browser cases PASS on final A1 test bytes; unsigned, awaiting parent verification/sealing.",
+  "run": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02",
+  "source": {
+    "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\results.json",
+    "bytes": 1943162,
+    "sha256": "ed7857e7db13393e3360824e4f9a73ab98ea98d151c4ee13b69239d46efe0f8d"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\typecheck.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    }
+  },
+  "browserLog": {
+    "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\browser.log",
+    "bytes": 968,
+    "sha256": "1c75548aa2e900aa6924556e9be34df1244eb1992ec5eec6897d826544fe4e46"
+  },
+  "validation": {
+    "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\validation.json",
+    "bytes": 1884,
+    "sha256": "fab486e0aa77e78971306bde66b011b72e74a47640a461cff0bd2e1f12212471"
+  },
+  "selected": 6,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "flaky": 0,
+  "retries": 0,
+  "wallDurationMs": 25788.452,
+  "maximumCombinedAPICalls": 28,
+  "settings": {
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000,
+    "workers": 1,
+    "retries": 0,
+    "combinedAPICap": 60,
+    "serviceWorkers": "block",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure",
+    "port": 18824,
+    "normalTLS": true,
+    "runnerConfigOrBudgetChanges": false
+  },
+  "unchangedNarrativeChecks": {
+    "sixCaseIdentitiesUnchanged": true,
+    "WP2_WP4_WP6BodiesTextIdentical": true,
+    "WP3OnlyAdditionalSetupIsPageReload": true,
+    "WP5LoginLogoutTailTextIdentical": true
+  },
+  "cases": [
+    {
+      "case": "WP1",
+      "title": "WP1 Manual native 100+100+tail preserves local filter sort selection and 50-row display pages",
+      "status": "passed",
+      "durationMs": 4076,
+      "timeoutMs": 20000,
+      "retry": 0,
+      "combinedAPICalls": 6,
+      "violations": 0,
+      "pageErrors": 0,
+      "externalAttempts": 0,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "Second native page retained local matching rows, display page, sort, focus and selected native identity.",
+        "All 207 native rows reachable with manual pages only; local sorting restored native order without any q/sort API or mutation."
+      ],
+      "ledgerAttachment": "work-pagination-http-ledger",
+      "ledgerSHA256": "ffa2809cfe258d0b5d92b96e2ddad5251bb9cdaaea2243d0c3203cce225f2968"
+    },
+    {
+      "case": "WP2",
+      "title": "WP2 Failed continuation retries exact cursor and accepts only an authorized null empty tail",
+      "status": "passed",
+      "durationMs": 3292,
+      "timeoutMs": 20000,
+      "retry": 0,
+      "combinedAPICalls": 11,
+      "violations": 0,
+      "pageErrors": 0,
+      "externalAttempts": 0,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "503, network, invalid DTO and repeated cursor retained confirmed rows and the same unretired cursor.",
+        "Authorized zero/empty null tail ended continuation honestly; unused legacy cursor left first page intact and consumption failed locally without HTTP."
+      ],
+      "ledgerAttachment": "work-pagination-http-ledger",
+      "ledgerSHA256": "935686722d8f667f227e97129b44a4f556e53ca65e6b8e6420877d4a356e4321"
+    },
+    {
+      "case": "WP3",
+      "title": "WP3 Page reads cannot roll back canonical finding ACKs or create unrequested rows",
+      "status": "passed",
+      "durationMs": 5059,
+      "timeoutMs": 20000,
+      "retry": 0,
+      "combinedAPICalls": 28,
+      "violations": 0,
+      "pageErrors": 0,
+      "externalAttempts": 0,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "ACK protected its loaded source page while an older page settled and a different page started after ACK.",
+        "Stale refresh did not undo a later workflow ACK; owner ACK moved a row out of the local filter without losing filter/focus context.",
+        "Unloaded detail ACK made no phantom Work row; current server PATCH role denied a stale analyst hint without revoking authorized Work reads."
+      ],
+      "ledgerAttachment": "work-pagination-http-ledger",
+      "ledgerSHA256": "d919bdd5484777b9ea12a90d16ff7b3f731dd1bb277ab860dab306d0ff044cd0"
+    },
+    {
+      "case": "WP4",
+      "title": "WP4 Refresh resets native frontier and Work denial survives 503 and independent detail ACK",
+      "status": "passed",
+      "durationMs": 3748,
+      "timeoutMs": 20000,
+      "retry": 0,
+      "combinedAPICalls": 16,
+      "violations": 0,
+      "pageErrors": 0,
+      "externalAttempts": 0,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "Canonical first-page refresh reset the frontier, not the active filter, surviving display page or selected IDs.",
+        "403 and 404 Work denial withheld rows/selections through 503; independent detail ACK did not authorize Work; only later Work 200 recovered."
+      ],
+      "ledgerAttachment": "work-pagination-http-ledger",
+      "ledgerSHA256": "4170373ad45507384674ce3c8263eaf4148c9dc40e3150db32505c65f82077be"
+    },
+    {
+      "case": "WP5",
+      "title": "WP5 Workspace 401 and logout abort held pages without cross-scope append or persistent state",
+      "status": "passed",
+      "durationMs": 2793,
+      "timeoutMs": 20000,
+      "retry": 0,
+      "combinedAPICalls": 15,
+      "violations": 0,
+      "pageErrors": 0,
+      "externalAttempts": 0,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "A1 calibration: bounded declared detail 401s remained held without a response or Sign in; no default 200 was admitted.",
+        "Held bounded detail cohort delivered only declared 401s; an observed 401 before abort caused real Sign in, and released stale Work could not restore protected context.",
+        "Actual old requests aborted across workspace, global 401 and logout; released responses never appended or restored contexts."
+      ],
+      "ledgerAttachment": "work-pagination-http-ledger",
+      "ledgerSHA256": "998271dc7f75057588997efcf56f0f5e908c7debd6069447c7d2a0dc8e20f634"
+    },
+    {
+      "case": "WP6",
+      "title": "WP6 Mobile reduced-motion continuation keeps focus selection and local display context responsive",
+      "status": "passed",
+      "durationMs": 2076,
+      "timeoutMs": 20000,
+      "retry": 0,
+      "combinedAPICalls": 7,
+      "violations": 0,
+      "pageErrors": 0,
+      "externalAttempts": 0,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "390px reduced-motion view kept 50-row display, selection, filter, page and focus through held continuation and native finding close."
+      ],
+      "ledgerAttachment": "work-pagination-http-ledger",
+      "ledgerSHA256": "1656080bbb27f51f3bf219b42c027bba1d87e365b72bdbf68daa81af92c17fa4"
+    }
+  ],
+  "preservedDiagnostic": {
+    "source": {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\results.json",
+      "bytes": 1531435,
+      "sha256": "64afcb58e0ae43b5e4c87193dd200b8de1e5b1cd4d587feecf41444d479c5984"
+    },
+    "summary": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\DIAGNOSTIC.json",
+      "bytes": 7604,
+      "sha256": "62aa25e809fa0dfb501303015c2d51b3bdf65243fd7455103ceb17685fbf2e73"
+    },
+    "passed": 4,
+    "failed": 2,
+    "classification": "Fixture assumptions diagnosed before changing test bytes; not an unchanged-byte retry or production defect."
+  },
+  "limitations": [
+    "Old 115 cases were not rerun; their frozen control bytes are unchanged.",
+    "Synthetic HTTP boundary only, not backend/provider qualification.",
+    "No reviewer, publication, feature-completion or new signed-control claim."
+  ]
+}

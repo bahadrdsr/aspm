@@ -144,6 +144,15 @@ export function parseWork(value: unknown): WorkResponse {
   };
 }
 
+function validateWorkContinuation(page: WorkResponse, cursor: string): WorkResponse {
+  if (page.items.length > 100) return invalid("finding page size");
+  if (page.nextCursor !== null && (!/^[a-f0-9]{32}$/.test(page.nextCursor) ||
+    page.nextCursor <= cursor || page.nextCursor !== page.items.at(-1)?.id)) return invalid("finding pagination cursor");
+  if (page.items.some((item, index) => !/^[a-f0-9]{32}$/.test(item.id) ||
+    item.id <= (index === 0 ? cursor : page.items[index - 1].id))) return invalid("finding page order");
+  return page;
+}
+
 export function parseFinding(value: unknown): FindingResponse {
   const { body, dataOrigin } = envelope(value);
   const finding = object(body.finding, "finding detail");
@@ -498,7 +507,16 @@ async function reportRead<T>(path: string, parse: (value: unknown) => T, signal:
 }
 
 export const api = {
-  work: (signal: AbortSignal) => request("/api/v1/work", parseWork, { signal }),
+  work: (signal: AbortSignal, continuation?: { cursor: string }) => {
+    if (continuation === undefined) return request("/api/v1/work", parseWork, { signal, expectedStatus: 200 });
+    const cursor = continuation.cursor;
+    if (typeof cursor !== "string" || !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Finding pages require a native 32-character lowercase hexadecimal cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ limit: "100", cursor });
+    return request(`/api/v1/work?${query}`, (value) => validateWorkContinuation(parseWork(value), cursor),
+      { signal, expectedStatus: 200 });
+  },
   finding: (id: string, signal: AbortSignal, cursors?: { notesCursor?: string; observationsCursor?: string }) => {
     const workspace = requestAuthority().workspace;
     const notesCursor = findingCursor(cursors?.notesCursor), observationsCursor = findingCursor(cursors?.observationsCursor);

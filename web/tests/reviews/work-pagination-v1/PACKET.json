@@ -1,0 +1,546 @@
+{
+  "schemaVersion": 1,
+  "name": "work-pagination-v1",
+  "frozenAt": "2026-09-21T11:27:51.219Z",
+  "status": "FROZEN unsigned independent UI test packet: six actual missing-control REDs; parent verification/new seal before separate implementation.",
+  "author": {
+    "id": "independent-work-pagination-author-20260921",
+    "agentId": "f93d054c-caa3-4c46-9e3d-e49dbfb1e99e",
+    "role": "Independent test author, not implementation coder or accepting reviewer"
+  },
+  "publishedHEAD": "c1783cf778c3277b68dac8dd9ea747b293c7e56c",
+  "scope": {
+    "included": "Native manual Work continuation only; bare initial/refresh GET, cursor+limit100 continuation, existing 50-row display/local filter-sort/selection and canonical ACK reconciliation.",
+    "excluded": [
+      "Server-side search",
+      "Global/server sorting",
+      "Saved views",
+      "New backend/API",
+      "Broader M05 completion",
+      "Unrelated future backend/packaging work"
+    ],
+    "productionChanged": false
+  },
+  "contractBeforeTests": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\CONTRACT.txt",
+    "bytes": 8363,
+    "sha256": "68774e3e3fc3f367b0c56865f1aff74786880a3cbdbd1bfb44191eb1520136f4"
+  },
+  "decisions": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\DECISIONS.json",
+    "bytes": 2492,
+    "sha256": "c8d3a9b7d53c773ec29a3adf73b77ab756d41d68ee381b2ef5dbb6f5f3152c12"
+  },
+  "qualification": {
+    "typecheck": "passed",
+    "newCases": {
+      "selected": 6,
+      "passed": 0,
+      "failed": 6,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0
+    },
+    "newFunctionalTails": "ALL BLOCKED/NOT RUN after absent Load more findings. No fake GREEN from fixture data.",
+    "original115": {
+      "selected": 115,
+      "passed": 115,
+      "failed": 0,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0
+    },
+    "original115IdentityMultisetUnchanged": true,
+    "fullOriginalCompatibilityRuns": 1,
+    "trackedFrontendFilesUnchanged": 616,
+    "frontendSourcesUnchanged": 83,
+    "originalSpecFilesUnchanged": 21,
+    "executionDependenciesUnchanged": 5150,
+    "heldInputCount": 5775,
+    "sourceHold": "FileShare.Read plus before/after SHA256",
+    "newCaseCombinedAPICalls": 4,
+    "abortedInitialReadsCounted": true,
+    "fixtureViolations": 0,
+    "pageErrors": 0,
+    "externalAttempts": 0
+  },
+  "settings": {
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000,
+    "workers": 1,
+    "retries": 0,
+    "combinedAPICap": 60,
+    "serviceWorkers": "block",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure",
+    "ownedPort": 18824,
+    "normalTLSUnchanged": true
+  },
+  "boundary": {
+    "realApp": true,
+    "syntheticHTTPMetadataOnly": true,
+    "oldFixtureEdits": 0,
+    "explicitNativePageControls": true,
+    "allRequestsLedgeredAndCounted": true,
+    "externalHTTPWebSocketBlocked": true,
+    "initialMountCohort": "At most two bare reads per explicitly opened entry/scope/login; exactly one non-aborted completion, extras must be genuinely aborted, admission then closes.",
+    "noHooksDOMStateClocksOrAPIClientReplacement": true,
+    "oldAuthorityNotRecaptured": true
+  },
+  "reached": [
+    {
+      "title": "WP1 Manual native 100+100+tail preserves local filter sort selection and 50-row display pages",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN."
+    },
+    {
+      "title": "WP2 Failed continuation retries exact cursor and accepts only an authorized null empty tail",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN."
+    },
+    {
+      "title": "WP3 Page reads cannot roll back canonical finding ACKs or create unrequested rows",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN."
+    },
+    {
+      "title": "WP4 Refresh resets native frontier and Work denial survives 503 and independent detail ACK",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN."
+    },
+    {
+      "title": "WP5 Workspace 401 and logout abort held pages without cross-scope append or persistent state",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN."
+    },
+    {
+      "title": "WP6 Mobile reduced-motion continuation keeps focus selection and local display context responsive",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN."
+    }
+  ],
+  "historicalOracleQualification": [
+    {
+      "path": "scripts\\package-image.mjs",
+      "historical": "7247c24c1cfbcbd03acc1b121d7c3c42d4b4c8965696f5da9c2a70db9e127c44",
+      "published": "0e4aa9ee1741ff064ad4267734bef5fb04c465b2eb8f98f0fdeafc7c46d2fe2d",
+      "qualification": "Outside frontend scope; already published at c1783cf. Original oracle bytes remain unchanged, not recaptured."
+    }
+  ],
+  "results": {
+    "red": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\RED.json",
+      "bytes": 19206,
+      "sha256": "f91789c4b450763f660bc8f78c6fa394ccabe7eeb3b33ff22f54845186650e37"
+    },
+    "typecheck": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\TYPECHECK.json",
+      "bytes": 590,
+      "sha256": "cdbf3275e3e51f022dfa6eabaed4e439d48bbb829f2644420615520d2d0e9c40"
+    },
+    "compatibility": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\COMPATIBILITY.json",
+      "bytes": 29655,
+      "sha256": "0a7d448ffcbcaf40d4491e7fa774f608e53c93f0b2c0356b8cf4ee7339c342b4"
+    },
+    "guards": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\GUARDS.json",
+      "bytes": 3037,
+      "sha256": "dd354129474453527c796cdbd7a5a64cdb6d2878dfe8be6875ed937c41c69d9a"
+    },
+    "readme": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.txt",
+      "bytes": 7020,
+      "sha256": "59202e2580747b90b511d199da734c08def3548d1e242284053981963be5fca1"
+    }
+  },
+  "controlledFiles": [
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\BEFORE.json",
+      "bytes": 126804,
+      "sha256": "92e0c19400a5d2f135e2c23da4c594ba0f40ed68ab245cef83a952af8a58bbb4"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\COMPATIBILITY.json",
+      "bytes": 29655,
+      "sha256": "0a7d448ffcbcaf40d4491e7fa774f608e53c93f0b2c0356b8cf4ee7339c342b4"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\CONTRACT.txt",
+      "bytes": 8363,
+      "sha256": "68774e3e3fc3f367b0c56865f1aff74786880a3cbdbd1bfb44191eb1520136f4"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\DECISIONS.json",
+      "bytes": 2492,
+      "sha256": "c8d3a9b7d53c773ec29a3adf73b77ab756d41d68ee381b2ef5dbb6f5f3152c12"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\GUARDS.json",
+      "bytes": 3037,
+      "sha256": "dd354129474453527c796cdbd7a5a64cdb6d2878dfe8be6875ed937c41c69d9a"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.txt",
+      "bytes": 7020,
+      "sha256": "59202e2580747b90b511d199da734c08def3548d1e242284053981963be5fca1"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\RED.json",
+      "bytes": 19206,
+      "sha256": "f91789c4b450763f660bc8f78c6fa394ccabe7eeb3b33ff22f54845186650e37"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\TYPECHECK.json",
+      "bytes": 590,
+      "sha256": "cdbf3275e3e51f022dfa6eabaed4e439d48bbb829f2644420615520d2d0e9c40"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\playwright.config.ts",
+      "bytes": 1129,
+      "sha256": "3666241bd5eee66efdbcf521d4c4952a94e3f5abfd69ad8982b6fc56df7a3a9c"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\run-held.ps1",
+      "bytes": 4508,
+      "sha256": "43b267d14243c6d617743c101cabb8e780bb982232ebcf9334e65596c0c50dd5"
+    },
+    {
+      "path": "web\\tests\\work-pagination-data.ts",
+      "bytes": 3363,
+      "sha256": "40088080e2f96c2ce4935a4b7e8965550f5c91568b601cfe3ceeb461c8e6ac20"
+    },
+    {
+      "path": "web\\tests\\work-pagination-fixture.ts",
+      "bytes": 16310,
+      "sha256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22"
+    },
+    {
+      "path": "web\\tests\\work-pagination-ui.spec.ts",
+      "bytes": 24775,
+      "sha256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f"
+    }
+  ],
+  "payloadFileCount": 13,
+  "rawEvidenceFiles": [
+    {
+      "path": ".artifacts\\work-pagination-v1\\before-list-v1\\results.json",
+      "bytes": 80991,
+      "sha256": "61e019467c429cad7480754c54ad576d2393f52bad9341c46bfc7d666f5e4f4d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\execution.json",
+      "bytes": 920,
+      "sha256": "c0b48c38dc5172b899d143362bf51f3cb7f284d7a454dfc05155e66dee38b15d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\held-inputs.json",
+      "bytes": 1280325,
+      "sha256": "71b3d8d6375b5007ad5e391ec26108f47e4f94408e963513e14baa351ac6214f"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\output.log",
+      "bytes": 28088,
+      "sha256": "59af14d8d1b98c2c21fb724c2c8a2a3a21971cb84ad50e2fe2542f45407a8b9d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results.json",
+      "bytes": 424472,
+      "sha256": "5bfc5071d6488c77cc056cbc17da819265a21e77c8a0154aa6f739097d4f59e1"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\.last-run.json",
+      "bytes": 341,
+      "sha256": "18b465dde2a06c7f1f76e00fef57723e804f8e9c3f0a5c561859688861b7a38d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP1-Man-47f78-on-and-50-row-display-pages\\error-context.md",
+      "bytes": 13384,
+      "sha256": "7eb2169874665c6f989d17ff964b73a00858a4dc8211c1b9dd388923b00a1839"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP1-Man-47f78-on-and-50-row-display-pages\\test-failed-1.png",
+      "bytes": 52504,
+      "sha256": "229aa2b3b07da4444f8df2e26baac5999c120c8e23b99482065d75651de2f5ca"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP1-Man-47f78-on-and-50-row-display-pages\\trace.zip",
+      "bytes": 199694,
+      "sha256": "65abde9dc3084c709508fc07f6893f375e28a4d95c766ca6518bd29c21dfb377"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP2-Fai-ef12c--authorized-null-empty-tail\\error-context.md",
+      "bytes": 13383,
+      "sha256": "1922bdb300257ad04d43ac0800d645563997aabebeaba7af9c9a940f3c30ba88"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP2-Fai-ef12c--authorized-null-empty-tail\\test-failed-1.png",
+      "bytes": 52504,
+      "sha256": "229aa2b3b07da4444f8df2e26baac5999c120c8e23b99482065d75651de2f5ca"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP2-Fai-ef12c--authorized-null-empty-tail\\trace.zip",
+      "bytes": 199263,
+      "sha256": "0e934c60e2e3553ebe34a626ff39e1d21c4f0d1a6de067b6ccef908c656d8018"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\error-context.md",
+      "bytes": 13373,
+      "sha256": "840750a0796ecda5a1fb8a0b85d27e5074c973ddc265420a18da3209bc25f2a5"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\test-failed-1.png",
+      "bytes": 52504,
+      "sha256": "229aa2b3b07da4444f8df2e26baac5999c120c8e23b99482065d75651de2f5ca"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\trace.zip",
+      "bytes": 199017,
+      "sha256": "dfae7486d6255b8b5ced032ca3ea8d8c62e28d24e9985c3115e74cc1570fa54e"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP4-Ref-74bc2--and-independent-detail-ACK\\error-context.md",
+      "bytes": 13382,
+      "sha256": "d0e1ae3cafd375a4d222fec0b447ac9c02a777b0cb9c78d3a1958245e8a3c0ca"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP4-Ref-74bc2--and-independent-detail-ACK\\test-failed-1.png",
+      "bytes": 52504,
+      "sha256": "229aa2b3b07da4444f8df2e26baac5999c120c8e23b99482065d75651de2f5ca"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP4-Ref-74bc2--and-independent-detail-ACK\\trace.zip",
+      "bytes": 198836,
+      "sha256": "3dac5e367c0a9d9ad3016b39b9a59d50d63fbc80d57407b27b5a7105700515c8"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\error-context.md",
+      "bytes": 13384,
+      "sha256": "6a0baff6f1ba7848d2132a54e8e1bf87e7a497242efada263d1ed43ff993ae5a"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\test-failed-1.png",
+      "bytes": 52504,
+      "sha256": "229aa2b3b07da4444f8df2e26baac5999c120c8e23b99482065d75651de2f5ca"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\trace.zip",
+      "bytes": 199300,
+      "sha256": "eac83c1cae1eb556029d5db55f22c20814c624de51bf7987fe8c9702bb910176"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP6-Mob-a58d4--display-context-responsive\\error-context.md",
+      "bytes": 12953,
+      "sha256": "f556de843319bc119ef91517ba2b19dfc719e901914f6479e7b666bf8bf0f97d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP6-Mob-a58d4--display-context-responsive\\test-failed-1.png",
+      "bytes": 35339,
+      "sha256": "3d738b4b1298193c21d230e6f9cdfc10b51fff0df4338395b8c71d7b4db6ebff"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v1\\results\\work-pagination-ui-WP6-Mob-a58d4--display-context-responsive\\trace.zip",
+      "bytes": 158323,
+      "sha256": "e7cdbb9295cb48df064cdb4d77391e0d4352a515a92c1f9fc5547c8f950b01c6"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\execution.json",
+      "bytes": 920,
+      "sha256": "4cda20245fe3566f9e1c6b6b74c1e9a96bfe059fad48e0f70e7b5d0d05ccad0d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\held-inputs.json",
+      "bytes": 1280325,
+      "sha256": "7c00db70681f09162eccdeaddc0eac25e8caf956b72c176cde1f234f24bc4de0"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\output.log",
+      "bytes": 24394,
+      "sha256": "065c866b3fec7cbf8ba16d3a4dc8694e40e5535bf9b708ff23b16814b6a85135"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results.json",
+      "bytes": 759524,
+      "sha256": "70b39cfa4b2960a1c5053cbc6d5d847a4e3364e4ac927755d85236b85b16f49e"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\.last-run.json",
+      "bytes": 341,
+      "sha256": "18b465dde2a06c7f1f76e00fef57723e804f8e9c3f0a5c561859688861b7a38d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP1-Man-47f78-on-and-50-row-display-pages\\error-context.md",
+      "bytes": 45008,
+      "sha256": "d9a12c43f878b7afc28b5e80147698588277f0384c78b68b5bd4c45a93c648d1"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP1-Man-47f78-on-and-50-row-display-pages\\test-failed-1.png",
+      "bytes": 83045,
+      "sha256": "1a000a0f602abb0cf5721937e2c009556242a4da257dc8fc2329bf0bc30be9dd"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP1-Man-47f78-on-and-50-row-display-pages\\trace.zip",
+      "bytes": 264218,
+      "sha256": "0e7ddeb989d8d0aaa4f8c8206be49c50dc3a93fde343e8087a1117906af4ba96"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP2-Fai-ef12c--authorized-null-empty-tail\\error-context.md",
+      "bytes": 45006,
+      "sha256": "f8245150aa209d75be5a3b707d90f2d50cd917a8bda9fbef327cde5826087d53"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP2-Fai-ef12c--authorized-null-empty-tail\\test-failed-1.png",
+      "bytes": 83045,
+      "sha256": "1a000a0f602abb0cf5721937e2c009556242a4da257dc8fc2329bf0bc30be9dd"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP2-Fai-ef12c--authorized-null-empty-tail\\trace.zip",
+      "bytes": 264119,
+      "sha256": "3245f877b7426d91833964c05117cf7488e2bc4905974f00a839c96a8c8bae43"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\error-context.md",
+      "bytes": 44996,
+      "sha256": "81910bf38ad822da6c1a7e1d23e72705fd33ec7f8375f9d313791c1d68eb6bd3"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\test-failed-1.png",
+      "bytes": 83045,
+      "sha256": "1a000a0f602abb0cf5721937e2c009556242a4da257dc8fc2329bf0bc30be9dd"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\trace.zip",
+      "bytes": 264109,
+      "sha256": "656fafd51504239f1452586043047a26c8a793ad54c1e3fb364dfddf23893a25"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP4-Ref-74bc2--and-independent-detail-ACK\\error-context.md",
+      "bytes": 45005,
+      "sha256": "38e3a1dd834660885acaf016752f63f62e01aa025752f29b09a5ed4946e14267"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP4-Ref-74bc2--and-independent-detail-ACK\\test-failed-1.png",
+      "bytes": 83045,
+      "sha256": "1a000a0f602abb0cf5721937e2c009556242a4da257dc8fc2329bf0bc30be9dd"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP4-Ref-74bc2--and-independent-detail-ACK\\trace.zip",
+      "bytes": 264040,
+      "sha256": "542e9632c0d4e7731dc0aa7f0134f359fce7b40641218171696063960694f473"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\error-context.md",
+      "bytes": 45007,
+      "sha256": "1dba376d241bea8d875a30117635ea4253a604923eb08f59b52989d37d485cd0"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\test-failed-1.png",
+      "bytes": 83045,
+      "sha256": "1a000a0f602abb0cf5721937e2c009556242a4da257dc8fc2329bf0bc30be9dd"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\trace.zip",
+      "bytes": 263834,
+      "sha256": "3e0e159675df3dba5f570742450987cf88cfd6404c74f066b36acf2af79b9447"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP6-Mob-a58d4--display-context-responsive\\error-context.md",
+      "bytes": 44789,
+      "sha256": "b7d098d079c8c10ce3258a9f94677ab1ba765c66f115809cd32dc57384578525"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP6-Mob-a58d4--display-context-responsive\\test-failed-1.png",
+      "bytes": 41736,
+      "sha256": "b65c391181c561afff0bf94a9160c596d0441c97505186524c6f139d7ad1442e"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results\\work-pagination-ui-WP6-Mob-a58d4--display-context-responsive\\trace.zip",
+      "bytes": 178713,
+      "sha256": "25d1b8ef64642d1865d0eccad55ac8a256d20402a87a2ff74196b52952469bfc"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\original-115-compat-v1\\execution.json",
+      "bytes": 930,
+      "sha256": "c1868fc96118b593f0232c17b4a750b675549bbc81798817e5b47ee1eccc2166"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\original-115-compat-v1\\held-inputs.json",
+      "bytes": 1280325,
+      "sha256": "7c00db70681f09162eccdeaddc0eac25e8caf956b72c176cde1f234f24bc4de0"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\original-115-compat-v1\\output.log",
+      "bytes": 19444,
+      "sha256": "9f8b3df95e5a737decb4936f24e3bcd574c63ec8d884a24f357437d322882700"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\original-115-compat-v1\\results.json",
+      "bytes": 27337661,
+      "sha256": "455432b227b25d1aee70d225957eeb52fcc804583f9d46a87bd2e9f791eb446c"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\original-115-compat-v1\\results\\.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v1\\execution.json",
+      "bytes": 841,
+      "sha256": "ae0462bb1fe168b7bf5911e2b38656614a45b8b630556b1a00744cf2e90138d3"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v1\\held-inputs.json",
+      "bytes": 1280325,
+      "sha256": "a3da5f58f1d14cccc28935283ffce2afe1d5c5258482df71e127a281689378d7"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v1\\output.log",
+      "bytes": 106,
+      "sha256": "817b4235d38f72557af9b441960ab500df3d3ad0050ec9c3ab16d384394ea622"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v2\\execution.json",
+      "bytes": 841,
+      "sha256": "dbeff522ff5c2825c703ae95565054efa671ba254a522aef4bc232e3a6cf94ab"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v2\\held-inputs.json",
+      "bytes": 1280325,
+      "sha256": "71b3d8d6375b5007ad5e391ec26108f47e4f94408e963513e14baa351ac6214f"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v3\\execution.json",
+      "bytes": 841,
+      "sha256": "31aceb2d549fd82d6450fb62130206c9c504d4b74b29809ed2bfaa53cabd253f"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\typecheck-v3\\held-inputs.json",
+      "bytes": 1280325,
+      "sha256": "7c00db70681f09162eccdeaddc0eac25e8caf956b72c176cde1f234f24bc4de0"
+    }
+  ],
+  "prohibitions": {
+    "productionBackendEdits": 0,
+    "oldTestsFixturesHelpersControlsEdits": 0,
+    "dependenciesInstalledOrChanged": 0,
+    "originalRunnerOrConfigEdits": 0,
+    "oracleWritesOrAuthorityCapture": 0,
+    "agentsLaunched": 0,
+    "commits": 0,
+    "liveAPIProviderDBCalls": 0
+  },
+  "hashPolicy": "Raw SHA256 bytes. Root PACKET.json/PACKET.sha256/HANDOFF.json/HANDOFF.sha256 are nonrecursively hashed publication metadata. PACKET.sha256 covers the packet; HANDOFF.sha256 covers its linked handoff. These checksums are not an authority signature or parent seal.",
+  "nextOwner": "Parent verifies/seals exact new controls and actual RED, then assigns separate coder/reviewer. Author stops; server search/sort/saved views remain future M05 gates."
+}

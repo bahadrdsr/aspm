@@ -1,25 +1,24 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import { motion } from "motion/react";
-import { api } from "@/api/client";
 import type { WorkItem } from "@/api/types";
-import { useResource } from "@/lib/use-resource";
+import { useWorkPages } from "@/lib/use-work-pages";
+import type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
 import { usePreferences } from "@/lib/preferences";
 import { sourceDate } from "@/lib/format";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import { ActionButton } from "@/components/action-button";
+import { FormError } from "@/components/form-dialog";
 import { DataNotice, EmptyState, ErrorState, LoadingState, SeverityBadge, WorkflowBadge } from "@/components/states";
+
+export type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
 
 export interface WorkContext {
   query: string;
   selected: Set<string>;
   page: number;
   sort: "source-order" | "severity" | "title";
-}
-export interface ConfirmedWorkUpdates {
-  revision: number;
-  items: ReadonlyMap<string, { revision: number; item: WorkItem }>;
 }
 export function matchesWorkQuery(item: WorkItem, query: string): boolean {
   return `${item.title} ${item.assetName} ${item.ownerName ?? ""}`.toLowerCase().includes(query.trim().toLowerCase());
@@ -35,22 +34,8 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
   confirmed: ConfirmedWorkUpdates;
   canWrite: boolean;
 }) {
-  const currentRevision = useRef(confirmed.revision);
-  useLayoutEffect(() => { currentRevision.current = confirmed.revision; }, [confirmed.revision]);
-  const load = useCallback(async (signal: AbortSignal) => {
-    const revision = currentRevision.current;
-    return { response: await api.work(signal), revision };
-  }, []);
-  const resource = useResource(load);
-  const data = useMemo(() => {
-    const read = resource.data;
-    if (!read) return null;
-    return { ...read.response, items: read.response.items.map((item) => {
-      const update = confirmed.items.get(item.id);
-      // A read started before the acknowledgement cannot roll that row back.
-      return update && update.revision > read.revision ? update.item : item;
-    }) };
-  }, [resource.data, confirmed]);
+  const resource = useWorkPages(confirmed);
+  const data = resource.data;
   const { reducedMotion } = usePreferences();
   const selectPage = useRef<HTMLInputElement>(null);
   const { query, selected, sort } = context;
@@ -68,7 +53,9 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
     if (selectPage.current) selectPage.current.indeterminate = selectedOnPage > 0 && selectedOnPage < rows.length;
   }, [selectedOnPage, rows.length]);
   useEffect(() => {
-    if (resource.error?.code === "forbidden") setContext((previous) => ({ ...previous, selected: new Set() }));
+    if (resource.error?.code === "forbidden" || resource.error?.code === "not-found") {
+      setContext((previous) => ({ ...previous, selected: new Set() }));
+    }
   }, [resource.error, setContext]);
   const updateQuery = (value: string) => setContext((previous) => ({ ...previous, query: value, page: 0 }));
   const select = (id: string, checked: boolean) => setContext((previous) => {
@@ -84,7 +71,7 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
     </header>
 
     {data && <div className="work-summary" aria-label="Current result summary">
-      <div><span className="summary-label"><Icon name="layers" size={16} />Findings in view</span><strong>{matching.length.toLocaleString()}</strong><span>of {data.total.toLocaleString()} returned by the API</span></div>
+      <div><span className="summary-label"><Icon name="layers" size={16} />Findings in view</span><strong>{matching.length.toLocaleString()}</strong><span>of {data.total.toLocaleString()} returned by the API at the last read</span></div>
       <div><span className="summary-label"><Icon name="user" size={16} />Without an owner</span><strong>{matching.filter((item) => item.ownerName === null).length.toLocaleString()}</strong><span>ownership is not inferred</span></div>
       <div><span className="summary-label"><Icon name="clock" size={16} />Unknown scan time</span><strong>{matching.filter((item) => item.sourceScanAt === null).length.toLocaleString()}</strong><span>import time is kept separate</span></div>
     </div>}
@@ -94,18 +81,24 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
         <div className="queue-title"><span className="section-mark" /><h2>Finding queue</h2><span className="subtle-pill">{canWrite ? "In-context actions" : "Read only"}</span></div>
         <div className="filter-field"><Icon name="search" size={17} /><input id="finding-filter" ref={filterRef} type="text" enterKeyHint="search" aria-label="Filter findings" placeholder="Filter by title, asset, or owner" value={query} onChange={(event) => updateQuery(event.target.value)} />{query && <button type="button" className="clear-filter" aria-label="Clear finding filter" onClick={() => { updateQuery(""); filterRef.current?.focus(); }}><Icon name="close" size={15} /></button>}</div>
       </div>
-      {resource.error && <ErrorState error={resource.error} retry={resource.reload} stale={data !== null} />}
+      {resource.error && (resource.continuation ? <div className="inline-status">
+        <FormError error={resource.error} /><ActionButton variant="outline" disabled={resource.pending} onClick={resource.retry}>Retry more findings</ActionButton>
+      </div> : <ErrorState error={resource.error} retry={resource.reload} stale={data !== null} />)}
       {resource.status === "loading" && !data && <LoadingState label="Loading findings" />}
       {data && <p className="inline-status" role={resource.status === "loading" ? "status" : undefined}><Icon name={resource.status === "loading" ? "clock" : "info"} size={15} />
-        {resource.status === "loading" ? "Refreshing findings. Current results stay in place." :
-          resource.error ? "Refresh failed. Showing the last received findings." : "Loaded findings. Refresh to check for updates."}</p>}
+        {resource.status === "loading" ? `${resource.continuation ? "Loading more findings." : "Refreshing findings."} Current results stay in place.` :
+          resource.error ? "Read failed. Showing the last confirmed findings." : "Loaded findings. Refresh to check for updates."}</p>}
       {data && <>
         {selected.size > 0 && <motion.div role="status" className="selection-toolbar" initial={reducedMotion ? false : { opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }}>
           <span className="selection-count">{selected.size}</span><span>selected<span className="selection-scope"> / {selectedOnPage} on this page</span></span>
           <span className="selection-boundary">{canWrite ? "Open a finding to make changes. Bulk actions are not available." : "Read-only selection. Open a finding to review its evidence."}</span>
           <Button variant="ghost" size="sm" onClick={() => setContext((previous) => ({ ...previous, selected: new Set() }))}>Clear selection</Button>
         </motion.div>}
-        {data.nextCursor !== null && <p className="inline-status"><Icon name="info" size={15} />More results exist on the service. Filtering and selection apply only to this loaded result set.</p>}
+        <p className="inline-status"><Icon name="info" size={15} />Filtering and Finding/Severity sorting apply only to loaded findings.</p>
+        <p className="inline-status" role="status" aria-label="Finding pagination"><Icon name="info" size={15} />
+          {data.items.length.toLocaleString()} loaded findings; {data.total.toLocaleString()} total reported by the last returned page.{" "}
+          {data.nextCursor !== null ? "More results remain on the service. " : "The last returned page has no continuation. "}
+          Pages and counts are not a single atomic snapshot.</p>
         {matching.length === 0 ? <EmptyState title="No findings" description={query ? "Nothing in the loaded results matches this filter. Try a different title, asset, or owner." : "The service returned no findings in this view. Connect a source when verified integrations become available."}>
           {query ? <Button variant="outline" onClick={() => updateQuery("")}>Clear filter</Button> : <Button asChild variant="outline"><a href="#/integrations">Explore integrations<Icon name="arrow" /></a></Button>}
         </EmptyState> : <>
@@ -136,6 +129,8 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
           </div>
           <footer className="table-footer"><span>{page * pageSize + 1}-{Math.min((page + 1) * pageSize, matching.length)} of {matching.length.toLocaleString()} loaded findings</span><div className="pagination"><Button variant="ghost" size="sm" disabled={page === 0} onClick={() => setContext((previous) => ({ ...previous, page: page - 1 }))}>Previous</Button><span>Page {page + 1} of {pageCount}</span><Button variant="ghost" size="sm" disabled={page + 1 >= pageCount} onClick={() => setContext((previous) => ({ ...previous, page: page + 1 }))}>Next</Button></div></footer>
         </>}
+        {data.nextCursor !== null && <div className="inline-status"><ActionButton variant="outline" disabled={resource.pending}
+          onClick={resource.loadMore}>Load more findings<Icon name="chevron" /></ActionButton></div>}
       </>}
     </section>
     <p className="view-footnote"><Icon name="shield" size={15} />Source evidence, human decisions, and verification are separate. Opening a finding triggers no external action.</p>

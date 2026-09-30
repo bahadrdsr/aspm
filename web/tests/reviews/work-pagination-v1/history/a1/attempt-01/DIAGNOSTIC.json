@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "classification": "Fixture/spec diagnostic, not a new production defect or qualifying pass. No unchanged-byte retry.",
+  "archives": [
+    {
+      "source": {
+        "path": "web\\tests\\work-pagination-fixture.ts",
+        "bytes": 19830,
+        "sha256": "5a2d354a67880b7cd6bf758d111b0211bcbd48aea6eac891fb03edb19d9cf43e"
+      },
+      "archive": {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\work-pagination-fixture.ts.before.txt",
+        "bytes": 19830,
+        "sha256": "5a2d354a67880b7cd6bf758d111b0211bcbd48aea6eac891fb03edb19d9cf43e"
+      }
+    },
+    {
+      "source": {
+        "path": "web\\tests\\work-pagination-ui.spec.ts",
+        "bytes": 25983,
+        "sha256": "bbfe4d85629f357c5b7c2ae068389fc923b061179730e7419e18fa2398114898"
+      },
+      "archive": {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\work-pagination-ui.spec.ts.before.txt",
+        "bytes": 25983,
+        "sha256": "bbfe4d85629f357c5b7c2ae068389fc923b061179730e7419e18fa2398114898"
+      }
+    }
+  ],
+  "results": {
+    "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\results.json",
+    "bytes": 1531435,
+    "sha256": "64afcb58e0ae43b5e4c87193dd200b8de1e5b1cd4d587feecf41444d479c5984"
+  },
+  "validation": {
+    "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\validation.json",
+    "bytes": 1756,
+    "sha256": "9c47e9b864074115ff2e6347e5d183c69e2fc00d49b22cdb7bb215ed2b973b8e"
+  },
+  "passed": [
+    "WP1",
+    "WP2",
+    "WP4",
+    "WP6"
+  ],
+  "failed": [
+    "WP3",
+    "WP5"
+  ],
+  "retryCount": 0,
+  "failures": [
+    {
+      "case": "WP3",
+      "durationMs": 8415,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute.",
+        "ACK protected its loaded source page while an older page settled and a different page started after ACK.",
+        "Stale refresh did not undo a later workflow ACK; owner ACK moved a row out of the local filter without losing filter/focus context."
+      ],
+      "cohorts": {
+        "work": [
+          {
+            "workspace": "11000000000000000000000000000001",
+            "closed": true,
+            "requestIndexes": [
+              2,
+              3
+            ]
+          },
+          {
+            "workspace": "11000000000000000000000000000001",
+            "closed": false,
+            "requestIndexes": []
+          }
+        ],
+        "detailDenial": []
+      },
+      "combinedAPICalls": 18,
+      "violations": [],
+      "httpTail": [
+        {
+          "index": 16,
+          "method": "GET",
+          "path": "/api/v1/findings/510000000000000000000000000000cf",
+          "workspace": "11000000000000000000000000000001",
+          "query": {},
+          "status": 200,
+          "responseStatus": null,
+          "finished": false,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "index": 17,
+          "method": "GET",
+          "path": "/api/v1/findings/510000000000000000000000000000cf",
+          "workspace": "11000000000000000000000000000001",
+          "query": {},
+          "status": 200,
+          "responseStatus": 200,
+          "finished": true,
+          "failure": null
+        }
+      ],
+      "trace": {
+        "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\trace.zip",
+        "bytes": 1567496,
+        "sha256": "de3cdf296fcd0fda6e174e90780d816b0310146a5677e36382a49a1f33713994"
+      },
+      "errorContext": {
+        "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\results\\work-pagination-ui-WP3-Pag-d978c--or-create-unrequested-rows\\error-context.md",
+        "bytes": 54499,
+        "sha256": "ea9eb7f19cb1b2e41719e057a72518230d47870cd0834f466ae9517f17d950d0"
+      }
+    },
+    {
+      "case": "WP5",
+      "durationMs": 6939,
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.",
+        "New Load more findings control reached; remaining narrative can execute."
+      ],
+      "cohorts": {
+        "work": [
+          {
+            "workspace": "11000000000000000000000000000001",
+            "closed": true,
+            "requestIndexes": [
+              2,
+              3
+            ]
+          },
+          {
+            "workspace": "11000000000000000000000000000002",
+            "closed": true,
+            "requestIndexes": [
+              5,
+              6
+            ]
+          }
+        ],
+        "detailDenial": [
+          {
+            "path": "/api/v1/findings/61000000000000000000000000000001",
+            "workspace": "11000000000000000000000000000002",
+            "closed": false,
+            "requestIndexes": [
+              8,
+              9
+            ]
+          }
+        ]
+      },
+      "combinedAPICalls": 10,
+      "violations": [],
+      "httpTail": [
+        {
+          "index": 7,
+          "method": "GET",
+          "path": "/api/v1/work",
+          "workspace": "11000000000000000000000000000002",
+          "query": {
+            "limit": "100",
+            "cursor": "61000000000000000000000000000064"
+          },
+          "status": 200,
+          "responseStatus": null,
+          "finished": false,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "index": 8,
+          "method": "GET",
+          "path": "/api/v1/findings/61000000000000000000000000000001",
+          "workspace": "11000000000000000000000000000002",
+          "query": {},
+          "status": 401,
+          "responseStatus": null,
+          "finished": false,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "index": 9,
+          "method": "GET",
+          "path": "/api/v1/findings/61000000000000000000000000000001",
+          "workspace": "11000000000000000000000000000002",
+          "query": {},
+          "status": 401,
+          "responseStatus": 401,
+          "finished": false,
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "trace": {
+        "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\trace.zip",
+        "bytes": 547081,
+        "sha256": "d559d20808790790b3946af10b07d378da6d514214c32ef81658a3ad3e411594"
+      },
+      "errorContext": {
+        "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-01\\results\\work-pagination-ui-WP5-Wor-ae1b2--append-or-persistent-state\\error-context.md",
+        "bytes": 14100,
+        "sha256": "6d93b8e3ca60504e5fc6ebf9b5a0898bc8e16619a1f9738f0b8e4ca780d13369"
+      }
+    }
+  ],
+  "diagnosis": {
+    "WP3": "Hash-only page.goto is same-document navigation. No Work entry request occurred (cohort empty), while both unloaded-detail GETs were handled. Make the intended new entry a real browser reload without changing ACK assertions.",
+    "WP5": "Both detail calls were declared 401. The first aborted before response. The second emitted an actual 401 response and the real App displayed Sign in, then authority revocation aborted its body. client.ts:466 rejects the session on response headers before response.json. Capture the nonaborted response event explicitly, retaining the later real abort, rather than imposing requestfinished on a 401 that correctly ends its own authority."
+  }
+}

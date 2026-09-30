@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "name": "work-pagination-v1-amendment-a1",
+  "createdAt": "2026-09-30T16:32:01.880434+00:00",
+  "status": "FROZEN unsigned A1 test amendment; parent verification/sealing pending; no reviewer stage.",
+  "role": "TEST/UAT author",
+  "historicalControls": {
+    "manifest": {
+      "path": ".oracles\\work-pagination-v1.json",
+      "bytes": 283905,
+      "sha256": "817f0494e117f9c7993377c891e76cdfe6223fbcaa2c1cfdcd91bb7eca59f331"
+    },
+    "originalCount": 1429,
+    "unchangedAtInitialCapture": 1429,
+    "unchangedAfterApprovedTestChanges": 1427,
+    "approvedDifferences": [
+      {
+        "path": "web\\tests\\work-pagination-fixture.ts",
+        "beforeSHA256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22",
+        "afterSHA256": "faa6b1bf74ebda13207f279280fb7d2716d0c07378bcc269176be6e314ef2e60"
+      },
+      {
+        "path": "web\\tests\\work-pagination-ui.spec.ts",
+        "beforeSHA256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f",
+        "afterSHA256": "46db7c0aafcb298a1794d466b797c0aced41cfe3a6bfac7663f22f2f748cfd0e"
+      }
+    ],
+    "originalPacketAndHandoffAndSignaturesPreserved": [
+      {
+        "path": ".oracles\\work-pagination-v1.json",
+        "bytes": 283905,
+        "sha256": "817f0494e117f9c7993377c891e76cdfe6223fbcaa2c1cfdcd91bb7eca59f331"
+      },
+      {
+        "path": ".oracles\\work-pagination-v1.json.sig",
+        "bytes": 89,
+        "sha256": "36dc40a186f8a4ae5e9027886f06f69544a74edf83e0fdf141f67c9930e7bf91"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET.json",
+        "bytes": 25052,
+        "sha256": "6a4df003318502bc451247a66528840f86f4d6ef48f207eb5772b8a538b23648"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET.sha256",
+        "bytes": 78,
+        "sha256": "814dbe906f17d38bbadb86e1d31673d8a6382d38c4a4c89027d3416dadf11ff1"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.json",
+        "bytes": 5110,
+        "sha256": "d00d9f62d161e964e370405bfa67e5263d050a0970e08d577fc9515bf7edf671"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.sha256",
+        "bytes": 79,
+        "sha256": "02c787598d5032ccce9dfc0967906c0e2054fc940a5295f0ed183f1c15604a37"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.txt",
+        "bytes": 7020,
+        "sha256": "59202e2580747b90b511d199da734c08def3548d1e242284053981963be5fca1"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\CONTRACT.txt",
+        "bytes": 8363,
+        "sha256": "68774e3e3fc3f367b0c56865f1aff74786880a3cbdbd1bfb44191eb1520136f4"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\DECISIONS.json",
+        "bytes": 2492,
+        "sha256": "c8d3a9b7d53c773ec29a3adf73b77ab756d41d68ee381b2ef5dbb6f5f3152c12"
+      }
+    ],
+    "newSealCreated": false
+  },
+  "scope": {
+    "modifiedTestPaths": [
+      "web\\tests\\work-pagination-fixture.ts",
+      "web\\tests\\work-pagination-ui.spec.ts"
+    ],
+    "productionEdited": false,
+    "oldTestsSharedFixturesDataRunnerConfigBudgetsDependenciesEdited": false,
+    "realBrowserReloadOnlyForDeclaredDeepEntry": true,
+    "live401Proof": "An actual 401 response event while Request.failure and recorded failure are clear, plus real App Sign in and stale Work abort. Later revocation-body abort is preserved, not relabeled as a completed response."
+  },
+  "heldProduction": [
+    {
+      "path": "web\\src\\api\\client.ts",
+      "bytes": 35920,
+      "sha256": "3c6ac9da46e72430416f7935048e1fc6009b14a0706be2b2985518f1d3f74569"
+    },
+    {
+      "path": "web\\src\\lib\\use-work-pages.ts",
+      "bytes": 3529,
+      "sha256": "475b4aa5bf4cc85064b3ac6c9e1f45251dccea617d58baef1db107c86c1659a8"
+    },
+    {
+      "path": "web\\src\\pages\\work.tsx",
+      "bytes": 12090,
+      "sha256": "727d06406be4fe87bcea7294846c449a970f1b7f880f7ec886f8aecdb6a256e7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 37217,
+      "sha256": "0f68817a5ae10decc9f428a1551989b615a59f7b74906c13a02e1513fdb213f9"
+    }
+  ],
+  "readLocksDuringValidation": 4,
+  "testFiles": [
+    {
+      "path": "web\\tests\\work-pagination-fixture.ts",
+      "bytes": 20173,
+      "sha256": "faa6b1bf74ebda13207f279280fb7d2716d0c07378bcc269176be6e314ef2e60"
+    },
+    {
+      "path": "web\\tests\\work-pagination-ui.spec.ts",
+      "bytes": 26123,
+      "sha256": "46db7c0aafcb298a1794d466b797c0aced41cfe3a6bfac7663f22f2f748cfd0e"
+    }
+  ],
+  "additiveReviewFiles": [
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\AMENDMENT-A1.txt",
+      "bytes": 5399,
+      "sha256": "00b1aeda941b663589205f7e57bd299ba8814d4deaeb29a7662d387495642fe2"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\RESULTS-A1.json",
+      "bytes": 8959,
+      "sha256": "1d94d30b35edbf4e2e5cb817f4b52145d3dcd1eeaaae3d31c625a928ddcec7e5"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\CALIBRATION-A1.json",
+      "bytes": 6146,
+      "sha256": "e54e70b3259cc16bfad155928574dea72251c33ed5c8657e61b49c773c1ec695"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\BASELINE.json",
+      "bytes": 15238,
+      "sha256": "3a33497efcfbc2f80a377f9159011d0e2a80b1b8a6fabf7f856917cc2fb9450e"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\work-pagination-fixture.ts.before.txt",
+      "bytes": 16310,
+      "sha256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\work-pagination-ui.spec.ts.before.txt",
+      "bytes": 24775,
+      "sha256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\DIAGNOSTIC.json",
+      "bytes": 7604,
+      "sha256": "62aa25e809fa0dfb501303015c2d51b3bdf65243fd7455103ceb17685fbf2e73"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\work-pagination-fixture.ts.before.txt",
+      "bytes": 19830,
+      "sha256": "5a2d354a67880b7cd6bf758d111b0211bcbd48aea6eac891fb03edb19d9cf43e"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\work-pagination-ui.spec.ts.before.txt",
+      "bytes": 25983,
+      "sha256": "bbfe4d85629f357c5b7c2ae068389fc923b061179730e7419e18fa2398114898"
+    }
+  ],
+  "evidence": [
+    {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\results.json",
+      "bytes": 1943162,
+      "sha256": "ed7857e7db13393e3360824e4f9a73ab98ea98d151c4ee13b69239d46efe0f8d"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\typecheck.log",
+      "bytes": 49,
+      "sha256": "091ce51a9ff6adf770a52124cace3cdd3e4789cfdab47fb9dbc50ae088895de8"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\browser.log",
+      "bytes": 968,
+      "sha256": "1c75548aa2e900aa6924556e9be34df1244eb1992ec5eec6897d826544fe4e46"
+    },
+    {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\validation.json",
+      "bytes": 1884,
+      "sha256": "fab486e0aa77e78971306bde66b011b72e74a47640a461cff0bd2e1f12212471"
+    }
+  ],
+  "results": {
+    "selected": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "retries": 0,
+    "typecheckExitCode": 0,
+    "maximumCombinedAPICalls": 28,
+    "settings": {
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "workers": 1,
+      "retries": 0,
+      "combinedAPICap": 60,
+      "serviceWorkers": "block",
+      "trace": "retain-on-failure",
+      "screenshot": "only-on-failure",
+      "port": 18824,
+      "normalTLS": true,
+      "runnerConfigOrBudgetChanges": false
+    },
+    "unchangedNarrativeChecks": {
+      "sixCaseIdentitiesUnchanged": true,
+      "WP2_WP4_WP6BodiesTextIdentical": true,
+      "WP3OnlyAdditionalSetupIsPageReload": true,
+      "WP5LoginLogoutTailTextIdentical": true
+    }
+  },
+  "calibration": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\CALIBRATION-A1.json",
+    "bytes": 6146,
+    "sha256": "e54e70b3259cc16bfad155928574dea72251c33ed5c8657e61b49c773c1ec695"
+  },
+  "limitations": [
+    "Old 115 cases were not rerun; their frozen control bytes are unchanged.",
+    "Synthetic HTTP boundary only, not backend/provider qualification.",
+    "No reviewer, publication, feature-completion or new signed-control claim."
+  ]
+}

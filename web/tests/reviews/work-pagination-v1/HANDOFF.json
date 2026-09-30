@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-21T11:27:51.492Z",
+  "status": "FROZEN unsigned independent UI test packet: six actual missing-control REDs; parent verification/new seal before separate implementation.",
+  "author": {
+    "id": "independent-work-pagination-author-20260921",
+    "agentId": "f93d054c-caa3-4c46-9e3d-e49dbfb1e99e",
+    "role": "Independent test author, not implementation coder or accepting reviewer"
+  },
+  "publishedHEAD": "c1783cf778c3277b68dac8dd9ea747b293c7e56c",
+  "packet": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET.json",
+    "bytes": 25052,
+    "sha256": "6a4df003318502bc451247a66528840f86f4d6ef48f207eb5772b8a538b23648"
+  },
+  "packetChecksum": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET.sha256",
+    "bytes": 78,
+    "sha256": "814dbe906f17d38bbadb86e1d31673d8a6382d38c4a4c89027d3416dadf11ff1"
+  },
+  "readme": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.txt",
+    "bytes": 7020,
+    "sha256": "59202e2580747b90b511d199da734c08def3548d1e242284053981963be5fca1"
+  },
+  "contract": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\CONTRACT.txt",
+    "bytes": 8363,
+    "sha256": "68774e3e3fc3f367b0c56865f1aff74786880a3cbdbd1bfb44191eb1520136f4"
+  },
+  "scope": {
+    "included": "Native manual Work continuation only; bare initial/refresh GET, cursor+limit100 continuation, existing 50-row display/local filter-sort/selection and canonical ACK reconciliation.",
+    "excluded": [
+      "Server-side search",
+      "Global/server sorting",
+      "Saved views",
+      "New backend/API",
+      "Broader M05 completion",
+      "Unrelated future backend/packaging work"
+    ],
+    "productionChanged": false
+  },
+  "newTestSources": [
+    {
+      "path": "web\\tests\\work-pagination-data.ts",
+      "bytes": 3363,
+      "sha256": "40088080e2f96c2ce4935a4b7e8965550f5c91568b601cfe3ceeb461c8e6ac20"
+    },
+    {
+      "path": "web\\tests\\work-pagination-fixture.ts",
+      "bytes": 16310,
+      "sha256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22"
+    },
+    {
+      "path": "web\\tests\\work-pagination-ui.spec.ts",
+      "bytes": 24775,
+      "sha256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f"
+    }
+  ],
+  "qualification": {
+    "typecheck": "passed",
+    "newCases": {
+      "selected": 6,
+      "passed": 0,
+      "failed": 6,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0
+    },
+    "newFunctionalTails": "ALL BLOCKED/NOT RUN after absent Load more findings. No fake GREEN from fixture data.",
+    "original115": {
+      "selected": 115,
+      "passed": 115,
+      "failed": 0,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0
+    },
+    "original115IdentityMultisetUnchanged": true,
+    "fullOriginalCompatibilityRuns": 1,
+    "trackedFrontendFilesUnchanged": 616,
+    "frontendSourcesUnchanged": 83,
+    "originalSpecFilesUnchanged": 21,
+    "executionDependenciesUnchanged": 5150,
+    "heldInputCount": 5775,
+    "sourceHold": "FileShare.Read plus before/after SHA256",
+    "newCaseCombinedAPICalls": 4,
+    "abortedInitialReadsCounted": true,
+    "fixtureViolations": 0,
+    "pageErrors": 0,
+    "externalAttempts": 0
+  },
+  "settings": {
+    "caseTimeoutMs": 20000,
+    "expectTimeoutMs": 5000,
+    "workers": 1,
+    "retries": 0,
+    "combinedAPICap": 60,
+    "serviceWorkers": "block",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure",
+    "ownedPort": 18824,
+    "normalTLSUnchanged": true
+  },
+  "results": {
+    "red": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\RED.json",
+      "bytes": 19206,
+      "sha256": "f91789c4b450763f660bc8f78c6fa394ccabe7eeb3b33ff22f54845186650e37"
+    },
+    "typecheck": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\TYPECHECK.json",
+      "bytes": 590,
+      "sha256": "cdbf3275e3e51f022dfa6eabaed4e439d48bbb829f2644420615520d2d0e9c40"
+    },
+    "compatibility": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\COMPATIBILITY.json",
+      "bytes": 29655,
+      "sha256": "0a7d448ffcbcaf40d4491e7fa774f608e53c93f0b2c0356b8cf4ee7339c342b4"
+    },
+    "guards": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\GUARDS.json",
+      "bytes": 3037,
+      "sha256": "dd354129474453527c796cdbd7a5a64cdb6d2878dfe8be6875ed937c41c69d9a"
+    },
+    "readme": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\HANDOFF.txt",
+      "bytes": 7020,
+      "sha256": "59202e2580747b90b511d199da734c08def3548d1e242284053981963be5fca1"
+    }
+  },
+  "historicalOracleQualification": [
+    {
+      "path": "scripts\\package-image.mjs",
+      "historical": "7247c24c1cfbcbd03acc1b121d7c3c42d4b4c8965696f5da9c2a70db9e127c44",
+      "published": "0e4aa9ee1741ff064ad4267734bef5fb04c465b2eb8f98f0fdeafc7c46d2fe2d",
+      "qualification": "Outside frontend scope; already published at c1783cf. Original oracle bytes remain unchanged, not recaptured."
+    }
+  ],
+  "stop": "Parent verifies/seals exact new controls and actual RED, then assigns separate coder/reviewer. Author stops; server search/sort/saved views remain future M05 gates."
+}

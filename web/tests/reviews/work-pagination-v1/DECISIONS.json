@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "author": "independent-work-pagination-author-20260921",
+  "contractWrittenBeforeTests": true,
+  "manualContinuationOnly": true,
+  "serverSearchSortAndSavedViews": "OUT OF SCOPE and still open M05 gates",
+  "routes": {
+    "entryAndRefresh": "Bare GET /api/v1/work, no body",
+    "continuation": "GET /api/v1/work with exactly cursor=<native32hex> and limit=100, no body",
+    "localFilterSort": "Zero HTTP; preserve existing loaded-row behavior",
+    "mutation": "Only declared existing owner/workflow PATCH, exact body and canonical receipt",
+    "nativeAIAndSlackAndSourceHistory": "No new reads or implicit activation"
+  },
+  "reconciliation": {
+    "refresh": "Canonical first page replaces loaded set and resets Work continuation, unlike the older Assets frontier policy.",
+    "ACK": "Older page snapshots remain fenced by the canonical ACK even when a different page starts later.",
+    "unloadedACK": "Never insert a Work row absent from confirmed Work pages.",
+    "denial": "Work 403/404 withholds Work rows/selections through 503 and detail ACK until Work 200; no invented global detail denial."
+  },
+  "fixtureSetupCorrection": {
+    "firstRun": "missing-control-red-v1 is SETUP DIAGNOSTIC, not accepted missing-control RED.",
+    "observed": "Actual published StrictMode lifecycle made one bare Work request which was aborted, then one usable bare request.",
+    "correction": "Explicit entry/scope/login cohorts permit at most two bare initial reads, require exactly one non-aborted completion, verify any extra is actually aborted, and close after confirmed first render.",
+    "unchangedGuards": "Every request still enters the ledger and 60-call cap. No arbitrary bare fallback, continuation fallback, disabled StrictMode, cleanup delay, UI replacement or old-fixture edit.",
+    "subsequentReads": "Every refresh/continuation remains explicitly scheduled; no automatic polling or draining is admitted."
+  },
+  "publishedBaseline": {
+    "HEAD": "c1783cf778c3277b68dac8dd9ea747b293c7e56c",
+    "historicalOracle": "The older UI A1 oracle references a superseded scripts/package-image.mjs. That packaging-only change is already committed in the requested HEAD and is outside this frontend cut.",
+    "authority": "Pin current published frontend/shared dependencies and every old frontend assertion/fixture. Preserve original oracle/signature bytes; do not recapture or freeze unrelated backend/packaging work."
+  }
+}

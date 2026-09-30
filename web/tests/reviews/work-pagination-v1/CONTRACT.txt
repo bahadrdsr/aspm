@@ -1,0 +1,135 @@
+WORK PAGINATION V1 - MANUAL NATIVE CONTINUATION ONLY
+==================================================
+
+Independent test author: independent-work-pagination-author-20260921.
+Published HEAD c1783cf778c3277b68dac8dd9ea747b293c7e56c.
+This contract precedes new tests. No production/backend/dependency/old test,
+fixture/helper/control edits, agents, commits or live API/DB/provider access.
+The existing 115 cases and all their assertion/fixture bytes remain unchanged.
+Parent verifies/seals this new RED packet before a separate coder/reviewer.
+
+Scope and surface
+-----------------
+This closes inaccessible native Work continuation only. Server search/sort,
+saved views, global-result sorting and broader M05 completion remain OPEN.
+Keep the five navigation links, initial bare Work request, existing Work
+context, 50-row display pages, Previous/Next and human finding actions.
+No timers, automatic draining/polling, new navigation or new backend/API.
+
+Inside "Finding work queue", add one button "Load more findings" when an
+authorized confirmed nextCursor remains. Busy state disables duplicate load
+activation, while confirmed rows and other usable local controls stay present.
+Continuation errors expose an alert and "Retry more findings"; retry preserves
+the exact failed native cursor and limit. Refresh remains the existing Refresh.
+Exhaustion can remove or natively disable Load more findings.
+
+An accessible status named "Finding pagination" describes all confirmed LOADED
+rows and the LAST RETURNED server total, independent of the local filter.
+Explain whether more results remain and that separate pages/counts are not a
+single atomic snapshot. Existing 50-row page text can describe filtered loaded
+matches. Clearly state that BOTH filtering and Finding/Severity sorting apply
+only to loaded findings, even after the last known cursor is exhausted.
+
+Exact HTTP and authority
+-----------------------
+Initial load, scope/session entry and manual first-page Refresh:
+  GET /api/v1/work
+  No query and no body.
+An explicitly consumed continuation:
+  GET /api/v1/work?limit=100&cursor=<32-lowercase-hex-native-ID>
+  No body. Query order is irrelevant. No duplicate query keys.
+No q, offset, page number, sort, saved-view, role, actor, credential or other
+authority is added. Filter/sort changes issue ZERO HTTP.
+Keep the real shared typed parser/errors and bounded query encoder; reuse or
+extract pure helpers rather than inventing a second parser/framework.
+
+The original first-page parser may preserve an UNUSED legacy synthetic cursor.
+Do not reject its otherwise valid first page merely because an old fixture
+never intends to consume that cursor. Validate before consumption: a malformed
+cursor must produce an explicit error without HTTP or losing confirmed rows.
+Once continuation is requested, malformed metadata or a nonadvancing/repeated
+nextCursor is an explicit failed page, not success/exhaustion/automatic retry.
+Keep the last confirmed frontier available for exact manual retry.
+
+Successful native pages merge by ID without duplicate visible rows. Native
+server order is retained before optional local loaded-row sorting. Failed
+continuations commit no rows/cursor/total. An authorized empty tail with null
+cursor can end continuation; an empty/error/denied response without that
+authorized null does not. A later total may differ from loaded count.
+
+Refresh and reconciliation decisions
+------------------------------------
+A successful explicit bare refresh starts a new canonical first-page set and
+resets continuation to THAT response's cursor. Unlike the prior Assets cut,
+do not preserve an old Work continuation frontier after this replacement.
+Keep active filter/sort/selection and usable display-page/focus context.
+Never automatically fetch remaining pages to reconstruct the old set.
+
+A canonical finding PATCH ACK is visible immediately in a loaded row. A read
+started before ACK cannot overwrite it. Starting another page after that ACK
+must not withdraw its protection from older already-loaded page snapshots.
+Track source/request order as appropriate; no server revision/header is
+invented. New reads can reconcile their own current canonical rows.
+Opening/closing a finding and owner changes moving it out of a local filter
+must preserve coherent context/focus. A valid detail ACK for an UNLOADED ID
+must not manufacture a Work row or increase loaded count.
+Only explicit existing human actions mutate findings; Bulk actions remain
+unavailable and all original source/evidence/verification fields stay intact.
+
+Errors, denial and epochs
+------------------------
+503, a failed network read and invalid continuation metadata retain permitted
+confirmed rows and the failed cursor for explicit retry, with an honest alert.
+Authoritative Work 403/404 clears ALL protected Work rows and selected IDs.
+Those rows/selections stay withheld during pending/failed 503 reads until an
+authorized Work 200. Do not show "No findings" as a denial/failed-read success.
+An authorized detail response/PATCH ACK is NOT a new Work authorization.
+Do not infer global cross-route permission: a still-authorized open detail
+may retain its own context/actions while Work alone is denied.
+
+Workspace switch, global 401 and logout abort old reads and discard old Work/
+finding contexts. Released old-scope pages cannot append or cross workspaces.
+Keep cookie/workspace authority, server role checks and existing session flow.
+A stale cached analyst role cannot turn a server-rejected PATCH into success.
+Viewer Work reads remain useful; Work continuation itself is GET-only.
+
+Six actual-browser narratives
+----------------------------
+WP1 Manual 100+100+7, distinct 50-row Previous/Next, local-only filter/sorts,
+    loaded/server counts, source order and stable selection.
+WP2 Held 503/network/invalid/repeated-cursor retries, genuine empty null tail,
+    malformed UNUSED first-page cursor rejected only on consumption.
+WP3 Held page + actual canonical finding PATCH, later-page source ordering,
+    stale first-page refresh, filter exit, unloaded ACK/no phantom row,
+    authoritative PATCH-role denial without inventing Work denial.
+WP4 Explicit first-page refresh reset, 403/404 Work withholding through 503,
+    independent detail authority/ACK and later authorized Work recovery.
+WP5 Workspace/401/logout epochs with held native pages and no cross-scope append.
+WP6 390px/reduced-motion busy/focus/selection/display-page/filter stability.
+
+Synthetic boundary and evidence
+-------------------------------
+Render the actual App. The new isolated HTTP fixture supplies protocol-shaped
+metadata only. It reuses existing native-ID, page-parameter, finding DTO and
+Work projection helpers. It does not implement UI merging, revisions, denial
+latches, hooks, DOM, clocks, handlers or timers on the app's behalf.
+All calls are logged, including denied/aborted/malformed requests. Undeclared
+HTTP/WebSockets and external destinations are blocked before I/O; only local
+Vite assets/HMR and explicitly scheduled synthetic API responses are allowed.
+No AI/Slack/source-history read is activated by Work continuation or ordinary
+finding open. Existing initial finding DTO histories are not separate reads.
+
+Only explicitly queued PATCH ACK metadata is supported for owner/workflow
+reconciliation. It carries the exact selected body, full canonical finding and
+actual synthetic current server role. It is not a new mutation implementation.
+Session/logout/login remain existing protocol boundaries; synthetic credentials
+are not logged or placed in browser storage, URLs, readable cookies or DOM.
+
+20s cases, 5s expectations, one worker, zero retries/skips, combined 60 API calls
+per case, blocked service workers, retained failure traces/failure screenshots.
+No force clicks, sleeps, state/hook/DOM/clock replacements or 500+ row DOM stress.
+Browser evaluate observes state or synchronizes animation frames only.
+Run typecheck, real missing-control RED, then original-115 compatibility once.
+Record reached vs BLOCKED tails. Metadata is not fake GREEN or backend proof.
+Hold only current frontend/shared dependencies/controls, not unrelated future
+backend author work. Stop at frozen unsigned packet for parent verification.

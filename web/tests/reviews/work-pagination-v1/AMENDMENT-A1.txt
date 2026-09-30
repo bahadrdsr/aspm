@@ -1,0 +1,81 @@
+WORK PAGINATION V1: AMENDMENT A1
+2026-09-30, TEST/UAT author, no reviewer stage
+
+This is an additive, unsigned amendment. CONTRACT.txt, DECISIONS.json, the
+original PACKET/HANDOFF and existing signatures remain historical and unchanged.
+Only the new work-pagination fixture/spec are amended. Exact preceding bytes
+are in history\a1; shared fixtures, data, old 115 tests and runners are unchanged.
+
+Reason and evidence
+-------------------
+The astra-focused-20260930-01 run passed WP1/WP2/WP4. WP3/WP6 stopped at
+finishEntry line 52: the ledger contained two scheduled bare Work 200s with
+null failures. The raw traces actually include an aborted first request.
+The fixture registered the request only after awaiting allHeaders, so an early
+requestfailed event could be missed. A1 registers before that await, seeds only
+the real Request.failure value, and records response/requestfinished events.
+History BASELINE.json preserves this distinction and source artifact hashes.
+
+DECISIONS.json historically required exactly one nonaborted entry completion
+and an actual abort for any extra. That observation is not a transport invariant:
+StrictMode cleanup can race a completed read. A1 admits at most two explicitly
+declared bare scoped entry calls, requires at least one completed observed 200,
+and accepts only completed 200s or actual abort failures for the other call.
+The cohort closes after a confirmed 50-row render. No extra requests, delay in
+production, deduplication, StrictMode change, automatic drain or cap change.
+WP1's final ledger assertion counts the bounded entry cohort plus exactly the
+two explicitly requested continuations, rather than assuming one live entry.
+
+WP5's first held detail 401 was consumed by a request with net::ERR_ABORTED.
+Its second GET for the same finding took the default 200 response. No live 401
+reached the App, so waiting for Sign in did not test production 401 behavior.
+A1 declares two held 401 responses in one path/workspace-specific denial cohort.
+While active, that path cannot use default 200, including after an earlier 401
+changes synthetic authentication. A third request is rejected and ledgered.
+Other detail defaults, authentication, Work errors, ACKs and refresh stay intact.
+The case requires an actual 401 response event while the request is nonaborted,
+real App Sign in, stale Work abort and no protected restoration before closure.
+
+First A1 diagnostic (astra-a1-focused-20260930-01)
+------------------------------------------------
+WP1/WP2/WP4/WP6 passed. WP3 reached its unloaded-detail tail but no new Work read:
+hash-only page.goto is same-document navigation. An explicit browser reload now
+creates the intended new entry. All ACK, refresh and role-denial assertions stay
+unchanged; production is not made to refetch Work when a detail hash changes.
+
+WP5 delivered both declared 401s without a 200 fallback. The real App displayed
+Sign in and aborted the held Work page. Its active detail request received 401
+headers before authority revocation also aborted that request's body.
+client.ts rejects the scoped session at the 401 headers before response.json.
+Requiring requestfinished for this 401 was another invalid completion invariant.
+A1 records responseBeforeFailure directly at the actual response event, with
+Request.failure and the recorded requestfailed state both still clear. The
+event's real 401 plus actual Sign in is required; a scheduled or pre-delivery
+aborted 401 cannot qualify. A later real abort stays in the ledger unmodified.
+No production cleanup delay is added to manufacture a completed response body.
+Exact diagnostic test bytes and compact evidence are in history\a1\attempt-01.
+
+Calibration and validation
+--------------------------
+The six actual browser narratives include transport calibration: each closed
+entry has 1-2 exact bare scoped calls with recorded completion/abort outcomes;
+WP5 observes held 401-only detail calls before release, then requires a live
+401 event before failure and Sign in. Cohort indexes are attached to the ledger.
+No app hooks, DOM, business state, handlers, clocks or cleanup delays are replaced.
+
+Typecheck and six-case results, reached tails, exact hashes and any limitations
+are recorded in PACKET-A1.json and the single frozen HANDOFF-A1.json. The prior
+RED run-held runner pins the old producer and is not used to qualify current code.
+Validation uses the unchanged direct CLI/config, port 18824, cached dependencies
+and browser, normal TLS, 20s cases, 5s expects, one worker, zero retries and the
+unchanged combined 60 API-call cap. Four current coder production paths are held.
+No old-115 rerun, backend qualification, review, publication or feature completion
+claim is made. Parent verification and sealing remain pending.
+
+Final-byte validation: astra-a1-focused-20260930-02 passed typecheck and WP1-WP6
+in 25.8s, with zero retries/skips/flaky cases. API counts were 6/11/28/16/15/7
+(maximum 28 of 60); no fixture violations, page errors or external attempts.
+All four held production hashes and the other 1,427 original controls matched.
+Two-completed-entry transport is permitted, not claimed observed in this run.
+RESULTS-A1.json and CALIBRATION-A1.json bind the compact evidence; PACKET-A1.sha256
+and HANDOFF-A1.sha256 bind the final unsigned packet and single frozen handoff.

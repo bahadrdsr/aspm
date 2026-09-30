@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "method": "Observe real App transport events and actual UI through the same six-case unchanged Playwright CLI/config run; no app state/hook/DOM/clock replacement or production delay.",
+  "source": {
+    "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\results.json",
+    "bytes": 1943162,
+    "sha256": "ed7857e7db13393e3360824e4f9a73ab98ea98d151c4ee13b69239d46efe0f8d"
+  },
+  "entries": {
+    "cohortCount": 9,
+    "maximumDeclaredCalls": 2,
+    "totalObservedCalls": 18,
+    "completed200": 9,
+    "actualAbortFailures": 9,
+    "allClosedAfterConfirmed50RowRender": true,
+    "cohorts": [
+      {
+        "case": "WP1",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          2,
+          3
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP2",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          2,
+          3
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP3",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          2,
+          3
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP3",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          20,
+          22
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP4",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          2,
+          3
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP5",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          2,
+          3
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP5",
+        "workspace": "11000000000000000000000000000002",
+        "closed": true,
+        "requestIndexes": [
+          5,
+          6
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP5",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          11,
+          12
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      },
+      {
+        "case": "WP6",
+        "workspace": "11000000000000000000000000000001",
+        "closed": true,
+        "requestIndexes": [
+          2,
+          3
+        ],
+        "callCount": 2,
+        "completed200": 1,
+        "actualAbortFailures": 1,
+        "exactBareWorkspaceAndBody": true
+      }
+    ],
+    "twoCompletedOutcome": "Permitted by the bounded validator, not claimed observed in this run. Both completion and actual-abort paths were observed; no absent event was manufactured into an abort."
+  },
+  "heldDetail401": {
+    "heldBeforeReleaseAssertionPassed": true,
+    "realSignInAssertionPassed": true,
+    "noProtectedRestorationAssertionPassed": true,
+    "cohorts": [
+      {
+        "case": "WP5",
+        "path": "/api/v1/findings/61000000000000000000000000000001",
+        "workspace": "11000000000000000000000000000002",
+        "closed": true,
+        "requestIndexes": [
+          8,
+          9
+        ],
+        "declaredResponseSlots": 2,
+        "default200Count": 0,
+        "nonaborted401AtResponseEvent": 1,
+        "transport": [
+          {
+            "requestIndex": 8,
+            "status": 401,
+            "responseStatus": null,
+            "responseBeforeFailure": false,
+            "finished": false,
+            "failure": "net::ERR_ABORTED"
+          },
+          {
+            "requestIndex": 9,
+            "status": 401,
+            "responseStatus": 401,
+            "responseBeforeFailure": true,
+            "finished": false,
+            "failure": "net::ERR_ABORTED"
+          }
+        ]
+      }
+    ],
+    "qualification": "Nonaborted at the observed 401 response event, not a promise of requestfinished. Published authority revocation then aborts the body. Final real abort remains recorded; a planned or pre-response aborted 401 alone cannot qualify."
+  },
+  "oldWorkAcrossWorkspace401Logout": [
+    {
+      "requestIndex": 4,
+      "workspace": "11000000000000000000000000000001",
+      "query": {
+        "limit": "100",
+        "cursor": "51000000000000000000000000000064"
+      },
+      "responseStatus": null,
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "requestIndex": 7,
+      "workspace": "11000000000000000000000000000002",
+      "query": {
+        "limit": "100",
+        "cursor": "61000000000000000000000000000064"
+      },
+      "responseStatus": null,
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "requestIndex": 13,
+      "workspace": "11000000000000000000000000000001",
+      "query": {
+        "limit": "100",
+        "cursor": "51000000000000000000000000000064"
+      },
+      "responseStatus": null,
+      "failure": "net::ERR_ABORTED"
+    }
+  ],
+  "allObservedCallsWithin60PerCase": true,
+  "additionalNetworkForCalibration": 0,
+  "notes": [
+    "Third-call guards remain strict; calibration does not deliberately issue undeclared HTTP.",
+    "The initial A1 diagnostic also observed one-call completed entry cohorts in WP4 and WP6; that run is preserved, not promoted to six-case success."
+  ]
+}

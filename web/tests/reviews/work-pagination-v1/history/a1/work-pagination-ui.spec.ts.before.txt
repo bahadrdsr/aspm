@@ -1,0 +1,351 @@
+import type { Locator, Page } from "@playwright/test";
+import { requireProductionUI } from "./network";
+import { expect, test } from "./work-pagination-fixture";
+import type { WorkControl, WorkEntry, WorkPaginationAPI } from "./work-pagination-fixture";
+import {
+  alpha, alphaTotal, apiVersion, beta, betaCursor, betaTotal, currentOwner, cursor100, cursor200,
+  findingAt, first, later, password, pathFor, user, workItem,
+} from "./work-pagination-data";
+import type { ActionFinding } from "./work-pagination-data";
+
+test.use({ reducedMotion: "reduce", timezoneId: "UTC" });
+test.beforeEach(async ({ workAPI }) => { requireProductionUI(); expect(workAPI.requests).toEqual([]); });
+const main = (page: Page) => page.getByRole("main", { includeHidden: true });
+const queue = (page: Page) => main(page).getByRole("region", { name: "Finding work queue", exact: true, includeHidden: true });
+const table = (page: Page) => queue(page).getByRole("table", { name: "Findings", exact: true, includeHidden: true });
+const rows = (page: Page) => table(page).locator("tbody tr");
+const row = (page: Page, f = first) => rows(page).filter({ hasText: f.title });
+const trigger = (page: Page, f = first) => row(page, f).getByRole("button", { name: f.title, exact: true, includeHidden: true });
+const selected = (page: Page, f = first) => row(page, f).getByRole("checkbox", { name: `Select ${f.title}`, exact: true, includeHidden: true });
+const filter = (page: Page) => main(page).getByRole("textbox", { name: "Filter findings", exact: true, includeHidden: true });
+const more = (page: Page) => queue(page).getByRole("button", { name: "Load more findings", exact: true });
+const retry = (page: Page) => queue(page).getByRole("button", { name: "Retry more findings", exact: true });
+const refresh = (page: Page) => main(page).getByRole("button", { name: "Refresh", exact: true });
+const pagination = (page: Page) => queue(page).getByRole("status", { name: "Finding pagination", exact: true, includeHidden: true });
+const dialog = (page: Page, f = first) => page.getByRole("dialog", { name: f.title, exact: true });
+const workspace = (page: Page) => page.getByRole("combobox", { name: "Workspace", exact: true });
+const selection = (page: Page) => queue(page).getByRole("status", { includeHidden: true }).filter({ hasText: /selected.*on this page/i });
+const pageButton = (page: Page, name: "Previous" | "Next") => queue(page).getByRole("button", { name, exact: true });
+async function frames(page: Page) {
+  await page.evaluate(() => new Promise<void>((done) => requestAnimationFrame(() => requestAnimationFrame(() => done()))));
+}
+async function arrived(control: WorkControl) {
+  await expect.poll(() => control.call !== null, "The explicit native HTTP operation must reach the guarded ledger.").toBe(true);
+  return control.call!;
+}
+async function release(page: Page, control: WorkControl, aborted = false) {
+  control.release(); await control.delivered; await frames(page);
+  if (aborted) await expect.poll(() => control.call?.failure).toMatch(/abort/i);
+}
+async function counts(page: Page, loaded: number, total: number) {
+  await expect(pagination(page)).toContainText(new RegExp(`(?:\\b${loaded}\\b[^.;]*loaded|loaded[^.;]*\\b${loaded}\\b)`, "i"));
+  await expect(pagination(page)).toContainText(new RegExp(`(?:\\b${total}\\b[^.;]*(?:total|reported)|(?:total|reported)[^.;]*\\b${total}\\b)`, "i"));
+  await expect(pagination(page)).toContainText(/last|reported/i);
+}
+async function titles(page: Page, expected: ActionFinding[]) {
+  await expect(rows(page).getByRole("button", { includeHidden: true })).toHaveText(expected.map((f) => f.title));
+  await expect(rows(page)).toHaveCount(expected.length);
+}
+async function noMore(page: Page) { for (const button of await more(page).all()) await expect(button).toBeDisabled(); }
+async function finishEntry(page: Page, api: WorkPaginationAPI, entry: WorkEntry, workspace = alpha.id) {
+  await frames(page);
+  await expect.poll(() => entry.calls.filter((call) => call.failure === null).length).toBe(1);
+  return api.finishEntry(entry, workspace);
+}
+async function boot(page: Page, api: WorkPaginationAPI) {
+  const initial = api.entry();
+  await page.goto("/#/work");
+  await expect(rows(page)).toHaveCount(50);
+  const read = await finishEntry(page, api, initial);
+  expect(read.query).toEqual({}); expect(read.workspace).toBe(alpha.id);
+  expect((read.response as { items: unknown[] }).items).toHaveLength(100);
+  await expect(page.getByRole("navigation", { name: "Primary", exact: true }).getByRole("link")).toHaveCount(5);
+  await expect(filter(page)).toHaveValue("");
+  await frames(page);
+  expect(api.calls()).toHaveLength(initial.calls.length);
+  api.mark("Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.");
+  await expect(more(page), "Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.").toBeVisible();
+  api.mark("New Load more findings control reached; remaining narrative can execute.");
+}
+async function load(page: Page, api: WorkPaginationAPI, cursor: string) {
+  const response = api.page(cursor);
+  await more(page).click();
+  expect((await arrived(response)).query).toEqual({ cursor, limit: "100" });
+  await expect(more(page)).toBeDisabled();
+  await release(page, response);
+  return response;
+}
+async function openFinding(page: Page, f = first) {
+  await trigger(page, f).click(); await expect(dialog(page, f)).toBeVisible();
+}
+async function closeFinding(page: Page, f = first) {
+  await dialog(page, f).getByRole("button", { name: "Close finding details", exact: true }).click();
+  await expect(dialog(page, f)).toHaveCount(0);
+}
+async function canonicalPatch(page: Page, api: WorkPaginationAPI, f: ActionFinding, fields: Record<string, unknown>,
+  canonical: ActionFinding, action: Locator) {
+  const previous = structuredClone(api.findings.get(f.id)!);
+  const ack = api.patch(fields, canonical, true);
+  await action.click();
+  const call = await arrived(ack);
+  expect(call).toMatchObject({ method: "PATCH", path: pathFor(f.id), body: fields });
+  const fact = dialog(page, f).getByRole("term").filter({ hasText: "ownerId" in fields ? /^Owner$/ : /^Human workflow$/ })
+    .locator("xpath=following-sibling::dd[1]");
+  await expect(fact).toContainText("ownerId" in fields ? previous.ownerName ?? "Unassigned" :
+    new RegExp(previous.workflowState.replace("-", " "), "i"));
+  await release(page, ack);
+  await expect(dialog(page, f).getByRole("status").filter({ hasText: /updated from the service|Human workflow saved/i })).toBeVisible();
+  return ack;
+}
+async function noAutomaticIO(page: Page, api: WorkPaginationAPI, before: number) {
+  await frames(page); expect(api.requests).toHaveLength(before);
+}
+
+test("WP1 Manual native 100+100+tail preserves local filter sort selection and 50-row display pages", async ({ page, workAPI: api }) => {
+  await boot(page, api); await counts(page, 100, alphaTotal);
+  await titles(page, Array.from({ length: 50 }, (_, i) => findingAt(i + 1)));
+  await expect(queue(page)).toContainText(/filter[^.]*sort[^.]*loaded|sort[^.]*filter[^.]*loaded/i);
+  await selected(page).check();
+  await pageButton(page, "Next").click(); await expect(queue(page)).toContainText("Page 2 of 2");
+  await titles(page, Array.from({ length: 50 }, (_, i) => findingAt(i + 51)));
+  await pageButton(page, "Previous").click(); await expect(selected(page)).toBeChecked();
+  const before = api.requests.length;
+  await filter(page).fill("initial");
+  await table(page).getByRole("button", { name: "Finding", exact: true }).click();
+  await pageButton(page, "Next").click();
+  const localPage = Array.from({ length: 50 }, (_, i) => findingAt(50 - i));
+  await titles(page, localPage);
+  await noAutomaticIO(page, api, before);
+  const held = api.page(cursor100);
+  await more(page).click(); expect((await arrived(held)).query).toEqual({ cursor: cursor100, limit: "100" });
+  await expect(more(page)).toBeDisabled(); await titles(page, localPage); await expect(selected(page)).toBeChecked();
+  await filter(page).focus();
+  await release(page, held);
+  await counts(page, 200, alphaTotal); await titles(page, localPage);
+  await expect(filter(page)).toHaveValue("initial"); await expect(filter(page)).toBeFocused();
+  await expect(queue(page)).toContainText("Page 2 of 2"); await expect(selected(page)).toBeChecked();
+  await expect(table(page).getByRole("columnheader", { name: "Finding", exact: true })).toHaveAttribute("aria-sort", "ascending");
+  api.mark("Second native page retained local matching rows, display page, sort, focus and selected native identity.");
+  await load(page, api, cursor200); await counts(page, 207, 207); await noMore(page);
+  await expect(pagination(page)).toContainText(/not.*(?:atomic|single)|(?:pages|counts).*snapshot/i);
+  const beforeLocal = api.requests.length;
+  await filter(page).fill("");
+  await expect(trigger(page, later)).toBeVisible();
+  await table(page).getByRole("button", { name: "Severity", exact: true }).click();
+  await expect(table(page).getByRole("columnheader", { name: "Severity", exact: true })).toHaveAttribute("aria-sort", "ascending");
+  const severity = await rows(page).locator("td:nth-child(3)").allTextContents();
+  const ranks = severity.map((s) => ["critical", "high", "medium", "low", "info"].indexOf(s.trim().toLowerCase()));
+  expect(ranks.every((rank, i) => rank >= 0 && (i === 0 || rank >= ranks[i - 1]))).toBe(true);
+  await table(page).getByRole("button", { name: "Severity", exact: true }).click();
+  await titles(page, Array.from({ length: 50 }, (_, i) => findingAt(i + 1)));
+  await expect(selected(page)).toBeChecked(); await expect(queue(page)).toContainText("Page 1 of 5");
+  await expect(selection(page)).toContainText(/Bulk actions are not available/i);
+  await noAutomaticIO(page, api, beforeLocal);
+  expect(api.calls().filter((c) => c.failure === null).map((c) => c.query))
+    .toEqual([{}, { cursor: cursor100, limit: "100" }, { cursor: cursor200, limit: "100" }]);
+  api.mark("All 207 native rows reachable with manual pages only; local sorting restored native order without any q/sort API or mutation.");
+});
+
+test("WP2 Failed continuation retries exact cursor and accepts only an authorized null empty tail", async ({ page, workAPI: api }) => {
+  await boot(page, api); await selected(page).check();
+  const pageTwo = Array.from({ length: 100 }, (_, i) => workItem(findingAt(i + 101)));
+  for (const [index, outcome] of [
+    { status: 503 as const }, { status: "network" as const },
+    { status: 200 as const, payload: { apiVersion, dataOrigin: "synthetic", items: [], total: "not-a-count", nextCursor: null } },
+    { status: 200 as const, payload: { apiVersion, dataOrigin: "synthetic", items: pageTwo, total: 207, nextCursor: cursor100 } },
+  ].entries()) {
+    const pending = api.page(cursor100, outcome.status, true, alpha.id, "payload" in outcome ? outcome.payload : undefined);
+    await (index === 0 ? more(page) : retry(page)).click();
+    expect((await arrived(pending)).query).toEqual({ cursor: cursor100, limit: "100" });
+    await counts(page, 100, 207); await expect(rows(page)).toHaveCount(50);
+    await release(page, pending);
+    await expect(queue(page).getByRole("alert")).toBeVisible(); await expect(retry(page)).toBeEnabled();
+    await counts(page, 100, 207); await expect(selected(page)).toBeChecked();
+    await expect(queue(page).getByRole("heading", { name: "No findings", exact: true })).toHaveCount(0);
+  }
+  api.mark("503, network, invalid DTO and repeated cursor retained confirmed rows and the same unretired cursor.");
+  const recovered = api.page(cursor100);
+  await retry(page).click(); await arrived(recovered); await release(page, recovered); await counts(page, 200, 207);
+  const empty = api.page(cursor200, 200, true, alpha.id, { apiVersion, dataOrigin: "synthetic", items: [], total: 0, nextCursor: null });
+  await more(page).click(); await arrived(empty); await release(page, empty);
+  await counts(page, 200, 0); await noMore(page); await expect(selected(page)).toBeChecked();
+  const legacy = api.page("", 200, true, alpha.id, { apiVersion, dataOrigin: "synthetic",
+    items: Array.from({ length: 100 }, (_, i) => workItem(findingAt(i + 1))), total: 207, nextCursor: "legacy-unused-work-cursor" });
+  await refresh(page).click(); await arrived(legacy); await release(page, legacy);
+  await expect(rows(page)).toHaveCount(50); await counts(page, 100, 207);
+  const before = api.calls().length;
+  await more(page).click();
+  await expect(queue(page).getByRole("alert")).toBeVisible(); await expect(rows(page)).toHaveCount(50);
+  await frames(page); expect(api.calls()).toHaveLength(before);
+  api.mark("Authorized zero/empty null tail ended continuation honestly; unused legacy cursor left first page intact and consumption failed locally without HTTP.");
+});
+
+test("WP3 Page reads cannot roll back canonical finding ACKs or create unrequested rows", async ({ page, workAPI: api }) => {
+  await boot(page, api);
+  await expect(row(page)).toContainText(currentOwner.name);
+  const heldPage = api.page(cursor100);
+  await more(page).click(); await arrived(heldPage);
+  await openFinding(page);
+  const owned = { ...api.findings.get(first.id)!, ownerId: user.id, ownerName: user.name };
+  await canonicalPatch(page, api, first, { ownerId: user.id }, owned,
+    dialog(page).getByRole("button", { name: "Assign to me", exact: true }));
+  await expect(row(page)).toContainText(user.name);
+  await closeFinding(page); await release(page, heldPage);
+  await counts(page, 200, 207); await expect(row(page)).toContainText(user.name);
+  await load(page, api, cursor200); await counts(page, 207, 207);
+  await expect(row(page)).toContainText(user.name);
+  api.mark("ACK protected its loaded source page while an older page settled and a different page started after ACK.");
+
+  const staleRefresh = api.page("");
+  await refresh(page).click(); await arrived(staleRefresh); await openFinding(page);
+  const resolved = { ...owned, workflowState: "resolved" as const };
+  await dialog(page).getByRole("combobox", { name: "Workflow", exact: true }).selectOption("resolved");
+  await canonicalPatch(page, api, first, { workflowState: "resolved" }, resolved,
+    dialog(page).getByRole("button", { name: "Save workflow", exact: true }));
+  await closeFinding(page); await release(page, staleRefresh);
+  await counts(page, 100, 207); await expect(row(page)).toContainText(/Resolved/);
+  await expect(row(page)).toContainText(user.name);
+  await filter(page).fill(user.name); await openFinding(page);
+  const unassigned = { ...resolved, ownerId: null, ownerName: null };
+  await canonicalPatch(page, api, first, { ownerId: null }, unassigned,
+    dialog(page).getByRole("button", { name: "Unassign", exact: true }));
+  await expect(dialog(page).getByRole("status").filter({ hasText: /no longer matches/i })).toBeVisible();
+  await closeFinding(page); await expect(page.getByRole("heading", { name: "Work", exact: true })).toBeFocused();
+  await expect(filter(page)).toHaveValue(user.name); await expect(rows(page)).toHaveCount(0); await counts(page, 100, 207);
+  await main(page).getByRole("button", { name: "Clear finding filter", exact: true }).click();
+  api.mark("Stale refresh did not undo a later workflow ACK; owner ACK moved a row out of the local filter without losing filter/focus context.");
+
+  const deepEntry = api.entry();
+  await page.goto(`/#/work?finding=${later.id}`);
+  await expect(dialog(page, later)).toBeVisible();
+  await expect(rows(page)).toHaveCount(50); await finishEntry(page, api, deepEntry);
+  const lateOwner = { ...api.findings.get(later.id)!, ownerId: user.id, ownerName: user.name };
+  await canonicalPatch(page, api, later, { ownerId: user.id }, lateOwner,
+    dialog(page, later).getByRole("button", { name: "Assign to me", exact: true }));
+  await closeFinding(page, later);
+  await counts(page, 100, 207); await expect(trigger(page, later)).toHaveCount(0);
+  await openFinding(page);
+  api.serverRoles.set(alpha.id, "viewer");
+  const denied = api.patch({ ownerId: user.id }, { ...unassigned, ownerId: user.id, ownerName: user.name });
+  await dialog(page).getByRole("button", { name: "Assign to me", exact: true }).click();
+  expect((await arrived(denied)).status).toBe(403);
+  await expect(dialog(page).getByRole("alert")).toBeVisible(); await closeFinding(page);
+  await expect(rows(page)).toHaveCount(50); await expect(row(page)).toContainText(/Unassigned/);
+  expect(api.findings.get(first.id)).toEqual(unassigned);
+  api.mark("Unloaded detail ACK made no phantom Work row; current server PATCH role denied a stale analyst hint without revoking authorized Work reads.");
+});
+
+test("WP4 Refresh resets native frontier and Work denial survives 503 and independent detail ACK", async ({ page, workAPI: api }) => {
+  await boot(page, api); await load(page, api, cursor100); await counts(page, 200, 207);
+  await filter(page).fill("repository"); await pageButton(page, "Next").click();
+  const onPage = findingAt(51);
+  await selected(page, onPage).check();
+  const replacement = api.page("");
+  await refresh(page).click(); await arrived(replacement);
+  await expect(queue(page)).toContainText("Page 2 of 4");
+  await filter(page).focus(); await release(page, replacement);
+  await counts(page, 100, 207); await expect(queue(page)).toContainText("Page 2 of 2");
+  await expect(selected(page, onPage)).toBeChecked(); await expect(filter(page)).toBeFocused();
+  await load(page, api, cursor100); await counts(page, 200, 207);
+  api.mark("Canonical first-page refresh reset the frontier, not the active filter, surviving display page or selected IDs.");
+  for (const denial of [403, 404] as const) {
+    const rejected = api.page("", denial);
+    await refresh(page).click(); await arrived(rejected);
+    if (denial === 403) await openFinding(page, onPage);
+    await release(page, rejected);
+    await expect(rows(page)).toHaveCount(0); await expect(selection(page)).toHaveCount(0);
+    if (denial === 403) {
+      const canonical = { ...api.findings.get(onPage.id)!, workflowState: "resolved" as const };
+      await dialog(page, onPage).getByRole("combobox", { name: "Workflow", exact: true }).selectOption("resolved");
+      await canonicalPatch(page, api, onPage, { workflowState: "resolved" }, canonical,
+        dialog(page, onPage).getByRole("button", { name: "Save workflow", exact: true }));
+      await expect(rows(page)).toHaveCount(0);
+      await closeFinding(page, onPage);
+    }
+    const unavailable = api.page("", 503);
+    await refresh(page).click(); await arrived(unavailable);
+    await expect(rows(page)).toHaveCount(0); await expect(selection(page)).toHaveCount(0);
+    await release(page, unavailable);
+    await expect(queue(page).getByRole("alert")).toBeVisible();
+    await expect(rows(page)).toHaveCount(0);
+    await expect(queue(page).getByRole("heading", { name: "No findings", exact: true })).toHaveCount(0);
+    const authorized = api.page("");
+    await refresh(page).click(); await arrived(authorized); await expect(rows(page)).toHaveCount(0);
+    await release(page, authorized); await counts(page, 100, 207); await expect(rows(page)).toHaveCount(50);
+    await expect(selection(page)).toHaveCount(0);
+    await expect(filter(page)).toHaveValue("repository");
+  }
+  api.mark("403 and 404 Work denial withheld rows/selections through 503; independent detail ACK did not authorize Work; only later Work 200 recovered.");
+});
+
+test("WP5 Workspace 401 and logout abort held pages without cross-scope append or persistent state", async ({ page, workAPI: api }) => {
+  await boot(page, api); await selected(page).check(); await filter(page).fill("initial");
+  const oldAlpha = api.page(cursor100);
+  await more(page).click(); await arrived(oldAlpha);
+  const betaEntry = api.entry(beta.id);
+  await workspace(page).selectOption(beta.id);
+  await expect(trigger(page, findingAt(1, beta.id))).toBeVisible(); await counts(page, 100, betaTotal);
+  await finishEntry(page, api, betaEntry, beta.id);
+  await expect(filter(page)).toHaveValue(""); await expect(selection(page)).toHaveCount(0);
+  await release(page, oldAlpha, true);
+  await expect(trigger(page)).toHaveCount(0); await counts(page, 100, betaTotal);
+  const oldBeta = api.page(betaCursor, 200, true, beta.id);
+  await more(page).click(); await arrived(oldBeta);
+  const unauthorized = api.detail(findingAt(1, beta.id).id, 401, true);
+  await trigger(page, findingAt(1, beta.id)).click(); await arrived(unauthorized); await release(page, unauthorized);
+  const login = page.getByRole("form", { name: "Sign in", exact: true });
+  await expect(login).toBeVisible(); await release(page, oldBeta, true);
+  await expect(table(page)).toHaveCount(0); await expect(page.getByRole("dialog")).toHaveCount(0);
+  const loginEntry = api.entry();
+  await login.getByRole("textbox", { name: "Email", exact: true }).fill(user.email);
+  await login.getByLabel("Password", { exact: true }).fill(password);
+  await login.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(trigger(page)).toBeVisible(); await counts(page, 100, alphaTotal);
+  await finishEntry(page, api, loginEntry);
+  await expect(filter(page)).toHaveValue(""); await expect(selection(page)).toHaveCount(0);
+  const beforeLogout = api.page(cursor100);
+  await more(page).click(); await arrived(beforeLogout);
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await expect(login).toBeVisible(); await release(page, beforeLogout, true);
+  await expect(table(page)).toHaveCount(0); await expect(page).not.toHaveURL(/finding=/);
+  expect(api.calls("POST", "/api/v1/logout")).toHaveLength(1);
+  api.mark("Actual old requests aborted across workspace, global 401 and logout; released responses never appended or restored contexts.");
+});
+
+test("WP6 Mobile reduced-motion continuation keeps focus selection and local display context responsive", async ({ page, workAPI: api }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await boot(page, api); await filter(page).fill("initial"); await pageButton(page, "Next").click();
+  const onPage = findingAt(51);
+  await selected(page, onPage).check();
+  const visible = Array.from({ length: 50 }, (_, i) => findingAt(i + 51));
+  const pending = api.page(cursor100);
+  await more(page).click(); await arrived(pending); await expect(more(page)).toBeDisabled();
+  await titles(page, visible); await expect(selected(page, onPage)).toBeChecked();
+  await filter(page).focus(); await expect(filter(page)).toBeEnabled();
+  await release(page, pending);
+  await expect(filter(page)).toBeFocused(); await expect(filter(page)).toHaveValue("initial");
+  await counts(page, 200, 207); await titles(page, visible);
+  await expect(queue(page)).toContainText("Page 2 of 2"); await expect(selected(page, onPage)).toBeChecked();
+  await openFinding(page, onPage);
+  await expect(dialog(page, onPage)).toContainText(onPage.evidence.text);
+  await closeFinding(page, onPage); await expect(trigger(page, onPage)).toBeFocused();
+  const geometry = await page.evaluate(async () => {
+    const motion = new Set<string>();
+    for (let sample = 0; sample < 6; sample++) {
+      for (const animation of document.getAnimations()) {
+        if (animation.playState !== "running" || !(animation.effect instanceof KeyframeEffect)) continue;
+        if (animation.effect.getTiming().iterations === Infinity) motion.add("continuous");
+        const frames = animation.effect.getKeyframes() as Array<Record<string, unknown>>;
+        for (const name of ["transform", "translate", "scale", "rotate", "left", "top"]) {
+          if (new Set(frames.map((frame) => frame[name]).filter((v) => v !== undefined).map(String)).size > 1) motion.add(name);
+        }
+      }
+      await new Promise<void>((done) => requestAnimationFrame(() => done()));
+    }
+    return { reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
+      overflow: document.documentElement.scrollWidth - innerWidth, motion: [...motion] };
+  });
+  expect(geometry.reduced).toBe(true); expect(geometry.overflow).toBeLessThanOrEqual(1); expect(geometry.motion).toEqual([]);
+  await expect(rows(page)).toHaveCount(50);
+  api.mark("390px reduced-motion view kept 50-row display, selection, filter, page and focus through held continuation and native finding close.");
+});

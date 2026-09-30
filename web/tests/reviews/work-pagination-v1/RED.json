@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-21T11:11:53.008Z",
+  "author": "independent-work-pagination-author-20260921",
+  "status": "ACTUAL SIX-CASE MISSING-CONTROL RED; no functional continuation GREEN is claimed.",
+  "run": "missing-control-red-v2",
+  "counts": {
+    "selected": 6,
+    "passed": 0,
+    "failed": 6,
+    "skipped": 0,
+    "retried": 0,
+    "flaky": 0
+  },
+  "report": {
+    "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\results.json",
+    "bytes": 759524,
+    "sha256": "70b39cfa4b2960a1c5053cbc6d5d847a4e3364e4ac927755d85236b85b16f49e"
+  },
+  "execution": {
+    "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\execution.json",
+    "bytes": 920,
+    "sha256": "4cda20245fe3566f9e1c6b6b74c1e9a96bfe059fad48e0f70e7b5d0d05ccad0d"
+  },
+  "heldInputs": {
+    "path": ".artifacts\\work-pagination-v1\\missing-control-red-v2\\held-inputs.json",
+    "bytes": 1280325,
+    "sha256": "7c00db70681f09162eccdeaddc0eac25e8caf956b72c176cde1f234f24bc4de0"
+  },
+  "sourceHold": {
+    "count": 5775,
+    "stable": true,
+    "mode": "FileShare.Read"
+  },
+  "cases": [
+    {
+      "file": "work-pagination-ui.spec.ts",
+      "title": "WP1 Manual native 100+100+tail preserves local filter sort selection and 50-row display pages",
+      "line": 104,
+      "status": "failed",
+      "durationMs": 8868,
+      "retry": 0,
+      "error": "Error: Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action. getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\n\n\n  65 |   expect(api.calls()).toHaveLength(initial.calls.length);\n  66 |   api.mark(\"Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.\");\n> 67 |   await expect(more(page), \"Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\").toBeVisible();\n     |                                                                                                                                                   ^\n  68 |   api.mark(\"New Load more findings control reached; remaining narrative can execute.\");\n  69 | }\n  70 | async function load(page: Page, api: WorkPaginationAPI, cursor: string) {\n    at boot (C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:67:147)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:105:3",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN.",
+      "combinedAPICalls": 4,
+      "initialWorkRequests": [
+        {
+          "query": {},
+          "status": 200,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "query": {},
+          "status": 200,
+          "failure": null
+        }
+      ],
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "file": "work-pagination-ui.spec.ts",
+      "title": "WP2 Failed continuation retries exact cursor and accepts only an authorized null empty tail",
+      "line": 149,
+      "status": "failed",
+      "durationMs": 7419,
+      "retry": 0,
+      "error": "Error: Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action. getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\n\n\n  65 |   expect(api.calls()).toHaveLength(initial.calls.length);\n  66 |   api.mark(\"Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.\");\n> 67 |   await expect(more(page), \"Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\").toBeVisible();\n     |                                                                                                                                                   ^\n  68 |   api.mark(\"New Load more findings control reached; remaining narrative can execute.\");\n  69 | }\n  70 | async function load(page: Page, api: WorkPaginationAPI, cursor: string) {\n    at boot (C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:67:147)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:150:3",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN.",
+      "combinedAPICalls": 4,
+      "initialWorkRequests": [
+        {
+          "query": {},
+          "status": 200,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "query": {},
+          "status": 200,
+          "failure": null
+        }
+      ],
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "file": "work-pagination-ui.spec.ts",
+      "title": "WP3 Page reads cannot roll back canonical finding ACKs or create unrequested rows",
+      "line": 183,
+      "status": "failed",
+      "durationMs": 7756,
+      "retry": 0,
+      "error": "Error: Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action. getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\n\n\n  65 |   expect(api.calls()).toHaveLength(initial.calls.length);\n  66 |   api.mark(\"Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.\");\n> 67 |   await expect(more(page), \"Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\").toBeVisible();\n     |                                                                                                                                                   ^\n  68 |   api.mark(\"New Load more findings control reached; remaining narrative can execute.\");\n  69 | }\n  70 | async function load(page: Page, api: WorkPaginationAPI, cursor: string) {\n    at boot (C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:67:147)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:184:3",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN.",
+      "combinedAPICalls": 4,
+      "initialWorkRequests": [
+        {
+          "query": {},
+          "status": 200,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "query": {},
+          "status": 200,
+          "failure": null
+        }
+      ],
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "file": "work-pagination-ui.spec.ts",
+      "title": "WP4 Refresh resets native frontier and Work denial survives 503 and independent detail ACK",
+      "line": 238,
+      "status": "failed",
+      "durationMs": 7633,
+      "retry": 0,
+      "error": "Error: Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action. getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\n\n\n  65 |   expect(api.calls()).toHaveLength(initial.calls.length);\n  66 |   api.mark(\"Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.\");\n> 67 |   await expect(more(page), \"Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\").toBeVisible();\n     |                                                                                                                                                   ^\n  68 |   api.mark(\"New Load more findings control reached; remaining narrative can execute.\");\n  69 | }\n  70 | async function load(page: Page, api: WorkPaginationAPI, cursor: string) {\n    at boot (C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:67:147)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:239:3",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN.",
+      "combinedAPICalls": 4,
+      "initialWorkRequests": [
+        {
+          "query": {},
+          "status": 200,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "query": {},
+          "status": 200,
+          "failure": null
+        }
+      ],
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "file": "work-pagination-ui.spec.ts",
+      "title": "WP5 Workspace 401 and logout abort held pages without cross-scope append or persistent state",
+      "line": 281,
+      "status": "failed",
+      "durationMs": 7444,
+      "retry": 0,
+      "error": "Error: Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action. getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\n\n\n  65 |   expect(api.calls()).toHaveLength(initial.calls.length);\n  66 |   api.mark(\"Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.\");\n> 67 |   await expect(more(page), \"Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\").toBeVisible();\n     |                                                                                                                                                   ^\n  68 |   api.mark(\"New Load more findings control reached; remaining narrative can execute.\");\n  69 | }\n  70 | async function load(page: Page, api: WorkPaginationAPI, cursor: string) {\n    at boot (C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:67:147)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:282:3",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN.",
+      "combinedAPICalls": 4,
+      "initialWorkRequests": [
+        {
+          "query": {},
+          "status": 200,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "query": {},
+          "status": 200,
+          "failure": null
+        }
+      ],
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    },
+    {
+      "file": "work-pagination-ui.spec.ts",
+      "title": "WP6 Mobile reduced-motion continuation keeps focus selection and local display context responsive",
+      "line": 315,
+      "status": "failed",
+      "durationMs": 6973,
+      "retry": 0,
+      "error": "Error: Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\n\nexpect(locator).toBeVisible() failed\n\nLocator: getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action. getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true }) with timeout 5000ms\n  - waiting for getByRole('main', { includeHidden: true }).getByRole('region', { name: 'Finding work queue', exact: true, includeHidden: true }).getByRole('button', { name: 'Load more findings', exact: true })\n\n\n  65 |   expect(api.calls()).toHaveLength(initial.calls.length);\n  66 |   api.mark(\"Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation.\");\n> 67 |   await expect(more(page), \"Missing manual Work continuation: the published app discloses nextCursor but provides no Load more findings action.\").toBeVisible();\n     |                                                                                                                                                   ^\n  68 |   api.mark(\"New Load more findings control reached; remaining narrative can execute.\");\n  69 | }\n  70 | async function load(page: Page, api: WorkPaginationAPI, cursor: string) {\n    at boot (C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:67:147)\n    at C:\\bahadr\\serious\\aspm\\web\\tests\\work-pagination-ui.spec.ts:317:3",
+      "reached": [
+        "Published real App: bare authorized first Work page of 100, 50 display rows, five navigation links, no automatic continuation."
+      ],
+      "blocked": "All assertions after the missing Load more findings control: continuation/count/ACK/denial/epoch/mobile tails NOT RUN.",
+      "combinedAPICalls": 4,
+      "initialWorkRequests": [
+        {
+          "query": {},
+          "status": 200,
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "query": {},
+          "status": 200,
+          "failure": null
+        }
+      ],
+      "violations": [],
+      "pageErrors": [],
+      "externalAttempts": 0
+    }
+  ],
+  "currentNewSourcesMatchTestedBytes": [
+    {
+      "path": "web\\tests\\work-pagination-data.ts",
+      "bytes": 3363,
+      "sha256": "40088080e2f96c2ce4935a4b7e8965550f5c91568b601cfe3ceeb461c8e6ac20"
+    },
+    {
+      "path": "web\\tests\\work-pagination-fixture.ts",
+      "bytes": 16310,
+      "sha256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22"
+    },
+    {
+      "path": "web\\tests\\work-pagination-ui.spec.ts",
+      "bytes": 24775,
+      "sha256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f"
+    }
+  ],
+  "scopeOpen": [
+    "Server search/sort",
+    "Saved views",
+    "Broader M05 completion"
+  ],
+  "diagnostics": [
+    {
+      "run": "typecheck-v1",
+      "outcome": "Unused new-test import; corrected by asserting actual PATCH path. Not production RED."
+    },
+    {
+      "run": "missing-control-red-v1",
+      "outcome": "New fixture initial admission was too narrow for actual aborted StrictMode mount read. Corrected only the new fixture; every request remained counted/logged. Not accepted production RED."
+    }
+  ],
+  "noProductionOldFixtureOrOracleChanges": true
+}

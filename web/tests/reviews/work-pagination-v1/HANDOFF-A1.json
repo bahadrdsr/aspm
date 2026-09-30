@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-09-30T16:32:02.037333+00:00",
+  "status": "FROZEN unsigned A1 handoff. Parent verifies/seals; no reviewer, publication or feature-completion claim.",
+  "originalManifestSHA256": "817f0494e117f9c7993377c891e76cdfe6223fbcaa2c1cfdcd91bb7eca59f331",
+  "originalPACKETSHA256": "6a4df003318502bc451247a66528840f86f4d6ef48f207eb5772b8a538b23648",
+  "originalHANDOFFSHA256": "d00d9f62d161e964e370405bfa67e5263d050a0970e08d577fc9515bf7edf671",
+  "packet": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET-A1.json",
+    "bytes": 8608,
+    "sha256": "92fd61c2484c02cc12c5178a1f9109bce44756ac29df449a3b44858bacbabbf9"
+  },
+  "packetChecksum": {
+    "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET-A1.sha256",
+    "bytes": 81,
+    "sha256": "7c4e44fd785e89e7539b000d4b5fe80f704e27c460b4752262c2d34ef3766639"
+  },
+  "changedPaths": {
+    "modified": [
+      {
+        "path": "web\\tests\\work-pagination-fixture.ts",
+        "bytes": 20173,
+        "sha256": "faa6b1bf74ebda13207f279280fb7d2716d0c07378bcc269176be6e314ef2e60"
+      },
+      {
+        "path": "web\\tests\\work-pagination-ui.spec.ts",
+        "bytes": 26123,
+        "sha256": "46db7c0aafcb298a1794d466b797c0aced41cfe3a6bfac7663f22f2f748cfd0e"
+      }
+    ],
+    "additiveReview": [
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\AMENDMENT-A1.txt",
+        "bytes": 5399,
+        "sha256": "00b1aeda941b663589205f7e57bd299ba8814d4deaeb29a7662d387495642fe2"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\RESULTS-A1.json",
+        "bytes": 8959,
+        "sha256": "1d94d30b35edbf4e2e5cb817f4b52145d3dcd1eeaaae3d31c625a928ddcec7e5"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\CALIBRATION-A1.json",
+        "bytes": 6146,
+        "sha256": "e54e70b3259cc16bfad155928574dea72251c33ed5c8657e61b49c773c1ec695"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\BASELINE.json",
+        "bytes": 15238,
+        "sha256": "3a33497efcfbc2f80a377f9159011d0e2a80b1b8a6fabf7f856917cc2fb9450e"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\work-pagination-fixture.ts.before.txt",
+        "bytes": 16310,
+        "sha256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\work-pagination-ui.spec.ts.before.txt",
+        "bytes": 24775,
+        "sha256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\DIAGNOSTIC.json",
+        "bytes": 7604,
+        "sha256": "62aa25e809fa0dfb501303015c2d51b3bdf65243fd7455103ceb17685fbf2e73"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\work-pagination-fixture.ts.before.txt",
+        "bytes": 19830,
+        "sha256": "5a2d354a67880b7cd6bf758d111b0211bcbd48aea6eac891fb03edb19d9cf43e"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\history\\a1\\attempt-01\\work-pagination-ui.spec.ts.before.txt",
+        "bytes": 25983,
+        "sha256": "bbfe4d85629f357c5b7c2ae068389fc923b061179730e7419e18fa2398114898"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET-A1.json",
+        "bytes": 8608,
+        "sha256": "92fd61c2484c02cc12c5178a1f9109bce44756ac29df449a3b44858bacbabbf9"
+      },
+      {
+        "path": "web\\tests\\reviews\\work-pagination-v1\\PACKET-A1.sha256",
+        "bytes": 81,
+        "sha256": "7c4e44fd785e89e7539b000d4b5fe80f704e27c460b4752262c2d34ef3766639"
+      }
+    ],
+    "thisHandoff": "HANDOFF-A1.json is self-bound by the adjacent HANDOFF-A1.sha256."
+  },
+  "productionHold": {
+    "files": [
+      {
+        "path": "web\\src\\api\\client.ts",
+        "bytes": 35920,
+        "sha256": "3c6ac9da46e72430416f7935048e1fc6009b14a0706be2b2985518f1d3f74569"
+      },
+      {
+        "path": "web\\src\\lib\\use-work-pages.ts",
+        "bytes": 3529,
+        "sha256": "475b4aa5bf4cc85064b3ac6c9e1f45251dccea617d58baef1db107c86c1659a8"
+      },
+      {
+        "path": "web\\src\\pages\\work.tsx",
+        "bytes": 12090,
+        "sha256": "727d06406be4fe87bcea7294846c449a970f1b7f880f7ec886f8aecdb6a256e7"
+      },
+      {
+        "path": "README.md",
+        "bytes": 37217,
+        "sha256": "0f68817a5ae10decc9f428a1551989b615a59f7b74906c13a02e1513fdb213f9"
+      }
+    ],
+    "readLocksDuringValidation": 4,
+    "beforeAfterIdentical": true,
+    "productionEdits": 0
+  },
+  "protectedControls": {
+    "originalCount": 1429,
+    "unchanged": 1427,
+    "onlyApprovedDifferences": [
+      {
+        "path": "web\\tests\\work-pagination-fixture.ts",
+        "beforeSHA256": "e9fcfd8822ff375999d35e24bc3aca9659e99f13fa13dc9348fcf85dacb80a22",
+        "afterSHA256": "faa6b1bf74ebda13207f279280fb7d2716d0c07378bcc269176be6e314ef2e60"
+      },
+      {
+        "path": "web\\tests\\work-pagination-ui.spec.ts",
+        "beforeSHA256": "94053c51abf3da1bd2eca4b7f089bb2ff868cb318058d535382146d90789b27f",
+        "afterSHA256": "46db7c0aafcb298a1794d466b797c0aced41cfe3a6bfac7663f22f2f748cfd0e"
+      }
+    ],
+    "originalSignaturesUnchanged": true,
+    "newSealCreated": false
+  },
+  "validation": {
+    "typecheck": "PASS",
+    "actualBrowserCases": {
+      "selected": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "retried": 0,
+      "flaky": 0
+    },
+    "run": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02",
+    "results": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\RESULTS-A1.json",
+      "bytes": 8959,
+      "sha256": "1d94d30b35edbf4e2e5cb817f4b52145d3dcd1eeaaae3d31c625a928ddcec7e5"
+    },
+    "calibration": {
+      "path": "web\\tests\\reviews\\work-pagination-v1\\CALIBRATION-A1.json",
+      "bytes": 6146,
+      "sha256": "e54e70b3259cc16bfad155928574dea72251c33ed5c8657e61b49c773c1ec695"
+    },
+    "guardReceipt": {
+      "path": ".artifacts\\work-pagination-v1\\astra-a1-focused-20260930-02\\validation.json",
+      "bytes": 1884,
+      "sha256": "fab486e0aa77e78971306bde66b011b72e74a47640a461cff0bd2e1f12212471"
+    },
+    "settings": {
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "workers": 1,
+      "retries": 0,
+      "combinedAPICap": 60,
+      "serviceWorkers": "block",
+      "trace": "retain-on-failure",
+      "screenshot": "only-on-failure",
+      "port": 18824,
+      "normalTLS": true,
+      "runnerConfigOrBudgetChanges": false
+    },
+    "old115": "NOT RERUN; frozen assertion/fixture bytes unchanged.",
+    "priorA1Attempt": "Preserved as fixture diagnostic with exact source bytes; no unchanged-byte retry.",
+    "remainingProductionFailure": null
+  },
+  "importantQualification": "WP5 requires nonaborted 401 at the actual response event and real Sign in, not a completed response body. The published header-first authority reset then aborts that same request; this actual abort is retained in the ledger. WP3 uses an explicit real reload for its declared new entry, leaving ACK assertions intact.",
+  "limits": [
+    "No production, old test, shared fixture, dependency, runner/config, budget or signature edit.",
+    "No agents, commits, backend/provider calls, reviewer stage or publication.",
+    "Current original seal is historical; two approved new-test differences await parent A1 verification and sealing."
+  ],
+  "stop": "Author work complete for this bounded amendment; parent owns verification/sealing."
+}
