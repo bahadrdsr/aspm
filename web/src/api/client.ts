@@ -153,6 +153,17 @@ function validateWorkContinuation(page: WorkResponse, cursor: string): WorkRespo
   return page;
 }
 
+export function workSearchQuery(draft: string): string {
+  const query = draft.trim();
+  if (query.includes("\0")) {
+    throw new APIError("A workspace search must be NUL-free. Your draft has not been changed.", "invalid-input", false);
+  }
+  if (new TextEncoder().encode(query).byteLength > 512) {
+    throw new APIError("A workspace search must be at most 512 UTF-8 bytes after trimming. Your draft has not been changed.", "invalid-input", false);
+  }
+  return query;
+}
+
 export function parseFinding(value: unknown): FindingResponse {
   const { body, dataOrigin } = envelope(value);
   const finding = object(body.finding, "finding detail");
@@ -507,14 +518,17 @@ async function reportRead<T>(path: string, parse: (value: unknown) => T, signal:
 }
 
 export const api = {
-  work: (signal: AbortSignal, continuation?: { cursor: string }) => {
-    if (continuation === undefined) return request("/api/v1/work", parseWork, { signal, expectedStatus: 200 });
-    const cursor = continuation.cursor;
-    if (typeof cursor !== "string" || !/^[a-f0-9]{32}$/.test(cursor)) {
+  work: (signal: AbortSignal, options?: { q?: string; cursor?: string }) => {
+    const query = new URLSearchParams();
+    const q = workSearchQuery(options?.q ?? "");
+    if (q !== "") query.set("q", q);
+    const cursor = options?.cursor;
+    if (cursor !== undefined && (typeof cursor !== "string" || !/^[a-f0-9]{32}$/.test(cursor))) {
       throw new APIError("Finding pages require a native 32-character lowercase hexadecimal cursor.", "invalid-input", false);
     }
-    const query = new URLSearchParams({ limit: "100", cursor });
-    return request(`/api/v1/work?${query}`, (value) => validateWorkContinuation(parseWork(value), cursor),
+    if (cursor !== undefined) { query.set("limit", "100"); query.set("cursor", cursor); }
+    const path = query.size === 0 ? "/api/v1/work" : `/api/v1/work?${query}`;
+    return request(path, (value) => cursor === undefined ? parseWork(value) : validateWorkContinuation(parseWork(value), cursor),
       { signal, expectedStatus: 200 });
   },
   finding: (id: string, signal: AbortSignal, cursors?: { notesCursor?: string; observationsCursor?: string }) => {

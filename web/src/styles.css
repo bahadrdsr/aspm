@@ -172,6 +172,10 @@ main:focus:not(:focus-visible) { outline: none; }
 .filter-field input { background: transparent; border: 0; min-width: 0; width: 100%; height: 37px; outline: none; font-size: 11px; color: var(--ink); }
 .clear-filter { display: grid; place-items: center; width: 27px; min-height: 29px; border-radius: 4px; color: var(--muted); }
 .clear-filter:hover { background: var(--surface-soft); }
+.work-search-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.work-search-controls .filter-field { flex: 1 1 250px; }
+.workspace-search-status { align-items: flex-start; }
+.workspace-search-status span { min-width: 0; overflow-wrap: anywhere; }
 .table-scroll { overflow: auto; }
 .table-scroll:focus-visible { outline-offset: -3px; }
 .finding-table { border-collapse: collapse; width: 100%; font-size: 11px; min-width: 830px; text-align: left; }
@@ -469,6 +473,7 @@ html { scrollbar-gutter: stable; }
   .work-summary > div > span:last-child { font-size: 9px; }
   .queue-toolbar { flex-wrap: wrap; gap: 13px; padding: 15px; }
   .queue-toolbar .filter-field { width: 100%; }
+  .work-search-controls { width: 100%; }
   .settings-grid { gap: 15px; }
   .settings-card { padding: 21px; }
   .boundary-grid { gap: 19px; }

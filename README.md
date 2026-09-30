@@ -82,21 +82,39 @@ Do not share an operator S3 credential across those processes.
 ### Application UI workflows
 
 In **Work**, **Load more findings** explicitly requests the service's native
-cursor with `limit=100`. Entry and **Refresh** keep the bare Work GET; there is
-no automatic page drain or server search/sort. Native rows merge by ID in source
+cursor with `limit=100`. Default entry keeps the bare Work GET. The shared
+**Filter findings** input is a local filter and an editable search draft:
+typing, sorting and display paging send no HTTP. **Search all findings** or Enter
+explicitly submits a trimmed, NUL-free workspace query of at most 512 UTF-8 bytes
+through the existing Work GET, with `q` only on its first page. Search continuation
+uses exactly that confirmed `q`, `limit=100` and the native cursor. **Refresh**
+uses the confirmed query, not an unsaved draft. **Clear search** or empty Enter
+requests the bare first page, clears the draft and focuses the input.
+There is no automatic page drain, server sort or search across workspaces.
+Native rows merge by ID in source
 order. Filtering and Finding/Severity sorting apply only to loaded findings,
 even after continuation ends. Previous/Next still shows separate 50-row display
 pages. The **Finding pagination** status reports loaded rows and the last
 returned server total, which can change between pages and is not one snapshot.
 
+The **Workspace search** status identifies the confirmed query separately from
+edited, pending or failed drafts. A different successful query replaces rows and
+continuation, resets the display page and clears selected IDs, including hidden
+selections, without replacing a newer draft. New searches or clearing can supersede
+pending reads; late responses cannot mix queries. Failed searches retain authorized
+confirmed results, and **Retry search** repeats the failed query, not later edits.
 Failed continuation reads retain confirmed rows and metadata; **Retry more
-findings** repeats the exact cursor. A successful **Refresh** replaces the
+findings** repeats the exact query and cursor. A successful same-query **Refresh** replaces the
 loaded set and resets continuation to that first page while preserving local
 filter, sort, selection and usable display context. Work permission/missing-view
 denials withhold its rows and selection through transient failures until a Work
 read is authorized again. Independently authorized finding detail or PATCH
 responses cannot restore Work access. Workspace/session changes abort old reads
-and discard the scoped pages; nothing is stored in browser storage.
+and discard the scoped pages and search context. Confirmed query and draft remain
+in memory across Settings/Work navigation only, never in browser storage or URLs.
+Canonical owner changes preserve acknowledged fields on loaded rows and mark
+server search membership as needing refresh until a later authorized read
+establishes membership. They do not invent results for unloaded findings.
 
 In **Assets**, create an asset or edit a returned inventory row. The owner
 selector supports unassigned, yourself, or preserving its existing owner;

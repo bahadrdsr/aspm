@@ -45,7 +45,7 @@ function WorkspaceApplication() {
   const { session, workspace, changeWorkspace, signOut } = useSession();
   const route = useRoute();
   const { warning } = usePreferences();
-  const [workContext, setWorkContext] = useState<WorkContext>({ query: "", selected: new Set(), page: 0, sort: "source-order" });
+  const [workContext, setWorkContext] = useState<WorkContext>({ query: "", confirmedQuery: "", selected: new Set(), page: 0, sort: "source-order" });
   const [workUpdates, setWorkUpdates] = useState<ConfirmedWorkUpdates>({ revision: 0, items: new Map() });
   const confirmFinding = useCallback((finding: WorkItem) => {
     setWorkUpdates((previous) => {

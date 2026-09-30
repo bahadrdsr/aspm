@@ -1,0 +1,150 @@
+{
+  "slice": "M05 explicit workspace Work search v1",
+  "status": "FROZEN_UNSIGNED_RED",
+  "date": "2026-09-30",
+  "producer": "811332c97480f3aa22826cee3ca106801af70611",
+  "role": "TEST/UAT author only; parent verification and seal pending; no reviewer stage",
+  "contractWrittenBeforeTests": true,
+  "authoredFiles": [
+    {
+      "path": "web\\tests\\reviews\\work-search-v1\\CONTRACT.txt",
+      "bytes": 8361,
+      "sha256": "3370460e05dfb886f7db780535634bf7895238a2ea32567ac10b4da9a537cd6a"
+    },
+    {
+      "path": "web\\tests\\reviews\\work-search-v1\\playwright.config.ts",
+      "bytes": 1294,
+      "sha256": "dc8558fdbf01d55c5162a130ff79e4779b85713d9fa2b3ddc5da6ff28c017df5"
+    },
+    {
+      "path": "web\\tests\\work-search-data.ts",
+      "bytes": 2359,
+      "sha256": "da771338bfd06bec244f26ffbcd49104bb44b95929d3fd9aafd9548ec9f8de6a"
+    },
+    {
+      "path": "web\\tests\\work-search-fixture.ts",
+      "bytes": 10334,
+      "sha256": "c5d7e909311e8870183bdd6d5f4f847030260f24dc8fd50287351eb40897f721"
+    },
+    {
+      "path": "web\\tests\\work-search-ui.spec.ts",
+      "bytes": 28932,
+      "sha256": "5502c797705c87b388fc439c9acb06c13e0d0b569dcb5be75acf69430077bc07"
+    }
+  ],
+  "unchangedBoundary": {
+    "exactManifest": {
+      "path": ".artifacts\\work-search-v1\\boundary-before.json",
+      "bytes": 159453,
+      "sha256": "175f9d4d259438dadc43a550d582096bab149513170dc12b4ca7c36adae94b96"
+    },
+    "capturedFiles": 808,
+    "unchangedFiles": 808,
+    "frontendProductionFiles": 84,
+    "testAndOracleControlFiles": 700,
+    "trackedWorktreeDiff": [],
+    "existingCases": 121,
+    "existingSpecFiles": 22,
+    "combinedDiscovery": "126 cases in 23 files",
+    "oldCasesRerun": false,
+    "heldDuringTypecheckAndRED": "813 FileShare.Read inputs: 808 original paths plus the five authored inputs; all hashes matched afterward",
+    "keyProductionSHA256": {
+      "web\\src\\App.tsx": "13a561e6da30f6d12d48430164fae751ea96786af39099b66052187e97c1e04a",
+      "web\\src\\api\\client.ts": "3c6ac9da46e72430416f7935048e1fc6009b14a0706be2b2985518f1d3f74569",
+      "web\\src\\lib\\use-work-pages.ts": "475b4aa5bf4cc85064b3ac6c9e1f45251dccea617d58baef1db107c86c1659a8",
+      "web\\src\\pages\\work.tsx": "c2e3bf08db667f2281e53512705284486ec1001a759d28eaeb3851863d10b3f8",
+      "web\\src\\api\\authorization.ts": "2c932968b01af0f9a4c6e1af7680c1a4a63ae4a6383bc72e8c9cd99c78279277",
+      "web\\src\\lib\\session.tsx": "775eb584cf21ed8705b863fec71deff1cf6a1b0c12ac73744e290d49049df3de",
+      "web\\src\\lib\\use-resource.ts": "32bac181e4a6385159a264c7b458769be7a50186087cbe5b80100d75a4139c23",
+      "internal\\app\\work.go": "c9c6fc730ee3f20f518dafdfd00140743561125ceb68167758dcaf2b7db3cf45"
+    }
+  },
+  "validation": {
+    "cwd": "C:\\bahadr\\serious\\aspm\\web",
+    "commands": [
+      "node node_modules\\typescript\\bin\\tsc --noEmit --pretty false",
+      "node scripts\\playwright.mjs test --config tests\\reviews\\work-search-v1\\playwright.config.ts",
+      "node scripts\\playwright.mjs test --list --reporter=list"
+    ],
+    "environment": {
+      "ASPM_WEB_TEST_PORT": "18825",
+      "ASPM_WORK_SEARCH_RUN": "red-01",
+      "NODE_USE_SYSTEM_CA": "1",
+      "node": "C:\\Program Files\\nodejs\\node.exe",
+      "nodeVersion": "v22.20.0",
+      "browserCache": "web\\.cache\\playwright",
+      "tls": "normal",
+      "caseTimeoutMs": 20000,
+      "expectTimeoutMs": 5000,
+      "workers": 1,
+      "retries": 0,
+      "combinedAPICap": 60
+    },
+    "typecheckExit": 0,
+    "browserExit": 1,
+    "browserDurationMs": 51674.11,
+    "failed": 5,
+    "passed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "globalErrors": 0,
+    "commonFailure": "Published producer is missing explicit workspace server search: Search all findings.",
+    "cases": [
+      { "id": "WS1", "durationMs": 8122, "apiCalls": 4, "bareWorkEntryCalls": 2 },
+      { "id": "WS2", "durationMs": 6386, "apiCalls": 3, "bareWorkEntryCalls": 1 },
+      { "id": "WS3", "durationMs": 6258, "apiCalls": 3, "bareWorkEntryCalls": 1 },
+      { "id": "WS4", "durationMs": 6305, "apiCalls": 3, "bareWorkEntryCalls": 1 },
+      { "id": "WS5", "durationMs": 6275, "apiCalls": 4, "bareWorkEntryCalls": 2 }
+    ],
+    "reached": "All five rendered the actual App, verified a closed 1-2-call bare authorized Work cohort, 100 loaded/207 reported, 50 display rows, five navigation links and no auto-drain. WS3 entered at 390px. Each had exactly one assertion failure at the missing control.",
+    "blocked": [
+      "WS1: local typing, explicit asset/title/owner q, q-bound continuation/refresh, local sort, counts and in-app query/draft memory.",
+      "WS2: replacement/selection/frontier reset, held old responses, exact failed-query and continuation retries, pending clear.",
+      "WS3: Enter/focus, UTF-8/NUL validation, valid 512-byte result, empty submission and reduced-motion/overflow assertions.",
+      "WS4: owner ACK fencing, preserved source facts, honest membership, no phantom ACK rows, 403/404 latch and Work-only recovery.",
+      "WS5: query clearing at workspace/session/logout boundaries, observed-before-failure 401 and late-result privacy."
+    ],
+    "fixtureViolations": 0,
+    "browserPageErrors": 0,
+    "externalAttempts": 0,
+    "port18825FreeAfterRun": true
+  },
+  "evidence": [
+    {
+      "path": ".artifacts\\work-search-v1\\red-01\\execution.json",
+      "sha256": "98b5475da13e53ae243bb81473229db60dbb58f791ca2abedd2631f18bb67679"
+    },
+    {
+      "path": ".artifacts\\work-search-v1\\red-01\\authored-inputs.json",
+      "sha256": "b4208eea8ba72a239963b3b7448052ee8810d81748fc23eb69cae46813b8d1d7"
+    },
+    {
+      "path": ".artifacts\\work-search-v1\\red-01\\typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".artifacts\\work-search-v1\\red-01\\browser.log",
+      "sha256": "2717c5c1606a4eb17c0819794f8b50ad9386e753d14f41f12e523ae6fa5d6049"
+    },
+    {
+      "path": ".artifacts\\work-search-v1\\red-01\\results.json",
+      "sha256": "a1e4a66c34d6c57f2cc8a65c634c5a6ee1e712df63a3b55d7d965fc58663c7ed"
+    },
+    {
+      "path": ".artifacts\\work-search-v1\\existing-121-list.log",
+      "sha256": "f9a134dba897a66403eb27d6859c65fb61efbb9012eb993157ece391e4dcf10b"
+    },
+    {
+      "path": ".artifacts\\work-search-v1\\all-126-list.log",
+      "sha256": "c0eea0c36b2058d4d1245612cdfd173b5d98e6f0fd87408b8f5d2df1b32f0667"
+    }
+  ],
+  "limits": [
+    "This is genuine producer RED, not search implementation acceptance. All post-control tails are authored and blocked.",
+    "Synthetic protocol metadata and typecheck are not backend, live PG/S3, scanner, source-account or provider proof.",
+    "The existing 121 cases and frozen controls are byte-unchanged, not newly executed or requalified.",
+    "No production, backend, API, dependency or existing-test edits; no agents, reviewer, commit, seal or publication.",
+    "Model/author labels provide no acceptance evidence. Actual browser observations and exact hashes are the boundary."
+  ],
+  "next": "Parent verifies and seals this unsigned RED handoff, then GPT-6.1 Sol implements this bounded contract. Keep original controls and existing 121 tests unchanged. Stop here; no project completion claim."
+}

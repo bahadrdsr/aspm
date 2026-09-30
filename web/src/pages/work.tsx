@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import { motion } from "motion/react";
 import type { WorkItem } from "@/api/types";
+import { APIError, workSearchQuery } from "@/api/client";
 import { useWorkPages } from "@/lib/use-work-pages";
 import type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
 import { usePreferences } from "@/lib/preferences";
@@ -16,6 +17,7 @@ export type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
 
 export interface WorkContext {
   query: string;
+  confirmedQuery: string;
   selected: Set<string>;
   page: number;
   sort: "source-order" | "severity" | "title";
@@ -34,8 +36,11 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
   confirmed: ConfirmedWorkUpdates;
   canWrite: boolean;
 }) {
-  const resource = useWorkPages(confirmed);
+  const confirmQuery = useCallback((confirmedQuery: string) => setContext((previous) => previous.confirmedQuery === confirmedQuery
+    ? previous : { ...previous, confirmedQuery, selected: new Set(), page: 0 }), [setContext]);
+  const resource = useWorkPages(confirmed, context.confirmedQuery, confirmQuery);
   const data = resource.data;
+  const [searchError, setSearchError] = useState<APIError | null>(null);
   const { reducedMotion } = usePreferences();
   const selectPage = useRef<HTMLInputElement>(null);
   const { query, selected, sort } = context;
@@ -57,7 +62,26 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
       setContext((previous) => ({ ...previous, selected: new Set() }));
     }
   }, [resource.error, setContext]);
-  const updateQuery = (value: string) => setContext((previous) => ({ ...previous, query: value, page: 0 }));
+  const updateQuery = (value: string) => {
+    setSearchError(null);
+    setContext((previous) => ({ ...previous, query: value, page: 0 }));
+  };
+  const clearSearch = () => {
+    updateQuery("");
+    resource.search("");
+    filterRef.current?.focus();
+  };
+  const submitSearch = () => {
+    try {
+      const submitted = workSearchQuery(query);
+      setSearchError(null);
+      if (submitted === "") clearSearch();
+      else resource.search(submitted);
+    } catch (cause: unknown) {
+      if (cause instanceof APIError) setSearchError(cause);
+      else throw cause;
+    }
+  };
   const select = (id: string, checked: boolean) => setContext((previous) => {
     const next = new Set(previous.selected);
     if (checked) next.add(id); else next.delete(id);
@@ -79,14 +103,30 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
     <section className="surface queue-surface" aria-label="Finding work queue">
       <div className="queue-toolbar">
         <div className="queue-title"><span className="section-mark" /><h2>Finding queue</h2><span className="subtle-pill">{canWrite ? "In-context actions" : "Read only"}</span></div>
-        <div className="filter-field"><Icon name="search" size={17} /><input id="finding-filter" ref={filterRef} type="text" enterKeyHint="search" aria-label="Filter findings" placeholder="Filter by title, asset, or owner" value={query} onChange={(event) => updateQuery(event.target.value)} />{query && <button type="button" className="clear-filter" aria-label="Clear finding filter" onClick={() => { updateQuery(""); filterRef.current?.focus(); }}><Icon name="close" size={15} /></button>}</div>
+        <div className="work-search-controls">
+          <div className="filter-field"><Icon name="search" size={17} /><input id="finding-filter" ref={filterRef} type="text" enterKeyHint="search" aria-label="Filter findings"
+            aria-invalid={searchError !== null || undefined} aria-describedby={searchError ? "work-search-error" : undefined}
+            placeholder="Filter by title, asset, or owner" value={query} onChange={(event) => updateQuery(event.target.value)}
+            onKeyDown={(event) => { if (event.key === "Enter" && !event.nativeEvent.isComposing) { event.preventDefault(); submitSearch(); } }} />
+            {query && <button type="button" className="clear-filter" aria-label="Clear finding filter" onClick={() => { updateQuery(""); filterRef.current?.focus(); }}><Icon name="close" size={15} /></button>}</div>
+          <ActionButton variant="outline" onClick={submitSearch}>Search all findings</ActionButton>
+          <Button variant="ghost" onClick={clearSearch}>Clear search</Button>
+        </div>
       </div>
+      <p className="inline-status workspace-search-status" role="status" aria-label="Workspace search"><Icon name="search" size={15} /><span>
+        {(data?.query ?? context.confirmedQuery) === "" ? "No server search. Results are scoped to this workspace." :
+          <>Confirmed workspace server search: "{data?.query ?? context.confirmedQuery}". Server results for this workspace.</>}
+        {data?.membershipNeedsRefresh && " Canonical owner changes mean search membership needs refresh; loaded rows and reported counts retain the last read's membership."}
+      </span></p>
+      {searchError && <div id="work-search-error" className="inline-status"><FormError error={searchError} /></div>}
       {resource.error && (resource.continuation ? <div className="inline-status">
         <FormError error={resource.error} /><ActionButton variant="outline" disabled={resource.pending} onClick={resource.retry}>Retry more findings</ActionButton>
-      </div> : <ErrorState error={resource.error} retry={resource.reload} stale={data !== null} />)}
+      </div> : resource.searching ? <div className="inline-status">
+        <FormError error={resource.error} /><ActionButton variant="outline" disabled={resource.pending} onClick={resource.retry}>Retry search</ActionButton>
+      </div> : <ErrorState error={resource.error} retry={resource.retry} stale={data !== null} />)}
       {resource.status === "loading" && !data && <LoadingState label="Loading findings" />}
       {data && <p className="inline-status" role={resource.status === "loading" ? "status" : undefined}><Icon name={resource.status === "loading" ? "clock" : "info"} size={15} />
-        {resource.status === "loading" ? `${resource.continuation ? "Loading more findings." : "Refreshing findings."} Current results stay in place.` :
+        {resource.status === "loading" ? `${resource.continuation ? "Loading more findings." : resource.searching ? "Loading workspace search." : "Refreshing findings."} Last confirmed results stay in place.` :
           resource.error ? "Read failed. Showing the last confirmed findings." : "Loaded findings. Refresh to check for updates."}</p>}
       {data && <>
         {selected.size > 0 && <motion.div role="status" className="selection-toolbar" initial={reducedMotion ? false : { opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }}>

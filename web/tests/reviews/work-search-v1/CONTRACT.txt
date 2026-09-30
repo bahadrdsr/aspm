@@ -1,0 +1,127 @@
+WORK SEARCH V1: EXPLICIT WORKSPACE SEARCH
+2026-09-30. TEST/UAT author boundary, unsigned RED, no reviewer stage.
+Published producer: 811332c97480f3aa22826cee3ca106801af70611.
+This contract is written before the new test/fixture/config files.
+
+Surface and scope
+Reuse the existing "Filter findings" text input as an editable draft. Typing,
+clearing that local filter, sorting and display-page navigation remain local
+and issue no HTTP. Add "Search all findings", with Enter in the input doing
+the same explicit submission. This searches the selected workspace only,
+not every workspace, scanner, source account or a consistent global snapshot.
+No second search panel, extra navigation, saved views, sort API or filter DSL.
+
+Trim a submitted draft. Nonempty text is NUL-free and at most 512 UTF-8 bytes,
+not 512 characters. Invalid input has an accessible alert, aria-invalid on
+the input, and no HTTP or successful empty-result transition. Do not truncate
+or silently replace it. A valid 512-byte trimmed query is permitted.
+
+A status named "Workspace search" identifies the confirmed query separately
+from the editable input. For bare results it says "No server search". For
+search results it identifies the confirmed query, the workspace scope and
+that these are server results. It must not label old rows with a pending,
+failed or merely edited query. Loading/failure messages describe old results
+honestly. "Clear search" and an empty submitted draft explicitly request the
+bare native first page, clear the draft, and restore focus to the input.
+
+Retain the existing honest "Finding pagination" status: loaded row count,
+last returned service total and whether native continuation remains. Counts
+may differ and pages are not an atomic snapshot. Finding/Severity sorts and
+the unsaved draft still apply only to loaded rows. No automatic draining,
+per-keystroke fetching, debounce timer, polling or promise of full scanning.
+
+Exact existing HTTP
+Initial/default load and a confirmed clear: GET /api/v1/work, no query/body.
+Submitted nonempty query and its refresh: GET /api/v1/work?q=<trimmed-query>,
+with q ONLY, no limit or cursor on the first page.
+Manual search continuation and its retry: GET /api/v1/work with exactly q,
+limit=100 and the service's native 32-lowercase-hex cursor. Order is irrelevant.
+No duplicates, offsets, generated predicates, role/actor/revision authority,
+server-sort or other parameters. Refresh uses the CONFIRMED query, not draft.
+Retry search uses the exact failed first-page query. Retry more findings uses
+the exact failed query AND native cursor even if the draft has since changed.
+The existing backend queryText/workFilter is read-only, not changed or
+qualified by these synthetic browser tests. No backend/API/schema work.
+
+Replacement, concurrency and decisions
+Explicitly submitting a different query or clearing can supersede a pending
+query, refresh or continuation. No duplicate automatic operation is allowed.
+Until success, keep only still-authorized last confirmed rows and their old
+query label; local draft filtering can hide them. A successful DIFFERENT
+query atomically replaces rows and native frontier, resets display page to
+one, and clears query-specific selected IDs, including hidden selections.
+It must not overwrite a newer unsaved draft. Same-query refresh retains
+the published usable local context while resetting its native frontier.
+Old responses cannot mix rows/frontiers/labels across queries.
+
+Canonical finding PATCH ACKs still protect row reads started before the ACK,
+including older search reads. Do not inject an ACK's otherwise-unloaded ID
+into another query's results. Keep the published local-match/focus behavior.
+An owner update can invalidate an older query's observed membership: preserve
+the canonical row fields and honestly say search membership needs refresh,
+rather than inventing a new server membership or relabeling old API counts.
+The next authorized query read can establish its own actual membership.
+All original source, evidence, scan, provenance and verification fields stay
+unchanged; only explicitly declared existing human PATCH intents may mutate.
+
+Authority, memory and transport
+Work 403/404 clears protected Work rows and selected IDs. Failed/pending new
+searches, old continuations and independent detail ACKs cannot recover them.
+Only a subsequently authorized Work 200 can recover that Work view. A detail
+can keep its separate authority without authorizing denied Work results.
+Global 401, workspace/session change and logout discard private Work/finding
+context. Released old requests must not restore it or cross scope/epoch.
+Keep draft/confirmed search in memory across Settings/Work navigation only;
+workspace/session changes clear both. No private storage, readable cookie,
+URL persistence of search text, external traffic, scanner/AI/provider calls.
+
+Transport observations are evidence, not invented browser guarantees.
+Register requests before awaiting allHeaders. Record actual response,
+requestfinished and requestfailed events. StrictMode entries admit one or two
+declared scoped calls, at least one observed completed 200, and no fallthrough
+default response for a denied entry. A global 401 is proved by its real
+response event before failure plus real App Sign in; a later authority-driven
+body abort is permitted. Superseded reads may actually abort or complete,
+but neither outcome may change the newer UI. Reload explicitly if a new
+document is intended; hash-only navigation is not a reload.
+
+Five real App browser narratives
+WS1 Bare initial entry; local typing sends zero HTTP; explicit trimmed q finds
+    records outside the initial page; native q-bound continuation and refresh;
+    title/asset/owner query coverage, honest counts and memory-only navigation.
+WS2 Query replacement and selected/display-page reset; held old first pages
+    and continuations; exact transient search/continuation retry despite edited
+    draft; pending clear returns bare first page without late restoration.
+WS3 390px/reduced-motion controls, keyboard/focus and selection; ASCII and
+    multibyte byte bounds, NUL rejection, valid 512-byte query, empty submission.
+WS4 Canonical owner ACK versus old search reads and honest membership; source
+    preservation; no phantom ACK rows; Work 403/404 latch, independent detail
+    ACK, late page, failed new search and authorized Work-only recovery.
+WS5 Confirmed search plus held responses across workspace, observed global
+    401, fresh login and logout; no stale private context or persistent search.
+
+Fixture, controls and handoff
+Use actual App and its hooks/client/parser. A small search-only extension of
+the existing Work pagination fixture supplies protocol-shaped query pages;
+reuse its native data/types, session/detail/PATCH and A1 denial cohorts.
+Do not emulate UI merging, handlers, search state, membership reconciliation,
+authority latches, DOM, hooks or clocks. All synthetic HTTP is ledgered and
+undeclared API/external HTTP/WebSocket attempts are blocked. Combined cap is
+60 API calls per case, including the inherited fixture's calls.
+
+Original config: 20s per test, 5s expectations, one worker, zero retries,
+normal TLS, blocked service workers, failure screenshot and retained trace.
+Use existing Node/browser/dependencies and the free owned port 18825.
+No dependencies, nested agents, source/old-test edits, commits or publication.
+Run typecheck and these five new cases only. Each must be genuinely RED at
+the missing Search all findings control on the unchanged published producer;
+all later assertions are authored but BLOCKED, not claimed passing.
+The existing 121 cases are discovered and byte-checked, not rerun: prior
+full-120 plus final FA7 and six WP evidence remains prior evidence only.
+
+Normal logs/artifacts belong in .artifacts\work-search-v1. Record exact new
+file hashes, the unchanged production/old-control boundary, commands/results
+and reached/BLOCKED tails in ONE small unsigned HANDOFF packet. No repeated
+repository dumps, copied trees or recursive archives. Parent seals before
+separate implementation; model/author text alone is not acceptance evidence.
+Stop at frozen unsigned RED. No review, backend proof or completion claim.

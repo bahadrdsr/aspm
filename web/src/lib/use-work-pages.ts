@@ -9,11 +9,13 @@ export interface ConfirmedWorkUpdates {
   items: ReadonlyMap<string, { revision: number; item: WorkItem }>;
 }
 
-export function useWorkPages(confirmed: ConfirmedWorkUpdates) {
-  const [read, setRead] = useState({ cursor: "", sequence: 0 });
+export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQueryConfirmed: (query: string) => void) {
+  const [read, setRead] = useState({ query, cursor: "", sequence: 0, search: false });
   const rows = useRef(new Map<string, { revision: number; item: WorkItem }>());
-  const lastPage = useRef<WorkResponse | null>(null);
+  const lastPage = useRef<(WorkResponse & { query: string }) | null>(null);
   const currentRevision = useRef(confirmed.revision);
+  const sequence = useRef(0);
+  const activeRequest = useRef<AbortController | null>(null);
   const scheduled = useRef(false);
   const mounted = useRef(true);
   const clear = useCallback(() => {
@@ -25,53 +27,67 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates) {
     mounted.current = true;
     const signal = requestAuthority().signal;
     signal.addEventListener("abort", clear, { once: true });
-    return () => { mounted.current = false; signal.removeEventListener("abort", clear); clear(); };
+    return () => { mounted.current = false; activeRequest.current?.abort(); signal.removeEventListener("abort", clear); clear(); };
   }, [clear]);
   const load = useCallback(async (signal: AbortSignal) => {
     scheduled.current = false;
     const authority = requestAuthority();
-    const scopedSignal = AbortSignal.any([signal, authority.signal]);
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    const scopedSignal = AbortSignal.any([signal, authority.signal, controller.signal]);
     const revision = currentRevision.current;
     let page: WorkResponse;
     try {
-      page = await api.work(scopedSignal, read.cursor === "" ? undefined : { cursor: read.cursor });
+      page = await api.work(scopedSignal, read.cursor === "" ? { q: read.query } : { q: read.query, cursor: read.cursor });
     } catch (cause: unknown) {
       scopedSignal.throwIfAborted();
+      if (read.sequence !== sequence.current) throw new DOMException("Work read superseded", "AbortError");
       if (cause instanceof APIError && (cause.code === "forbidden" || cause.code === "not-found")) clear();
       throw cause;
     }
     scopedSignal.throwIfAborted();
-    if (!mounted.current || requestAuthority().revision !== authority.revision) {
-      throw new DOMException("Work view closed or workspace changed", "AbortError");
+    if (!mounted.current || read.sequence !== sequence.current || requestAuthority().revision !== authority.revision) {
+      throw new DOMException("Work view closed, superseded or workspace changed", "AbortError");
     }
     const merged = read.cursor === "" ? new Map<string, { revision: number; item: WorkItem }>() : new Map(rows.current);
     for (const item of page.items) merged.set(item.id, { revision, item });
     rows.current = merged;
-    lastPage.current = page;
+    lastPage.current = { ...page, query: read.query };
+    onQueryConfirmed(read.query);
     return page;
-  }, [read, clear]);
+  }, [read, clear, onQueryConfirmed]);
   const resource = useResource(load);
   const data = useMemo(() => {
     const page = lastPage.current;
     if (page === null) return null;
-    return { ...page, items: [...rows.current.values()].map((row) => {
+    let membershipNeedsRefresh = false;
+    const items = [...rows.current.values()].map((row) => {
       const update = confirmed.items.get(row.item.id);
       // Only a read of this row can supersede its ACK fence, not an unrelated later page.
+      if (page.query !== "" && update && update.revision > row.revision && update.item.ownerName !== row.item.ownerName) {
+        membershipNeedsRefresh = true;
+      }
       return update && update.revision > row.revision ? update.item : row.item;
-    }) };
+    });
+    return { ...page, items, membershipNeedsRefresh };
   }, [resource.data, resource.status, resource.error, confirmed]);
-  function requestPage(cursor: string) {
-    if (resource.status === "loading" || scheduled.current) return;
+  function requestPage(query: string, cursor: string, search = false) {
+    if ((resource.status === "loading" || scheduled.current) &&
+      (!search || (query === read.query && cursor === read.cursor))) return;
     scheduled.current = true;
-    setRead((previous) => ({ cursor, sequence: previous.sequence + 1 }));
+    activeRequest.current?.abort();
+    sequence.current += 1;
+    setRead({ query, cursor, search, sequence: sequence.current });
   }
   function loadMore() {
-    const next = lastPage.current?.nextCursor;
-    if (next != null) requestPage(next);
+    const page = lastPage.current;
+    if (page?.nextCursor != null) requestPage(page.query, page.nextCursor);
   }
   return {
     data, error: resource.error, status: resource.status, pending: resource.status === "loading",
-    continuation: read.cursor !== "", loadMore,
-    reload: () => requestPage(""), retry: () => requestPage(read.cursor),
+    continuation: read.cursor !== "", searching: read.search || read.query !== "", loadMore,
+    search: (query: string) => requestPage(query, "", true),
+    reload: () => requestPage(lastPage.current?.query ?? query, ""),
+    retry: () => requestPage(read.query, read.cursor, read.search),
   };
 }
