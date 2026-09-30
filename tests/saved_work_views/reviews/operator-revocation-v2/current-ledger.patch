@@ -1,0 +1,95 @@
+diff --git a/tests/ai_assessments/upgrade_test.go b/tests/ai_assessments/upgrade_test.go
+index 9ea7c70..ee499db 100644
+--- a/tests/ai_assessments/upgrade_test.go
++++ b/tests/ai_assessments/upgrade_test.go
+@@ -163,7 +163,7 @@ func seedPublishedV7(t *testing.T, f *fixture) (legacySeed, string) {
+ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 	t.Run("fresh-v8-and-reopen", func(t *testing.T) {
+ 		h := newHarness(t, false)
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8"}), "fresh current core did not apply V8")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "fresh current core did not apply through V9")
+ 		finding := h.seed()
+ 		p, key := h.profile("local", true)
+ 		pol, grant := h.approve(p)
+@@ -174,7 +174,7 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 		w := h.worker(h.configForWorker("fresh-v8"))
+ 		process(t, h.ctx, w, true)
+ 		h.assertResult(h.job(h.admin, job.ID), p, v, "inconclusive")
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8"}), "reopen repeated or skipped a migration")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "reopen repeated or skipped a migration")
+ 	})
+ 	t.Run("published-v7-upgrade", func(t *testing.T) {
+ 		f := newFixture(t)
+@@ -195,8 +195,8 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 		target := filepath.Join(required(t, "ASPM_ASSESSMENT_ARTIFACT_DIR"), "published-v7-upgrade-"+nonce(t)+".json")
+ 		must(t, "record nonsecret actual V7 upgrade observation", os.WriteFile(target, encoded(t, observation), 0600))
+ 		t.Log("actual published-v7 upgrade observation:", target)
+-		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8"}),
+-			"CURRENT core did not apply the NEW required V8 exactly once over actual published populated V7")
++		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}),
++			"CURRENT core did not apply required migrations through V9 exactly once over actual published populated V7")
+ 		check(t, reflect.DeepEqual(oldDefinitions, definitions(t, f, baseline.LegacyTables)), "V8 changed a legacy definition")
+ 		check(t, reflect.DeepEqual(oldData, legacyData(t, f, baseline.LegacyTables)), "V8 changed actual pre-upgrade API-created legacy data")
+ 		must(t, "close migration probe before enabled core", current.Close())
+@@ -216,9 +216,9 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 		h.reopen()
+ 		fresh := h.worker(h.configForWorker("upgraded-reopened-worker"))
+ 		process(t, h.ctx, fresh, false)
+-		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8"}) &&
+-			reflect.DeepEqual(oldDefinitions, definitions(t, f, baseline.LegacyTables)), "V8 reopen changed legacy definitions or exact ledger")
++		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) &&
++			reflect.DeepEqual(oldDefinitions, definitions(t, f, baseline.LegacyTables)), "V9 reopen changed legacy definitions or exact ledger")
+ 		check(t, h.job(h.admin, job.ID).State == "succeeded", "upgraded durable advisory lost on independent reopen")
+-		t.Log("AA8 exact populated published-V7 -> V8 and legacy contracts/reopen verified")
++		t.Log("AA8 populated published-V7 -> current through V9 and legacy contracts/reopen verified")
+ 	})
+ }
+diff --git a/tests/ai_configuration/upgrade_test.go b/tests/ai_configuration/upgrade_test.go
+index 2d54393..ed6f296 100644
+--- a/tests/ai_configuration/upgrade_test.go
++++ b/tests/ai_configuration/upgrade_test.go
+@@ -129,7 +129,7 @@ func testPublishedUpgrade(t *testing.T) {
+ 		must(t, "record actual published-v6 upgrade observation", os.WriteFile(file, encode(t, observation), 0600))
+ 		t.Log("actual schema upgrade observation:", file)
+ 	}
+-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8"}), "CURRENT core startup did not apply required migrations through v8 exactly once over real published v6")
++	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "CURRENT core startup did not apply required migrations through v9 exactly once over real published v6")
+ 	check(t, reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "AI upgrade changed a legacy table definition")
+ 	h.enroll()
+ 	key := secret(t)
+@@ -142,7 +142,7 @@ func testPublishedUpgrade(t *testing.T) {
+ 	must(t, "close resolver for upgrade persistence probe", r.Close())
+ 	fresh := h.resolver()
+ 	assertResolved(t, fresh, h.ctx, h.admin, h.get(h.admin, p.ID), h.json(h.admin, "GET", policyPath, nil, 200).Policy, &g, key)
+-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8"}) && reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "v8 reopen repeated migration or changed old schema definitions")
++	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) && reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "v9 reopen repeated migration or changed old schema definitions")
+ 	h.networkNone()
+ 	t.Log("real schema-only v6 upgrade and API-created post-upgrade configuration persistence; no legacy customer-data migration claim")
+ }
+diff --git a/tests/source_collection/upgrade_test.go b/tests/source_collection/upgrade_test.go
+index 531f94d..c713903 100644
+--- a/tests/source_collection/upgrade_test.go
++++ b/tests/source_collection/upgrade_test.go
+@@ -175,8 +175,8 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
+ 			}
+ 			opened = true
+ 			afterOpenVersions, afterOpenTables = versionLedger(t, f), actualTables(t, f)
+-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8"}),
+-				"current constructor returned success but did not apply and record v6, v7 and v8 exactly once over actual published v5")
++			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}),
++				"current constructor returned success but did not apply and record v6, v7, v8 and v9 exactly once over actual published v5")
+ 			for _, name := range []string{"source_connections", "source_collections", "source_repository_assets", "source_collection_records"} {
+ 				found := false
+ 				for _, table := range afterOpenTables {
+@@ -219,9 +219,9 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
+ 			must(t, "close worker before v6 idempotent reopen", worker.Close())
+ 			fresh := h.openWorker(h.workerConfig(native, "idempotent-v6"))
+ 			process(t, h.ctx, fresh, false)
+-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8"}) &&
++			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) &&
+ 				reflect.DeepEqual(oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables)),
+-				"reopening v8 repeated migration or changed legacy definitions")
++				"reopening v9 repeated migration or changed legacy definitions")
+ 			require(t, h.collection(h.admin, job.ID).State == "succeeded" && len(h.assets(h.admin)) == 1,
+ 				"current API-produced post-upgrade data did not survive repeat core/worker opens")
+ 			apiTailExecuted = true

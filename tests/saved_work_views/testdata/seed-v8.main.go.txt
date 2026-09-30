@@ -1,0 +1,203 @@
+package main
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"os"
+	"regexp"
+	"strings"
+	"sync/atomic"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+)
+
+type input struct {
+	DatabaseURL, Schema, ApplicationName, BootstrapToken, Password, ViewerPassword string
+	StorageEndpoint, Bucket, Prefix, AccessKey, SecretKey, Report                  string
+	Now                                                                            time.Time
+}
+type actor struct {
+	User      app.User
+	Workspace string
+	Cookie    *http.Cookie
+}
+type envelope struct {
+	User      app.User
+	Workspace app.Workspace
+	Asset     app.Asset
+	Import    app.Import
+	Finding   app.Finding
+	Items     []app.WorkItem
+}
+type countedConn struct {
+	net.Conn
+	writes *atomic.Int32
+}
+
+func (c countedConn) Write(b []byte) (int, error) {
+	if c.writes.Add(1) > 40 {
+		return 0, errors.New("published intake I/O budget exceeded")
+	}
+	return c.Conn.Write(b)
+}
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+func run() error {
+	var in input
+	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 256<<10))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&in) != nil || !regexp.MustCompile(`^work_views_[a-f0-9]{24}$`).MatchString(in.Schema) ||
+		in.Prefix != "saved-work-views/"+strings.TrimPrefix(in.Schema, "work_views_")+"/" || in.Now.IsZero() {
+		return errors.New("published seed rejected unowned input; private details withheld")
+	}
+	database, err := url.Parse(in.DatabaseURL)
+	if err != nil || database.Hostname() != "127.0.0.1" || database.Port() != "15432" || database.User == nil {
+		return errors.New("published seed rejected database boundary")
+	}
+	endpoint, err := url.Parse(in.StorageEndpoint)
+	if err != nil || endpoint.Scheme != "http" || endpoint.Hostname() != "127.0.0.1" || endpoint.Port() != "18333" {
+		return errors.New("published seed rejected storage boundary")
+	}
+	var writes, blocked atomic.Int32
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.Proxy = nil
+	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != endpoint.Host {
+			blocked.Add(1)
+			return nil, errors.New("published seed forbids non-intake HTTP")
+		}
+		conn, err := (&net.Dialer{Timeout: 3 * time.Second}).DialContext(ctx, network, address)
+		if err != nil {
+			return nil, err
+		}
+		return countedConn{conn, &writes}, nil
+	}
+	http.DefaultTransport = transport
+	defer transport.CloseIdleConnections()
+	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
+	defer cancel()
+	const origin = "https://saved-work-views.synthetic.invalid"
+	core, err := app.Open(ctx, app.Config{DatabaseURL: in.DatabaseURL, Schema: in.Schema,
+		ApplicationName: in.ApplicationName, MaxConnections: 2, BootstrapToken: in.BootstrapToken,
+		ManualProcessing: true, PublicOrigin: origin, MaxUploadBytes: 64 << 10, SessionTTL: time.Hour,
+		Now: func() time.Time { return in.Now }, LogOutput: io.Discard,
+		Storage: app.StorageConfig{Endpoint: in.StorageEndpoint, Bucket: in.Bucket, Prefix: in.Prefix,
+			AccessKey: in.AccessKey, SecretKey: in.SecretKey, Region: "us-east-1", Timeout: 5 * time.Second}})
+	if err != nil {
+		return errors.New("exact published V8 app.Open failed; private details withheld")
+	}
+	defer core.Close()
+	workspace, calls := "", 0
+	var cookie *http.Cookie
+	request := func(method, path string, body any, status int) (envelope, error) {
+		calls++
+		if calls > 24 {
+			return envelope{}, errors.New("published API budget exceeded")
+		}
+		data, err := json.Marshal(body)
+		if err != nil {
+			return envelope{}, errors.New("published request encoding failed")
+		}
+		req := httptest.NewRequest(method, origin+path, bytes.NewReader(data)).WithContext(ctx)
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Origin", origin)
+		req.Header.Set("X-ASPM-Workspace-ID", workspace)
+		if cookie != nil {
+			req.AddCookie(cookie)
+		}
+		if path == "/api/v1/bootstrap" {
+			req.Header.Set("X-ASPM-Bootstrap-Token", in.BootstrapToken)
+		}
+		response := httptest.NewRecorder()
+		core.Handler.ServeHTTP(response, req)
+		if response.Code != status {
+			return envelope{}, fmt.Errorf("published %s %s returned %d, want %d; response withheld", method, path, response.Code, status)
+		}
+		var out envelope
+		if json.Unmarshal(response.Body.Bytes(), &out) != nil {
+			return out, errors.New("published API response encoding failed")
+		}
+		for _, value := range response.Result().Cookies() {
+			if value.Name == "aspm_session" {
+				cookie = value
+			}
+		}
+		return out, nil
+	}
+	enrolled, err := request("POST", "/api/v1/bootstrap", map[string]any{"workspaceName": "Actual published V8",
+		"name": "Legacy owner", "email": "legacy@views.invalid", "password": in.Password}, 201)
+	if err != nil {
+		return err
+	}
+	workspace = enrolled.Workspace.ID
+	session, err := request("POST", "/api/v1/login", map[string]string{"email": "legacy@views.invalid", "password": in.Password}, 200)
+	if err != nil || cookie == nil {
+		return errors.New("published admin login failed")
+	}
+	admin := actor{session.User, workspace, cookie}
+	if _, err = request("POST", "/api/v1/users", map[string]any{"name": "Legacy viewer", "email": "viewer@views.invalid",
+		"password": in.ViewerPassword, "role": "viewer"}, 201); err != nil {
+		return err
+	}
+	asset, err := request("POST", "/api/v1/assets", map[string]any{"name": "Published V8 repository", "kind": "repository",
+		"environment": "test", "criticality": "medium", "tags": []string{"synthetic"}, "ownerId": admin.User.ID}, 201)
+	if err != nil {
+		return err
+	}
+	queued, err := request("POST", "/api/v1/imports", map[string]any{"apiVersion": app.APIVersion, "assetId": asset.Asset.ID,
+		"format": "sarif", "report": in.Report, "sourceId": "published-v8-source", "scanId": "published-v8-scan",
+		"scope":        app.Scope{ID: asset.Asset.ID, Revision: "1", Branch: "refs/heads/main"},
+		"sourceScanAt": in.Now.Add(-time.Hour), "collectedAt": in.Now,
+		"sourceStatus": "succeeded", "scanKind": "full", "completeness": "complete"}, 202)
+	if err != nil {
+		return err
+	}
+	if core.ProcessImports(ctx) != nil {
+		return errors.New("published real S3 intake failed")
+	}
+	completed, err := request("GET", "/api/v1/imports/"+queued.Import.ID, nil, 200)
+	if err != nil || completed.Import.State != "succeeded" || completed.Import.ObservationCount != 1 {
+		return errors.New("published real finding intake did not complete")
+	}
+	work, err := request("GET", "/api/v1/work", nil, 200)
+	if err != nil || len(work.Items) != 1 {
+		return errors.New("published real Work identity missing")
+	}
+	id := work.Items[0].ID
+	if _, err = request("PATCH", "/api/v1/findings/"+id, map[string]any{"workflowState": "in-progress", "ownerId": admin.User.ID}, 200); err != nil {
+		return err
+	}
+	if _, err = request("POST", "/api/v1/findings/"+id+"/notes", map[string]string{"text": "Actual published V8 human note."}, 201); err != nil {
+		return err
+	}
+	session, err = request("POST", "/api/v1/login", map[string]string{"email": "viewer@views.invalid", "password": in.ViewerPassword}, 200)
+	if err != nil || cookie == nil {
+		return errors.New("published viewer login failed")
+	}
+	viewer := actor{session.User, workspace, cookie}
+	finding, err := request("GET", "/api/v1/findings/"+id, nil, 200)
+	if err != nil || len(finding.Finding.Notes) != 1 || blocked.Load() != 0 {
+		return errors.New("published legacy read or native boundary failed")
+	}
+	return json.NewEncoder(os.Stdout).Encode(struct {
+		Admin, Viewer actor
+		Asset         app.Asset
+		Import        app.Import
+		Finding       app.Finding
+		APICalls      int
+		StorageWrites int32
+	}{admin, viewer, asset.Asset, completed.Import, finding.Finding, calls, writes.Load()})
+}

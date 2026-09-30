@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/csv"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -39,6 +40,32 @@ func queryText(r *http.Request) (string, error) {
 	return q, nil
 }
 
+func (a *Application) workQuery(r *http.Request, workspace string, session authenticatedSession) (string, error) {
+	query, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		// A discarded malformed selector must not fall back to unfiltered Work.
+		for _, parameter := range strings.Split(r.URL.RawQuery, "&") {
+			key, _, _ := strings.Cut(parameter, "=")
+			key, _ = url.QueryUnescape(key)
+			if key == "viewId" {
+				return "", errInvalid
+			}
+		}
+	}
+	selectors, selected := query["viewId"]
+	if !selected {
+		return queryText(r)
+	}
+	if err != nil || query.Has("q") || len(selectors) != 1 || !validID(selectors[0]) {
+		return "", errInvalid
+	}
+	view, err := a.readWorkView(r.Context(), workspace, session.User.ID, selectors[0])
+	if err != nil {
+		return "", err
+	}
+	return view.Query, nil
+}
+
 type workQuerier interface {
 	Query(context.Context, string, ...any) (pgx.Rows, error)
 }
@@ -69,8 +96,8 @@ func (a *Application) workPage(ctx context.Context, db workQuerier, workspace, q
 	return items, next, nil
 }
 
-func (a *Application) listWork(w http.ResponseWriter, r *http.Request, workspace string) error {
-	q, err := queryText(r)
+func (a *Application) listWork(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession) error {
+	q, err := a.workQuery(r, workspace, session)
 	if err != nil {
 		return err
 	}
@@ -114,11 +141,11 @@ func csvText(text string) string {
 	return text
 }
 
-func (a *Application) exportWork(w http.ResponseWriter, r *http.Request, workspace string) error {
+func (a *Application) exportWork(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession) error {
 	if r.URL.Query().Get("format") != "csv" {
 		return errUnsupported
 	}
-	q, err := queryText(r)
+	q, err := a.workQuery(r, workspace, session)
 	if err != nil {
 		return err
 	}

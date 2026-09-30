@@ -1,0 +1,37 @@
+{
+  "baseline": "629bebd727b448fb89eb732485457fd60cbffbfd",
+  "reason": "Explicit test-author operator fixture and eight current-ledger expectation approval, 2026-09-30",
+  "capturedOnceBeforeAmendment": true,
+  "files": [
+    {
+      "source": "tests\\saved_work_views\\CONTRACT.txt",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\CONTRACT.before.txt",
+      "sha256": "8f8567bb6866184366f5f1793657b4b9b021e3354133e54bd8714a506e79a7f9",
+      "bytes": 7289
+    },
+    {
+      "source": "tests\\saved_work_views\\HANDOFF.json",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\HANDOFF.before.json",
+      "sha256": "e179e3455d46b25580267949fe416f402c5a96e4f6ff0f2e29bee43f01f04d1b",
+      "bytes": 9138
+    },
+    {
+      "source": "tests\\ai_configuration\\upgrade_test.go",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\ai-configuration-upgrade.go.txt",
+      "sha256": "fb67430bb362394d1111038d548e632c8bffe063a37b172a933263bb4fd19801",
+      "bytes": 7157
+    },
+    {
+      "source": "tests\\ai_assessments\\upgrade_test.go",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\ai-assessments-upgrade.go.txt",
+      "sha256": "4c58962bbbe89327ddb3d22d1e7e48541844d0aa348aa2711256353740583fbe",
+      "bytes": 11892
+    },
+    {
+      "source": "tests\\source_collection\\upgrade_test.go",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\source-collection-upgrade.go.txt",
+      "sha256": "9a9d0702d9ab38dcaf2cf4255d9c87c2532a1b5b50cdc35b83d9afeca4c83a95",
+      "bytes": 10745
+    }
+  ]
+}

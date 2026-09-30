@@ -1,0 +1,82 @@
+{
+  "baseline": "629bebd727b448fb89eb732485457fd60cbffbfd",
+  "currentLedgerExpectationsChanged": 8,
+  "allOtherOldFileBytesPreserved": true,
+  "caseIdentitiesHistoricalStartsLegacyDataDDLNoProviderReopenPredicatesUnchanged": true,
+  "oldCasesExecuted": false,
+  "sourceDependencySignatureEdits": false,
+  "files": [
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\ai-configuration-upgrade.go.txt",
+      "currentLedgerLines": [
+        132,
+        145
+      ],
+      "beforeSHA256": "fb67430bb362394d1111038d548e632c8bffe063a37b172a933263bb4fd19801",
+      "afterSHA256": "24a9541339e5a4a6f767cfb52e1ab488543b41528a4d7c3cfa843ed5496a4bb3",
+      "diagnosticReplacements": [
+        [
+          "through v8 exactly once",
+          "through v9 exactly once"
+        ],
+        [
+          "\"v8 reopen repeated",
+          "\"v9 reopen repeated"
+        ]
+      ]
+    },
+    {
+      "path": "tests\\ai_assessments\\upgrade_test.go",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\ai-assessments-upgrade.go.txt",
+      "currentLedgerLines": [
+        166,
+        177,
+        198,
+        219
+      ],
+      "beforeSHA256": "4c58962bbbe89327ddb3d22d1e7e48541844d0aa348aa2711256353740583fbe",
+      "afterSHA256": "a4f3e88dbaf38dcaee5fee57fff9068761c65dcb5fca45559338f2be92b59135",
+      "diagnosticReplacements": [
+        [
+          "fresh current core did not apply V8",
+          "fresh current core did not apply through V9"
+        ],
+        [
+          "CURRENT core did not apply the NEW required V8 exactly once",
+          "CURRENT core did not apply required migrations through V9 exactly once"
+        ],
+        [
+          "\"V8 reopen changed",
+          "\"V9 reopen changed"
+        ],
+        [
+          "AA8 exact populated published-V7 -> V8 and legacy contracts/reopen verified",
+          "AA8 populated published-V7 -> current through V9 and legacy contracts/reopen verified"
+        ]
+      ]
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "archive": "tests\\saved_work_views\\reviews\\operator-revocation-v2\\source-collection-upgrade.go.txt",
+      "currentLedgerLines": [
+        178,
+        222
+      ],
+      "beforeSHA256": "9a9d0702d9ab38dcaf2cf4255d9c87c2532a1b5b50cdc35b83d9afeca4c83a95",
+      "afterSHA256": "291557d2e9f02d8cfb17329bcc89c74f9a4b05d31ec338f28f77062e8dadaff7",
+      "diagnosticReplacements": [
+        [
+          "record v6, v7 and v8 exactly once",
+          "record v6, v7, v8 and v9 exactly once"
+        ],
+        [
+          "\"reopening v8 repeated",
+          "\"reopening v9 repeated"
+        ]
+      ]
+    }
+  ],
+  "diffSHA256": "25a960fc62ccbb73104e094b640d590c5d50f30e0fd68fe7d7e0d4efd4d66f94",
+  "rationale": "Explicit 2026-09-30 approval: expect current through V9 while preserving historical V5/V6/V7 and every other predicate; no source or old-oracle rewrite."
+}

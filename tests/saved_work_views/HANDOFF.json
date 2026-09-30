@@ -1,0 +1,115 @@
+{
+  "status": "FROZEN_UNSIGNED_FOR_PARENT_NEW_SEAL_AND_SOL",
+  "baseline": "629bebd727b448fb89eb732485457fd60cbffbfd",
+  "root": "C:\\bahadr\\serious\\aspm",
+  "scope": "M05 / OF-06 test-author amendment only; both authoring blockers resolved within explicit 2026-09-30 approval",
+  "approvalsApplied": [
+    "One operator-fixture membership DELETE per owned schema: generated currently non-admin actor, verified recorded schema and qualified namespace/table/owner, both workspace_id and user_id parameters, exactly one matching RETURNING row. No other direct business SQL writes or fake authorization hook.",
+    "Exactly eight CURRENT full-ledger expectations in three old files extend 1..8 to 1..9, plus directly stale current-version diagnostics. Historical starts, case identities, legacy DDL/data/no-provider/reopen predicates, seeders/builders/pools/budgets remain exact.",
+    "Previous CONTRACT/HANDOFF and the three old files were archived once before amendment. Prior unsigned RED/evidence and all old signatures remain unchanged. No public membership-removal API or UI workflow was added."
+  ],
+  "authoredPaths": [
+    "tests\\saved_work_views\\CONTRACT.txt",
+    "tests\\saved_work_views\\fixtures_test.go",
+    "tests\\saved_work_views\\operator_test.go",
+    "tests\\saved_work_views\\operator_calibration_test.go",
+    "tests\\saved_work_views\\query_test.go",
+    "tests\\saved_work_views\\views_test.go",
+    "tests\\saved_work_views\\upgrade_test.go",
+    "tests\\saved_work_views\\Test-SavedWorkViews.ps1",
+    "tests\\saved_work_views\\prepare-published-v8.mjs",
+    "tests\\saved_work_views\\testdata\\seed-v8.main.go.txt"
+  ],
+  "amendedOldPaths": [
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "currentLedgerLines": [132, 145],
+      "afterSHA256": "24a9541339e5a4a6f767cfb52e1ab488543b41528a4d7c3cfa843ed5496a4bb3"
+    },
+    {
+      "path": "tests\\ai_assessments\\upgrade_test.go",
+      "currentLedgerLines": [166, 177, 198, 219],
+      "afterSHA256": "a4f3e88dbaf38dcaee5fee57fff9068761c65dcb5fca45559338f2be92b59135"
+    },
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "currentLedgerLines": [178, 222],
+      "afterSHA256": "291557d2e9f02d8cfb17329bcc89c74f9a4b05d31ec338f28f77062e8dadaff7"
+    }
+  ],
+  "reviewHistory": {
+    "root": "tests\\saved_work_views\\reviews\\operator-revocation-v2",
+    "archiveManifest": "ARCHIVE.json",
+    "archiveSHA256": "93ef7c3638e6e8ae201ad821b2c6f70441edefeededfb2f9717a642ab52f15fb",
+    "beforeAfterManifest": "AMENDMENT.json",
+    "amendmentSHA256": "618d162c24e8ef78e853374b8e200e816894b226283f485f1e1b4b56a2b07372",
+    "diff": "current-ledger.patch",
+    "diffSHA256": "25a960fc62ccbb73104e094b640d590c5d50f30e0fd68fe7d7e0d4efd4d66f94",
+    "rationale": "CHANGE.txt",
+    "rationaleSHA256": "6b3c5b6e23bb7db92f9fdb10c5d22fe783b5b7b9cf3531e6603d5e84cca4b121"
+  },
+  "frozenManifest": {
+    "path": ".artifacts\\saved-work-views-v1\\frozen-inputs-v2-01.json",
+    "sha256": "bba48c30c54ca963b8fbd83a0833cab0ced9be01a9201226835d646aaa7860a0",
+    "inputFiles": 25,
+    "evidenceFiles": 12,
+    "coverage": "Exact hashes for authored inputs, review history, three amended old files, pinned V8 compiler helper/main/executable and 81-source-input build receipt. Includes current raw evidence; excludes private runtime/authority, installed toolchain archives and this packet's self-hash."
+  },
+  "actualResults": {
+    "featureRED": {
+      "log": ".artifacts\\saved-work-views-v1\\red-v2-01.log",
+      "receipt": ".artifacts\\saved-work-views-v1\\red-v2-01.receipt.json",
+      "exitCode": 1,
+      "narratives": 4,
+      "productFailures": 4,
+      "fixtureFailures": 0,
+      "suiteSeconds": 5.605,
+      "stops": [
+        "query_test.go:106: POST views 404 instead of 201, after actual S3 intake exposed four selected-workspace IDs and one foreign-workspace ID.",
+        "upgrade_test.go:137: exact API-populated published V8 had 27 legacy relations; current app.Open left ledger 1..8 instead of 1..9.",
+        "views_test.go:17: authenticated GET views 404 instead of 200.",
+        "views_test.go:120: POST views 404 instead of 201."
+      ],
+      "membershipSavedViewTail": "BLOCKED by missing view creation API before operator deletion/replay; not claimed passed"
+    },
+    "operatorCalibration": {
+      "log": ".artifacts\\saved-work-views-v1\\operator-calibration-v2-01.log",
+      "receipt": ".artifacts\\saved-work-views-v1\\operator-calibration-v2-01.receipt.json",
+      "exitCode": 0,
+      "cases": 1,
+      "classification": "CURRENT ordinary Work/CSV/session fixture calibration only, not saved-view acceptance",
+      "reached": "Exactly one verified both-keyed non-admin membership DELETE committed. Previously allowed Work/CSV returned generic 403 without private payload using unchanged cookie and explicit removed workspace. Session remained authenticated, its second membership worked, an independent session worked, and other business/session state stayed unchanged.",
+      "actualBudgets": "API 30/220, SQL 277/1800, S3 writes 12/160, blocked dials 0"
+    },
+    "typechecks": "Saved-view feature package and each of the three amended old packages compiled offline. Old migration cases were NOT executed. No missing-production-symbol compile RED.",
+    "cleanup": "Exact owned cleanup callbacks reported no errors. No pool, timeout, native-I/O budget, service or policy changes."
+  },
+  "sourceHolds": {
+    "path": ".artifacts\\saved-work-views-v1\\source-holds-v2-01.json",
+    "sha256": "22b6bb3044993b7f07ae4d7e3dcf04295d75ae85d7e47565915fb87b692eaa9c",
+    "unchangedPublishedFiles": 1659,
+    "approvedChangedOldFiles": 3,
+    "held": "Production, dependencies, signatures, all other old tests and 126 Work search UI controls remain byte-identical. Each approved old-file delta was checked against exact archived bytes. No additional current-app version pin found."
+  },
+  "commands": {
+    "cwd": "C:\\bahadr\\serious\\aspm",
+    "runtime": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\runtime.json",
+    "goExecutable": ".cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "offlineEnvironment": "GOTOOLCHAIN=local GOENV=off GOWORK=off GOFLAGS= GOPROXY=off GOSUMDB=off; GOMODCACHE=.cache\\modules GOCACHE=.cache\\build GOPATH=.cache\\saved-work-views-v1\\gopath GOTMPDIR=.cache\\saved-work-views-v1\\work",
+    "featureCompile": "pwsh -NoProfile -File .\\tests\\saved_work_views\\Test-SavedWorkViews.ps1 -Mode Compile -OutputName compile-v2-01",
+    "operatorCalibration": ".\\tests\\saved_work_views\\Test-SavedWorkViews.ps1 -Mode Calibration -OutputName operator-calibration-v2-01 -RuntimeConfig $runtime -FixturesReady",
+    "featureRED": ".\\tests\\saved_work_views\\Test-SavedWorkViews.ps1 -Mode Run -OutputName red-v2-01 -RuntimeConfig $runtime -PublishedV8Receipt .\\.artifacts\\saved-work-views-v1\\published-v8-01.published-v8-build.json -FixturesReady",
+    "oldCompileOnly": [
+      "go test -c -tags=integration -mod=readonly -o .artifacts\\saved-work-views-v1\\ai-configuration-v2-compile.test.exe .\\tests\\ai_configuration",
+      "go test -c -tags=integration -mod=readonly -o .artifacts\\saved-work-views-v1\\ai-assessments-v2-compile.test.exe .\\tests\\ai_assessments",
+      "go test -c -tags=integration -mod=readonly -o .artifacts\\saved-work-views-v1\\source-collection-v2-compile.test.exe .\\tests\\source_collection"
+    ],
+    "note": "Use the specified cached goExecutable and private runtime path. Labels above are historical and refuse overwrite; temporary old-package compile executables were removed after success."
+  },
+  "remainingLimits": [
+    "Saved-view CRUD/privacy, query/export membership, revision races, persistence and operator-revoked saved-view replay remain unqualified until implementation reaches those assertions.",
+    "V9 migration and post-V9 preservation/reopen are unqualified. Amended old migration cases may now legitimately fail missing V9; only their compilation was checked.",
+    "No public admin/UI membership-removal workflow, UI acceptance, real provider action or cross-request snapshot consistency is claimed."
+  ],
+  "stop": "Frozen and unsigned for parent new seal and Sol implementation. No reviewer, agent delegation, production/dependency/other-old-test edits, commit, old-oracle resigning or private signing-authority access."
+}

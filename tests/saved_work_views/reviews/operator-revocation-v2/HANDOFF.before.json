@@ -1,0 +1,113 @@
+{
+  "status": "UNSIGNED_ACTUAL_RED_COVERAGE_BLOCKED",
+  "baseline": "629bebd727b448fb89eb732485457fd60cbffbfd",
+  "root": "C:\\bahadr\\serious\\aspm",
+  "scope": "M05 / OF-06 personal saved Work views, backend acceptance authoring only",
+  "reached": [
+    "CONTRACT.txt was written before cases. Four narratives compile against the real current app.Open constructor and actual HTTP handler.",
+    "Offline cached Go 1.27.1 compilation passed. No missing-production-symbol compile RED.",
+    "Exact published V8 fixture compiled from 81 pinned production/module inputs plus the new HTTP/intake-only seed helper.",
+    "Final test binary lists exactly four narratives. Listing did not execute them.",
+    "All 1662 published tracked files and all eight authored inputs remain byte-identical after actual RED, including production, dependencies, old tests, signatures and the existing 126-case Work search UI controls.",
+    "After parent readiness, one real owned-fixture run reached four product RED failures in 5.19s, not fixture failures. GET/POST saved-view routes returned actual 404; populated published V8 remained at V8 after current production open.",
+    "Real S3 intake exposed four selected-workspace finding IDs plus one foreign-workspace ID. The exact published V8 helper created legacy assets/findings/notes/roles through HTTP and legitimate intake; 27 legacy relations and starting V8 were verified.",
+    "Every fixture remained within its original budgets with zero blocked HTTP dials. Exact owned cleanup callbacks completed without reported errors. No timeout/pool relaxation or test edits were needed."
+  ],
+  "notReached": [
+    "The missing view API stops personal CRUD/privacy/strict-validation, saved-query/CSV membership, persistence, native-page and revision-race assertions before qualification.",
+    "V9 was not applied. Post-V9 legacy preservation and saved-view reopen were not reached. Genuine membership-loss replay remains an explicit coverage blocker.",
+    "No UI tests were rerun. The test author made no backend/UI changes, provider calls, service/policy changes, dependency installs, agent delegation, reviewer request, commit, authority capture or signature. Only bounded synchronous fixture imports ran, not background worker services."
+  ],
+  "actualRun": {
+    "finishedAt": "2026-09-30T19:11:38.2978765+00:00",
+    "exitCode": 1,
+    "narratives": 4,
+    "productRED": 4,
+    "fixtureFailures": 0,
+    "suiteSeconds": 5.19,
+    "stops": [
+      "query_test.go:106: POST /api/v1/work/views returned 404, expected 201; API=16 SQL=226 S3-writes=17.",
+      "upgrade_test.go:137: current open over actual populated published V8 returned ledger 1..8, expected 1..9; parent API=0 SQL=120 S3-writes=3; historical helper API=11 S3-writes=4.",
+      "views_test.go:17: GET /api/v1/work/views returned 404, expected 200, after real bootstrap/login and anonymous 401 check; API=4 SQL=42 S3-writes=2.",
+      "views_test.go:120: first POST /api/v1/work/views returned 404, expected 201; API=3 SQL=42 S3-writes=2."
+    ],
+    "servicePrerequisite": {
+      "receipt": "RUNTIME\\fixture-resume20260930.json",
+      "bytes": 1965,
+      "sha256": "4da95b16e5b35ab09991b15fcb71531e40704dbce796cce0dab6e17c91187356",
+      "qualification": "Parent-relayed service prerequisite only, not app or saved-view qualification. Private contents were not copied or displayed."
+    }
+  },
+  "blockers": [
+    {
+      "id": "true-membership-loss",
+      "detail": "Published HTTP supports only PATCH /api/v1/users/{id} with admin/analyst/viewer. Every role can read Work. There is no membership-removal API. No-business-SQL-write prevents a genuine prior-membership-loss fixture. The third narrative covers denied selection, current role and logout, NOT membership removal. This remains a coverage blocker even if those assertions later pass. No fake hook or additional membership endpoint was invented.",
+      "source": [
+        "internal\\app\\http.go:282-292",
+        "internal\\app\\auth.go:103-105",
+        "internal\\app\\auth.go:323-344"
+      ]
+    }
+  ],
+  "futureVersionControlBlocker": {
+    "detail": "These old tests pin the complete CURRENT ledger through V8. V9 will invalidate these exact assertions. No edits were made or approved; do not bulk-rewrite expectations or re-sign old controls. Parent approval of any narrow amendment is required first.",
+    "locations": [
+      {
+        "path": "tests\\ai_configuration\\upgrade_test.go",
+        "lines": [132, 145],
+        "meaning": "Current migration over published V6 and subsequent reopen expect versions 1..8."
+      },
+      {
+        "path": "tests\\ai_assessments\\upgrade_test.go",
+        "lines": [166, 177, 198, 219],
+        "meaning": "Fresh/current reopen and actual published-V7 upgrade/current reopen expect versions 1..8."
+      },
+      {
+        "path": "tests\\source_collection\\upgrade_test.go",
+        "lines": [178, 222],
+        "meaning": "Current open over published V5 and subsequent reopen expect versions 1..8."
+      }
+    ]
+  },
+  "commandsExecutedFromRoot": [
+    "node '.\\tests\\saved_work_views\\prepare-published-v8.mjs' 'published-v8-01'",
+    "pwsh -NoProfile -File '.\\tests\\saved_work_views\\Test-SavedWorkViews.ps1' -Mode Compile -OutputName 'compile-03'",
+    "& '.artifacts\\saved-work-views-v1\\compile-03.test.exe' '-test.list=^TestSavedWorkViews'",
+    "pwsh -NoProfile -NonInteractive -File '.\\tests\\saved_work_views\\Test-SavedWorkViews.ps1' -Mode Run -OutputName 'readiness-guard-01'",
+    "& '.\\tests\\saved_work_views\\Test-SavedWorkViews.ps1' -Mode Run -OutputName 'red-01' -RuntimeConfig 'C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\runtime.json' -PublishedV8Receipt '.\\.artifacts\\saved-work-views-v1\\published-v8-01.published-v8-build.json' -FixturesReady",
+    "git --no-pager diff --exit-code 629bebd727b448fb89eb732485457fd60cbffbfd --"
+  ],
+  "budgets": "Per narrative: 90s context, 220 API requests, 1800 traced PG queries, 160 native S3 writes, app pool 3 / fixture pool 1. Historical helper: 25s, 24 API requests, 40 S3 writes, app pool 2. Suite timeout 240s. Exact random schema/prefix cleanup only.",
+  "authoringNotes": "An unquoted listing flag and a new-test literal syntax error were corrected before final compile. Neither reached data execution or was production RED. Earlier compiler logs/receipts remain; superseded test binaries were removed.",
+  "inputRoot": "tests\\saved_work_views",
+  "inputSHA256": {
+    "CONTRACT.txt": "8f8567bb6866184366f5f1793657b4b9b021e3354133e54bd8714a506e79a7f9",
+    "fixtures_test.go": "6b6b39641cf3f993835cf6de330a1990addd54bc57dfd660514c85d93e20b811",
+    "prepare-published-v8.mjs": "d2ef9c65185ebeea4b5734717fc08d64a245f7222904d431331fdc3fed470d47",
+    "query_test.go": "5e53c6ef7b0fb050bc0c8a4287b4f696fca207e4ae9de127fbe681ee07460261",
+    "Test-SavedWorkViews.ps1": "677c68801285802ccb75c092a5309031db2072a08241e3d5a0614f9d1b94999f",
+    "testdata\\seed-v8.main.go.txt": "cf4630850ccd8e6492e6878f4d1c4ec79b77f9ec882846be8747b265b94db3db",
+    "upgrade_test.go": "88eae11ceb426eb418eea84d2dce3db1391ced8bdd2522c0011a02c9826c1019",
+    "views_test.go": "40647298d0afdc5d33e6bfe3d1921501eb6d897848ba3685dfb39a928f88acc2"
+  },
+  "evidenceRoot": ".artifacts\\saved-work-views-v1",
+  "evidenceSHA256": {
+    "compile-03.log": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "compile-03.receipt.json": "e450f668c37f3f053f8121f039c495496e240f7163e14c6be399edb38814502c",
+    "compile-03.test.exe": "92feefd94b9be4c897eca6af11aa2908e80091d41f40ff911c3a4828e33f8f86",
+    "published-v8-01.published-v8-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "published-v8-01.published-v8-build.json": "46c3af620d0ad790ca6ed3cfc950ef58bfe2d09cb4df28b51019bf81dfeab8e1",
+    "unchanged-controls-01.json": "508a69be42e507f2e73e8ef4ea93966d02f66bc519246d32a25d11aeeb167e2e",
+    "readiness-guard-01.log": "6d6130a873abce3a1d59da36a7e0afdce71ad8fc372685cd75cf8cca40588c4c",
+    "test-list-03.log": "99623543ca161dde23be069d4fbd2d6aa417cd67b534f7bc8a9a0afd8af64964",
+    "red-01.log": "ac9c5897c407e1d0cecb0d0ac1d3230fe13e33c80f6e4f86fe1da7a9a8e0d04c",
+    "red-01.receipt.json": "6999c809bd8d9109d5ccedfec1a83198f55d396e8d1d59e88d43bdab5fd75f9b",
+    "published-v8-upgrade-b7dee8d395f9a894276b9123.json": "1b4dd72d1749a605cab669919fb02fc2f83e617090232c7ac26c1854b279573f",
+    "unchanged-controls-02.json": "874ce438d0c0b68cffaef10657d1cebe9f2e76437acf78c288e86ba0d5974965"
+  },
+  "publishedExecutable": {
+    "path": ".cache\\saved-work-views-v1\\published-v8\\published-v8-01\\owned-v8-seed.exe",
+    "sha256": "46eda894fe8a0df5b41b00c11e2993c7b9103a190dee51b5ca59ba63d084bca3"
+  },
+  "sealing": "Unsigned. Packet self-hash is excluded to avoid recursion. Actual owned-fixture RED is now captured; parent still owns coverage-blocker resolution and any later sealing. No reviewer or product-completion claim."
+}

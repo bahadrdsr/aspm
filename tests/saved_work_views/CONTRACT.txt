@@ -1,0 +1,139 @@
+Personal saved Work views, first backend cut (M05 / OF-06)
+Read-first proposal, pinned baseline 629bebd727b448fb89eb732485457fd60cbffbfd.
+Unsigned test-author input. No backend/UI implementation or release claim.
+
+Scope and existing conventions
+- A view belongs to the authenticated user AND selected workspace. Admins have
+  no override. Current membership is required on every operation. Viewers may
+  manage their own preferences without gaining finding, note or intake writes.
+- Use the actual app.Open/Handler, sessions, X-ASPM-Workspace-ID, origin check,
+  strict JSON decoder, aspm/v1alpha1 response envelope and typed errors.
+  No apiVersion member is required or accepted in a saved-view request body.
+- The later UI applies a view in one activation. This backend cut does not
+  claim UI acceptance, saved results, or a snapshot spanning pages/requests.
+
+HTTP contract
+  GET    /api/v1/work/views                 200 {items,total,nextCursor}
+  POST   /api/v1/work/views                 201 {view}
+  GET    /api/v1/work/views/{id}            200 {view}
+  PATCH  /api/v1/work/views/{id}            200 {view}
+  DELETE /api/v1/work/views/{id}            204, empty body
+All JSON replies also carry the existing apiVersion. Each canonical view has
+exactly id, name, query, sort, revision, createdAt, updatedAt. Scope is implicit
+in session/selection; there are no owner/workspace authority fields in input.
+IDs and list cursors use the existing lowercase 32-hex native IDs. Lists use
+ascending ID, total for this owner/workspace, default limit 100, range 1..500,
+and last returned ID as nextCursor only when another page exists. Empty items
+is [], not null. Invalid limit/cursor is 400 invalid-input.
+
+POST requires exactly name:string, query:string and sort:string. Names and
+queries are trimmed using strings.TrimSpace before checking their UTF-8 byte
+lengths: name is nonempty, NUL-free, <=256 bytes; query is NUL-free, <=512
+bytes and may be empty. Invalid UTF-8, nulls, wrong types, missing required
+fields, unknown fields and authority/credential/result fields are rejected,
+not ignored. Duplicate names are allowed; identity is the native ID.
+sort is exactly source-order, severity or title. It is LOADED client-side
+presentation metadata, never a global server ordering or a persisted row set.
+Only the preference plus server-owned scope/ID/revision/timestamps is stored.
+Saving does not execute Work search, scans, imports, AI or provider actions.
+
+Mutation precondition (explicit, narrow new contract)
+Existing configuration resources use a positive decimal string revision,
+row-locked sparse updates and unchanged revisions for public no-op patches;
+there is no general If-Match/expectedRevision framework in this publication.
+Use that representation, with one required revision:string in PATCH/DELETE
+bodies as the expected current revision. POST rejects revision. PATCH may
+also contain any of name/query/sort; omission preserves, null is invalid.
+DELETE accepts only revision. Revision starts at "1"; a meaningful successful
+PATCH increments once, preserves createdAt, and advances updatedAt. A no-op
+returns unchanged canonical data. Missing/malformed revision is 400.
+A stale revision for an existing owned view is 409 conflict with no metadata.
+Exactly one of two concurrent mutations at a revision can change/delete it.
+If deletion won, a later PATCH is 404. No lost update or stale delete.
+
+Authorization/error contract
+401 unauthorized without a current session; 403 forbidden without current
+selected-workspace membership or valid mutation origin. An absent view and a
+foreign-owner/workspace view give the same 404 not-found error shape, even to
+an admin. Failed/stale/invalid writes leave existing canonical data untouched.
+Errors carry only the normal apiVersion/error envelope, not names, IDs, query,
+items or CSV rows. A role change to viewer preserves personal view/read rights
+but removes finding/note/intake writes. Losing the selected membership denies
+saved-view metadata, Work query and CSV replay with 403, even when the same
+session remains authenticated and another workspace membership still works.
+
+One query interpretation for Work and CSV
+GET /api/v1/work?viewId={id}[&limit=...&cursor=...]
+GET /api/v1/work/export?format=csv&viewId={id}
+Resolve an owned view after ordinary current Work session/membership checks,
+then feed its canonical query into the existing shared workFilter/workPage
+path. Do not duplicate SQL filter semantics. The existing q-only behavior
+remains unchanged: case-insensitive literal substring of title, asset name or
+owner name, not an expression language. The saved canonical trimmed query is
+the exact q used for comparison. Empty query means all authorized findings.
+q and viewId together are 400, including q=. A present empty/malformed viewId
+is 400; a well-formed missing/foreign one is 404. Repeated viewId selectors
+are 400. Work retains native ID cursor/limit ordering regardless of saved sort.
+CSV retains its columns, escaping, media type, filename and completion trailer.
+CSV still streams the whole filtered result; its existing 500-row internal
+page size is not replaced by the Work limit. Other formats remain 415.
+Compare actual finding IDs with independent expected membership on a quiescent
+owned fixture. This is NOT proof of snapshot consistency during changes.
+
+Durability and migration
+Published baseline is actual V8, including the published assessment schema,
+not an earlier development V8 relabelled as this baseline. A fresh current
+open and populated published-V8 -> current must apply additive V9 exactly
+once; reopen must preserve views and existing assets/findings/notes/roles.
+Build the pinned published production dependency closure from local git,
+populate it through real HTTP and legitimate S3 intake, close it, then open
+the current production pool/schema path. No SQL business-row seeds, ledger
+relabeling, fake handler or new dependencies. The sole operator-fixture DELETE
+exception and eight explicitly approved current-ledger amendments are below.
+
+Four bounded narratives
+1. Owner/workspace privacy, viewer preferences and strict canonical CRUD.
+2. Fresh V9, reopen, native pages, no-op/stale revisions and mutation races.
+3. Real imported finding IDs, shared query/CSV filtering, denied scopes and
+   genuine operator-side membership revocation with a still-valid session.
+4. Actual populated published V8 -> V9, legacy preservation and view reopen.
+Reuse acceptance/ai_configuration DTO, request, fixture and validation idioms.
+Only existing private runtime.json credentials, exact random schema/prefix
+cleanup, offline Go 1.27.1/modules, bounded API/PG/S3 activity. No Docker,
+service restoration, credential discovery, provider calls, agents or commits.
+
+Approved operator-fixture exception (2026-09-30)
+All users, workspaces, sessions, assets, findings and views are created through
+real HTTP/intake first. An independent fixture connection may then remove
+exactly ONE membership for its own generated, currently non-admin actor in
+the fixture's random schema and selected workspace. Before the transaction's
+DELETE, verify the recorded owned schema, namespace/table name and owner,
+the exact generated actor/workspace, and its current non-admin membership.
+Use a parameterized DELETE scoped by BOTH workspace_id and user_id, require
+exactly one matching RETURNING row, and commit once. No other business SQL
+writes, fake authorization hook, handler change or global fixture mutation.
+This is operator-side revocation, NOT a public removal workflow or identity
+management implementation. The existing public API still has no removal route.
+
+The actor has a second membership created using existing HTTP operations and
+is non-admin in both workspaces before revocation. Replay previously allowed
+saved-view list/detail, Work and CSV using the unchanged cookie and explicit
+removed workspace: 403 with only the generic typed error, no private payload.
+GET /session must still authenticate; the retained membership and another
+actor's session must still authorize real reads. Demotion/logout are not
+revocation proxies. Finding/evidence/action state must remain unchanged.
+A separately tagged, small operator calibration uses CURRENT ordinary Work,
+CSV and session APIs to prove setup/403/isolation before saved views exist.
+Calibration is not one of the four feature narratives or saved-view acceptance.
+
+Approved current-ledger evolution (2026-09-30)
+Only extend 1..8 to 1..9 at ai_configuration/upgrade_test.go:132,145;
+ai_assessments/upgrade_test.go:166,177,198,219; and
+source_collection/upgrade_test.go:178,222, with directly stale current-version
+diagnostics corrected. Preserve every historical V5/V6/V7 start, old case
+identity, seeder/builder/pool/budget, legacy DDL/data, no-provider and reopen
+assertion. No blanket replacements, other old-test edits or old-oracle signing.
+Exact previous files, this prior contract and prior unsigned handoff are
+archived once in reviews\operator-revocation-v2. Prior RED/evidence remains
+history. This is explicitly approved test-author migration evolution before
+coding, not weaker acceptance. Report any additional current-version pin.

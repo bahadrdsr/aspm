@@ -188,3 +188,36 @@ See doc.go for immutable snapshots, current authority, one-attempt dispatch,
 local I/O reservations, bounded shared admission and uncertainty semantics.
 Owned native/runtime and UI-to-worker qualification is not live-model quality,
 remote exactly-once processing, deployment isolation or whole-M11 completion.
+
+Personal saved Work views
+=========================
+
+GET/POST /api/v1/work/views and GET/PATCH/DELETE /api/v1/work/views/{id}
+manage preferences for the authenticated user in the selected workspace.
+Every member, including a viewer, can manage their own views. Administrators
+cannot read or change someone else's preferences. Existing session, membership,
+Origin and typed error checks apply. Writes recheck current authority under
+shared workspace/session/membership locks before locking the preference row.
+
+POST requires name, query and sort, with no apiVersion or authority fields.
+Name and query are trimmed, valid UTF-8, NUL-free and bounded to 256/512 bytes.
+Name cannot be empty; query can. Sort is source-order, severity or title and
+is only later loaded client-side presentation metadata. Saving stores no
+finding rows and runs no search, intake, scan, AI or provider action.
+
+PATCH and DELETE require the current positive decimal string revision.
+Sparse PATCH preserves omissions. A canonical no-op preserves revision and
+timestamps; a meaningful change advances revision once and updatedAt by at
+least one PostgreSQL microsecond, preserving createdAt. Concurrent mutations
+serialize on the owned row. Stale writes conflict; absent or foreign views
+return the same opaque not-found error. Lists retain native ID pagination.
+
+Work and CSV accept viewId instead of q. Empty, malformed or repeated viewId,
+or q together with viewId, is invalid. An owned view supplies only its query
+to the existing shared Work filter and page path. Saved sort never changes
+server ID order, CSV columns, escaping, paging or completion trailers.
+
+Schema v9 adds only the preference table and its owner/workspace/ID index
+after published v8. Prior relation definitions and source/business rows are
+unchanged. This backend does not claim a UI workflow, saved result snapshots,
+cross-request consistency or a public membership-removal API.

@@ -1,0 +1,36 @@
+Approved test-author amendment, 2026-09-30
+
+ARCHIVE.json records five exact pre-amendment copies captured once: the prior
+contract/handoff and the three published Go files as .go.txt. Prior unsigned
+red-01 logs, receipts and observations remain unchanged under .artifacts.
+
+The only operator exception is one membership DELETE per owned fixture after
+HTTP/intake setup. It checks the recorded random schema, actual qualified
+namespace/table and owner, generated actor/workspace, and current non-admin
+role. Both identity predicates are parameters; exactly one matching RETURNING
+row is required before commit. There are no other direct business SQL writes.
+Existing HTTP workspace creation requires admin: the generated subject briefly
+creates its second workspace, creates another administrator there, and is
+demoted through HTTP before any revocation. It is non-admin in both workspaces
+when deleted. Its unchanged session, second membership and independent witness
+session must remain valid. This is not a production removal API or UI workflow.
+
+The separate saved_work_views_calibration build tag exercises only CURRENT
+ordinary Work/CSV/session reads around this operator action. It cannot qualify
+saved views. The four feature narratives retain their identities; their third
+tail now replays actual saved-view metadata/query/CSV and mutations after the
+same controlled membership deletion, with explicit workspace and opaque 403.
+
+Only these CURRENT full-ledger expectations change from 1..8 to 1..9:
+  tests\ai_configuration\upgrade_test.go:132,145
+  tests\ai_assessments\upgrade_test.go:166,177,198,219
+  tests\source_collection\upgrade_test.go:178,222
+Directly stale current-version diagnostics, including the AA8 completion log,
+are corrected. Case/subtest identities, historical V5/V6/V7 starts, all legacy
+DDL/business-data/no-provider/reopen predicates, seeders, builders, pools and
+budgets remain exact. The published-V8 baseline in the new upgrade case stays
+1..8. No additional current-app version pin was found in tests/internal app.
+
+AMENDMENT.json and current-ledger.patch record exact before/after hashes and
+the limited diff. This evolves test-author expectations for the approved V9,
+not production code, weaker tests, old signatures or signing authority.

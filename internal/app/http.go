@@ -168,12 +168,20 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
 		}
-		return a.listWork(w, r, membership.ID)
+		return a.listWork(w, r, membership.ID, session)
 	case "/api/v1/work/export":
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
 		}
-		return a.exportWork(w, r, membership.ID)
+		return a.exportWork(w, r, membership.ID, session)
+	case "/api/v1/work/views":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+			return err
+		}
+		if r.Method == http.MethodGet {
+			return a.listWorkViews(w, r, membership.ID, session)
+		}
+		return a.createWorkView(w, r, membership.ID, session)
 	case "/api/v1/integrations/catalog":
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
@@ -208,6 +216,19 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		return a.createReportSnapshot(w, r, membership.ID, session.User.ID)
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 3 && parts[0] == "work" && parts[1] == "views" && validID(parts[2]) {
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch, http.MethodDelete); err != nil {
+			return err
+		}
+		switch r.Method {
+		case http.MethodGet:
+			return a.getWorkView(w, r, membership.ID, session, parts[2])
+		case http.MethodPatch:
+			return a.updateWorkView(w, r, membership.ID, session, parts[2])
+		default:
+			return a.deleteWorkView(w, r, membership.ID, session, parts[2])
+		}
+	}
 	if len(parts) >= 3 && parts[0] == "sources" && parts[1] == "collections" && validID(parts[2]) {
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
