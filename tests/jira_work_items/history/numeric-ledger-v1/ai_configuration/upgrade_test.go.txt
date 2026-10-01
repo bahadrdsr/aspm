@@ -50,7 +50,7 @@ func tableNames(t *testing.T, f *fixture) []string {
 	return catalogRows(t, f, `SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname=$1 AND c.relkind IN ('r','p') ORDER BY c.relname`, f.database.Schema)
 }
 func versions(t *testing.T, f *fixture) []string {
-	return catalogRows(t, f, "SELECT ledger.version::text FROM "+f.table("schema_versions")+" AS ledger ORDER BY ledger.version")
+	return catalogRows(t, f, "SELECT version::text FROM "+f.table("schema_versions")+" ORDER BY version")
 }
 func definitions(t *testing.T, f *fixture, names []string) map[string][]string {
 	t.Helper()

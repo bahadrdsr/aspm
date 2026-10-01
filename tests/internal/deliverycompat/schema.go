@@ -1,0 +1,131 @@
+//go:build integration
+
+package deliverycompat
+
+import (
+	"fmt"
+	"reflect"
+	"slices"
+	"strings"
+	"testing"
+)
+
+const LegacyProfileCheck = `CHECK (profile = 'slack-workspace-bot'::text)`
+const ProfileCheck = `CHECK (profile = ANY (ARRAY['slack-workspace-bot'::text, 'jira-cloud-v3'::text]))`
+const TargetCheck = `CHECK (profile = 'slack-workspace-bot'::text AND jira_target IS NULL AND channel ~ '^[CG][A-Z0-9]{2,127}$'::text OR profile = 'jira-cloud-v3'::text AND jira_target IS NOT NULL AND jsonb_typeof(jira_target) = 'object'::text AND channel = ''::text)`
+
+// Project verifies the whole allowed current snapshot before reverting only the
+// approved V10 differences for the original legacy comparison.
+func Project(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	projected, err := project(before, current)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return projected
+}
+
+func clone(snapshot map[string][]string) map[string][]string {
+	result := make(map[string][]string, len(snapshot))
+	for key, rows := range snapshot {
+		result[key] = slices.Clone(rows)
+	}
+	return result
+}
+
+func sortConstraints(rows []string) {
+	slices.SortFunc(rows, func(a, b string) int {
+		aName, _, _ := strings.Cut(a, "|")
+		bName, _, _ := strings.Cut(b, "|")
+		return strings.Compare(aName, bName)
+	})
+}
+
+func profileRow(table string, rows []string) (string, string, error) {
+	name := "app_" + table + "_profile_check"
+	for _, row := range rows {
+		for _, separator := range []string{"|", "|c|"} {
+			if row == name+separator+LegacyProfileCheck {
+				return row, separator, nil
+			}
+		}
+	}
+	return "", "", fmt.Errorf("V10 compatibility: exact historical %s CHECK is missing", name)
+}
+
+func expected(before map[string][]string) (map[string][]string, error) {
+	result := clone(before)
+	for _, table := range []string{"integration_connections", "finding_deliveries"} {
+		columns, constraints := table+"/columns", table+"/constraints"
+		oldColumns, ok := before[columns]
+		if !ok || len(oldColumns) == 0 {
+			return nil, fmt.Errorf("V10 compatibility: historical %s columns missing", table)
+		}
+		suffix := ""
+		switch strings.Count(oldColumns[0], "|") {
+		case 3:
+		case 5:
+			suffix = "||"
+		default:
+			return nil, fmt.Errorf("V10 compatibility: unsupported %s catalog representation", table)
+		}
+		result[columns] = append(result[columns], "jira_target|jsonb|false|"+suffix)
+		if table == "finding_deliveries" {
+			result[columns] = append(result[columns], "create_attempted_at|timestamp with time zone|false|"+suffix)
+		}
+		oldProfile, separator, err := profileRow(table, before[constraints])
+		if err != nil {
+			return nil, err
+		}
+		replacements := 0
+		for i, row := range result[constraints] {
+			if row == oldProfile {
+				result[constraints][i] = "app_" + table + "_profile_check" + separator + ProfileCheck
+				replacements++
+			}
+		}
+		if replacements != 1 {
+			return nil, fmt.Errorf("V10 compatibility: historical %s CHECK identity is ambiguous", table)
+		}
+		result[constraints] = append(result[constraints], "app_"+table+"_profile_target_check"+separator+TargetCheck)
+		sortConstraints(result[constraints])
+	}
+	return result, nil
+}
+
+func project(before, current map[string][]string) (map[string][]string, error) {
+	want, err := expected(before)
+	if err != nil {
+		return nil, err
+	}
+	if len(current) != len(want) {
+		return nil, fmt.Errorf("V10 compatibility: relation/catalog key set changed")
+	}
+	for key, rows := range want {
+		actual, ok := current[key]
+		if !ok || !reflect.DeepEqual(actual, rows) {
+			return nil, fmt.Errorf("V10 compatibility: missing required or unapproved DDL change in %s", key)
+		}
+	}
+	projected := clone(current)
+	for _, table := range []string{"integration_connections", "finding_deliveries"} {
+		columns, constraints := table+"/columns", table+"/constraints"
+		projected[columns] = projected[columns][:len(before[columns])]
+		oldProfile, separator, _ := profileRow(table, before[constraints])
+		newProfile := "app_" + table + "_profile_check" + separator + ProfileCheck
+		target := "app_" + table + "_profile_target_check" + separator + TargetCheck
+		rows := make([]string, 0, len(before[constraints]))
+		for _, row := range projected[constraints] {
+			if row == target {
+				continue
+			}
+			if row == newProfile {
+				row = oldProfile
+			}
+			rows = append(rows, row)
+		}
+		sortConstraints(rows)
+		projected[constraints] = rows
+	}
+	return projected, nil
+}

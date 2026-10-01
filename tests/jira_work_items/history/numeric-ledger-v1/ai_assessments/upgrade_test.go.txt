@@ -51,7 +51,7 @@ func catalogRows(t *testing.T, f *fixture, query string, args ...any) []string {
 	return result
 }
 func ledger(t *testing.T, f *fixture) []string {
-	return catalogRows(t, f, "SELECT ledger.version::text FROM "+f.table("schema_versions")+" AS ledger ORDER BY ledger.version")
+	return catalogRows(t, f, "SELECT version::text FROM "+f.table("schema_versions")+" ORDER BY version")
 }
 func definitions(t *testing.T, f *fixture, names []string) map[string][]string {
 	result := map[string][]string{}

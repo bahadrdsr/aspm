@@ -331,6 +331,15 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return a.importResource(w, r, membership.ID, parts[1], len(parts) == 3)
 	case "findings":
+		if len(parts) == 3 && parts[2] == "delivery-previews" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.previewFindingDelivery(w, r, membership.ID, session, parts[1])
+		}
 		if len(parts) == 3 && parts[2] == "assessment-previews" {
 			if err = requireMethod(w, r, http.MethodPost); err != nil {
 				return err

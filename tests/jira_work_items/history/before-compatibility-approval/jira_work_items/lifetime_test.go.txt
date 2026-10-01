@@ -1,0 +1,349 @@
+//go:build integration
+
+package jira_work_items
+
+import (
+	"bytes"
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/json"
+	"errors"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"os/exec"
+	"regexp"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+)
+
+type stepResult struct {
+	processed bool
+	err       error
+}
+
+func asyncStep(ctx context.Context, w *app.DeliveryWorker) <-chan stepResult {
+	done := make(chan stepResult, 1)
+	go func() {
+		processed, err := w.ProcessNext(ctx)
+		done <- stepResult{processed, err}
+	}()
+	return done
+}
+func awaitStep(t *testing.T, done <-chan stepResult) stepResult {
+	t.Helper()
+	select {
+	case result := <-done:
+		check(t, result.processed, "held worker lost its claimed job")
+		return result
+	case <-time.After(2 * time.Second):
+		t.Fatal("held worker did not release its native/SQL resources")
+		return stepResult{}
+	}
+}
+func (h *harness) waitExpired(id string) {
+	h.t.Helper()
+	ctx, cancel := context.WithTimeout(h.ctx, 2*time.Second)
+	defer cancel()
+	tick := time.NewTicker(25 * time.Millisecond)
+	defer tick.Stop()
+	for i := 0; i < 80; i++ {
+		var expired bool
+		must(h.t, "observe natural owned lease expiry", h.db.QueryRow(ctx,
+			"SELECT COALESCE(lease_until<=clock_timestamp(),true) FROM "+h.table("finding_deliveries")+" WHERE id=$1", id).Scan(&expired))
+		if expired {
+			return
+		}
+		select {
+		case <-tick.C:
+		case <-ctx.Done():
+			h.t.Fatal("owned lease did not naturally expire within its configured bound")
+		}
+	}
+	h.t.Fatal("bounded lease observations exhausted")
+}
+func (h *harness) snapshotJob(id string) []string {
+	return h.rows("SELECT to_jsonb(v)::text FROM "+h.table("finding_deliveries")+" v WHERE id=$1", id)
+}
+func (h *harness) revoke(who actor, c connection, kind string) {
+	switch kind {
+	case "role":
+		h.json(h.admin, "PATCH", "/api/v1/users/"+who.ID, object{"role": "viewer"}, 200)
+	case "disable":
+		h.json(h.admin, "PATCH", connectionsPath+"/"+c.ID, object{"enabled": false}, 200)
+	case "rotate":
+		token := secret(h.t)
+		h.remember(token)
+		h.json(h.admin, "PATCH", connectionsPath+"/"+c.ID, object{"token": token}, 200)
+	}
+}
+
+func TestJiraJ4HeldIORevocationFencingCrashAndReopen(t *testing.T) {
+	h, n := newHarness(t), newJira(t)
+	writer := h.user("analyst")
+	f := h.seed(h.admin, "Held Jira I/O source")
+	w := h.worker(n, "active-owner", 4*time.Second)
+	other := h.worker(n, "other-owner", 4*time.Second)
+	for _, kind := range []string{"role", "disable", "rotate"} {
+		token := secret(t)
+		c := h.connection(h.admin, n.target(), token)
+		job := h.queue(writer, h.preview(writer, f.ID, c), "before-"+kind, 202)
+		h.revoke(writer, c, kind)
+		before := n.calls.Load()
+		h.reopen()
+		process(t, h.ctx, w, true)
+		blocked := h.delivery(h.admin, job.ID)
+		code := map[string]string{"role": "authorization-revoked", "disable": "connection-disabled", "rotate": "connection-changed"}[kind]
+		check(t, blocked.State == "blocked" && blocked.Failure != nil && blocked.Failure.Code == code &&
+			blocked.CreateAttemptedAt == nil && n.calls.Load() == before,
+			"reopened queued intent did not recheck current authority/connection before native I/O")
+		if kind == "role" {
+			h.json(h.admin, "PATCH", "/api/v1/users/"+writer.ID, object{"role": "analyst"}, 200)
+		}
+		process(t, h.ctx, other, false)
+	}
+	for _, phase := range []string{"metadata", "create"} {
+		for _, kind := range []string{"role", "disable", "rotate"} {
+			token := secret(t)
+			c := h.connection(h.admin, n.target(), token)
+			job := h.queue(writer, h.preview(writer, f.ID, c), phase+"-"+kind, 202)
+			metadata, create := "hold", "ok"
+			if phase == "create" {
+				metadata, create = "ok", "hold"
+			}
+			p := n.arm(token, metadata, create, func() error { return h.marker(job.ID) })
+			ctx, cancel := context.WithCancel(h.ctx)
+			done := asyncStep(ctx, w)
+			t.Cleanup(cancel)
+			arrived, cancelled := p.getArrived, p.getCancelled
+			if phase == "create" {
+				arrived, cancelled = p.postArrived, p.postCancelled
+			}
+			awaitCall(t, arrived)
+			probe, stop := context.WithTimeout(h.ctx, 750*time.Millisecond)
+			must(t, "held native body must release the single worker SQL connection", w.Ping(probe))
+			process(t, probe, other, false)
+			h.request(probe, h.admin, "GET", "/api/v1/work", nil, 200)
+			h.request(probe, h.admin, "GET", connectionsPath, nil, 200)
+			stop()
+			h.revoke(writer, c, kind)
+			awaitCancel(t, cancelled)
+			result := awaitStep(t, done)
+			cancel()
+			if result.err != nil {
+				h.private([]byte(result.err.Error()))
+			}
+			settled := h.delivery(h.admin, job.ID)
+			if phase == "metadata" {
+				code := map[string]string{"role": "authorization-revoked", "disable": "connection-disabled", "rotate": "connection-changed"}[kind]
+				check(t, settled.State == "blocked" && settled.Failure != nil && settled.Failure.Code == code &&
+					settled.CreateAttemptedAt == nil && p.posts.Load() == 0,
+					"revoked metadata-only work proceeded to create or invented uncertainty/success")
+			} else {
+				check(t, settled.State == "uncertain" && settled.CreateAttemptedAt != nil && settled.Receipt == nil &&
+					settled.Failure != nil && settled.Failure.Code == "uncertain" && p.posts.Load() == 1,
+					"revoked possible create accepted a stale receipt or discarded uncertainty")
+			}
+			p.releaseGET()
+			p.releasePOST()
+			if kind == "role" {
+				h.json(h.admin, "PATCH", "/api/v1/users/"+writer.ID, object{"role": "analyst"}, 200)
+			}
+			h.reopen()
+			before := n.calls.Load()
+			process(t, h.ctx, other, false)
+			same(t, "regrant/reopen resurrected terminal Jira work", h.delivery(h.admin, job.ID), settled)
+			check(t, n.calls.Load() == before, "terminal revoked work generated fresh native I/O")
+		}
+	}
+
+	// These mutate only API-created owned rows to test stored-binding corruption.
+	for _, field := range []string{"payload", "approval_ref", "idempotency_key", "target"} {
+		token := secret(t)
+		c := h.connection(h.admin, n.target(), token)
+		job := h.queue(writer, h.preview(writer, f.ID, c), "binding-"+field, 202)
+		var err error
+		switch field {
+		case "payload":
+			_, err = h.db.Exec(h.ctx, "UPDATE "+h.table("finding_deliveries")+
+				" SET payload=jsonb_set(payload,'{title}','\"tampered stored title\"') WHERE id=$1", job.ID)
+		case "approval_ref":
+			_, err = h.db.Exec(h.ctx, "UPDATE "+h.table("finding_deliveries")+" SET approval_ref=$2 WHERE id=$1", job.ID, "not-server-approved")
+		case "idempotency_key":
+			_, err = h.db.Exec(h.ctx, "UPDATE "+h.table("finding_deliveries")+" SET idempotency_key=$2 WHERE id=$1", job.ID, "not-the-reserved-user-key")
+		case "target":
+			_, err = h.db.Exec(h.ctx, "UPDATE "+h.table("integration_connections")+
+				" SET jira_target=jsonb_set(jira_target,'{apiBase}',to_jsonb($2::text)) WHERE id=$1",
+				c.ID, n.slack.URL+"/ex/jira/"+cloudID)
+		}
+		must(t, "apply one owned corruption negative, not a business seed", err)
+		before := n.calls.Load()
+		process(t, h.ctx, other, true)
+		blocked := h.delivery(h.admin, job.ID)
+		check(t, blocked.State == "blocked" && blocked.Receipt == nil && blocked.CreateAttemptedAt == nil &&
+			n.calls.Load() == before, "corrupt reserved target/user key/profile approval reached native I/O")
+	}
+
+	token := secret(t)
+	c := h.connection(h.admin, n.target(), token)
+	job := h.queue(writer, h.preview(writer, f.ID, c), "natural-fence", 202)
+	p := n.arm(token, "ok", "hold", func() error { return h.marker(job.ID) })
+	short := h.worker(n, "expiring-owner", 350*time.Millisecond)
+	done := asyncStep(h.ctx, short)
+	awaitCall(t, p.postArrived)
+	h.waitExpired(job.ID)
+	_, err := other.ProcessNext(h.ctx)
+	must(t, "recover expired claim without another create", err)
+	fenced := h.snapshotJob(job.ID)
+	p.releasePOST()
+	result := awaitStep(t, done)
+	if result.err != nil {
+		h.private([]byte(result.err.Error()))
+	}
+	same(t, "expired owner committed a late receipt after recovery", h.snapshotJob(job.ID), fenced)
+	uncertain := h.delivery(h.admin, job.ID)
+	check(t, uncertain.State == "uncertain" && uncertain.Receipt == nil && p.posts.Load() == 1,
+		"expired Jira creation became confirmed/retryable or was resent")
+
+	crashed := h.queue(writer, h.preview(writer, f.ID, c), "real-crash", 202)
+	p = n.arm(token, "ok", "hold", func() error { return h.marker(crashed.ID) })
+	child := h.crashWorker(n)
+	awaitCall(t, p.postArrived)
+	child.kill(t)
+	awaitCancel(t, p.postCancelled)
+	h.waitExpired(crashed.ID)
+	process(t, h.ctx, other, true)
+	recovered := h.delivery(h.admin, crashed.ID)
+	check(t, recovered.State == "uncertain" && recovered.CreateAttemptedAt != nil &&
+		recovered.Receipt == nil && p.posts.Load() == 1, "actual crash lost committed attempt/uncertainty or resent")
+	h.reopen()
+	fresh := h.worker(n, "after-crash", 4*time.Second)
+	process(t, h.ctx, fresh, false)
+	same(t, "crash recovery did not persist across independent opens", h.delivery(h.admin, crashed.ID), recovered)
+	assertFindingUnchanged(t, f, h.finding(h.admin, f.ID))
+}
+
+type privateWorkerInput struct {
+	DatabaseURL, Schema, WorkerID, JiraOrigin, SlackOrigin string
+	EncryptionKey, RootDER                                 []byte
+	Lease                                                  time.Duration
+}
+
+func TestMain(m *testing.M) {
+	if os.Getenv("ASPM_JIRA_WORKER_CHILD") == "1" {
+		os.Exit(runWorkerChild())
+	}
+	os.Exit(m.Run())
+}
+func runWorkerChild() int {
+	var input privateWorkerInput
+	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 64<<10))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&input) != nil || !regexp.MustCompile(`^jira_items_[a-f0-9]{24}$`).MatchString(input.Schema) {
+		return 2
+	}
+	db, err := url.Parse(input.DatabaseURL)
+	if err != nil || db.Hostname() != "127.0.0.1" || db.Port() != "15432" || db.User == nil {
+		return 2
+	}
+	endpoint, err := url.Parse(input.JiraOrigin)
+	if err != nil || endpoint.Scheme != "https" || endpoint.Hostname() != "127.0.0.1" || endpoint.Port() == "" {
+		return 2
+	}
+	root, err := x509.ParseCertificate(input.RootDER)
+	if err != nil {
+		return 2
+	}
+	roots := x509.NewCertPool()
+	roots.AddCert(root)
+	blocked := &http.Transport{Proxy: nil, DialContext: func(context.Context, string, string) (net.Conn, error) {
+		return nil, errors.New("child ambient HTTP forbidden")
+	}}
+	http.DefaultTransport = blocked
+	transport := &http.Transport{Proxy: nil, TLSClientConfig: &tls.Config{RootCAs: roots, MinVersion: tls.VersionTLS12}}
+	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != endpoint.Host {
+			return nil, errors.New("child unapproved Jira destination")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+	}
+	defer transport.CloseIdleConnections()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	w, err := app.OpenDeliveryWorker(ctx, app.DeliveryWorkerConfig{
+		Database: app.DatabaseConfig{DatabaseURL: input.DatabaseURL, Schema: input.Schema,
+			ApplicationName: "owned-jira-child", MaxConnections: 1, LogOutput: io.Discard},
+		WorkerID: input.WorkerID, LeaseDuration: input.Lease, EncryptionKey: input.EncryptionKey,
+		SlackEndpoint: input.SlackOrigin, Client: &http.Client{Transport: transport, Timeout: 3 * time.Second,
+			CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }},
+	})
+	if err != nil {
+		return 3
+	}
+	defer w.Close()
+	_, err = w.ProcessNext(ctx)
+	if err != nil && !errors.Is(err, context.Canceled) {
+		return 4
+	}
+	return 0
+}
+
+type ownedProcess struct {
+	command *exec.Cmd
+	done    chan struct{}
+	err     error
+}
+
+func safeChildEnvironment() []string {
+	result := []string{}
+	for _, entry := range os.Environ() {
+		name, _, _ := strings.Cut(entry, "=")
+		name = strings.ToUpper(name)
+		if strings.HasPrefix(name, "ASPM_") || strings.HasPrefix(name, "AWS_") || strings.HasPrefix(name, "JIRA_") ||
+			strings.HasPrefix(name, "SLACK_") || strings.HasPrefix(name, "AZURE_") ||
+			strings.HasPrefix(name, "OPENAI_") || strings.HasPrefix(name, "ANTHROPIC_") ||
+			strings.HasPrefix(name, "GITHUB_") || strings.HasPrefix(name, "GH_") ||
+			name == "HTTP_PROXY" || name == "HTTPS_PROXY" || name == "ALL_PROXY" {
+			continue
+		}
+		result = append(result, entry)
+	}
+	return append(result, "AWS_EC2_METADATA_DISABLED=true")
+}
+func (h *harness) crashWorker(n *jiraServer) *ownedProcess {
+	input := privateWorkerInput{DatabaseURL: h.cfg.DatabaseURL, Schema: h.cfg.Schema,
+		WorkerID: "crash-" + nonce(h.t), JiraOrigin: n.server.URL, SlackOrigin: n.slack.URL,
+		EncryptionKey: h.cfg.IntegrationEncryptionKey, RootDER: n.rootDER, Lease: 600 * time.Millisecond}
+	command := exec.CommandContext(h.ctx, os.Args[0], "-test.run=^$")
+	command.Env = append(safeChildEnvironment(), "ASPM_JIRA_WORKER_CHILD=1")
+	command.Stdin = bytes.NewReader(encoded(h.t, input))
+	command.Stdout, command.Stderr = &h.log, &h.log
+	p := &ownedProcess{command: command, done: make(chan struct{})}
+	must(h.t, "start exact owned crash-worker PID", command.Start())
+	go func() { p.err = command.Wait(); close(p.done) }()
+	h.t.Cleanup(func() {
+		_ = command.Process.Kill()
+		select {
+		case <-p.done:
+		case <-time.After(2 * time.Second):
+			h.t.Error("owned child process did not terminate")
+		}
+	})
+	return p
+}
+func (p *ownedProcess) kill(t *testing.T) {
+	t.Helper()
+	must(t, "crash only the exact owned worker PID", p.command.Process.Kill())
+	select {
+	case <-p.done:
+		check(t, p.err != nil, "owned crash worker exited normally before crash")
+	case <-time.After(2 * time.Second):
+		t.Fatal("exact owned crash-worker PID did not terminate")
+	}
+}

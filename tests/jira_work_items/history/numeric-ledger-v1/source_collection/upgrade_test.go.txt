@@ -71,7 +71,7 @@ func legacyDefinitionSnapshot(t *testing.T, f *fixture, names []string) map[stri
 
 func versionLedger(t *testing.T, f *fixture) []string {
 	t.Helper()
-	return legacyRows(t, f, "SELECT ledger.version::text FROM "+f.table("schema_versions")+" AS ledger ORDER BY ledger.version")
+	return legacyRows(t, f, "SELECT version::text FROM "+f.table("schema_versions")+" ORDER BY version")
 }
 
 func actualTables(t *testing.T, f *fixture) []string {

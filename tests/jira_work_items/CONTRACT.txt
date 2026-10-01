@@ -1,0 +1,202 @@
+M08a / OF-08: Jira work-item backend acceptance contract
+Base: published 4a54db75046f5910705007d800fa34496adc22d8.
+Test-author cut only. Parent seals before implementation; no reviewer stage.
+
+EXTENSION AND EXACT API
+Extend existing connections, delivery outbox/history and DeliveryWorker, not a
+parallel Jira service. Reuse app.Open, sessions/membership, leases/fences,
+integration crypto and connectors.OpenDelivery; no new constructor is required.
+Existing Slack requests, DTO keys, worker behavior and UI stay unchanged.
+
+POST /api/v1/integrations/connections:
+{profile:"jira-cloud-v3",name,enabled,token,jira:{
+ credentialType:"oauth2-bearer",cloudId,apiBase,siteOrigin,project,issueType,
+ fieldMappings:{"customfield_10010":"asset.name"}}}
+All fields are explicit. Current workspace admin alone configures connections.
+PATCH /api/v1/integrations/connections/{id} accepts name/enabled/token/jira;
+whole jira target replaces atomically, omission preserves, null is invalid.
+Real changes increment revision once. Profile/workspace/id/revision/approval
+are server-owned. Reject empty/scheme-prefixed credentials, arbitrary metadata,
+headers, Slack channel on Jira and Jira target on Slack. No secret readback/logs.
+Jira GET/list retain common metadata with channel:"", add jira and
+permissionState:"not-verified". Metadata never certifies Jira permission.
+
+COMMON LIST SELECTION AND OLD SLACK UI
+GET /api/v1/integrations/connections and
+GET /api/v1/findings/{id}/deliveries WITHOUT a profile selector remain Slack-only.
+The published Slack UI sends only limit/cursor and strictly parses Slack profiles
+and JSON keys. Omission must not select Jira, a mixed list or all profiles.
+Exactly one profile=jira-cloud-v3 selects Jira-only; exactly one
+profile=slack-workspace-bot explicitly selects the same Slack-only default.
+Empty, unknown or repeated profile values, even identical repeats, return 400.
+There is no cross-profile/workspace/finding fallback when a selection is empty.
+Filter membership and total by the selected profile and workspace (and finding
+for history) before native-ID pagination. Preserve ascending exclusive id>cursor,
+limit, total across every page, last returned native ID as nextCursor only when
+another selected item exists, and null nextCursor on the last/empty page.
+Common individual-resource GETs remain typed by the selected resource's profile,
+not the list default. All POST paths/bodies above and below remain unchanged.
+New Jira tests alone opt their intended list GETs into Jira. Real API-created
+mixed Slack/Jira connections and intents must prove default and explicit Slack
+keys/membership/total/cursors, explicit Jira lists/history and scope isolation.
+Old Slack tests/fixtures and the 132 UI tests are not edited or rerun here.
+
+POST /api/v1/findings/{id}/delivery-previews with {connectionId} returns 200:
+{preview:{workspaceId,findingId,connectionId,connectionRevision,profile,
+ requestedBy,jira,payload:{title,body,deepLink,fields},bindingDigest,
+ nativeValidation:"not-run",reviewRequirements:[
+ "explicit-queue-consent","native-required-fields","jira-permission"]}}
+This is LOCAL payload review: no native GET/POST and no persisted intent.
+bindingDigest is "sha256:" plus 64 lowercase hex digits of the server binding:
+workspace/finding/actor/connection/revision/profile/target/resolved payload.
+No separate preview service is needed; queue recomputes and compares the digest.
+
+Jira POST /api/v1/findings/{id}/deliveries requires exactly
+{connectionId,idempotencyKey,previewDigest,confirm:true}; 202 means durable queued.
+Slack keeps its existing {connectionId,idempotencyKey} request unchanged.
+Current admin/analyst can preview/queue their scoped finding; viewer reads but
+cannot write. Cross-scope IDs are 404. Missing/false consent and forged routing,
+actor, payload, prior or approval are 400. Disabled/changed selection is 409.
+Identical replay is 200 with the same intent/receipt, including after reopen;
+same workspace key with different finding/actor/revision/target/payload is 409.
+No auto-generated replacement key, automatic retry or exactly-once remote claim.
+
+NATIVE PROFILE, APPROVED TARGET AND FIELD CONTRACT
+Use the existing jira-cloud-v3 OAuth bearer profile, NOT email/API-token Basic.
+cloudId is a lowercase UUID; project is uppercase native KEY; issueType is a
+positive decimal native ID. apiBase is an explicit canonical HTTPS origin plus
+exactly /ex/jira/{cloudId}, without credentials/query/fragment/encoded routing.
+This is the Atlassian OAuth gateway shape; a separately approved gateway may
+retain it. siteOrigin is an explicit HTTPS browser origin, never a credential
+destination. Admin selection approves only the exact workspace target, not a
+global provider permission. Dispatch needs the existing explicitly approved
+normal-TLS/direct client. No default client/transport, ambient secret, endpoint
+fallback, redirect, proxy, tenant discovery, credential refresh or HTTP downgrade.
+Jira credentials must not reach Slack or another origin.
+
+Mappings have <=16 keys matching ^customfield_[0-9]+$ (<=128 bytes).
+Sources are only finding.id, finding.title, finding.severity, asset.name and
+finding.deepLink, resolved to strings. No literals/templates/scripts, arbitrary
+property paths, objects or reserved project/issuetype/summary/description keys.
+Payload title is canonical finding title, body is
+"Severity: <severity>\nAsset: <name>", and deepLink is trusted PublicOrigin +
+"/#/work?finding=" + escaped finding ID. Reject summary >255 runes at preview/
+queue, without truncation. Source text is inert ADF text, never instructions.
+No raw report, source code, evidence, notes, remediation, secret or AI auto-export.
+
+DURABLE DISPATCH
+Only Jira delivery DTOs add jira and createAttemptedAt; their payload adds fields.
+Trusted approvalRef, exact target/profile, actor, user key and payload binding
+survive reopen. Recompute stored binding and freshly check role, enabled/revision,
+target/profile/credential identity at dispatch, before create and before receipt
+commit. Corruption/routing mismatch fails before I/O.
+Worker calls existing native Preview (GET createmeta) before Send (one POST).
+Bound metadata to <=4 pages, <=50 fields/page, <=64 KiB/body. No SQL connection,
+transaction or row lock may survive a metadata, POST or response-body wait.
+Commit create_attempted_at under the current fenced lease BEFORE external create.
+
+Missing/unsupported required fields: failed/required_fields, sorted
+failure.missingFields, failure.stage:"metadata", retryable:false, ZERO POST.
+Native POST 400 field errors use stage:"create"; 401/403 are failed/auth;
+429 is rate-limited/rate_limited with literal bounded Retry-After. Empty/malformed
+receipt, lost ACK, timeout or 5xx after create is uncertain, never fake success.
+Failure keeps code/nativeCode/httpStatus/retryAfterSeconds/retryable plus
+Jira-only stage/missingFields, not vendor bodies/messages/secrets.
+Confirmed receipt remoteId is the native issue key exposed by the adapter
+(SYN-42), not a fabricated numeric ID. Derive remoteUrl from approved siteOrigin
++ "/browse/" + key; never trust arbitrary native self as the browser link.
+
+Role loss, disablement or credential/target revision cancels held context-honoring
+Jira I/O within one second. Before create: blocked with authorization-revoked,
+connection-disabled or connection-changed, no createAttemptedAt. After possible
+create: uncertain, no accepted receipt/resend. Natural lease expiry/crash fences
+the old owner against late commits/resends. Regrant cannot resurrect terminal
+work. Finding workflow/source/verification/evidence/notes remain unchanged.
+
+COMPATIBILITY AND V10
+Add V10 to existing ledger 1..9; never rewrite historical migrations.
+integration_connections and finding_deliveries gain nullable jira_target jsonb;
+finding_deliveries also gains nullable create_attempted_at timestamptz.
+Widen only app_integration_connections_profile_check and
+app_finding_deliveries_profile_check to the exact Slack/Jira profile pair.
+Add only app_integration_connections_profile_target_check and
+app_finding_deliveries_profile_target_check. Their approved predicate is:
+(profile='slack-workspace-bot' AND jira_target IS NULL
+ AND channel ~ '^[CG][A-Z0-9]{2,127}$')
+OR (profile='jira-cloud-v3' AND jira_target IS NOT NULL
+ AND jsonb_typeof(jira_target)='object' AND channel='').
+The exact PostgreSQL CHECK forms are frozen in the test-only
+tests\internal\deliverycompat\schema.go helper. Validate all approved additions/
+replacements positively before projecting only them for legacy comparisons.
+Missing/weakened/renamed/extra CHECKs, columns/defaults/order, unrelated
+constraints/indexes/relations are not exempted. Old Slack rows retain null new
+columns and all old values. No second queue or duplicated identity/lease framework.
+Jira uses existing sealCredential/openCredential and the independent 32-byte
+integration key, version-1 envelope, AAD
+"aspm/jira-credential/v1\0<workspace>\0<connection>".
+Slack credential envelope/AAD is unchanged; target/mappings are nonsecret config.
+Authentic pinned V9 app.Open/APIs create old Slack/finding/note/view/assessment
+data before current Open. Preserve old-column data and all unrelated definitions;
+allow only the specified additive/check delta. Reopen records 1..10 exactly once.
+These are coordinator-approved implementation decisions under the user's
+autonomous direction, including the ten CURRENT-ledger literal changes, bounded
+definition comparisons, owned-row fault scope and list selector amendment. This
+does not claim verbatim user approval of the detailed implementation contract.
+The original five test files and original
+contract/unsigned handoff are archived once under history\before-compatibility-approval.
+The prior unsigned handoff/contract and only the new test bytes changed for list
+selection are preserved there once as before-profile-selector files, recorded
+by one additive history entry. No duplicate whole-package archive is created.
+Historical V5/V6/V7/V8/V9 starts, test identities, seed/build provenance, budgets,
+old business-data assertions and pinned DDL/checksum bytes remain unchanged.
+
+EXPLICIT OWNED-ROW SQL FAULT EXCEPTION
+Ordinary CRUD/intake/preview/consent/native creation still use real APIs/workers.
+Fault injection may UPDATE only this fixture's already API-created
+integration_connections/finding_deliveries rows. Require the owned random schema,
+workspace_id AND id, lock/select exactly one row, and require RowsAffected=1 for
+every successful UPDATE. No INSERT/business seeding or other-user/schema/policy/
+permission mutation is authorized by this exception.
+J4 enumerated committed faults: delivery payload.title, approval_ref,
+idempotency_key, binding_digest; connection jira_target.apiBase; and a delivery's
+profile/channel/jira_target changed together to a valid-but-unapproved Slack tuple.
+J5 validates old Slack/null-Jira and new Jira tuples using scoped no-op UPDATEs
+that affect exactly one row and are rolled back. Its invalid profile/channel/
+jira_target tuples first lock exactly one row, must fail an approved named CHECK
+with SQLSTATE 23514 and zero affected rows, and are rolled back. Verify original
+old values afterward. These are real, scoped SQL fault/probe writes, not a
+zero-SQL-writes claim. Separate empty owned predicate probes calibrate catalog
+deparse/read-only tuple evaluation only; they do not stand in for V9/V10 migration.
+
+FIVE NARRATIVES AND BOUNDS
+J1 encrypted configuration/RBAC/privacy/strict local preview, plus a small
+Jira-independent common-list default/invalid-selector guard.
+J2 canonical queue/replay/reopen, native fields/ADF/receipt/history, with actual
+mixed-profile connection/intent list compatibility and scoped native-ID pages.
+J3 required fields/permission/rate/400/no-result/lost-ACK/timeout, no blind retry.
+J4 held HTTP/pool availability/revocation/rotation/corruption/fence/crash/reopen.
+J5 populated actual published V9 -> additive current V10, including old Slack.
+Separate calibration uses the unchanged adapter, real GET/POST and a fresh
+in-memory TLS chain with explicit roots. No disabled checks/shared-cert repair,
+fake RoundTripper, production-handler mock, business SQL seeds or vendor account.
+Corruption negatives obey only the enumerated owned-row exception above.
+Per narrative: 90s, 220 API calls, 1400 traced SQL operations (pinned helper <=400),
+64 native requests, 64 S3 socket writes; core/worker pools 1, observer pool 2.
+Use only random owned PG15432 schemas/S318333 prefixes and private runtime.json.
+Cached Go1.27.1/offline modules only, no installs or timeout/pool inflation.
+Compile the four amended old packages, new Jira package and shared test helper;
+run only new Jira/calibration/helper cases. Missing routes/migration are actual
+RED; later assertions remain blocked, not accepted. No production/dependency/
+signature/commit changes, old full-suite or UI132 run, Docker/policy/cluster/key changes.
+UI/deployed-runtime qualification follows this backend contract. No Jira Data
+Center, OAuth installation/refresh, arbitrary webhook/script, bidirectional sync,
+automatic closure, live-vendor, whole-M08 or project-completion claim.
+
+Provenance, consulted September 30, 2026:
+internal\connectors\jira.go, delivery.go, types.go, http.go and README.txt.
+Official Atlassian primary docs:
+`https://developer.atlassian.com/cloud/jira/platform/oauth-2-3lo-apps/`
+`https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/`
+Native metadata: GET /rest/api/3/issue/createmeta/{project}/issuetypes/{type},
+startAt/maxResults; creation: POST /rest/api/3/issue. Description is ADF v1,
+single-line custom fields are strings. Existing Send does not implicitly Preview.

@@ -1,12 +1,14 @@
 package app
 
 import (
+	"bytes"
 	"context"
 	"crypto/cipher"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strconv"
 	"strings"
 	"sync"
@@ -139,9 +141,11 @@ func (w *DeliveryWorker) Close() error {
 }
 
 type deliveryDispatch struct {
-	record  findingDeliveryRecord
-	adapter connectors.DeliveryAdapter
-	token   string
+	record      findingDeliveryRecord
+	adapter     connectors.DeliveryAdapter
+	token       string
+	credential  []byte
+	closeClient func()
 }
 
 func deliveryInfrastructureError(ctx context.Context, message string) error {
@@ -180,8 +184,12 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 		return nil, false, deliveryInfrastructureError(ctx, "read delivery claim failed")
 	}
 	if record.State == "dispatching" {
-		// An expired dispatch may already have reached Slack. It is never a fresh send.
-		if err = w.settleClaim(ctx, tx, record, "uncertain", "uncertain"); err != nil {
+		// An expired possible write is terminal, never a fresh send.
+		state, code := "uncertain", "uncertain"
+		if record.Profile == connectors.JiraCloudV3 && record.CreateAttemptedAt == nil {
+			state, code = "blocked", "lease-expired"
+		}
+		if err = w.settleClaim(ctx, tx, record, state, code); err != nil {
 			return nil, false, deliveryInfrastructureError(ctx, "record expired delivery uncertainty failed")
 		}
 		if err = tx.Commit(ctx); err != nil {
@@ -190,6 +198,9 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 		return nil, true, nil
 	}
 	reason := ""
+	if !validDeliveryBinding(record) {
+		reason = "binding-changed"
+	}
 	var role string
 	err = tx.QueryRow(ctx, `SELECT role FROM `+w.table("memberships")+`
 		WHERE workspace_id=$1 AND user_id=$2 FOR SHARE`, record.WorkspaceID, record.RequestedBy).Scan(&role)
@@ -214,22 +225,43 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 			reason = "connection-disabled"
 		case connection.Revision != record.ConnectionRevision || connection.Profile != record.Profile || connection.Channel != record.Channel:
 			reason = "connection-changed"
+		case !reflect.DeepEqual(connection.Jira, record.Jira):
+			reason = "connection-changed"
 		}
 	}
 	var adapter connectors.DeliveryAdapter
 	var token string
+	var closeClient func()
+	defer func() {
+		if closeClient != nil {
+			closeClient()
+		}
+	}()
 	if reason == "" {
-		plain, openErr := openIntegrationToken(w.credentials, record.WorkspaceID, record.ConnectionID, connection.ciphertext)
+		plain, openErr := openConnectionToken(w.credentials, record.Profile, record.WorkspaceID, record.ConnectionID, connection.ciphertext)
 		if openErr != nil {
 			reason = "credential-unavailable"
 		} else {
 			token = string(plain)
 			clear(plain)
-			adapter, err = connectors.OpenDelivery(ctx, connectors.DeliveryConfig{
+			config := connectors.DeliveryConfig{
 				Profile: record.Profile, Endpoint: w.endpoint, WorkspaceID: record.WorkspaceID,
 				Channel: record.Channel, Token: token, Client: w.client,
 				Limits: connectors.Limits{Requests: 1, Pages: 1, PageSize: 1, Bytes: 64 << 10},
-			})
+			}
+			if record.Profile == connectors.JiraCloudV3 {
+				config.Endpoint, config.Project, config.IssueType = record.Jira.APIBase, record.Jira.Project, record.Jira.IssueType
+				config.Limits = connectors.Limits{Requests: 4, Pages: 4, PageSize: 50, Bytes: 64 << 10}
+				config.Client, err = sourceNativeClient(w.client, config.Endpoint)
+				if err != nil {
+					reason = "native-client-unavailable"
+				} else {
+					closeClient = config.Client.CloseIdleConnections
+				}
+			}
+			if reason == "" {
+				adapter, err = connectors.OpenDelivery(ctx, config)
+			}
 			if ctx.Err() != nil {
 				return nil, false, ctx.Err()
 			}
@@ -260,7 +292,11 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 	if err = tx.Commit(ctx); err != nil {
 		return nil, false, deliveryInfrastructureError(ctx, "commit delivery dispatch start failed")
 	}
-	return &deliveryDispatch{record: record, adapter: adapter, token: token}, true, nil
+	dispatch := &deliveryDispatch{
+		record: record, adapter: adapter, token: token, credential: bytes.Clone(connection.ciphertext), closeClient: closeClient,
+	}
+	closeClient = nil
+	return dispatch, true, nil
 }
 
 func deliveryOutcome(ctx context.Context, result connectors.Delivery, nativeErr error, token string) (string, *FindingDeliveryReceipt, *FindingDeliveryFailure) {
@@ -334,6 +370,13 @@ func (w *DeliveryWorker) ProcessNext(ctx context.Context) (bool, error) {
 		return processed, err
 	}
 	record := dispatch.record
+	if dispatch.closeClient != nil {
+		defer dispatch.closeClient()
+	}
+	defer clear(dispatch.credential)
+	if record.Profile == connectors.JiraCloudV3 {
+		return true, w.processJiraDelivery(requestCtx, dispatch)
+	}
 	result, nativeErr := dispatch.adapter.Send(requestCtx, connectors.Action{
 		WorkspaceID: record.WorkspaceID, IntentID: record.ID, ApprovalRef: record.approvalRef,
 		FindingID: record.FindingID, Title: record.Payload.Title, Body: record.Payload.Body, DeepLink: record.Payload.DeepLink,

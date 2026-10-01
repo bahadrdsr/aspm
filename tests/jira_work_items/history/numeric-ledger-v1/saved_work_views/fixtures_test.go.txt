@@ -495,7 +495,7 @@ func (f *fixture) rows(query string, args ...any) []string {
 	return result
 }
 func (f *fixture) ledger() []string {
-	return f.rows("SELECT ledger.version::text FROM " + f.table("schema_versions") + " AS ledger ORDER BY ledger.version")
+	return f.rows("SELECT version::text FROM " + f.table("schema_versions") + " ORDER BY version")
 }
 func (f *fixture) snapshot(tables []string) map[string][]string {
 	result := map[string][]string{}

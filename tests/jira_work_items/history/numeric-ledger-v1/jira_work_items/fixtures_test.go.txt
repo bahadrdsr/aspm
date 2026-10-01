@@ -1,0 +1,651 @@
+//go:build integration
+
+package jira_work_items
+
+import (
+	"bytes"
+	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"os"
+	"reflect"
+	"regexp"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+const origin = "https://jira-work-items.synthetic.invalid"
+const connectionsPath = "/api/v1/integrations/connections"
+const jiraProfile = "jira-cloud-v3"
+const cloudID = "11111111-2222-4333-8444-555555555555"
+const siteOrigin = "https://owned-jira.synthetic.invalid"
+const rawCanary = "RAW-REPORT-NOT-APPROVED"
+const noteCanary = "HUMAN-NOTE-NOT-APPROVED"
+
+type object = map[string]any
+
+type jiraTarget struct {
+	CredentialType string            `json:"credentialType"`
+	CloudID        string            `json:"cloudId"`
+	APIBase        string            `json:"apiBase"`
+	SiteOrigin     string            `json:"siteOrigin"`
+	Project        string            `json:"project"`
+	IssueType      string            `json:"issueType"`
+	FieldMappings  map[string]string `json:"fieldMappings"`
+}
+type connection struct {
+	ID, WorkspaceID, Profile, Name, Channel string
+	PermissionState                         string
+	Enabled, CredentialConfigured           bool
+	Revision                                int64
+	CreatedAt, UpdatedAt                    time.Time
+	Jira                                    *jiraTarget
+}
+type payload struct {
+	Title    string            `json:"title"`
+	Body     string            `json:"body"`
+	DeepLink string            `json:"deepLink"`
+	Fields   map[string]string `json:"fields,omitempty"`
+}
+type preview struct {
+	WorkspaceID, FindingID, ConnectionID, Profile, RequestedBy string
+	ConnectionRevision                                         int64
+	Jira                                                       jiraTarget
+	Payload                                                    payload
+	BindingDigest, NativeValidation                            string
+	ReviewRequirements                                         []string
+}
+type failure struct {
+	Code, NativeCode, Stage string
+	HTTPStatus              int
+	RetryAfterSeconds       int64
+	Retryable               bool
+	MissingFields           []string
+}
+type receipt struct{ RemoteID, RemoteURL string }
+type delivery struct {
+	ID, WorkspaceID, FindingID, ConnectionID, Profile, Channel, RequestedBy, State string
+	ConnectionRevision                                                             int64
+	Jira                                                                           *jiraTarget
+	Payload                                                                        payload
+	CreatedAt                                                                      time.Time
+	DispatchStartedAt, CreateAttemptedAt, CompletedAt                              *time.Time
+	Receipt                                                                        *receipt
+	Failure                                                                        *failure
+}
+type actor struct {
+	ID, Workspace string
+	Cookie        *http.Cookie
+}
+type reply struct {
+	APIVersion string
+	User       app.User
+	Workspace  app.Workspace
+	Workspaces []app.Workspace
+	Asset      app.Asset
+	Import     app.Import
+	Finding    app.Finding
+	Connection connection
+	Preview    preview
+	Delivery   delivery
+	View       json.RawMessage
+	Profile    app.AIProfile
+	Policy     app.AIPolicy
+	Grant      app.AIEgressGrant
+	Assessment json.RawMessage
+	Items      []json.RawMessage
+	Total      int
+	NextCursor *string
+	Error      *app.Failure
+}
+
+func must(t *testing.T, label string, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("%s failed (%T; private values withheld)", label, err)
+	}
+}
+func check(t *testing.T, ok bool, label string) {
+	t.Helper()
+	if !ok {
+		t.Fatal(label)
+	}
+}
+func same(t *testing.T, label string, got, want any) {
+	t.Helper()
+	check(t, reflect.DeepEqual(got, want), label)
+}
+func encoded(t *testing.T, value any) []byte {
+	t.Helper()
+	data, err := json.Marshal(value)
+	must(t, "encode bounded fixture value", err)
+	return data
+}
+func decoded[T any](t *testing.T, data []byte) T {
+	t.Helper()
+	var value T
+	must(t, "decode actual response", json.Unmarshal(data, &value))
+	return value
+}
+func random(t *testing.T, n int) []byte {
+	value := make([]byte, n)
+	_, err := rand.Read(value)
+	must(t, "generate owned identity", err)
+	return value
+}
+func nonce(t *testing.T) string { return hex.EncodeToString(random(t, 12)) }
+func secret(t *testing.T) string {
+	return "synthetic-jira-" + base64.RawURLEncoding.EncodeToString(random(t, 24))
+}
+func digest(data []byte) string { return fmt.Sprintf("%x", sha256.Sum256(data)) }
+
+type safeLog struct {
+	mu sync.Mutex
+	b  bytes.Buffer
+}
+
+func (l *safeLog) Write(data []byte) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.Write(data)
+}
+func (l *safeLog) data() []byte {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return bytes.Clone(l.b.Bytes())
+}
+
+type queryBudget struct{ calls atomic.Int32 }
+
+func (b *queryBudget) TraceQueryStart(ctx context.Context, _ *pgx.Conn, _ pgx.TraceQueryStartData) context.Context {
+	if b.calls.Add(1) > 1400 {
+		cancelled, cancel := context.WithCancel(ctx)
+		cancel()
+		return cancelled
+	}
+	return ctx
+}
+func (*queryBudget) TraceQueryEnd(context.Context, *pgx.Conn, pgx.TraceQueryEndData) {}
+
+type countedConn struct {
+	net.Conn
+	writes *atomic.Int32
+}
+
+func (c countedConn) Write(data []byte) (int, error) {
+	if c.writes.Add(1) > 64 {
+		return 0, errors.New("owned S3 write budget exceeded")
+	}
+	return c.Conn.Write(data)
+}
+
+type fixture struct {
+	t                  *testing.T
+	ctx                context.Context
+	db                 *pgxpool.Pool
+	store              *s3.Client
+	cfg                app.Config
+	queries            queryBudget
+	api, writes, stray atomic.Int32
+	publishedQueries   atomic.Int32
+	publishedWrites    atomic.Int32
+	log                safeLog
+	mu                 sync.Mutex
+	secrets            []string
+}
+
+func newFixture(t *testing.T) *fixture {
+	t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	t.Cleanup(cancel)
+	f := &fixture{t: t, ctx: ctx}
+	path := os.Getenv("ASPM_JIRA_RUNTIME")
+	check(t, path != "", "BLOCKED: explicit private runtime.json path required")
+	data, err := os.ReadFile(path)
+	must(t, "read private runtime input", err)
+	runtime := decoded[struct{ DatabaseURL, S3Endpoint, S3AccessKey, S3SecretKey, S3Bucket string }](t, data)
+	dbURL, err := url.Parse(runtime.DatabaseURL)
+	must(t, "parse explicit PG boundary", err)
+	check(t, (dbURL.Scheme == "postgres" || dbURL.Scheme == "postgresql") &&
+		dbURL.Hostname() == "127.0.0.1" && dbURL.Port() == "15432" && dbURL.User != nil,
+		"BLOCKED: only the selected PG15432 fixture is permitted")
+	password, present := dbURL.User.Password()
+	check(t, present && password != "", "BLOCKED: explicit PG identity required")
+	storeURL, err := url.Parse(runtime.S3Endpoint)
+	must(t, "parse explicit S3 boundary", err)
+	check(t, storeURL.Scheme == "http" && storeURL.Hostname() == "127.0.0.1" &&
+		storeURL.Port() == "18333" && storeURL.User == nil && storeURL.RawQuery == "" &&
+		storeURL.Fragment == "" && runtime.S3Bucket != "" && !strings.ContainsAny(runtime.S3Bucket, "/\\:"),
+		"BLOCKED: only the existing selected S318333 bucket is permitted")
+	id := nonce(t)
+	f.cfg = app.Config{
+		DatabaseURL: runtime.DatabaseURL, Schema: "jira_items_" + id, ApplicationName: "jira-items-" + id,
+		MaxConnections: 1, ManualProcessing: true, PublicOrigin: origin, BootstrapToken: secret(t),
+		IntegrationEncryptionKey: random(t, 32), AssessmentScope: "jira-owned-assessment",
+		MaxUploadBytes: 64 << 10, SessionTTL: time.Hour, QueryTracer: &f.queries, LogOutput: &f.log,
+		Storage: app.StorageConfig{
+			Endpoint: runtime.S3Endpoint, Bucket: runtime.S3Bucket, Prefix: "jira-work-items/" + id + "/",
+			AccessKey: runtime.S3AccessKey, SecretKey: runtime.S3SecretKey, Region: "us-east-1", Timeout: 4 * time.Second,
+		},
+	}
+	for _, value := range []string{runtime.DatabaseURL, password, runtime.S3AccessKey, runtime.S3SecretKey,
+		f.cfg.BootstrapToken, string(f.cfg.IntegrationEncryptionKey), base64.StdEncoding.EncodeToString(f.cfg.IntegrationEncryptionKey),
+		hex.EncodeToString(f.cfg.IntegrationEncryptionKey)} {
+		f.remember(value)
+	}
+	pc, err := pgxpool.ParseConfig(runtime.DatabaseURL)
+	must(t, "parse fixture observation pool", err)
+	pc.MaxConns, pc.MinConns, pc.ConnConfig.ConnectTimeout = 2, 0, 3*time.Second
+	pc.ConnConfig.RuntimeParams["application_name"] = f.cfg.ApplicationName + "-observe"
+	pc.ConnConfig.Tracer = &f.queries
+	f.db, err = pgxpool.NewWithConfig(ctx, pc)
+	must(t, "open existing real PG", err)
+	t.Cleanup(f.db.Close)
+	must(t, "authenticate actual PG", f.db.Ping(ctx))
+	_, err = f.db.Exec(ctx, "CREATE SCHEMA "+pgx.Identifier{f.cfg.Schema}.Sanitize())
+	must(t, "create random task-owned schema", err)
+	prior := http.DefaultTransport
+	guard := prior.(*http.Transport).Clone()
+	guard.Proxy = nil
+	guard.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != storeURL.Host {
+			f.stray.Add(1)
+			return nil, errors.New("ambient native or foreign HTTP forbidden")
+		}
+		conn, err := (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+		if err != nil {
+			return nil, err
+		}
+		return countedConn{conn, &f.writes}, nil
+	}
+	http.DefaultTransport = guard
+	t.Cleanup(func() {
+		http.DefaultTransport = prior
+		guard.CloseIdleConnections()
+		check(t, f.stray.Load() == 0, "production attempted ambient native/foreign I/O")
+		f.private(f.log.data())
+		queries, writes := f.queries.calls.Load()+f.publishedQueries.Load(), f.writes.Load()+f.publishedWrites.Load()
+		check(t, f.api.Load() <= 220 && queries <= 1400 && writes <= 64,
+			"fixture exceeded API/SQL/S3 budget")
+		t.Logf("bounded counts: API=%d/220 SQL=%d/1400 S3-writes=%d/64", f.api.Load(), queries, writes)
+	})
+	st := f.cfg.Storage
+	f.store = s3.New(s3.Options{
+		Region: st.Region, BaseEndpoint: aws.String(st.Endpoint), UsePathStyle: true,
+		Credentials: credentials.NewStaticCredentialsProvider(st.AccessKey, st.SecretKey, ""), RetryMaxAttempts: 1,
+		HTTPClient: &http.Client{Transport: guard, Timeout: 4 * time.Second,
+			CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }},
+		RequestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+		ResponseChecksumValidation: aws.ResponseChecksumValidationWhenRequired,
+	})
+	t.Cleanup(f.cleanup)
+	_, err = f.store.HeadBucket(ctx, &s3.HeadBucketInput{Bucket: aws.String(st.Bucket)})
+	must(t, "authenticate existing S3 bucket", err)
+	return f
+}
+
+func (f *fixture) cleanup() {
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+	if !regexp.MustCompile(`^jira_items_[a-f0-9]{24}$`).MatchString(f.cfg.Schema) ||
+		f.cfg.Storage.Prefix != "jira-work-items/"+strings.TrimPrefix(f.cfg.Schema, "jira_items_")+"/" {
+		f.t.Error("refusing cleanup outside owned random schema/prefix")
+		return
+	}
+	page, err := f.store.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket: aws.String(f.cfg.Storage.Bucket), Prefix: aws.String(f.cfg.Storage.Prefix), MaxKeys: aws.Int32(100),
+	})
+	if err != nil {
+		f.t.Errorf("owned S3 cleanup listing failed (%T; private values withheld)", err)
+	} else {
+		if aws.ToBool(page.IsTruncated) {
+			f.t.Error("owned cleanup exceeded its one-page bound")
+		}
+		for _, item := range page.Contents {
+			if !strings.HasPrefix(aws.ToString(item.Key), f.cfg.Storage.Prefix) {
+				f.t.Error("refusing unrelated object deletion")
+				continue
+			}
+			if _, err = f.store.DeleteObject(ctx, &s3.DeleteObjectInput{Bucket: aws.String(f.cfg.Storage.Bucket), Key: item.Key}); err != nil {
+				f.t.Errorf("owned object cleanup failed (%T; private values withheld)", err)
+			}
+		}
+	}
+	if _, err = f.db.Exec(ctx, "DROP SCHEMA "+pgx.Identifier{f.cfg.Schema}.Sanitize()+" CASCADE"); err != nil {
+		f.t.Errorf("owned schema cleanup failed (%T; private values withheld)", err)
+	}
+}
+func (f *fixture) remember(value string) {
+	if value != "" {
+		f.mu.Lock()
+		defer f.mu.Unlock()
+		f.secrets = append(f.secrets, value, url.QueryEscape(value), base64.StdEncoding.EncodeToString([]byte(value)))
+	}
+}
+func (f *fixture) private(data []byte) {
+	f.t.Helper()
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	for _, value := range f.secrets {
+		check(f.t, !bytes.Contains(data, []byte(value)), "credential escaped response/storage metadata/log")
+	}
+}
+func (f *fixture) table(name string) string {
+	return pgx.Identifier{f.cfg.Schema, "app_" + name}.Sanitize()
+}
+func (f *fixture) rows(query string, args ...any) []string {
+	f.t.Helper()
+	rows, err := f.db.Query(f.ctx, query, args...)
+	must(f.t, "bounded readonly SQL observation", err)
+	defer rows.Close()
+	result := []string{}
+	for rows.Next() {
+		check(f.t, len(result) < 256, "SQL observation row bound exceeded")
+		var value string
+		must(f.t, "read private SQL observation", rows.Scan(&value))
+		result = append(result, value)
+	}
+	must(f.t, "finish readonly observation", rows.Err())
+	return result
+}
+func (f *fixture) ledger() []string {
+	return f.rows("SELECT version::text FROM " + f.table("schema_versions") + " ORDER BY version")
+}
+
+type harness struct {
+	*fixture
+	admin     actor
+	base      string
+	client    *http.Client
+	closeCore func() error
+	imports   func(context.Context) error
+}
+
+func newHarness(t *testing.T) *harness {
+	h := &harness{fixture: newFixture(t)}
+	h.open()
+	h.enroll()
+	return h
+}
+func directClient(t *testing.T, base string) *http.Client {
+	t.Helper()
+	u, err := url.Parse(base)
+	must(t, "parse owned HTTP origin", err)
+	transport := &http.Transport{Proxy: nil, DisableKeepAlives: false}
+	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != u.Host {
+			t.Error("HTTP client attempted an unapproved address")
+			return nil, errors.New("unapproved HTTP address")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+	}
+	t.Cleanup(transport.CloseIdleConnections)
+	return &http.Client{Transport: transport, Timeout: 4 * time.Second,
+		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+}
+func (h *harness) open() {
+	h.t.Helper()
+	core, err := app.Open(h.ctx, h.cfg)
+	must(h.t, "open real current app", err)
+	server := httptest.NewServer(core.Handler)
+	h.base, h.client, h.imports = server.URL, directClient(h.t, server.URL), core.ProcessImports
+	var once sync.Once
+	h.closeCore = func() error {
+		once.Do(func() { server.Close(); _ = core.Close() })
+		return nil
+	}
+	h.t.Cleanup(func() { must(h.t, "close actual core/listener", h.closeCore()) })
+}
+func (h *harness) reopen() {
+	must(h.t, "close core before independent reopen", h.closeCore())
+	h.open()
+}
+func (h *harness) request(ctx context.Context, who actor, method, path string, value any, want int, headers ...string) ([]byte, http.Header) {
+	h.t.Helper()
+	check(h.t, h.api.Add(1) <= 220, "API narrative budget exceeded")
+	var data []byte
+	if value != nil {
+		data = encoded(h.t, value)
+	}
+	req, err := http.NewRequestWithContext(ctx, method, h.base+path, bytes.NewReader(data))
+	must(h.t, "construct actual HTTP API request", err)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Origin", origin)
+	if who.Workspace != "" {
+		req.Header.Set("X-ASPM-Workspace-ID", who.Workspace)
+	}
+	if who.Cookie != nil {
+		req.AddCookie(who.Cookie)
+	}
+	for i := 0; i < len(headers); i += 2 {
+		req.Header.Set(headers[i], headers[i+1])
+	}
+	response, err := h.client.Do(req)
+	must(h.t, "call actual API over owned HTTP", err)
+	defer response.Body.Close()
+	body, err := io.ReadAll(io.LimitReader(response.Body, (256<<10)+1))
+	must(h.t, "read bounded actual API response", err)
+	check(h.t, len(body) <= 256<<10, "API response bound exceeded")
+	h.private(body)
+	if response.StatusCode != want {
+		h.t.Fatalf("RED: actual %s %s returned %d, want %d; body/private values withheld", method, path, response.StatusCode, want)
+	}
+	return body, response.Header
+}
+func (h *harness) json(who actor, method, path string, value any, want int, headers ...string) reply {
+	h.t.Helper()
+	body, _ := h.request(h.ctx, who, method, path, value, want, headers...)
+	r := decoded[reply](h.t, body)
+	check(h.t, r.APIVersion == app.APIVersion, "actual API lost version")
+	if want >= 400 {
+		check(h.t, r.Error != nil && r.Error.Code != "" && !r.Error.Retryable, "denial must be explicit and nonretryable")
+	}
+	return r
+}
+func (h *harness) enroll() {
+	password := secret(h.t)
+	h.remember(password)
+	enrolled := h.json(actor{}, "POST", "/api/v1/bootstrap", object{
+		"workspaceName": "Owned Jira contract", "name": "Synthetic admin",
+		"email": "admin@jira.invalid", "password": password,
+	}, 201, "X-ASPM-Bootstrap-Token", h.cfg.BootstrapToken)
+	h.admin = h.login("admin@jira.invalid", password, enrolled.Workspace.ID)
+}
+func (h *harness) login(email, password, workspace string) actor {
+	body, headers := h.request(h.ctx, actor{}, "POST", "/api/v1/login", object{"email": email, "password": password}, 200)
+	r := decoded[reply](h.t, body)
+	for _, cookie := range (&http.Response{Header: headers}).Cookies() {
+		if cookie.Name == "aspm_session" {
+			check(h.t, cookie.Secure && cookie.HttpOnly, "actual protected session required")
+			h.remember(cookie.Value)
+			return actor{ID: r.User.ID, Workspace: workspace, Cookie: cookie}
+		}
+	}
+	h.t.Fatal("actual login omitted protected cookie")
+	return actor{}
+}
+func (h *harness) user(role string) actor {
+	password, email := secret(h.t), nonce(h.t)+"@jira.invalid"
+	h.remember(password)
+	h.json(h.admin, "POST", "/api/v1/users", object{"name": "Owned " + role, "email": email, "password": password, "role": role}, 201)
+	return h.login(email, password, h.admin.Workspace)
+}
+func (h *harness) otherWorkspace() actor {
+	r := h.json(h.admin, "POST", "/api/v1/workspaces", object{"name": "Other owned Jira workspace"}, 201)
+	who := h.admin
+	who.Workspace = r.Workspace.ID
+	return who
+}
+func (h *harness) seed(who actor, name string) app.Finding {
+	return h.seedTitle(who, name, "Synthetic <script>inert text</script> 安全")
+}
+func (h *harness) seedTitle(who actor, name, title string) app.Finding {
+	h.t.Helper()
+	asset := h.json(who, "POST", "/api/v1/assets", object{
+		"name": name, "kind": "repository", "environment": "test", "criticality": "medium", "tags": []string{"synthetic"},
+	}, 201).Asset
+	source := object{"version": "2.1.0", "runs": []any{object{
+		"tool": object{"driver": object{"name": "Owned Jira SARIF", "rules": []any{object{
+			"id": "JIRA-SYN-1", "shortDescription": object{"text": title},
+			"fullDescription": object{"text": "SOURCE-DESCRIPTION-NOT-APPROVED"},
+		}}}},
+		"results": []any{object{"ruleId": "JIRA-SYN-1", "level": "warning", "message": object{"text": rawCanary},
+			"properties": object{"endpoint": "https://not-approved.invalid", "approvalRef": "scanner-not-approval",
+				"Authorization": "scanner-not-a-credential", "customfield_10010": "scanner-not-a-mapping"}}},
+	}}}
+	now := time.Now().UTC().Add(-time.Minute)
+	queued := h.json(who, "POST", "/api/v1/imports", object{
+		"apiVersion": app.APIVersion, "assetId": asset.ID, "format": "sarif", "report": string(encoded(h.t, source)),
+		"sourceId": "owned-jira-source", "scanId": nonce(h.t), "scope": object{"id": asset.ID, "revision": "1", "branch": "main"},
+		"sourceScanAt": now, "collectedAt": now.Add(time.Second), "sourceStatus": "succeeded", "scanKind": "full", "completeness": "complete",
+	}, 202).Import
+	must(h.t, "process real PG/S3 report intake", h.imports(h.ctx))
+	done := h.json(who, "GET", "/api/v1/imports/"+queued.ID, nil, 200).Import
+	check(h.t, done.State == "succeeded" && done.ObservationCount == 1, "real intake did not produce canonical finding")
+	work := h.json(who, "GET", "/api/v1/work?q="+url.QueryEscape(name), nil, 200)
+	check(h.t, len(work.Items) == 1, "actual intake finding identity missing")
+	id := decoded[struct{ ID string }](h.t, work.Items[0]).ID
+	h.json(who, "POST", "/api/v1/findings/"+id+"/notes", object{"text": noteCanary}, 201)
+	return h.finding(who, id)
+}
+func (h *harness) finding(who actor, id string) app.Finding {
+	return h.json(who, "GET", "/api/v1/findings/"+id, nil, 200).Finding
+}
+func previewPath(id string) string  { return "/api/v1/findings/" + id + "/delivery-previews" }
+func historyPath(id string) string  { return "/api/v1/findings/" + id + "/deliveries" }
+func deliveryPath(id string) string { return "/api/v1/integrations/deliveries/" + id }
+func expectedPayload(f app.Finding) payload {
+	return payload{
+		Title: f.Title, Body: "Severity: " + f.Severity + "\nAsset: " + f.AssetName,
+		DeepLink: origin + "/#/work?finding=" + url.QueryEscape(f.ID),
+		Fields:   map[string]string{"customfield_10010": f.AssetName, "customfield_10011": f.Severity},
+	}
+}
+func (h *harness) connection(who actor, target jiraTarget, token string) connection {
+	h.t.Helper()
+	h.remember(token)
+	r := h.json(who, "POST", connectionsPath, object{
+		"profile": jiraProfile, "name": "Explicit owned Jira target", "enabled": true, "token": token, "jira": target,
+	}, 201)
+	c := r.Connection
+	check(h.t, c.ID != "" && c.WorkspaceID == who.Workspace && c.Profile == jiraProfile && c.Channel == "" &&
+		c.Enabled && c.CredentialConfigured && c.Revision == 1 && c.PermissionState == "not-verified",
+		"Jira metadata misstates identity/credential presence/permission")
+	same(h.t, "selected Jira target/mapping metadata changed", c.Jira, &target)
+	return c
+}
+func (h *harness) preview(who actor, findingID string, c connection) preview {
+	h.t.Helper()
+	v := h.json(who, "POST", previewPath(findingID), object{"connectionId": c.ID}, 200).Preview
+	check(h.t, v.WorkspaceID == who.Workspace && v.FindingID == findingID && v.ConnectionID == c.ID &&
+		v.ConnectionRevision == c.Revision && v.Profile == jiraProfile && v.RequestedBy == who.ID &&
+		v.NativeValidation == "not-run" && regexp.MustCompile(`^sha256:[a-f0-9]{64}$`).MatchString(v.BindingDigest),
+		"local preview omitted canonical binding or claimed native validation")
+	same(h.t, "local preview omitted explicit review requirements", v.ReviewRequirements,
+		[]string{"explicit-queue-consent", "native-required-fields", "jira-permission"})
+	same(h.t, "preview changed selected target", &v.Jira, c.Jira)
+	return v
+}
+func queueInput(v preview, key string) object {
+	return object{"connectionId": v.ConnectionID, "idempotencyKey": key, "previewDigest": v.BindingDigest, "confirm": true}
+}
+func (h *harness) queue(who actor, v preview, key string, status int) delivery {
+	return h.json(who, "POST", historyPath(v.FindingID), queueInput(v, key), status).Delivery
+}
+func (h *harness) delivery(who actor, id string) delivery {
+	return h.json(who, "GET", deliveryPath(id), nil, 200).Delivery
+}
+func (h *harness) worker(n *jiraServer, label string, lease time.Duration) *app.DeliveryWorker {
+	h.t.Helper()
+	db := app.DatabaseConfig{
+		DatabaseURL: h.cfg.DatabaseURL, Schema: h.cfg.Schema, ApplicationName: "jira-worker-" + nonce(h.t),
+		MaxConnections: 1, QueryTracer: &h.queries, LogOutput: &h.log,
+	}
+	worker, err := app.OpenDeliveryWorker(h.ctx, app.DeliveryWorkerConfig{
+		Database: db, EncryptionKey: h.cfg.IntegrationEncryptionKey, WorkerID: label + "-" + nonce(h.t),
+		LeaseDuration: lease, Client: n.client, SlackEndpoint: n.slack.URL,
+	})
+	must(h.t, "open actual independent delivery worker", err)
+	h.t.Cleanup(func() { must(h.t, "close owned worker", worker.Close()) })
+	return worker
+}
+func process(t *testing.T, ctx context.Context, worker *app.DeliveryWorker, want bool) {
+	t.Helper()
+	processed, err := worker.ProcessNext(ctx)
+	must(t, "process actual bounded delivery step", err)
+	check(t, processed == want, "unexpected eligible-work result")
+}
+func (h *harness) marker(id string) error {
+	var state, owner string
+	var started, attempted, lease *time.Time
+	var fence int64
+	var live bool
+	err := h.db.QueryRow(h.ctx, "SELECT state,worker_id,dispatch_started_at,create_attempted_at,lease_until,fence,"+
+		"lease_until>clock_timestamp() FROM "+h.table("finding_deliveries")+" WHERE id=$1", id).
+		Scan(&state, &owner, &started, &attempted, &lease, &fence, &live)
+	if err != nil || state != "dispatching" || owner == "" || started == nil ||
+		attempted == nil || lease == nil || fence < 1 || !live {
+		return errors.New("Jira POST preceded a committed independent fenced create-attempt marker")
+	}
+	return nil
+}
+func (h *harness) ciphertext(id string) []byte {
+	h.t.Helper()
+	var result []byte
+	must(h.t, "observe encrypted selected credential", h.db.QueryRow(h.ctx,
+		"SELECT credential_ciphertext FROM "+h.table("integration_connections")+" WHERE id=$1", id).Scan(&result))
+	return result
+}
+func (h *harness) assertEncrypted(c connection, token string) {
+	h.t.Helper()
+	value := h.ciphertext(c.ID)
+	check(h.t, !bytes.Contains(value, []byte(token)), "credential persisted in plaintext")
+	block, err := aes.NewCipher(h.cfg.IntegrationEncryptionKey)
+	must(h.t, "build independent AES assertion", err)
+	aead, err := cipher.NewGCM(block)
+	must(h.t, "build independent GCM assertion", err)
+	check(h.t, len(value) > 1+aead.NonceSize()+aead.Overhead() && value[0] == 1, "wrong credential envelope")
+	end := 1 + aead.NonceSize()
+	aad := func(workspace, id, profile string) []byte {
+		return []byte("aspm/" + profile + "-credential/v1\x00" + workspace + "\x00" + id)
+	}
+	plain, err := aead.Open(nil, value[1:end], value[end:], aad(c.WorkspaceID, c.ID, "jira"))
+	must(h.t, "authenticate actual Jira credential with independent integration key", err)
+	check(h.t, string(plain) == token, "stored selected bearer changed")
+	clear(plain)
+	for _, binding := range [][]byte{aad("other-workspace", c.ID, "jira"), aad(c.WorkspaceID, "other-id", "jira"), aad(c.WorkspaceID, c.ID, "slack")} {
+		_, err = aead.Open(nil, value[1:end], value[end:], binding)
+		check(h.t, err != nil, "credential envelope lost workspace/connection/profile isolation")
+	}
+	h.remember(base64.StdEncoding.EncodeToString(value))
+	h.remember(hex.EncodeToString(value))
+}
+func (h *harness) noStoredSecrets() {
+	for _, table := range []string{"integration_connections", "finding_deliveries"} {
+		for _, row := range h.rows("SELECT (to_jsonb(v)-'credential_ciphertext')::text FROM " + h.table(table) + " v") {
+			h.private([]byte(row))
+		}
+	}
+}

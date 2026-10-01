@@ -3,19 +3,34 @@ package app
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"net/http"
-	"net/url"
 	"time"
 
+	"github.com/bahadrdsr/aspm/internal/connectors"
 	"github.com/jackc/pgx/v5"
 )
 
 type FindingNotification struct {
-	Title    string `json:"title"`
-	Body     string `json:"body"`
-	DeepLink string `json:"deepLink"`
+	Title    string            `json:"title"`
+	Body     string            `json:"body"`
+	DeepLink string            `json:"deepLink"`
+	Fields   map[string]string `json:"fields,omitempty"`
+}
+
+func (payload FindingNotification) MarshalJSON() ([]byte, error) {
+	var fields *map[string]string
+	if payload.Fields != nil {
+		fields = &payload.Fields
+	}
+	return json.Marshal(struct {
+		Title    string             `json:"title"`
+		Body     string             `json:"body"`
+		DeepLink string             `json:"deepLink"`
+		Fields   *map[string]string `json:"fields,omitempty"`
+	}{payload.Title, payload.Body, payload.DeepLink, fields})
 }
 
 type FindingDeliveryReceipt struct {
@@ -24,11 +39,13 @@ type FindingDeliveryReceipt struct {
 }
 
 type FindingDeliveryFailure struct {
-	Code              string `json:"code"`
-	NativeCode        string `json:"nativeCode"`
-	HTTPStatus        int    `json:"httpStatus"`
-	RetryAfterSeconds int64  `json:"retryAfterSeconds"`
-	Retryable         bool   `json:"retryable"`
+	Code              string   `json:"code"`
+	NativeCode        string   `json:"nativeCode"`
+	HTTPStatus        int      `json:"httpStatus"`
+	RetryAfterSeconds int64    `json:"retryAfterSeconds"`
+	Retryable         bool     `json:"retryable"`
+	Stage             string   `json:"stage,omitempty"`
+	MissingFields     []string `json:"missingFields,omitempty"`
 }
 
 type FindingDelivery struct {
@@ -47,31 +64,51 @@ type FindingDelivery struct {
 	CompletedAt        *time.Time              `json:"completedAt"`
 	Receipt            *FindingDeliveryReceipt `json:"receipt"`
 	Failure            *FindingDeliveryFailure `json:"failure"`
+	Jira               *JiraTarget             `json:"jira,omitempty"`
+	CreateAttemptedAt  *time.Time              `json:"-"`
+}
+
+func (delivery FindingDelivery) MarshalJSON() ([]byte, error) {
+	type value FindingDelivery
+	if delivery.Profile == connectors.JiraCloudV3 {
+		return json.Marshal(struct {
+			value
+			CreateAttemptedAt *time.Time `json:"createAttemptedAt"`
+		}{value(delivery), delivery.CreateAttemptedAt})
+	}
+	return json.Marshal(value(delivery))
 }
 
 type findingDeliveryRecord struct {
 	FindingDelivery
-	bindingDigest []byte
-	approvalRef   string
-	fence         int64
+	bindingDigest  []byte
+	approvalRef    string
+	fence          int64
+	idempotencyKey string
 }
 
 const findingDeliveryColumns = `id,workspace_id,finding_id,connection_id,connection_revision,
 	profile,channel,requested_by,state,payload,created_at,dispatch_started_at,completed_at,
-	receipt,failure,binding_digest,approval_ref,fence`
+	receipt,failure,binding_digest,approval_ref,fence,idempotency_key,jira_target,create_attempted_at`
 
 func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 	var record findingDeliveryRecord
-	var payload, receipt, failure []byte
+	var payload, receipt, failure, target []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.FindingID, &record.ConnectionID,
 		&record.ConnectionRevision, &record.Profile, &record.Channel, &record.RequestedBy, &record.State,
 		&payload, &record.CreatedAt, &record.DispatchStartedAt, &record.CompletedAt,
-		&receipt, &failure, &record.bindingDigest, &record.approvalRef, &record.fence)
+		&receipt, &failure, &record.bindingDigest, &record.approvalRef, &record.fence,
+		&record.idempotencyKey, &target, &record.CreateAttemptedAt)
 	if err != nil {
 		return record, err
 	}
 	if err = json.Unmarshal(payload, &record.Payload); err != nil {
 		return record, err
+	}
+	if len(target) != 0 {
+		if err = json.Unmarshal(target, &record.Jira); err != nil {
+			return record, err
+		}
 	}
 	if len(receipt) != 0 {
 		if err = json.Unmarshal(receipt, &record.Receipt); err != nil {
@@ -96,7 +133,16 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 		Actor: delivery.RequestedBy, Profile: delivery.Profile, Channel: delivery.Channel,
 		Revision: delivery.ConnectionRevision, Payload: delivery.Payload,
 	}
-	data, err := json.Marshal(value)
+	var data []byte
+	var err error
+	if delivery.Profile == connectors.JiraCloudV3 {
+		data, err = json.Marshal(struct {
+			Binding any
+			Jira    *JiraTarget
+		}{value, delivery.Jira})
+	} else {
+		data, err = json.Marshal(value)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -104,10 +150,44 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 	return digest[:], nil
 }
 
+func deliveryIntentBinding(delivery FindingDelivery, key string) ([]byte, error) {
+	binding, err := deliveryBinding(delivery)
+	if err != nil || delivery.Profile != connectors.JiraCloudV3 {
+		return binding, err
+	}
+	data, err := json.Marshal(struct {
+		Binding        []byte
+		IdempotencyKey string
+	}{binding, key})
+	if err != nil {
+		return nil, err
+	}
+	digest := sha256.Sum256(data)
+	return digest[:], nil
+}
+
+func validDeliveryBinding(record findingDeliveryRecord) bool {
+	if record.approvalRef != "aspm:remediation:"+record.WorkspaceID+":"+record.ID ||
+		!validText(record.idempotencyKey, 256) {
+		return false
+	}
+	if record.Profile == connectors.JiraCloudV3 &&
+		(!validJiraTarget(record.Jira) || record.Channel != "" || record.Payload.Fields == nil) {
+		return false
+	}
+	if record.Profile == connectors.SlackWorkspaceBot && (record.Jira != nil || record.Payload.Fields != nil) {
+		return false
+	}
+	binding, err := deliveryIntentBinding(record.FindingDelivery, record.idempotencyKey)
+	return err == nil && bytes.Equal(binding, record.bindingDigest)
+}
+
 func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession, findingID string) error {
 	var input struct {
-		ConnectionID   string `json:"connectionId"`
-		IdempotencyKey string `json:"idempotencyKey"`
+		ConnectionID   string           `json:"connectionId"`
+		IdempotencyKey string           `json:"idempotencyKey"`
+		PreviewDigest  optional[string] `json:"previewDigest"`
+		Confirm        optional[bool]   `json:"confirm"`
 	}
 	if err := a.decode(w, r, &input, 16<<10); err != nil {
 		return err
@@ -123,42 +203,27 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 		return err
 	}
 	defer rollback(tx)
-	var workspaceID string
-	if err = tx.QueryRow(r.Context(), `SELECT id FROM `+a.table("workspaces")+`
-		WHERE id=$1 FOR KEY SHARE`, workspace).Scan(&workspaceID); err != nil {
-		return err
-	}
-	role, err := a.sessionRole(r.Context(), tx, session, workspace)
+	delivery, err := a.selectedFindingDelivery(r, tx, workspace, session, findingID, input.ConnectionID)
 	if err != nil {
 		return err
 	}
-	if !canWrite(Workspace{Role: role}) {
-		return errForbidden
+	if delivery.Profile == connectors.JiraCloudV3 {
+		if input.Confirm.Value == nil || !*input.Confirm.Value || input.PreviewDigest.Value == nil ||
+			len(*input.PreviewDigest.Value) != 71 {
+			return errInvalid
+		}
+		binding, err := deliveryBinding(delivery)
+		if err != nil {
+			return err
+		}
+		if *input.PreviewDigest.Value != "sha256:"+hex.EncodeToString(binding) {
+			return errConflict
+		}
+	} else if input.Confirm.Set || input.PreviewDigest.Set {
+		return errInvalid
 	}
-	finding, err := scanWork(tx.QueryRow(r.Context(), `SELECT `+workColumns+a.workFrom()+
-		` WHERE f.workspace_id=$1 AND f.id=$2 FOR SHARE OF f,asset`, workspace, findingID))
-	if err != nil {
-		return err
-	}
-	connection, err := scanIntegrationConnection(tx.QueryRow(r.Context(), `SELECT `+integrationConnectionColumns+
-		` FROM `+a.table("integration_connections")+` WHERE workspace_id=$1 AND id=$2 FOR SHARE`,
-		workspace, input.ConnectionID))
-	if err != nil {
-		return err
-	}
-	if !connection.Enabled {
-		return errConflict
-	}
-	delivery := FindingDelivery{
-		ID: newID(), WorkspaceID: workspace, FindingID: findingID, ConnectionID: connection.ID,
-		ConnectionRevision: connection.Revision, Profile: connection.Profile, Channel: connection.Channel,
-		RequestedBy: session.User.ID, State: "queued", CreatedAt: a.config.Now().UTC(),
-		Payload: FindingNotification{
-			Title: finding.Title, Body: "Severity: " + finding.Severity + "\nAsset: " + finding.AssetName,
-			DeepLink: a.config.PublicOrigin + "/#/work?finding=" + url.QueryEscape(finding.ID),
-		},
-	}
-	digest, err := deliveryBinding(delivery)
+	delivery.ID, delivery.State, delivery.CreatedAt = newID(), "queued", a.config.Now().UTC()
+	digest, err := deliveryIntentBinding(delivery, input.IdempotencyKey)
 	if err != nil {
 		return err
 	}
@@ -166,14 +231,21 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return err
 	}
+	var target []byte
+	if delivery.Jira != nil {
+		target, err = json.Marshal(delivery.Jira)
+		if err != nil {
+			return err
+		}
+	}
 	record, err := scanFindingDelivery(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("finding_deliveries")+`
 		(id,workspace_id,finding_id,connection_id,connection_revision,profile,channel,requested_by,
-		 idempotency_key,binding_digest,approval_ref,payload,created_at)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+		 idempotency_key,binding_digest,approval_ref,payload,created_at,jira_target)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
 		ON CONFLICT (workspace_id,idempotency_key) DO NOTHING RETURNING `+findingDeliveryColumns,
-		delivery.ID, workspace, findingID, connection.ID, connection.Revision, connection.Profile,
-		connection.Channel, session.User.ID, input.IdempotencyKey, digest,
-		"aspm:remediation:"+workspace+":"+delivery.ID, payload, delivery.CreatedAt))
+		delivery.ID, workspace, findingID, delivery.ConnectionID, delivery.ConnectionRevision, delivery.Profile,
+		delivery.Channel, session.User.ID, input.IdempotencyKey, digest,
+		"aspm:remediation:"+workspace+":"+delivery.ID, payload, delivery.CreatedAt, target))
 	status := http.StatusAccepted
 	if errors.Is(err, pgx.ErrNoRows) {
 		record, err = scanFindingDelivery(tx.QueryRow(r.Context(), `SELECT `+findingDeliveryColumns+
@@ -182,7 +254,7 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 		if err != nil {
 			return err
 		}
-		if !bytes.Equal(record.bindingDigest, digest) {
+		if !bytes.Equal(record.bindingDigest, digest) || !validDeliveryBinding(record) {
 			return errConflict
 		}
 		status = http.StatusOK
@@ -207,6 +279,10 @@ func (a *Application) getFindingDelivery(w http.ResponseWriter, r *http.Request,
 }
 
 func (a *Application) listFindingDeliveries(w http.ResponseWriter, r *http.Request, workspace, findingID string) error {
+	profile, err := deliveryProfile(r)
+	if err != nil {
+		return err
+	}
 	limit, cursor, err := pageParameters(r)
 	if err != nil {
 		return err
@@ -223,11 +299,12 @@ func (a *Application) listFindingDeliveries(w http.ResponseWriter, r *http.Reque
 	}
 	var total int64
 	if err = tx.QueryRow(r.Context(), `SELECT count(*) FROM `+a.table("finding_deliveries")+`
-		WHERE workspace_id=$1 AND finding_id=$2`, workspace, findingID).Scan(&total); err != nil {
+		WHERE workspace_id=$1 AND finding_id=$2 AND profile=$3`, workspace, findingID, profile).Scan(&total); err != nil {
 		return err
 	}
 	rows, err := tx.Query(r.Context(), `SELECT `+findingDeliveryColumns+` FROM `+a.table("finding_deliveries")+`
-		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT $4`, workspace, findingID, cursor, limit+1)
+		WHERE workspace_id=$1 AND finding_id=$2 AND profile=$3 AND id>$4 ORDER BY id LIMIT $5`,
+		workspace, findingID, profile, cursor, limit+1)
 	if err != nil {
 		return err
 	}

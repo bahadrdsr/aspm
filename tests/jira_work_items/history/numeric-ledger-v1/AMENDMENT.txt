@@ -1,0 +1,15 @@
+Numeric migration-ledger observation correction, October 1, 2026
+
+The first implemented Jira run passed J1-J4 and both calibrations. J5 stopped
+because its SELECT version::text output made ORDER BY version sort text:
+1,10,2,...,9. The actual database contained all ten integer version rows.
+
+Five test-only ledger queries now order the qualified underlying integer
+column. Returned values remain strings. Exact expected ledgers, historical
+starting versions, schema comparisons and business-data assertions are
+unchanged. No production workaround, timeout increase or assertion removal
+is authorized. BEFORE.json and the adjacent files preserve preceding bytes.
+
+This is an Astra test/UAT correction after implementation, not a new pre-code
+RED baseline or independent code review. The initial failed run remains
+evidence. A new signed current control set must precede further qualification.

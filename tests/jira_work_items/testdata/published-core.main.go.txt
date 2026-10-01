@@ -1,0 +1,140 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"regexp"
+	"strings"
+	"sync/atomic"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/jackc/pgx/v5"
+)
+
+type input struct {
+	DatabaseURL, Schema, ApplicationName, BootstrapToken, AssessmentScope string
+	StorageEndpoint, Bucket, Prefix, AccessKey, SecretKey                 string
+	EncryptionKey                                                         []byte
+}
+type countedConn struct {
+	net.Conn
+	writes *atomic.Int32
+}
+
+type queryBudget struct{ count atomic.Int32 }
+
+func (b *queryBudget) TraceQueryStart(ctx context.Context, _ *pgx.Conn, _ pgx.TraceQueryStartData) context.Context {
+	if b.count.Add(1) > 400 {
+		cancelled, cancel := context.WithCancel(ctx)
+		cancel()
+		return cancelled
+	}
+	return ctx
+}
+func (*queryBudget) TraceQueryEnd(context.Context, *pgx.Conn, pgx.TraceQueryEndData) {}
+
+func (c countedConn) Write(data []byte) (int, error) {
+	if c.writes.Add(1) > 32 {
+		return 0, errors.New("published intake write budget exceeded")
+	}
+	return c.Conn.Write(data)
+}
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, "exact published V9 core fixture failed; private details withheld")
+		os.Exit(1)
+	}
+}
+func run() error {
+	var in input
+	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 64<<10))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&in) != nil || !regexp.MustCompile(`^jira_items_[a-f0-9]{24}$`).MatchString(in.Schema) ||
+		in.Prefix != "jira-work-items/"+strings.TrimPrefix(in.Schema, "jira_items_")+"/" || len(in.EncryptionKey) != 32 {
+		return errors.New("unowned published fixture input")
+	}
+	db, err := url.Parse(in.DatabaseURL)
+	if err != nil || db.Hostname() != "127.0.0.1" || db.Port() != "15432" || db.User == nil {
+		return errors.New("unapproved PG boundary")
+	}
+	store, err := url.Parse(in.StorageEndpoint)
+	if err != nil || store.Scheme != "http" || store.Hostname() != "127.0.0.1" || store.Port() != "18333" ||
+		store.User != nil || store.RawQuery != "" || store.Fragment != "" {
+		return errors.New("unapproved S3 boundary")
+	}
+	var writes atomic.Int32
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.Proxy = nil
+	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != store.Host {
+			return nil, errors.New("published core permits only selected S3 intake")
+		}
+		conn, err := (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+		if err != nil {
+			return nil, err
+		}
+		return countedConn{conn, &writes}, nil
+	}
+	http.DefaultTransport = transport
+	defer transport.CloseIdleConnections()
+	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
+	defer cancel()
+	var queries queryBudget
+	core, err := app.Open(ctx, app.Config{
+		DatabaseURL: in.DatabaseURL, Schema: in.Schema, ApplicationName: in.ApplicationName,
+		MaxConnections: 1, BootstrapToken: in.BootstrapToken, IntegrationEncryptionKey: in.EncryptionKey,
+		ManualProcessing: true, PublicOrigin: "https://jira-work-items.synthetic.invalid",
+		AssessmentScope: in.AssessmentScope, MaxUploadBytes: 64 << 10, SessionTTL: time.Hour, LogOutput: io.Discard,
+		QueryTracer: &queries,
+		Storage: app.StorageConfig{Endpoint: in.StorageEndpoint, Bucket: in.Bucket, Prefix: in.Prefix,
+			AccessKey: in.AccessKey, SecretKey: in.SecretKey, Region: "us-east-1", Timeout: 4 * time.Second},
+	})
+	if err != nil {
+		return errors.New("published app.Open failed")
+	}
+	defer core.Close()
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return errors.New("published HTTP listener unavailable")
+	}
+	server := &http.Server{Handler: core.Handler, ReadHeaderTimeout: 2 * time.Second}
+	defer server.Close()
+	go func() { _ = server.Serve(listener) }()
+	encoder := json.NewEncoder(os.Stdout)
+	outcome := func() error {
+		return encoder.Encode(map[string]any{"ok": true, "queries": queries.count.Load(), "writes": writes.Load()})
+	}
+	if encoder.Encode(map[string]string{"address": "http://" + listener.Addr().String()}) != nil {
+		return errors.New("published readiness pipe failed")
+	}
+	for count := 0; count < 4; count++ {
+		var command struct{ Operation string }
+		if decoder.Decode(&command) != nil {
+			return errors.New("published bounded control pipe failed")
+		}
+		switch command.Operation {
+		case "imports":
+			if core.ProcessImports(ctx) != nil || outcome() != nil {
+				return errors.New("published actual intake failed")
+			}
+		case "close":
+			stop, done := context.WithTimeout(context.Background(), 2*time.Second)
+			defer done()
+			if server.Shutdown(stop) != nil || core.Close() != nil {
+				return errors.New("published core shutdown failed")
+			}
+			return outcome()
+		default:
+			return errors.New("published control operation not allowed")
+		}
+	}
+	return errors.New("published control budget exceeded")
+}

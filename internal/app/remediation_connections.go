@@ -2,7 +2,9 @@ package app
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/bahadrdsr/aspm/internal/connectors"
@@ -10,16 +12,18 @@ import (
 )
 
 type IntegrationConnection struct {
-	ID                   string    `json:"id"`
-	WorkspaceID          string    `json:"workspaceId"`
-	Profile              string    `json:"profile"`
-	Name                 string    `json:"name"`
-	Channel              string    `json:"channel"`
-	Enabled              bool      `json:"enabled"`
-	CredentialConfigured bool      `json:"credentialConfigured"`
-	Revision             int64     `json:"revision"`
-	CreatedAt            time.Time `json:"createdAt"`
-	UpdatedAt            time.Time `json:"updatedAt"`
+	ID                   string      `json:"id"`
+	WorkspaceID          string      `json:"workspaceId"`
+	Profile              string      `json:"profile"`
+	Name                 string      `json:"name"`
+	Channel              string      `json:"channel"`
+	Enabled              bool        `json:"enabled"`
+	CredentialConfigured bool        `json:"credentialConfigured"`
+	Revision             int64       `json:"revision"`
+	CreatedAt            time.Time   `json:"createdAt"`
+	UpdatedAt            time.Time   `json:"updatedAt"`
+	Jira                 *JiraTarget `json:"jira,omitempty"`
+	PermissionState      string      `json:"permissionState,omitempty"`
 }
 
 type integrationConnectionRecord struct {
@@ -28,29 +32,50 @@ type integrationConnectionRecord struct {
 }
 
 const integrationConnectionColumns = `id,workspace_id,profile,name,channel,enabled,
-	revision,created_at,updated_at,credential_ciphertext`
+	revision,created_at,updated_at,credential_ciphertext,jira_target`
 
 func scanIntegrationConnection(row pgx.Row) (integrationConnectionRecord, error) {
 	var record integrationConnectionRecord
+	var target []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.Profile, &record.Name, &record.Channel,
-		&record.Enabled, &record.Revision, &record.CreatedAt, &record.UpdatedAt, &record.ciphertext)
+		&record.Enabled, &record.Revision, &record.CreatedAt, &record.UpdatedAt, &record.ciphertext, &target)
+	if err == nil && len(target) != 0 {
+		err = json.Unmarshal(target, &record.Jira)
+	}
+	if record.Profile == connectors.JiraCloudV3 {
+		record.PermissionState = "not-verified"
+	}
 	record.CredentialConfigured = len(record.ciphertext) > 0
 	return record, err
 }
 
 func (a *Application) createIntegrationConnection(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession) error {
 	var input struct {
-		Profile string `json:"profile"`
-		Name    string `json:"name"`
-		Channel string `json:"channel"`
-		Token   string `json:"token"`
-		Enabled *bool  `json:"enabled"`
+		Profile string               `json:"profile"`
+		Name    string               `json:"name"`
+		Channel optional[string]     `json:"channel"`
+		Token   string               `json:"token"`
+		Enabled *bool                `json:"enabled"`
+		Jira    optional[JiraTarget] `json:"jira"`
 	}
 	if err := a.decode(w, r, &input, 32<<10); err != nil {
 		return err
 	}
-	if input.Profile != connectors.SlackWorkspaceBot || !validText(input.Name, 256) ||
-		!integrationChannel.MatchString(input.Channel) || !validIntegrationToken(input.Token) || input.Enabled == nil {
+	if !validText(input.Name, 256) || !validConnectionToken(input.Profile, input.Token) || input.Enabled == nil {
+		return errInvalid
+	}
+	channel := ""
+	switch input.Profile {
+	case connectors.SlackWorkspaceBot:
+		if input.Channel.Value == nil || !integrationChannel.MatchString(*input.Channel.Value) || input.Jira.Set {
+			return errInvalid
+		}
+		channel = *input.Channel.Value
+	case connectors.JiraCloudV3:
+		if input.Channel.Set || !validJiraTarget(input.Jira.Value) {
+			return errInvalid
+		}
+	default:
 		return errInvalid
 	}
 	if a.integrationCredentials == nil {
@@ -74,14 +99,21 @@ func (a *Application) createIntegrationConnection(w http.ResponseWriter, r *http
 		return errForbidden
 	}
 	id := newID()
-	ciphertext, err := sealIntegrationToken(a.integrationCredentials, workspace, id, input.Token)
+	ciphertext, err := sealConnectionToken(a.integrationCredentials, input.Profile, workspace, id, input.Token)
 	if err != nil {
 		return err
 	}
+	var target []byte
+	if input.Jira.Value != nil {
+		target, err = json.Marshal(input.Jira.Value)
+		if err != nil {
+			return err
+		}
+	}
 	record, err := scanIntegrationConnection(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("integration_connections")+`
-		(id,workspace_id,profile,name,channel,credential_ciphertext,enabled,created_at,updated_at)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$8) RETURNING `+integrationConnectionColumns,
-		id, workspace, input.Profile, input.Name, input.Channel, ciphertext, *input.Enabled, a.config.Now().UTC()))
+		(id,workspace_id,profile,name,channel,credential_ciphertext,enabled,created_at,updated_at,jira_target)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$8,$9) RETURNING `+integrationConnectionColumns,
+		id, workspace, input.Profile, input.Name, channel, ciphertext, *input.Enabled, a.config.Now().UTC(), target))
 	if err != nil {
 		return err
 	}
@@ -94,10 +126,11 @@ func (a *Application) createIntegrationConnection(w http.ResponseWriter, r *http
 
 func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession, id string) error {
 	var input struct {
-		Name    optional[string] `json:"name"`
-		Channel optional[string] `json:"channel"`
-		Token   optional[string] `json:"token"`
-		Enabled optional[bool]   `json:"enabled"`
+		Name    optional[string]     `json:"name"`
+		Channel optional[string]     `json:"channel"`
+		Token   optional[string]     `json:"token"`
+		Enabled optional[bool]       `json:"enabled"`
+		Jira    optional[JiraTarget] `json:"jira"`
 	}
 	if err := a.decode(w, r, &input, 32<<10); err != nil {
 		return err
@@ -105,7 +138,8 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 	if input.Name.Set && (input.Name.Value == nil || !validText(*input.Name.Value, 256)) ||
 		input.Channel.Set && (input.Channel.Value == nil || !integrationChannel.MatchString(*input.Channel.Value)) ||
 		input.Token.Set && (input.Token.Value == nil || !validIntegrationToken(*input.Token.Value)) ||
-		input.Enabled.Set && input.Enabled.Value == nil {
+		input.Enabled.Set && input.Enabled.Value == nil ||
+		input.Jira.Set && !validJiraTarget(input.Jira.Value) {
 		return errInvalid
 	}
 	tx, err := a.pool.Begin(r.Context())
@@ -125,6 +159,11 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 	if err != nil {
 		return err
 	}
+	if record.Profile == connectors.JiraCloudV3 && input.Channel.Set ||
+		record.Profile == connectors.SlackWorkspaceBot && input.Jira.Set ||
+		input.Token.Set && !validConnectionToken(record.Profile, *input.Token.Value) {
+		return errInvalid
+	}
 	changed := false
 	if input.Name.Set && record.Name != *input.Name.Value {
 		record.Name, changed = *input.Name.Value, true
@@ -135,15 +174,18 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 	if input.Enabled.Set && record.Enabled != *input.Enabled.Value {
 		record.Enabled, changed = *input.Enabled.Value, true
 	}
+	if input.Jira.Set && !reflect.DeepEqual(record.Jira, input.Jira.Value) {
+		record.Jira, changed = input.Jira.Value, true
+	}
 	if input.Token.Set {
-		prior, err := openIntegrationToken(a.integrationCredentials, workspace, id, record.ciphertext)
+		prior, err := openConnectionToken(a.integrationCredentials, record.Profile, workspace, id, record.ciphertext)
 		if err != nil {
 			return err
 		}
 		same := bytes.Equal(prior, []byte(*input.Token.Value))
 		clear(prior)
 		if !same {
-			record.ciphertext, err = sealIntegrationToken(a.integrationCredentials, workspace, id, *input.Token.Value)
+			record.ciphertext, err = sealConnectionToken(a.integrationCredentials, record.Profile, workspace, id, *input.Token.Value)
 			if err != nil {
 				return err
 			}
@@ -151,10 +193,17 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 		}
 	}
 	if changed {
+		var target []byte
+		if record.Jira != nil {
+			target, err = json.Marshal(record.Jira)
+			if err != nil {
+				return err
+			}
+		}
 		record, err = scanIntegrationConnection(tx.QueryRow(r.Context(), `UPDATE `+a.table("integration_connections")+`
-			SET name=$3,channel=$4,credential_ciphertext=$5,enabled=$6,revision=revision+1,updated_at=$7
+			SET name=$3,channel=$4,credential_ciphertext=$5,enabled=$6,revision=revision+1,updated_at=$7,jira_target=$8
 			WHERE workspace_id=$1 AND id=$2 RETURNING `+integrationConnectionColumns,
-			workspace, id, record.Name, record.Channel, record.ciphertext, record.Enabled, a.config.Now().UTC()))
+			workspace, id, record.Name, record.Channel, record.ciphertext, record.Enabled, a.config.Now().UTC(), target))
 		if err != nil {
 			return err
 		}
@@ -177,6 +226,10 @@ func (a *Application) getIntegrationConnection(w http.ResponseWriter, r *http.Re
 }
 
 func (a *Application) listIntegrationConnections(w http.ResponseWriter, r *http.Request, workspace string) error {
+	profile, err := deliveryProfile(r)
+	if err != nil {
+		return err
+	}
 	limit, cursor, err := pageParameters(r)
 	if err != nil {
 		return err
@@ -188,11 +241,11 @@ func (a *Application) listIntegrationConnections(w http.ResponseWriter, r *http.
 	defer rollback(tx)
 	var total int64
 	if err = tx.QueryRow(r.Context(), `SELECT count(*) FROM `+a.table("integration_connections")+`
-		WHERE workspace_id=$1`, workspace).Scan(&total); err != nil {
+		WHERE workspace_id=$1 AND profile=$2`, workspace, profile).Scan(&total); err != nil {
 		return err
 	}
 	rows, err := tx.Query(r.Context(), `SELECT `+integrationConnectionColumns+` FROM `+a.table("integration_connections")+`
-		WHERE workspace_id=$1 AND id>$2 ORDER BY id LIMIT $3`, workspace, cursor, limit+1)
+		WHERE workspace_id=$1 AND profile=$2 AND id>$3 ORDER BY id LIMIT $4`, workspace, profile, cursor, limit+1)
 	if err != nil {
 		return err
 	}

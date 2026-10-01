@@ -1,0 +1,56 @@
+{
+  "beforeHelperSHA256": "b829421150b0e07c9c13831ae67152002efc4db15cf0657a6365f89096f069d6",
+  "producerHeld": [
+    {
+      "path": "internal\\app\\http.go",
+      "sha256": "3e07c822f01cf2544e46815ec6d52d8c14021c05d389a2f37476a25524818468"
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "sha256": "44b2ae81a91cf7b9f342afd78d16f21aafee2c46f58af74ff7ee6a4fc92ec9f5"
+    },
+    {
+      "path": "internal\\app\\remediation_connections.go",
+      "sha256": "dccbb88d3d6d7c97b3411c8ce31615b21452d5a6ee4dfe79596243619d459cf5"
+    },
+    {
+      "path": "internal\\app\\remediation_credentials.go",
+      "sha256": "dbca782e8fb59df2019b60562566a4f4efd7f05da01c92a80420b2d4f297b885"
+    },
+    {
+      "path": "internal\\app\\remediation_deliveries.go",
+      "sha256": "42793f034d07715254dc015712700441f46d38cd8f761a6ea6ba95bdad34715c"
+    },
+    {
+      "path": "internal\\app\\remediation_worker.go",
+      "sha256": "a0e25b8b86238b6fb08fa28cbd1c4f1aa8e9e54f73c25623a4c8482315a8421b"
+    },
+    {
+      "path": "internal\\app\\jira_schema.go",
+      "sha256": "b4792fe5e7385bcb6e7b06aa44d6f8df3e3fcbca63d2b28dac066336136bdb1b"
+    },
+    {
+      "path": "internal\\app\\remediation_jira.go",
+      "sha256": "21e1021a34ba35174ff9d582a98b1869d3c418c4c78c4d69f847abc6c84f74a0"
+    },
+    {
+      "path": "internal\\app\\remediation_jira_worker.go",
+      "sha256": "1609fd76323f911a9531394d3bdb4110a7062ed22799057abbf6b16f7cd9c49b"
+    },
+    {
+      "path": "internal\\app\\README.txt",
+      "sha256": "022779d95a105263084c29d748c9742f0968ecc712a8be7cf62496a9e8a2758b"
+    }
+  ],
+  "diagnosticEvidence": [
+    {
+      "path": ".cache\\jira-work-items-coder\\ddl-actual-a1-01.json",
+      "sha256": "e84de206e3814a4df41c8fd23c5a6553e6ac8a85de2f3ae88622c819a39d70a8"
+    },
+    {
+      "path": ".cache\\jira-work-items-coder\\ddl-order-a1-01.json",
+      "sha256": "655e8ce0335655a08cde6f643403df710404fa37029ca874bab2ab840e76fe16"
+    }
+  ],
+  "reason": "The observed PostgreSQL ORDER BY conname differs from sorting the serialized name|definition row for prefix-related names. No constraint definition is being changed."
+}

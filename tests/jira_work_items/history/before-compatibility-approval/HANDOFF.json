@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "unsigned": true,
+  "status": "author-ready-for-parent-seal",
+  "baseCommit": "4a54db75046f5910705007d800fa34496adc22d8",
+  "requestedWorkflow": "Astra tests/UAT, parent seal, GPT-6.1 Sol implementation; no reviewer",
+  "contract": "tests\\jira_work_items\\CONTRACT.txt",
+  "contractOrder": "Authored before test code; final edit only condensed the same contract after verification.",
+  "decision": "A bounded common-delivery extension is feasible: typed Jira target, local digest-bound preview/consent, existing native adapter and worker, additive V10. No new constructor, native profile, dependency or provider-wide permission.",
+  "verification": {
+    "compile": {"mode": "new package only", "exitCode": 0, "receipt": ".artifacts\\jira-work-items\\author-compile-02.receipt.json"},
+    "contractRun": {"exitCode": 1, "packageSeconds": 8.661, "timeoutSeconds": 90, "topLevelPassed": 1, "topLevelFailed": 5, "skipped": 0, "log": ".artifacts\\jira-work-items\\author-red-02.log"},
+    "calibration": {
+      "test": "TestJiraNativeTLSCalibration",
+      "result": "PASS, library/fixture calibration only",
+      "reached": ["Fresh in-memory CA/leaf with normal verification and explicit roots", "Real paginated native createmeta GET", "One native POST per action, ADF/approved string mapping and issue-key receipt", "Unsupported required field with zero POST", "403, 429/Retry-After, 400 field error, malformed/empty receipt and dropped ACK", "Confirmed/uncertain prior does not resend", "Held metadata and create-body context cancellation"],
+      "notClaimed": "Application Jira workflow, deployed runtime, actual vendor permission or live Jira certification"
+    },
+    "observedMaximumPerFixture": {"api": 18, "sqlIncludingPublishedHelper": 372, "s3SocketWrites": 7},
+    "enforcedPerNarrative": {"seconds": 90, "api": 220, "sql": 1400, "publishedHelperSql": 400, "nativeRequests": 64, "s3SocketWrites": 64, "corePool": 1, "workerPool": 1, "observerPool": 2}
+  },
+  "narratives": [
+    {"id": "J1", "test": "TestJiraJ1ConnectionPrivacyRolesAndStrictLocalPreview", "actualRed": "Preview route is 404 instead of 400 for invalid input; valid Jira connection is 400 instead of 201; missing-key Jira request is 400 instead of 503.", "reached": "Real HTTP bootstrap/login, existing role denials, PG/S3 intake, notes and canonical finding.", "blocked": "Jira encrypted target storage, exact metadata, strict mappings/summary bounds, local review, revision/rotation and Jira-specific role/privacy gates."},
+    {"id": "J2", "test": "TestJiraJ2CanonicalIntentReplayNativeReceiptAndReopen", "actualRed": "Jira connection POST 400 instead of 201.", "reached": "Real sessions/roles and API/S3-created finding.", "blocked": "Preview binding, explicit consent, canonical idempotent intent, conflicts, history, committed attempt marker, native worker GET/POST/ADF, issue receipt and fresh replay."},
+    {"id": "J3", "test": "TestJiraJ3NativeFailuresDiagnosticsAndNoBlindRetry", "actualRed": "Jira connection POST 400 instead of 201.", "reached": "Actual PG/S3 finding setup; corresponding native classifications calibrated separately.", "blocked": "Application-persisted missing/unsupported fields, permission/rate/field diagnostics, no-result/drop-ACK/timeout uncertainty and no-retry/reopen guarantees."},
+    {"id": "J4", "test": "TestJiraJ4HeldIORevocationFencingCrashAndReopen", "actualRed": "Jira connection POST 400 instead of 201.", "reached": "Real core/intake and two independently opened existing workers; held native fixture cancellation calibrated separately.", "blocked": "Current-authority checks, held-I/O SQL availability, active role/disable/rotation cancellation, owned-row binding corruption, natural lease fencing, real worker-PID crash and uncertainty recovery."},
+    {"id": "J5", "test": "TestJiraJ5ActualPublishedV9DataToAdditiveV10", "actualRed": "Current app still records 1..9, not 1..10, over authentic populated published V9.", "reached": "Exact published V9 constructor, actual HTTP-created Slack connection/intent, S3 finding/notes, saved view, AI profile/policy/grant and assessment preview/job. 28 legacy relations observed; current V9 reopen retained old-column data; no native provider call.", "blocked": "V10 additive DDL and old-column preservation, post-V10 exact Slack DTO/native-worker compatibility, Jira creation after upgrade and V10 reopen."}
+  ],
+  "publishedBaseline": {
+    "commit": "4a54db75046f5910705007d800fa34496adc22d8",
+    "productionFiles": 83,
+    "productionSourceBytes": 494882,
+    "executableSHA256": "d26aab3879a85da32497987cb02b40d270606f919969b61a4995af5f20c5ac1f",
+    "buildReceipt": ".artifacts\\jira-work-items\\author-v9-02.published-v9-build.json",
+    "observation": ".artifacts\\jira-work-items\\published-v9-upgrade-6c6cd4b80b943159259c5aab.json",
+    "businessSqlSeeds": false,
+    "ledgerRelabeling": false,
+    "sourceOrBinaryArchiveAddedToTests": false,
+    "note": "Pinned source closure and executable remain only in ignored owned cache for reruns. The manifest verifies each git blob/source hash and helper/binary hash. Disposable compile-only test executables were removed."
+  },
+  "compatibilityAmendmentsRequiringParentApproval": {
+    "status": "NOT APPLIED. All tracked files remain unchanged.",
+    "ledgerRule": "Only the following ten existing CURRENT-ledger literal sites need suffix 10. Do not globally replace 9, rename historical tests, change starting ledgers or alter pinned fixture/provenance hashes.",
+    "sites": [
+      {"file": "tests\\source_collection\\upgrade_test.go", "literalLines": [178, 222], "scope": "Both current-core/current-worker iterations of TestSourceCollectionPublishedV5UpgradeA2", "historicalStartToKeep": "1..5", "definitionComparisons": [187, 223], "unchangedFileSHA256": "291557d2e9f02d8cfb17329bcc89c74f9a4b05d31ec338f28f77062e8dadaff7"},
+      {"file": "tests\\ai_configuration\\upgrade_test.go", "literalLines": [132, 145], "scope": "Current open and reopen over published V6", "historicalStartToKeep": "1..6", "definitionComparisons": [133, 145], "unchangedFileSHA256": "24a9541339e5a4a6f767cfb52e1ab488543b41528a4d7c3cfa843ed5496a4bb3"},
+      {"file": "tests\\ai_assessments\\upgrade_test.go", "literalLines": [166, 177, 198, 219], "scope": "Keep TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens identity and fresh-v8-and-reopen/published-v7-upgrade names", "historicalStartToKeep": "1..7", "definitionComparisons": [200, 220], "unchangedFileSHA256": "a4f3e88dbaf38dcaee5fee57fff9068761c65dcb5fca45559338f2be92b59135"},
+      {"file": "tests\\saved_work_views\\views_test.go", "literalLines": [122], "assertionLinesUsingThatValue": [123, 215], "scope": "TestSavedWorkViewsFreshReopenNativePagesAndRevisionRaces current ledger only", "unchangedFileSHA256": "40647298d0afdc5d33e6bfe3d1921501eb6d897848ba3685dfb39a928f88acc2"},
+      {"file": "tests\\saved_work_views\\upgrade_test.go", "literalLines": [138], "scope": "TestSavedWorkViewsActualPopulatedPublishedV8Upgrade current destination; line 161 reuses observed after ledger", "historicalStartToKeep": "1..8", "definitionComparisons": [139, 162], "unchangedFileSHA256": "88eae11ceb426eb418eea84d2dce3db1391ced8bdd2522c0011a02c9826c1019"}
+    ],
+    "definitionRule": "Preserve the historical DDL/test identities and all existing non-profile columns/constraints/indexes. Parent-approved comparisons must explicitly allow only nullable jira_target on integration_connections/finding_deliveries, nullable create_attempted_at on finding_deliveries, the two widened profile CHECKs and added typed consistency CHECKs. Do not bypass a whole legacy-definition assertion.",
+    "preserve": [
+      "Published V5 7281edf4466c2b940eea7aa95c377d25e7f4c2b0 and DDL fixture fa923212498d0d33cd10b2bb7ffad1eee139dad6d4c6a0431871482bf3157b77",
+      "Published V6 24556fd41090628f391a728457f9c377ca624983 and DDL fixture 507a2366bf23b541f3cdf1bca85723ae84f24bab9e9dbdcacf30d01d68b51a55",
+      "Published V7 98a41ced71c09e71c8cc2bd158678fd52268498c and DDL fixture 80ce37253c46cf61d37d88b2449ab0447e832a40852be30acb32a4a17b7358d4",
+      "Published V8 629bebd727b448fb89eb732485457fd60cbffbfd and its exact source/helper build identities",
+      "Existing legacy business-data assertions, test names and historical starts",
+      "Old invalid Jira-as-Slack tuple must still be rejected; old Slack metadata keys, two-field queue request, worker/DTO/UI behavior and native tests are not relaxed",
+      "No old binding behavior/fallback. Any necessary old binding change is type/constructor forwarding only and needs parent approval."
+    ]
+  },
+  "files": [
+    {"path": "tests\\jira_work_items\\CONTRACT.txt", "sha256": "8eb0526ff46d2e8f6d19145f792b7c8e66005235e772745dd89c062aad4792cf"},
+    {"path": "tests\\jira_work_items\\fixtures_test.go", "sha256": "457eb59977cf0aebcaeca16e0e257b4544c66a6b8df442736d7bd57f4083149a"},
+    {"path": "tests\\jira_work_items\\jira_fixture_test.go", "sha256": "7515a30bbc3d10d36182b35fc282f5b502e9f862b4d5ec0f10250d0cda4f55a0"},
+    {"path": "tests\\jira_work_items\\lifetime_test.go", "sha256": "4fc1c17eefe66150f5203f2da443f71e1494e498fc211c70f0ee1c306cd218f9"},
+    {"path": "tests\\jira_work_items\\prepare-published-v9.mjs", "sha256": "164d30ab84624656a079c3e0a9252be43ada3aad7c81382f61407e37ca123385"},
+    {"path": "tests\\jira_work_items\\Test-JiraWorkItems.ps1", "sha256": "cbda3ffe3ee3e32c253d0b3336e88b2d20524e125311f21430ba166ca8aeb868"},
+    {"path": "tests\\jira_work_items\\testdata\\published-core.main.go.txt", "sha256": "40d4acf4b14ed7045f1030353eaa51ac8dd43ac49d651836e6847221c8ef2825"},
+    {"path": "tests\\jira_work_items\\upgrade_test.go", "sha256": "c14351010d99afdc483684b42fbe7926b63361b2e9717cab9d6fb06e8cb4bf7b"},
+    {"path": "tests\\jira_work_items\\work_items_test.go", "sha256": "43a63397245d44436b0b13ea4348409dfad12022f5e980cc910f6084337a4e77"}
+  ],
+  "evidence": [
+    {"path": ".artifacts\\jira-work-items\\author-compile-02.receipt.json", "sha256": "02fd8fbd31b4755f931b2de487827a99944c366ba1bd83327e83c603200c2eb6"},
+    {"path": ".artifacts\\jira-work-items\\author-red-02.log", "sha256": "ab552b9f772c38a9308934080034d2095c0cd09d6cc5b6a3e266c90598aee42a"},
+    {"path": ".artifacts\\jira-work-items\\author-red-02.jsonl", "sha256": "fce0be967377fa2740633fcb13f8e24d63992d6f3230251471f1619b1eef1a66"},
+    {"path": ".artifacts\\jira-work-items\\author-red-02.receipt.json", "sha256": "96dedce446a64907995a6da82cc94bd20ab5e9c92946f897af5714ff95dcd71f"},
+    {"path": ".artifacts\\jira-work-items\\author-v9-02.published-v9-build.json", "sha256": "c2b68178030d610c620a14e5a882af15872bb7620b2b118c29b08da07a810f6e"},
+    {"path": ".artifacts\\jira-work-items\\published-v9-upgrade-6c6cd4b80b943159259c5aab.json", "sha256": "6d6a0cc49e529334334a7d94749556552f1688a107b0507727eede77292d15d4"}
+  ],
+  "rerun": {
+    "cwd": "C:\\bahadr\\serious\\aspm",
+    "prepare": "node .\\tests\\jira_work_items\\prepare-published-v9.mjs <fresh-label>",
+    "compile": ".\\tests\\jira_work_items\\Test-JiraWorkItems.ps1 -RuntimeConfig <RUNTIME>\\runtime.json -Mode Compile -OutputName <fresh-label>",
+    "contract": ".\\tests\\jira_work_items\\Test-JiraWorkItems.ps1 -RuntimeConfig <RUNTIME>\\runtime.json -PublishedReceipt .\\.artifacts\\jira-work-items\\author-v9-02.published-v9-build.json -Mode Contract -OutputName <fresh-label>",
+    "note": "Use a new prepared receipt if rebuilding the pinned helper. Runner uses cached Go1.27.1, readonly/offline modules and only this package."
+  },
+  "boundaries": {
+    "productionOrTrackedFilesChanged": false,
+    "oldTestsOrFixturesChanged": false,
+    "oldSuitesRun": false,
+    "ui132TouchedOrRun": false,
+    "dependenciesInstalledOrChanged": false,
+    "signaturesCommitsOrPublication": false,
+    "nestedAgentsOrReviewer": false,
+    "vendorAccountsScannersOrOffensiveTools": false,
+    "sharedTlsPolicyClusterOrKeyRotationChanges": false,
+    "ownedPgAndS3Cleanup": "Completed without cleanup failures; only task-random schema/prefix resources were removed.",
+    "acceptanceClaim": "Author-stage compile/calibration and actual RED only. No implementation, UI/runtime qualification, live Jira, whole M08 or project completion."
+  },
+  "selfHash": "Intentionally excluded from this unsigned handoff. Parent sealing must hash HANDOFF.json separately."
+}

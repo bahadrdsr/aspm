@@ -14,8 +14,6 @@ import (
 	"sort"
 	"testing"
 	"time"
-
-	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
 )
 
 const previousPublishedCommit = "24556fd41090628f391a728457f9c377ca624983"
@@ -50,7 +48,7 @@ func tableNames(t *testing.T, f *fixture) []string {
 	return catalogRows(t, f, `SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname=$1 AND c.relkind IN ('r','p') ORDER BY c.relname`, f.database.Schema)
 }
 func versions(t *testing.T, f *fixture) []string {
-	return catalogRows(t, f, "SELECT ledger.version::text FROM "+f.table("schema_versions")+" AS ledger ORDER BY ledger.version")
+	return catalogRows(t, f, "SELECT version::text FROM "+f.table("schema_versions")+" ORDER BY version")
 }
 func definitions(t *testing.T, f *fixture, names []string) map[string][]string {
 	t.Helper()
@@ -131,8 +129,8 @@ func testPublishedUpgrade(t *testing.T) {
 		must(t, "record actual published-v6 upgrade observation", os.WriteFile(file, encode(t, observation), 0600))
 		t.Log("actual schema upgrade observation:", file)
 	}
-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "CURRENT core startup did not apply required migrations through v10 exactly once over real published v6")
-	check(t, reflect.DeepEqual(before, deliverycompat.Project(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
+	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "CURRENT core startup did not apply required migrations through v9 exactly once over real published v6")
+	check(t, reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "AI upgrade changed a legacy table definition")
 	h.enroll()
 	key := secret(t)
 	p := h.create(h.admin, "openai", h.tlsTripwire.URL+"/v1", key)
@@ -144,7 +142,7 @@ func testPublishedUpgrade(t *testing.T) {
 	must(t, "close resolver for upgrade persistence probe", r.Close())
 	fresh := h.resolver()
 	assertResolved(t, fresh, h.ctx, h.admin, h.get(h.admin, p.ID), h.json(h.admin, "GET", policyPath, nil, 200).Policy, &g, key)
-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) && reflect.DeepEqual(before, deliverycompat.Project(t, before, definitions(t, f, baseline.LegacyTables))), "v10 reopen repeated migration or changed old schema definitions")
+	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) && reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "v9 reopen repeated migration or changed old schema definitions")
 	h.networkNone()
 	t.Log("real schema-only v6 upgrade and API-created post-upgrade configuration persistence; no legacy customer-data migration claim")
 }

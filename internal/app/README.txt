@@ -46,6 +46,70 @@ Their owned HTTPS/TLS qualification is separate from this backend's PG/API
 acceptance. Deployed worker scheduling, live Slack authority, production key
 rotation and broader partition/recovery qualification remain separate work.
 
+Selected Jira Cloud work items
+=============================
+
+Jira extends the same encrypted integration connections, finding delivery
+outbox/history and DeliveryWorker. Admin-only configuration explicitly selects
+jira-cloud-v3, an oauth2-bearer credential, lowercase cloud UUID, canonical HTTPS
+API origin plus /ex/jira/{cloudId}, HTTPS browser siteOrigin, native project KEY,
+decimal issueType and at most 16 customfield string mappings. No metadata,
+provider permission, OAuth installation/refresh or endpoint is inferred.
+Jira credentials reuse the v1 envelope and independent integration key with the
+distinct aspm/jira-credential/v1 + NUL + workspace + NUL + connection AAD.
+Slack's envelope and authenticated domain are unchanged.
+
+Member reads expose Jira target configuration and permissionState:not-verified,
+never a token. A writer's POST /api/v1/findings/{id}/delivery-previews with
+{connectionId} is local review only. It performs no native I/O and persists no
+intent. The server resolves only finding.id/title/severity, asset.name and the
+trusted finding.deepLink into strings. Payload contains the canonical title,
+severity/asset body and PublicOrigin finding link; it does not export raw
+reports, evidence, notes, remediation or AI content. Summaries above 255 runes
+are rejected without truncation. nativeValidation:not-run and explicit review
+requirements do not certify native field support or Jira permission.
+
+Jira enqueue requires {connectionId,idempotencyKey,previewDigest,confirm:true}.
+The server recomputes the actor/workspace/finding/connection revision/target/
+profile/payload digest and retains the selected user key in its durable binding.
+Identical replay returns the original intent, including its terminal outcome.
+Changed bindings conflict. Slack keeps its original two-field enqueue body.
+Individual connection and delivery GETs remain resource-profile-typed.
+Common connection and finding-history lists default to Slack only so the
+existing strict Slack UI never receives Jira fields. Exactly one explicit
+profile=slack-workspace-bot or profile=jira-cloud-v3 selects that profile.
+Empty, unknown or repeated selectors are invalid. Profile/scope filtering
+precedes totals and the unchanged ascending exclusive native-ID cursor.
+
+For Jira, the common worker uses an explicitly approved direct verified-TLS
+client bound to the selected API origin. The existing adapter first reads native
+createmeta, bounded to four pages, 50 fields/page and 64 KiB/body, then sends at
+most one native create. A separate fenced create_attempted_at is committed
+before that POST. SQL slots, transactions and row locks are released throughout
+metadata, create and response-body waits. Current role, enabled/revision/target,
+credential identity, immutable binding and lease are checked at dispatch,
+before create, while native I/O is held and before the terminal outcome commits.
+
+Role loss, disablement or connection change cancels held context-honoring Jira
+I/O. Before a possible create, revoked work is blocked with a specific reason
+and no attempt marker. After a possible create, cancellation, lost ACK, malformed
+receipt, timeout, 5xx or expired ownership stays uncertain without a receipt or
+blind resend. Required-field failures retain sorted field IDs and metadata/
+create stage; authentication and literal bounded Retry-After remain safe
+terminal diagnostics. A confirmed remote URL comes only from the approved
+siteOrigin plus /browse/{native issue key}, never a native arbitrary self URL.
+Neither regrant nor reopen revives terminal work. Finding lifecycle, source,
+verification, evidence and notes are unchanged.
+
+V10 appends only nullable/default-free jira_target jsonb to the two common
+tables and create_attempted_at timestamptz to finding_deliveries. It widens the
+two existing named profile CHECKs to the Slack/Jira pair and adds the two named
+profile_target CHECKs enforcing Slack/channel/null-target and Jira/empty-channel/
+object-target tuples. Historical V1..V9 migrations, unrelated definitions and
+old Slack values/null additions are preserved. UI/deployed-runtime setup, live
+vendor authority, Data Center, status sync and broader recovery qualification
+remain separate work.
+
 Selected GitHub source collection
 ================================
 

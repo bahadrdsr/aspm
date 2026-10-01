@@ -1,0 +1,22 @@
+Constraint catalog observation correction, October 1, 2026
+
+The actual V9-to-V10 catalog has the approved constraint definitions. J5
+rejected their order because the test helper sorted complete serialized
+name|definition rows. For prefix-related names, check1| sorts before check|,
+unlike PostgreSQL ORDER BY conname, where check precedes check1.
+
+The helper now orders expected and projected constraint rows by the name
+before the first separator. It still compares every complete observed row,
+the complete catalog key set, exact CHECK predicates, column metadata and
+indexes. It does not reorder the observation or accept changed definitions.
+No producer, database collation, historical CHECK name or budget is changed.
+
+TestConstraintRowsFollowCatalogNameOrder independently supplies the two
+catalog representations in name order. It also rejects reversed observed
+rows and a changed legacy constraint. It failed on the original helper in
+.artifacts\jira-work-items\catalog-order-red-20261001-01.log before this fix.
+The original helper and production boundary are preserved beside this file.
+
+This is an Astra test/UAT observation correction after implementation, not
+independent code review or a replacement for actual populated-upgrade UAT.
+The earlier failed full-catalog observation remains recorded as such.

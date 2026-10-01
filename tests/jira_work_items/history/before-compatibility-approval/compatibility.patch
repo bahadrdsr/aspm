@@ -1,0 +1,197 @@
+diff --git a/tests/ai_assessments/upgrade_test.go b/tests/ai_assessments/upgrade_test.go
+index ee499db..2e04369 100644
+--- a/tests/ai_assessments/upgrade_test.go
++++ b/tests/ai_assessments/upgrade_test.go
+@@ -19,6 +19,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/bahadrdsr/aspm/internal/app"
++	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+ )
+ 
+ const publishedOrigin = "98a41ced71c09e71c8cc2bd158678fd52268498c"
+@@ -163,7 +164,7 @@ func seedPublishedV7(t *testing.T, f *fixture) (legacySeed, string) {
+ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 	t.Run("fresh-v8-and-reopen", func(t *testing.T) {
+ 		h := newHarness(t, false)
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "fresh current core did not apply through V9")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "fresh current core did not apply through V10")
+ 		finding := h.seed()
+ 		p, key := h.profile("local", true)
+ 		pol, grant := h.approve(p)
+@@ -174,7 +175,7 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 		w := h.worker(h.configForWorker("fresh-v8"))
+ 		process(t, h.ctx, w, true)
+ 		h.assertResult(h.job(h.admin, job.ID), p, v, "inconclusive")
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "reopen repeated or skipped a migration")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "reopen repeated or skipped a migration")
+ 	})
+ 	t.Run("published-v7-upgrade", func(t *testing.T) {
+ 		f := newFixture(t)
+@@ -195,10 +196,10 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 		target := filepath.Join(required(t, "ASPM_ASSESSMENT_ARTIFACT_DIR"), "published-v7-upgrade-"+nonce(t)+".json")
+ 		must(t, "record nonsecret actual V7 upgrade observation", os.WriteFile(target, encoded(t, observation), 0600))
+ 		t.Log("actual published-v7 upgrade observation:", target)
+-		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}),
+-			"CURRENT core did not apply required migrations through V9 exactly once over actual published populated V7")
+-		check(t, reflect.DeepEqual(oldDefinitions, definitions(t, f, baseline.LegacyTables)), "V8 changed a legacy definition")
+-		check(t, reflect.DeepEqual(oldData, legacyData(t, f, baseline.LegacyTables)), "V8 changed actual pre-upgrade API-created legacy data")
++		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}),
++			"CURRENT core did not apply required migrations through V10 exactly once over actual published populated V7")
++		check(t, reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V10 changed a legacy definition")
++		check(t, reflect.DeepEqual(oldData, legacyData(t, f, baseline.LegacyTables)), "V10 changed actual pre-upgrade API-created legacy data")
+ 		must(t, "close migration probe before enabled core", current.Close())
+ 		h := &harness{fixture: f, admin: actor{ID: legacy.UserID, Workspace: legacy.WorkspaceID, Cookie: legacy.Cookie}}
+ 		h.open()
+@@ -216,9 +217,9 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
+ 		h.reopen()
+ 		fresh := h.worker(h.configForWorker("upgraded-reopened-worker"))
+ 		process(t, h.ctx, fresh, false)
+-		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) &&
+-			reflect.DeepEqual(oldDefinitions, definitions(t, f, baseline.LegacyTables)), "V9 reopen changed legacy definitions or exact ledger")
++		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) &&
++			reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V10 reopen changed legacy definitions or exact ledger")
+ 		check(t, h.job(h.admin, job.ID).State == "succeeded", "upgraded durable advisory lost on independent reopen")
+-		t.Log("AA8 populated published-V7 -> current through V9 and legacy contracts/reopen verified")
++		t.Log("AA8 populated published-V7 -> current through V10 and legacy contracts/reopen verified")
+ 	})
+ }
+diff --git a/tests/ai_configuration/upgrade_test.go b/tests/ai_configuration/upgrade_test.go
+index ed6f296..d4ff5b6 100644
+--- a/tests/ai_configuration/upgrade_test.go
++++ b/tests/ai_configuration/upgrade_test.go
+@@ -14,6 +14,8 @@ import (
+ 	"sort"
+ 	"testing"
+ 	"time"
++
++	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+ )
+ 
+ const previousPublishedCommit = "24556fd41090628f391a728457f9c377ca624983"
+@@ -129,8 +131,8 @@ func testPublishedUpgrade(t *testing.T) {
+ 		must(t, "record actual published-v6 upgrade observation", os.WriteFile(file, encode(t, observation), 0600))
+ 		t.Log("actual schema upgrade observation:", file)
+ 	}
+-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}), "CURRENT core startup did not apply required migrations through v9 exactly once over real published v6")
+-	check(t, reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "AI upgrade changed a legacy table definition")
++	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "CURRENT core startup did not apply required migrations through v10 exactly once over real published v6")
++	check(t, reflect.DeepEqual(before, deliverycompat.Project(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
+ 	h.enroll()
+ 	key := secret(t)
+ 	p := h.create(h.admin, "openai", h.tlsTripwire.URL+"/v1", key)
+@@ -142,7 +144,7 @@ func testPublishedUpgrade(t *testing.T) {
+ 	must(t, "close resolver for upgrade persistence probe", r.Close())
+ 	fresh := h.resolver()
+ 	assertResolved(t, fresh, h.ctx, h.admin, h.get(h.admin, p.ID), h.json(h.admin, "GET", policyPath, nil, 200).Policy, &g, key)
+-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) && reflect.DeepEqual(before, definitions(t, f, baseline.LegacyTables)), "v9 reopen repeated migration or changed old schema definitions")
++	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) && reflect.DeepEqual(before, deliverycompat.Project(t, before, definitions(t, f, baseline.LegacyTables))), "v10 reopen repeated migration or changed old schema definitions")
+ 	h.networkNone()
+ 	t.Log("real schema-only v6 upgrade and API-created post-upgrade configuration persistence; no legacy customer-data migration claim")
+ }
+diff --git a/tests/saved_work_views/upgrade_test.go b/tests/saved_work_views/upgrade_test.go
+index ab18390..9486ff1 100644
+--- a/tests/saved_work_views/upgrade_test.go
++++ b/tests/saved_work_views/upgrade_test.go
+@@ -14,6 +14,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/bahadrdsr/aspm/internal/app"
++	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+ )
+ 
+ const publishedCommit = "629bebd727b448fb89eb732485457fd60cbffbfd"
+@@ -134,10 +135,10 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
+ 		"legacyDefinitionsSHA256": digest(encode(t, definitions)), "businessSQLSeeds": false}
+ 	output := filepath.Join("..", "..", ".artifacts", "saved-work-views-v1", "published-v8-upgrade-"+nonce(t)+".json")
+ 	must(t, "record nonsecret actual migration observation", os.WriteFile(output, encode(t, observation), 0600))
+-	same(t, "current production open did not apply additive V9 over actual populated published V8",
+-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"})
+-	same(t, "V9 changed a published legacy definition", f.definitions(names), definitions)
+-	same(t, "V9 changed actual published API-created business rows", f.snapshot(names), before)
++	same(t, "current production open did not apply through additive V10 over actual populated published V8",
++		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"})
++	same(t, "V10 changed a published legacy definition", deliverycompat.Project(t, definitions, f.definitions(names)), definitions)
++	same(t, "V10 changed actual published API-created business rows", f.snapshot(names), before)
+ 	checkLegacy := func() {
+ 		t.Helper()
+ 		same(t, "upgraded asset changed", h.json(h.admin, "GET", "/api/v1/assets/"+legacy.Asset.ID, nil, 200).Asset, legacy.Asset)
+@@ -159,8 +160,8 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
+ 	h.reopen()
+ 	same(t, "new saved preference lost on upgraded app reopen", h.get(legacy.Viewer, v.ID), v)
+ 	same(t, "upgraded reopen repeated/skipped migration", f.ledger(), after)
+-	same(t, "upgraded reopen altered legacy definitions", f.definitions(names), definitions)
++	same(t, "upgraded reopen altered legacy definitions", deliverycompat.Project(t, definitions, f.definitions(names)), definitions)
+ 	same(t, "saved preference/reopen changed pre-upgrade legacy rows", f.snapshot(names), before)
+ 	checkLegacy()
+-	t.Log("actual populated published V8 -> V9, canonical saved view reopen and original human/source/role state reached")
++	t.Log("actual populated published V8 -> V10, canonical saved view reopen and original human/source/role state reached")
+ }
+diff --git a/tests/saved_work_views/views_test.go b/tests/saved_work_views/views_test.go
+index 23de13f..cd9d77a 100644
+--- a/tests/saved_work_views/views_test.go
++++ b/tests/saved_work_views/views_test.go
+@@ -119,8 +119,8 @@ func TestSavedWorkViewsFreshReopenNativePagesAndRevisionRaces(t *testing.T) {
+ 	h := newHarness(t)
+ 	values := []savedView{h.create(h.admin, "Third title", "needle", "title"),
+ 		h.create(h.admin, "First title", "", "source-order"), h.create(h.admin, "Second title", "literal%_", "severity")}
+-	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
+-	same(t, "fresh current core must apply additive V9 exactly once", h.ledger(), wantLedger)
++	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
++	same(t, "fresh current core must apply through additive V10 exactly once", h.ledger(), wantLedger)
+ 	other := h.workspace()
+ 	h.create(other, "Not in selected list", "", "title")
+ 	sort.Slice(values, func(i, j int) bool { return values[i].ID < values[j].ID })
+@@ -213,5 +213,5 @@ func TestSavedWorkViewsFreshReopenNativePagesAndRevisionRaces(t *testing.T) {
+ 	h.reopen()
+ 	same(t, "race winner lost on second app reopen", h.get(h.admin, winner.ID), winner)
+ 	same(t, "reopen repeated/skipped migration", h.ledger(), wantLedger)
+-	t.Log("fresh V9, actual reopen, native ID pages, stale revisions and atomic mutation races reached")
++	t.Log("fresh V10, actual reopen, native ID pages, stale revisions and atomic mutation races reached")
+ }
+diff --git a/tests/source_collection/upgrade_test.go b/tests/source_collection/upgrade_test.go
+index c713903..8d66ec6 100644
+--- a/tests/source_collection/upgrade_test.go
++++ b/tests/source_collection/upgrade_test.go
+@@ -14,6 +14,8 @@ import (
+ 	"sort"
+ 	"testing"
+ 	"time"
++
++	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+ )
+ 
+ const publishedV5Commit = "7281edf4466c2b940eea7aa95c377d25e7f4c2b0"
+@@ -175,8 +177,8 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
+ 			}
+ 			opened = true
+ 			afterOpenVersions, afterOpenTables = versionLedger(t, f), actualTables(t, f)
+-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}),
+-				"current constructor returned success but did not apply and record v6, v7, v8 and v9 exactly once over actual published v5")
++			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}),
++				"current constructor returned success but did not apply and record v6 through v10 exactly once over actual published v5")
+ 			for _, name := range []string{"source_connections", "source_collections", "source_repository_assets", "source_collection_records"} {
+ 				found := false
+ 				for _, table := range afterOpenTables {
+@@ -184,7 +186,7 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
+ 				}
+ 				require(t, found, "current upgrade omitted a real v6 source relation")
+ 			}
+-			require(t, reflect.DeepEqual(oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables)),
++			require(t, reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
+ 				"source upgrade changed an existing published legacy table definition")
+ 			if h.core.Handler == nil {
+ 				h.open()
+@@ -219,9 +221,9 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
+ 			must(t, "close worker before v6 idempotent reopen", worker.Close())
+ 			fresh := h.openWorker(h.workerConfig(native, "idempotent-v6"))
+ 			process(t, h.ctx, fresh, false)
+-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}) &&
+-				reflect.DeepEqual(oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables)),
+-				"reopening v9 repeated migration or changed legacy definitions")
++			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) &&
++				reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
++				"reopening v10 repeated migration or changed legacy definitions")
+ 			require(t, h.collection(h.admin, job.ID).State == "succeeded" && len(h.assets(h.admin)) == 1,
+ 				"current API-produced post-upgrade data did not survive repeat core/worker opens")
+ 			apiTailExecuted = true

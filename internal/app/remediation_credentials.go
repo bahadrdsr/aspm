@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/bahadrdsr/aspm/internal/connectors"
 )
 
 const integrationTokenLimit = 16384
@@ -64,6 +66,38 @@ func sealCredential(aead cipher.AEAD, aad []byte, token string) ([]byte, error) 
 
 func openIntegrationToken(aead cipher.AEAD, workspace, connection string, envelope []byte) ([]byte, error) {
 	return openCredential(aead, integrationCredentialAAD(workspace, connection), envelope)
+}
+
+func connectionCredentialAAD(profile, workspace, connection string) ([]byte, error) {
+	switch profile {
+	case connectors.SlackWorkspaceBot:
+		return integrationCredentialAAD(workspace, connection), nil
+	case connectors.JiraCloudV3:
+		return []byte("aspm/jira-credential/v1\x00" + workspace + "\x00" + connection), nil
+	default:
+		return nil, errUnavailable
+	}
+}
+
+func sealConnectionToken(aead cipher.AEAD, profile, workspace, connection, token string) ([]byte, error) {
+	aad, err := connectionCredentialAAD(profile, workspace, connection)
+	if err != nil {
+		return nil, err
+	}
+	return sealCredential(aead, aad, token)
+}
+
+func openConnectionToken(aead cipher.AEAD, profile, workspace, connection string, envelope []byte) ([]byte, error) {
+	aad, err := connectionCredentialAAD(profile, workspace, connection)
+	if err != nil {
+		return nil, err
+	}
+	plain, err := openCredential(aead, aad, envelope)
+	if err == nil && !validConnectionToken(profile, string(plain)) {
+		clear(plain)
+		return nil, errUnavailable
+	}
+	return plain, err
 }
 
 func openCredential(aead cipher.AEAD, aad []byte, envelope []byte) ([]byte, error) {

@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 2,
+  "unsigned": true,
+  "status": "profile-selector-amended-ready-for-parent-seal",
+  "date": "2026-10-01",
+  "baseCommit": "4a54db75046f5910705007d800fa34496adc22d8",
+  "workflow": "Explicit GPT-6 Astra test author; parent seal next; GPT-6.1 Sol implementation remains held; no reviewer or nested agents.",
+  "contract": "tests\\jira_work_items\\CONTRACT.txt",
+  "approval": "Coordinator-approved implementation decisions under the user's autonomous direction: the bounded contract, ten CURRENT-ledger literals, exact two-table V10 delta, owned-row fault scope and list-selector compatibility amendment. The prior handoff incorrectly attributed detailed contract approval directly to the user; no verbatim user approval is claimed.",
+  "inputs": {
+    "runtime": "<RUNTIME>\\runtime.json, read-only private input; values withheld",
+    "readiness": {
+      "coordinatorRelay": "2026-10-01T06:04:48.138Z",
+      "fixtureVerified": "2026-10-01T06:01:42Z",
+      "receipt": "<RUNTIME>\\fixture-resume20261001.json",
+      "sha256": "f9363fbadda5168b67c9ef9db849f08e86c36ccd58ad78ca683db036cef2423a",
+      "boundary": "Saved-auth PG15432 SELECT 1; authenticated S318333 HEAD 200 and unsigned denial 403. Fixture restoration belonged to Sol; author made no service/runtime/credential/policy changes."
+    },
+    "publishedReceiptAbsolute": "C:\\bahadr\\serious\\aspm\\.artifacts\\jira-work-items\\author-v9-02.published-v9-build.json"
+  },
+  "amendments": {
+    "listSelection": {
+      "filesChangedThisResume": ["tests\\jira_work_items\\CONTRACT.txt", "tests\\jira_work_items\\work_items_test.go", "tests\\jira_work_items\\lifetime_test.go", "tests\\jira_work_items\\HANDOFF.json"],
+      "rule": "Common connection/history GET lists without profile remain Slack-only. Exactly one explicit Slack or jira-cloud-v3 selects only that profile. Empty/unknown/repeated profile is 400, with no all-profile or cross-scope fallback. Membership/total are scoped before unchanged ascending exclusive native-ID pagination.",
+      "preserved": "Individual GETs remain resource-profile-typed; existing POST paths/bodies are unchanged. Only new Jira list GETs opt into Jira. No production/API/dependency/signature/UI/old Slack test or fixture changes.",
+      "tests": "J1 adds one Jira-independent default/invalid selector guard. J2 adds real API-created mixed connections and intents, two of each profile in the selected workspace/finding, plus another finding/workspace; exact old Slack keys, explicit Jira membership, totals, terminal/empty pages, native/cross-profile cursor bounds and foreign-scope denials.",
+      "frozenBoundary": "All five previously approved old files, both shared schema helper files, new-owner base/native fixtures, J5 migration test, runner and published producer match prior handoff hashes. No repeated migration-design or projection amendments."
+    },
+    "oldTests": "Exactly five files changed: ten current 1..9 literals now 1..10; eight legacy-definition comparisons use the shared positive-delta projection. Only directly stale current-destination diagnostics changed otherwise.",
+    "sites": [
+      {"file": "tests\\source_collection\\upgrade_test.go", "beforeLines": [178, 222], "afterLines": [180, 224]},
+      {"file": "tests\\ai_configuration\\upgrade_test.go", "beforeLines": [132, 145], "afterLines": [134, 147]},
+      {"file": "tests\\ai_assessments\\upgrade_test.go", "beforeLines": [166, 177, 198, 219], "afterLines": [167, 178, 199, 220]},
+      {"file": "tests\\saved_work_views\\views_test.go", "beforeLines": [122], "afterLines": [122]},
+      {"file": "tests\\saved_work_views\\upgrade_test.go", "beforeLines": [138], "afterLines": [139]}
+    ],
+    "preserved": "Every historical V5/V6/V7/V8/V9 start, test identity, seed/build producer, pinned DDL/checksum, budget and old-business-data assertion remains intact. Slack DTO keys, two-field queue requests, native worker expectations and all 132 UI tests are unchanged.",
+    "sharedHelper": {
+      "path": "tests\\internal\\deliverycompat\\schema.go",
+      "scope": "Test-only, integration-tagged. No production API, framework or dependency. Both existing catalog representations remain unchanged.",
+      "positiveDelta": "Require nullable/default-free jira_target jsonb appended to each common delivery table and nullable/default-free create_attempted_at timestamptz appended to finding_deliveries. Require the exact two named profile CHECK replacements and exact two named profile_target CHECK additions frozen in CONTRACT/helper.",
+      "projection": "First compare the COMPLETE current catalog map with the explicit expected delta. Only afterward remove the three positively verified additions and replace the two verified profile CHECKs with historical definitions. Missing, weakened, renamed, NOT VALID or extra CHECKs and any unrelated columns/constraints/indexes/map keys fail. Nothing is silently ignored.",
+      "calibration": "Two helper tests, including 18 rejection mutations and both old snapshot formats, pass. Real PostgreSQL confirms exact CHECK deparse and 12 read-only valid/invalid tuple evaluations in empty owned non-application probes.",
+      "representationBlocker": null
+    },
+    "jiraJ5": "Authentic pinned V9 API/S3 setup remains. J5 now requires the exact relation set and shared allowlisted DDL comparison BEFORE projection, positively checks old added-column NULLs, preserves raw old-column values, tests actual CHECK enforcement on API-created Slack and Jira rows with rollback, then preserves strict old Slack/native behavior.",
+    "faultException": {
+      "scope": "Only already API-created connection/delivery rows in this fixture's random jira_items_<24 hex> schema, selected by workspace_id AND id. Lock/count exactly one before UPDATE; successful UPDATE must affect exactly one.",
+      "committedJ4Fields": {"finding_deliveries": ["payload.title", "approval_ref", "idempotency_key", "binding_digest", "profile/channel/jira_target together as a valid but unapproved Slack tuple"], "integration_connections": ["jira_target.apiBase"]},
+      "rolledBackJ5Fields": ["profile", "channel", "jira_target"],
+      "j5Semantics": "Valid Slack/null-Jira and valid Jira no-op UPDATEs affect one row and roll back. Each mixed/invalid tuple locks one existing row, must fail an exact approved named CHECK with 23514 and zero affected rows, then rolls back. Original business values are checked afterward.",
+      "notZeroSqlWrites": true,
+      "businessSqlSeeds": false,
+      "ordinaryFlow": "CRUD, intake, preview, consent and creation still use actual APIs/worker. No other schema/user/permission/policy modifications."
+    }
+  },
+  "verification": {
+    "priorCompatibility": {
+      "handoff": "history\\before-compatibility-approval\\HANDOFF.before-profile-selector.json",
+      "compiledPackages": ["source_collection", "ai_configuration", "ai_assessments", "saved_work_views", "jira_work_items", "internal\\deliverycompat"],
+      "compileExitCodes": [0, 0, 0, 0, 0, 0],
+      "helperTestsExitCode": 0,
+      "genuineFeatureRed": "All five narratives were RED in compatibility-red-01. J5 reached the authentic populated published V9 database, observed 28 legacy tables and unchanged raw rows, then found current ledger 1..9 instead of 1..10.",
+      "calibrations": "Native TLS and predicate calibration PASS, including exact CHECK deparse/12 tuples and both positive helper representations/18 rejection mutations. Initial NOT NULL-deparse calibration failures and correction remain preserved in their original logs."
+    },
+    "currentCompile": {
+      "package": "jira_work_items",
+      "label": "profile-selector-compile-01",
+      "exitCode": 0,
+      "executableSHA256": "bbd84791badcbb16e31f55d7bb15954cd00e33a7dabf922942b381a3258df5e0",
+      "executableRemoved": true
+    },
+    "oldCasesExecuted": false,
+    "jiraRun": {
+      "label": "profile-selector-red-01",
+      "contractInvocationsThisResume": 1,
+      "startedAt": "2026-10-01T06:05:03.9039270Z",
+      "exitCode": 1,
+      "seconds": 6.926,
+      "timeoutSeconds": 90,
+      "topLevelPassed": 2,
+      "topLevelFailed": 5,
+      "genuineFeatureRed": 4,
+      "fixtureInputBlocked": 1,
+      "skipped": 0
+    },
+    "passed": ["TestJiraNativeTLSCalibration", "TestJiraV10SchemaPredicateCalibration"],
+    "actualRed": "J1 empty profile on GET /api/v1/integrations/connections?limit=1&profile= returns 200 instead of 400. Local preview still returns 404 instead of 400; Jira creation returns 400 instead of 201, blocking J2/J3/J4; missing integration key returns 400 instead of 503.",
+    "reached": "Real sessions/RBAC/HTTP/S3 finding intake; two real Slack connections and intents. Omitted-profile and explicit Slack connection/history GETs preserved exact old JSON keys/membership, total=2 across exclusive native-ID pages, terminal null and empty-page null cursors. Both native TLS and exact schema-predicate calibrations passed again.",
+    "mixedCompatibility": {
+      "status": "Authored and compiled, not reached or accepted",
+      "blockedAt": "J2 first Jira connection creation returned 400, so no actual mixed-profile tail fixture or assertion executed.",
+      "otherUnreachedSelectors": "Unknown/repeated profile, invalid history selectors and explicit empty Jira/no-fallback checks follow J1's first fatal empty-profile RED and were not reached."
+    },
+    "j5InputBlock": {
+      "notFeatureRedThisRun": true,
+      "cause": "Author passed PublishedReceipt relative to the repository. Go executes this test from tests\\jira_work_items, so the unchanged loader's os.ReadFile failed before published V9 startup.",
+      "correction": "The rerun recipe now uses the verified absolute receipt path. Its hash, all 83 pinned sources, helper and executable still match. No producer or fixture code changed; no second run was made under the explicit one-run limit.",
+      "priorActualMigrationRedPreserved": true
+    },
+    "stillBlocked": "Production Jira config/preview/consent/outbox/native outcomes, revocation/fencing/crash, actual fault injections, positive V10 delta/CHECK probes and post-V10 compatibility remain unaccepted. Current J5 was input-blocked, not a fresh migration observation; prior genuine J5 RED is retained separately.",
+    "maximumObservedPerFixture": {"api": 25, "sqlIncludingPublishedHelper": 230, "s3SocketWrites": 7},
+    "budgetsUnchanged": {"seconds": 90, "api": 220, "sql": 1400, "publishedHelperSql": 400, "nativeRequests": 64, "s3SocketWrites": 64, "corePool": 1, "workerPool": 1, "observerPool": 2},
+    "tooling": "Unchanged Test-JiraWorkItems.ps1, cached Go1.27.1, readonly offline modules; no installs, old full-suite/helper reruns or UI132 run in this resume.",
+    "cleanup": "Owned schema/prefix/process cleanup reported no errors. New compile executable removed after hashing; pinned V9 build and all prior/new evidence retained."
+  },
+  "publishedProducer": {
+    "unchanged": true,
+    "commit": "4a54db75046f5910705007d800fa34496adc22d8",
+    "sourceFiles": 83,
+    "sourceBytes": 494882,
+    "executableSHA256": "d26aab3879a85da32497987cb02b40d270606f919969b61a4995af5f20c5ac1f",
+    "receipt": ".artifacts\\jira-work-items\\author-v9-02.published-v9-build.json",
+    "businessSqlSeedingOrLedgerRelabeling": false
+  },
+  "history": {
+    "folder": "tests\\jira_work_items\\history\\before-compatibility-approval",
+    "policy": "One exact pre-amendment archive, created before edits. The two extra Jira prior files make the approved fault/J5 evolution auditable. No history file was rewritten.",
+    "files": [
+      {"path": "ai_assessments\\upgrade_test.go.txt", "sha256": "a4f3e88dbaf38dcaee5fee57fff9068761c65dcb5fca45559338f2be92b59135"},
+      {"path": "ai_configuration\\upgrade_test.go.txt", "sha256": "24a9541339e5a4a6f767cfb52e1ab488543b41528a4d7c3cfa843ed5496a4bb3"},
+      {"path": "saved_work_views\\views_test.go.txt", "sha256": "40647298d0afdc5d33e6bfe3d1921501eb6d897848ba3685dfb39a928f88acc2"},
+      {"path": "saved_work_views\\upgrade_test.go.txt", "sha256": "88eae11ceb426eb418eea84d2dce3db1391ced8bdd2522c0011a02c9826c1019"},
+      {"path": "source_collection\\upgrade_test.go.txt", "sha256": "291557d2e9f02d8cfb17329bcc89c74f9a4b05d31ec338f28f77062e8dadaff7"},
+      {"path": "CONTRACT.txt", "sha256": "8eb0526ff46d2e8f6d19145f792b7c8e66005235e772745dd89c062aad4792cf"},
+      {"path": "HANDOFF.json", "sha256": "cef6635bd292b3808ad72777e704fb42a382a07bdb0b705ad8246ce08dd9e883"},
+      {"path": "jira_work_items\\lifetime_test.go.txt", "sha256": "4fc1c17eefe66150f5203f2da443f71e1494e498fc211c70f0ee1c306cd218f9"},
+      {"path": "jira_work_items\\upgrade_test.go.txt", "sha256": "c14351010d99afdc483684b42fbe7926b63361b2e9717cab9d6fb06e8cb4bf7b"},
+      {"path": "compatibility.patch", "sha256": "582e62eaeb01feac4a80fb4f56d713bf9c2beca2e903daa32e123f4d408b3014"}
+    ],
+    "records": [
+      {
+        "id": "profile-selector-2026-10-01",
+        "priorStatus": "compatibility-amended-ready-for-parent-seal",
+        "policy": "Reused four already-prepared pre-selector archive files after verifying exact pre-edit bytes. Only the prior unsigned handoff/contract and two actually amended new tests are preserved; no duplicate package archive and no original history file rewrites.",
+        "files": [
+          {"path": "HANDOFF.before-profile-selector.json", "sha256": "4e92e3d1fe03e780f04d609a6a76a6d2fcad2a7a4856f87d4a8605b906c6ca94"},
+          {"path": "CONTRACT.before-profile-selector.txt", "sha256": "8f89784930ff0490d610dc1aa973cbdc5abbcd086aaee917add5144587c3ff72"},
+          {"path": "jira_work_items\\work_items.before-profile-selector.go.txt", "sha256": "43a63397245d44436b0b13ea4348409dfad12022f5e980cc910f6084337a4e77"},
+          {"path": "jira_work_items\\lifetime.before-profile-selector.go.txt", "sha256": "0e56b1861fa128fe7ee3d28c0e731ad2f443f13d473053649022b2722335b8f5"}
+        ]
+      }
+    ]
+  },
+  "files": [
+    {"path": "tests\\source_collection\\upgrade_test.go", "sha256": "c3bed70deac1c14ccf836d468b58e83c6929fbfcba25bc8136737efc33b8220f"},
+    {"path": "tests\\ai_configuration\\upgrade_test.go", "sha256": "82829c6cff34323c4d588b6b0d87d396b948ade36aba43c1f1a66e77fcbb020e"},
+    {"path": "tests\\ai_assessments\\upgrade_test.go", "sha256": "90176681edb7986d7f07c2b571836207b9b7c21633c5dbb6a8e10f4d03c4c8ef"},
+    {"path": "tests\\saved_work_views\\views_test.go", "sha256": "72e5d5ee4b9577a7a108c7044362bd392ecc1c63821926c0eb1d2d7c44eeb620"},
+    {"path": "tests\\saved_work_views\\upgrade_test.go", "sha256": "7b62829383bbf7348b9b5dc8bc02ae5f9f2d6d0442c187cca8307b27b834a841"},
+    {"path": "tests\\internal\\deliverycompat\\schema.go", "sha256": "b829421150b0e07c9c13831ae67152002efc4db15cf0657a6365f89096f069d6"},
+    {"path": "tests\\internal\\deliverycompat\\schema_test.go", "sha256": "c50719b605c0ca657d7530c31d54094f37a4bf992f66737f789b3ac545fc5d2d"},
+    {"path": "tests\\jira_work_items\\CONTRACT.txt", "sha256": "55c6f5526c01b3dbc3094f5cfe269a0fc81e8e1db63fdfcb50b5577902e1bbfa"},
+    {"path": "tests\\jira_work_items\\fixtures_test.go", "sha256": "457eb59977cf0aebcaeca16e0e257b4544c66a6b8df442736d7bd57f4083149a"},
+    {"path": "tests\\jira_work_items\\jira_fixture_test.go", "sha256": "7515a30bbc3d10d36182b35fc282f5b502e9f862b4d5ec0f10250d0cda4f55a0"},
+    {"path": "tests\\jira_work_items\\lifetime_test.go", "sha256": "d5fc3f4e11acc73aa4ed42808f0a056874b4e5c35d7bbb8dfe4e75c8e153654c"},
+    {"path": "tests\\jira_work_items\\prepare-published-v9.mjs", "sha256": "164d30ab84624656a079c3e0a9252be43ada3aad7c81382f61407e37ca123385"},
+    {"path": "tests\\jira_work_items\\schema_compatibility_test.go", "sha256": "b3e4d16fd3843bfb31de8029f18c70b93e0be46cf5ed922fb5a8ded7066c31c1"},
+    {"path": "tests\\jira_work_items\\Test-JiraWorkItems.ps1", "sha256": "cbda3ffe3ee3e32c253d0b3336e88b2d20524e125311f21430ba166ca8aeb868"},
+    {"path": "tests\\jira_work_items\\upgrade_test.go", "sha256": "9b2bdea71fe0de462390f1d9dd6af2c5575d3661f3e3b5277561e5af941f9ea4"},
+    {"path": "tests\\jira_work_items\\work_items_test.go", "sha256": "864f22dcab8f09e57c1dd7969f441c096475ac7af23a7e7aa7913b54cde660c3"},
+    {"path": "tests\\jira_work_items\\testdata\\published-core.main.go.txt", "sha256": "40d4acf4b14ed7045f1030353eaa51ac8dd43ac49d651836e6847221c8ef2825"}
+  ],
+  "evidence": [
+    {"path": ".artifacts\\jira-work-items\\compatibility-audit-01.json", "sha256": "2408ab8e6672b22926dca48dc73156cd489acd8a3a13c09d0d703de12f8fc949"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-calibration-01.jsonl", "sha256": "eeb1516671678a6c4b0b164db6d684226d7de755b56f56f1a637f70472f193e5"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-calibration-02.jsonl", "sha256": "10bbfb797dd7b2ca32d773ac11b0db5e1fb8bc4a4e0cfc5ee3ea8cd3f30d231a"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-compile-01\\receipt.json", "sha256": "d17c2e97e1f6a725f9f8492c7b920b07da119166799c3c57a55c8994b90369be"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-compile-01\\helper-tests.jsonl", "sha256": "8003c58c89c41b11daf6e583b080c227f0dec9b273e5a16bcf089f5f76e98922"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-red-01.log", "sha256": "8e3c1306235e38d6beac582d4d6aa28a61b7c745c8d1771b0ddabdcd7dcf8c1d"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-red-01.jsonl", "sha256": "ebe9abc5a6e277614a5c7ce2d98df6da535effc44dc72c8077560d84ecdf79cf"},
+    {"path": ".artifacts\\jira-work-items\\compatibility-red-01.receipt.json", "sha256": "174a6316fffe4eeafcf24c12fe79620c4b322ccf0198b6226c35738d3f464c34"},
+    {"path": ".artifacts\\jira-work-items\\published-v9-upgrade-650c6f3492c898d7378998c2.json", "sha256": "8d81c3bf0c928040b5c7c774bd702d1e95f73d5caa6d8fcc6bd9fa64ebdc98a7"},
+    {"path": ".artifacts\\jira-work-items\\author-v9-02.published-v9-build.json", "sha256": "c2b68178030d610c620a14e5a882af15872bb7620b2b118c29b08da07a810f6e"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-compile-01.receipt.json", "sha256": "f06b51fa31c9c768f93b3cda042ba0e4c981636501847eebe96e7071c3d79539"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-compile-01.jsonl", "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-boundary-01.json", "sha256": "4d4a7e48759a08cb923c60411a9211f7b1ebe56d9e35eb86a931d3b25852389e"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-red-01.log", "sha256": "51730a4fd92aaab93b72b19ad93bddcad44f9589953d77d7a584db1cc6d9f361"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-red-01.jsonl", "sha256": "68b571d2d23dcb9d2bd7b08063081c9feed73e96e1e7ff2f0109428e085d970a"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-red-01.receipt.json", "sha256": "b9491571cbf8bb458785519ca90de68506d096e231065a3c0d770db7a7b6e88e"},
+    {"path": ".artifacts\\jira-work-items\\profile-selector-outcome-01.json", "sha256": "982aa082cd2a496c1c74ce5fd2d6969b368113f3267b7f03a55a0d132bedec5d"}
+  ],
+  "rerun": {
+    "cwd": "C:\\bahadr\\serious\\aspm",
+    "jira": ".\\tests\\jira_work_items\\Test-JiraWorkItems.ps1 -RuntimeConfig <RUNTIME>\\runtime.json -PublishedReceipt C:\\bahadr\\serious\\aspm\\.artifacts\\jira-work-items\\author-v9-02.published-v9-build.json -Mode Contract -OutputName <fresh-label>",
+    "receiptPath": "PublishedReceipt must be absolute because Go executes from the package directory. This verified input correction is for the next authorized qualification, not another author run.",
+    "compile": "Use the six exact -c commands in compatibility-compile-01\\receipt.json with fresh outputs and the existing offline Go environment.",
+    "helper": "go test -mod=readonly -tags=integration -count=1 -timeout=30s .\\tests\\internal\\deliverycompat"
+  },
+  "held": {
+    "parentSealRequired": true,
+    "solImplementationStarted": false,
+    "productionDependencySignatureOrCommitChanges": false,
+    "reviewerOrNestedAgents": false,
+    "oldSuiteOrUI132Execution": false,
+    "currentJ5RevalidationInputBlocked": true,
+    "deployedRuntimeOrVendorQualification": false,
+    "wholeM08OrProjectCompletionClaim": false
+  },
+  "selfHash": "Excluded from this unsigned handoff; parent sealing hashes HANDOFF.json separately."
+}
