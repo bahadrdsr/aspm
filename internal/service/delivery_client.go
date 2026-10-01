@@ -21,6 +21,7 @@ import (
 )
 
 const deliveryCALimit = 1 << 20
+const jiraAPIOriginLimit = 16
 
 func deliveryRoots(path string) (*x509.CertPool, error) {
 	if path == "" {
@@ -94,18 +95,109 @@ func deliveryOrigin(endpoint string) (string, error) {
 
 type deliveryDial func(context.Context, string, string) (net.Conn, error)
 
-func deliveryOriginDial(origin string, dial deliveryDial) deliveryDial {
+func jiraOriginAddresses(origins []string) ([]string, error) {
+	invalid := errors.New("ASPM_JIRA_API_ORIGINS/JiraAPIOrigins requires at most 16 unique canonical HTTPS origins")
+	if len(origins) > jiraAPIOriginLimit {
+		return nil, invalid
+	}
+	addresses := make([]string, 0, len(origins))
+	seen := make(map[string]struct{}, len(origins))
+	for _, origin := range origins {
+		if !strings.HasPrefix(origin, "https://") ||
+			strings.ContainsAny(strings.TrimPrefix(origin, "https://"), "/?#%@\\*") ||
+			strings.ContainsFunc(origin, func(c rune) bool { return c <= ' ' || c >= 0x7f }) {
+			return nil, invalid
+		}
+		target, err := url.Parse(origin)
+		if err != nil || target.Host == "" || target.User != nil || target.Opaque != "" {
+			return nil, invalid
+		}
+		host := target.Hostname()
+		canonical := host
+		if ip, err := netip.ParseAddr(host); err == nil {
+			if ip.Is4In6() || ip.Zone() != "" {
+				return nil, invalid
+			}
+			canonical = ip.String()
+			if ip.Is6() {
+				canonical = "[" + canonical + "]"
+			}
+		} else {
+			if len(host) == 0 || len(host) > 253 {
+				return nil, invalid
+			}
+			numeric := true
+			for _, c := range host {
+				if c != '.' && (c < '0' || c > '9') {
+					numeric = false
+				}
+			}
+			if numeric {
+				return nil, invalid
+			}
+			for _, label := range strings.Split(host, ".") {
+				if len(label) == 0 || len(label) > 63 || label[0] == '-' || label[len(label)-1] == '-' {
+					return nil, invalid
+				}
+				for _, c := range label {
+					if c != '-' && (c < 'a' || c > 'z') && (c < '0' || c > '9') {
+						return nil, invalid
+					}
+				}
+			}
+		}
+		if port := target.Port(); port != "" {
+			number, err := strconv.Atoi(port)
+			if err != nil || number < 1 || number > 65535 || strconv.Itoa(number) != port {
+				return nil, invalid
+			}
+			canonical += ":" + port
+		}
+		if target.Host != canonical {
+			return nil, invalid
+		}
+		address, err := deliveryOrigin(origin)
+		if err != nil {
+			return nil, invalid
+		}
+		if _, duplicate := seen[address]; duplicate {
+			return nil, invalid
+		}
+		seen[address] = struct{}{}
+		addresses = append(addresses, address)
+	}
+	return addresses, nil
+}
+
+func deliveryOrigins(endpoint string, jiraOrigins []string) ([]string, error) {
+	origin, err := deliveryOrigin(endpoint)
+	if err != nil {
+		return nil, err
+	}
+	additional, err := jiraOriginAddresses(jiraOrigins)
+	if err != nil {
+		return nil, err
+	}
+	return append([]string{origin}, additional...), nil
+}
+
+func deliveryOriginDial(origins []string, dial deliveryDial) deliveryDial {
+	allowed := make(map[string]struct{}, len(origins))
+	for _, origin := range origins {
+		allowed[origin] = struct{}{}
+	}
 	return func(ctx context.Context, network, address string) (net.Conn, error) {
 		candidate, err := deliveryAddress(address)
-		if err != nil || candidate != origin || (network != "tcp" && network != "tcp4" && network != "tcp6") {
+		_, approved := allowed[candidate]
+		if err != nil || !approved || (network != "tcp" && network != "tcp4" && network != "tcp6") {
 			return nil, errors.New("delivery transport denied an unapproved gateway address")
 		}
 		return dial(ctx, network, address)
 	}
 }
 
-func newProviderClient(endpoint, caFile string) (*http.Client, error) {
-	origin, err := deliveryOrigin(endpoint)
+func newProviderClient(endpoint, caFile string, jiraOrigins ...string) (*http.Client, error) {
+	origins, err := deliveryOrigins(endpoint, jiraOrigins)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +206,7 @@ func newProviderClient(endpoint, caFile string) (*http.Client, error) {
 		return nil, err
 	}
 	transport := client.Transport.(*http.Transport)
-	transport.DialContext = deliveryOriginDial(origin, transport.DialContext)
+	transport.DialContext = deliveryOriginDial(origins, transport.DialContext)
 	return client, nil
 }
 
@@ -178,10 +270,10 @@ func validateDeliveryClient(client *http.Client, endpoint string) error {
 }
 
 func ownDeliveryClient(config Config) (*http.Client, error) {
-	return ownProviderClient(config.DeliveryClient, config.SlackEndpoint, config.DeliveryCAFile)
+	return ownProviderClient(config.DeliveryClient, config.SlackEndpoint, config.DeliveryCAFile, config.JiraAPIOrigins...)
 }
 
-func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Client, error) {
+func ownProviderClient(supplied *http.Client, gateway, caFile string, jiraOrigins ...string) (*http.Client, error) {
 	endpoint, err := app.ValidateDeliveryGateway(gateway)
 	if err != nil {
 		return nil, err
@@ -189,7 +281,7 @@ func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Cli
 	if err = validateDeliveryClient(supplied, endpoint); err != nil {
 		return nil, err
 	}
-	origin, err := deliveryOrigin(endpoint)
+	origins, err := deliveryOrigins(endpoint, jiraOrigins)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +290,7 @@ func ownProviderClient(supplied *http.Client, gateway, caFile string) (*http.Cli
 		return nil, err
 	}
 	transport := client.Transport.(*http.Transport)
-	transport.DialContext = deliveryOriginDial(origin, transport.DialContext)
+	transport.DialContext = deliveryOriginDial(origins, transport.DialContext)
 	return client, nil
 }
 

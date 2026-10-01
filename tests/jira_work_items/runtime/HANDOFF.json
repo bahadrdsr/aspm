@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "unsigned": true,
+  "status": "AUTHORED_ONLY_AWAITING_SOL_INITIAL_RED",
+  "date": "2026-10-01",
+  "baseCommit": "88aa7f4d702486c9895fdfcffdcad6d09a28dc8c",
+  "authorLane": "Explicitly requested GPT-6 Astra: criteria, tests and justified test corrections only.",
+  "executionLane": "GPT-6.1 Sol: all routine compilation, builds, calibration, tests, implementation, validation and publication.",
+  "reviewerOrNestedAgentsUsed": false,
+  "contract": "tests\\jira_work_items\\runtime\\CONTRACT.txt",
+  "contractAuthoredBeforeCases": true,
+  "privateInputs": {
+    "criteriaDraft": {
+      "path": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\jira-runtime-acceptance-20261001.txt",
+      "sha256": "30d5057b7f2b02d2aadcb02c5fad9072572bde2fd7b7783cdbd8d3610fa5b0f7"
+    },
+    "runtimeConfigAbsolute": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\runtime.json",
+    "runtimeDiscovery": "Filename located only. No credential values printed or copied into new controls. Astra did not probe PG/S3 readiness.",
+    "runtimeRequirement": "Existing authenticated 127.0.0.1:15432 PG and 127.0.0.1:18333 S3 only. The PG observer requires the existing explicit ?sslmode=disable URL, without extra routing query overrides. A different input is BLOCKED, never silently downgraded.",
+    "readiness": "NOT_EXECUTED_BY_ASTRA. Sol owns readiness checks. Do not start or reconfigure unavailable fixtures."
+  },
+  "scope": {
+    "newFilesOnly": true,
+    "newBuildConstraint": "integration && jira_runtime",
+    "runtimeSelector": "^TestJiraRuntime",
+    "ordinaryIntegrationSelection": "New runtime cases are excluded unless jira_runtime is also supplied. Frozen old cases are compiled as shared fixtures but not selected for execution.",
+    "productionChangeByAuthor": "NONE. Only the seven listed new authoring/control files were introduced.",
+    "frozenInputsChangedByAuthor": "NONE. Old Jira/backend/runtime tests, helpers, runners, testdata, contracts, modules and UI are unchanged.",
+    "publishedUI139": "User-reported published baseline; NOT_EXECUTED or requalified by Astra.",
+    "noNewDependenciesOrModule": true,
+    "noCommitSigningOrPublication": true,
+    "noVendorCloudScannerOrExploitAccess": true
+  },
+  "contractSummary": {
+    "originSetting": "ASPM_JIRA_API_ORIGINS, JSON array of at most 16 unique canonical HTTPS origins. Unset/empty string/[] add nothing; malformed/null/wrong types/duplicates/oversize/noncanonical inputs fail field-specific private preflight.",
+    "networkBoundary": "Configured Slack origin union explicit Jira origins only. Preserve caller-narrower DialContext. Both Environment and Run must admit the full set without an accidental inner Slack-only gate. No unwrapping, unrestricted replacement client, automatic Atlassian/Slack fallback or permission/target selection.",
+    "programmaticProbes": "Environment is the normal entry. Reflection only probes JiraAPIOrigins []string for invalid programmatic inputs and nonmutation, so the new tests do not depend on missing production fields at compile time.",
+    "preserved": "Normal TLS/hostname verification >=1.2, bounded explicit CA, no proxy/cookies/ambient credentials/redirect following, bounded cancellation, DB/key-only health role, exact accepted backend approvals and terminal semantics.",
+    "safeFailures": "The exact bounded classification alternatives were written in CONTRACT before tests: failed/unavailable/metadata, blocked/scope/metadata, blocked/unavailable/metadata, or pre-adapter blocked/native-client-unavailable with empty stage, all HTTP 0. Redirect is blocked/scope/metadata/307. No receipt/create marker/retry/native-field fabrication. Positive caller-dial/TLS witnesses additionally apply."
+  },
+  "narratives": [
+    {
+      "test": "TestJiraRuntimeR1EnvironmentAndPreflight",
+      "purpose": "SQL-free actual Environment defaults/strict parsing; owned DB/provider/listener-conflict witnesses for Run preflight; real TLS Slack plus two separate Jira origins; explicit Slack-origin sharing; before-DNS/socket denial; programmatic invalid slices and nonmutation.",
+      "expectedBaselineRED": "Malformed origin settings are currently ignored. Environment's actual client admits Slack but refuses a separately approved Jira origin. The reflection-only programmatic tail will report missing JiraAPIOrigins at runtime, not manufacture a missing-field compile failure.",
+      "execution": "NOT_EXECUTED_BY_ASTRA"
+    },
+    {
+      "test": "TestJiraRuntimeR2ActualMainSeparateJiraAndLegacySlack",
+      "purpose": "Frozen real core/PG/S3 intake, admin connection, analyst preview/consent, plus a real legacy Slack intent. Newly built actual main, explicit stripped process env/public CA, native GET/one POST, committed marker, canonical ADF and matching API/PG receipt, isolated Slack credential, truthful health and absent core routes.",
+      "expectedBaselineRED": "The actual command's Jira metadata request should be rejected by its Slack-only dial gates and persist a safe failure instead of confirmed. This is a source-derived expectation, not observed evidence.",
+      "execution": "NOT_EXECUTED_BY_ASTRA"
+    },
+    {
+      "test": "TestJiraRuntimeR3NetworkRefusalsAndNarrowerCallerPolicy",
+      "purpose": "Actual-main unapproved origin, approved redirect and approved untrusted TLS negatives with owned socket/HTTP ledgers. Real Run additionally preserves a caller's narrower dialer and original client/TLS/key/origin configuration. Later observed claim executions bound no-repeat observations.",
+      "expectedBaselineRED": "The unapproved negative may already be safe, but the approved redirect/TLS narratives cannot reach their required native/handshake witnesses while the setting is ignored. The narrower-caller tail is not an accepted result until reached.",
+      "execution": "NOT_EXECUTED_BY_ASTRA"
+    },
+    {
+      "test": "TestJiraRuntimeR4CanceledCreateThenFreshActualMain",
+      "purpose": "Real Environment+Run held-create cancellation, native cancellation and complete listener/worker shutdown preserve durable uncertainty. A fresh actual main observes further claim progress without resending, then handles a separately previewed/consented new intent. Caller-owned key/TLS/client/origin backing storage remains unchanged.",
+      "expectedBaselineRED": "Real Run cannot reach the held Jira POST while the origin selection is ignored. Cancellation/uncertainty/fresh-main/new-intent tails therefore remain unaccepted. A missing optional reflected field does not precede that real wiring probe.",
+      "execution": "NOT_EXECUTED_BY_ASTRA"
+    }
+  ],
+  "observerDesign": {
+    "reuse": "Unmodified newHarness, newFixture, freshTLS, newJira, API/session/intake/preview/queue helpers, native ADF assertions and accepted app backend. No new fake application, replacement handler, RoundTripper success fake, worker constructor or business SQL seed.",
+    "native": "Loopback byte-forwarding observers terminate TLS only at the unchanged owned native fixture. They retain counts, not HTTP bodies or credentials. Unknown and redirect sockets must be zero; an untrusted TLS socket must positively be observed with zero HTTP.",
+    "sql": "The actual service/main database URL points through a bounded byte-for-byte relay to the selected authenticated PG15432. Existing pgproto3 decodes client frames only for Query/Execute counts and claim-progress booleans. Counts share the fixture's existing 1400-operation counter. No fabricated PG replies, SQL rewrites, raw packet/SQL/bind logging, role changes or extra dependency.",
+    "progress": "Three further forwarded eligible-claim executions, with a live entrypoint and single worker pool, are required instead of sleeping and assuming no retry. No forever/exactly-once/all-unobserved-attempts claim.",
+    "childIdentity": "Only the new runner's separately built cmd/delivery-worker.exe is launched, its SHA256 is checked, and each owned PID/start interval is recorded. The old TestMain worker-child flag is not supplied. The newly compiled test harness is not the delivery command.",
+    "cleanup": "Context/PID-owned cleanup only, no process-name kills. The runner can clean an orphaned actual-main PID only after matching the unique invocation binary path/hash and start interval; forced or refused cleanup cannot silently produce a successful overall receipt.",
+    "sqlPlaintextRequirement": "Already explicit local fixture sslmode=disable only. If this or the observer framing is unsupported during Sol calibration, report the blocker and obtain an Astra-authored correction. Do not bypass counting or weaken a frozen helper."
+  },
+  "budgets": {
+    "perNarrativeSeconds": 90,
+    "actualRunTimeoutSeconds": 90,
+    "apiIncludingRoleHealth": 220,
+    "sqlIncludingRelayedServiceMain": 1400,
+    "nativeHTTP": 64,
+    "s3SocketWrites": 64,
+    "corePool": 1,
+    "workerPool": 1,
+    "observerPool": 2,
+    "notIncreased": true
+  },
+  "verification": {
+    "sourceInspectionAndHashing": "Performed only to author this packet; not executable acceptance.",
+    "compile": "NOT_EXECUTED_BY_ASTRA",
+    "mainbuild": "NOT_EXECUTED_BY_ASTRA",
+    "actualrun": "NOT_EXECUTED_BY_ASTRA",
+    "calibration": "NOT_EXECUTED_BY_ASTRA",
+    "formatterLinterOrSyntaxValidation": "NOT_EXECUTED_BY_ASTRA",
+    "fixtureReadiness": "NOT_EXECUTED_BY_ASTRA",
+    "oldBackendOrRuntimeSuites": "NOT_EXECUTED_BY_ASTRA",
+    "ui139": "NOT_EXECUTED_BY_ASTRA",
+    "publication": "NOT_EXECUTED_BY_ASTRA",
+    "exitCodes": null,
+    "actualREDReceipt": null,
+    "allLaterAssertions": "AUTHORED, NOT EXECUTED. Compile correctness, observer/native calibration, source-derived RED expectations, budgets and all successful tails require Sol's actual evidence."
+  },
+  "solInitialRED": {
+    "cwd": "C:\\bahadr\\serious\\aspm",
+    "command": ".\\tests\\jira_work_items\\Test-JiraRuntime.ps1 -RuntimeConfig 'C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\runtime.json' -OutputName 'sol-jira-runtime-red-20261001-01' -Mode Contract",
+    "freshLabelRule": "If that label already exists, choose a new unique OutputName only. Never overwrite earlier receipts/artifacts.",
+    "expectedReceipt": "C:\\bahadr\\serious\\aspm\\.artifacts\\jira-runtime\\sol-jira-runtime-red-20261001-01\\receipt.json",
+    "toolchain": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "settings": "GOTOOLCHAIN=local, GOENV/GOWORK/GOPROXY/GOSUMDB=off, GOFLAGS empty, cached modules, -mod=readonly, project-owned work directories. No install/download. Existing .cache\\build is reused.",
+    "phases": [
+      "compile: go test -c -mod=readonly -buildvcs=false -tags=integration,jira_runtime -o <unique output>\\jira-runtime.test.exe .\\tests\\jira_work_items",
+      "mainbuild: go build -mod=readonly -buildvcs=false -trimpath -o <unique output>\\delivery-worker.exe .\\cmd\\delivery-worker",
+      "actualrun: execute that newly compiled tagged harness from tests\\jira_work_items with -test.v -test.count=1 -test.parallel=1 -test.timeout=90s -test.run=^TestJiraRuntime"
+    ],
+    "receiptSemantics": "Each phase starts NOT_EXECUTED and records its actual result separately. Source heads/diffs/input hashes, binary hashes, health/native/socket/SQL/durable-outcome ledgers and PID cleanup are evidence, not a static productionChanged:false assertion.",
+    "failureHandling": "Missing dependencies/fixture readiness, compile errors or observer problems are BLOCKED prerequisites, not fabricated feature RED. Sol reports exact redacted evidence to Astra for justified new-test corrections. Do not edit old fixtures, relax budgets, substitute the historical worker child or unwrap the caller dialer.",
+    "sealOrder": "Sol compiles/calibrates and reproduces genuine initial RED first. Parent seals these new controls only after actual RED. Implementation follows that gate; no reviewer."
+  },
+  "knownUnchangedTrees": [
+    {"path": "internal", "baselineGitTree": "5489840226bb3025de2243b9100f89c1c2edf450"},
+    {"path": "cmd", "baselineGitTree": "f34e5a7c64119a389d2202b6c980632c44e3bb31"},
+    {"path": "web", "baselineGitTree": "beb28a0a65da6eda1898bf762213469364df382d"},
+    {"path": "tests", "baselineGitTree": "e7e97e0013595bac1be2402ccaff76c02b21da1c"},
+    {"path": "tests\\jira_work_items", "baselineGitTree": "7e369e031426d16606cdf9cec39e4c14481fb0be"},
+    {"path": "tests\\delivery_runtime", "baselineGitTree": "1e4effeb38def2654003aeb2208b46c4d20afa70"},
+    {"path": "tests\\internal\\deliverycompat", "baselineGitTree": "da33077cac4d4ea7c07d3a3f0394455e6b017217"}
+  ],
+  "treeMeaning": "Baseline tracked-tree identities, with no author edits to tracked files. The new files remain separate untracked additions at handoff. These IDs are not test results or a future prohibition on Sol's authorized implementation.",
+  "files": [
+    {"path": "tests\\jira_work_items\\runtime\\CONTRACT.txt", "sha256": "0ac78608804095becff344764e26fd4a3814a51354fc233dfe42def706a15fe1"},
+    {"path": "tests\\jira_work_items\\Test-JiraRuntime.ps1", "sha256": "57c25d199b58afb364c42a51c0cd4320c8a7a7a45838b256bc39a20513a810f6"},
+    {"path": "tests\\jira_work_items\\runtime_contract_test.go", "sha256": "f08cdfb50670f957a8b73f04fb729b29a3d6e7e15fc1b563ae31b6bec691b983"},
+    {"path": "tests\\jira_work_items\\runtime_fixtures_test.go", "sha256": "d634404304497f627ff56545b3ac5443144560c82dcd2a9b3b3b893a385be4db"},
+    {"path": "tests\\jira_work_items\\runtime_network_test.go", "sha256": "c09e818f89baa62c4b935fd664adbdabab20e5a37d397fb1d4d8d24577229fb1"},
+    {"path": "tests\\jira_work_items\\runtime_roles_test.go", "sha256": "97b576a7f284e4601b27640b67a09a9dc3f6429a470b798e46969c7c80cecb5c"}
+  ],
+  "frozenInputs": [
+    {"path": "go.mod", "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"},
+    {"path": "go.sum", "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"},
+    {"path": "tests\\jira_work_items\\CONTRACT.txt", "sha256": "55c6f5526c01b3dbc3094f5cfe269a0fc81e8e1db63fdfcb50b5577902e1bbfa"},
+    {"path": "tests\\jira_work_items\\HANDOFF.json", "sha256": "49de4d37c511a65ab1a326890337e614543162551f40eda9975ab33a61c01768"},
+    {"path": "tests\\jira_work_items\\Test-JiraWorkItems.ps1", "sha256": "cbda3ffe3ee3e32c253d0b3336e88b2d20524e125311f21430ba166ca8aeb868"},
+    {"path": "tests\\jira_work_items\\fixtures_test.go", "sha256": "e6b97e19c9618ec0d0cb7ef26e232d88a004c39e8a171f902e6d0aeb13ef2e43"},
+    {"path": "tests\\jira_work_items\\jira_fixture_test.go", "sha256": "7515a30bbc3d10d36182b35fc282f5b502e9f862b4d5ec0f10250d0cda4f55a0"},
+    {"path": "tests\\jira_work_items\\lifetime_test.go", "sha256": "d5fc3f4e11acc73aa4ed42808f0a056874b4e5c35d7bbb8dfe4e75c8e153654c"},
+    {"path": "tests\\jira_work_items\\work_items_test.go", "sha256": "864f22dcab8f09e57c1dd7969f441c096475ac7af23a7e7aa7913b54cde660c3"},
+    {"path": "tests\\jira_work_items\\upgrade_test.go", "sha256": "9b2bdea71fe0de462390f1d9dd6af2c5575d3661f3e3b5277561e5af941f9ea4"},
+    {"path": "tests\\jira_work_items\\schema_compatibility_test.go", "sha256": "b3e4d16fd3843bfb31de8029f18c70b93e0be46cf5ed922fb5a8ded7066c31c1"},
+    {"path": "tests\\jira_work_items\\prepare-published-v9.mjs", "sha256": "164d30ab84624656a079c3e0a9252be43ada3aad7c81382f61407e37ca123385"},
+    {"path": "tests\\jira_work_items\\testdata\\published-core.main.go.txt", "sha256": "40d4acf4b14ed7045f1030353eaa51ac8dd43ac49d651836e6847221c8ef2825"},
+    {"path": "tests\\delivery_runtime\\CONTRACT.txt", "sha256": "fdcef55a75e24400db4dceb3d355aeaa49c320a9c160fb3b433bc08928f00029"},
+    {"path": "tests\\delivery_runtime\\HANDOFF.txt", "sha256": "5b9571f97e8c81a2cb30d14e8feeae85c03714dfaa818b3f2a6f929544c146f6"},
+    {"path": "tests\\delivery_runtime\\Test-DeliveryRuntime.ps1", "sha256": "d749718c5853d5784871e538a349eadb9a9dfca6fea6ca06251969e95d8f7ac5"},
+    {"path": "tests\\delivery_runtime\\contract_test.go", "sha256": "10973f24322983e9cba5c2f7d5d0b10d85148cc81629d50a61466b3eea9d9cd3"},
+    {"path": "tests\\delivery_runtime\\fixtures_test.go", "sha256": "216b2a2575627187dd4a69191582835832dac129133f158b7a56b8b922d8e217"},
+    {"path": "tests\\delivery_runtime\\production_bindings_test.go", "sha256": "b6887085b4f737db9c10e17721572767e0044a13a65d712994566e87cbf60ad3"},
+    {"path": "tests\\delivery_runtime\\roles_test.go", "sha256": "ca2fae3491ec4ae864ba54904f490dff74f236f1bb725c9a6ef5642512aea4f8"},
+    {"path": "tests\\delivery_runtime\\tls_range_test.go", "sha256": "ea785ba48eea6be96c5e631a5e29a43179931fc919140d63a5b5bdbd68ae29bb"},
+    {"path": "tests\\internal\\deliverycompat\\schema.go", "sha256": "4989b18e0518e7c1c5df8987f1d701e8a7412c23e6d5e1c24ffb914d2a376680"},
+    {"path": "tests\\internal\\deliverycompat\\schema_test.go", "sha256": "c50719b605c0ca657d7530c31d54094f37a4bf992f66737f789b3ac545fc5d2d"}
+  ],
+  "baselineSourceInputs": [
+    {"path": "internal\\service\\delivery_client.go", "sha256": "145ddeb5d9a64a79753f37c3d8ea037846b6cf06cad2f0762c4323d1ee1e91c7"},
+    {"path": "internal\\service\\delivery_runtime.go", "sha256": "c5e376290c2a683bdbbf4d975ca8cce621538cefc79cea7175fad0fad103d711"},
+    {"path": "internal\\service\\run.go", "sha256": "1dbdf7b72b76a3874030540a8a82b1bc9a2449a88f6c2c883140ae750d45ee17"},
+    {"path": "internal\\service\\config.go", "sha256": "5b864412f9c84de66bdebe56301d802823c6d8e341ff0c21fed69a551b0cacd1"},
+    {"path": "cmd\\delivery-worker\\main.go", "sha256": "edd04403a575417aa2d9cc167399177e40d394301cbeba08fd76dd5f5ac82f36"},
+    {"path": "internal\\app\\remediation_jira_worker.go", "sha256": "1609fd76323f911a9531394d3bdb4110a7062ed22799057abbf6b16f7cd9c49b"},
+    {"path": "internal\\app\\remediation_worker.go", "sha256": "a0e25b8b86238b6fb08fa28cbd1c4f1aa8e9e54f73c25623a4c8482315a8421b"},
+    {"path": "internal\\app\\source_worker.go", "sha256": "98458bc6ccb884113740675c380ef67dce5d932a80d38bfe5bf8e805565b286c"}
+  ],
+  "selfHash": "HANDOFF.json is the seventh new file. Its self-hash is excluded from its own contents; parent sealing hashes this unsigned file separately.",
+  "completionBoundary": "Authoring handoff only. No actual RED/GREEN, deployed runtime, browser-to-command, vendor permission, Helm/Quadlet, OAuth refresh, broader Jira, UI139, or project-completion claim."
+}

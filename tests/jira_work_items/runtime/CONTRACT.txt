@@ -1,0 +1,191 @@
+Jira delivery command wiring, October 1, 2026
+==========================================
+
+AUTHORING ONLY: GPT-6 Astra. Every compile, build, run, calibration, fixture
+readiness check and publication is NOT EXECUTED by Astra. GPT-6.1 Sol owns
+those operations and implementation. No reviewer or nested agent.
+Source baseline: 88aa7f4d702486c9895fdfcffdcad6d09a28dc8c.
+This contract is written before its new cases. It is not passing evidence.
+
+Boundary and minimal change
+---------------------------
+Exercise actual service.Environment("delivery"), service.Run, and the actual
+built cmd/delivery-worker, not only app.OpenDeliveryWorker. At the baseline,
+deliveryEnvironment creates a Slack-only origin dialer and Run adds another
+Slack-only gate. Supplying a separately approved Jira API origin must work
+through BOTH layers. Never remove the old Slack guard or replace/unwrap a
+caller-supplied narrower DialContext.
+
+ASPM_JIRA_API_ORIGINS is explicit process configuration, a JSON array with
+at most 16 unique canonical HTTPS origins. Unset, an empty environment string,
+and [] mean no additional origins. JSON whitespace around an array is valid;
+a nonempty whitespace-only string is not an empty setting. null, a scalar,
+object, nested array, nonstring element, trailing JSON, malformed JSON, empty
+origin, duplicate or oversized selection is invalid.
+
+An origin has lowercase "https://", a canonical host, and optionally an
+un-padded decimal port in 1..65535. No final slash, path, query (including a
+bare ?), fragment (including a bare #), userinfo, percent/backslash escapes,
+wildcard, whitespace or control is permitted. DNS names are lowercase ASCII
+labels, without a trailing dot, underscores or empty/edge-hyphen labels;
+explicit lowercase IDNA A-labels are allowed. IP literals must be canonical
+IPv4 or bracketed compressed lowercase IPv6; reject IPv4 shorthand, padded
+octets, zones and IPv4-mapped IPv6 aliases. Explicit :443 is permitted, but
+uniqueness compares the effective host/port, so host and host:443 duplicate.
+The existing Slack endpoint's accepted path/normalization/default rules are
+unchanged. A Jira origin equal to the Slack origin is allowed, not a duplicate
+of the implicit Slack member. Duplicate explicit Jira entries are still invalid.
+
+The runtime egress set is the trusted configured Slack origin UNION only the
+explicit Jira origins. This is not Jira permission, tenant/project discovery,
+a workspace-wide credential, or an automatic target selection. Shared gateway
+origins do not erase exact profile/path/credential/workspace/actor/target/
+revision/payload approval. Existing accepted backend binding checks remain.
+Do not add api.atlassian.com, Slack.com, vendor or arbitrary HTTP fallbacks.
+
+Programmatic service.Config carries JiraAPIOrigins []string with the same
+validation. New tests obtain the normal config through Environment. Reflection
+is used only for additional programmatic invalid-input and ownership probes,
+so missing new production fields cannot manufacture a compile-only RED.
+Environment/Run must retain snapshots without sorting/normalizing/clearing the
+caller's slice, client, transport, TLS policy/roots or integration key in place.
+
+Invalid selections fail before DB connections, provider I/O, service listener
+binding or worker startup. Errors identify ASPM_JIRA_API_ORIGINS/JiraAPIOrigins
+without echoing the private input or other configuration. An owned DB socket
+detector and already-bound health address witness preflight ordering.
+
+Preserve direct normal TLS/hostname verification with TLS >=1.2, explicitly
+bounded regular PEM CA input, Proxy:nil, no DialTLS bypass, no cookies or
+ambient credentials, redirect rejection, and bounded context-aware requests.
+Unknown origins are rejected before DNS/socket dialing. The environment client
+must admit every explicit member. Run's owned clone cannot retain an accidental
+inner Slack-only gate. A narrower caller dialer must still be invoked and obeyed.
+Delivery is DB/key-only and exposes only health, not S3/bootstrap/AI/core auth.
+
+Four bounded narratives
+-----------------------
+R1. SQL-free Environment/default/schema/origin/preflight checks. Actual trusted
+TLS native fixtures prove Slack and two separate explicit Jira origins. Owned
+socket and resolver-dial witnesses prove rejection before DNS/connect. Invalid
+programmatic origin slices use actual Run and the preflight witnesses. Existing
+Slack-only defaults and secure client policy are checked without vendor access.
+
+R2. Real core API/session/PG/S3 intake creates a finding, Jira connection, local
+preview and explicitly consented intent, plus one legacy Slack intent. No native
+traffic before the independently built actual main starts. Its explicit process
+environment contains only OS necessities and DB/key/listen/lease/gateways/public
+CA. Require one native createmeta GET and one Jira create POST, canonical ADF,
+committed create marker, selected credential/actor/target, and matching API/PG
+receipt. Slack reaches its separate owned TLS origin with its own token and
+unchanged route/body. Health is alive/ready, database:reachable,
+storage:not-required; /api/v1/session, /api/v1/login and / are 404.
+
+R3. Real API-approved connections do not override operator network policy.
+The actual main handles three explicitly queued negatives: an unapproved Jira
+origin, an approved origin returning a redirect, and an approved origin with
+an untrusted fresh TLS chain. Require zero sockets at the unapproved and
+redirect destinations; the TLS negative must positively reach the owned socket
+but deliver zero HTTP requests. No create marker, POST, receipt or blind repeat.
+A separate real Run step preserves a caller's narrower dial restriction and
+its configuration. SQL claim progress and full owned network ledgers bound the
+no-repeat observation; no elapsed-sleep substitute or forever/exactly-once claim.
+
+R4. Actual Environment+Run reaches a held native create. Cancel its service
+context, observe native request cancellation and complete listener/worker
+shutdown, and retain a durable uncertain receipt with the create marker.
+A fresh ACTUAL main process cannot resend it. After observed fresh claim-loop
+progress, a new separately previewed/consented intent succeeds. Old uncertainty
+and all native GET/POST/connection counts remain accounted for. The in-process
+Run input key/client/TLS/origin slice remain unchanged.
+Windows PID cleanup of a child is not graceful OS-signal evidence. Graceful
+cancellation is specifically the real Run context, not a fake main wrapper.
+Do not copy the accepted J4 revocation/fencing/corruption matrix.
+
+Bounded acceptable failure fields, fixed before tests
+---------------------------------------------------
+Every pre-create network negative: state terminal, receipt:null,
+createAttemptedAt:null, completedAt present, retryable:false, no missing-fields
+or native-code fabrication, no Retry-After, and no credential/error-body leak.
+For an origin/caller/TLS transport refusal, accept only these existing safe
+backend classifications (HTTP status 0):
+  failed / code:unavailable / stage:metadata
+  blocked / code:scope / stage:metadata
+  blocked / code:unavailable / stage:metadata
+  blocked / code:native-client-unavailable / stage:"" (pre-adapter rejection)
+The narrower-dial and TLS cases additionally require their respective positive
+dial/handshake witnesses; an early generic rejection cannot satisfy those.
+Metadata redirect is specifically blocked / scope / metadata / HTTP 307.
+No newly invented runtime error code is required. Deadline/canceled, auth,
+permission, confirmed or uncertain are not interchangeable with these negatives.
+The held attempted create is uncertain / uncertain / create, no receipt,
+retryable:false, and a durable createAttemptedAt. Existing backend API/PG
+definitions are authoritative; tests never synthesize a result.
+
+Reuse, observation and limits
+----------------------------
+New runtime_*_test.go files live in tests\jira_work_items and require BOTH
+integration AND jira_runtime. Frozen fixtures, API helpers, native server,
+SARIF intake, old tests/runners/testdata/contracts and the published UI139 are
+not edited. Ordinary integration-only backend runs cannot discover these cases.
+No new module/dependency, business SQL seeding, migration or production change.
+
+Reuse only the explicit private authenticated 127.0.0.1:15432 PG and
+127.0.0.1:18333 S3 runtime.json. Random jira_items_<24 hex> schemas and matching
+object prefixes use the existing bounded cleanup. Core/worker pools stay 1,
+observer pool 2. Per narrative: 90s, 220 API, 1400 SQL, 64 native HTTP and 64 S3
+socket writes. The runner's actual-run timeout is also 90s, with serial tests.
+No service/container/bucket/role/credential/trust-store repair or startup.
+Sol checks readiness; unavailable fixtures are BLOCKED, not a vendor fallback.
+
+New network helpers only forward bytes to exact owned listeners and observe
+them. Native TLS terminates at the unchanged native fixture, not at a fake
+RoundTripper. Fresh in-memory CA/leaf keys are reused from freshTLS; only public
+CA certificates may be written to the owned artifact directory.
+
+Because a separate main cannot inherit the fixture's QueryTracer, its exact
+PG traffic passes through a bounded loopback byte-forwarding observer to the
+same authenticated PG15432. It counts simple Query and extended Execute
+messages into the EXISTING 1400-operation fixture counter before forwarding.
+It never answers PG, rewrites SQL, changes rows or records credentials, SQL
+text, bind values, native request bodies or raw packets. The selected private
+PG fixture must explicitly use sslmode=disable, already local to this test;
+otherwise stop as BLOCKED rather than downgrade TLS or hide uncounted traffic.
+The observer counts all eligible-claim executions using the accepted query
+shape. Waiting for later claims is a progress condition, not a time-lag pass.
+Only observed intervals and destinations can support no-repeat statements.
+Any parser/capability/budget limitation is a blocker, never a skipped green.
+
+Exact execution handoff
+----------------------
+New Test-JiraRuntime.ps1 takes an ABSOLUTE RuntimeConfig and a unique OutputName.
+Use cached Go1.27.1, local/offline modules, -mod=readonly, no install/restore.
+Evidence/work paths are new .artifacts\jira-runtime\<OutputName> and
+.cache\jira-runtime\<OutputName>, outside protected test/production roots;
+the existing .cache\build compiler cache is reused without installing packages.
+Compile with integration,jira_runtime, build actual cmd/delivery-worker, then
+execute that freshly compiled tagged harness with -test.run=^TestJiraRuntime,
+-test.timeout=90s and -test.parallel=1. Do not rebuild a different harness for
+actualrun. It is the test runner, never a substitute delivery command.
+Receipt phases are compile, mainbuild, actualrun,
+each independently NOT_EXECUTED until reached. Hash the actual built main,
+record real source/diff inputs, role health, native/socket/SQL ledgers and
+bounded cleanup, and redact private runtime values. Never hardcode a claim
+that production stayed unchanged after Sol later implements the feature.
+No historical test binary, app-worker replacement or test-main wrapper can
+stand in for this command.
+
+One unsigned HANDOFF.json lists new hashes and known unchanged inputs.
+Astra's expected baseline RED is ignored malformed origin configuration and
+the environment/Run Slack-only dial gates. Compile success, exact first RED,
+fixture readiness, all later assertions and budgets remain NOT EXECUTED.
+Sol compiles/calibrates and reproduces genuine initial RED. Parent seals only
+after actual RED. Test corrections remain Astra-authored and justified.
+No reviewer, broad runtime/UI/vendor qualification, commit, signing, deployment,
+or whole-project completion follows from this authoring slice.
+
+Child-start identity evidence is written immediately for each actual main
+PID. On abnormal harness exit, the runner only stops that exact PID after
+matching its unique invocation binary path/hash and process start interval.
+It never kills by name. Any refused cleanup or timeout remains explicit.
+Source/file hashing and authoring inspection are not compile/run evidence.

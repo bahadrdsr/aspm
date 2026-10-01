@@ -551,7 +551,7 @@ loss clears drafts and intents and aborts late responses. Jira UI metadata and
 receipts do not prove vendor permissions, resolve a finding or qualify a live
 native account or deployed workflow.
 
-For this initial managed notification profile, core and `cmd\delivery-worker`
+For managed Slack and Jira delivery, core and `cmd\delivery-worker`
 must receive the same independently generated 32-byte key through protected
 `ASPM_INTEGRATION_ENCRYPTION_KEY` configuration, encoded as canonical standard
 base64. Do not derive it from database, bootstrap or storage credentials.
@@ -565,6 +565,20 @@ go run .\cmd\delivery-worker
 
 The default outbound base is `https://slack.com`. Only trusted process
 configuration may select an approved HTTPS gateway and its optional CA file.
+Jira delivery additionally requires explicit `ASPM_JIRA_API_ORIGINS`, a JSON
+array of at most 16 unique canonical HTTPS origins, without paths or trailing
+slashes. Unset, empty-string and `[]` retain Slack-only network admissions.
+For example, an operator-approved process environment can set:
+
+```powershell
+$env:ASPM_JIRA_API_ORIGINS = '["https://jira-gateway.example.invalid"]'
+```
+
+Those origins expand only the delivery network boundary. They do not grant Jira
+permissions, select a tenant/project/token or replace backend queue approval.
+Caller-supplied narrower dial policies remain enforced. No Atlassian destination
+is inferred or automatically admitted. Existing Helm/Quadlet origin-setting
+wiring and live Jira accounts are not qualified by this runtime slice.
 See `internal\service\README.txt` for transport, lease and shutdown behavior.
 Helm and manual Quadlet deployment of this role are explicit opt-ins; see
 `docs\m02-runtime.md`. Installer key/env-file provisioning and automatic scheduling,

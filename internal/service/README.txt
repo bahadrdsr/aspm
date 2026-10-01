@@ -16,7 +16,27 @@ Delivery-specific settings:
   ASPM_DB_MAX_CONNECTIONS: defaults to 1; values 1..100 are supported
   ASPM_DELIVERY_LEASE_DURATION: defaults to 15s; accepted range 250ms..1m
   ASPM_SLACK_ENDPOINT: defaults to https://slack.com; trusted HTTPS base only
+  ASPM_JIRA_API_ORIGINS: optional JSON array of at most 16 canonical HTTPS origins
   ASPM_DELIVERY_CA_FILE: optional regular PEM certificate file, at most 1 MiB
+
+Unset, empty-string and [] Jira selections add no network destinations. Other
+inputs must be a JSON array of unique strings: lowercase https:// and canonical
+lowercase ASCII DNS names, IPv4 or bracketed compressed IPv6, optionally with an
+unpadded port from 1..65535. Paths, trailing slashes/dots, query, fragment,
+credentials, escapes, wildcards, whitespace, controls and IP aliases are
+rejected. Host and host:443 count as duplicate explicit origins. A Jira origin
+equal to the configured Slack origin is allowed. JSON whitespace around an
+array is valid; a whitespace-only setting or null is not.
+
+Both Environment and Run admit only the trusted Slack origin plus that explicit
+Jira set. Programmatic Config.JiraAPIOrigins uses the same validation before
+database, native or listener activity; private values are not echoed in errors.
+Run snapshots the origin slice and key without changing caller backing storage.
+Its owned transport wraps, rather than replaces or unwraps, any supplied
+DialContext, so a caller's narrower network policy still applies. Configuring
+an origin grants no Jira permission or target/credential selection. The accepted
+backend still enforces profile, workspace, actor, target, revision and consent.
+No Atlassian or other provider destination is implicitly added.
 
 The ordinary service listen/TLS settings apply to health endpoints. Delivery
 ignores unrelated S3/readiness/bootstrap environment values; it does not derive
@@ -35,6 +55,10 @@ database/schema/provider/listener activity. It clones the approved client,
 transport and trust pool, applies the explicit CA policy to its private copy,
 and preserves the configured endpoint, headers and native payload. Caller-owned
 transport pools are not closed or mutated by Run.
+
+Provision Jira origins through the protected delivery process environment.
+Existing Helm/Quadlet origin-setting wiring and live Jira account access are not
+qualified by this service change; deployment and native UI flows remain separate.
 
 The processing loop calls the accepted ProcessNext without interpreting or
 rewriting outbox state. It waits 200ms only for false,nil idle results, with

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"time"
@@ -10,6 +11,14 @@ import (
 )
 
 func deliveryEnvironment(config *Config) error {
+	if value := os.Getenv("ASPM_JIRA_API_ORIGINS"); value != "" {
+		if err := json.Unmarshal([]byte(value), &config.JiraAPIOrigins); err != nil || config.JiraAPIOrigins == nil {
+			return errors.New("ASPM_JIRA_API_ORIGINS must be a JSON array of canonical HTTPS origins")
+		}
+	}
+	if _, err := jiraOriginAddresses(config.JiraAPIOrigins); err != nil {
+		return err
+	}
 	key, err := integrationEncryptionKey(os.Getenv("ASPM_INTEGRATION_ENCRYPTION_KEY"), true)
 	if err != nil {
 		return err
@@ -27,7 +36,7 @@ func deliveryEnvironment(config *Config) error {
 		return err
 	}
 	config.DeliveryCAFile = os.Getenv("ASPM_DELIVERY_CA_FILE")
-	config.DeliveryClient, err = newProviderClient(config.SlackEndpoint, config.DeliveryCAFile)
+	config.DeliveryClient, err = newProviderClient(config.SlackEndpoint, config.DeliveryCAFile, config.JiraAPIOrigins...)
 	return err
 }
 
@@ -40,6 +49,9 @@ func deliveryWorkerConfig(config Config) app.DeliveryWorkerConfig {
 }
 
 func validateDeliveryConfig(config Config) error {
+	if _, err := jiraOriginAddresses(config.JiraAPIOrigins); err != nil {
+		return err
+	}
 	if err := app.ValidateDeliveryWorkerConfig(deliveryWorkerConfig(config)); err != nil {
 		return err
 	}
