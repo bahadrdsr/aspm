@@ -16,6 +16,30 @@
 {{- end -}}
 {{- $enabled = $delivery.enabled -}}
 {{- end -}}
+{{- if hasKey $delivery "jiraAPIOrigins" -}}
+{{- $origins := get $delivery "jiraAPIOrigins" -}}
+{{- if not (kindIs "invalid" $origins) -}}
+{{- if not (kindIs "slice" $origins) -}}
+{{- fail "delivery.jiraAPIOrigins must be an array of at most 16 HTTPS origin strings" -}}
+{{- end -}}
+{{- if gt (len $origins) 16 -}}
+{{- fail "delivery.jiraAPIOrigins must contain at most 16 origins" -}}
+{{- end -}}
+{{- $seen := dict -}}
+{{- range $origin := $origins -}}
+{{- if not (kindIs "string" $origin) -}}
+{{- fail "delivery.jiraAPIOrigins entries must be strings" -}}
+{{- end -}}
+{{- if or (not (regexMatch "^https://[^/?#@*[:space:][:cntrl:]\\p{Z}\\p{Cc}]+$" $origin)) (contains "\\" $origin) -}}
+{{- fail "delivery.jiraAPIOrigins entries must be HTTPS origins without credentials, paths, queries, fragments, wildcards or whitespace" -}}
+{{- end -}}
+{{- if hasKey $seen $origin -}}
+{{- fail "delivery.jiraAPIOrigins must not contain duplicate origins" -}}
+{{- end -}}
+{{- $_ := set $seen $origin true -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 {{- $key := dict -}}
 {{- if hasKey .Values "integrationKeySecret" -}}
 {{- if not (kindIs "map" .Values.integrationKeySecret) -}}
@@ -114,6 +138,10 @@
   value: {{ $settings.leaseDuration | quote }}
 - name: ASPM_SLACK_ENDPOINT
   value: {{ $settings.slackEndpoint | quote }}
+{{- if $settings.jiraAPIOrigins }}
+- name: ASPM_JIRA_API_ORIGINS
+  value: {{ $settings.jiraAPIOrigins | mustToJson | quote }}
+{{- end }}
 {{- end }}
 {{- if or (eq $role "core") (eq $role "collection") }}
 {{ include "aspm.collectionEnvironment" . }}

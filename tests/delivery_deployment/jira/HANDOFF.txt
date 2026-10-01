@@ -1,0 +1,60 @@
+Jira deployment origin selection: authored-only handoff, October 1, 2026
+
+Baseline 8251106903e13c0776359206c23ad60a591cf5f0.
+Astra wrote CONTRACT.txt before jira_origins_test.go. Sol owns all compile,
+render, implementation, build and publication execution. No reviewer.
+
+New controls:
+tests\delivery_deployment\jira\CONTRACT.txt
+tests\delivery_deployment\jira\HANDOFF.txt
+tests\delivery_deployment\jira_origins_test.go
+
+No production, existing tests/helpers/runners, module/lock, installer,
+Quadlet, runtime, UI or signature change is part of this authoring handoff.
+Compile, formatting, real Helm baseline, all positive and negative tails,
+old compatibility checks and publication are NOT EXECUTED by Astra.
+
+Use the existing cached Go 1.27.1 and actual cached Helm executable. No
+installation, API server, kubeconfig discovery, vendor credentials or PG/S3
+fixtures are needed. Reuse the published delivery_deployment nested module
+and its real client-only Helm/YAML helper. Do not fabricate rendered output.
+
+Executor setup:
+  cwd C:\bahadr\serious\aspm\tests\delivery_deployment
+  ASPM_DELIVERY_DEPLOY_HELM: explicit absolute existing Helm executable
+  ASPM_DELIVERY_DEPLOY_ARTIFACTS: fresh absolute ignored artifact directory
+  GOTOOLCHAIN=local; GOENV=off; GOWORK=off; GOFLAGS=
+  GOPROXY=off; GOSUMDB=off
+  GOMODCACHE and GOCACHE: existing repository .cache\modules and .cache\build
+  GOPATH/GOTMPDIR: owned ignored working directories, never global changes
+
+Initial command with the cached go.exe:
+  go test -json -mod=readonly -count=1 -timeout=120s -run=^TestJiraDeployment .
+
+Expected source-derived RED, not yet observed: shipped jiraAPIOrigins default
+is absent, explicit origins are not emitted, and malformed selections are
+ignored. A source-only missing-default assertion is not a substitute for the
+positive/negative cases reaching actual Helm. Compile/tool/fixture problems
+are blockers, not passing or failing product behavior.
+
+Before and after execution, record hashes for the three new controls and the
+existing tracked source/test/compiler/config closure. Record concise results
+and evidence paths, not duplicate full inventories in the handoff.
+Do not use an old signed config to pretend the new tests are already sealed.
+Parent seals only after actual baseline evidence. No implementation yet.
+
+After sealing and implementation, the combined relevant Helm selector is:
+  -run=^(TestJiraDeployment|TestDeliveryDeploymentHelm)
+Old artifacts/native Quadlet generator cases are outside this changed scope;
+their source files and shipped unit must stay unchanged. Do not require WSL
+or installed Podman merely to execute this Helm-only selector.
+
+The renderer's existing 15-second per-call timeout, output cap and isolated
+empty kubeconfig remain unchanged. The nested module needs no new dependency.
+If any authored test has a genuine compilation or Helm-representation error,
+report it to Astra; do not weaken tests, rewrite old helpers or alter runtime
+behavior to work around it. Preserve failed-attempt evidence.
+
+Publication remains held. Actual cluster/systemd activation, rendered-to-main
+or browser-to-worker native flow, and live Jira permission are not qualified
+by this handoff or by a successful client render.

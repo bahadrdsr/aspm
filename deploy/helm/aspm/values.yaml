@@ -37,6 +37,7 @@ reports:
     limits: {cpu: "1", memory: 512Mi}
 delivery:
   enabled: false
+  jiraAPIOrigins: []
   replicas: 1
   leaseDuration: "15s"
   slackEndpoint: "https://slack.com"

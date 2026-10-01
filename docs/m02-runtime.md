@@ -179,6 +179,31 @@ bootstrap or UI credentials. The chart rejects non-string lease/gateway values
 and credential-bearing gateways; the runtime remains authoritative for full
 duration and HTTPS-base validation.
 
+`delivery.jiraAPIOrigins` defaults to `[]`, retaining Slack-only network
+admission. With the existing integration-key Secret selectors configured, an
+operator can explicitly select delivery and an ordered list of approved origins:
+
+```yaml
+delivery:
+  enabled: true
+  jiraAPIOrigins:
+    - "https://jira-gateway.example.invalid"
+```
+
+A nonempty selection does not enable delivery. Only the enabled delivery main
+container receives `ASPM_JIRA_API_ORIGINS` as a literal JSON-array string in the
+selected order, not a Secret reference. Other roles and init containers receive
+no Jira-origin setting. Empty, omitted or Helm-null selections emit no variable;
+Helm null removes the merged key. Global values are not a fallback.
+
+The chart validates arrays of at most 16 strings, exact duplicates and obvious
+unsafe origin shapes even while delivery is disabled. The runtime remains
+authoritative for full canonical DNS/IP syntax, effective-port alias uniqueness
+and actual transport admission. Origin admission is additional to approval of
+the exact workspace Jira connection and does not verify Jira permissions.
+Client-only chart rendering checks shape and wiring, not worker activation,
+native network policy or a live Jira account.
+
 Source collection is a separate opt-in. `collection.enabled` defaults to the
 boolean `false`; neither it nor `delivery.enabled` enables the other role.
 `collection.storage` selects explicit `endpoint`, `bucket`, `prefix` and `region`
@@ -347,6 +372,19 @@ provision this env file or activate delivery. Protected key/file provisioning
 and an explicit operator-controlled worker start are separate from shipping
 the unit. Client rendering and rootless native-generator dryruns are not
 Kubernetes/systemd activation or proof that credentials have been provisioned.
+
+For this unchanged manual Quadlet, put the same JSON selection in the existing
+protected `/etc/aspm/delivery.env`:
+
+```dotenv
+ASPM_JIRA_API_ORIGINS=["https://jira-gateway.example.invalid"]
+```
+
+Podman's `--env-file` parsing retains the right-hand-side value. Do not wrap the
+whole JSON array in shell-style single or double quotes; the JSON quotes around
+each origin are required. An unset or empty value, or `[]`, retains Slack-only
+admission. This selection does not change the unit, installer, automatic start,
+credential provisioning or TLS trust configuration.
 
 `aspm-collection.container` likewise remains manual opt-in with no `[Install]`
 configuration. Its only environment source is `/etc/aspm/collection.env`, which

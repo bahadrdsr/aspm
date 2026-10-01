@@ -1,0 +1,96 @@
+Jira origin deployment selection, October 1, 2026
+
+Baseline: 8251106903e13c0776359206c23ad60a591cf5f0.
+Astra authors this contract and its new tests. Sol performs all compilation,
+Helm rendering, implementation and validation. No reviewer. No run has been
+performed by the author, and this document is not deployment evidence.
+
+Scope
+
+Expose the already implemented ASPM_JIRA_API_ORIGINS runtime setting through
+delivery.jiraAPIOrigins in the Helm chart. Default exactly [] in values.yaml.
+Delivery remains opt-in. A nonempty selection does not enable the worker.
+An enabled worker receives a single literal environment STRING containing
+the JSON array in the caller's order. Do not join entries with commas,
+double-encode JSON, invent a vendor origin or use a Secret/ambient fallback.
+Empty or omitted selection adds no environment variable and preserves the
+existing Slack-only default. Global values are not an origin-selection source.
+
+Helm null removes a merged key, so an explicit null is treated as omission,
+not serialized to the runtime as JSON null. The runtime still rejects a
+literal JSON-null ASPM_JIRA_API_ORIGINS value. These are distinct boundaries.
+
+Only the delivery main container receives the setting. Core, ingestion,
+reports, collection, assessment and all init containers receive no Jira
+origin environment. Existing DB/key selectors, Slack gateway, independent
+role activation and storage separation remain unchanged. Enabling all six
+roles in the new fixture must not change this isolation.
+
+Chart validation
+
+The effective non-null value must be an array of at most 16 strings.
+Reject wrong types, null/non-string entries, empty/whitespace entries,
+exact duplicate strings and obvious non-origin shapes: non-HTTPS scheme,
+credentials, trailing slash/path, query, fragment, wildcard or control text.
+Fail rendering with the delivery.jiraAPIOrigins path, also while delivery is
+disabled. Do not echo a credential-bearing invalid value in the error.
+
+Full canonical DNS/IP syntax, effective-port alias uniqueness and all actual
+transport admission remain governed by the published runtime validator.
+Do not duplicate its entire host parser in Helm or claim rendering alone
+proves native network policy. Positive values include canonical DNS origins,
+an explicit port and bracketed IPv6, and the full 16-entry bound. Their JSON
+strings must reach the rendered worker unchanged.
+
+Operator documentation
+
+Update the existing deployment/runtime documentation with an explicit Helm
+selection and its empty default. Explain that network admission is additional
+to workspace connection approval and does not verify Jira permissions.
+For the unchanged manual Quadlet, show the same JSON setting in the existing
+protected /etc/aspm/delivery.env. Podman 4.9 env-file parsing retains the
+right-hand-side value, so do not put shell-style quotes around the whole JSON
+array. JSON quotes around the individual strings are required.
+Example file line:
+ASPM_JIRA_API_ORIGINS=["https://jira-gateway.example.invalid"]
+
+The existing delivery Quadlet, installer copying/start behavior, Secret
+provisioning and worker activation remain unchanged. This slice does not add
+automatic installation, trust-store modification, CA/key generation, cluster
+deployment or systemd activation. Existing literal environment-file routing
+and previous native generator evidence are not a new environment-file run.
+
+Acceptance
+
+Reuse the existing delivery_deployment module and actual Helm/YAML helpers.
+Add only jira_origins_test.go; leave old tests, helpers, runner, module files,
+compiler settings and runtime source unchanged.
+
+1. Shipped empty default, explicit/implicit disabled worker, enabled empty
+   selection, Helm null omission, and no global fallback.
+2. Literal ordered JSON with all six roles enabled, 16-origin boundary,
+   delivery-only placement and preserved original settings/Secret references.
+3. Effective malformed types/entries/duplicates/obvious unsafe URI shapes
+   rejected by real client-only Helm rendering, without private input echo.
+
+No fabricated Helm output or regular-expression-only source test can replace
+those renders. Existing helpers use an explicit cached Helm executable,
+empty kubeconfig, isolated HOME/plugin directories, bounded output and a
+15-second per-render timeout. Use the existing offline Go/module cache.
+No package/tool installation or Kubernetes/vendor credentials are required.
+
+Sol first compiles and executes only ^TestJiraDeployment with fresh ignored
+artifact output. Classify missing field/rendered value or ignored validation
+as genuine RED only after the real renderer ran. Compilation/tool/fixture
+problems are prerequisites, not product failures. Parent seals after RED.
+After implementation run these cases and the existing Helm delivery cases.
+UI139, native Jira runtime, migrations, images, unrelated suites and unchanged
+Quadlet generator need not be rerun for this Helm/documentation-only delta.
+
+Provenance consulted October 1, 2026:
+Published internal/service delivery parser and tests/jira_work_items/runtime.
+Existing tests/delivery_deployment Helm helpers and accepted role fixtures.
+Helm values-file documentation, section Deleting a default key:
+`https://helm.sh/docs/chart_template_guide/values_files/`
+Podman 4.9.3 env-file parser, ParseFile and parseEnv:
+`https://raw.githubusercontent.com/containers/podman/v4.9.3/pkg/env/env.go`

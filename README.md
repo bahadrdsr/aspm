@@ -574,11 +574,17 @@ For example, an operator-approved process environment can set:
 $env:ASPM_JIRA_API_ORIGINS = '["https://jira-gateway.example.invalid"]'
 ```
 
-Those origins expand only the delivery network boundary. They do not grant Jira
-permissions, select a tenant/project/token or replace backend queue approval.
+Those origins expand only the delivery network boundary. They do not replace
+approval of the exact workspace Jira connection or explicit queue consent,
+grant Jira permissions, or select a tenant/project/token.
 Caller-supplied narrower dial policies remain enforced. No Atlassian destination
-is inferred or automatically admitted. Existing Helm/Quadlet origin-setting
-wiring and live Jira accounts are not qualified by this runtime slice.
+is inferred or automatically admitted. For Helm, `delivery.jiraAPIOrigins`
+defaults to `[]` and passes a nonempty ordered selection as a literal JSON string
+only to the enabled delivery main container; it does not enable the worker.
+The unchanged manual Quadlet reads the same variable from the existing protected
+`/etc/aspm/delivery.env`, without shell quotes around the whole JSON array.
+Client rendering and env-file selection do not activate services or qualify a
+live Jira account.
 See `internal\service\README.txt` for transport, lease and shutdown behavior.
 Helm and manual Quadlet deployment of this role are explicit opt-ins; see
 `docs\m02-runtime.md`. Installer key/env-file provisioning and automatic scheduling,

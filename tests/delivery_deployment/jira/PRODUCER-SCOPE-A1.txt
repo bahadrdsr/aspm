@@ -1,0 +1,24 @@
+Deployment producer-scope correction, October 1, 2026
+
+The initial jira-deployment-v1 capture inherited exact-byte controls for
+three files that this feature explicitly authorizes the implementer to edit:
+
+deploy/helm/aspm/values.yaml
+deploy/helm/aspm/templates/_helpers.tpl
+docs/m02-runtime.md
+
+Those files are the chart and documentation under test, not acceptance
+oracles. The active A1 control set removes only those three entries from
+the immutable-control list. They must remain in the complete tested-input
+scope and its before/after source digest on every guarded validation.
+
+All tests, assertions, helpers, compiler/module settings, budgets and other
+fixed controls remain unchanged. The original signed manifest and signature
+are preserved as history and are themselves fixed inputs in A1.
+No test case or expected behavior is removed or relaxed.
+
+The producer has not changed since the original actual Helm baseline:
+45 renders, five omission/default passes, two missing positive emissions and
+38 ignored-validation failures, plus the separate missing-default assertion.
+The original RED evidence remains applicable to this corrected pre-code
+scope. This amendment does not claim a new run, acceptance or deployment.
