@@ -110,6 +110,42 @@ old Slack values/null additions are preserved. UI/deployed-runtime setup, live
 vendor authority, Data Center, status sync and broader recovery qualification
 remain separate work.
 
+Selected Teams Workflow notifications
+====================================
+
+Teams extends the same connections, local previews, finding delivery outbox and
+DeliveryWorker with teams-workflows-channel. An administrator supplies the whole
+write-only workflowUrl, declares channelType:standard and explicitly acknowledges
+Workflow owner/co-owner continuity. That declaration is not verified ownership,
+permission or channel identity. The common channel field remains empty.
+Metadata exposes only the canonical HTTPS workflowOrigin and the declaration.
+The entire original callback URL is encrypted with the existing independent key
+and envelope, using aspm/teams-workflow-credential/v1 + NUL + workspace + NUL +
+connection AAD. Exact URL/configuration no-ops preserve ciphertext and revision.
+
+Admin/analyst preview is local, exports only canonical title/severity/asset/link,
+and requires explicit queue consent with the current actor/revision/destination/
+payload digest. The idempotency key is also bound into the stored intent.
+Explicit Teams list selection never changes the default Slack-only lists or old
+Slack/Jira DTOs, digests, credential domains and queue bodies.
+
+Local admission and native Send share the adapter's exact Adaptive Card 1.4
+serialization and 28 KiB byte cap. This is an adapter bound, not a universal
+Teams platform limit. The worker preserves the complete escaped callback path
+and raw signed query. It uses only an explicit direct normal-TLS client narrowed
+to that origin, with no token header, proxy, redirects or alternate profile.
+The existing reviewed-delivery authority/watch/fence guard commits the durable
+attempt marker before POST, releases SQL locks during I/O, cancels held work
+on authority changes and never blindly resends possible writes.
+
+Native 202 is accepted with a NULL receipt, not confirmed or channel delivery.
+Teams exposes outboundAttemptedAt for the shared create_attempted_at marker.
+Failures never retain native messages, codes or secret URL components.
+V11 adds only two nullable teams_target JSONB columns and replaces the four
+existing profile/target CHECKs. Historical migrations and old values remain.
+Teams UI, actual delivery-main origin policy, deployment and live account/channel
+qualification are separate gates and are not provided by this backend increment.
+
 Selected GitHub source collection
 ================================
 

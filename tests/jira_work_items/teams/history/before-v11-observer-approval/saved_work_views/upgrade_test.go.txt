@@ -135,9 +135,9 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 		"legacyDefinitionsSHA256": digest(encode(t, definitions)), "businessSQLSeeds": false}
 	output := filepath.Join("..", "..", ".artifacts", "saved-work-views-v1", "published-v8-upgrade-"+nonce(t)+".json")
 	must(t, "record nonsecret actual migration observation", os.WriteFile(output, encode(t, observation), 0600))
-	same(t, "current production open did not apply through additive V11 over actual populated published V8",
-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
-	same(t, "V11 changed a published legacy definition", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
+	same(t, "current production open did not apply through additive V10 over actual populated published V8",
+		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"})
+	same(t, "V10 changed a published legacy definition", deliverycompat.Project(t, definitions, f.definitions(names)), definitions)
 	same(t, "V10 changed actual published API-created business rows", f.snapshot(names), before)
 	checkLegacy := func() {
 		t.Helper()
@@ -160,7 +160,7 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 	h.reopen()
 	same(t, "new saved preference lost on upgraded app reopen", h.get(legacy.Viewer, v.ID), v)
 	same(t, "upgraded reopen repeated/skipped migration", f.ledger(), after)
-	same(t, "upgraded reopen altered legacy definitions", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
+	same(t, "upgraded reopen altered legacy definitions", deliverycompat.Project(t, definitions, f.definitions(names)), definitions)
 	same(t, "saved preference/reopen changed pre-upgrade legacy rows", f.snapshot(names), before)
 	checkLegacy()
 	t.Log("actual populated published V8 -> V10, canonical saved view reopen and original human/source/role state reached")

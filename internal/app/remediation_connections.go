@@ -12,18 +12,19 @@ import (
 )
 
 type IntegrationConnection struct {
-	ID                   string      `json:"id"`
-	WorkspaceID          string      `json:"workspaceId"`
-	Profile              string      `json:"profile"`
-	Name                 string      `json:"name"`
-	Channel              string      `json:"channel"`
-	Enabled              bool        `json:"enabled"`
-	CredentialConfigured bool        `json:"credentialConfigured"`
-	Revision             int64       `json:"revision"`
-	CreatedAt            time.Time   `json:"createdAt"`
-	UpdatedAt            time.Time   `json:"updatedAt"`
-	Jira                 *JiraTarget `json:"jira,omitempty"`
-	PermissionState      string      `json:"permissionState,omitempty"`
+	ID                   string         `json:"id"`
+	WorkspaceID          string         `json:"workspaceId"`
+	Profile              string         `json:"profile"`
+	Name                 string         `json:"name"`
+	Channel              string         `json:"channel"`
+	Enabled              bool           `json:"enabled"`
+	CredentialConfigured bool           `json:"credentialConfigured"`
+	Revision             int64          `json:"revision"`
+	CreatedAt            time.Time      `json:"createdAt"`
+	UpdatedAt            time.Time      `json:"updatedAt"`
+	Jira                 *JiraTarget    `json:"jira,omitempty"`
+	Teams                *TeamsMetadata `json:"teams,omitempty"`
+	PermissionState      string         `json:"permissionState,omitempty"`
 }
 
 type integrationConnectionRecord struct {
@@ -32,17 +33,20 @@ type integrationConnectionRecord struct {
 }
 
 const integrationConnectionColumns = `id,workspace_id,profile,name,channel,enabled,
-	revision,created_at,updated_at,credential_ciphertext,jira_target`
+	revision,created_at,updated_at,credential_ciphertext,jira_target,teams_target`
 
 func scanIntegrationConnection(row pgx.Row) (integrationConnectionRecord, error) {
 	var record integrationConnectionRecord
-	var target []byte
+	var target, teams []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.Profile, &record.Name, &record.Channel,
-		&record.Enabled, &record.Revision, &record.CreatedAt, &record.UpdatedAt, &record.ciphertext, &target)
+		&record.Enabled, &record.Revision, &record.CreatedAt, &record.UpdatedAt, &record.ciphertext, &target, &teams)
 	if err == nil && len(target) != 0 {
 		err = json.Unmarshal(target, &record.Jira)
 	}
-	if record.Profile == connectors.JiraCloudV3 {
+	if err == nil && len(teams) != 0 {
+		err = json.Unmarshal(teams, &record.Teams)
+	}
+	if record.Profile == connectors.JiraCloudV3 || record.Profile == connectors.TeamsWorkflows {
 		record.PermissionState = "not-verified"
 	}
 	record.CredentialConfigured = len(record.ciphertext) > 0
@@ -51,32 +55,53 @@ func scanIntegrationConnection(row pgx.Row) (integrationConnectionRecord, error)
 
 func (a *Application) createIntegrationConnection(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession) error {
 	var input struct {
-		Profile string               `json:"profile"`
-		Name    string               `json:"name"`
-		Channel optional[string]     `json:"channel"`
-		Token   string               `json:"token"`
-		Enabled *bool                `json:"enabled"`
-		Jira    optional[JiraTarget] `json:"jira"`
+		Profile     string                       `json:"profile"`
+		Name        string                       `json:"name"`
+		Channel     optional[string]             `json:"channel"`
+		Token       optional[string]             `json:"token"`
+		Enabled     *bool                        `json:"enabled"`
+		Jira        optional[JiraTarget]         `json:"jira"`
+		WorkflowURL optional[string]             `json:"workflowUrl"`
+		Teams       optional[teamsConfiguration] `json:"teams"`
 	}
 	if err := a.decode(w, r, &input, 32<<10); err != nil {
 		return err
 	}
-	if !validText(input.Name, 256) || !validConnectionToken(input.Profile, input.Token) || input.Enabled == nil {
+	if !validText(input.Name, 256) || input.Enabled == nil {
 		return errInvalid
 	}
-	channel := ""
+	channel, credential := "", ""
+	var teams *TeamsMetadata
 	switch input.Profile {
 	case connectors.SlackWorkspaceBot:
-		if input.Channel.Value == nil || !integrationChannel.MatchString(*input.Channel.Value) || input.Jira.Set {
+		if input.Channel.Value == nil || !integrationChannel.MatchString(*input.Channel.Value) || input.Jira.Set ||
+			input.WorkflowURL.Set || input.Teams.Set {
 			return errInvalid
 		}
 		channel = *input.Channel.Value
 	case connectors.JiraCloudV3:
-		if input.Channel.Set || !validJiraTarget(input.Jira.Value) {
+		if input.Channel.Set || !validJiraTarget(input.Jira.Value) || input.WorkflowURL.Set || input.Teams.Set {
 			return errInvalid
 		}
+	case connectors.TeamsWorkflows:
+		if input.Channel.Set || input.Token.Set || input.Jira.Set || input.WorkflowURL.Value == nil ||
+			!validTeamsConfiguration(input.Teams.Value) {
+			return errInvalid
+		}
+		origin, valid := teamsWorkflowOrigin(*input.WorkflowURL.Value)
+		if !valid {
+			return errInvalid
+		}
+		credential = *input.WorkflowURL.Value
+		teams = &TeamsMetadata{origin, input.Teams.Value.ChannelType, input.Teams.Value.OwnershipAcknowledged}
 	default:
 		return errInvalid
+	}
+	if input.Profile != connectors.TeamsWorkflows {
+		if input.Token.Value == nil || !validConnectionToken(input.Profile, *input.Token.Value) {
+			return errInvalid
+		}
+		credential = *input.Token.Value
 	}
 	if a.integrationCredentials == nil {
 		return errUnavailable
@@ -99,21 +124,27 @@ func (a *Application) createIntegrationConnection(w http.ResponseWriter, r *http
 		return errForbidden
 	}
 	id := newID()
-	ciphertext, err := sealConnectionToken(a.integrationCredentials, input.Profile, workspace, id, input.Token)
+	ciphertext, err := sealConnectionToken(a.integrationCredentials, input.Profile, workspace, id, credential)
 	if err != nil {
 		return err
 	}
-	var target []byte
+	var target, teamTarget []byte
 	if input.Jira.Value != nil {
 		target, err = json.Marshal(input.Jira.Value)
 		if err != nil {
 			return err
 		}
 	}
+	if teams != nil {
+		teamTarget, err = json.Marshal(teams)
+		if err != nil {
+			return err
+		}
+	}
 	record, err := scanIntegrationConnection(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("integration_connections")+`
-		(id,workspace_id,profile,name,channel,credential_ciphertext,enabled,created_at,updated_at,jira_target)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$8,$9) RETURNING `+integrationConnectionColumns,
-		id, workspace, input.Profile, input.Name, channel, ciphertext, *input.Enabled, a.config.Now().UTC(), target))
+		(id,workspace_id,profile,name,channel,credential_ciphertext,enabled,created_at,updated_at,jira_target,teams_target)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$10) RETURNING `+integrationConnectionColumns,
+		id, workspace, input.Profile, input.Name, channel, ciphertext, *input.Enabled, a.config.Now().UTC(), target, teamTarget))
 	if err != nil {
 		return err
 	}
@@ -126,11 +157,13 @@ func (a *Application) createIntegrationConnection(w http.ResponseWriter, r *http
 
 func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession, id string) error {
 	var input struct {
-		Name    optional[string]     `json:"name"`
-		Channel optional[string]     `json:"channel"`
-		Token   optional[string]     `json:"token"`
-		Enabled optional[bool]       `json:"enabled"`
-		Jira    optional[JiraTarget] `json:"jira"`
+		Name        optional[string]             `json:"name"`
+		Channel     optional[string]             `json:"channel"`
+		Token       optional[string]             `json:"token"`
+		Enabled     optional[bool]               `json:"enabled"`
+		Jira        optional[JiraTarget]         `json:"jira"`
+		WorkflowURL optional[string]             `json:"workflowUrl"`
+		Teams       optional[teamsConfiguration] `json:"teams"`
 	}
 	if err := a.decode(w, r, &input, 32<<10); err != nil {
 		return err
@@ -139,7 +172,9 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 		input.Channel.Set && (input.Channel.Value == nil || !integrationChannel.MatchString(*input.Channel.Value)) ||
 		input.Token.Set && (input.Token.Value == nil || !validIntegrationToken(*input.Token.Value)) ||
 		input.Enabled.Set && input.Enabled.Value == nil ||
-		input.Jira.Set && !validJiraTarget(input.Jira.Value) {
+		input.Jira.Set && !validJiraTarget(input.Jira.Value) ||
+		input.WorkflowURL.Set && (input.WorkflowURL.Value == nil || !validConnectionToken(connectors.TeamsWorkflows, *input.WorkflowURL.Value)) ||
+		input.Teams.Set && !validTeamsConfiguration(input.Teams.Value) {
 		return errInvalid
 	}
 	tx, err := a.pool.Begin(r.Context())
@@ -161,6 +196,8 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 	}
 	if record.Profile == connectors.JiraCloudV3 && input.Channel.Set ||
 		record.Profile == connectors.SlackWorkspaceBot && input.Jira.Set ||
+		record.Profile != connectors.TeamsWorkflows && (input.WorkflowURL.Set || input.Teams.Set) ||
+		record.Profile == connectors.TeamsWorkflows && (input.Token.Set || input.Channel.Set || input.Jira.Set) ||
 		input.Token.Set && !validConnectionToken(record.Profile, *input.Token.Value) {
 		return errInvalid
 	}
@@ -177,15 +214,30 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 	if input.Jira.Set && !reflect.DeepEqual(record.Jira, input.Jira.Value) {
 		record.Jira, changed = input.Jira.Value, true
 	}
-	if input.Token.Set {
+	if input.Teams.Set {
+		if !validTeamsMetadata(record.Teams) {
+			return errUnavailable
+		}
+		next := &TeamsMetadata{record.Teams.WorkflowOrigin, input.Teams.Value.ChannelType, input.Teams.Value.OwnershipAcknowledged}
+		if !reflect.DeepEqual(record.Teams, next) {
+			record.Teams, changed = next, true
+		}
+	}
+	credential := input.Token
+	if input.WorkflowURL.Set {
+		credential = input.WorkflowURL
+		origin, _ := teamsWorkflowOrigin(*input.WorkflowURL.Value)
+		record.Teams = &TeamsMetadata{origin, "standard", true}
+	}
+	if credential.Set {
 		prior, err := openConnectionToken(a.integrationCredentials, record.Profile, workspace, id, record.ciphertext)
 		if err != nil {
 			return err
 		}
-		same := bytes.Equal(prior, []byte(*input.Token.Value))
+		same := bytes.Equal(prior, []byte(*credential.Value))
 		clear(prior)
 		if !same {
-			record.ciphertext, err = sealConnectionToken(a.integrationCredentials, record.Profile, workspace, id, *input.Token.Value)
+			record.ciphertext, err = sealConnectionToken(a.integrationCredentials, record.Profile, workspace, id, *credential.Value)
 			if err != nil {
 				return err
 			}
@@ -193,17 +245,23 @@ func (a *Application) updateIntegrationConnection(w http.ResponseWriter, r *http
 		}
 	}
 	if changed {
-		var target []byte
+		var target, teamTarget []byte
 		if record.Jira != nil {
 			target, err = json.Marshal(record.Jira)
 			if err != nil {
 				return err
 			}
 		}
+		if record.Teams != nil {
+			teamTarget, err = json.Marshal(record.Teams)
+			if err != nil {
+				return err
+			}
+		}
 		record, err = scanIntegrationConnection(tx.QueryRow(r.Context(), `UPDATE `+a.table("integration_connections")+`
-			SET name=$3,channel=$4,credential_ciphertext=$5,enabled=$6,revision=revision+1,updated_at=$7,jira_target=$8
+			SET name=$3,channel=$4,credential_ciphertext=$5,enabled=$6,revision=revision+1,updated_at=$7,jira_target=$8,teams_target=$9
 			WHERE workspace_id=$1 AND id=$2 RETURNING `+integrationConnectionColumns,
-			workspace, id, record.Name, record.Channel, record.ciphertext, record.Enabled, a.config.Now().UTC(), target))
+			workspace, id, record.Name, record.Channel, record.ciphertext, record.Enabled, a.config.Now().UTC(), target, teamTarget))
 		if err != nil {
 			return err
 		}

@@ -73,6 +73,35 @@ type slackBlock struct {
 
 var slackTimestamp = regexp.MustCompile(`^[0-9]{1,20}\.[0-9]{1,10}$`)
 
+// TeamsWorkflowPayload serializes the native card without performing I/O.
+func TeamsWorkflowPayload(action Action) ([]byte, error) {
+	payload := struct {
+		Type        string           `json:"type"`
+		Attachments []cardAttachment `json:"attachments"`
+	}{
+		Type: "message",
+		Attachments: []cardAttachment{{
+			ContentType: "application/vnd.microsoft.card.adaptive",
+			Content: adaptiveCard{
+				Type: "AdaptiveCard", Version: "1.4",
+				Body: []cardText{
+					{Type: "TextBlock", Text: action.Title, Wrap: true, Weight: "Bolder"},
+					{Type: "TextBlock", Text: action.Body, Wrap: true},
+				},
+				Actions: []cardAction{{Type: "Action.OpenUrl", Title: "View finding", URL: action.DeepLink}},
+			},
+		}},
+	}
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, connectorError(ErrProtocol)
+	}
+	if len(body) > 28*1024 {
+		return nil, connectorError(ErrLimit)
+	}
+	return body, nil
+}
+
 func (d *notificationDelivery) Send(ctx context.Context, action Action) (Delivery, error) {
 	result, finished, err := d.prepare(ctx, action)
 	if finished {
@@ -81,23 +110,11 @@ func (d *notificationDelivery) Send(ctx context.Context, action Action) (Deliver
 	target := d.base
 	headers := http.Header{"Content-Type": {"application/json"}, "Accept": {"application/json"}}
 	var payload any
+	var body []byte
 	if d.config.Profile == TeamsWorkflows {
-		payload = struct {
-			Type        string           `json:"type"`
-			Attachments []cardAttachment `json:"attachments"`
-		}{
-			Type: "message",
-			Attachments: []cardAttachment{{
-				ContentType: "application/vnd.microsoft.card.adaptive",
-				Content: adaptiveCard{
-					Type: "AdaptiveCard", Version: "1.4",
-					Body: []cardText{
-						{Type: "TextBlock", Text: action.Title, Wrap: true, Weight: "Bolder"},
-						{Type: "TextBlock", Text: action.Body, Wrap: true},
-					},
-					Actions: []cardAction{{Type: "Action.OpenUrl", Title: "View finding", URL: action.DeepLink}},
-				},
-			}},
+		body, err = TeamsWorkflowPayload(action)
+		if err != nil {
+			return deliveryFailure(result, nativeResponse{}, err)
 		}
 	} else {
 		text := action.Title + "\n" + action.Body
@@ -120,13 +137,10 @@ func (d *notificationDelivery) Send(ctx context.Context, action Action) (Deliver
 				{Type: "actions", Elements: []slackButton{{Type: "button", Text: slackText{Type: "plain_text", Text: "View finding"}, URL: action.DeepLink}}},
 			},
 		}
-	}
-	body, err := json.Marshal(payload)
-	if err != nil {
-		return deliveryFailure(result, nativeResponse{}, connectorError(ErrProtocol))
-	}
-	if d.config.Profile == TeamsWorkflows && len(body) > 28*1024 {
-		return deliveryFailure(result, nativeResponse{}, connectorError(ErrLimit))
+		body, err = json.Marshal(payload)
+		if err != nil {
+			return deliveryFailure(result, nativeResponse{}, connectorError(ErrProtocol))
+		}
 	}
 	budget := httpBudget{http: d.http}
 	response, err := budget.do(ctx, http.MethodPost, target, headers, body, nil)

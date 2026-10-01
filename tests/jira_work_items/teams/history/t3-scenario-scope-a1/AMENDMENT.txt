@@ -1,0 +1,28 @@
+T3 fixture-scoping amendment, October 1, 2026
+
+The implemented T1 and T2 passed. Original T3 exhausted the inherited
+1400-query parent counter while creating a connection in its corruption
+matrix, after native outcomes and queued/held revocation had run. The
+counter then also prevented ordinary cleanup. Sol separately removed only
+the identified owned residue and retained both failures as evidence.
+
+T3 had combined more than twenty independent notification, revocation,
+corruption and recovery paths in one fixture. Its new four subtests use
+separate owned fixtures for those distinct scenarios. Every original
+behavioral assertion and within-scenario replay/reopen sequence is retained.
+The three earlier scenarios now also check secret-storage absence and
+unchanged finding data before ending, as the recovery scenario already did.
+
+The original fixture/helper counters, 1400-query, 220-API, 64-native,
+64-S3, pool sizes, cancellation assertions and time bounds are unchanged.
+No counter is reset or bypassed. T3's command still has a 90-second timeout.
+The combined T3 resource allowance is now larger because there are four
+fixtures. Report each scenario and their aggregate separately; do not
+describe this as passing the old combined budget or as a throughput result.
+The inherited untraced crash-child limitation remains explicit.
+
+Only teams_lifetime_test.go and its contract change. All thirteen producer
+files are held at BEFORE.json hashes; there is no production workaround.
+No test execution, formatter, benchmark or independent review was performed
+by Astra. Sol must compile and execute the changed tests after a new current
+seal, and any remaining product failure remains a failure.

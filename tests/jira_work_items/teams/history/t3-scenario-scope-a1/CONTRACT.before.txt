@@ -1,0 +1,233 @@
+M08b Teams Workflows: backend acceptance authoring cut
+Author: GPT-6 Astra (gpt-6-astra), October 1, 2026
+Published baseline: 21080a3cbe04957e4ff55a6236d13bb4fde0fcc2
+Status: UNSIGNED. All compile/build/test/calibration phases NOT EXECUTED.
+
+Scope and authority
+-------------------
+Extend the existing encrypted connections, local review, common finding delivery
+outbox and DeliveryWorker. Do not create a Teams queue, constructor, identity,
+consent, lease or fencing subsystem. Sol implements/runs/publishes separately.
+No production, dependency, existing test/helper/signature or commit edits here.
+No reviewer or nested agents. No fixture startup or private runtime input read.
+The proposed old observer amendments require coordinator approval before edits.
+Producer targets internal\app common/profile/schema code and related docs are
+NOT immutable test controls. Existing .oracles\jira-deployment-a1 controls remain
+unchanged; historical issuer/parent authority is not this author's access.
+
+Only teams-workflows-channel: operator-declared standard channel, Anyone signed
+Workflow URL. The operator acknowledges responsibility for Workflow owners and
+co-owners; team ownership does not automatically own a Workflow. No claim that
+this declaration proves ownership, permissions, installation or channel receipt.
+No old Office 365 connector, Basic, bearer, refresh, Graph or bot profile.
+UI139, runtime, local browser-worker, service environment, Helm and deployment
+are separate gates. Do not introduce ASPM_TEAMS_WORKFLOW_ORIGINS here.
+The future runtime origin policy must be explicit, not a guessed host allowlist.
+
+Exact REST and DTO contract (chosen before cases)
+------------------------------------------------
+Use actual versioned HTTP, protected sessions, Origin checks, selected workspace
+and current membership. Existing status/error envelopes are unchanged.
+
+POST /api/v1/integrations/connections, admin only:
+{profile:"teams-workflows-channel",name,enabled,workflowUrl,
+ teams:{channelType:"standard",ownershipAcknowledged:true}}
+name: existing nonblank display-label limit, <=256 UTF-8 bytes.
+enabled: explicit boolean. workflowUrl: explicit nonempty string, write-only.
+Both teams keys are required and exact. No tenant/team/user identifiers.
+Return 201 {apiVersion,connection}. PATCH /.../connections/{id}, admin only,
+accepts only name, enabled, workflowUrl, teams. Omitted fields preserve values;
+whole teams replacement is atomic, not a merge. Reject null/wrong types,
+unknown/nested keys, token/channel/jira/headers/actor/override/profile fields.
+An exact URL/config no-op preserves revision, timestamps and ciphertext.
+One meaningful combined URL/config change increments revision exactly once.
+Invalid shape/URL is 400; absent integration key is 503 with zero native I/O.
+
+Teams connection DTO has exactly the existing ten common keys:
+id,workspaceId,profile,name,channel,enabled,credentialConfigured,revision,
+createdAt,updatedAt, plus teams and permissionState.
+channel is the empty common-schema sentinel, NOT a Teams channel ID or input.
+teams = {workflowOrigin,channelType:"standard",ownershipAcknowledged:true}.
+workflowOrigin is canonical HTTPS scheme/authority ONLY, never path or query.
+permissionState is always "not-verified"; credentialConfigured describes envelope
+presence only. No API yields workflowUrl, ciphertext, authorization or a URL hash.
+GET detail/PATCH return 200. Viewer reads metadata/history but cannot configure,
+preview or queue. Current admin/analyst can preview and explicitly queue.
+
+GET /api/v1/integrations/connections and
+GET /api/v1/findings/{id}/deliveries:
+omitted profile selects Slack ONLY, not a mixed/all-profiles list.
+Exactly one profile=teams-workflows-channel selects Teams ONLY.
+Explicit slack-workspace-bot and jira-cloud-v3 retain published behavior.
+Empty, unknown or repeated selectors (including identical repeats) are 400.
+Retain exact items,total,nextCursor envelopes and native exclusive ID pagination.
+Filter selected workspace/profile/finding before total and pagination.
+Individual connection/delivery IDs use their own typed profile, not the default
+list profile. Foreign IDs are 404; no current membership is 403, even with a
+previously valid cookie. No fallback for an empty selected list.
+
+POST /api/v1/findings/{id}/delivery-previews with exactly {connectionId}:
+200 {apiVersion,preview:{workspaceId,findingId,connectionId,connectionRevision,
+ profile,requestedBy,destination,payload,bindingDigest,nativeValidation,
+ reviewRequirements}}.
+destination = {name,workflowOrigin,channelType,ownershipAcknowledged}, all from
+the current selected connection. This public snapshot also appears in history.
+payload = {title,body,deepLink}; no fields, notes, evidence, report or credentials.
+title = canonical finding title.
+body = "Severity: <canonical severity>\nAsset: <canonical asset name>".
+deepLink = trusted PublicOrigin + "/#/work?finding=" + escaped finding ID.
+nativeValidation = "not-run".
+reviewRequirements = ["explicit-queue-consent","operator-declared-standard-channel",
+ "workflow-owner-continuity"] in that order.
+bindingDigest = "sha256:" followed by 64 lowercase hexadecimal characters.
+Preview is server-local, creates no outbox row and makes NO Workflow request.
+Validate the adapter's serialized card byte limit locally before possible POST.
+Do not change existing canonical intake limits to manufacture a size test.
+
+POST /api/v1/findings/{id}/deliveries, admin/analyst only:
+exactly {connectionId,idempotencyKey,previewDigest,confirm:true}.
+202 is durable queued, not native acceptance. Missing/false/null consent, wrong
+types, malformed digest, and forged routing/actor/payload/prior are 400.
+Disabled connection or stale/foreign actor/payload/revision digest is 409.
+Same workspace key and exact authorized intent replay is 200, same ID/outcome.
+A different actor/finding/connection/revision/profile/public destination/payload
+with that key is 409. A stale digest conflicts even with a fresh key.
+Bind the user key in the stored intent too, as Jira already does.
+Recompute current consent at queue; recompute stored immutable binding at worker
+dispatch. A credential rotation cannot reuse old consent. No automatic retry or
+fresh-key substitute. GET remains the way to read an old result after changes.
+
+Teams delivery DTO has the existing 15 common delivery keys (channel:""), plus
+destination and outboundAttemptedAt:null|timestamp. Do NOT add jira,
+createAttemptedAt or payload.fields to Teams. Only Teams gets the new alias.
+Internally reuse create_attempted_at: for Teams it means durable outbound POST
+attempt, not Jira creation or confirmation. Native 202 yields state:"accepted",
+receipt:null,failure:null. No fabricated issue/channel ID, remote URL or receipt.
+Failures have exactly code,nativeCode,httpStatus,retryAfterSeconds,retryable.
+nativeCode is empty for this cut; retryable:false. No Jira stage/missingFields.
+Old Slack ten-key connection/15-key delivery/three-key payload and two-field
+queue bytes stay compatible. Old explicit Jira DTO/preview/binding stay intact.
+
+URL, credential and native protocol boundary
+-------------------------------------------
+The complete original URL, including every query value, is secret.
+Use shared AES-256-GCM key/envelope (32-byte independent integration key;
+byte(1), nonce, ciphertext/tag), with Teams-specific AAD:
+"aspm/teams-workflow-credential/v1\0<workspace>\0<connection>".
+Do not alter Slack/Jira AAD/version or derive a key from another credential.
+DB privacy observations exclude ONLY credential_ciphertext, not target/payload.
+They prove absence outside that envelope, not key-rotation authorization.
+
+URL <=16384 bytes, explicit canonical HTTPS origin, valid port, nonempty callback
+path other than "/", no userinfo/fragment/opaque form/controls. Canonical origin
+uses lowercase host, no trailing dot or explicit default :443, and a canonical
+nondefault decimal port. No provider/cloud hostname guess. The existing adapter
+also bounds decoded path to 4096 bytes and rejects dot segments, repeated slashes,
+backslash, encoded routing separators, double-encoded routing and decoded
+controls. Safe escaped path letters remain valid and must retain original bytes.
+Parse the query successfully: exactly one nonempty decoded sig, no whitespace
+in sig; reject bad escapes and decoded controls in any query component.
+Preserve safe encoded path and the ENTIRE raw query byte-for-byte when sending,
+including order, encoding case, duplicates of non-sig keys and legitimate
+parameters. Do not normalize/reassemble it or strip/re-add sig.
+
+No token Authorization header, Idempotency-Key, cookies, redirects, proxy,
+ambient client/credential, default Slack route or Jira route. Use only the
+explicit approved normal-TLS/direct caller client, narrowed to the exact origin.
+Constructor/configure/read/preview/queue never initiates native activity.
+Native fixture represents protocol, never an actual Teams account/channel.
+Adaptive Card 1.4 POST is the existing adapter's envelope and inert text/link.
+Its 28*1024 serialized-byte cap is OUR adapter cap, not a universal Workflows
+platform limit. Exact-cap accepted/one-byte-over no-POST checks use the unchanged
+adapter, because canonical parser title limits preclude arbitrary large titles.
+
+Native 202: accepted only. Unexpected 200, lost ACK, response-body timeout or 5xx
+after possible POST: uncertain, receipt null. 401/403: failed/auth.
+429: rate-limited/rate_limited with bounded Retry-After metadata only.
+Redirect: blocked/scope, no second origin request. Other failures keep existing
+conservative native semantics. Never store raw native bodies/messages or secret
+query-component echoes, even a syntactically safe native error code.
+
+Lifetime and safety
+-------------------
+Fresh current actor, enabled connection, revision, profile, destination and
+authenticated credential checks at claim, immediately before outbound attempt,
+and finalization. Reuse/extract Jira's guard where invariants actually match.
+Commit the outbound marker under the live owner/fence BEFORE external side
+effect. No SQL connection/transaction/row lock across HTTP/body wait.
+Disable/URL rotation/role loss cancels held context-honoring I/O within 1 second.
+Before attempt: blocked, no POST/marker. After possible send: uncertain and no
+accepted receipt. Regrant/re-enable cannot resurrect terminal work.
+Expiry/crash recovery fences the old owner; no late commit, resend or replay.
+No changes to finding workflow/source/verification/notes/evidence.
+Fault probes use only already API-created connection/delivery rows in the random
+owned schema, workspace AND id, selected/locked exactly once, RowsAffected=1.
+Enumerated faults: ciphertext substitution between owned connections, delivery
+payload/approval/key/digest, current public target, and a valid but unapproved
+profile tuple. No SQL business seeds or injected lease/receipt/actor rows.
+
+V11 and historical controls
+--------------------------
+Authentic published V10 app.Open/APIs must create old Slack AND Jira connections,
+queued deliveries, finding/intake/notes, view and assessment preview/job first.
+One published-worker Jira send additionally seeds a nonnull native receipt and
+attempt marker. Other published Slack/Jira intents remain queued for the current
+common worker after migration; no historical row is invented with business SQL.
+Starting ledger is exactly 1..10 from the pinned commit, not relabelled current
+DDL or an archive of current production. Close published core before current
+Open. Preserve all historical old-column values (including ciphertext, targets,
+digests, receipts and markers), DDL, relation/index/constraint sets and ordering.
+
+Only approved V10 -> V11 delta:
+1. Append nullable, no-default teams_target jsonb to each common connection and
+   delivery table. Connections store the three-key public teams metadata;
+   deliveries store the four-key public destination snapshot, including name.
+2. Replace only each table's existing app_<table>_profile_check to admit exactly
+   Slack, Jira and Teams, in that order.
+3. Replace only each app_<table>_profile_target_check with:
+   Slack: jira_target NULL, teams_target NULL, existing C/G channel regex.
+   Jira: nonnull object jira_target, teams_target NULL, channel="".
+   Teams: jira_target NULL, nonnull object teams_target, channel="".
+   Deep metadata validation remains at API/worker boundaries, as with Jira.
+4. Record integer version 11 once. No other relation/index/column/default/CHECK
+   delta, V1-V10 edits, data rewrites, bulk ignore or new queue is permitted.
+
+Literal deparsed CHECK expectations live in the additive deliverycompat Teams
+helper. Verify the entire permitted snapshot before projecting those differences.
+Keep the original V10 helper/constants/signatures/tests intact. New ProjectV11
+checks authentic V10 -> V11; new ProjectCurrent composes exact V9 -> V10 -> V11
+for old CURRENT observers, only after approved caller edits.
+Order ledgers by qualified integer ledger.version; constraints by conname,
+never the full serialized row. Historical V5/V6/V7/V8/V9/V10 starts, DDL/seed/
+source manifests, checksums and business assertions remain fixed.
+SCHEMA-AMENDMENT.diff.txt is a proposal only, not approval or an applied patch.
+
+Four narratives and future execution
+------------------------------------
+T1 encrypted config/no-op/rotation, strict shape and roles, local preview/privacy.
+T2 canonical consent/replay, mixed-profile lists and unchanged Slack/Jira shapes,
+   native card/202 accepted, durable readable history and reopen.
+T3 field-safe native failures/size/no retries, queued and held revocation,
+   credential/binding corruption, pool availability, fence and real child crash.
+T4 authentic populated published V10 -> exact additive V11, old bytes/API shapes,
+   original business data, typed constraints, new Teams use and reopen.
+Reuse tests\jira_work_items fixtures under integration && teams_workflows.
+Per narrative targets: 90 seconds, 220 API, 1400 SQL, 64 native and 64 S3 socket
+writes; core/worker pools 1, observer 2. No old full-suite/all-version seed rebuild.
+The reused T3 crash child has no QueryTracer; its single ProcessNext is bounded
+by its existing context/client/lease but absent from the parent's SQL counter.
+Do not report that counter as a measured all-process SQL total. This inherited
+instrumentation limit and all aggregate/time targets await Sol's baseline;
+no old child-helper change is authorized by this packet.
+Runtime inputs remain private and are read only by a later authorized Sol run.
+ASPM_JIRA_RUNTIME is reused solely as the existing test fixture input path;
+ASPM_TEAMS_V10_RECEIPT is a test-only pinned-build receipt, not runtime policy.
+Fresh ignored pinned production closure builds may follow the existing pattern.
+No full published-source archive, package install or new runner/control inventory.
+
+Source context supplied by coordinator, verified October 1, not re-fetched here:
+`https://learn.microsoft.com/en-us/connectors/teams/`
+`https://support.microsoft.com/en-us/workflows/send-messages-in-teams-using-incoming-webhooks`
+`https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook`
+Anyone uses no authentication token header; tenant/user choices require tokens
+and are outside this profile. No external vendor call or research was performed.

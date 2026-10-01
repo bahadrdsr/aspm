@@ -1,0 +1,74 @@
+{
+  "producerHeld": [
+    {
+      "path": "README.md",
+      "sha256": "c152c83211db008409cb31eee659a0fdf9cf9ce8c9ea6fb2f2b8cc6ff48ce26c",
+      "bytes": 45081
+    },
+    {
+      "path": "internal\\app\\README.txt",
+      "sha256": "b01be94eac5c066bf0f607eb6cd379edefc80e7a6c351411a0def2ee74d2cb9f",
+      "bytes": 21192
+    },
+    {
+      "path": "internal\\app\\remediation_connections.go",
+      "sha256": "a4b0e8ca835a355917321f27875412ecf60a7562f81261ff6691b9a5b5f3be71",
+      "bytes": 12025
+    },
+    {
+      "path": "internal\\app\\remediation_credentials.go",
+      "sha256": "ea44a8b4cabcbe85c750f32f7b3bbcc45563491350287358e2a8574482ad662e",
+      "bytes": 3685
+    },
+    {
+      "path": "internal\\app\\remediation_deliveries.go",
+      "sha256": "eb4574203734070c8f44cd554eb85d9d0d75a8763e1271592d933328927f49bc",
+      "bytes": 12899
+    },
+    {
+      "path": "internal\\app\\remediation_jira.go",
+      "sha256": "6cb0b469638dc3c9aa6eaaafcf2a52ca62b38a1dc57375adb10dc0777781146c",
+      "bytes": 7873
+    },
+    {
+      "path": "internal\\app\\remediation_jira_worker.go",
+      "sha256": "b948ddcc86ac34d765ccfa580d9f4575c0f7c3ef23919e6631fb4c9496fb63c5",
+      "bytes": 10519
+    },
+    {
+      "path": "internal\\app\\remediation_teams.go",
+      "sha256": "530f84568f1e68030a7ee24e22e2ad5b05ea1ed99b62577c8f5be4c0172cc8f3",
+      "bytes": 5579
+    },
+    {
+      "path": "internal\\app\\remediation_teams_worker.go",
+      "sha256": "1eae13048b384e48483ee2bf73e7e04e9dd530168956d818153285e4deb71a9c",
+      "bytes": 1901
+    },
+    {
+      "path": "internal\\app\\remediation_worker.go",
+      "sha256": "6c8f3d0ccc4ed5e63c5b9dced5c2eefba66f8ec110e2037c10619b7f7d1ec754",
+      "bytes": 14847
+    },
+    {
+      "path": "internal\\app\\schema.go",
+      "sha256": "d1a06cc6b618b965fd901a8781c3906162311a9e25f2dbfcd8684bccf6c55853",
+      "bytes": 11419
+    },
+    {
+      "path": "internal\\app\\teams_schema.go",
+      "sha256": "0cc0e18440eecf7c8ff45e6ace17e80dea635cda14eeaf8ab009cc3788c106a8",
+      "bytes": 1729
+    },
+    {
+      "path": "internal\\connectors\\notifications.go",
+      "sha256": "60adf8785745cb2b368dec74d2fbea20ac2d154585fc0bf577185f217e3ecdf0",
+      "bytes": 5987
+    }
+  ],
+  "beforeTestSHA256": "f9cc2c98c87e48eda7c6bbaec46deeaba99d479f8d6ba84e4c2e6c50dccde008",
+  "beforeContractSHA256": "bdeaa95e4941a5aee2b47948a1738766cb240c55a8b81919e2d5bfa761d206bc",
+  "blockedReceipt": ".cache\\teams-backend-coder\\teams-t3-code-01.receipt.json",
+  "blockerEvidenceSHA256": "1ede1b39388f26e8dd3a6e217fd771b0760fa9f52e8a9d8f0b7a69366ad3d632",
+  "reason": "T3 combined independent native-outcome, revocation, tamper and recovery matrices in a single cumulative fixture. Split fixtures without removing assertions; keep individual hard limits and report the larger aggregate honestly."
+}

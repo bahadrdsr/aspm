@@ -186,7 +186,7 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 	if record.State == "dispatching" {
 		// An expired possible write is terminal, never a fresh send.
 		state, code := "uncertain", "uncertain"
-		if record.Profile == connectors.JiraCloudV3 && record.CreateAttemptedAt == nil {
+		if (record.Profile == connectors.JiraCloudV3 || record.Profile == connectors.TeamsWorkflows) && record.CreateAttemptedAt == nil {
 			state, code = "blocked", "lease-expired"
 		}
 		if err = w.settleClaim(ctx, tx, record, state, code); err != nil {
@@ -227,6 +227,9 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 			reason = "connection-changed"
 		case !reflect.DeepEqual(connection.Jira, record.Jira):
 			reason = "connection-changed"
+		case record.Profile == connectors.TeamsWorkflows && (!validTeamsMetadata(connection.Teams) ||
+			!reflect.DeepEqual(&TeamsDestination{connection.Name, *connection.Teams}, record.Destination)):
+			reason = "connection-changed"
 		}
 	}
 	var adapter connectors.DeliveryAdapter
@@ -257,6 +260,20 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 					reason = "native-client-unavailable"
 				} else {
 					closeClient = config.Client.CloseIdleConnections
+				}
+			}
+			if record.Profile == connectors.TeamsWorkflows {
+				origin, valid := teamsWorkflowOrigin(token)
+				if !valid || origin != connection.Teams.WorkflowOrigin {
+					reason = "credential-unavailable"
+				} else {
+					config.Endpoint, config.Token = token, ""
+					config.Client, err = sourceNativeClient(w.client, origin)
+					if err != nil {
+						reason = "native-client-unavailable"
+					} else {
+						closeClient = config.Client.CloseIdleConnections
+					}
 				}
 			}
 			if reason == "" {
@@ -376,6 +393,9 @@ func (w *DeliveryWorker) ProcessNext(ctx context.Context) (bool, error) {
 	defer clear(dispatch.credential)
 	if record.Profile == connectors.JiraCloudV3 {
 		return true, w.processJiraDelivery(requestCtx, dispatch)
+	}
+	if record.Profile == connectors.TeamsWorkflows {
+		return true, w.processTeamsDelivery(requestCtx, dispatch)
 	}
 	result, nativeErr := dispatch.adapter.Send(requestCtx, connectors.Action{
 		WorkspaceID: record.WorkspaceID, IntentID: record.ID, ApprovalRef: record.approvalRef,

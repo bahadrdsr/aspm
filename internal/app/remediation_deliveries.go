@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/bahadrdsr/aspm/internal/connectors"
@@ -65,6 +66,7 @@ type FindingDelivery struct {
 	Receipt            *FindingDeliveryReceipt `json:"receipt"`
 	Failure            *FindingDeliveryFailure `json:"failure"`
 	Jira               *JiraTarget             `json:"jira,omitempty"`
+	Destination        *TeamsDestination       `json:"destination,omitempty"`
 	CreateAttemptedAt  *time.Time              `json:"-"`
 }
 
@@ -74,6 +76,12 @@ func (delivery FindingDelivery) MarshalJSON() ([]byte, error) {
 		return json.Marshal(struct {
 			value
 			CreateAttemptedAt *time.Time `json:"createAttemptedAt"`
+		}{value(delivery), delivery.CreateAttemptedAt})
+	}
+	if delivery.Profile == connectors.TeamsWorkflows {
+		return json.Marshal(struct {
+			value
+			OutboundAttemptedAt *time.Time `json:"outboundAttemptedAt"`
 		}{value(delivery), delivery.CreateAttemptedAt})
 	}
 	return json.Marshal(value(delivery))
@@ -89,16 +97,16 @@ type findingDeliveryRecord struct {
 
 const findingDeliveryColumns = `id,workspace_id,finding_id,connection_id,connection_revision,
 	profile,channel,requested_by,state,payload,created_at,dispatch_started_at,completed_at,
-	receipt,failure,binding_digest,approval_ref,fence,idempotency_key,jira_target,create_attempted_at`
+	receipt,failure,binding_digest,approval_ref,fence,idempotency_key,jira_target,create_attempted_at,teams_target`
 
 func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 	var record findingDeliveryRecord
-	var payload, receipt, failure, target []byte
+	var payload, receipt, failure, target, teams []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.FindingID, &record.ConnectionID,
 		&record.ConnectionRevision, &record.Profile, &record.Channel, &record.RequestedBy, &record.State,
 		&payload, &record.CreatedAt, &record.DispatchStartedAt, &record.CompletedAt,
 		&receipt, &failure, &record.bindingDigest, &record.approvalRef, &record.fence,
-		&record.idempotencyKey, &target, &record.CreateAttemptedAt)
+		&record.idempotencyKey, &target, &record.CreateAttemptedAt, &teams)
 	if err != nil {
 		return record, err
 	}
@@ -107,6 +115,11 @@ func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 	}
 	if len(target) != 0 {
 		if err = json.Unmarshal(target, &record.Jira); err != nil {
+			return record, err
+		}
+	}
+	if len(teams) != 0 {
+		if err = json.Unmarshal(teams, &record.Destination); err != nil {
 			return record, err
 		}
 	}
@@ -140,6 +153,11 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 			Binding any
 			Jira    *JiraTarget
 		}{value, delivery.Jira})
+	} else if delivery.Profile == connectors.TeamsWorkflows {
+		data, err = json.Marshal(struct {
+			Binding     any
+			Destination *TeamsDestination
+		}{value, delivery.Destination})
 	} else {
 		data, err = json.Marshal(value)
 	}
@@ -152,7 +170,7 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 
 func deliveryIntentBinding(delivery FindingDelivery, key string) ([]byte, error) {
 	binding, err := deliveryBinding(delivery)
-	if err != nil || delivery.Profile != connectors.JiraCloudV3 {
+	if err != nil || delivery.Profile != connectors.JiraCloudV3 && delivery.Profile != connectors.TeamsWorkflows {
 		return binding, err
 	}
 	data, err := json.Marshal(struct {
@@ -172,10 +190,14 @@ func validDeliveryBinding(record findingDeliveryRecord) bool {
 		return false
 	}
 	if record.Profile == connectors.JiraCloudV3 &&
-		(!validJiraTarget(record.Jira) || record.Channel != "" || record.Payload.Fields == nil) {
+		(!validJiraTarget(record.Jira) || record.Channel != "" || record.Payload.Fields == nil || record.Destination != nil) {
 		return false
 	}
-	if record.Profile == connectors.SlackWorkspaceBot && (record.Jira != nil || record.Payload.Fields != nil) {
+	if record.Profile == connectors.SlackWorkspaceBot && (record.Jira != nil || record.Payload.Fields != nil || record.Destination != nil) {
+		return false
+	}
+	if record.Profile == connectors.TeamsWorkflows && (record.Jira != nil || record.Channel != "" ||
+		!validTeamsDestination(record.Destination) || !teamsPayloadValid(record.Payload)) {
 		return false
 	}
 	binding, err := deliveryIntentBinding(record.FindingDelivery, record.idempotencyKey)
@@ -207,10 +229,17 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return err
 	}
-	if delivery.Profile == connectors.JiraCloudV3 {
+	if delivery.Profile == connectors.JiraCloudV3 || delivery.Profile == connectors.TeamsWorkflows {
 		if input.Confirm.Value == nil || !*input.Confirm.Value || input.PreviewDigest.Value == nil ||
 			len(*input.PreviewDigest.Value) != 71 {
 			return errInvalid
+		}
+		if delivery.Profile == connectors.TeamsWorkflows {
+			raw, err := hex.DecodeString((*input.PreviewDigest.Value)[7:])
+			if !strings.HasPrefix(*input.PreviewDigest.Value, "sha256:") || err != nil || len(raw) != 32 ||
+				strings.ToLower(*input.PreviewDigest.Value) != *input.PreviewDigest.Value {
+				return errInvalid
+			}
 		}
 		binding, err := deliveryBinding(delivery)
 		if err != nil {
@@ -231,21 +260,27 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return err
 	}
-	var target []byte
+	var target, teams []byte
 	if delivery.Jira != nil {
 		target, err = json.Marshal(delivery.Jira)
 		if err != nil {
 			return err
 		}
 	}
+	if delivery.Destination != nil {
+		teams, err = json.Marshal(delivery.Destination)
+		if err != nil {
+			return err
+		}
+	}
 	record, err := scanFindingDelivery(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("finding_deliveries")+`
 		(id,workspace_id,finding_id,connection_id,connection_revision,profile,channel,requested_by,
-		 idempotency_key,binding_digest,approval_ref,payload,created_at,jira_target)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+		 idempotency_key,binding_digest,approval_ref,payload,created_at,jira_target,teams_target)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
 		ON CONFLICT (workspace_id,idempotency_key) DO NOTHING RETURNING `+findingDeliveryColumns,
 		delivery.ID, workspace, findingID, delivery.ConnectionID, delivery.ConnectionRevision, delivery.Profile,
 		delivery.Channel, session.User.ID, input.IdempotencyKey, digest,
-		"aspm:remediation:"+workspace+":"+delivery.ID, payload, delivery.CreatedAt, target))
+		"aspm:remediation:"+workspace+":"+delivery.ID, payload, delivery.CreatedAt, target, teams))
 	status := http.StatusAccepted
 	if errors.Is(err, pgx.ErrNoRows) {
 		record, err = scanFindingDelivery(tx.QueryRow(r.Context(), `SELECT `+findingDeliveryColumns+

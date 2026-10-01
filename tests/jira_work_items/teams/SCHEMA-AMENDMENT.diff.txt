@@ -1,0 +1,110 @@
+READ-ONLY PROPOSAL. NOT APPLIED. COORDINATOR APPROVAL REQUIRED.
+Base: 21080a3cbe04957e4ff55a6236d13bb4fde0fcc2.
+
+Six existing test files, eleven CURRENT ledger literals, nine CURRENT DDL
+projection call sites, plus the populated V9 Jira legacy-row observer.
+Historical starting ledgers, test identities, seed/DDL/source manifests and
+business-data checks remain. No existing helper/signature/control edit is needed:
+the new deliverycompat\teams_schema.go adds ProjectV11 and ProjectCurrent.
+Original schema.go, schema_test.go, catalog_order_test.go and Jira V10 predicate
+calibration remain byte-identical, continuing to test the historical V10 delta.
+The new helper validates the full exact delta BEFORE either projection.
+Do not execute/apply this proposal or change any signed control without approval.
+No old full-suite/all-version rebuild is requested by this authoring packet.
+
+--- tests\source_collection\upgrade_test.go
++++ tests\source_collection\upgrade_test.go
+@@ -180,2 +180,2 @@
+-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}),
+-				"current constructor returned success but did not apply and record v6 through v10 exactly once over actual published v5")
++			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}),
++				"current constructor returned success but did not apply and record v6 through v11 exactly once over actual published v5")
+@@ -189,1 +189,1 @@
+-			require(t, reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
++			require(t, reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
+@@ -224,3 +224,3 @@
+-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) &&
+-				reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
+-				"reopening v10 repeated migration or changed legacy definitions")
++			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}) &&
++				reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
++				"reopening v11 repeated migration or changed legacy definitions")
+--- tests\ai_configuration\upgrade_test.go
++++ tests\ai_configuration\upgrade_test.go
+@@ -134,2 +134,2 @@
+-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "CURRENT core startup did not apply required migrations through v10 exactly once over real published v6")
+-	check(t, reflect.DeepEqual(before, deliverycompat.Project(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
++	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}), "CURRENT core startup did not apply required migrations through v11 exactly once over real published v6")
++	check(t, reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
+@@ -147,1 +147,1 @@
+-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) && reflect.DeepEqual(before, deliverycompat.Project(t, before, definitions(t, f, baseline.LegacyTables))), "v10 reopen repeated migration or changed old schema definitions")
++	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v11 reopen repeated migration or changed old schema definitions")
+--- tests\ai_assessments\upgrade_test.go
++++ tests\ai_assessments\upgrade_test.go
+@@ -167,1 +167,1 @@
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "fresh current core did not apply through V10")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}), "fresh current core did not apply through V11")
+@@ -178,1 +178,1 @@
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}), "reopen repeated or skipped a migration")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}), "reopen repeated or skipped a migration")
+@@ -199,3 +199,3 @@
+-		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}),
+-			"CURRENT core did not apply required migrations through V10 exactly once over actual published populated V7")
+-		check(t, reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V10 changed a legacy definition")
++		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}),
++			"CURRENT core did not apply required migrations through V11 exactly once over actual published populated V7")
++		check(t, reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V11 changed a legacy definition")
+@@ -220,2 +220,2 @@
+-		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}) &&
+-			reflect.DeepEqual(oldDefinitions, deliverycompat.Project(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V10 reopen changed legacy definitions or exact ledger")
++		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}) &&
++			reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V11 reopen changed legacy definitions or exact ledger")
+--- tests\saved_work_views\views_test.go
++++ tests\saved_work_views\views_test.go
+@@ -122,2 +122,2 @@
+-	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
+-	same(t, "fresh current core must apply through additive V10 exactly once", h.ledger(), wantLedger)
++	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}
++	same(t, "fresh current core must apply through additive V11 exactly once", h.ledger(), wantLedger)
+--- tests\saved_work_views\upgrade_test.go
++++ tests\saved_work_views\upgrade_test.go
+@@ -138,3 +138,3 @@
+-	same(t, "current production open did not apply through additive V10 over actual populated published V8",
+-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"})
+-	same(t, "V10 changed a published legacy definition", deliverycompat.Project(t, definitions, f.definitions(names)), definitions)
++	same(t, "current production open did not apply through additive V11 over actual populated published V8",
++		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
++	same(t, "V11 changed a published legacy definition", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
+@@ -163,1 +163,1 @@
+-	same(t, "upgraded reopen altered legacy definitions", deliverycompat.Project(t, definitions, f.definitions(names)), definitions)
++	same(t, "upgraded reopen altered legacy definitions", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
+--- tests\jira_work_items\upgrade_test.go
++++ tests\jira_work_items\upgrade_test.go
+@@ -138,2 +138,2 @@
+-				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL"), []string{})
+-			projection += "-'jira_target'"
++				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL OR teams_target IS NOT NULL"), []string{})
++			projection += "-'jira_target'-'teams_target'"
+@@ -143,2 +143,2 @@
+-				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL OR create_attempted_at IS NOT NULL"), []string{})
+-			projection += "-'jira_target'-'create_attempted_at'"
++				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL OR create_attempted_at IS NOT NULL OR teams_target IS NOT NULL"), []string{})
++			projection += "-'jira_target'-'create_attempted_at'-'teams_target'"
+@@ -255,5 +255,5 @@
+-	same(t, "RED: current app did not add V10 over exact populated published V9",
+-		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"})
+-	same(t, "V10 changed the historical relation set", h.relations(), relations)
+-	same(t, "V10 must assert the exact approved DDL delta before any projection",
+-		deliverycompat.Project(t, definitions, h.definitions(names)), definitions)
++	same(t, "current app did not add V10/V11 over exact populated published V9",
++		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
++	same(t, "V11 changed the historical relation set", h.relations(), relations)
++	same(t, "V10/V11 must assert the exact approved DDL delta before any projection",
++		deliverycompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
+
+No other old file change is proposed. The populated V7/V8 business snapshots
+still compare every existing row; their published seeds contain no delivery
+rows, so no new data projection is needed there. The V9 Jira seed DOES contain
+Slack rows, hence its narrow null-checked extension above is necessary.
+The new T4 independently checks actual V10 data, including nonnull old Jira
+targets, rather than broadening the V9-only data observer.

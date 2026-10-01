@@ -1,0 +1,38 @@
+{
+  "baseline": "21080a3cbe04957e4ff55a6236d13bb4fde0fcc2",
+  "scope": "Exactly the six current-observer files and changes listed in SCHEMA-AMENDMENT.diff.txt; no existing V10 helper or historical data/starting ledger changes",
+  "files": [
+    {
+      "path": "tests\\source_collection\\upgrade_test.go",
+      "beforeSHA256": "993f8838c9c6dee4f2a50adc2afbdbc142d627751519da25f1b3a67d1e960a14",
+      "archive": "tests\\jira_work_items\\teams\\history\\before-v11-observer-approval\\source_collection\\upgrade_test.go.txt"
+    },
+    {
+      "path": "tests\\ai_configuration\\upgrade_test.go",
+      "beforeSHA256": "69656db38781428a13ca5f54d8d4de0498a68cdec69b0d43e5c06fbfe94dba9c",
+      "archive": "tests\\jira_work_items\\teams\\history\\before-v11-observer-approval\\ai_configuration\\upgrade_test.go.txt"
+    },
+    {
+      "path": "tests\\ai_assessments\\upgrade_test.go",
+      "beforeSHA256": "a8cab315a8ea6884d4efca526b25333f0d78dbba7aa133a99e90380362c1f3aa",
+      "archive": "tests\\jira_work_items\\teams\\history\\before-v11-observer-approval\\ai_assessments\\upgrade_test.go.txt"
+    },
+    {
+      "path": "tests\\saved_work_views\\views_test.go",
+      "beforeSHA256": "72e5d5ee4b9577a7a108c7044362bd392ecc1c63821926c0eb1d2d7c44eeb620",
+      "archive": "tests\\jira_work_items\\teams\\history\\before-v11-observer-approval\\saved_work_views\\views_test.go.txt"
+    },
+    {
+      "path": "tests\\saved_work_views\\upgrade_test.go",
+      "beforeSHA256": "7b62829383bbf7348b9b5dc8bc02ae5f9f2d6d0442c187cca8307b27b834a841",
+      "archive": "tests\\jira_work_items\\teams\\history\\before-v11-observer-approval\\saved_work_views\\upgrade_test.go.txt"
+    },
+    {
+      "path": "tests\\jira_work_items\\upgrade_test.go",
+      "beforeSHA256": "9b2bdea71fe0de462390f1d9dd6af2c5575d3661f3e3b5277561e5af941f9ea4",
+      "archive": "tests\\jira_work_items\\teams\\history\\before-v11-observer-approval\\jira_work_items\\upgrade_test.go.txt"
+    }
+  ],
+  "proposalSHA256": "c00b03577589eb1b7167f4923ee1254b16c111a3fa0b25675b26a7bc1f7757fb",
+  "authorHandoffSHA256": "4702d0b85855e805a4d0a94b10ac824f36b1388ca155f107fe6962f8098b9244"
+}

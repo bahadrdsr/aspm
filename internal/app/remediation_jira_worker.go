@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"reflect"
 	"regexp"
 	"slices"
 	"strings"
@@ -20,7 +21,7 @@ func (denial deliveryDenial) Error() string { return string(denial) }
 
 const deliveryLeaseLost deliveryDenial = "lease-lost"
 
-func (w *DeliveryWorker) jiraDispatchAuthority(ctx context.Context, db queryRower, dispatch *deliveryDispatch, lock bool) (findingDeliveryRecord, error) {
+func (w *DeliveryWorker) deliveryDispatchAuthority(ctx context.Context, db queryRower, dispatch *deliveryDispatch, lock bool) (findingDeliveryRecord, error) {
 	suffix := ""
 	if lock {
 		suffix = " FOR UPDATE"
@@ -77,10 +78,14 @@ func (w *DeliveryWorker) jiraDispatchAuthority(ctx context.Context, db queryRowe
 		!bytes.Equal(connection.ciphertext, dispatch.credential) {
 		return current, deliveryDenial("connection-changed")
 	}
+	if prior.Profile == connectors.TeamsWorkflows && (!validTeamsMetadata(connection.Teams) ||
+		!reflect.DeepEqual(&TeamsDestination{connection.Name, *connection.Teams}, prior.Destination)) {
+		return current, deliveryDenial("connection-changed")
+	}
 	return current, nil
 }
 
-func (w *DeliveryWorker) watchJiraDelivery(ctx context.Context, cancel context.CancelCauseFunc, dispatch *deliveryDispatch) func() {
+func (w *DeliveryWorker) watchDeliveryAuthority(ctx context.Context, cancel context.CancelCauseFunc, dispatch *deliveryDispatch) func() {
 	watch, stop := context.WithCancel(ctx)
 	done := make(chan struct{})
 	go func() {
@@ -93,7 +98,7 @@ func (w *DeliveryWorker) watchJiraDelivery(ctx context.Context, cancel context.C
 				return
 			case <-ticker.C:
 				probe, end := context.WithTimeout(watch, 250*time.Millisecond)
-				_, err := w.jiraDispatchAuthority(probe, w.pool, dispatch, false)
+				_, err := w.deliveryDispatchAuthority(probe, w.pool, dispatch, false)
 				end()
 				if err != nil {
 					if watch.Err() == nil {
@@ -113,7 +118,7 @@ func (w *DeliveryWorker) lockDeliveryWorkspace(ctx context.Context, tx pgx.Tx, w
 		workspace).Scan(&id)
 }
 
-func (w *DeliveryWorker) markJiraCreate(ctx context.Context, dispatch *deliveryDispatch) (findingDeliveryRecord, error) {
+func (w *DeliveryWorker) markDeliveryAttempt(ctx context.Context, dispatch *deliveryDispatch) (findingDeliveryRecord, error) {
 	record := dispatch.record
 	tx, err := w.pool.Begin(ctx)
 	if err != nil {
@@ -123,7 +128,7 @@ func (w *DeliveryWorker) markJiraCreate(ctx context.Context, dispatch *deliveryD
 	if err = w.lockDeliveryWorkspace(ctx, tx, record.WorkspaceID); err != nil {
 		return record, err
 	}
-	current, err := w.jiraDispatchAuthority(ctx, tx, dispatch, true)
+	current, err := w.deliveryDispatchAuthority(ctx, tx, dispatch, true)
 	if err != nil {
 		return current, err
 	}
@@ -141,7 +146,7 @@ func (w *DeliveryWorker) markJiraCreate(ctx context.Context, dispatch *deliveryD
 	if err != nil {
 		return current, err
 	}
-	// The create marker must be durable before the adapter can send a POST.
+	// Both reviewed profiles commit the attempt marker before a native POST.
 	return current, tx.Commit(ctx)
 }
 
@@ -172,6 +177,14 @@ func jiraInterruptedOutcome(cause error, attempted bool) (string, *FindingDelive
 	return "blocked", &FindingDeliveryFailure{Code: code, Stage: "metadata"}
 }
 
+func guardedDeliveryInterruptedOutcome(profile string, cause error, attempted bool) (string, *FindingDeliveryFailure) {
+	state, failure := jiraInterruptedOutcome(cause, attempted)
+	if profile == connectors.TeamsWorkflows {
+		failure.Stage = ""
+	}
+	return state, failure
+}
+
 func jiraMetadataOutcome(preview connectors.Preview, nativeErr error, token string) (string, *FindingDeliveryFailure) {
 	state := "failed"
 	switch {
@@ -186,34 +199,34 @@ func jiraMetadataOutcome(preview connectors.Preview, nativeErr error, token stri
 	return state, failure
 }
 
-func (w *DeliveryWorker) finishJiraDelivery(dispatch *deliveryDispatch, state string, receipt *FindingDeliveryReceipt, failure *FindingDeliveryFailure) error {
+func (w *DeliveryWorker) finishGuardedDelivery(dispatch *deliveryDispatch, state string, receipt *FindingDeliveryReceipt, failure *FindingDeliveryFailure) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	tx, err := w.pool.Begin(ctx)
 	if err != nil {
-		return errors.New("open Jira delivery finalization failed")
+		return errors.New("open guarded delivery finalization failed")
 	}
 	defer rollback(tx)
 	prior := dispatch.record
 	if err = w.lockDeliveryWorkspace(ctx, tx, prior.WorkspaceID); err != nil {
-		return errors.New("lock Jira delivery workspace failed")
+		return errors.New("lock guarded delivery workspace failed")
 	}
-	current, err := w.jiraDispatchAuthority(ctx, tx, dispatch, true)
+	current, err := w.deliveryDispatchAuthority(ctx, tx, dispatch, true)
 	if err != nil {
 		var denial deliveryDenial
 		if !errors.As(err, &denial) || denial == deliveryLeaseLost {
-			return deliveryInfrastructureError(ctx, "Jira delivery authority or lease is no longer current")
+			return deliveryInfrastructureError(ctx, "delivery authority or lease is no longer current")
 		}
-		state, failure = jiraInterruptedOutcome(err, current.CreateAttemptedAt != nil)
+		state, failure = guardedDeliveryInterruptedOutcome(prior.Profile, err, current.CreateAttemptedAt != nil)
 		receipt = nil
 	}
 	receiptJSON, err := json.Marshal(receipt)
 	if err != nil {
-		return errors.New("encode Jira delivery receipt failed")
+		return errors.New("encode guarded delivery receipt failed")
 	}
 	failureJSON, err := json.Marshal(failure)
 	if err != nil {
-		return errors.New("encode Jira delivery failure failed")
+		return errors.New("encode guarded delivery failure failed")
 	}
 	tag, err := tx.Exec(ctx, `UPDATE `+w.table("finding_deliveries")+`
 		SET state=$5,receipt=$6,failure=$7,completed_at=clock_timestamp(),lease_until=NULL
@@ -221,13 +234,13 @@ func (w *DeliveryWorker) finishJiraDelivery(dispatch *deliveryDispatch, state st
 		AND state='dispatching' AND lease_until>clock_timestamp()`,
 		prior.WorkspaceID, prior.ID, w.workerID, prior.fence, state, receiptJSON, failureJSON)
 	if err != nil {
-		return errors.New("persist Jira delivery outcome failed")
+		return errors.New("persist guarded delivery outcome failed")
 	}
 	if tag.RowsAffected() != 1 {
 		return deliveryLeaseLost
 	}
 	if err = tx.Commit(ctx); err != nil {
-		return errors.New("commit Jira delivery outcome failed")
+		return errors.New("commit guarded delivery outcome failed")
 	}
 	return nil
 }
@@ -235,7 +248,7 @@ func (w *DeliveryWorker) finishJiraDelivery(dispatch *deliveryDispatch, state st
 func (w *DeliveryWorker) processJiraDelivery(ctx context.Context, dispatch *deliveryDispatch) error {
 	nativeCtx, cancel := context.WithCancelCause(ctx)
 	defer cancel(nil)
-	stop := w.watchJiraDelivery(nativeCtx, cancel, dispatch)
+	stop := w.watchDeliveryAuthority(nativeCtx, cancel, dispatch)
 	defer stop()
 	record := dispatch.record
 	action := connectors.Action{
@@ -250,9 +263,9 @@ func (w *DeliveryWorker) processJiraDelivery(ctx context.Context, dispatch *deli
 		if cause := context.Cause(nativeCtx); cause != nil {
 			state, failure = jiraInterruptedOutcome(cause, false)
 		}
-		return w.finishJiraDelivery(dispatch, state, nil, failure)
+		return w.finishGuardedDelivery(dispatch, state, nil, failure)
 	}
-	record, err = w.markJiraCreate(nativeCtx, dispatch)
+	record, err = w.markDeliveryAttempt(nativeCtx, dispatch)
 	if err != nil {
 		stop()
 		cause := err
@@ -260,7 +273,7 @@ func (w *DeliveryWorker) processJiraDelivery(ctx context.Context, dispatch *deli
 			cause = interrupted
 		}
 		state, failure := jiraInterruptedOutcome(cause, record.CreateAttemptedAt != nil)
-		return w.finishJiraDelivery(dispatch, state, nil, failure)
+		return w.finishGuardedDelivery(dispatch, state, nil, failure)
 	}
 	result, nativeErr := dispatch.adapter.Send(nativeCtx, action)
 	stop()
@@ -281,5 +294,5 @@ func (w *DeliveryWorker) processJiraDelivery(ctx context.Context, dispatch *deli
 		state, failure = jiraInterruptedOutcome(context.Cause(nativeCtx), true)
 		receipt = nil
 	}
-	return w.finishJiraDelivery(dispatch, state, receipt, failure)
+	return w.finishGuardedDelivery(dispatch, state, receipt, failure)
 }

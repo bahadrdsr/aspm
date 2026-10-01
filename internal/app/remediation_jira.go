@@ -75,6 +75,10 @@ func validJiraTarget(target *JiraTarget) bool {
 }
 
 func validConnectionToken(profile, token string) bool {
+	if profile == connectors.TeamsWorkflows {
+		_, valid := teamsWorkflowOrigin(token)
+		return valid
+	}
 	return validIntegrationToken(token) &&
 		(profile != connectors.JiraCloudV3 || !strings.ContainsFunc(token, unicode.IsSpace))
 }
@@ -84,7 +88,7 @@ func deliveryProfile(r *http.Request) (string, error) {
 	if !present {
 		return connectors.SlackWorkspaceBot, nil
 	}
-	if len(values) != 1 || values[0] != connectors.SlackWorkspaceBot && values[0] != connectors.JiraCloudV3 {
+	if len(values) != 1 || values[0] != connectors.SlackWorkspaceBot && values[0] != connectors.JiraCloudV3 && values[0] != connectors.TeamsWorkflows {
 		return "", errInvalid
 	}
 	return values[0], nil
@@ -150,6 +154,15 @@ func (a *Application) selectedFindingDelivery(r *http.Request, tx pgx.Tx, worksp
 			}
 		}
 	}
+	if delivery.Profile == connectors.TeamsWorkflows {
+		if !validTeamsMetadata(connection.Teams) || connection.Jira != nil || connection.Channel != "" {
+			return FindingDelivery{}, errConflict
+		}
+		delivery.Destination = &TeamsDestination{connection.Name, *connection.Teams}
+		if !teamsPayloadValid(delivery.Payload) {
+			return FindingDelivery{}, errInvalid
+		}
+	}
 	return delivery, nil
 }
 
@@ -175,7 +188,7 @@ func (a *Application) previewFindingDelivery(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return err
 	}
-	if delivery.Profile != connectors.JiraCloudV3 {
+	if delivery.Profile != connectors.JiraCloudV3 && delivery.Profile != connectors.TeamsWorkflows {
 		return errInvalid
 	}
 	digest, err := deliveryBinding(delivery)
@@ -184,6 +197,10 @@ func (a *Application) previewFindingDelivery(w http.ResponseWriter, r *http.Requ
 	}
 	if err = tx.Commit(r.Context()); err != nil {
 		return err
+	}
+	if delivery.Profile == connectors.TeamsWorkflows {
+		a.writeTeamsPreview(w, delivery, "sha256:"+hex.EncodeToString(digest))
+		return nil
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"preview": struct {
 		WorkspaceID        string              `json:"workspaceId"`

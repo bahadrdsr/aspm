@@ -135,13 +135,13 @@ func (f *fixture) legacyData(names []string) map[string][]string {
 		projection := "to_jsonb(v)"
 		if name == "integration_connections" {
 			same(f.t, "old Slack connections acquired Jira targets",
-				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL OR teams_target IS NOT NULL"), []string{})
-			projection += "-'jira_target'-'teams_target'"
+				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL"), []string{})
+			projection += "-'jira_target'"
 		}
 		if name == "finding_deliveries" {
 			same(f.t, "old Slack deliveries acquired Jira targets/attempt markers",
-				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL OR create_attempted_at IS NOT NULL OR teams_target IS NOT NULL"), []string{})
-			projection += "-'jira_target'-'create_attempted_at'-'teams_target'"
+				f.rows("SELECT id FROM "+f.table(name)+" WHERE jira_target IS NOT NULL OR create_attempted_at IS NOT NULL"), []string{})
+			projection += "-'jira_target'-'create_attempted_at'"
 		}
 		result[name] = f.rows("SELECT (" + projection + ")::text FROM " + f.table(name) + " v ORDER BY (" + projection + ")::text")
 	}
@@ -252,11 +252,11 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	output := filepath.Join("..", "..", ".artifacts", "jira-work-items", "published-v9-upgrade-"+nonce(t)+".json")
 	must(t, "record bounded nonsecret actual migration observation", os.WriteFile(output, encoded(t, observation), 0600))
 	t.Log("actual migration observation:", output)
-	same(t, "current app did not add V10/V11 over exact populated published V9",
-		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
-	same(t, "V11 changed the historical relation set", h.relations(), relations)
-	same(t, "V10/V11 must assert the exact approved DDL delta before any projection",
-		deliverycompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
+	same(t, "RED: current app did not add V10 over exact populated published V9",
+		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"})
+	same(t, "V10 changed the historical relation set", h.relations(), relations)
+	same(t, "V10 must assert the exact approved DDL delta before any projection",
+		deliverycompat.Project(t, definitions, h.definitions(names)), definitions)
 	same(t, "V10 changed actual historical business rows", h.legacyData(names), before)
 	body, _ := h.request(h.ctx, viewer, "GET", connectionsPath+"/"+slackConnection.ID, nil, 200)
 	same(t, "Jira-disabled migration changed exact old Slack metadata keys/values", decoded[object](t, body)["connection"], slackShape)

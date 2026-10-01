@@ -74,6 +74,8 @@ func connectionCredentialAAD(profile, workspace, connection string) ([]byte, err
 		return integrationCredentialAAD(workspace, connection), nil
 	case connectors.JiraCloudV3:
 		return []byte("aspm/jira-credential/v1\x00" + workspace + "\x00" + connection), nil
+	case connectors.TeamsWorkflows:
+		return []byte("aspm/teams-workflow-credential/v1\x00" + workspace + "\x00" + connection), nil
 	default:
 		return nil, errUnavailable
 	}

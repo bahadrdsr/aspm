@@ -1,0 +1,39 @@
+{
+  "scope": "Six approved current migration observers only",
+  "files": [
+    {
+      "afterSHA256": "df112e896fefed2eeecd4016f386e4c39b0a7eb50d7e7b4a775a00d1a5f10fa1",
+      "beforeSHA256": "993f8838c9c6dee4f2a50adc2afbdbc142d627751519da25f1b3a67d1e960a14",
+      "path": "tests\\source_collection\\upgrade_test.go"
+    },
+    {
+      "afterSHA256": "eb3d48763e4be32bbe609fb0a8ad4f758bbc22a1a5d26c803a47049fcdc98ba9",
+      "beforeSHA256": "69656db38781428a13ca5f54d8d4de0498a68cdec69b0d43e5c06fbfe94dba9c",
+      "path": "tests\\ai_configuration\\upgrade_test.go"
+    },
+    {
+      "afterSHA256": "776eeba40fc6569a1621c3a52360ad9c9a47d5f12629646c529624b43e1b218a",
+      "beforeSHA256": "a8cab315a8ea6884d4efca526b25333f0d78dbba7aa133a99e90380362c1f3aa",
+      "path": "tests\\ai_assessments\\upgrade_test.go"
+    },
+    {
+      "afterSHA256": "86d85d7aa4a523c45a9f7db74c70f3d5ce14ae86f6d48d869a3687ff7a6d5061",
+      "beforeSHA256": "72e5d5ee4b9577a7a108c7044362bd392ecc1c63821926c0eb1d2d7c44eeb620",
+      "path": "tests\\saved_work_views\\views_test.go"
+    },
+    {
+      "afterSHA256": "ad55380190378fcec138747d2027783259003a99da24ae055a7727a446dfaadf",
+      "beforeSHA256": "7b62829383bbf7348b9b5dc8bc02ae5f9f2d6d0442c187cca8307b27b834a841",
+      "path": "tests\\saved_work_views\\upgrade_test.go"
+    },
+    {
+      "afterSHA256": "4eb02a1f41aab92fcd301a3ebabd27e66948e47b4805d6d29ff3073809882985",
+      "beforeSHA256": "9b2bdea71fe0de462390f1d9dd6af2c5575d3661f3e3b5277561e5af941f9ea4",
+      "path": "tests\\jira_work_items\\upgrade_test.go"
+    }
+  ],
+  "authorization": "tests\\jira_work_items\\teams\\PARENT-AUTHORIZATION.txt",
+  "proposalSHA256": "c00b03577589eb1b7167f4923ee1254b16c111a3fa0b25675b26a7bc1f7757fb",
+  "originalV10HelperUnchanged": true,
+  "executionByAstra": "NONE"
+}

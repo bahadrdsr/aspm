@@ -591,6 +591,18 @@ Helm and manual Quadlet deployment of this role are explicit opt-ins; see
 plus production key rotation, remain unfinished. The presence of the UI does not
 start a worker automatically.
 
+The backend API also supports explicit `teams-workflows-channel` connections and
+reviewed finding notifications through the common encrypted store and outbox.
+The signed Workflow URL is write-only; public metadata contains only its origin,
+an operator-declared standard channel and an ownership-continuity acknowledgment.
+Local preview requires explicit digest-bound queue consent. A native 202 means
+accepted with no receipt, not confirmed channel delivery. The worker retains the
+original signed path/query and uses the existing fencing and cancellation guard.
+See `internal\app\README.txt` for the bounded backend contract.
+Teams UI, the actual delivery-main origin policy, runtime/deployment setup and
+live account/channel qualification remain separate work. The Slack/Jira process
+configuration above does not automatically admit a Teams origin.
+
 In **Reports**, **Live overview** displays the service's exact totals, all-finding
 severity counts, coverage, as-of time and freshness bounds. Edit **Freshness days**
 (1 through 365, initially 7), then explicitly **Refresh report** to apply the

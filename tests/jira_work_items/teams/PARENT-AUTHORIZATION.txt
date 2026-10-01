@@ -1,0 +1,28 @@
+Teams current-observer evolution approved by coordinator, October 1, 2026
+
+Applied exactly the six-file changes in SCHEMA-AMENDMENT.diff.txt:
+eleven CURRENT ledger expectations extend through V11; nine current DDL
+comparisons use the new strict ProjectCurrent composition. The populated
+V9 row observer checks that both new teams_target columns are NULL before
+excluding only those additional NULL fields from historical row comparisons.
+
+Every historical starting ledger, seed/source/DDL hash, test identity and
+other business-data assertion remains unchanged. The original V10 schema
+helper, constants and tests remain intact. Prior six-file bytes and the
+original authored handoff are archived once under
+history/before-v11-observer-approval.
+
+The original handoff's approval-pending status describes its authoring time.
+This record supersedes only that pending approval. No compile, build, test,
+calibration or readiness check has been executed by Astra. Sol must establish
+the genuine baseline before the coordinator signs the new control set.
+
+Producer internal/app code and related product documentation remain mutable
+test subjects after that authorization, not immutable acceptance controls.
+They must be covered by the complete tested-tree digest. Existing tests and
+the new controls become fixed at the signed pre-code baseline.
+
+The T3 crash child's single ProcessNext has no inherited QueryTracer. Parent
+SQL counts must be labeled as parent-only, not an all-process performance
+measurement. Context, pool and native-I/O limits still apply; do not invent
+an enterprise throughput or whole-process SQL-cap qualification.
