@@ -26,7 +26,9 @@ export function LoadingState({ label: text }: { label: string }) {
   return <div className="loading-state" role="status"><div className="loading-caption"><Icon name="clock" /><span>{text}</span></div><div className="skeleton-lines" aria-hidden="true"><i /><i /><i /><i /></div><p>Waiting for the data service. Other views remain available.</p></div>;
 }
 
-export function ErrorState({ error, retry, stale = false }: { error: APIError; retry: () => void; stale?: boolean }) {
+export function ErrorState({ error, retry, stale = false, retryLabel }: {
+  error: APIError; retry: () => void; stale?: boolean; retryLabel?: string;
+}) {
   const forbidden = error.code === "forbidden";
   return <div className={`error-state ${forbidden ? "permission" : ""}`} role="alert">
     <span className="error-icon"><Icon name={forbidden ? "lock" : "warning"} size={22} /></span>
@@ -34,7 +36,7 @@ export function ErrorState({ error, retry, stale = false }: { error: APIError; r
       {stale && <p className="muted">Showing the last received data. Its source timestamps have not been refreshed.</p>}
       {error.requestId && <p className="request-id">Request <code>{error.requestId}</code></p>}
       {forbidden && <p className="muted">Ask your administrator to review your access. Restricted records are not displayed.</p>}
-      <ActionButton variant="outline" onClick={retry}><Icon name="refresh" />{error.retryable ? "Retry" : "Check again"}</ActionButton>
+      <ActionButton variant="outline" onClick={retry}><Icon name="refresh" />{retryLabel ?? (error.retryable ? "Retry" : "Check again")}</ActionButton>
     </div>
   </div>;
 }

@@ -1,0 +1,156 @@
+Jira work items UI v1: bounded test-author contract, October 1, 2026
+Published producer: f73c3377eebac68a5366f790ae0c1aea8c6c8d22 (V10).
+Requested author lane: GPT-6 Astra; implementation lane: Sol 6.1.
+No reviewer. Author labels are not acceptance or model-runtime attestations.
+Parent seals this unsigned cut before implementation. Stop at actual RED.
+
+FROZEN BOUNDARY
+Read tests\jira_work_items\CONTRACT.txt and the published app Jira, connection,
+delivery, custom JSON, worker and HTTP definitions before writing this file.
+All pre-existing tracked files remain byte-identical, including 132 browser
+cases, fixtures/configs, adapter/schema tests, signatures, production and locks.
+New files only: this contract, jira-work-items-ui-{data,fixture}.ts,
+jira-work-items-ui.spec.ts, this directory's playwright.config.ts and one
+unsigned HANDOFF.txt. Evidence goes under web\.artifacts only. No commits,
+agents, installs, backend/provider calls, SQL, server/handler/business-I/O fakes,
+UI replacement, hook/state injection, transport/TLS bypass or vendor account.
+The real App, cookie session, selected workspace, DOM events and HTTP boundary
+are exercised. Reuse frozen SavedViewsAPI/Work helpers and empty navigation
+helpers; Jira responses are declared metadata, not a second business server.
+
+ENTRY, AUTHORITY AND ROUTING
+Keep five nav links, eight catalog families, Slack Connections, Sources,
+collapsed AI settings, Work search/selection and personal saved views.
+Jira connections starts collapsed, optionally reached from the Jira family.
+Only explicit Jira entry/selection/refresh reads Jira metadata. Ordinary
+Integrations, Work and finding open produce zero Jira HTTP. Slack list/history
+GETs keep their original no-profile queries and response bytes.
+Jira connection and finding delivery list GETs use exactly one
+profile=jira-cloud-v3, limit=100 and optional native 32-lowercase-hex cursor.
+No mixed-profile client filtering, lost total, offset or invented query.
+GET connection/detail and delivery/detail have no query. Every protected
+request carries the current X-ASPM-Workspace-ID and application session cookie.
+403/404 revokes that resource's cached authority through later 503; 401 clears
+the session. Work/detail authority and connection metadata authority are
+distinct, not a fabricated global grant. Current roles/server denials win.
+Entry GET cohorts permit at most two declared StrictMode requests, never an
+unbounded fallback. Register requests before awaiting allHeaders. A 401 must
+have an actual response event before auth-triggered abort, not just fulfill.
+Use a real reload when testing a new document. No aborted 401 fallthrough 200.
+
+SETUP AND STRICT METADATA
+Admin alone adds/edits; analyst/viewer can explicitly read metadata.
+Use labelled Name, Cloud ID, Site origin, Project, Issue type, OAuth bearer
+token (password input), Enabled and visible reviewable API base. Clearly Jira
+Cloud v3 / OAuth bearer, not Basic email/API token, Data Center, OAuth install
+or refresh. The standard https://api.atlassian.com/ex/jira/{cloudId} may be a
+visible proposal; it is never hidden tenant/provider authorization. A separately
+approved gateway is an optional advanced field using the same exact path.
+POST /api/v1/integrations/connections has exactly
+{profile:"jira-cloud-v3",name,enabled,token,jira:{credentialType:"oauth2-bearer",
+cloudId,apiBase,siteOrigin,project,issueType,fieldMappings}}.
+PATCH /api/v1/integrations/connections/{id} is sparse name/enabled/token/jira.
+Blank edit token preserves the old credential by omission. Changed jira replaces
+the whole target; unchanged jira is omitted. No credential readback or browser
+token test. Secret drafts disappear on close/success/workspace/logout/401.
+Mappings are up to 16 explicit customfield_[0-9]+ IDs (128-byte maximum), each
+mapped by a fixed selector to finding.id, finding.title, finding.severity,
+asset.name or finding.deepLink. No JSON editor, free path, literal or template.
+Reject reserved/duplicate/17th mapping and invalid target/name/token bounds
+locally, preserve input, show honest error, send nothing, never truncate/coerce.
+Cloud ID: lowercase UUID; project: [A-Z][A-Z0-9_]{0,254}; issue type:
+[1-9][0-9]{0,19}; canonical HTTPS origin and exact /ex/jira/{cloudId}, no
+credentials/query/fragment/encoded routing. Name <=256 UTF-8 bytes; token
+<=16384 UTF-8 bytes, opaque, no whitespace/control characters.
+Parse exact published envelopes/keys and types, profile, native IDs, workspace,
+positive safe integer revision, timestamps, target and expected write status.
+Wrong/malformed ACK is not success. Metadata permissionState stays not-verified
+even after HTTP 200/201 or credentialConfigured:true. No implicit vendor grant.
+
+LOCAL REVIEW AND QUEUE
+Admin/analyst "Create Jira work item" opens a focused region in the existing
+finding detail, not stacked dialogs. Viewer has explicit history only.
+One unambiguous enabled configured destination: entry loads current metadata
+and POST /api/v1/findings/{id}/delivery-previews {connectionId}, then one
+"Queue Jira work item" confirmation. Two activations, no extra mandatory
+preview click. Multiple destinations require explicit selection first.
+No typing HTTP. Preview is server-local, not a fake client-built preview:
+{apiVersion,preview:{workspaceId,findingId,connectionId,connectionRevision,
+profile,requestedBy,jira,payload:{title,body,deepLink,fields},bindingDigest,
+nativeValidation:"not-run",reviewRequirements:["explicit-queue-consent",
+"native-required-fields","jira-permission"]}}.
+Show canonical summary/body, project/type/site, finding link and resolved
+customfield strings. State "Native validation not run"; required fields and
+Jira permissions are checked by the worker. No raw evidence/report/code/notes
+or remediation export. Treat all text as data, never markup/instructions.
+Queue exactly {connectionId,idempotencyKey,previewDigest,confirm:true} to
+POST /api/v1/findings/{id}/deliveries. Validate preview digest syntax
+sha256:<64 lowercase hex>, scope/actor/finding/connection revision/target/payload.
+No optimistic finding mutation. 202 is queued, not created; 200 is same-intent
+replay, not a new receipt. Invalid ACK retains uncertainty, not success.
+Bounded memory retains original key after lost ACK for explicit same-intent
+confirmation only; no autoPOST, automatic retry, new key or resend on open.
+New selection, authorized revision/target/disabled metadata, changed canonical
+finding, stale detail, wrong scope/actor or 409 invalidates old consent. Require
+a fresh local preview before new consent; never silently replace an unresolved
+intent. No exactly-once remote guarantee. Close restores Work filter, current
+selection, personal-view context, existing controls and entry focus.
+
+MANUAL HISTORY AND NATIVE OUTCOMES
+"Jira work item history" explicitly loads GET /api/v1/findings/{id}/deliveries
+with the Jira selector. Manual paging/reload and selected detail GET
+/api/v1/integrations/deliveries/{id} only. No timers/polling/resend on open.
+Use actual delivery DTO: id/workspaceId/findingId/connectionId/revision/profile,
+channel:"", requestedBy, state, immutable payload and jira, createdAt,
+dispatchStartedAt/completedAt, receipt/failure and Jira createAttemptedAt.
+States: queued, dispatching, confirmed, accepted, blocked, failed,
+rate-limited, uncertain. Acceptance is not confirmation; native adapter
+confirmation requires a canonical matching issue key and approved-site URL.
+Failure keeps code/nativeCode/httpStatus/retryAfterSeconds/retryable:false,
+optional stage/missingFields. Metadata required_fields with no createAttemptedAt
+means no native POST. Create uncertainty means possibly sent, do not resend.
+429 Retry-After is data, not an automatic retry timer. Show create marker.
+Native receipt URL must equal approved siteOrigin + "/browse/" + native key
+matching selected project and positive numeric suffix. Reject arbitrary self,
+other site/key, malformed URI or HTML; HTTPS links use noopener/noreferrer and
+never open automatically. Unvalidated target metadata may remain plaintext.
+Individual detail denial withholds its fields through 503 even if the history
+list or unrelated metadata remains readable. Server error bodies cannot leak
+credentials or become HTML. Configuration never verifies an account/finding.
+
+SEVEN REAL-APP NARRATIVES
+JU1 lazy navigation, scoped native metadata pages/totals, denied-read latch,
+    explicit strict create, visible gateway, safe mappings/local rejection.
+JU2 sparse edit/blank credential/whole-target change, strict ACKs, current
+    admin denial, analyst/viewer read-only configuration.
+JU3 server-local canonical review, unique and multiple target intent,
+    malformed binding refusal, explicit exact queue, personal Work nonmutation.
+JU4 manual native history pages/details, states/required fields/429/uncertainty,
+    canonical receipt links, unsafe receipt rejection and detail denial latch.
+JU5 lost ACK original-key explicit replay, malformed ACK uncertainty, no resend,
+    changed revision/target/disabled selection, stale preview and server 409.
+JU6 workspace/logout/actual-response-401 cleanup, late response abortion,
+    new-document role changes and no surviving token drafts or old-scope data.
+JU7 390px keyboard/reduced-motion focused review, view-only history, resource
+    authority separation and Work selection/filter/focus restoration.
+Each narrative first asserts its missing production Jira control. Unreached
+tails stay blocked, never accepted because fixture declarations exist.
+Accessible names used by the cut: forms Add/Edit Jira connection; group Custom
+field mapping with Custom field ID and String source; review region Jira work
+item review; history table Jira work items; detail region Jira work item details
+and status Jira work item status. Close Jira review returns to the same finding.
+Refresh/Retry Jira connections, Refresh/Retry Jira preview, Refresh Jira history,
+Next Jira connections/work items and Open/Refresh/Retry Jira work item describe
+their explicit bounded actions. Saved-view compatibility is exercised before
+JU3 reaches the missing finding control; it is not a rerun of the old suite.
+
+VALIDATION AND EVIDENCE
+20s per case, 5s expect, one worker, zero retries, 60 combined API calls per
+case across inherited and Jira handlers, blocked service workers, normal TLS,
+failure trace/screenshot and redacted ledger. Port 18827 only if free; cached
+Node/Playwright/browser/dependencies only. Typecheck and discovery (132+7=139),
+then only seven new narratives. Do not rerun old 132 in this author phase.
+Hash exact frozen inputs, producer bytes, new files and evidence in one
+unsigned HANDOFF. Record reached vs blocked assertions and all fixture guards.
+Synthetic HTTP proves no backend, worker, external creation, vendor permission,
+deployed UI success, native qualification or whole-feature completion.

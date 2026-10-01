@@ -520,6 +520,37 @@ real HTTPS and an owned certificate-validated Slack-protocol fixture. Confirmed
 and lost-acknowledgement outcomes remain distinct, with no automatic resend.
 This is not live Slack installation or channel-authority certification.
 
+**Jira connections** starts collapsed in Integrations. Opening it explicitly
+reads only the Jira Cloud v3 profile, using native 100-row cursor pages. Admins
+can add or edit the approved Cloud ID, HTTPS site/API base, project, numeric
+issue type, enabled state and masked OAuth bearer token. A blank edit token is
+omitted; target changes replace the whole Jira target. Up to 16 explicit custom
+field IDs can use the five fixed finding/asset/link string sources. The visible
+Atlassian API-base proposal is not approval of a tenant or credential destination.
+Configuration remains not verified and never probes Jira or creates an issue.
+
+In the existing finding detail, admins and analysts can **Create Jira work item**.
+An unambiguous enabled, configured destination from a complete native page
+loads a server-local canonical preview directly. Otherwise, select a destination
+explicitly; unloaded pages are not proof of uniqueness. **Queue Jira work item**
+is a separate confirmation bound to the server digest, current scope, actor,
+finding, target and connection revision. Native required-field and permission
+checks belong to the worker. A 202 means queued, not created; a 200 acknowledges
+the same intent replay, not a new request. Lost or malformed acknowledgements
+retain the original key in bounded scoped memory for explicit same-intent
+confirmation only. Changed or denied authority invalidates consent without
+silently replacing an unresolved intent. There is no automatic retry or resend.
+
+Viewers can read configuration and **Jira work item history**, but cannot queue.
+History paging, detail reads and refresh are manual. Native failure stage,
+missing fields, HTTP status, Retry-After and create-attempt timestamps distinguish
+metadata rejection without a native POST from possible creation. Confirmed issue
+links must match the immutable approved site, project and native key; they never
+open automatically. Resource denials withhold cached fields, and scope/session
+loss clears drafts and intents and aborts late responses. Jira UI metadata and
+receipts do not prove vendor permissions, resolve a finding or qualify a live
+native account or deployed workflow.
+
 For this initial managed notification profile, core and `cmd\delivery-worker`
 must receive the same independently generated 32-byte key through protected
 `ASPM_INTEGRATION_ENCRYPTION_KEY` configuration, encoded as canonical standard

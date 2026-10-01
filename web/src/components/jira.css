@@ -1,0 +1,23 @@
+.jira-entry { margin-block: 20px; min-width: 0; }
+.jira-form, .jira-review, .jira-work-items { min-width: 0; overflow-wrap: anywhere; }
+.jira-form input, .jira-form select { max-width: 100%; }
+.jira-enabled { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.jira-enabled input { width: auto; }
+.jira-mappings { display: grid; gap: 12px; min-width: 0; }
+.jira-mapping { display: grid; gap: 10px; min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+.jira-work-items { margin-block: 20px; }
+.jira-work-items-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.jira-work-items-heading h3 { margin-right: auto; font-size: 12px; }
+.jira-review { margin-top: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; display: grid; gap: 14px; }
+.jira-review:focus { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
+.jira-review select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+.jira-review label { display: grid; gap: 6px; font-size: 12px; }
+.jira-review .slack-payload { border: 1px solid var(--line); padding: 12px; border-radius: 8px; background: var(--surface-soft); }
+.jira-review .slack-payload dd { white-space: pre-wrap; }
+.jira-review .form-actions { flex-wrap: wrap; }
+.jira-work-items .slack-panel { box-shadow: none; margin-block: 14px; }
+.jira-work-items .slack-panel-heading h3 { font-size: 12px; }
+@media (max-width: 600px) {
+  .jira-review { padding: 12px; }
+  .jira-work-items-heading { gap: 8px; }
+}

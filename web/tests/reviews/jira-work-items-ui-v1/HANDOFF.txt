@@ -1,0 +1,130 @@
+Jira work items UI v1: UNSIGNED test-author handoff
+October 1, 2026. Decision: FROZEN RED. Parent seals, then Sol 6.1 implements.
+Requested author lane: GPT-6 Astra. Lane label is not runtime-model evidence.
+No reviewer, nested agents, commits, installs or signature changes.
+Producer HEAD: f73c3377eebac68a5366f790ae0c1aea8c6c8d22.
+
+SCOPE AND RESULT
+Six new files only, including this unsigned handoff. CONTRACT.txt was written
+before the new data helper, fixture, spec and isolated configuration.
+All 1,749 pre-existing tracked files remain byte-identical, including 158
+.sha256/.sig/.asc files, existing 132 browser cases, helpers/configs, native
+Jira/Slack adapter/schema tests, production and dependency manifests/locks.
+The historical base in tests\jira_work_items\CONTRACT.txt is not the UI producer
+base: this cut uses the actual published HEAD and its Jira custom JSON/API.
+No backend, PG, S3, provider, vendor-account or deployed-runtime test was run.
+
+Typecheck: PASS. Discovery: 132 old + 7 new = 139 tests in 25 files.
+Isolated discovery: 7 tests in 1 file. Old 132 were not rerun.
+Final browser run red-02: seven genuine missing-production-control REDs,
+one attempt each, no global errors, fixture violations or browser page errors.
+Every case made zero Jira requests and zero external requests before stopping.
+
+Case  API calls  Duration   Reached / first missing control
+JU1       6      10.362s    Existing Integrations / Jira connections entry
+JU2       6       6.874s    Existing Integrations / Jira connections entry
+JU3       9       7.955s    Personal view apply, Work, finding / Create Jira work item
+JU4       6       7.430s    Viewer Work and finding / Jira work item history
+JU5       6       7.133s    Work and finding / Create Jira work item
+JU6       6       6.922s    Existing Integrations / Jira connections entry
+JU7       6       7.424s    390px Work and finding / Create Jira work item
+
+Reached prefixes establish original five links/eight families, Slack/Sources
+navigation, lazy AI settings, personal-view compatibility where exercised,
+real finding context and no Jira HTTP on ordinary navigation/detail opening.
+ALL subsequent Jira setup/edit/validation/preview/queue/history/replay/denial/
+privacy/keyboard-focus tails remain BLOCKED, not passed or accepted. Their
+full runtime inside the configured budget is also not yet qualified.
+red-01 is retained, not overwritten: JU1/JU2/JU6 were fixture-blocked because
+the new helper declared Sources with limit=100 instead of its actual bare GET.
+The other four cases reached real missing controls. Only new author files were
+corrected/finalized before red-02, including API-base bounds, nativeCode display
+and accessible-name checks. Exact input snapshots and all failure evidence
+exist for both runs. No frozen helper was changed to accommodate Jira.
+
+BOUNDARIES, ROUTES AND BUDGETS
+Real App/Vite assets plus frozen SavedViewsAPI/Work helpers; no replacement
+DOM, hooks/state, production handlers, SQL or Jira business server.
+New Jira fixture scripts exact scoped HTTP requests and typed metadata only.
+Digest strings and outcomes are declared fixtures, not computed authorization,
+native permission, backend idempotency or remote exactly-once proof.
+Positive connection metadata always says permissionState:not-verified.
+Wrong profile/scope/revision/target/receipt/HTTP status are explicit negatives.
+Only application cookie/current workspace/Origin authority is allowed.
+
+Frozen navigation: session, Work/finding, catalog, bare Sources, Slack default
+connections?limit=100 (NO profile), existing personal-view GETs, login/logout.
+Jira connection/history list GETs: exactly profile=jira-cloud-v3, limit=100,
+optional native cursor; no mixed default rows or client-filtered totals.
+GET /api/v1/integrations/connections/{id} and
+GET /api/v1/integrations/deliveries/{id}: no query.
+POST /api/v1/integrations/connections: explicit Cloud v3 OAuth bearer target.
+PATCH /api/v1/integrations/connections/{id}: sparse name/enabled/token/jira;
+blank token omitted, changed jira replaces its whole target.
+POST /api/v1/findings/{id}/delivery-previews: exactly {connectionId}, local only.
+POST /api/v1/findings/{id}/deliveries: exactly
+{connectionId,idempotencyKey,previewDigest,confirm:true}.
+GET /api/v1/findings/{id}/deliveries: explicit Jira history selector above.
+No provider probes, automatic POST/retry/polling or finding writes are declared.
+
+20s/case, 5s/expect, one worker, zero retries, combined 60 API calls/case
+(inherited and Jira share one ledger), at most two declared entry GETs.
+Requests register before allHeaders; 401 needs a real response before abort;
+held old-scope traffic must actually abort. No aborted-401 success fallback.
+Service workers blocked; normal TLS guards, ignoreHTTPSErrors:false.
+Failure screenshots/traces and redacted HTTP ledgers retained.
+Cached Node v22.20.0, Playwright 1.63.0, TypeScript 7.0.2, headless shell 1243.
+Port 18827 was free before each run; no listener remained after final cleanup.
+
+COMMANDS (cwd C:\bahadr\serious\aspm\web)
+node node_modules\typescript\bin\tsc --noEmit                       exit 0
+node scripts\playwright.mjs test --list --reporter=list             exit 0
+node scripts\playwright.mjs test --config tests\reviews\jira-work-items-ui-v1\playwright.config.ts --list --reporter=list
+                                                                  exit 0
+ASPM_JIRA_UI_RUN=red-02, then:
+node scripts\playwright.mjs test --config tests\reviews\jira-work-items-ui-v1\playwright.config.ts
+                                                                  exit 1 (seven expected REDs)
+No production success, native qualification, vendor permission, live creation,
+deployed UI success or whole-feature completion is claimed.
+
+AUTHOR FILE SHA-256 (paths relative to repository root)
+web\tests\jira-work-items-ui-data.ts
+  c8301f8cd69ee3fd7d2023f0537bd83ea8cf77e20aae9b3c48787d4637a30d6e
+web\tests\jira-work-items-ui-fixture.ts
+  058701d5470309b462a2c597d1b51457e08e44bc4ee5cb0ca23e68b4d02bb4d0
+web\tests\jira-work-items-ui.spec.ts
+  ff4713d5b8f8c96af9ac37cbc44580a4c6c0c138a04d9d1115a02167493c25a7
+web\tests\reviews\jira-work-items-ui-v1\CONTRACT.txt
+  6d482603579edafc4748be2fbb8fe70ccf57faefe9a567f3de5c4a44c6d0c527
+web\tests\reviews\jira-work-items-ui-v1\playwright.config.ts
+  adf4fc268d68b57cd3ddd33e85476de58a85bfb0c86bbf3ba1b9b1916e7749c7
+
+EVIDENCE SHA-256
+E means web\.artifacts\jira-work-items-ui-v1-author.
+E\evidence-manifest.json
+  4436166c285a2a1029ea5e7fe5ea66425e78b7ed7dd77b4249ab15546b0154f7
+E\red-01\frozen-boundary.json
+  95787e63dfc457aa61d1622b7ed85eb9c72b94780267d38168caa8dd07224705
+E\red-02\verification.json
+  ade51d2b9595bf734e525ac3751fb09632dc570bb53e1ff36412153e5b0b16cb
+E\red-02\author-inputs.json
+  739303990997128723910a638e5b0dc55e31199e1c6ad69711fe154185e3ed86
+E\red-02\results.json
+  6a6aeaad80b0eacbec3241fb6d4083b3c9103f3a958097db5ef1237ec39464a6
+E\red-02\typecheck.log
+  de69bb1bf4ac25a8aa60d47231e2bc226a790968de4caf52989692ee583bebc2
+E\red-02\discovery-all.log
+  5a2acda545e025def6ae6233be65c68a088b99af5b7906fd2583bd74141535d6
+E\red-02\discovery-new.log
+  fcd24a2ac284785cea9d18347c8c111e2f0f166f45c3f987e70aa2cbeac4e643
+E\red-02\browser-red.log
+  a77e9002175aebc18e94cfc9d6ebbadaab6f27fbdce2928e706277030776da33
+
+The evidence manifest hashes every retained artifact separately, including
+both runs' screenshots/traces/error contexts and exact author input snapshots.
+verification.json binds all final per-case ledger hashes/source witnesses and
+21 consulted producer/harness file hashes. frozen-boundary.json enumerates
+all 1,749 pre-existing byte hashes. Every final ledger witness matched the
+current author files when verification.json was produced.
+This handoff excludes its own hash. It is not signed or sealed; existing
+signatures remain untouched. Parent must seal this exact cut before coding.

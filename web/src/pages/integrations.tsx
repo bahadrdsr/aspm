@@ -7,6 +7,7 @@ import { ActionButton } from "@/components/action-button";
 import { DataNotice, EmptyState, ErrorState, LoadingState } from "@/components/states";
 import { Icon } from "@/components/icon";
 import { SlackConnections } from "@/components/slack-connections";
+import { JiraConnections } from "@/components/jira-connections";
 import { Sources } from "@/components/sources/sources";
 import { AISettings } from "@/components/ai-settings/ai-settings";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export function IntegrationsPage() {
   const dataOrigin = resource.data?.dataOrigin;
   const [query, setQuery] = useState("");
   const [aiOpen, setAIOpen] = useState(false);
+  const [jiraOpen, setJiraOpen] = useState(false);
   const aiEntry = useRef<HTMLButtonElement>(null);
   const items = resource.data?.items.filter((item) => `${item.name} ${item.capabilities.join(" ")}`.toLowerCase().includes(query.toLowerCase())) ?? [];
   return <>
@@ -34,6 +36,7 @@ export function IntegrationsPage() {
     <div className="catalog-intro"><div><Icon name="integrations" size={24} /><p><strong>Capabilities first. Credentials later.</strong><span>Support maturity, connection health, and live verification are separate.</span></p></div><span className="subtle-pill">Read-only catalog</span></div>
     <SlackConnections />
     <Sources />
+    <JiraConnections open={jiraOpen} onToggle={() => setJiraOpen((value) => !value)} />
     <div className="ai-entry"><Button ref={aiEntry} type="button" variant="outline" aria-expanded={aiOpen}
       onClick={() => setAIOpen(true)}>AI settings</Button></div>
     {aiOpen && <AISettings onClose={() => { setAIOpen(false); aiEntry.current?.focus({ preventScroll: true }); }} />}
@@ -43,7 +46,7 @@ export function IntegrationsPage() {
     {resource.data && items.length === 0 && <div className="surface"><EmptyState icon="integrations" title="No integrations in this view" description="The API returned no matching catalog entries. Try another filter or refresh the catalog." /></div>}
     {resource.data && <ul className="integration-grid" aria-label="Native integrations">{items.map((item) => {
       const presentation = familyPresentation[item.id];
-      const verified = dataOrigin === "live" && item.liveVerification.state === "passed" && item.supportMaturity === "supported";
+      const verified = item.id !== "jira" && dataOrigin === "live" && item.liveVerification.state === "passed" && item.supportMaturity === "supported";
       return <li className="integration-card" key={item.id}>
         <div className="integration-card-top"><span className={`family-mark family-${item.id}`} aria-hidden="true">{presentation.monogram}</span><span className="subtle-pill">{label(item.supportMaturity)}</span></div>
         <h3>{item.name}</h3><p className="integration-purpose">{presentation.purpose}</p>
@@ -51,7 +54,9 @@ export function IntegrationsPage() {
         <div className="connection-line"><span>Connection</span><strong>{item.connectionState === "unconfigured" ? "Not connected" : label(item.connectionState)}</strong></div>
         <div className="verification-line"><Icon name={verified ? "check" : "clock"} size={15} /><span>{verified ? "API reports verification passed" : "Not verified"}</span></div>
         <p className="verification-reason">{item.liveVerification.reason}</p>
-        <div className="integration-footer"><Icon name="lock" size={14} /><span>{item.id === "slack" ? "Outbound destinations are managed in Connections" : item.id === "github" ? "Selected repositories are managed in Sources" : "Setup is not available in this view"}</span></div>
+        <div className="integration-footer"><Icon name="lock" size={14} />{item.id === "jira"
+          ? <Button type="button" variant="ghost" size="sm" onClick={() => setJiraOpen(true)}>Manage Jira connections</Button>
+          : <span>{item.id === "slack" ? "Outbound destinations are managed in Connections" : item.id === "github" ? "Selected repositories are managed in Sources" : "Setup is not available in this view"}</span>}</div>
       </li>;
     })}</ul>}
     <p className="view-footnote"><Icon name="info" size={15} />Report import formats do not count as native integrations. Connection configuration never sends a notification or verifies a catalog family.</p>
