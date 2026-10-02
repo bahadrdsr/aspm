@@ -149,6 +149,7 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 func Run(ctx context.Context, role string, config Config) (err error) {
 	if role == "delivery" {
 		config.JiraAPIOrigins = append([]string(nil), config.JiraAPIOrigins...)
+		config.TeamsWorkflowOrigins = append([]string(nil), config.TeamsWorkflowOrigins...)
 	}
 	if (role == "core" || role == "collection") && config.CollectionStorage != nil {
 		storage := *config.CollectionStorage

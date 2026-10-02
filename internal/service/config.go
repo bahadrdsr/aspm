@@ -34,6 +34,7 @@ type Config struct {
 	DeliveryLeaseDuration    time.Duration
 	SlackEndpoint            string             `json:"-"`
 	JiraAPIOrigins           []string           `json:"-"`
+	TeamsWorkflowOrigins     []string           `json:"-"`
 	DeliveryClient           *http.Client       `json:"-"`
 	DeliveryCAFile           string             `json:"-"`
 	CollectionStorage        *app.StorageConfig `json:"-"`

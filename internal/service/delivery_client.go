@@ -96,7 +96,15 @@ func deliveryOrigin(endpoint string) (string, error) {
 type deliveryDial func(context.Context, string, string) (net.Conn, error)
 
 func jiraOriginAddresses(origins []string) ([]string, error) {
-	invalid := errors.New("ASPM_JIRA_API_ORIGINS/JiraAPIOrigins requires at most 16 unique canonical HTTPS origins")
+	return providerOriginAddresses(origins, "ASPM_JIRA_API_ORIGINS/JiraAPIOrigins")
+}
+
+func teamsOriginAddresses(origins []string) ([]string, error) {
+	return providerOriginAddresses(origins, "ASPM_TEAMS_WORKFLOW_ORIGINS/TeamsWorkflowOrigins")
+}
+
+func providerOriginAddresses(origins []string, field string) ([]string, error) {
+	invalid := errors.New(field + " requires at most 16 unique canonical HTTPS origins")
 	if len(origins) > jiraAPIOriginLimit {
 		return nil, invalid
 	}
@@ -170,6 +178,10 @@ func jiraOriginAddresses(origins []string) ([]string, error) {
 }
 
 func deliveryOrigins(endpoint string, jiraOrigins []string) ([]string, error) {
+	return deliveryOriginUnion(endpoint, jiraOrigins, nil)
+}
+
+func deliveryOriginUnion(endpoint string, jiraOrigins, teamsOrigins []string) ([]string, error) {
 	origin, err := deliveryOrigin(endpoint)
 	if err != nil {
 		return nil, err
@@ -178,7 +190,21 @@ func deliveryOrigins(endpoint string, jiraOrigins []string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return append([]string{origin}, additional...), nil
+	teams, err := teamsOriginAddresses(teamsOrigins)
+	if err != nil {
+		return nil, err
+	}
+	all := append([]string{origin}, additional...)
+	all = append(all, teams...)
+	union := make([]string, 0, len(all))
+	seen := make(map[string]struct{}, len(all))
+	for _, address := range all {
+		if _, duplicate := seen[address]; !duplicate {
+			seen[address] = struct{}{}
+			union = append(union, address)
+		}
+	}
+	return union, nil
 }
 
 func deliveryOriginDial(origins []string, dial deliveryDial) deliveryDial {
@@ -197,7 +223,11 @@ func deliveryOriginDial(origins []string, dial deliveryDial) deliveryDial {
 }
 
 func newProviderClient(endpoint, caFile string, jiraOrigins ...string) (*http.Client, error) {
-	origins, err := deliveryOrigins(endpoint, jiraOrigins)
+	return newGatewayProviderClient(endpoint, caFile, jiraOrigins, nil)
+}
+
+func newGatewayProviderClient(endpoint, caFile string, jiraOrigins, teamsOrigins []string) (*http.Client, error) {
+	origins, err := deliveryOriginUnion(endpoint, jiraOrigins, teamsOrigins)
 	if err != nil {
 		return nil, err
 	}
@@ -270,10 +300,15 @@ func validateDeliveryClient(client *http.Client, endpoint string) error {
 }
 
 func ownDeliveryClient(config Config) (*http.Client, error) {
-	return ownProviderClient(config.DeliveryClient, config.SlackEndpoint, config.DeliveryCAFile, config.JiraAPIOrigins...)
+	return ownGatewayProviderClient(config.DeliveryClient, config.SlackEndpoint, config.DeliveryCAFile,
+		config.JiraAPIOrigins, config.TeamsWorkflowOrigins)
 }
 
 func ownProviderClient(supplied *http.Client, gateway, caFile string, jiraOrigins ...string) (*http.Client, error) {
+	return ownGatewayProviderClient(supplied, gateway, caFile, jiraOrigins, nil)
+}
+
+func ownGatewayProviderClient(supplied *http.Client, gateway, caFile string, jiraOrigins, teamsOrigins []string) (*http.Client, error) {
 	endpoint, err := app.ValidateDeliveryGateway(gateway)
 	if err != nil {
 		return nil, err
@@ -281,7 +316,7 @@ func ownProviderClient(supplied *http.Client, gateway, caFile string, jiraOrigin
 	if err = validateDeliveryClient(supplied, endpoint); err != nil {
 		return nil, err
 	}
-	origins, err := deliveryOrigins(endpoint, jiraOrigins)
+	origins, err := deliveryOriginUnion(endpoint, jiraOrigins, teamsOrigins)
 	if err != nil {
 		return nil, err
 	}

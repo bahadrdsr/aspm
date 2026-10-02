@@ -551,7 +551,7 @@ loss clears drafts and intents and aborts late responses. Jira UI metadata and
 receipts do not prove vendor permissions, resolve a finding or qualify a live
 native account or deployed workflow.
 
-For managed Slack and Jira delivery, core and `cmd\delivery-worker`
+For managed Slack, Jira and Teams delivery, core and `cmd\delivery-worker`
 must receive the same independently generated 32-byte key through protected
 `ASPM_INTEGRATION_ENCRYPTION_KEY` configuration, encoded as canonical standard
 base64. Do not derive it from database, bootstrap or storage credentials.
@@ -565,26 +565,33 @@ go run .\cmd\delivery-worker
 
 The default outbound base is `https://slack.com`. Only trusted process
 configuration may select an approved HTTPS gateway and its optional CA file.
-Jira delivery additionally requires explicit `ASPM_JIRA_API_ORIGINS`, a JSON
-array of at most 16 unique canonical HTTPS origins, without paths or trailing
-slashes. Unset, empty-string and `[]` retain Slack-only network admissions.
+Jira and Teams have independent optional `ASPM_JIRA_API_ORIGINS` and
+`ASPM_TEAMS_WORKFLOW_ORIGINS` JSON arrays, each with at most 16 unique canonical
+HTTPS origins, without paths or trailing slashes. Unset, empty-string and `[]`
+add nothing; both unset retain Slack-only network admission. JSON null and
+whitespace-only values are rejected. Runtime validates effective-port aliases
+within each list; sharing an origin across lists or with Slack is allowed.
 For example, an operator-approved process environment can set:
 
 ```powershell
 $env:ASPM_JIRA_API_ORIGINS = '["https://jira-gateway.example.invalid"]'
+$env:ASPM_TEAMS_WORKFLOW_ORIGINS = '["https://workflow-gateway.example.invalid"]'
 ```
 
 Those origins expand only the delivery network boundary. They do not replace
-approval of the exact workspace Jira connection or explicit queue consent,
-grant Jira permissions, or select a tenant/project/token.
-Caller-supplied narrower dial policies remain enforced. No Atlassian destination
-is inferred or automatically admitted. For Helm, `delivery.jiraAPIOrigins`
-defaults to `[]` and passes a nonempty ordered selection as a literal JSON string
+approval of the exact workspace/profile connection or explicit queue consent,
+grant vendor permissions, or select a tenant/project/token. Both Environment
+and Run admit the union, not a per-profile permission gate: Teams unset does not
+block an approved Teams callback on an explicitly admitted Jira origin.
+Caller-supplied narrower dial and TLS policies remain enforced. No Atlassian or
+Microsoft destination is automatically admitted. For Helm,
+`delivery.jiraAPIOrigins` and `delivery.teamsWorkflowOrigins` default to `[]`
+and pass each nonempty ordered selection as a literal JSON string
 only to the enabled delivery main container; it does not enable the worker.
-The unchanged manual Quadlet reads the same variable from the existing protected
+The unchanged manual Quadlet reads both variables from the existing protected
 `/etc/aspm/delivery.env`, without shell quotes around the whole JSON array.
 Client rendering and env-file selection do not activate services or qualify a
-live Jira account.
+live account. Runtime JSON null is invalid; Helm null removes the merged key.
 See `internal\service\README.txt` for transport, lease and shutdown behavior.
 Helm and manual Quadlet deployment of this role are explicit opt-ins; see
 `docs\m02-runtime.md`. Installer key/env-file provisioning and automatic scheduling,
@@ -624,9 +631,9 @@ are not permission, delivery or safe-resend proof. Scope/session loss clears
 private drafts and intents and aborts late replies.
 
 Real-App UI acceptance uses synthetic API metadata, not a Teams account or native
-worker. The actual delivery-main origin policy, runtime/deployment setup and live
-account/channel qualification remain separate. The Slack/Jira process
-configuration above does not automatically admit a Teams origin.
+worker. Explicit process/chart origins supply network admission only, never
+Workflow ownership or channel confirmation. Actual Teams browser-to-worker and
+live account/channel-delivery qualification remain separate.
 
 In **Reports**, **Live overview** displays the service's exact totals, all-finding
 severity counts, coverage, as-of time and freshness bounds. Edit **Freshness days**

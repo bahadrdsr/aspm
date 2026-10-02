@@ -16,27 +16,29 @@
 {{- end -}}
 {{- $enabled = $delivery.enabled -}}
 {{- end -}}
-{{- if hasKey $delivery "jiraAPIOrigins" -}}
-{{- $origins := get $delivery "jiraAPIOrigins" -}}
+{{- range $field := list "jiraAPIOrigins" "teamsWorkflowOrigins" -}}
+{{- if hasKey $delivery $field -}}
+{{- $origins := get $delivery $field -}}
 {{- if not (kindIs "invalid" $origins) -}}
 {{- if not (kindIs "slice" $origins) -}}
-{{- fail "delivery.jiraAPIOrigins must be an array of at most 16 HTTPS origin strings" -}}
+{{- fail (printf "delivery.%s must be an array of at most 16 HTTPS origin strings" $field) -}}
 {{- end -}}
 {{- if gt (len $origins) 16 -}}
-{{- fail "delivery.jiraAPIOrigins must contain at most 16 origins" -}}
+{{- fail (printf "delivery.%s must contain at most 16 origins" $field) -}}
 {{- end -}}
 {{- $seen := dict -}}
 {{- range $origin := $origins -}}
 {{- if not (kindIs "string" $origin) -}}
-{{- fail "delivery.jiraAPIOrigins entries must be strings" -}}
+{{- fail (printf "delivery.%s entries must be strings" $field) -}}
 {{- end -}}
 {{- if or (not (regexMatch "^https://[^/?#@*[:space:][:cntrl:]\\p{Z}\\p{Cc}]+$" $origin)) (contains "\\" $origin) -}}
-{{- fail "delivery.jiraAPIOrigins entries must be HTTPS origins without credentials, paths, queries, fragments, wildcards or whitespace" -}}
+{{- fail (printf "delivery.%s entries must be HTTPS origins without credentials, paths, queries, fragments, wildcards or whitespace" $field) -}}
 {{- end -}}
 {{- if hasKey $seen $origin -}}
-{{- fail "delivery.jiraAPIOrigins must not contain duplicate origins" -}}
+{{- fail (printf "delivery.%s must not contain duplicate origins" $field) -}}
 {{- end -}}
 {{- $_ := set $seen $origin true -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -141,6 +143,10 @@
 {{- if $settings.jiraAPIOrigins }}
 - name: ASPM_JIRA_API_ORIGINS
   value: {{ $settings.jiraAPIOrigins | mustToJson | quote }}
+{{- end }}
+{{- if $settings.teamsWorkflowOrigins }}
+- name: ASPM_TEAMS_WORKFLOW_ORIGINS
+  value: {{ $settings.teamsWorkflowOrigins | mustToJson | quote }}
 {{- end }}
 {{- end }}
 {{- if or (eq $role "core") (eq $role "collection") }}

@@ -38,6 +38,7 @@ reports:
 delivery:
   enabled: false
   jiraAPIOrigins: []
+  teamsWorkflowOrigins: []
   replicas: 1
   leaseDuration: "15s"
   slackEndpoint: "https://slack.com"

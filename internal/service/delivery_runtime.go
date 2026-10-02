@@ -11,12 +11,19 @@ import (
 )
 
 func deliveryEnvironment(config *Config) error {
-	if value := os.Getenv("ASPM_JIRA_API_ORIGINS"); value != "" {
-		if err := json.Unmarshal([]byte(value), &config.JiraAPIOrigins); err != nil || config.JiraAPIOrigins == nil {
-			return errors.New("ASPM_JIRA_API_ORIGINS must be a JSON array of canonical HTTPS origins")
-		}
+	var err error
+	config.JiraAPIOrigins, err = originEnvironment("ASPM_JIRA_API_ORIGINS")
+	if err != nil {
+		return err
 	}
 	if _, err := jiraOriginAddresses(config.JiraAPIOrigins); err != nil {
+		return err
+	}
+	config.TeamsWorkflowOrigins, err = originEnvironment("ASPM_TEAMS_WORKFLOW_ORIGINS")
+	if err != nil {
+		return err
+	}
+	if _, err := teamsOriginAddresses(config.TeamsWorkflowOrigins); err != nil {
 		return err
 	}
 	key, err := integrationEncryptionKey(os.Getenv("ASPM_INTEGRATION_ENCRYPTION_KEY"), true)
@@ -36,8 +43,21 @@ func deliveryEnvironment(config *Config) error {
 		return err
 	}
 	config.DeliveryCAFile = os.Getenv("ASPM_DELIVERY_CA_FILE")
-	config.DeliveryClient, err = newProviderClient(config.SlackEndpoint, config.DeliveryCAFile, config.JiraAPIOrigins...)
+	config.DeliveryClient, err = newGatewayProviderClient(config.SlackEndpoint, config.DeliveryCAFile,
+		config.JiraAPIOrigins, config.TeamsWorkflowOrigins)
 	return err
+}
+
+func originEnvironment(name string) ([]string, error) {
+	value := os.Getenv(name)
+	if value == "" {
+		return nil, nil
+	}
+	var origins []string
+	if err := json.Unmarshal([]byte(value), &origins); err != nil || origins == nil {
+		return nil, errors.New(name + " must be a JSON array of canonical HTTPS origins")
+	}
+	return origins, nil
 }
 
 func deliveryWorkerConfig(config Config) app.DeliveryWorkerConfig {
@@ -50,6 +70,9 @@ func deliveryWorkerConfig(config Config) app.DeliveryWorkerConfig {
 
 func validateDeliveryConfig(config Config) error {
 	if _, err := jiraOriginAddresses(config.JiraAPIOrigins); err != nil {
+		return err
+	}
+	if _, err := teamsOriginAddresses(config.TeamsWorkflowOrigins); err != nil {
 		return err
 	}
 	if err := app.ValidateDeliveryWorkerConfig(deliveryWorkerConfig(config)); err != nil {

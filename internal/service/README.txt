@@ -17,26 +17,35 @@ Delivery-specific settings:
   ASPM_DELIVERY_LEASE_DURATION: defaults to 15s; accepted range 250ms..1m
   ASPM_SLACK_ENDPOINT: defaults to https://slack.com; trusted HTTPS base only
   ASPM_JIRA_API_ORIGINS: optional JSON array of at most 16 canonical HTTPS origins
+  ASPM_TEAMS_WORKFLOW_ORIGINS: independent optional JSON array with the same rules
   ASPM_DELIVERY_CA_FILE: optional regular PEM certificate file, at most 1 MiB
 
-Unset, empty-string and [] Jira selections add no network destinations. Other
+Unset, empty-string and [] selections add no network destinations. Each list
+independently permits at most 16 origins. Other
 inputs must be a JSON array of unique strings: lowercase https:// and canonical
 lowercase ASCII DNS names, IPv4 or bracketed compressed IPv6, optionally with an
 unpadded port from 1..65535. Paths, trailing slashes/dots, query, fragment,
 credentials, escapes, wildcards, whitespace, controls and IP aliases are
-rejected. Host and host:443 count as duplicate explicit origins. A Jira origin
-equal to the configured Slack origin is allowed. JSON whitespace around an
+rejected. Host and host:443 count as duplicates within one list. Sharing an
+origin across Jira, Teams or the configured Slack origin is allowed and
+deduplicated for network admission. JSON whitespace around an
 array is valid; a whitespace-only setting or null is not.
 
-Both Environment and Run admit only the trusted Slack origin plus that explicit
-Jira set. Programmatic Config.JiraAPIOrigins uses the same validation before
+Both Environment and Run admit only the union of the trusted Slack origin and
+the independently validated Jira and Teams sets. Programmatic
+Config.JiraAPIOrigins and Config.TeamsWorkflowOrigins use the same validation before
 database, native or listener activity; private values are not echoed in errors.
-Run snapshots the origin slice and key without changing caller backing storage.
+Run snapshots both origin slices and the key without changing caller backing storage.
 Its owned transport wraps, rather than replaces or unwraps, any supplied
 DialContext, so a caller's narrower network policy still applies. Configuring
-an origin grants no Jira permission or target/credential selection. The accepted
+an origin grants no Jira/Teams permission or target/credential selection. The accepted
 backend still enforces profile, workspace, actor, target, revision and consent.
-No Atlassian or other provider destination is implicitly added.
+No Atlassian, Microsoft or other provider destination is implicitly added.
+A Teams callback already on an explicitly admitted Jira origin remains usable
+with Teams selection unset: these lists govern network admission, not profile
+permission. The full signed Workflow URL is a secret, never an Authorization
+header or public path/query. Native 202 means accepted with no channel receipt,
+not confirmed channel delivery.
 
 The ordinary service listen/TLS settings apply to health endpoints. Delivery
 ignores unrelated S3/readiness/bootstrap environment values; it does not derive
@@ -56,9 +65,13 @@ transport and trust pool, applies the explicit CA policy to its private copy,
 and preserves the configured endpoint, headers and native payload. Caller-owned
 transport pools are not closed or mutated by Run.
 
-Provision Jira origins through the protected delivery process environment.
-Existing Helm/Quadlet origin-setting wiring and live Jira account access are not
-qualified by this service change; deployment and native UI flows remain separate.
+Provision both lists through the protected delivery process environment.
+Helm supplies each nonempty list only to an enabled delivery main. The unchanged
+manual Quadlet reads literal JSON from /etc/aspm/delivery.env, without shell
+quotes around the whole array. Runtime rejects JSON null; Helm null removes
+the selected key. No installer/autostart/CA provisioning or cluster activation
+is implied. Actual Teams browser-to-worker and live account/channel delivery
+qualification remain separate.
 
 The processing loop calls the accepted ProcessNext without interpreting or
 rewriting outbox state. It waits 200ms only for false,nil idle results, with

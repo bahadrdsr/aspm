@@ -1,0 +1,166 @@
+Teams runtime origins and delivery packaging, October 2, 2026
+==========================================================
+
+READ FIRST. Authored before the new cases, against published
+bc0fc558dadea65304b4bc7bf37d083c5d993c67. This is an unsigned acceptance
+contract, not passing evidence. Astra authors tests only. Sol owns compilation,
+calibration, actual RED, implementation, validation and publication. Parent
+seals after actual RED. All execution phases are NOT_EXECUTED by the author.
+No reviewer, nested agent, production edit, old-test/helper edit, dependency,
+module, signature, formatter, readiness operation or commit is authorized here.
+
+One bounded producer increment
+-----------------------------
+Add ASPM_TEAMS_WORKFLOW_ORIGINS and service.Config.TeamsWorkflowOrigins []string.
+Use one underlying canonical origin parser with profile-specific diagnostics.
+Preserve existing Jira-named errors, defaults and the trusted Slack endpoint.
+Environment-created transport and Run-owned clone must both admit the union
+of trusted Slack origin, explicit Jira origins and explicit Teams origins.
+Do not retain an inner Jira/Slack-only gate. Never unwrap or replace a narrower
+caller DialContext to accomplish this.
+
+Each explicit list independently permits at most 16 unique effective host/port
+origins under the published Jira canonical HTTPS rules. Unset, empty env string
+and [] add nothing. JSON whitespace around an array is allowed; whitespace-only,
+JSON null/scalar/object, wrong element types, malformed JSON, unsafe origins,
+within-list duplicates (including implicit/explicit :443) and 17 entries fail
+field-specific preflight without private input echo, before DB/native/listener
+I/O. Canonical DNS, IPv4 and compressed IPv6 rules stay authoritative at runtime.
+Duplicates across profiles or with the implicit Slack member are allowed and
+deduplicated for network admission. Neither global vendor defaults nor a Jira
+setting advertised as Teams configuration is allowed.
+
+This is a network union, not profile permission or tenant ownership. With Teams
+unset, a Teams callback already on an explicitly admitted Jira origin remains
+usable. It is still the exact workspace/profile/credential/target/current actor,
+revision and reviewed payload consent selected by the existing backend.
+Callbacks are whole signed-URL credentials. Their path/query bytes are neither
+public metadata nor Authorization headers. No backend/schema/UI/card/HTTP
+adapter changes are planned in this increment.
+
+Preserve caller Teams/Jira slice backing storage, client/transport, TLS policy
+and roots, and integration key buffers. Preserve normal hostname/CA verification,
+TLS 1.2+, Proxy:nil, no cookies or ambient credentials, redirects denied,
+network-family checking before DNS/socket admission, bounded cancellation,
+DB/key-only delivery authority and health-only HTTP surfaces.
+
+Three runtime narratives
+------------------------
+TR1: Strict Environment defaults and invalid-setting preflight use an owned DB
+socket detector and conflicting listener. Selected representative Jira vectors
+are reused, not another full host-parser suite. Real TLS Teams/Jira/Slack calls
+prove the complete Environment union and cross-profile sharing. Resolver/socket
+witnesses prove unknown and non-TCP denial before I/O, without contacting a
+vendor. Reflection is only for the future Teams field: the baseline first fails
+actual ignored-setting/denied-approved-origin assertions, not compilation or a
+fake constructor. Actual Run programmatic preflight and a narrower caller dial
+policy retain caller-owned buffers. No caller policy is weakened.
+
+TR2: Real API/session/intake creates one Teams intent and old Jira/Slack controls.
+The freshly built actual cmd\delivery-worker reaches the exact signed callback
+with no Authorization, receives native 202 and persists accepted, no receipt,
+and the public outbound marker/history. Jira retains native metadata/create,
+its bearer and receipt; Slack retains its separate bearer/channel route.
+Teams-only admission is required in the first main. A subsequent actual main
+with Teams unset and the same origin explicitly admitted through Jira handles
+only a new separately previewed/consented Teams intent. That second observation
+proves network union, not a new per-profile permission gate. Check role health,
+absent core/auth routes, stripped child env, no S3 work, and no implicit replay.
+
+TR3: Actual main processes API-approved unapproved-origin, redirect and untrusted
+TLS cases. Require zero sockets/HTTP at unapproved and redirect destinations,
+and a positive TLS socket/byte witness with zero native HTTP for the untrusted
+chain. Then actual Environment+Run reaches a held Teams POST; cancel its context,
+observe native cancellation and listener shutdown. A fresh actual main makes
+further eligible claims without replaying uncertainty, then accepts a new
+explicitly consented intent. The caller client/TLS/key/Jira/Teams buffers stay
+unchanged. Main PID cleanup is not graceful OS-signal evidence; the Run context
+is the explicit cancellation observation.
+
+Each narrative has one existing random harness and the same 90s/220 API/1400 SQL/
+64 native HTTP/64 S3 writes caps. Core pool 1, worker pool 1, observer pool 2.
+Runs are serial. No higher limits; split negatives/recovery only if later real
+calibration demonstrates a bound problem and the author corrects the packet.
+PG relays count actual main/Run SQL in the existing shared budget. Native relays
+only forward bytes. Reuse freshTLS, newTeamsServer, its exact RequestURI/no-auth
+checks, runtimeRole, PG accounting and child PID conventions. A thin native
+observer records only counts and full signed-target equality, never path/query,
+URL/body/key readback. No fake responses, mock RoundTripper, SQL business seeds,
+old worker-child harness flag or historical migration build is substituted.
+
+Published Teams outcome semantics
+--------------------------------
+remediation_teams_worker.go calls markDeliveryAttempt before adapter.Send.
+connectors/http.go marks its attempt before Client.Do; generic dial/TLS refusal
+becomes unavailable, then deliveryFailure retains uncertain/uncertain at HTTP 0.
+Thus these transport-negative fixtures expect the committed outbound marker,
+uncertain/uncertain/0, receipt null, completed timestamp, no native code, no
+retry/delay and no Jira stage/missing-fields. Zero socket observations do NOT
+mean no pre-send marker or proof of channel delivery. Redirect is specifically
+blocked/scope/307 with the marker and no receipt. Held-send cancellation is
+uncertain/uncertain, never accepted merely because 202 headers were received.
+Native 202 plus completed body is accepted, not confirmed. No channel receipt
+is invented. SQL receipt absence accepts the existing JSON null representation;
+public receipt remains null. Stored create_attempted_at maps to the Teams-only
+public outboundAttemptedAt, not public createAttemptedAt.
+
+Two Helm narratives in the existing delivery_deployment module
+-------------------------------------------------------------
+delivery.teamsWorkflowOrigins ships as []. Selection does not enable delivery.
+Only an enabled delivery main receives ONE literal JSON-array environment string,
+ASPM_TEAMS_WORKFLOW_ORIGINS, preserving order. Empty, omitted or Helm-null-removes-
+key emits nothing. All other roles/init containers receive none. Preserve Jira
+env, Slack gateway, worker command, DB/key selectors and independent role flags.
+
+The first narrative covers shipped default, omission/null, disabled selection
+and malformed values even while disabled. Shared chart validation checks
+list<=16/string/nonempty/exact duplicate and obvious non-HTTPS, userinfo, path,
+query, fragment, wildcard, whitespace/control shapes without input echo.
+The second renders both nonempty Jira and Teams selections, including a shared
+origin, all six roles and the 16-entry boundary. No full host parser in Helm:
+runtime canonical/effective-port validation stays authoritative.
+Use the frozen real Helm helper: template --dry-run=client, empty kubeconfig,
+isolated client dirs and no plugins/cluster. No source-grep rendering substitute.
+The default-values assertion reads YAML only to check the shipped default.
+
+Documentation is part of the same producer increment
+---------------------------------------------------
+Update the existing docs\m02-runtime.md explanation and Helm example for both
+independent lists and their network union. For the unchanged manual Quadlet,
+show this literal RHS in protected /etc/aspm/delivery.env:
+ASPM_TEAMS_WORKFLOW_ORIGINS=["https://workflow-gateway.example.invalid"]
+Do not wrap the entire JSON array in shell quotes. Explain absence/empty/[],
+runtime rejection of JSON null versus Helm key removal, and exact origin only.
+Do not claim ownership, channel confirmation, permission, installer changes,
+autostart, certificate provisioning or real activation. Manual Quadlets remain
+unchanged. Documentation wording is a Sol/parent inspection obligation, not a
+fragile source-text test or authored production edit.
+
+Execution and preservation
+--------------------------
+New runtime files are tagged integration && teams_runtime. Their reused helpers
+require integration,jira_runtime,teams_workflows,teams_runtime together.
+Execute ONLY ^TestTeamsRuntime. Helm files additionally use teams_runtime;
+execute ONLY ^TestTeamsDeploymentHelm with that tag inside its EXISTING module.
+Compiling overlapping old files is not authorization to run their cases.
+Old Test-JiraRuntime.ps1 and Test-DeliveryDeployment.ps1 do not expose these
+selectors/tags. Do not invoke them or modify them. The single HANDOFF.json gives
+the minimal phase commands and required private-executor receipt/cleanup rules.
+Use cached Go1.27.1/modules and private Helm4.3 only, no installs. Runtime fixtures
+are the explicit private PG15432/S318333 input, read only by Sol at execution.
+Author never reads credentials or checks/starts/repairs readiness.
+
+Each invocation must create a fresh exclusive .artifacts\jira-runtime\teams-...
+root (the existing runtimeArtifact boundary) and feature-specific cache work.
+Helm gets its own fresh output root. Record and verify the ACTUAL reported root,
+not only the requested label; refuse existing roots, files or an identity
+mismatch. Never overwrite, delete, or rebuild inside earlier evidence.
+No whole toolchain/source archives. Preserve new input hashes and compact
+before/after source-change facts. No hardcoded productionChanged:false.
+
+The one unsigned handoff lists new hashes and unchanged test/helper/module/
+Quadlet/control-set boundaries. Producer files are observed, not frozen by this
+new packet; the parent reports current fixed1607 excludes the planned producers.
+Old UI145, backend/runtime/Helm suites, migrations, generators, images, cluster,
+browser-native flow and live Teams account qualification are NOT_EXECUTED here.
+This packet is neither deployment evidence nor completion of all M08 work.

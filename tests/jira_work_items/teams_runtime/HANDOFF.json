@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "unsigned": true,
+  "status": "AUTHORED_ONLY_AWAITING_SOL_INITIAL_RED",
+  "date": "2026-10-02",
+  "root": "C:\\bahadr\\serious\\aspm",
+  "baseCommit": "bc0fc558dadea65304b4bc7bf37d083c5d993c67",
+  "authorLane": "Requested GPT-6 Astra: read-first contract, new acceptance files and this unsigned handoff only.",
+  "executorLane": "GPT-6.1 Sol: compile/calibrate, capture actual RED, then implement service/chart/docs together after parent seals.",
+  "contract": "tests\\jira_work_items\\teams_runtime\\CONTRACT.txt",
+  "contractAuthoredBeforeCases": true,
+  "reviewerOrNestedAgentsUsed": false,
+  "newRunnerAuthored": false,
+  "runnerDecision": "The existing Jira runtime runner hardcodes its old tags/selector and the old deployment runner selects generator cases too. Do not invoke or amend either. Use the bounded private-executor commands and rules below; no new nested module or copied toolchain/source archive.",
+  "files": [
+    {"path": "tests\\jira_work_items\\teams_runtime\\CONTRACT.txt", "sha256": "b0fb66438c3841fae51a1a8b889c6abcbb90db66d518f10411091c1bf2b476c0"},
+    {"path": "tests\\jira_work_items\\teams_runtime_fixtures_test.go", "sha256": "357b67247b79b7c3621938330739a19019bf8f8578d32d78afb2b775b89b0cf9"},
+    {"path": "tests\\jira_work_items\\teams_runtime_contract_test.go", "sha256": "5e4a7dff20859edcd5368a8a8d201582298bc00988111c668f3a528da916664b"},
+    {"path": "tests\\jira_work_items\\teams_runtime_roles_test.go", "sha256": "702a31e1b6ecc7d0621ee17feaa2f2a32fe7a9e6a298d38a478c953316ed1766"},
+    {"path": "tests\\delivery_deployment\\teams_origins_test.go", "sha256": "ce7b03e0d4c1bf754dc3359f5f64053581a8c2fe6d5458f5a5682f113bdbc7c1"}
+  ],
+  "handoffSelfHash": "Not embedded, to avoid a self-reference. Compute externally before parent sealing.",
+  "scope": {
+    "authorTrackedFileChanges": [],
+    "authorNewFileCountIncludingHandoff": 6,
+    "runtimeBuildConstraint": "integration && teams_runtime",
+    "runtimeBuildTags": "integration,jira_runtime,teams_workflows,teams_runtime",
+    "runtimeSelector": "^TestTeamsRuntime",
+    "helmBuildConstraint": "teams_runtime",
+    "helmSelector": "^TestTeamsDeploymentHelm",
+    "compiledOldFiles": "Shared helpers and old tests compile under overlapping tags, but their cases are not selected. ASPM_JIRA_WORKER_CHILD must be absent.",
+    "oldTestsHelpersModulesSignatures": "UNCHANGED_BY_AUTHOR",
+    "existingUI145": "User-reported published 139+6 baseline. Untouched and NOT_EXECUTED here.",
+    "currentFixed1607": "Parent reports planned service/chart/docs producers are not frozen. This packet does not add them to knownUnchangedInputs.",
+    "producerPathsForOneLaterIncrement": [
+      "internal\\service\\delivery_runtime.go",
+      "internal\\service\\delivery_client.go",
+      "internal\\service\\config.go",
+      "internal\\service\\run.go",
+      "deploy\\helm\\aspm\\values.yaml",
+      "deploy\\helm\\aspm\\templates\\_helpers.tpl",
+      "docs\\m02-runtime.md"
+    ],
+    "producerHashes": "Do not freeze these paths across RED and implementation. Executor source snapshots are per invocation only.",
+    "excludedChanges": "Backend/schema/UI/card/HTTP adapter, old fixtures/helpers/tests, modules/dependencies, manual Quadlet, installer, image, cluster and signatures.",
+    "noPublicationOrM08CompletionClaim": true
+  },
+  "narratives": [
+    {
+      "test": "TestTeamsRuntimeR1EnvironmentPreflightUnionAndCallerPolicy",
+      "purpose": "Strict optional Teams JSON/defaults; independent 16-entry lists and effective-port sharing; field-private preflight before DB/listener; real TLS Environment union; before-DNS/socket/network-family denial; programmatic Run preflight and narrower caller preservation.",
+      "expectedInitialRED": "Published Environment ignores malformed Teams settings and denies a Teams-only approved TLS origin. Future-field reflection occurs after real behavior probes and does not prevent initial compilation.",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "test": "TestTeamsRuntimeR2ActualMainCombinedOriginsAndSignedCredential",
+      "purpose": "API-created Teams consent through actual main to exact signed URL/no Authorization/native 202/accepted/null receipt/public marker/history; explicit native Jira and Slack controls; subsequent main with Teams unset uses an already explicitly admitted Jira origin without a per-profile permission gate.",
+      "expectedInitialRED": "Actual main retains the Jira/Slack-only network set, so the Teams-only origin cannot produce the required native 202 and accepted outcome.",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "test": "TestTeamsRuntimeR3RefusalsCancellationAndFreshMain",
+      "purpose": "Actual-main unknown/redirect/untrusted-TLS witnesses and private logs; real Run held-send cancellation and complete shutdown; fresh-main claim progress with no repeat followed by a new explicit intent. Caller key/TLS/Jira/Teams backing storage is retained.",
+      "expectedInitialRED": "Approved redirect/TLS witnesses are unreachable while Teams origins are ignored. Negative and recovery tails are not accepted until actually reached.",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "test": "TestTeamsDeploymentHelmDefaultsAndInvalidSelections",
+      "purpose": "Shipped [], omission/empty/Helm-null, no activation/global fallback, and malformed selection rejection while enabled or disabled through real client-only Helm.",
+      "expectedInitialRED": "The chart lacks the default and ignores invalid teamsWorkflowOrigins instead of producing its field diagnostic.",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "test": "TestTeamsDeploymentHelmExactJSONAndAllRoleIsolation",
+      "purpose": "Exact ordered literal JSON, nonempty Jira and Teams lists with shared origin, all six roles, independent 16-entry bounds, preserved DB/key/Slack/worker settings and no other role exposure.",
+      "expectedInitialRED": "Actual render emits no ASPM_TEAMS_WORKFLOW_ORIGINS for the enabled delivery main.",
+      "status": "NOT_EXECUTED"
+    }
+  ],
+  "outcomeContract": {
+    "sourceBasis": "Published remediation_teams_worker.go, remediation_worker.go, remediation_jira_worker.go, connectors/delivery.go and connectors/http.go were read before authoring.",
+    "transportRefusal": "Committed outbound marker, uncertain/uncertain/HTTP 0, null receipt and completed timestamp. No native code/Jira stage/missing fields/retry/delay. Zero socket observation does not erase the pre-send marker.",
+    "redirect": "blocked/scope/307, outbound marker, null receipt, no follow or retry.",
+    "heldCancellation": "uncertain/uncertain/0 with outbound marker, not accepted merely from 202 headers.",
+    "native202": "accepted with no receipt/channel confirmation. Private callback path/query are absent from public metadata and logs.",
+    "storage": "Teams public outboundAttemptedAt equals stored create_attempted_at. Receipt absence includes the published JSON null representation, not an invented receipt object.",
+    "nativeObserver": "Only counts/full signed-target equality are recorded; the unchanged Teams native handler produces every response. Fresh in-memory TLS and public CA files only."
+  },
+  "limits": {
+    "perRuntimeNarrativeSeconds": 90,
+    "runtimeActualRunSeconds": 90,
+    "apiIncludingRoleHealth": 220,
+    "sqlIncludingRelayedMainAndRun": 1400,
+    "nativeHTTP": 64,
+    "s3SocketWrites": 64,
+    "corePool": 1,
+    "workerPool": 1,
+    "observerPool": 2,
+    "helmPerRenderSeconds": 15,
+    "helmActualRunSeconds": 120,
+    "parallel": 1,
+    "calibration": "No raised limits. If real evidence requires it, author may split negative/recovery fixtures rather than increase their caps."
+  },
+  "privateExecutor": {
+    "runtimeConfig": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\runtime.json",
+    "runtimeInputAccessByAuthor": "NONE. No credential reads, readiness checks, service starts or fixture repairs.",
+    "runtimeBoundary": "Explicit authenticated PG 127.0.0.1:15432 with the existing sslmode=disable byte-relay input and S3 127.0.0.1:18333. Existing harness creates only random owned schema/prefix. Sol handles setup/readiness; unsupported input is BLOCKED, not a downgrade/fallback.",
+    "go": "C:\\bahadr\\serious\\aspm\\.cache\\modules\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "helm": "C:\\Users\\bahadrdoser\\.copilot\\session-state\\2c52af96-fb91-4017-8ee3-b2f684c354d7\\files\\aspm-runtime\\tools\\helm.exe",
+    "helmVersionSource": "User-provided private Helm 4.3. No author tool execution or version probe.",
+    "outputNameForFirstRed": "teams-runtime-red-20261002-fe9da77d698d",
+    "runtimeOutput": "C:\\bahadr\\serious\\aspm\\.artifacts\\jira-runtime\\teams-runtime-red-20261002-fe9da77d698d",
+    "runtimeCache": "C:\\bahadr\\serious\\aspm\\.cache\\teams-runtime\\teams-runtime-red-20261002-fe9da77d698d",
+    "helmOutput": "C:\\bahadr\\serious\\aspm\\.artifacts\\teams-runtime-helm\\teams-runtime-red-20261002-fe9da77d698d",
+    "helmCache": "C:\\bahadr\\serious\\aspm\\.cache\\teams-runtime-helm\\teams-runtime-red-20261002-fe9da77d698d",
+    "outputUniqueness": {
+      "authorFileInspection": "All four exact proposed paths were absent. No directories were created.",
+      "beforeExecution": "Recheck all exact resolved paths, create exclusively without Force, and fail if any already exists. Check actual reported canonical output/cache roots against these expected paths before starting a phase and against each phase receipt afterwards. Label uniqueness alone is insufficient.",
+      "subsequentInvocations": "Use a fresh teams- prefixed GUID label and fresh output/cache roots for every correction or GREEN run. Never reuse, overwrite, delete, restore into or rebuild inside previous evidence."
+    },
+    "environment": {
+      "inheritance": "Clear inherited environment. Retain only SystemRoot/WINDIR plus the explicit phase settings. No ambient ASPM/AWS/PG/provider/proxy/KUBE/HELM credentials or old worker-child flag.",
+      "offlineGo": "GOTOOLCHAIN=local GOENV=off GOWORK=off GOFLAGS= GOPROXY=off GOSUMDB=off GOOS=windows GOARCH=amd64 CGO_ENABLED=0",
+      "cache": "GOMODCACHE=<root>\\.cache\\modules; GOCACHE=<root>\\.cache\\build; GOPATH=<phaseCache>\\gopath; GOTMPDIR/TEMP/TMP/TMPDIR=<phaseCache>\\work. Create only those new project-owned work paths; no tool/module installs.",
+      "runtimeActual": "ASPM_JIRA_RUNTIME=<runtimeConfig>; ASPM_JIRA_COMMAND_BINARY=<runtimeOutput>\\delivery-worker.exe; ASPM_JIRA_COMMAND_SHA256=<fresh main SHA256>; ASPM_JIRA_COMMAND_ARTIFACT_DIR=<runtimeOutput>.",
+      "helmActual": "ASPM_DELIVERY_DEPLOY_HELM=<helm>; ASPM_DELIVERY_DEPLOY_ARTIFACTS=<helmOutput>. The frozen helper writes empty kubeconfig and uses --dry-run=client/no plugins. No generator/WSL/cluster flags are needed."
+    },
+    "bindings": "Commands below use $Go, $RuntimeOutput, $HelmOutput as the exact values above. Execute with the explicit cwd and sanitized environment for each phase, not an inherited interactive shell.",
+    "phases": [
+      {
+        "name": "runtime_compile",
+        "status": "NOT_EXECUTED",
+        "cwd": "C:\\bahadr\\serious\\aspm",
+        "command": "& $Go test -c -mod=readonly -buildvcs=false -tags=integration,jira_runtime,teams_workflows,teams_runtime -o \"$RuntimeOutput\\teams-runtime.test.exe\" .\\tests\\jira_work_items",
+        "outerTimeoutSeconds": 180
+      },
+      {
+        "name": "mainbuild",
+        "status": "NOT_EXECUTED",
+        "cwd": "C:\\bahadr\\serious\\aspm",
+        "command": "& $Go build -mod=readonly -buildvcs=false -trimpath -o \"$RuntimeOutput\\delivery-worker.exe\" .\\cmd\\delivery-worker",
+        "outerTimeoutSeconds": 120
+      },
+      {
+        "name": "runtime_actualrun",
+        "status": "NOT_EXECUTED",
+        "cwd": "C:\\bahadr\\serious\\aspm\\tests\\jira_work_items",
+        "command": "& \"$RuntimeOutput\\teams-runtime.test.exe\" -test.v -test.count=1 -test.parallel=1 -test.timeout=90s '-test.run=^TestTeamsRuntime'",
+        "outerTimeoutSeconds": 120
+      },
+      {
+        "name": "helm_compile",
+        "status": "NOT_EXECUTED",
+        "cwd": "C:\\bahadr\\serious\\aspm\\tests\\delivery_deployment",
+        "command": "& $Go test -c -mod=readonly -buildvcs=false -tags=teams_runtime -o \"$HelmOutput\\teams-deployment.test.exe\" .",
+        "outerTimeoutSeconds": 180
+      },
+      {
+        "name": "helm_actualrun",
+        "status": "NOT_EXECUTED",
+        "cwd": "C:\\bahadr\\serious\\aspm\\tests\\delivery_deployment",
+        "command": "& \"$HelmOutput\\teams-deployment.test.exe\" -test.v -test.count=1 -test.parallel=1 -test.timeout=120s '-test.run=^TestTeamsDeploymentHelm'",
+        "outerTimeoutSeconds": 150
+      }
+    ],
+    "requiredExecutorRules": [
+      "Use separate runtime and Helm receipts. Initialize every phase NOT_EXECUTED, record actual argv/cwd/PID/time/exitCode, exact output root and binary hashes. Never mark an unreached phase PASS.",
+      "Verify new files and known unchanged test/helper/module hashes before use. Capture source HEAD, actual changed paths against the baseline and input/final SHA inventories for that invocation; no source archives or hardcoded productionChanged:false.",
+      "Compile failures, missing cached inputs and fixture failures are prerequisites, not product RED. Do not run a phase whose binary prerequisites failed. Runtime and Helm RED collection are independent; a genuine runtime RED need not suppress the Helm phases.",
+      "Hash the freshly compiled tagged harness and actual main, then recheck both immediately before execution. Execute that harness, not a differently rebuilt test or old worker-child executable. No historical migration build is required.",
+      "Bound each phase output to 2 MiB, capture stdout/stderr without exposing raw private values, and preserve only redacted logs. Redact runtime DB/password/S3 credentials and encoded variants; generated callbacks are checked by existing rememberTeamsURL/private checks, and raw child log buffers or signed URLs must not be serialized.",
+      "On timeout/failure, inspect this invocation's *-process-*.json records. Stop only exact owned PIDs after matching binary path, recorded main hash and process-start interval, following the existing Jira runner's identity rules. Never kill by process name. Report refused/orphan cleanup and output timeout as failure, not green.",
+      "Observe final child cleanup and file/input integrity before completing receipts. A retry gets entirely new output/cache roots. Do not repair shared services, certificates or trust stores.",
+      "Do not run old UI145/Jira/Teams backend/runtime/Helm corpora, migration builds, Quadlet generator, images, browsers, account flows or cluster operations in this author/initial-RED slice. Later preservation selectors require Sol/parent authorization.",
+      "No formatter/test corrections to authored or old files by this private executor. Return concrete compilation/calibration evidence for an author correction rather than changing helpers, semantics or limits."
+    ]
+  },
+  "knownUnchangedInputs": [
+    {"path": "tests\\jira_work_items\\runtime_contract_test.go", "sha256": "f08cdfb50670f957a8b73f04fb729b29a3d6e7e15fc1b563ae31b6bec691b983"},
+    {"path": "tests\\jira_work_items\\runtime_fixtures_test.go", "sha256": "d634404304497f627ff56545b3ac5443144560c82dcd2a9b3b3b893a385be4db"},
+    {"path": "tests\\jira_work_items\\runtime_network_test.go", "sha256": "c09e818f89baa62c4b935fd664adbdabab20e5a37d397fb1d4d8d24577229fb1"},
+    {"path": "tests\\jira_work_items\\runtime_roles_test.go", "sha256": "97b576a7f284e4601b27640b67a09a9dc3f6429a470b798e46969c7c80cecb5c"},
+    {"path": "tests\\jira_work_items\\fixtures_test.go", "sha256": "e6b97e19c9618ec0d0cb7ef26e232d88a004c39e8a171f902e6d0aeb13ef2e43"},
+    {"path": "tests\\jira_work_items\\jira_fixture_test.go", "sha256": "7515a30bbc3d10d36182b35fc282f5b502e9f862b4d5ec0f10250d0cda4f55a0"},
+    {"path": "tests\\jira_work_items\\teams_fixtures_test.go", "sha256": "75ab9808e25cde68ea116829573eac657790620815542a27bbe29da8a534c793"},
+    {"path": "tests\\jira_work_items\\teams_lifetime_test.go", "sha256": "cc3ae7346f91877885077e55a58ffd54ca51ae6bf1f1123e93ce4f1546b0c8d1"},
+    {"path": "tests\\jira_work_items\\teams_workflows_test.go", "sha256": "8504df0ed4157308e0e7e9e896a65c111d6442ccdfde1c55b4639741646f1a1b"},
+    {"path": "tests\\jira_work_items\\teams_upgrade_test.go", "sha256": "ed7b2bd4775f7024b8b55e32241cf808a210dc97053dcad76a1c9fbbc72bc6a5"},
+    {"path": "tests\\jira_work_items\\teams_published_test.go", "sha256": "a7529cf1918c8879dd438b2346967de7d6501f42f952c31e498e7877f9d304b6"},
+    {"path": "tests\\jira_work_items\\Test-JiraRuntime.ps1", "sha256": "57c25d199b58afb364c42a51c0cd4320c8a7a7a45838b256bc39a20513a810f6"},
+    {"path": "tests\\delivery_deployment\\jira_origins_test.go", "sha256": "b1fa37a3126e3352e50d30dc88d10b8db61cf239fdb5b41b112f0ea54dfb8622"},
+    {"path": "tests\\delivery_deployment\\helm_helpers_test.go", "sha256": "0e8aa835928da3b2763688bd76fd62f29b7e879947bd2888f06a983eb492e55a"},
+    {"path": "tests\\delivery_deployment\\helm_test.go", "sha256": "27d7e91cf3b5de59cc403fd02bfbca2bf3c8c465eb9a368ec60a2c4a170c8774"},
+    {"path": "tests\\delivery_deployment\\artifacts_test.go", "sha256": "af730d272d62609e20ab1eb864c3df9f648a83db5f2839adee62c22575a5e7e5"},
+    {"path": "tests\\delivery_deployment\\Test-DeliveryDeployment.ps1", "sha256": "6070c26d5d7d585404d950cdfb1cc888dcc2e84797d8a87552790d1c80c2c867"},
+    {"path": "tests\\delivery_deployment\\go.mod", "sha256": "d48146229e01b80a24a41e6cead4ef139cd4d8482a769672c6e8cc90f1cabf24"},
+    {"path": "tests\\delivery_deployment\\go.sum", "sha256": "173fcf5b95672f732e382372d5391ce203dd020260215001391df13314b5d312"},
+    {"path": "go.mod", "sha256": "8ef487f1fa00f23e404b59a6219e7d53eae874421118064941d7e9c14137d038"},
+    {"path": "go.sum", "sha256": "3844e12207ea3211292f04cb44147c72e5d05303029f2d2c04419293df63e3e6"},
+    {"path": "deploy\\quadlet\\aspm-delivery.container", "sha256": "ab370da340719a1918ea0348cf306c61ccf1d8a69041dca4400f6f06b51ac919"},
+    {"path": ".oracles\\teams-ui-control-set.json", "sha256": "7f1f2464a490f863129252bcc97f0ba370fee8126c44af598e81aa15145e69a9"},
+    {"path": ".oracles\\teams-ui-a2.json", "sha256": "978c66a99923b39d857c1447b0ee114a31b8b725770cbd760030976af0bea420"}
+  ],
+  "documentationAcceptance": "Sol updates docs\\m02-runtime.md in the same increment: independent Teams JSON setting plus union, literal unwrapped RHS in protected /etc/aspm/delivery.env, unchanged manual Quadlet and no installer/autostart/cert/ownership/permission/activation claim. Parent checks documentation directly; no brittle source-grep test was added.",
+  "verification": {
+    "authorFileInspection": "Read sources, inspected new paths/selectors, computed hashes and checked proposed output-path absence only. No executable acceptance evidence.",
+    "format": "NOT_EXECUTED",
+    "compile": "NOT_EXECUTED",
+    "mainbuild": "NOT_EXECUTED",
+    "runtimeActualrun": "NOT_EXECUTED",
+    "helmRender": "NOT_EXECUTED",
+    "readiness": "NOT_EXECUTED",
+    "initialRED": "NOT_EXECUTED",
+    "implementation": "NOT_EXECUTED",
+    "preservationSuites": "NOT_EXECUTED",
+    "parentSeal": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "nativeBrowserOrLiveTeamsAccount": "NOT_EXECUTED"
+  }
+}
