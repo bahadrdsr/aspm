@@ -1,0 +1,22 @@
+Historical artifact loss recorded during Teams UI execution
+
+The executor checked freshness under web/.artifacts, but the existing
+all-spec configuration writes under repository .artifacts. Reusing the
+generic label sol-full-01 overwrote an older Jira failing-run results.json
+and removed its FH5 screenshot, error context and trace.zip.
+
+Affected historical root:
+.artifacts/work-pagination-v1/sol-full-01/
+
+Those old files are lost. Their earlier expected hashes must not be presented
+as matching the replacement files. No reconstruction or invented evidence
+is authorized. Older Jira verification and raw/guarded logs remain; the
+current Teams report and RF2 artifacts have separate retained copies.
+The detailed loss record remains at:
+.cache/teams-ui-coder/sol-full-01/recorder-output-collision.json
+
+Every subsequent run must use a feature-specific fresh label and check the
+actual resolved reporter/output directories before starting Playwright.
+Do not overwrite, delete or silently reuse any existing run directory.
+This loss is separate from the clock-observer defect and does not make the
+144/145 Teams run an accepted full-suite result.

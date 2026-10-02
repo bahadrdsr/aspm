@@ -8,6 +8,7 @@ import { DataNotice, EmptyState, ErrorState, LoadingState } from "@/components/s
 import { Icon } from "@/components/icon";
 import { SlackConnections } from "@/components/slack-connections";
 import { JiraConnections } from "@/components/jira-connections";
+import { TeamsConnections } from "@/components/teams-connections";
 import { Sources } from "@/components/sources/sources";
 import { AISettings } from "@/components/ai-settings/ai-settings";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ export function IntegrationsPage() {
   const [query, setQuery] = useState("");
   const [aiOpen, setAIOpen] = useState(false);
   const [jiraOpen, setJiraOpen] = useState(false);
+  const [teamsOpen, setTeamsOpen] = useState(false);
   const aiEntry = useRef<HTMLButtonElement>(null);
   const items = resource.data?.items.filter((item) => `${item.name} ${item.capabilities.join(" ")}`.toLowerCase().includes(query.toLowerCase())) ?? [];
   return <>
@@ -37,6 +39,7 @@ export function IntegrationsPage() {
     <SlackConnections />
     <Sources />
     <JiraConnections open={jiraOpen} onToggle={() => setJiraOpen((value) => !value)} />
+    <TeamsConnections open={teamsOpen} onToggle={() => setTeamsOpen((value) => !value)} />
     <div className="ai-entry"><Button ref={aiEntry} type="button" variant="outline" aria-expanded={aiOpen}
       onClick={() => setAIOpen(true)}>AI settings</Button></div>
     {aiOpen && <AISettings onClose={() => { setAIOpen(false); aiEntry.current?.focus({ preventScroll: true }); }} />}
@@ -56,6 +59,7 @@ export function IntegrationsPage() {
         <p className="verification-reason">{item.liveVerification.reason}</p>
         <div className="integration-footer"><Icon name="lock" size={14} />{item.id === "jira"
           ? <Button type="button" variant="ghost" size="sm" onClick={() => setJiraOpen(true)}>Manage Jira connections</Button>
+          : item.id === "teams" ? <Button type="button" variant="ghost" size="sm" onClick={() => setTeamsOpen(true)}>Manage Teams connections</Button>
           : <span>{item.id === "slack" ? "Outbound destinations are managed in Connections" : item.id === "github" ? "Selected repositories are managed in Sources" : "Setup is not available in this view"}</span>}</div>
       </li>;
     })}</ul>}

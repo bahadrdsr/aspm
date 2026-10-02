@@ -1,0 +1,69 @@
+{
+  "fixture": "web\\tests\\teams-workflows-ui-fixture.ts",
+  "beforeSHA256": "2d1b5cb657205550d7bdc7e558327b162967059011dcfb3cab86f6c4d5241658",
+  "producerHeld": [
+    {
+      "path": "README.md",
+      "sha256": "f6e94efce19219744a0adc661deb8cfa9c41609172f3362ec5784c0b552b3c84"
+    },
+    {
+      "path": "web\\src\\api\\teams-input.ts",
+      "sha256": "aba280fe5e3a582fe9abf369ad1b1db2fe875042df335e2bbbf47b3a8571b0be"
+    },
+    {
+      "path": "web\\src\\api\\teams-intents.ts",
+      "sha256": "2c59aacb75b1be1f23f1949b1b25aad451c33d9e2f6d3854fa7168f7dd84e513"
+    },
+    {
+      "path": "web\\src\\api\\teams-types.ts",
+      "sha256": "24fc36dbffe526ade89d37f91146d76e24ea545b7bbf951e93c911cfe1d964b5"
+    },
+    {
+      "path": "web\\src\\api\\teams.ts",
+      "sha256": "33b6c11097ae79e49afe60552b091a012ee021efbff3f056d31c59f0f17f865a"
+    },
+    {
+      "path": "web\\src\\components\\finding-dialog.tsx",
+      "sha256": "6f0a093de926504e1b002b6986349eceb5c849160311f766a91931232e6ad190"
+    },
+    {
+      "path": "web\\src\\components\\finding-teams.tsx",
+      "sha256": "050e405a2e760bac9ae1b5b1e7b221ac5190c594937d57dd5413d91a8188a38f"
+    },
+    {
+      "path": "web\\src\\components\\teams-connection-editor.tsx",
+      "sha256": "bfde77ad77abee8b0acf409e056b57433fff6ad24a4b5767f32dd32bb62acf4f"
+    },
+    {
+      "path": "web\\src\\components\\teams-connections.tsx",
+      "sha256": "15061843d35c7d01bb91f23577f84dfd5b9455db6dc1cc3f3eb12e205bab07ef"
+    },
+    {
+      "path": "web\\src\\components\\teams-delivery-detail.tsx",
+      "sha256": "96ce19890a6d36a0f8830e0ccee64a5b6c43dc83efce37ec4f2fea603130e1c0"
+    },
+    {
+      "path": "web\\src\\components\\teams-delivery-history.tsx",
+      "sha256": "da8f2e349b803c68b3e9b1c39f93e20af3c4a336119c3385350134053d4688bb"
+    },
+    {
+      "path": "web\\src\\components\\teams-facts.tsx",
+      "sha256": "bb4f605cecfd21704be65ef761142c6bc6df029c407d16d57afe940fa8146b2d"
+    },
+    {
+      "path": "web\\src\\components\\teams-notification-review.tsx",
+      "sha256": "1c5344c4d7eaa312207d06878659b17892e1d449a871c4585a5435691609b96e"
+    },
+    {
+      "path": "web\\src\\components\\teams.css",
+      "sha256": "99ad9dd7629acae47183ed54d254ce33ce782c193c0a43945d21face8bf85766"
+    },
+    {
+      "path": "web\\src\\pages\\integrations.tsx",
+      "sha256": "b0734f8dd6e7659874e236b7a191817ec843f3b1d8196123c1d45ead5f061600"
+    }
+  ],
+  "failureEvidence": ".cache\\teams-ui-coder\\sol-green-01\\oracle-blocker.json",
+  "failureEvidenceSHA256": "6434f3b437f680c64cf3dda0c6155a7abd0774f9689580623dc7329ad4582637",
+  "assertionsRemainUnchanged": "TU6 actual HTTP401 response event and native UTF-8/no-store/nosniff headers; every other test/status/budget"
+}

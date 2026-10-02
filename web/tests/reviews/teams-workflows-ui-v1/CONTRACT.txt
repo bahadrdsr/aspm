@@ -1,0 +1,207 @@
+Teams Workflows UI v1: read-first acceptance contract
+Authored October 1, 2026. Requested author: GPT-6 Astra.
+Published producer: e891555020394e949bcacfe403203795e835dfe0.
+UNSIGNED. Compile, discovery, browser, build, native and publication: NOT_EXECUTED.
+
+Authority and frozen boundary
+-----------------------------
+Astra authors only this contract and additive Teams tests/configuration/data.
+GPT-6.1 Sol executes every compile/build/test/publication command and implements
+production separately. Parent seals after Sol compiles and reproduces actual
+RED. No missing-control failure has been observed by this author.
+Existing 139 cases, helpers/configs, dependencies, production, native schemas,
+signatures and private authority are unchanged. No commits or nested agents.
+Read internal\app\remediation_teams.go, remediation_connections.go,
+remediation_deliveries.go, remediation_teams_worker.go, remediation_jira.go,
+remediation_credentials.go and tests\jira_work_items\teams\CONTRACT.txt first.
+The historical backend contract's baseline is not this UI producer baseline.
+
+Real App only, inherited JiraUIAPI -> SavedViewsAPI -> WorkSearchAPI ->
+WorkPaginationAPI. The same requests, session, roles, scope and 60-call budget
+cover inherited and Teams traffic. New replies are literal HTTP protocol
+fixtures, not a backend, queue, worker, idempotency engine or vendor emulator.
+The already qualified isolated PG/native-TLS backend remains a separate gate.
+Browser metadata cannot requalify it. Actual Teams accounts, deployment/main
+policy, runtime origin settings and UI-worker/live-account gates remain separate.
+No mock DOM, client/hook/state edits, provider requests or authentication setup.
+
+Chosen UI and entry behavior
+----------------------------
+Keep five primary destinations and eight catalog families. Integrations has a
+collapsed button and region named "Teams connections"; the existing Teams card
+may expose "Manage Teams connections". It is not a ninth family or new nav item.
+No Teams metadata on ordinary Integrations, Work, saved-view or finding entry.
+Keep bare Sources, Slack connections?limit=100 with NO profile, explicit Jira
+selectors, normal Work pagination/selection/filter/sort and lazy AI unchanged.
+The published catalog is live native family metadata, but all its entries are
+planned/unconfigured/not-run. Do not manufacture supported/verified catalog
+metadata from configured Teams credentials. Configuration is never verification.
+
+List controls: Refresh Teams connections, Next Teams connections, Retry Teams
+connections. A table named "Teams connections" renders just the current page.
+History: "Teams notification history" button/region; table "Teams notifications";
+Refresh Teams history, Next Teams notifications, Retry Teams history.
+Detail: "Open Teams notification", region "Teams notification details", status
+"Teams notification status", Refresh Teams notification/Retry Teams notification.
+Refresh starts page one. Retry replays the EXACT failed method/path/scope/query,
+including its native cursor, without repeating any mutation. No page drain,
+polling, automatic probes, retry timers or hidden provider links.
+403/404 withholds only that resource's cached fields and actions, including after
+a subsequent 503. Other authorized resources stay readable. 401 ends the global
+session based on the actual HTTP status, not an error string or aborted request.
+
+Configuration and secret handling
+---------------------------------
+Admin only: Add Teams connection/Edit Teams connection form; Name, password
+"Workflow URL", Enabled, and checkbox "I acknowledge Workflow ownership".
+The acknowledgement starts UNCHECKED on create. Explain standard-channel/Anyone
+signed Workflow scope, owner/co-owner continuity and that team ownership does
+not supply Workflow ownership. Ownership, permissions and channel delivery are
+NOT verified. Fixed standard channel, no channel-type picker or extra identities.
+Save Teams connection is explicit. Cancel and dialog close discard the draft.
+Only current authorized metadata is read on edit. There is no credential readback,
+delete API, test/probe button, runtime origin policy or vendor authentication UI.
+Disabling is an enabled:false edit. Blank Workflow URL preserves by OMISSION.
+Name/enabled/workflowUrl/teams PATCH fields are sparse, never token/channel/jira,
+profile, identity, routing, override or client-revision authority. An unchanged
+edit sends nothing. A changed teams declaration is a whole two-key object, never
+a partial merge. In this published profile every VALID declaration is already
+{channelType:"standard",ownershipAcknowledged:true}; therefore rotation does NOT
+invent a declaration change or resend teams, even when its derived origin changes.
+POST includes the complete two-key declaration. This is a backend-derived oracle
+clarification, not permission to change an old test or native contract.
+
+Name uses the published nonblank <=256 UTF-8-byte rule. URL uses the published
+<=16384 UTF-8 bytes and <=4096 decoded-path bytes, not JS character counts.
+Require canonical HTTPS origin: lowercase host, no trailing dot/userinfo/fragment/
+opaque form, no explicit :443, canonical nondefault port. Callback path must be
+nonempty and not "/", with no controls, repeated slashes, dot segments, backslash,
+decoded %, ?, #, encoded slash/backslash or double-encoded routing separators.
+Query must parse successfully, with exactly one decoded nonempty sig and no
+whitespace in sig or decoded controls in any query key/value. Reject malformed
+escapes. Safe encoded path letters and repeated NON-sig parameters are allowed.
+Send the ENTIRE original URL unchanged, preserving query order/case/encoding and
+safe path escapes. Parsing for validation is not permission to serialize it back.
+Do not truncate/coerce rejected input or echo it in accessible error text.
+
+Workflow URL and ALL its path/query values are secrets. Hold only in input/ref
+and the explicit same-origin configuration request; clear on success, cancel,
+close, scope change, logout or 401. Password DOM input value while editing is the
+intentional exception, not an API. No readback, label, preview, navigable link,
+storage, URL/hash/search, console or clipboard export. Safe derived origin may
+appear as plain text only after canonical acknowledgement, never a callback link.
+Correctable error retains a password draft; denial disables configuration.
+Native/server echoes, including standalone sig/path/query values, are never shown
+verbatim. A generic mutation failure is safer than exposing a bearer-equivalent URL.
+
+Exact REST and parsing
+----------------------
+All application requests use native versioned routes, session cookie, selected
+workspace header, normal same-origin JSON and Origin on writes. No extra
+Authorization/token/bootstrap/idempotency/revision headers.
+GET /api/v1/integrations/connections
+GET /api/v1/findings/{findingId}/deliveries
+  EXACTLY one profile=teams-workflows-channel, limit=100, optional native cursor.
+  Native items,total,nextCursor, ascending exclusive IDs; do not filter a mixed
+  response client-side or invent counts/cursors. Reject the whole malformed page.
+GET /api/v1/integrations/connections/{id}
+GET /api/v1/integrations/deliveries/{id}
+  No query. Individual native ID, workspace and expected profile must match.
+POST /api/v1/integrations/connections, 201:
+  {profile:"teams-workflows-channel",name,enabled,workflowUrl,
+   teams:{channelType:"standard",ownershipAcknowledged:true}}
+PATCH /api/v1/integrations/connections/{id}, 200:
+  Only changed name/enabled/workflowUrl/whole teams declaration. Blank URL omitted.
+  URL+enabled rotation is one write, revision +1; same URL can be a backend no-op.
+Connection has ten common keys plus teams and permissionState:"not-verified".
+channel:"" is a schema sentinel, not a configuration input. teams is exactly
+{workflowOrigin,channelType:"standard",ownershipAcknowledged:true}.
+Analyst/viewer can read safe origin/declaration/credentialConfigured/revision,
+never configure. Wrong profile/scope/ID/revision/status, unexpected secret fields,
+malformed metadata or mismatched acknowledgements fail explicitly with no invented
+successful row. CredentialConfigured is envelope presence, not native permission.
+
+Focused finding review and consent
+----------------------------------
+Writers get "Notify Teams"; viewers get history only. Entry opens region "Teams
+notification review" INSIDE the finding dialog, never another stacked dialog.
+Close Teams review/Escape restores Notify Teams focus only when appropriate.
+Use combobox role "Teams connection", not an exact label that includes option text.
+On explicit entry only, a complete page with one unambiguous enabled, credential-
+configured destination can select it and request a local canonical preview.
+If more pages or ambiguity exist, leave selection empty until an explicit choice.
+Configured single-target path requires exactly two activations: Notify Teams,
+then Queue Teams notification. No extra preview click, no automatic consent.
+Refresh Teams preview/Retry Teams preview and manual connection controls are reads
+of current local metadata/preview, never a send.
+
+POST /api/v1/findings/{id}/delivery-previews, 200, exactly {connectionId}.
+Preview keys: workspaceId,findingId,connectionId,connectionRevision,profile,
+requestedBy,destination,payload,bindingDigest,nativeValidation,reviewRequirements.
+Bind actor/workspace/finding/current enabled connection revision/public destination,
+canonical title/body/deep link and sha256:<64 lowercase hex>. No callback fetched.
+destination:{name,workflowOrigin,channelType,ownershipAcknowledged}.
+payload:{title,body,deepLink}, no fields, raw report/code/evidence/notes/remediation.
+Title is the canonical finding title; body is "Severity: <severity>\nAsset: <name>";
+deepLink is the trusted finding link. Display that canonical content for review.
+nativeValidation:"not-run"; requirements in order:
+explicit-queue-consent, operator-declared-standard-channel, workflow-owner-continuity.
+Clearly explain local-only preview and unverified ownership/permissions/delivery.
+Preview/configuration changes no finding, Work selection, personal view or outbox.
+
+Queue POST /api/v1/findings/{id}/deliveries:
+  exactly {connectionId,idempotencyKey,previewDigest,confirm:true}.
+202 acknowledges queued, not sent; 200 is an original-intent replay result.
+Validate acknowledgement scope/IDs/actor/revision/destination/payload/state/status.
+Lost or malformed ACK leaves the original intent UNCERTAIN in bounded scoped
+memory. "Confirm same Teams notification" is an explicit original-key replay,
+never autoPOST/new-key substitution. Do not silently evict an unresolved intent.
+Connection/target/revision/actor/finding/scope change, disablement or server409
+invalidates old consent. Require fresh canonical preview but retain the warning
+that the prior uncertain intent may exist; a fresh preview cannot erase it.
+Close/reopen/history must not resend. Scope/logout clears private intent memory.
+Existing Jira intent code is prior art, not authority for a broad shared refactor.
+
+History semantics
+------------------
+Exactly 15 common delivery keys + destination + outboundAttemptedAt:null|timestamp.
+No jira/createAttemptedAt/payload.fields. States ONLY queued,dispatching,accepted,
+blocked,failed,rate-limited,uncertain. Native202 is accepted with receipt:null AND
+failure:null, never confirmed or a channel receipt. Required wording:
+"Workflow accepted; channel delivery not confirmed".
+Reject "confirmed", any nonnull receipt/remote link and unexpected fields.
+Pre-send blocked/metadata failure with null marker differs from possible-send
+uncertain with timestamp. Marker presence is not receipt or permission proof.
+Failure EXACTLY code,nativeCode:"",httpStatus,retryAfterSeconds,retryable:false.
+No Jira stage/missingFields; no raw native error echo. Explain rate delay as data,
+not a timer, and uncertainty as possibly sent with no blind resend. No View Teams
+message link, read receipt, channel-delivery verification or remote-link inference.
+
+Six independent stories and evidence honesty
+--------------------------------------------
+TU1 lazy catalog/list/Jira compatibility, strict native pages and exact cursor
+retry through denial/unavailability, minimum explicit create and raw URL privacy.
+TU2 sparse edits/no-op/URL rotation, strict ACK refusal and cached-admin denial,
+real-document reloads into analyst/viewer metadata-only roles.
+TU3 personal Work view, keyboard/390px canonical local review and one explicit
+queue, ambiguous/partial target selection and bound-preview refusal. A held
+native finding-history read while editing notes tests focus without a note POST.
+TU4 viewer manual history/page retry, accepted versus invented confirmation,
+rate/uncertain/blocked meanings and detail withholding through 503.
+TU5 lost/malformed acknowledgement, exact explicit original-key replays, 409,
+revision/disablement/selection changes, retained uncertainty and no auto-send.
+TU6 secret cancel/close/scope/logout/401, held old-scope ACK abort, actual response
+headers before auth cleanup and clean authorized re-entry.
+These are representative user stories, not every permutation or native proof.
+Full criteria above still apply; no claim that 32-intent capacity, all URL edges,
+all stale-actor variants or clipboard internals were dynamically exhausted.
+
+20s each, 5s expectations, one worker, zero retries, combined60 API cap per story.
+At most TWO calls per declared StrictMode GET entry cohort, one per other intent.
+Register request ledgers BEFORE async allHeaders. Actual response events, not
+route fulfillment, prove status; actual401 must precede auth-induced abort.
+Read-only DOM observations and real user events only. Real page.reload for new
+documents/roles. Exact failures stay in evidence; no fixture fallback or reset.
+Use cached Node/Playwright and isolated port18828; author performs no discovery,
+syntax/format/build/browser/fixture/readiness command. Sol measures all timings,
+counts, complete tails and actual RED before any seal or acceptance claim.

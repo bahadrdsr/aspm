@@ -1,0 +1,20 @@
+.teams-entry, .teams-notifications { margin-block: 20px; min-width: 0; }
+.teams-form, .teams-review, .teams-notifications { min-width: 0; overflow-wrap: anywhere; }
+.teams-form input, .teams-review select { max-width: 100%; }
+.teams-checkbox { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.teams-checkbox input { width: auto; }
+.teams-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.teams-heading h3 { margin-right: auto; font-size: 12px; }
+.teams-review { margin-top: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; display: grid; gap: 14px; }
+.teams-review:focus { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
+.teams-review select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+.teams-review label { display: grid; gap: 6px; font-size: 12px; }
+.teams-review .slack-payload { border: 1px solid var(--line); padding: 12px; border-radius: 8px; background: var(--surface-soft); }
+.teams-review .form-actions { flex-wrap: wrap; }
+.teams-notifications .slack-panel { box-shadow: none; margin-block: 14px; }
+.teams-notifications .slack-panel-heading h3 { font-size: 12px; }
+.teams-notifications .slack-payload p { white-space: pre-wrap; }
+@media (max-width: 600px) {
+  .teams-review { padding: 12px; }
+  .teams-heading { gap: 8px; }
+}

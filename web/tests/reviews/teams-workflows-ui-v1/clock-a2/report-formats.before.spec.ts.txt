@@ -71,7 +71,7 @@ async function release(page: Page, control: IntakeControl) {
   await control.delivered;
   await frames(page);
 }
-function exactUpload(call: IntakeCall, file: ReportFile, input: IntakeMetadata, started: number, observedAt: number) {
+function exactUpload(call: IntakeCall, file: ReportFile, input: IntakeMetadata, started: number) {
   const mapped = ["generic-json", "generic-csv"].includes(file.format);
   expect(call).toMatchObject({ method: "POST", path: importsPath, workspace: intakeAlpha.id, query: "" });
   expect(Object.keys(call.body).sort()).toEqual([
@@ -85,7 +85,7 @@ function exactUpload(call: IntakeCall, file: ReportFile, input: IntakeMetadata, 
   expect(digest(String(call.body.report))).toBe(digest(file.buffer));
   expect(validExpiry(call.body.collectedAt)).toBe(true);
   expect(Date.parse(String(call.body.collectedAt))).toBeGreaterThanOrEqual(Math.floor(started / 1000) * 1000);
-  expect(Date.parse(String(call.body.collectedAt))).toBeLessThanOrEqual(observedAt);
+  expect(Date.parse(String(call.body.collectedAt))).toBeLessThanOrEqual(Date.now());
   expect(call.body.sourceScanAt).toBe(input.sourceScanAt);
   expect(call.bodyBytes).toBeLessThanOrEqual(uploadLimit);
   if (mapped) expect(call.body.mapping).toEqual(literalMapping);
@@ -193,7 +193,7 @@ test("RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit proven
     await open(page);
     const input = metadata(file.format, index === 2 ? { sourceScanAt: null, sourceStatus: "failed", scanKind: "delta", completeness: "partial" } :
       index === 1 ? { completeness: "unknown" } : {});
-    const started = await page.evaluate(() => Date.now());
+    const started = Date.now();
     await prepare(page, file, input);
     await frames(page);
     expect(formats.calls("POST", importsPath)).toHaveLength(index);
@@ -201,7 +201,7 @@ test("RF2 Trivy, ZAP and Gitleaks keep exact real-file bytes and explicit proven
     const held = formats.queueUpload(202, true);
     await submit(page).click();
     const call = await requested(held);
-    exactUpload(call, file, input, started, await page.evaluate(() => Date.now()));
+    exactUpload(call, file, input, started);
     await expect(form(page).getByRole("status").filter({ hasText: /reading|submitting/i })).toBeVisible();
     const value = receipt(call);
     await expect(latest(page).getByText(value.id, { exact: true })).toHaveCount(0);
@@ -221,14 +221,14 @@ test("RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays
   for (const file of [csvFile, manualFile]) await test.step(file.format, async () => {
     await open(page);
     const input = metadata(file.format, { sourceScanAt: null, scanKind: "delta", completeness: "partial" });
-    const started = await page.evaluate(() => Date.now());
+    const started = Date.now();
     await prepare(page, file, input);
     if (file.format === "generic-csv") expect(await displayedMapping(page)).toEqual(literalMapping);
     formats.expectUpload(file, input);
     const ack = formats.queueUpload();
     await submit(page).click();
     const call = await requested(ack);
-    exactUpload(call, file, input, started, await page.evaluate(() => Date.now()));
+    exactUpload(call, file, input, started);
     await ack.delivered;
     const value = receipt(call);
     await acknowledged(page, value);
@@ -236,7 +236,7 @@ test("RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays
     await publishAndRefresh(page, formats, value.id, "succeeded");
   });
   await open(page);
-  const input = metadata("manual-prose", { sourceScanAt: null }), started = await page.evaluate(() => Date.now());
+  const input = metadata("manual-prose", { sourceScanAt: null }), started = Date.now();
   await prepare(page, manualProseFile, input);
   formats.expectUpload(manualProseFile, input);
   const before = formats.calls("POST", importsPath).length, ack = formats.queueUpload();
@@ -247,7 +247,7 @@ test("RF3 Generic CSV uses the unchanged literal JSON mapping; manual JSON stays
     await expect(form(page).getByLabel("Format", { exact: true })).toHaveValue("manual");
   } else {
     const call = await requested(ack);
-    exactUpload(call, manualProseFile, input, started, await page.evaluate(() => Date.now()));
+    exactUpload(call, manualProseFile, input, started);
     await ack.delivered;
     await acknowledged(page, receipt(call));
     await publishAndRefresh(page, formats, receipt(call).id, "failed");
@@ -260,7 +260,7 @@ test("RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8
   await visit(page);
   await open(page);
   await choose(page, "generic-csv");
-  const large = nearLimitCSV(), input = metadata("valid-near-limit"), started = await page.evaluate(() => Date.now());
+  const large = nearLimitCSV(), input = metadata("valid-near-limit"), started = Date.now();
   expect(large.buffer.length).toBe(uploadLimit - 4096);
   expect(() => JSON.parse(large.buffer.toString("utf8"))).toThrow();
   await prepare(page, large, input);
@@ -268,7 +268,7 @@ test("RF4 CSV accepts a valid near-limit non-JSON file but rejects invalid UTF-8
   const accepted = formats.queueUpload();
   await submit(page).click();
   const call = await requested(accepted);
-  exactUpload(call, large, input, started, await page.evaluate(() => Date.now()));
+  exactUpload(call, large, input, started);
   await accepted.delivered;
   await acknowledged(page, receipt(call));
   const oversized = csvWithExtra("x".repeat(uploadLimit), "synthetic-oversized-file.csv"), escaped = encodedOverflowCSV();

@@ -13,6 +13,7 @@ import { matchesWorkQuery } from "@/pages/work";
 import { FindingActions, FindingNoteForm } from "./finding-actions";
 import { FindingNotifications } from "./finding-notifications";
 import { FindingJira } from "./finding-jira";
+import { FindingTeams } from "./finding-teams";
 import { FindingAssessments } from "./finding-assessments/finding-assessments";
 import { FindingNoteHistory, FindingObservationHistory } from "./finding-history";
 import { ActionButton } from "./action-button";
@@ -101,6 +102,7 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
             onBegin={() => setMessage(null)} onConfirmed={acceptPatch} />}
           {response && <FindingNotifications finding={finding} origin={response.dataOrigin} />}
           <FindingJira key={`jira:${finding.id}`} finding={finding} current={resource.status === "ready" && resource.error === null} />
+          <FindingTeams key={`teams:${finding.id}`} finding={finding} current={resource.status === "ready" && resource.error === null} />
           <FindingAssessments key={finding.id} finding={finding} />
           <section className="detail-section"><h3>What the source observed</h3><p>{finding.description || "The source did not supply a description."}</p></section>
           <section className="detail-section"><div className="section-heading"><h3>Original evidence</h3><span className="subtle-pill">Literal text</span></div><p className="evidence-source"><Icon name="file" size={14} />{finding.evidence.sourceLabel}</p><pre className="evidence-text">{finding.evidence.text || "The source did not supply evidence text."}</pre></section>

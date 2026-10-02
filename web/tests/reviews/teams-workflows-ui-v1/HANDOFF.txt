@@ -1,0 +1,155 @@
+Teams Workflows UI v1: UNSIGNED HANDOFF
+Authored October 1, 2026. Requested author lane: GPT-6 Astra.
+Producer: e891555020394e949bcacfe403203795e835dfe0.
+Status: AUTHORSHIP_COMPLETE, NOT_SEALED. Model label is not runtime attestation.
+GPT-6.1 Sol implements and executes; parent seals after actual compile/RED.
+
+EXECUTION
+Formatting: NOT_EXECUTED
+Syntax/typecheck: NOT_EXECUTED
+Discovery: NOT_EXECUTED
+Browser RED or GREEN: NOT_EXECUTED
+Build: NOT_EXECUTED
+Fixture/server/readiness: NOT_EXECUTED
+Existing 139-case regression: NOT_EXECUTED
+Native PG/TLS/worker qualification: NOT_EXECUTED
+Deployment/live account/publication: NOT_EXECUTED
+Per-case durations/API counts: NOT_EXECUTED
+Missing-control failures are expected, NOT observed. No acceptance is claimed.
+No command output/transcript archives, toolchain archives, installs, processes,
+commits, nested agents, reviewer, production edits or signature changes.
+
+FILES AND SCOPE
+Read CONTRACT.txt first; it preceded the data/fixture/spec/config authoring.
+Only six new files, including this unsigned handoff. Six coherent stories:
+TU1 lazy entry/Jira compatibility, native cursor retry, denial, raw-URL creation.
+TU2 sparse edits/no-op/rotation, invalid ACK, server denial, actual role reloads.
+TU3 saved Work view,390px keyboard/reduced-motion review, explicit queue, target
+    choice/preview binding, held note-history GET preserving unsaved-note focus.
+TU4 manual history, accepted-not-confirmed, rate/uncertain/blocked/failed states,
+    fake receipt refusal and denied detail through503.
+TU5 lost/malformed ACK same-key replay,409 and changed/disabled targets, no resend.
+TU6 cancel/close/scope/logout/401, held ACK/read abort, actual401 headers.
+    Logout uses the panel during a held read, not a click behind a modal.
+
+The fixture extends frozen JiraUIAPI -> SavedViewsAPI -> WorkSearchAPI ->
+WorkPaginationAPI. Auth, roles, requests, private scope and the combined60 API
+budget are shared, not reset or shadowed. Native-page/navigation helpers are
+reused. Literal Teams HTTP replies, not a business server or mock App. No DOM/
+hooks/client-state injection, provider traffic, SQL or callback invocation.
+Backend qualification, runtime origin policy/vendor auth, main policy, deployed
+UI-worker and actual Teams-account gates remain separate and unqualified here.
+
+CHOSEN UI CONTRACT
+Five destinations/eight families. Collapsed "Teams connections" button/region in
+Integrations, optionally linked from the existing Teams family. No ordinary
+Integrations/Work/finding Teams reads. Keep Slack connections?limit=100 without
+profile, bare Sources, explicit Jira and lazy AI untouched; never auto-verify.
+Admin: Add/Edit Teams connection form, Name/password Workflow URL/Enabled/
+initially unchecked "I acknowledge Workflow ownership"; Save Teams connection.
+Explain standard-channel/Anyone/owner-co-owner continuity, not verified. No
+extra identities, token, channel choice, Jira, override, probe, delete or export.
+URL is write-only input/ref, byte-preserved, never reconstructed or echoed.
+Apply native URL/path/UTF-8/sig rules. Plain safe origin only after canonical ACK.
+Clear secrets on success/cancel/close/scope/logout/401; blank edit URL is omitted.
+Notify Teams -> "Teams notification review" in ONE finding dialog -> Queue Teams
+notification. Complete single eligible target auto-selection only after entry;
+partial/ambiguous lists require combobox "Teams connection". Show canonical
+payload/destination, never raw evidence/notes. Close Teams review/Escape restores
+appropriate focus without taking it from notes. "Confirm same Teams notification"
+explicitly reuses the unresolved original key; changed consent cannot erase it.
+History: Teams notification history; table Teams notifications; detail/status
+Teams notification details/Teams notification status. Manual Refresh/Next/Retry,
+exact failed read replay. Resource403/404 stays withheld through503; HTTP401
+clears session. No polling, timers, channel receipts or Teams-message links:
+"Workflow accepted; channel delivery not confirmed".
+
+EXACT ROUTES / DTO DELTAS
+GET /api/v1/integrations/connections and
+GET /api/v1/findings/{id}/deliveries:
+  exactly ONE profile=teams-workflows-channel, limit=100, optional native cursor.
+  items,total,nextCursor stay native. Reject mixed/malformed pages as a whole.
+GET /api/v1/integrations/connections/{id}
+GET /api/v1/integrations/deliveries/{id}: no query.
+POST /api/v1/integrations/connections,201:
+  {profile:"teams-workflows-channel",name,enabled,workflowUrl,
+   teams:{channelType:"standard",ownershipAcknowledged:true}}
+PATCH same connections/{id},200: only changed name/enabled/workflowUrl/whole teams.
+  Blank URL is OMITTED; unchanged edit sends nothing.
+POST /api/v1/findings/{id}/delivery-previews,200: exactly {connectionId}.
+POST /api/v1/findings/{id}/deliveries,202 or exact-intent200:
+  exactly {connectionId,idempotencyKey,previewDigest,confirm:true}.
+No extra bearer/bootstrap/revision/idempotency headers; cookie/workspace/Origin.
+
+Connection: ten common keys + teams + permissionState:"not-verified".
+Preview: bound scope/finding/actor/revision/target/payload/digest, not-run native
+validation, exact three published reviewRequirements. No secret/readback fields.
+Delivery: 15 common keys + destination + outboundAttemptedAt, never Jira aliases/
+fields/receipts. Native202 accepted has receipt:null,failure:null. Exact native
+failure shape and seven valid states are in CONTRACT.txt; no fabricated confirmed.
+
+BACKEND-DERIVED ORACLE CLARIFICATIONS
+1. Valid teams is always standard/true. URL+enabled rotation omits unchanged
+   teams; the backend derives origin. No fictitious alternate declaration.
+2. Teams accepted has no receipt/Jira alias/stage/missingFields/nativeCode echo.
+3. http.go errors are retryable:false, including503. Manual read retry remains.
+   Observe401 JSON/no-store headers before auth abort; no invented challenge.
+4. catalog.go is planned/unconfigured/not-run native family metadata, not proof
+   of configured capability or backend qualification.
+Only additive Teams files embody these clarifications. No old oracle was edited.
+
+BUDGET / COVERAGE HONESTY
+20s/story,5s/expect,one worker,zero retries,shared60 API cap. At most two calls per
+declared StrictMode GET entry; one per other intent. Register BEFORE allHeaders.
+Real page.reload. Same-origin only, blocked external attempts fail. Normal TLS,
+service workers blocked, port18828, cached Node/Playwright. Ledgers redact secrets
+and record source hashes/shared cohorts/actual headers. All tails and measurements
+await Sol. Not exhaustive: URL edges, stale actor/finding variants,32-intent
+capacity, successful same-key terminal replay or clipboard internals. Full
+criteria still apply; quiet windows are not native no-retry/exactly-once proof.
+
+OLD-INPUT BOUNDARY (READ-ONLY BYTE HASHES)
+HEAD stayed e891555020394e949bcacfe403203795e835dfe0. All1824 pre-existing tracked
+files have identical before/after hashes; tracked git diff is empty.
+Boundary SHA256 before AND after:
+2b0f7fcf835c897dd3241ba6b94c4330a9c8ce3da85f02bea5605cd1d4faeb54
+Reproduction: git ls-files order, each repository-relative path with Windows
+separators + NUL + lowercase SHA256(raw file bytes) + LF; SHA256 of UTF-8 records.
+This binds every existing139 test input/helper/config/native schema/signature,
+not ignored or untracked files. No full source/toolchain archive was produced.
+Primary references, all fixed at that commit:
+internal\app\remediation_{teams,connections,deliveries,credentials,jira}.go
+internal\app\remediation_teams_worker.go; http.go; catalog.go
+tests\jira_work_items\teams\CONTRACT.txt
+web\tests\jira-work-items-ui*; saved-work-views*; work-search*; work-pagination*
+web\tests\slack-navigation.ts; source-navigation.ts; network.ts; fixtures.ts
+web\src\api\jira*; client.ts; web\src\components\jira-*; finding-jira.tsx;
+finding-dialog.tsx; finding-actions.tsx; form-dialog.tsx; web\src\pages\integrations.tsx
+web\src\lib\use-resource.ts; use-finding-history.ts; use-modal.ts
+web\playwright.config.ts; tsconfig.json; package*.json; scripts\playwright.mjs
+web\tests\reviews\jira-work-items-ui-v1\playwright.config.ts
+
+AUTHOR INPUT SHA256 (repository-relative paths)
+web\tests\teams-workflows-ui-data.ts (8660 bytes)
+93107faa34bd3951a34240609c778212408ac3a8d9c5111c5bee88df2aa74362
+web\tests\teams-workflows-ui-fixture.ts (17297 bytes)
+2d1b5cb657205550d7bdc7e558327b162967059011dcfb3cab86f6c4d5241658
+web\tests\teams-workflows-ui.spec.ts (41204 bytes)
+9f861757c6339846c95f5ddecad6a0c38bfc295431a15f9132b57abe83ec15e6
+web\tests\reviews\teams-workflows-ui-v1\CONTRACT.txt (14320 bytes)
+4bba35057d9d9ec8baf32ef798c3929e48c95e43c943b06f04e6fd3cc3d275ac
+web\tests\reviews\teams-workflows-ui-v1\playwright.config.ts (1750 bytes)
+8a8270a55a270e3d3123da96b96865328e09b1d92c367dcd9cbaec595f54e476
+This handoff excludes its own recursive hash. Its final raw-byte SHA256 is
+returned separately for the parent to bind; no seal/private authority is used.
+
+SOL FOCUSED BASELINE COMMANDS (ALL NOT_EXECUTED)
+Use the already approved cached Node on PATH. cwd C:\bahadr\serious\aspm\web.
+Do not install/archive a toolchain or change old inputs to make this cut pass.
+node node_modules\typescript\bin\tsc --noEmit
+node scripts\playwright.mjs test --config tests\reviews\teams-workflows-ui-v1\playwright.config.ts --list --reporter=list
+$env:ASPM_TEAMS_UI_RUN = 'red-01'
+node scripts\playwright.mjs test --config tests\reviews\teams-workflows-ui-v1\playwright.config.ts
+Six authored cases, not a discovered145-case claim. Reproduce on unchanged HEAD.
+Distinguish real missing-control RED from author defects; preserve failures.
+Astra corrects justified new-oracle defects only, Sol reruns, parent seals.

@@ -1,0 +1,25 @@
+Teams HTTP fixture Content-Type correction A1
+
+TU6 observed a real HTTP 401 before the application's auth-triggered abort,
+but its received Content-Type was application/json without the native UTF-8
+charset. The fixture supplied the correct responseHeaders object while also
+using route.fulfill's json option. The installed Playwright implementation
+assigns application/json for that option unless contentType is explicit.
+
+Set only the fixture's contentType option to its existing native header value.
+The JSON body, response status, other headers, request ledger, response-event
+ordering, auth behavior and all assertions remain unchanged. In particular,
+the exact application/json; charset=utf-8, no-store and nosniff assertions
+are not relaxed or fabricated in the observation map.
+
+The published application's writeJSON function sets the same UTF-8 header.
+Playwright's documented contentType option explicitly sets the response header:
+`https://playwright.dev/docs/api/class-route#route-fulfill`
+The installed coreBundle.js lines 59760-59797 and the captured response-event
+ledger are the exact-version evidence retained in the private blocker report.
+
+Original fixture bytes and fifteen held producer hashes are in BEFORE.json
+and the adjacent archive. This is an Astra test-author correction, not an
+application fix or independent code review. No test execution was performed
+by Astra. TU2's separate unexpected-status response-completion failure remains
+for Sol to repair; it is not declared fixed by this fixture change.

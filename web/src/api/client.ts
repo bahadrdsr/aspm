@@ -451,6 +451,25 @@ interface RequestOptions {
   decodeBody?: (response: Response) => Promise<unknown>;
 }
 
+async function discardUnexpectedResponse(response: Response): Promise<void> {
+  const reader = response.body?.getReader();
+  if (!reader) return;
+  try {
+    let bytes = 0;
+    // Complete small rejected replies without retaining data; cancel oversized streams.
+    while (bytes <= 32 << 10) {
+      const chunk = await reader.read();
+      if (chunk.done) return;
+      bytes += chunk.value.byteLength;
+    }
+    await reader.cancel();
+  } catch {
+    await reader.cancel().catch(() => {});
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 export async function request<T>(path: string, parse: (value: unknown, status: number) => T, options: RequestOptions = {}): Promise<T> {
   const authority = requestAuthority();
   const scoped = options.scoped !== false;
@@ -477,7 +496,13 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
   if (response.status === 401 && scoped) rejectSession(authority.revision);
   if (response.ok && options.expectedStatus !== undefined) {
     const accepted = typeof options.expectedStatus === "number" ? [options.expectedStatus] : options.expectedStatus;
-    if (!accepted.some((status) => status === response.status)) return invalid("HTTP response status", response.status);
+    if (!accepted.some((status) => status === response.status)) {
+      await discardUnexpectedResponse(response);
+      if (signal.aborted || (scoped && authority.revision !== requestAuthority().revision)) {
+        throw new DOMException("Request scope ended", "AbortError");
+      }
+      return invalid("HTTP response status", response.status);
+    }
   }
   if (response.status === 204) return parse(null, response.status);
   if (response.ok && options.decodeBody) {

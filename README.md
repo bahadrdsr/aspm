@@ -599,8 +599,33 @@ Local preview requires explicit digest-bound queue consent. A native 202 means
 accepted with no receipt, not confirmed channel delivery. The worker retains the
 original signed path/query and uses the existing fencing and cancellation guard.
 See `internal\app\README.txt` for the bounded backend contract.
-Teams UI, the actual delivery-main origin policy, runtime/deployment setup and
-live account/channel qualification remain separate work. The Slack/Jira process
+The Teams UI starts with a collapsed **Teams connections** entry in Integrations.
+Admins can explicitly save a name, enabled state and write-only signed Workflow
+URL after acknowledging standard-channel / Anyone Workflow ownership. Team
+ownership does not supply Workflow ownership; owners and co-owners must maintain
+continuity. Blank edit URLs preserve stored credentials, unchanged edits send
+nothing, and sparse writes preserve the original signed URL bytes. No callback
+URL, path or query value is read back, displayed, logged or browser-persisted.
+
+Within finding details, admins and analysts can **Notify Teams**, review a
+server-local canonical title/body/finding link and explicitly **Queue Teams
+notification**. A complete unambiguous enabled destination page can select one
+configured connection; partial or ambiguous pages require an explicit choice.
+Queue consent binds current scope, actor, finding, destination, revision and
+preview digest. Lost or malformed acknowledgements retain a bounded unresolved
+original-key intent across closes; changed consent cannot silently replace it.
+No blind retry or automatic send occurs.
+
+Viewers can read safe metadata and manual **Teams notification history**.
+Native pages, cursor retries and detail refreshes are scoped reads. Workflow
+acceptance means "Workflow accepted; channel delivery not confirmed", never a
+channel receipt or remote message link. Attempt markers and rate-delay metadata
+are not permission, delivery or safe-resend proof. Scope/session loss clears
+private drafts and intents and aborts late replies.
+
+Real-App UI acceptance uses synthetic API metadata, not a Teams account or native
+worker. The actual delivery-main origin policy, runtime/deployment setup and live
+account/channel qualification remain separate. The Slack/Jira process
 configuration above does not automatically admit a Teams origin.
 
 In **Reports**, **Live overview** displays the service's exact totals, all-finding
