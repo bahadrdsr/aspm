@@ -5,6 +5,8 @@ import type {
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
+  RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
+  RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
   Session, SourceScope, WorkItem, WorkResponse,
 } from "./types";
 import { rejectSession, requestAuthority } from "./authorization";
@@ -323,6 +325,149 @@ function parseSplitPreview(value: unknown, workspace: string | null, primary: st
 
 function parseCorrelationResponse(value: unknown, workspace: string | null): FindingCorrelationResponse {
   return { apiVersion, correlation: findingCorrelation(versioned(value).correlation, workspace) };
+}
+
+function retentionPolicy(value: unknown, workspace: string | null) {
+  const item = object(value, "retention policy");
+  const workspaceId = text(item.workspaceId, "retention policy workspace");
+  if (workspaceId !== workspace) return invalid("retention policy workspace");
+  const result = {
+    workspaceId,
+    revision: count(item.revision, "retention policy revision"),
+    hotHistoryDays: count(item.hotHistoryDays, "hot history retention"),
+    rawReportDays: count(item.rawReportDays, "raw report retention"),
+    archivedEvidenceDays: count(item.archivedEvidenceDays, "archived evidence retention"),
+    auditDays: count(item.auditDays, "audit retention"),
+    updatedBy: nullableText(item.updatedBy, "retention policy author"),
+    updatedAt: nullableTimestamp(item.updatedAt, "retention policy update time"),
+  };
+  if (result.revision < 1 || result.hotHistoryDays < 1 ||
+    result.hotHistoryDays >= result.rawReportDays ||
+    result.rawReportDays >= result.archivedEvidenceDays ||
+    result.archivedEvidenceDays >= result.auditDays ||
+    (result.updatedBy === null) !== (result.updatedAt === null)) return invalid("retention policy ordering");
+  return result;
+}
+
+function parseRetentionPolicy(value: unknown, workspace: string | null): RetentionPolicyResponse {
+  return { apiVersion, retentionPolicy: retentionPolicy(versioned(value).retentionPolicy, workspace) };
+}
+
+function retentionHold(value: unknown, workspace: string | null): RetentionHold {
+  const item = object(value, "retention hold");
+  const workspaceId = text(item.workspaceId, "retention hold workspace");
+  if (workspaceId !== workspace) return invalid("retention hold workspace");
+  const result: RetentionHold = {
+    id: reportIdentifier(item.id, "retention hold"),
+    workspaceId,
+    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event"], "retention resource kind"),
+    resourceId: reportIdentifier(item.resourceId, "retention resource"),
+    reason: text(item.reason, "retention hold reason"),
+    revision: count(item.revision, "retention hold revision"),
+    createdBy: text(item.createdBy, "retention hold creator"),
+    createdAt: timestamp(item.createdAt, "retention hold creation time"),
+    releasedBy: nullableText(item.releasedBy, "retention hold release actor"),
+    releasedAt: nullableTimestamp(item.releasedAt, "retention hold release time"),
+    releaseRationale: nullableText(item.releaseRationale, "retention hold release rationale"),
+  };
+  if (result.revision < 1 || (result.releasedAt === null) !== (result.releasedBy === null) ||
+    (result.releasedAt === null) !== (result.releaseRationale === null)) return invalid("retention hold lifecycle");
+  return result;
+}
+
+function parseRetentionHold(value: unknown, workspace: string | null): RetentionHoldResponse {
+  return { apiVersion, retentionHold: retentionHold(versioned(value).retentionHold, workspace) };
+}
+
+function parseRetentionHolds(value: unknown, workspace: string | null): RetentionHoldsResponse {
+  const holds = uniqueIds(array(versioned(value).retentionHolds, "retention holds")
+    .map((item) => retentionHold(item, workspace)));
+  return { apiVersion, retentionHolds: holds };
+}
+
+function retentionSummary(value: unknown): RetentionClassSummary {
+  const item = object(value, "retention summary");
+  const result: RetentionClassSummary = {
+    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit"], "retention class"),
+    action: choice(item.action, ["archive-history", "expire-archive", "expire-raw-report", "archive-audit"], "retention action"),
+    retainDays: count(item.retainDays, "retention days"),
+    totalCount: count(item.totalCount, "retention total"),
+    eligibleCount: count(item.eligibleCount, "retention eligible count"),
+    protectedCount: count(item.protectedCount, "retention protected count"),
+    sizeBytes: count(item.sizeBytes, "retention bytes"),
+  };
+  const actions: Record<RetentionClassSummary["class"], RetentionClassSummary["action"]> = {
+    "hot-history": "archive-history", "archived-evidence": "expire-archive",
+    "raw-report": "expire-raw-report", audit: "archive-audit",
+  };
+  if (result.retainDays < 1 || result.eligibleCount + result.protectedCount !== result.totalCount ||
+    actions[result.class] !== result.action) return invalid("retention summary consistency");
+  return result;
+}
+
+function retentionPreviewItem(value: unknown): RetentionPreviewItem {
+  const item = object(value, "retention preview item");
+  const result: RetentionPreviewItem = {
+    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit"], "retention item class"),
+    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event"], "retention item kind"),
+    resourceId: reportIdentifier(item.resourceId, "retention item resource"),
+    action: choice(item.action, ["archive-history", "expire-archive", "expire-raw-report", "archive-audit"], "retention item action"),
+    observedAt: timestamp(item.observedAt, "retention item time"),
+    sizeBytes: count(item.sizeBytes, "retention item bytes"),
+    protectedReasons: array(item.protectedReasons, "retention protection reasons").map((reason) =>
+      choice(reason, ["legal-hold", "active-decision", "shared-observation-references",
+        "assessment-reference", "active-correlation"], "retention protection reason")),
+  };
+  const actions: Record<RetentionPreviewItem["class"], RetentionPreviewItem["action"]> = {
+    "hot-history": "archive-history", "archived-evidence": "expire-archive",
+    "raw-report": "expire-raw-report", audit: "archive-audit",
+  };
+  if (actions[result.class] !== result.action ||
+    new Set(result.protectedReasons).size !== result.protectedReasons.length) {
+    return invalid("retention preview item consistency");
+  }
+  return result;
+}
+
+function retentionPreview(value: unknown, workspace: string | null): RetentionPreview {
+  const item = object(value, "retention preview");
+  const workspaceId = text(item.workspaceId, "retention preview workspace");
+  if (workspaceId !== workspace) return invalid("retention preview workspace");
+  const summaries = array(item.summaries, "retention summaries").map(retentionSummary);
+  if (summaries.length !== 4 || new Set(summaries.map((summary) => summary.class)).size !== 4) {
+    return invalid("retention summary classes");
+  }
+  const items = array(item.items, "retention preview items").map(retentionPreviewItem);
+  const itemKeys = items.map((entry) => `${entry.class}:${entry.resourceKind}:${entry.resourceId}`);
+  if (new Set(itemKeys).size !== itemKeys.length) return invalid("retention preview item identity");
+  const result: RetentionPreview = {
+    id: reportIdentifier(item.id, "retention preview"),
+    workspaceId,
+    revision: count(item.revision, "retention preview revision"),
+    state: choice(item.state, ["ready", "approved", "stale"], "retention preview state"),
+    policyRevision: count(item.policyRevision, "retention preview policy revision"),
+    snapshotDigest: text(item.snapshotDigest, "retention preview digest"),
+    createdBy: text(item.createdBy, "retention preview creator"),
+    createdAt: timestamp(item.createdAt, "retention preview creation time"),
+    expiresAt: timestamp(item.expiresAt, "retention preview expiry"),
+    summaries,
+    items,
+    approvedBy: nullableText(item.approvedBy, "retention approval actor"),
+    approvedAt: nullableTimestamp(item.approvedAt, "retention approval time"),
+    approvalRationale: nullableText(item.approvalRationale, "retention approval rationale"),
+  };
+  if (result.revision < 1 || result.policyRevision < 1 ||
+    !/^sha256:[a-f0-9]{64}$/.test(result.snapshotDigest) ||
+    (result.state === "approved") !== (result.approvedBy !== null) ||
+    (result.approvedBy === null) !== (result.approvedAt === null) ||
+    (result.approvedAt === null) !== (result.approvalRationale === null)) {
+    return invalid("retention preview lifecycle");
+  }
+  return result;
+}
+
+function parseRetentionPreview(value: unknown, workspace: string | null): RetentionPreviewResponse {
+  return { apiVersion, retentionPreview: retentionPreview(versioned(value).retentionPreview, workspace) };
 }
 
 function asset(value: unknown, workspace: string | null): Asset {
@@ -735,6 +880,81 @@ export const api = {
     findingBodyLimit(input, 32 << 10);
     return request(`/api/v1/findings/${encodeURIComponent(id)}/splits`,
       (value) => parseCorrelationResponse(value, workspace),
+      { method: "POST", body: input, signal, expectedStatus: [200, 201] });
+  },
+  retentionPolicy: (signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return request("/api/v1/retention/policy", (value) => parseRetentionPolicy(value, workspace),
+      { signal, expectedStatus: 200 });
+  },
+  updateRetentionPolicy: (input: RetentionPolicyInput, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    if (input.revision < 1 || input.hotHistoryDays < 1 ||
+      input.hotHistoryDays >= input.rawReportDays ||
+      input.rawReportDays >= input.archivedEvidenceDays ||
+      input.archivedEvidenceDays >= input.auditDays || input.auditDays > 3650) {
+      throw new APIError("Retention days must be positive and ordered hot, raw, archive, then audit.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 16 << 10);
+    return request("/api/v1/retention/policy", (value) => parseRetentionPolicy(value, workspace),
+      { method: "PATCH", body: input, signal, expectedStatus: 200 });
+  },
+  retentionHolds: (signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return request("/api/v1/retention/holds", (value) => parseRetentionHolds(value, workspace),
+      { signal, expectedStatus: 200 });
+  },
+  createRetentionHold: (input: { resourceKind: RetentionHold["resourceKind"]; resourceId: string; reason: string },
+    signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(input.resourceId, "retention resource");
+    if (input.reason.trim() === "" || input.reason.includes("\0") ||
+      new TextEncoder().encode(input.reason).byteLength > 8192) {
+      throw new APIError("A retention hold requires a bounded nonblank reason.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 16 << 10);
+    return request("/api/v1/retention/holds", (value) => parseRetentionHold(value, workspace),
+      { method: "POST", body: input, signal, expectedStatus: 201 });
+  },
+  releaseRetentionHold: (id: string, revision: number, rationale: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "retention hold");
+    if (revision < 1 || rationale.trim() === "" || rationale.includes("\0") ||
+      new TextEncoder().encode(rationale).byteLength > 8192) {
+      throw new APIError("Releasing a hold requires its current revision and a bounded rationale.", "invalid-input", false);
+    }
+    const body = { revision, rationale };
+    findingBodyLimit(body, 16 << 10);
+    return request(`/api/v1/retention/holds/${encodeURIComponent(id)}/releases`,
+      (value) => parseRetentionHold(value, workspace),
+      { method: "POST", body, signal, expectedStatus: 200 });
+  },
+  previewRetention: (signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return request("/api/v1/retention/previews", (value) => parseRetentionPreview(value, workspace),
+      { method: "POST", body: {}, signal, expectedStatus: 201 });
+  },
+  retentionPreview: (id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "retention preview");
+    return request(`/api/v1/retention/previews/${encodeURIComponent(id)}`,
+      (value) => parseRetentionPreview(value, workspace), { signal, expectedStatus: 200 });
+  },
+  approveRetentionPreview: (id: string, input: {
+    revision: number; snapshotDigest: string; rationale: string; idempotencyKey: string;
+  }, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "retention preview");
+    if (input.revision < 1 || !/^sha256:[a-f0-9]{64}$/.test(input.snapshotDigest) ||
+      input.rationale.trim() === "" || input.rationale.includes("\0") ||
+      new TextEncoder().encode(input.rationale).byteLength > 8192 ||
+      input.idempotencyKey.trim() === "" || input.idempotencyKey.includes("\0") ||
+      new TextEncoder().encode(input.idempotencyKey).byteLength > 256) {
+      throw new APIError("Approval requires the exact preview revision, digest, rationale and intent key.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 16 << 10);
+    return request(`/api/v1/retention/previews/${encodeURIComponent(id)}/approvals`,
+      (value) => parseRetentionPreview(value, workspace),
       { method: "POST", body: input, signal, expectedStatus: [200, 201] });
   },
   catalog: (signal: AbortSignal) => request("/api/v1/integrations/catalog", parseCatalog, { signal }),

@@ -133,6 +133,68 @@ type FindingSplitPreview struct {
 	Member      FindingCorrelationMember `json:"member"`
 }
 
+type RetentionPolicy struct {
+	WorkspaceID          string     `json:"workspaceId"`
+	Revision             int64      `json:"revision"`
+	HotHistoryDays       int        `json:"hotHistoryDays"`
+	RawReportDays        int        `json:"rawReportDays"`
+	ArchivedEvidenceDays int        `json:"archivedEvidenceDays"`
+	AuditDays            int        `json:"auditDays"`
+	UpdatedBy            *string    `json:"updatedBy"`
+	UpdatedAt            *time.Time `json:"updatedAt"`
+}
+
+type RetentionHold struct {
+	ID               string     `json:"id"`
+	WorkspaceID      string     `json:"workspaceId"`
+	ResourceKind     string     `json:"resourceKind"`
+	ResourceID       string     `json:"resourceId"`
+	Reason           string     `json:"reason"`
+	Revision         int64      `json:"revision"`
+	CreatedBy        string     `json:"createdBy"`
+	CreatedAt        time.Time  `json:"createdAt"`
+	ReleasedBy       *string    `json:"releasedBy"`
+	ReleasedAt       *time.Time `json:"releasedAt"`
+	ReleaseRationale *string    `json:"releaseRationale"`
+}
+
+type RetentionClassSummary struct {
+	Class          string `json:"class"`
+	Action         string `json:"action"`
+	RetainDays     int    `json:"retainDays"`
+	TotalCount     int    `json:"totalCount"`
+	EligibleCount  int    `json:"eligibleCount"`
+	ProtectedCount int    `json:"protectedCount"`
+	SizeBytes      int64  `json:"sizeBytes"`
+}
+
+type RetentionPreviewItem struct {
+	Class            string    `json:"class"`
+	ResourceKind     string    `json:"resourceKind"`
+	ResourceID       string    `json:"resourceId"`
+	Action           string    `json:"action"`
+	ObservedAt       time.Time `json:"observedAt"`
+	SizeBytes        int64     `json:"sizeBytes"`
+	ProtectedReasons []string  `json:"protectedReasons"`
+}
+
+type RetentionPreview struct {
+	ID                string                  `json:"id"`
+	WorkspaceID       string                  `json:"workspaceId"`
+	Revision          int64                   `json:"revision"`
+	State             string                  `json:"state"`
+	PolicyRevision    int64                   `json:"policyRevision"`
+	SnapshotDigest    string                  `json:"snapshotDigest"`
+	CreatedBy         string                  `json:"createdBy"`
+	CreatedAt         time.Time               `json:"createdAt"`
+	ExpiresAt         time.Time               `json:"expiresAt"`
+	Summaries         []RetentionClassSummary `json:"summaries"`
+	Items             []RetentionPreviewItem  `json:"items"`
+	ApprovedBy        *string                 `json:"approvedBy"`
+	ApprovedAt        *time.Time              `json:"approvedAt"`
+	ApprovalRationale *string                 `json:"approvalRationale"`
+}
+
 type Observation struct {
 	ID                 string           `json:"id"`
 	RunID              string           `json:"runId"`

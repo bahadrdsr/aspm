@@ -177,8 +177,8 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
 			}
 			opened = true
 			afterOpenVersions, afterOpenTables = versionLedger(t, f), actualTables(t, f)
-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}),
-				"current constructor returned success but did not apply and record v6 through v13 exactly once over actual published v5")
+			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"}),
+				"current constructor returned success but did not apply and record v6 through v14 exactly once over actual published v5")
 			for _, name := range []string{"source_connections", "source_collections", "source_repository_assets", "source_collection_records"} {
 				found := false
 				for _, table := range afterOpenTables {
@@ -221,9 +221,9 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
 			must(t, "close worker before v6 idempotent reopen", worker.Close())
 			fresh := h.openWorker(h.workerConfig(native, "idempotent-v6"))
 			process(t, h.ctx, fresh, false)
-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}) &&
+			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"}) &&
 				reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
-				"reopening v13 repeated migration or changed legacy definitions")
+				"reopening v14 repeated migration or changed legacy definitions")
 			require(t, h.collection(h.admin, job.ID).State == "succeeded" && len(h.assets(h.admin)) == 1,
 				"current API-produced post-upgrade data did not survive repeat core/worker opens")
 			apiTailExecuted = true

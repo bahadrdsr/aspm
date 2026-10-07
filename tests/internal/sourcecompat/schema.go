@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -183,7 +184,7 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	return ProjectV12(t, before, ProjectV13(t, v12, current))
+	return ProjectV12(t, before, ProjectV13(t, v12, ProjectV14(t, v12, current)))
 }
 
 var v13Relations = []string{
@@ -202,6 +203,85 @@ var v13Relations = []string{
 	"app_finding_correlations|r",
 	"app_finding_correlations_pkey|i",
 	"app_finding_correlations_workspace_id_key|i",
+}
+
+var v14Relations = []string{
+	"app_assessment_previews_retention_observation_idx|i",
+	"app_finding_correlation_events_retention_idx|i",
+	"app_imports_retention_idx|i",
+	"app_observations_retention_run_idx|i",
+	"app_retention_holds|r",
+	"app_retention_holds_active_resource|i",
+	"app_retention_holds_pkey|i",
+	"app_retention_holds_workspace_created|i",
+	"app_retention_holds_workspace_id_key|i",
+	"app_retention_policies|r",
+	"app_retention_policies_pkey|i",
+	"app_retention_preview_items|r",
+	"app_retention_preview_items_pkey|i",
+	"app_retention_preview_items_preview|i",
+	"app_retention_preview_items_resource_key|i",
+	"app_retention_previews|r",
+	"app_retention_previews_approval_key|i",
+	"app_retention_previews_pkey|i",
+	"app_retention_previews_workspace_created|i",
+	"app_retention_previews_workspace_id_key|i",
+}
+
+var v14LegacyIndexes = []struct {
+	table, name, definition string
+}{
+	{"imports", "app_imports_retention_idx",
+		"app_imports USING btree (workspace_id, imported_at, id) WHERE (state = ANY (ARRAY['succeeded'::text, 'failed'::text]))"},
+	{"observations", "app_observations_retention_run_idx",
+		"app_observations USING btree (workspace_id, run_id, id)"},
+	{"assessment_previews", "app_assessment_previews_retention_observation_idx",
+		"app_assessment_previews USING btree (workspace_id, observation_id)"},
+}
+
+var observedSchemaName = regexp.MustCompile(`^[a-z][a-z0-9_]{0,62}$`)
+
+func exactV14Index(row, name, definition string) bool {
+	prefix := name + "|CREATE INDEX " + name + " ON "
+	if !strings.HasPrefix(row, prefix) {
+		return false
+	}
+	schema, actual, present := strings.Cut(strings.TrimPrefix(row, prefix), ".")
+	return present && observedSchemaName.MatchString(schema) && actual == definition
+}
+
+// ProjectV14 validates and projects only the additive indexes on legacy tables.
+func ProjectV14(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	result := clone(current)
+	for _, spec := range v14LegacyIndexes {
+		key := spec.table + "/indexes"
+		prior, present := before[key]
+		if !present {
+			continue
+		}
+		rows, present := current[key]
+		if !present || len(rows) != len(prior)+1 {
+			t.Fatalf("V14: %s index set has a missing or unapproved delta", spec.table)
+		}
+		remaining := make([]string, 0, len(prior))
+		matches := 0
+		for _, row := range rows {
+			if strings.HasPrefix(row, spec.name+"|") {
+				if !exactV14Index(row, spec.name, spec.definition) {
+					t.Fatalf("V14: %s definition changed", spec.name)
+				}
+				matches++
+				continue
+			}
+			remaining = append(remaining, row)
+		}
+		if matches != 1 || !reflect.DeepEqual(remaining, prior) {
+			t.Fatalf("V14: %s index set has a missing or unapproved delta", spec.table)
+		}
+		result[key] = slices.Clone(prior)
+	}
+	return result
 }
 
 func relationDifference(left, right []string) []string {
@@ -225,6 +305,19 @@ func ProjectRelationsV13(t testing.TB, before, current []string) []string {
 	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
 	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
 		t.Fatalf("V13: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
+// ProjectRelationsV14 validates the complete current V13/V14 table and index set.
+func ProjectRelationsV14(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V14: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
 			missing, unexpected)
 	}
 	return slices.Clone(before)

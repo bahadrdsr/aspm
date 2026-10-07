@@ -58,7 +58,7 @@ Additive schema V13 introduces finding decision/evidence revisions plus
 correlation, membership and event tables. A partial unique index prevents one
 finding from participating in more than one active correlation.
 
-Historical V11 data is migrated through V12 and V13 without rewriting old
+Historical V11 data is migrated through current V14 without rewriting old
 migration literals or business rows outside the approved additive defaults.
 
 ## Verification completed
@@ -68,7 +68,8 @@ migration literals or business rows outside the approved additive defaults.
   evidence-byte preservation and reopen durability.
 - Browser acceptance covers explicit preview, decision selection, merge audit,
   Work collapse, split and Work restoration.
-- The complete 147-case browser suite passes with the new workflow.
+- The complete 148-case browser suite passes with the correlation and retention
+  preview workflows.
 
 ## Remaining limits
 
@@ -77,8 +78,7 @@ migration literals or business rows outside the approved additive defaults.
 - No cross-asset or same-source merge.
 - No groups larger than two active members.
 - No bulk merge/split.
-- No retention, archive, hold, shared-reference protection or restoration
-  workflow.
+- Retention policy, holds and preview approval are implemented separately, but
+  physical archive/expiry execution and restoration are not.
 
-The next M06 increment is a previewable retention/archive policy with separate
-lifetimes for hot history, archived evidence, raw reports and audit records.
+See `m06-retention-preview.md` for the current retention boundary.

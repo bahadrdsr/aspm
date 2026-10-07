@@ -123,6 +123,35 @@ func TestProjectRelationsV13AcceptsOnlyExactCorrelationRelations(t *testing.T) {
 	}
 }
 
+func TestProjectRelationsV14AcceptsOnlyExactRetentionRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV14(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V14 relation projection did not restore the prior relation set")
+	}
+}
+
+func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
+	before := map[string][]string{
+		"imports/indexes":             {"app_imports_pkey|unchanged"},
+		"observations/indexes":        {"app_observations_pkey|unchanged"},
+		"assessment_previews/indexes": {"app_assessment_previews_pkey|unchanged"},
+	}
+	current := clone(before)
+	for _, spec := range v14LegacyIndexes {
+		key := spec.table + "/indexes"
+		current[key] = append(current[key], spec.name+"|CREATE INDEX "+spec.name+
+			" ON acceptance_schema."+spec.definition)
+		slices.Sort(current[key])
+	}
+	if got := ProjectV14(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V14 index projection did not restore the prior catalog")
+	}
+}
+
 func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
 	before := map[string][]string{
 		"source_connections": {`{"id":"source","profile":"github-cloud-app"}`},

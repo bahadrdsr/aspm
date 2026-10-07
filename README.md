@@ -22,10 +22,14 @@ The first M06 correlation increment is also implemented: an analyst or
 administrator can explicitly preview, merge and split exactly two findings in
 the same workspace and asset when they have different source identities.
 Variants, evidence, observations, notes, decisions and audit history remain
-durable. Work now continues with the first previewable retention/archive
-policy. Indexed candidate matching, automatic correlation and multi-member
-groups remain unfinished. GitLab, AWS, Azure cloud and other unfinished
-integration expansion remain deferred.
+durable. The first retention increment is implemented too: each workspace has
+separate hot-history, raw-report, archived-evidence and audit lifetimes,
+explicit holds, exact impact previews and stale approval fencing. Preview and
+approval are deliberately non-destructive. Physical archive/expiry execution,
+availability-state downloads, resume and restore remain next. Indexed candidate
+matching, automatic correlation and multi-member groups remain unfinished.
+GitLab, AWS, Azure cloud and other unfinished integration expansion remain
+deferred.
 
 The application now has a real PostgreSQL/S3 backend: authenticated workspaces,
 roles, assets, queued report intake, findings and scan history, CSV exports,
@@ -35,7 +39,7 @@ server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, Slack/Jira/Teams configuration and
 delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
-two-source finding correlation, plus
+two-source finding correlation, retention policy/hold/preview controls, plus
 opt-in persistent AI profile, policy and grant configuration, with an in-finding
 assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the
@@ -145,6 +149,21 @@ findings, and restores both Work rows. Exact idempotent replay is accepted;
 changed replay and stale decision/evidence revisions are rejected. This slice
 supports only same-workspace, same-asset, different-source pairs and exactly
 two members. See `docs\m06-correlation.md`.
+
+In **Settings**, **Retention and archive preview** exposes four separate
+workspace policy durations: hot history, raw reports, archived evidence and
+audit. Administrators can change the ordered day bounds and create or release
+holds for an import, observation or correlation audit event. Any member can
+create a bounded exact preview. It reports affected IDs, counts, eligible
+logical payload bytes and protection reasons for legal holds, active decisions,
+shared observation references, assessment references and active correlations.
+
+An administrator can approve only the exact current policy/reference snapshot,
+with rationale and an idempotency key. A hold, policy, decision or reference
+change makes the preview stale. Approval persists review intent but starts no
+archive, expiry, compaction, deletion, restore or evidence-availability
+transition. Preview is capped at 200 resources and expires after 15 minutes.
+See `docs\m06-retention-preview.md`.
 
 **Saved views** is one closed-by-default inline panel in Work. Only explicitly
 opening it reads your personal preferences in the selected workspace. Every

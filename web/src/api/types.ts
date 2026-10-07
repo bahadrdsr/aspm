@@ -189,6 +189,103 @@ export interface FindingCorrelationResponse {
   correlation: FindingCorrelation;
 }
 
+export type RetentionClass = "hot-history" | "archived-evidence" | "raw-report" | "audit";
+export type RetentionResourceKind = "import" | "observation" | "correlation-event";
+export type RetentionAction = "archive-history" | "expire-archive" | "expire-raw-report" | "archive-audit";
+
+export interface RetentionPolicy {
+  workspaceId: string;
+  revision: number;
+  hotHistoryDays: number;
+  rawReportDays: number;
+  archivedEvidenceDays: number;
+  auditDays: number;
+  updatedBy: string | null;
+  updatedAt: string | null;
+}
+
+export interface RetentionPolicyInput {
+  revision: number;
+  hotHistoryDays: number;
+  rawReportDays: number;
+  archivedEvidenceDays: number;
+  auditDays: number;
+}
+
+export interface RetentionPolicyResponse {
+  apiVersion: typeof apiVersion;
+  retentionPolicy: RetentionPolicy;
+}
+
+export interface RetentionHold {
+  id: string;
+  workspaceId: string;
+  resourceKind: RetentionResourceKind;
+  resourceId: string;
+  reason: string;
+  revision: number;
+  createdBy: string;
+  createdAt: string;
+  releasedBy: string | null;
+  releasedAt: string | null;
+  releaseRationale: string | null;
+}
+
+export interface RetentionHoldResponse {
+  apiVersion: typeof apiVersion;
+  retentionHold: RetentionHold;
+}
+
+export interface RetentionHoldsResponse {
+  apiVersion: typeof apiVersion;
+  retentionHolds: RetentionHold[];
+}
+
+export interface RetentionClassSummary {
+  class: RetentionClass;
+  action: RetentionAction;
+  retainDays: number;
+  totalCount: number;
+  eligibleCount: number;
+  protectedCount: number;
+  sizeBytes: number;
+}
+
+export interface RetentionPreviewItem {
+  class: RetentionClass;
+  resourceKind: RetentionResourceKind;
+  resourceId: string;
+  action: RetentionAction;
+  observedAt: string;
+  sizeBytes: number;
+  protectedReasons: Array<
+    "legal-hold" | "active-decision" | "shared-observation-references" |
+    "assessment-reference" | "active-correlation"
+  >;
+}
+
+export interface RetentionPreview {
+  id: string;
+  workspaceId: string;
+  revision: number;
+  state: "ready" | "approved" | "stale";
+  policyRevision: number;
+  snapshotDigest: string;
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  summaries: RetentionClassSummary[];
+  items: RetentionPreviewItem[];
+  approvedBy: string | null;
+  approvedAt: string | null;
+  approvalRationale: string | null;
+}
+
+export interface RetentionPreviewResponse {
+  apiVersion: typeof apiVersion;
+  retentionPreview: RetentionPreview;
+}
+
 export interface AssetFields {
   name: string;
   kind: string;

@@ -151,6 +151,7 @@ GET /api/v1/integrations/catalog: exactly github,gitlab,azure-devops,aws,azure,
   verification not-run with reason until M08-M09. POST =>405; import formats do
   not inflate native family count or prove native support.
 
-Retention/merge-split, enterprise performance, browser interaction, full installer
-operation, OIDC, native network connectors and independent verification remain
+Reversible merge/split and retention policy/hold/preview now have dedicated M06
+gates. Physical archive/expiry execution, enterprise performance, full installer
+operation, native network connectors and independent verification remain
 separate gates. After handoff, expectation changes require a real issue.

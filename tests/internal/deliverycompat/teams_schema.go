@@ -39,7 +39,7 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	return Project(t, before, projected)
 }
 
-// ProjectCurrentV10 composes the authentic V10 -> V11 -> V12 -> V13 current delta.
+// ProjectCurrentV10 composes the authentic V10 -> current additive delta.
 func ProjectCurrentV10(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
 	v11, err := expectedTeams(before)

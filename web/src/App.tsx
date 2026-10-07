@@ -16,6 +16,7 @@ import { AssetsPage } from "@/pages/assets";
 import { GalleryPage } from "@/pages/gallery";
 import { ReportsPage } from "@/pages/reports";
 import { SessionBoundary, useSession } from "@/lib/session";
+import { RetentionSettings } from "@/components/retention-settings";
 
 const destinations: { id: Destination; name: string; icon: IconName }[] = [
   { id: "work", name: "Work", icon: "work" },
@@ -28,10 +29,11 @@ const destinations: { id: Destination; name: string; icon: IconName }[] = [
 function SettingsPage() {
   const { reducedMotion, theme } = usePreferences();
   return <>
-    <header className="page-heading"><div><p className="eyebrow">Make the workspace your own</p><h1>Settings</h1><p className="page-description">Presentation preferences now. Operational controls when their services exist.</p></div></header>
+    <header className="page-heading"><div><p className="eyebrow">Make the workspace your own</p><h1>Settings</h1><p className="page-description">Presentation preferences and explicitly opened workspace controls.</p></div></header>
     <div className="settings-grid">
       <section className="surface settings-card"><span className="settings-icon"><Icon name="grid" size={24} /></span><h2>Design system</h2><p>Explore the real shared controls, both themes, and clearly labeled synthetic states.</p><Button asChild variant="outline"><a href="#/gallery">Component gallery<Icon name="arrow" /></a></Button></section>
       <section className="surface settings-card"><span className="settings-icon"><Icon name="sun" size={24} /></span><h2>Appearance</h2><p>Your explicit theme preference is the only persistent browser setting. It contains no credentials.</p><dl className="settings-values"><div><dt>Current theme</dt><dd>{theme === "dark" ? "Dark" : "Light"}</dd></div><div><dt>Motion</dt><dd>{reducedMotion ? "Reduced by system" : "System default"}</dd></div></dl><p className="muted small">Use the color theme control in the header to change appearance.</p></section>
+      <RetentionSettings />
       <section className="surface settings-card full-width"><div className="section-heading"><h2>Preview boundaries</h2><span className="subtle-pill">Current limits</span></div><div className="boundary-grid"><div><Icon name="lock" /><h3>Session-based access</h3><p>Sign-in and instance-setup forms use this instance's API. SSO and credential management are not available in Settings.</p></div><div><Icon name="shield" /><h3>AI &amp; proof are inactive</h3><p>No provider calls, model tools or active verification are started from this interface.</p></div><div><Icon name="layers" /><h3>Server-owned data</h3><p>Unavailable data endpoints fail visibly. The component gallery is never an operational fallback for inventory or reports.</p></div></div></section>
     </div>
   </>;

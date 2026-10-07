@@ -91,6 +91,43 @@ type splitPreview struct {
 	Primary     findingCorrelationMember
 	Member      findingCorrelationMember
 }
+type retentionPolicy struct {
+	WorkspaceID                                                    string
+	Revision                                                       int64
+	HotHistoryDays, RawReportDays, ArchivedEvidenceDays, AuditDays int
+	UpdatedBy                                                      *string
+	UpdatedAt                                                      *time.Time
+}
+type retentionHold struct {
+	ID, WorkspaceID, ResourceKind, ResourceID, Reason, CreatedBy string
+	Revision                                                     int64
+	CreatedAt                                                    time.Time
+	ReleasedBy                                                   *string
+	ReleasedAt                                                   *time.Time
+	ReleaseRationale                                             *string
+}
+type retentionClassSummary struct {
+	Class, Action                             string
+	RetainDays                                int
+	TotalCount, EligibleCount, ProtectedCount int
+	SizeBytes                                 int64
+}
+type retentionPreviewItem struct {
+	Class, ResourceKind, ResourceID, Action string
+	ObservedAt                              time.Time
+	SizeBytes                               int64
+	ProtectedReasons                        []string
+}
+type retentionPreview struct {
+	ID, WorkspaceID, State, SnapshotDigest, CreatedBy string
+	Revision, PolicyRevision                          int64
+	CreatedAt, ExpiresAt                              time.Time
+	Summaries                                         []retentionClassSummary
+	Items                                             []retentionPreviewItem
+	ApprovedBy                                        *string
+	ApprovedAt                                        *time.Time
+	ApprovalRationale                                 *string
+}
 type apiFailure struct {
 	Code, Message, RequestID string
 	Retryable                bool
@@ -114,6 +151,10 @@ type reply struct {
 	MergePreview           mergePreview
 	SplitPreview           splitPreview
 	Correlation            findingCorrelation
+	RetentionPolicy        retentionPolicy
+	RetentionHold          retentionHold
+	RetentionHolds         []retentionHold
+	RetentionPreview       retentionPreview
 	Import                 imported
 	Items                  []json.RawMessage
 	Total                  int

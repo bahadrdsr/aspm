@@ -214,8 +214,61 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return errForbidden
 		}
 		return a.createReportSnapshot(w, r, membership.ID, session.User.ID)
+	case "/api/v1/retention/policy":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
+			return err
+		}
+		if r.Method == http.MethodGet {
+			return a.getRetentionPolicy(w, r, membership.ID)
+		}
+		if membership.Role != "admin" {
+			return errForbidden
+		}
+		return a.updateRetentionPolicy(w, r, membership.ID, session.User.ID)
+	case "/api/v1/retention/holds":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+			return err
+		}
+		if membership.Role != "admin" {
+			return errForbidden
+		}
+		if r.Method == http.MethodGet {
+			return a.listRetentionHolds(w, r, membership.ID)
+		}
+		return a.createRetentionHold(w, r, membership.ID, session.User.ID)
+	case "/api/v1/retention/previews":
+		if err = requireMethod(w, r, http.MethodPost); err != nil {
+			return err
+		}
+		return a.createRetentionPreview(w, r, membership.ID, session.User.ID)
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 3 && parts[0] == "retention" && parts[1] == "previews" && validID(parts[2]) {
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		return a.getRetentionPreview(w, r, membership.ID, parts[2])
+	}
+	if len(parts) == 4 && parts[0] == "retention" && validID(parts[2]) {
+		switch parts[1] + "/" + parts[3] {
+		case "holds/releases":
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if membership.Role != "admin" {
+				return errForbidden
+			}
+			return a.releaseRetentionHold(w, r, membership.ID, session.User.ID, parts[2])
+		case "previews/approvals":
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if membership.Role != "admin" {
+				return errForbidden
+			}
+			return a.approveRetentionPreview(w, r, membership.ID, session.User.ID, parts[2])
+		}
+	}
 	if len(parts) == 3 && parts[0] == "work" && parts[1] == "views" && validID(parts[2]) {
 		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch, http.MethodDelete); err != nil {
 			return err
