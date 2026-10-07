@@ -114,6 +114,7 @@ export interface FindingCorrelationMember {
   sourceId: string;
   title: string;
   severity: Severity;
+  active: boolean;
   decisionRevision: number;
   evidenceRevision: number;
   observationCount: number;
@@ -145,6 +146,7 @@ export interface FindingMergePreview {
   primary: FindingCorrelationMember;
   other: FindingCorrelationMember;
   conflicts: Array<"ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt">;
+  correlation: FindingCorrelation | null;
 }
 
 export interface FindingSplitPreview {
@@ -155,6 +157,7 @@ export interface FindingSplitPreview {
 
 export interface FindingMergeInput {
   otherFindingId: string;
+  correlationRevision: number;
   primaryDecisionRevision: number;
   primaryEvidenceRevision: number;
   otherDecisionRevision: number;
@@ -162,6 +165,19 @@ export interface FindingMergeInput {
   decision: FindingDecision;
   rationale: string;
   idempotencyKey: string;
+}
+
+export interface FindingCorrelationCandidate {
+  member: FindingCorrelationMember;
+  match: { kind: "exact-location"; branch: string; uri: string; line: number };
+}
+
+export interface FindingCorrelationCandidatesResponse {
+  apiVersion: typeof apiVersion;
+  correlationCandidates: {
+    items: FindingCorrelationCandidate[];
+    nextCursor: string | null;
+  };
 }
 
 export interface FindingSplitInput {

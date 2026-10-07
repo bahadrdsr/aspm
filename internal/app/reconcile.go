@@ -81,11 +81,15 @@ func (a *ImportWorker) reconcile(ctx context.Context, record importRecord, findi
 				// scan, not to the late partial/delta observation.
 				state, freshness = "inferred-resolved", coverage
 			}
+			candidateURI, candidateLine := "", 0
+			if record.SourceStatus == "succeeded" {
+				candidateURI, candidateLine = correlationCandidateLocation(f.Location)
+			}
 			batch.Queue(upsert, newID(), record.WorkspaceID, record.AssetID, record.SourceID,
 				record.Scope.ID, record.Scope.Revision, record.Scope.Branch, f.Identity,
 				f.Title, f.Description, f.Remediation, f.Severity, f.EvidenceText, f.SourceLabel,
 				record.SourceScanAt, record.CollectedAt, record.ImportedAt, freshness, state, owner,
-				record.SourceStatus == "succeeded", record.comparable() || covered)
+				candidateURI, candidateLine, record.SourceStatus == "succeeded", record.comparable() || covered)
 		}
 		result := tx.SendBatch(ctx, batch)
 		ids := make([]string, end-start)
@@ -152,7 +156,7 @@ func (a *ImportWorker) reconcile(ctx context.Context, record importRecord, findi
 }
 
 func (a *ImportWorker) findingUpsert() string {
-	newer := `($21 AND ((EXCLUDED.source_scan_at IS NOT NULL
+	newer := `($23 AND ((EXCLUDED.source_scan_at IS NOT NULL
 		AND (f.source_scan_at IS NULL OR EXCLUDED.source_scan_at>f.source_scan_at)
 		AND (f.source_freshness_at IS NULL OR EXCLUDED.source_scan_at>=f.source_freshness_at))
 		OR (EXCLUDED.source_scan_at IS NULL AND f.source_scan_at IS NULL AND f.source_freshness_at IS NULL)))`
@@ -161,14 +165,27 @@ func (a *ImportWorker) findingUpsert() string {
 		"source_scan_at", "collected_at", "imported_at", "source_state"} {
 		updates = append(updates, field+"=CASE WHEN "+newer+" THEN EXCLUDED."+field+" ELSE f."+field+" END")
 	}
-	updates = append(updates, `source_freshness_at=CASE WHEN $22 AND EXCLUDED.source_freshness_at IS NOT NULL
+	candidateNewer := newer + ` OR (f.candidate_uri='' AND $23 AND EXCLUDED.candidate_uri<>'')`
+	for _, field := range []string{"candidate_uri", "candidate_line"} {
+		updates = append(updates, field+"=CASE WHEN "+candidateNewer+" THEN EXCLUDED."+field+" ELSE f."+field+" END")
+	}
+	updates = append(updates, `source_freshness_at=CASE WHEN $24 AND EXCLUDED.source_freshness_at IS NOT NULL
 		AND (f.source_freshness_at IS NULL OR EXCLUDED.source_freshness_at>f.source_freshness_at)
 		THEN EXCLUDED.source_freshness_at ELSE f.source_freshness_at END`)
 	updates = append(updates, `evidence_revision=f.evidence_revision+1`)
 	return `INSERT INTO ` + a.table("findings") + ` AS f
 		(id,workspace_id,asset_id,source_id,scope_id,scope_revision,scope_branch,identity_key,title,description,
-		remediation,severity,evidence_text,source_label,source_scan_at,collected_at,imported_at,source_freshness_at,source_state,owner_id)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
+		remediation,severity,evidence_text,source_label,source_scan_at,collected_at,imported_at,source_freshness_at,source_state,owner_id,
+		candidate_uri,candidate_line)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)
 		ON CONFLICT(workspace_id,asset_id,source_id,scope_id,scope_revision,scope_branch,identity_key)
 		DO UPDATE SET ` + strings.Join(updates, ",") + ` RETURNING id`
+}
+
+func correlationCandidateLocation(location parsers.Location) (string, int) {
+	uri := strings.TrimSpace(location.URI)
+	if uri == "" || location.Line <= 0 {
+		return "", 0
+	}
+	return uri, location.Line
 }

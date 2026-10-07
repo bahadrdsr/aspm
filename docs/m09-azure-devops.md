@@ -87,6 +87,6 @@ developer and owned-fixture evidence, not a new independently signed capture.
   and held late replies remain to be added. Shared GitHub source machinery
   retains its existing coverage for those behaviors.
 - Other integration families remain deferred. The first M06 explicit
-  two-finding merge/split and retention preview/execution increments are
-  implemented. Bounded candidate matching, multi-member correlation and
-  recurring-scan churn qualification are the next M06 work.
+  candidate/multi-member correlation and retention preview/execution increments
+  are implemented. Change-focused lifecycle and recurring-scan churn
+  qualification are the next M06 work.

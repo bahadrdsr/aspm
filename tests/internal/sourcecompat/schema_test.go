@@ -97,8 +97,18 @@ func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	current["findings/columns"] = append(current["findings/columns"],
+		"candidate_uri|text|true|''::text",
+		"candidate_line|integer|true|0")
+	current["findings/constraints"] = append(current["findings/constraints"],
+		"app_findings_candidate_line_check|CHECK (candidate_line >= 0 AND candidate_line <= 2147483647)",
+		"app_findings_candidate_line_not_null|NOT NULL candidate_line",
+		"app_findings_candidate_location_check|CHECK (candidate_uri = ''::text AND candidate_line = 0 OR candidate_uri <> ''::text AND candidate_line > 0)",
+		"app_findings_candidate_uri_check|CHECK (octet_length(candidate_uri) <= 8192)",
+		"app_findings_candidate_uri_not_null|NOT NULL candidate_uri")
+	sortConstraints(current["findings/constraints"])
 	if got := ProjectCurrent(t, before, current); !reflect.DeepEqual(got, before) {
-		t.Fatal("current V12/V13 projection did not restore the observed legacy catalog")
+		t.Fatal("current projection did not restore the observed legacy catalog")
 	}
 }
 
@@ -146,6 +156,19 @@ func TestProjectRelationsV15AcceptsOnlyExactExecutionRelations(t *testing.T) {
 	}
 }
 
+func TestProjectRelationsV16AcceptsOnlyExactCandidateIndex(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV16(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V16 relation projection did not restore the prior relation set")
+	}
+}
+
 func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	before := map[string][]string{
 		"imports/indexes":             {"app_imports_pkey|unchanged"},
@@ -173,7 +196,7 @@ func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
 	current := map[string][]string{
 		"source_connections": {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
 		"source_collections": {`{"azure_devops_selection":null,"azure_devops_target":null,"id":"collection","profile":"github-cloud-app"}`},
-		"findings":           {`{"decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
+		"findings":           {`{"candidate_line":0,"candidate_uri":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
 	}
 	if got := ProjectRowsCurrent(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("complete current rows were not projected without loss")

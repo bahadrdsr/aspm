@@ -95,6 +95,7 @@ type FindingCorrelationMember struct {
 	SourceID         string          `json:"sourceId"`
 	Title            string          `json:"title"`
 	Severity         string          `json:"severity"`
+	Active           bool            `json:"active"`
 	DecisionRevision int64           `json:"decisionRevision"`
 	EvidenceRevision int64           `json:"evidenceRevision"`
 	ObservationCount int             `json:"observationCount"`
@@ -123,15 +124,28 @@ type FindingCorrelation struct {
 }
 
 type FindingMergePreview struct {
-	Primary   FindingCorrelationMember `json:"primary"`
-	Other     FindingCorrelationMember `json:"other"`
-	Conflicts []string                 `json:"conflicts"`
+	Primary     FindingCorrelationMember `json:"primary"`
+	Other       FindingCorrelationMember `json:"other"`
+	Conflicts   []string                 `json:"conflicts"`
+	Correlation *FindingCorrelation      `json:"correlation"`
 }
 
 type FindingSplitPreview struct {
 	Correlation FindingCorrelation       `json:"correlation"`
 	Primary     FindingCorrelationMember `json:"primary"`
 	Member      FindingCorrelationMember `json:"member"`
+}
+
+type FindingCorrelationMatch struct {
+	Kind   string `json:"kind"`
+	Branch string `json:"branch"`
+	URI    string `json:"uri"`
+	Line   int    `json:"line"`
+}
+
+type FindingCorrelationCandidate struct {
+	Member FindingCorrelationMember `json:"member"`
+	Match  FindingCorrelationMatch  `json:"match"`
 }
 
 type RetentionPolicy struct {

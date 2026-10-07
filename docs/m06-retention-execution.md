@@ -93,7 +93,7 @@ independent worker and a manual status refresh.
   expiry, normalized archival, interrupted raw/archive delete finalization,
   missing/corrupt controls, foreign-workspace denial, audit archival and exact
   restoration.
-- The authentic pinned published V11 closure migrates through V15 while
+- The authentic pinned published V11 closure migrates through V16 while
   preserving historical API/native data and exact old business rows.
 - Installer tests cover the additive retention credential, secret, Helm values,
   Quadlet unit, service activation and explicit reapply binding.
@@ -116,6 +116,6 @@ independent worker and a manual status refresh.
 - Linux activation and a supported release still require their broader M13
   qualification.
 
-The next M06 work is bounded candidate matching and multi-member correlation,
-change-focused lifecycle classification, and recurring-scan churn/capacity
-qualification.
+The next M06 work is change-focused lifecycle classification and recurring-scan
+churn/capacity qualification. Exact-location candidates and reviewed
+multi-member correlation are documented in `m06-correlation.md`.

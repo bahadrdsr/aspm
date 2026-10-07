@@ -1,7 +1,8 @@
 import { apiVersion } from "./types";
 import type {
   Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingCorrelation,
-  FindingCorrelationMember, FindingCorrelationResponse, FindingDecision, FindingMergeInput, FindingMergePreviewResponse,
+  FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
+  FindingDecision, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
@@ -106,6 +107,7 @@ function findingCorrelationMember(value: unknown): FindingCorrelationMember {
     sourceId: text(item.sourceId, "member source"),
     title: text(item.title, "member title"),
     severity: choice(item.severity, ["critical", "high", "medium", "low", "info"], "member severity"),
+    active: boolean(item.active, "member active state"),
     decisionRevision: count(item.decisionRevision, "member decision revision"),
     evidenceRevision: count(item.evidenceRevision, "member evidence revision"),
     observationCount: count(item.observationCount, "member observation count"),
@@ -134,13 +136,17 @@ function findingCorrelation(value: unknown, workspace: string | null): FindingCo
     };
   }));
   const primaryFindingId = reportIdentifier(item.primaryFindingId, "primary finding");
+  const state = choice(item.state, ["active", "split"], "correlation state");
   if (members.length < 2 || !members.some((member) => member.findingId === primaryFindingId)) {
     return invalid("correlation membership");
   }
+  const activeMembers = members.filter((member) => member.active);
+  if (state === "active" ? activeMembers.length < 2 : activeMembers.length !== 0) {
+    return invalid("correlation active membership");
+  }
   return {
     id: reportIdentifier(item.id, "correlation identifier"), workspaceId, primaryFindingId,
-    state: choice(item.state, ["active", "split"], "correlation state"),
-    revision: count(item.revision, "correlation revision"), members, events,
+    state, revision: count(item.revision, "correlation revision"), members, events,
   };
 }
 
@@ -311,14 +317,45 @@ function findingBodyLimit(body: unknown, bytes: number): void {
   }
 }
 
-function parseMergePreview(value: unknown, primary: string, other: string): FindingMergePreviewResponse {
+function parseMergePreview(value: unknown, workspace: string | null, primary: string, other: string): FindingMergePreviewResponse {
   const preview = object(versioned(value).mergePreview, "merge preview");
   const primaryMember = findingCorrelationMember(preview.primary);
   const otherMember = findingCorrelationMember(preview.other);
   if (primaryMember.findingId !== primary || otherMember.findingId !== other) return invalid("merge preview binding");
   const conflicts = array(preview.conflicts, "merge conflicts").map((value) =>
     choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"], "merge conflict"));
-  return { apiVersion, mergePreview: { primary: primaryMember, other: otherMember, conflicts } };
+  const correlation = preview.correlation === null ? null : findingCorrelation(preview.correlation, workspace);
+  if (correlation !== null && (correlation.state !== "active" || correlation.primaryFindingId !== primary ||
+    correlation.members.some((member) => member.findingId === other))) return invalid("merge correlation binding");
+  return { apiVersion, mergePreview: { primary: primaryMember, other: otherMember, conflicts, correlation } };
+}
+
+function parseCorrelationCandidates(value: unknown, workspace: string | null, cursor: string,
+  limit: number): FindingCorrelationCandidatesResponse {
+  const body = object(versioned(value).correlationCandidates, "correlation candidates");
+  const items = array(body.items, "correlation candidate items").map((value) => {
+    const item = object(value, "correlation candidate");
+    const member = findingCorrelationMember(item.member);
+    const match = object(item.match, "correlation candidate match");
+    const line = count(match.line, "candidate line");
+    const uri = text(match.uri, "candidate URI");
+    const branch = text(match.branch, "candidate branch");
+    if (!member.active || line < 1 || uri.trim() !== uri || branch.trim() !== branch) {
+      return invalid("correlation candidate");
+    }
+    return {
+      member,
+      match: { kind: choice(match.kind, ["exact-location"], "candidate match kind"), branch, uri, line },
+    };
+  });
+  const ids = items.map((item) => item.member.findingId);
+  if (items.length > limit || ids.some((id, index) => id <= (index === 0 ? cursor : ids[index - 1]))) {
+    return invalid("correlation candidate order");
+  }
+  const nextCursor = body.nextCursor === null ? null : reportIdentifier(body.nextCursor, "candidate cursor");
+  if (nextCursor !== null && nextCursor !== ids.at(-1)) return invalid("correlation candidate cursor");
+  void workspace;
+  return { apiVersion, correlationCandidates: { items, nextCursor } };
 }
 
 function parseSplitPreview(value: unknown, workspace: string | null, primary: string, member: string): FindingSplitPreviewResponse {
@@ -911,20 +948,37 @@ export const api = {
       { method: "POST", body, signal, expectedStatus: 201 });
   },
   previewFindingMerge: (id: string, otherFindingId: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
     reportIdentifier(id, "primary finding");
     reportIdentifier(otherFindingId, "other finding");
     if (id === otherFindingId) throw new APIError("Choose a different finding to correlate.", "invalid-input", false);
     const body = { otherFindingId };
     findingBodyLimit(body, 16 << 10);
     return request(`/api/v1/findings/${encodeURIComponent(id)}/merge-previews`,
-      (value) => parseMergePreview(value, id, otherFindingId),
+      (value) => parseMergePreview(value, workspace, id, otherFindingId),
       { method: "POST", body, signal, expectedStatus: 200 });
+  },
+  correlationCandidates: (id: string, options: { limit?: number; cursor?: string } | undefined,
+    signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "primary finding");
+    const limit = options?.limit ?? 100;
+    const cursor = options?.cursor ?? "";
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100 ||
+      (cursor !== "" && !/^[a-f0-9]{32}$/.test(cursor))) {
+      throw new APIError("Correlation candidate pages require a limit from 1 to 100 and a valid native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ limit: String(limit) });
+    if (cursor !== "") query.set("cursor", cursor);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/correlation-candidates?${query}`,
+      (value) => parseCorrelationCandidates(value, workspace, cursor, limit),
+      { signal, expectedStatus: 200 });
   },
   mergeFindings: (id: string, input: FindingMergeInput, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;
     reportIdentifier(id, "primary finding");
     reportIdentifier(input.otherFindingId, "other finding");
-    if (input.primaryDecisionRevision < 1 || input.primaryEvidenceRevision < 1 ||
+    if (input.correlationRevision < 0 || input.primaryDecisionRevision < 1 || input.primaryEvidenceRevision < 1 ||
       input.otherDecisionRevision < 1 || input.otherEvidenceRevision < 1 ||
       input.rationale.trim() === "" || input.rationale.includes("\0") ||
       new TextEncoder().encode(input.rationale).byteLength > 8192 ||

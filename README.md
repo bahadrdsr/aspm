@@ -18,18 +18,19 @@ wiring. Owned synthetic protocol/PG/S3 fixtures passed on October 7, 2026; an
 authorized live Azure DevOps account and Linux/Podman activation were not
 tested.
 
-The first M06 correlation increment is also implemented: an analyst or
-administrator can explicitly preview, merge and split exactly two findings in
-the same workspace and asset when they have different source identities.
-Variants, evidence, observations, notes, decisions and audit history remain
-durable. The first retention increment is implemented too: each workspace has
+The M06 correlation increment now supports bounded exact-location candidate
+pages plus reviewed multi-member merge and one-member release in the same
+workspace and asset. Variants, evidence, observations, notes, decisions and
+audit history remain durable. The first retention increment is implemented too: each workspace has
 separate hot-history, raw-report, archived-evidence and audit lifetimes,
 explicit holds, exact impact previews and stale approval fencing. Preview and
 approval are deliberately non-destructive. V15 adds an independent fenced
 retention worker for normalized-history/audit archival, raw/archive expiry,
 explicit availability states, resume, authorized retrieval and observation
-restoration. Indexed candidate matching, automatic correlation, multi-member
-groups and recurring-scan capacity qualification remain unfinished.
+restoration. V16 adds indexed exact-location candidate discovery and reversible
+multi-member source groups with one-member release. Automatic/fuzzy correlation,
+change-focused lifecycle work and recurring-scan capacity qualification remain
+unfinished.
 GitLab, AWS, Azure cloud and other unfinished integration expansion remain
 deferred.
 
@@ -41,7 +42,8 @@ server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, Slack/Jira/Teams configuration and
 delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
-two-source finding correlation, retention policy/hold/preview/execution
+multi-source finding correlation with bounded candidates, retention
+policy/hold/preview/execution
 controls, plus
 opt-in persistent AI profile, policy and grant configuration, with an in-finding
 assessment preview, explicit queue consent and read-only advisory history.

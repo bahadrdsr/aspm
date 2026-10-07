@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type correlationDB interface {
@@ -20,7 +21,10 @@ type correlationDB interface {
 
 type correlationFinding struct {
 	FindingCorrelationMember
-	AssetID string
+	AssetID       string
+	ScopeBranch   string
+	CandidateURI  string
+	CandidateLine int
 }
 
 type findingDecisionInput struct {
@@ -88,39 +92,55 @@ func correlationConflicts(left, right FindingDecision) []string {
 	return result
 }
 
-func (a *Application) readCorrelationFinding(ctx context.Context, db queryRower, workspace, id string, lock bool) (correlationFinding, error) {
+func scanCorrelationFinding(row pgx.Row) (correlationFinding, error) {
 	var record correlationFinding
+	err := row.Scan(&record.FindingID, &record.AssetID, &record.SourceID, &record.ScopeBranch,
+		&record.CandidateURI, &record.CandidateLine, &record.Title, &record.Severity,
+		&record.Decision.OwnerID, &record.Decision.WorkflowState,
+		&record.Decision.Disposition, &record.Decision.AcceptedRiskExpiresAt,
+		&record.DecisionRevision, &record.EvidenceRevision, &record.ObservationCount, &record.NoteCount)
+	record.OriginalDecision = record.Decision
+	record.Active = true
+	return record, err
+}
+
+func (a *Application) readCorrelationFinding(ctx context.Context, db queryRower, workspace, id string, lock bool) (correlationFinding, error) {
 	suffix := ""
 	if lock {
 		suffix = " FOR UPDATE OF f"
 	}
-	err := db.QueryRow(ctx, `SELECT f.id,f.asset_id,f.source_id,f.title,f.severity,
+	return scanCorrelationFinding(db.QueryRow(ctx, `SELECT f.id,f.asset_id,f.source_id,f.scope_branch,
+		f.candidate_uri,f.candidate_line,f.title,f.severity,
 		f.owner_id,f.workflow_state,f.disposition,f.accepted_risk_expires_at,
 		f.decision_revision,f.evidence_revision,
 		(SELECT count(*) FROM `+a.table("observations")+` o WHERE o.workspace_id=f.workspace_id AND o.finding_id=f.id),
 		(SELECT count(*) FROM `+a.table("notes")+` n WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id)
 		FROM `+a.table("findings")+` f WHERE f.workspace_id=$1 AND f.id=$2`+suffix,
-		workspace, id).Scan(&record.FindingID, &record.AssetID, &record.SourceID, &record.Title, &record.Severity,
-		&record.Decision.OwnerID, &record.Decision.WorkflowState, &record.Decision.Disposition,
-		&record.Decision.AcceptedRiskExpiresAt, &record.DecisionRevision, &record.EvidenceRevision,
-		&record.ObservationCount, &record.NoteCount)
-	record.OriginalDecision = record.Decision
-	return record, err
+		workspace, id))
+}
+
+func (a *Application) activeCorrelationMeta(ctx context.Context, db queryRower,
+	workspace, finding string) (string, string, int64, error) {
+	var id, primary string
+	var revision int64
+	err := db.QueryRow(ctx, `SELECT c.id,c.primary_finding_id,c.revision
+		FROM `+a.table("finding_correlation_members")+` m
+		JOIN `+a.table("finding_correlations")+` c
+		ON c.workspace_id=m.workspace_id AND c.id=m.correlation_id AND c.state='active'
+		WHERE m.workspace_id=$1 AND m.finding_id=$2 AND m.released_at IS NULL`,
+		workspace, finding).Scan(&id, &primary, &revision)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", "", 0, nil
+	}
+	return id, primary, revision, err
 }
 
 func (a *Application) activeCorrelationID(ctx context.Context, db queryRower, workspace, finding string) (string, error) {
-	var id string
-	err := db.QueryRow(ctx, `SELECT c.id FROM `+a.table("finding_correlation_members")+` m
-		JOIN `+a.table("finding_correlations")+` c
-		ON c.workspace_id=m.workspace_id AND c.id=m.correlation_id AND c.state='active'
-		WHERE m.workspace_id=$1 AND m.finding_id=$2 AND m.released_at IS NULL`, workspace, finding).Scan(&id)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return "", nil
-	}
+	id, _, _, err := a.activeCorrelationMeta(ctx, db, workspace, finding)
 	return id, err
 }
 
-func (a *Application) correlationPreview(ctx context.Context, db queryRower, workspace, primaryID, otherID string) (FindingMergePreview, error) {
+func (a *Application) correlationPreview(ctx context.Context, db correlationDB, workspace, primaryID, otherID string) (FindingMergePreview, error) {
 	var preview FindingMergePreview
 	if primaryID == otherID {
 		return preview, errInvalid
@@ -136,18 +156,119 @@ func (a *Application) correlationPreview(ctx context.Context, db queryRower, wor
 	if primary.AssetID != other.AssetID || primary.SourceID == other.SourceID {
 		return preview, errInvalid
 	}
-	for _, finding := range []string{primaryID, otherID} {
-		group, err := a.activeCorrelationID(ctx, db, workspace, finding)
+	primaryGroup, groupPrimary, _, err := a.activeCorrelationMeta(ctx, db, workspace, primaryID)
+	if err != nil {
+		return preview, err
+	}
+	otherGroup, _, _, err := a.activeCorrelationMeta(ctx, db, workspace, otherID)
+	if err != nil {
+		return preview, err
+	}
+	if otherGroup != "" || primaryGroup != "" && groupPrimary != primaryID {
+		return preview, errConflict
+	}
+	if primaryGroup != "" {
+		correlation, err := a.loadCorrelation(ctx, db, workspace, primaryGroup)
 		if err != nil {
 			return preview, err
 		}
-		if group != "" {
-			return preview, errConflict
+		for _, member := range correlation.Members {
+			if member.FindingID == otherID || member.Active && member.SourceID == other.SourceID {
+				return preview, errConflict
+			}
 		}
+		preview.Correlation = &correlation
 	}
 	preview.Primary, preview.Other = primary.FindingCorrelationMember, other.FindingCorrelationMember
 	preview.Conflicts = correlationConflicts(primary.Decision, other.Decision)
 	return preview, nil
+}
+
+func (a *Application) listCorrelationCandidates(w http.ResponseWriter, r *http.Request,
+	workspace, primaryID string) error {
+	limit, cursor, err := pageParameters(r)
+	if err != nil {
+		return err
+	}
+	if limit > 100 {
+		return errInvalid
+	}
+	primary, err := a.readCorrelationFinding(r.Context(), a.pool, workspace, primaryID, false)
+	if err != nil {
+		return err
+	}
+	groupID, groupPrimary, _, err := a.activeCorrelationMeta(r.Context(), a.pool, workspace, primaryID)
+	if err != nil {
+		return err
+	}
+	if groupID != "" && groupPrimary != primaryID {
+		return errConflict
+	}
+	items := []FindingCorrelationCandidate{}
+	if primary.CandidateURI == "" || primary.CandidateLine == 0 {
+		writeJSON(w, http.StatusOK, map[string]any{
+			"correlationCandidates": map[string]any{"items": items, "nextCursor": nil},
+		})
+		return nil
+	}
+	rows, err := a.pool.Query(r.Context(), `SELECT f.id,f.asset_id,f.source_id,f.scope_branch,f.candidate_uri,f.candidate_line,
+		f.title,f.severity,f.owner_id,f.workflow_state,f.disposition,f.accepted_risk_expires_at,
+		f.decision_revision,f.evidence_revision,
+		(SELECT count(*) FROM `+a.table("observations")+` o
+		 WHERE o.workspace_id=f.workspace_id AND o.finding_id=f.id),
+		(SELECT count(*) FROM `+a.table("notes")+` n
+		 WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id)
+		FROM `+a.table("findings")+` f
+		WHERE f.workspace_id=$1 AND f.asset_id=$2 AND f.scope_branch=$3
+		AND f.candidate_uri=$4 AND f.candidate_line=$5
+		AND f.id<>$6 AND f.id>$7 AND f.source_id<>$8
+		AND NOT EXISTS(SELECT 1 FROM `+a.table("finding_correlation_members")+` active_member
+		 JOIN `+a.table("finding_correlations")+` active_group
+		 ON active_group.workspace_id=active_member.workspace_id
+		  AND active_group.id=active_member.correlation_id AND active_group.state='active'
+		 WHERE active_member.workspace_id=f.workspace_id AND active_member.finding_id=f.id
+		  AND active_member.released_at IS NULL)
+		AND ($9='' OR NOT EXISTS(SELECT 1 FROM `+a.table("finding_correlation_members")+` prior_member
+		 WHERE prior_member.workspace_id=f.workspace_id AND prior_member.correlation_id=$9
+		  AND prior_member.finding_id=f.id))
+		AND ($9='' OR NOT EXISTS(SELECT 1 FROM `+a.table("finding_correlation_members")+` group_member
+		 JOIN `+a.table("findings")+` grouped
+		 ON grouped.workspace_id=group_member.workspace_id AND grouped.id=group_member.finding_id
+		 WHERE group_member.workspace_id=f.workspace_id AND group_member.correlation_id=$9
+		  AND group_member.released_at IS NULL AND grouped.source_id=f.source_id))
+		ORDER BY f.id LIMIT $10`,
+		workspace, primary.AssetID, primary.ScopeBranch, primary.CandidateURI, primary.CandidateLine,
+		primaryID, cursor, primary.SourceID, groupID, limit+1)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		record, err := scanCorrelationFinding(rows)
+		if err != nil {
+			return err
+		}
+		items = append(items, FindingCorrelationCandidate{
+			Member: record.FindingCorrelationMember,
+			Match: FindingCorrelationMatch{
+				Kind: "exact-location", Branch: record.ScopeBranch,
+				URI: record.CandidateURI, Line: record.CandidateLine,
+			},
+		})
+	}
+	if err = rows.Err(); err != nil {
+		return err
+	}
+	var next *string
+	if len(items) > limit {
+		value := items[limit-1].Member.FindingID
+		next = &value
+		items = items[:limit]
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"correlationCandidates": map[string]any{"items": items, "nextCursor": next},
+	})
+	return nil
 }
 
 func (a *Application) previewFindingMerge(w http.ResponseWriter, r *http.Request, workspace, primary string) error {
@@ -238,7 +359,7 @@ func (a *Application) loadCorrelation(ctx context.Context, db correlationDB, wor
 		f.decision_revision,f.evidence_revision,
 		(SELECT count(*) FROM `+a.table("observations")+` o WHERE o.workspace_id=f.workspace_id AND o.finding_id=f.id),
 		(SELECT count(*) FROM `+a.table("notes")+` n WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id),
-		m.original_decision
+		m.original_decision,m.released_at IS NULL
 		FROM `+a.table("finding_correlation_members")+` m
 		JOIN `+a.table("findings")+` f ON f.workspace_id=m.workspace_id AND f.id=m.finding_id
 		WHERE m.workspace_id=$1 AND m.correlation_id=$2 ORDER BY m.ordinal`,
@@ -252,7 +373,7 @@ func (a *Application) loadCorrelation(ctx context.Context, db correlationDB, wor
 		if err = rows.Scan(&member.FindingID, &member.SourceID, &member.Title, &member.Severity,
 			&member.Decision.OwnerID, &member.Decision.WorkflowState, &member.Decision.Disposition,
 			&member.Decision.AcceptedRiskExpiresAt, &member.DecisionRevision, &member.EvidenceRevision,
-			&member.ObservationCount, &member.NoteCount, &original); err != nil {
+			&member.ObservationCount, &member.NoteCount, &original, &member.Active); err != nil {
 			rows.Close()
 			return correlation, err
 		}
@@ -310,10 +431,21 @@ func correlationState(primary, other correlationFinding, decision FindingDecisio
 	}
 }
 
+func correlationActiveMemberIDs(correlation FindingCorrelation) []string {
+	ids := []string{}
+	for _, member := range correlation.Members {
+		if member.Active {
+			ids = append(ids, member.FindingID)
+		}
+	}
+	return ids
+}
+
 func (a *Application) mergeFindings(w http.ResponseWriter, r *http.Request, workspace string,
 	session authenticatedSession, primaryID string) error {
 	var input struct {
 		OtherFindingID          string               `json:"otherFindingId"`
+		CorrelationRevision     int64                `json:"correlationRevision"`
 		PrimaryDecisionRevision int64                `json:"primaryDecisionRevision"`
 		PrimaryEvidenceRevision int64                `json:"primaryEvidenceRevision"`
 		OtherDecisionRevision   int64                `json:"otherDecisionRevision"`
@@ -327,18 +459,19 @@ func (a *Application) mergeFindings(w http.ResponseWriter, r *http.Request, work
 	}
 	decision, valid := input.Decision.decision()
 	if !valid || !validID(input.OtherFindingID) || input.OtherFindingID == primaryID ||
+		input.CorrelationRevision < 0 ||
 		input.PrimaryDecisionRevision < 1 || input.PrimaryEvidenceRevision < 1 ||
 		input.OtherDecisionRevision < 1 || input.OtherEvidenceRevision < 1 ||
 		!validText(input.Rationale, 8192) || !validText(input.IdempotencyKey, 256) {
 		return errInvalid
 	}
 	binding := struct {
-		Workspace, Actor, Primary, Other, Rationale, Key string
-		PrimaryDecision, PrimaryEvidence                 int64
-		OtherDecision, OtherEvidence                     int64
-		Decision                                         FindingDecision
+		Workspace, Actor, Primary, Other, Rationale, Key      string
+		CorrelationRevision, PrimaryDecision, PrimaryEvidence int64
+		OtherDecision, OtherEvidence                          int64
+		Decision                                              FindingDecision
 	}{workspace, session.User.ID, primaryID, input.OtherFindingID, input.Rationale, input.IdempotencyKey,
-		input.PrimaryDecisionRevision, input.PrimaryEvidenceRevision,
+		input.CorrelationRevision, input.PrimaryDecisionRevision, input.PrimaryEvidenceRevision,
 		input.OtherDecisionRevision, input.OtherEvidenceRevision, decision}
 	digest, err := correlationDigest(binding)
 	if err != nil {
@@ -385,44 +518,109 @@ func (a *Application) mergeFindings(w http.ResponseWriter, r *http.Request, work
 		other.EvidenceRevision != input.OtherEvidenceRevision {
 		return errConflict
 	}
-	for _, finding := range []string{primaryID, input.OtherFindingID} {
-		group, err := a.activeCorrelationID(r.Context(), tx, workspace, finding)
-		if err != nil {
-			return err
-		}
-		if group != "" {
-			return errConflict
-		}
+	primaryGroup, groupPrimary, _, err := a.activeCorrelationMeta(r.Context(), tx, workspace, primaryID)
+	if err != nil {
+		return err
+	}
+	otherGroup, _, _, err := a.activeCorrelationMeta(r.Context(), tx, workspace, input.OtherFindingID)
+	if err != nil {
+		return err
+	}
+	if otherGroup != "" || primaryGroup != "" && groupPrimary != primaryID {
+		return errConflict
 	}
 	if err = a.applyFindingDecision(r.Context(), tx, workspace, primary, decision); err != nil {
 		return err
 	}
-	now, correlationID := a.config.Now().UTC(), newID()
-	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("finding_correlations")+`
-		(id,workspace_id,primary_finding_id,state,revision,created_by,created_at,updated_at)
-		VALUES($1,$2,$3,'active',1,$4,$5,$5)`,
-		correlationID, workspace, primaryID, session.User.ID, now); err != nil {
-		return err
-	}
-	for ordinal, member := range []correlationFinding{primary, other} {
-		original, err := json.Marshal(member.Decision)
+	now, correlationID := a.config.Now().UTC(), primaryGroup
+	sequence := int64(1)
+	var beforeState any
+	if correlationID == "" {
+		if input.CorrelationRevision != 0 {
+			return errConflict
+		}
+		correlationID = newID()
+		if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("finding_correlations")+`
+			(id,workspace_id,primary_finding_id,state,revision,created_by,created_at,updated_at)
+			VALUES($1,$2,$3,'active',1,$4,$5,$5)`,
+			correlationID, workspace, primaryID, session.User.ID, now); err != nil {
+			return err
+		}
+		for ordinal, member := range []correlationFinding{primary, other} {
+			original, err := json.Marshal(member.Decision)
+			if err != nil {
+				return err
+			}
+			if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("finding_correlation_members")+`
+				(id,workspace_id,correlation_id,finding_id,ordinal,original_decision,added_at,added_by)
+				VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
+				newID(), workspace, correlationID, member.FindingID, ordinal, original, now, session.User.ID); err != nil {
+				return err
+			}
+		}
+		beforeState = correlationState(primary, other, decision)
+	} else {
+		var revision int64
+		if err = tx.QueryRow(r.Context(), `SELECT revision FROM `+a.table("finding_correlations")+`
+			WHERE workspace_id=$1 AND id=$2 AND state='active' FOR UPDATE`,
+			workspace, correlationID).Scan(&revision); err != nil {
+			return err
+		}
+		if input.CorrelationRevision != revision {
+			return errConflict
+		}
+		current, err := a.loadCorrelation(r.Context(), tx, workspace, correlationID)
+		if err != nil {
+			return err
+		}
+		ordinal := 0
+		for _, member := range current.Members {
+			ordinal++
+			if member.FindingID == other.FindingID || member.Active && member.SourceID == other.SourceID {
+				return errConflict
+			}
+		}
+		if ordinal > 63 {
+			return errTooLarge
+		}
+		original, err := json.Marshal(other.Decision)
 		if err != nil {
 			return err
 		}
 		if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("finding_correlation_members")+`
 			(id,workspace_id,correlation_id,finding_id,ordinal,original_decision,added_at,added_by)
 			VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
-			newID(), workspace, correlationID, member.FindingID, ordinal, original, now, session.User.ID); err != nil {
+			newID(), workspace, correlationID, other.FindingID, ordinal, original, now, session.User.ID); err != nil {
 			return err
 		}
+		result, err := tx.Exec(r.Context(), `UPDATE `+a.table("finding_correlations")+`
+			SET revision=revision+1,updated_at=$4
+			WHERE workspace_id=$1 AND id=$2 AND revision=$3 AND state='active'`,
+			workspace, correlationID, revision, now)
+		if err != nil {
+			return err
+		}
+		if result.RowsAffected() != 1 {
+			return errConflict
+		}
+		sequence = revision + 1
+		beforeState = map[string]any{
+			"state": "active", "primaryFindingId": primaryID,
+			"memberFindingIds": correlationActiveMemberIDs(current),
+			"addedFindingId":   other.FindingID, "selectedDecision": decision,
+		}
 	}
-	before, err := json.Marshal(correlationState(primary, other, decision))
+	before, err := json.Marshal(beforeState)
+	if err != nil {
+		return err
+	}
+	current, err := a.loadCorrelation(r.Context(), tx, workspace, correlationID)
 	if err != nil {
 		return err
 	}
 	after, err := json.Marshal(map[string]any{
 		"state": "active", "primaryFindingId": primaryID,
-		"memberFindingIds": []string{primaryID, input.OtherFindingID}, "decision": decision,
+		"memberFindingIds": correlationActiveMemberIDs(current), "decision": decision,
 	})
 	if err != nil {
 		return err
@@ -430,8 +628,8 @@ func (a *Application) mergeFindings(w http.ResponseWriter, r *http.Request, work
 	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("finding_correlation_events")+`
 		(id,workspace_id,correlation_id,sequence,event_type,actor_id,rationale,idempotency_key,
 		 binding_digest,before_state,after_state,created_at)
-		VALUES($1,$2,$3,1,'merge',$4,$5,$6,$7,$8,$9,$10)`,
-		newID(), workspace, correlationID, session.User.ID, input.Rationale, input.IdempotencyKey,
+		VALUES($1,$2,$3,$4,'merge',$5,$6,$7,$8,$9,$10,$11)`,
+		newID(), workspace, correlationID, sequence, session.User.ID, input.Rationale, input.IdempotencyKey,
 		digest, before, after, now); err != nil {
 		return err
 	}
@@ -462,10 +660,13 @@ func (a *Application) activeSplitPreview(ctx context.Context, db correlationDB,
 	if err != nil {
 		return preview, err
 	}
-	if len(preview.Correlation.Members) != 2 {
+	if len(correlationActiveMemberIDs(preview.Correlation)) < 2 {
 		return preview, errConflict
 	}
 	for _, member := range preview.Correlation.Members {
+		if !member.Active {
+			continue
+		}
 		switch member.FindingID {
 		case primaryID:
 			preview.Primary = member
@@ -564,6 +765,10 @@ func (a *Application) splitFinding(w http.ResponseWriter, r *http.Request, works
 	if !canWrite(Workspace{Role: role}) {
 		return errForbidden
 	}
+	primary, member, err := a.lockCorrelationFindings(r.Context(), tx, workspace, primaryID, input.MemberFindingID)
+	if err != nil {
+		return err
+	}
 	var correlationID string
 	var revision int64
 	err = tx.QueryRow(r.Context(), `SELECT id,revision FROM `+a.table("finding_correlations")+`
@@ -581,7 +786,7 @@ func (a *Application) splitFinding(w http.ResponseWriter, r *http.Request, works
 		workspace, correlationID).Scan(&members); err != nil {
 		return err
 	}
-	if members != 2 {
+	if members < 2 {
 		return errConflict
 	}
 	var memberPresent bool
@@ -592,10 +797,6 @@ func (a *Application) splitFinding(w http.ResponseWriter, r *http.Request, works
 	}
 	if !memberPresent {
 		return errNotFound
-	}
-	primary, member, err := a.lockCorrelationFindings(r.Context(), tx, workspace, primaryID, input.MemberFindingID)
-	if err != nil {
-		return err
 	}
 	if primary.DecisionRevision != input.PrimaryDecisionRevision ||
 		primary.EvidenceRevision != input.PrimaryEvidenceRevision ||
@@ -609,21 +810,46 @@ func (a *Application) splitFinding(w http.ResponseWriter, r *http.Request, works
 	if err = a.applyFindingDecision(r.Context(), tx, workspace, member, memberDecision); err != nil {
 		return err
 	}
-	now := a.config.Now().UTC()
-	result, err := tx.Exec(r.Context(), `UPDATE `+a.table("finding_correlation_members")+`
-		SET released_at=$3,released_by=$4
-		WHERE workspace_id=$1 AND correlation_id=$2 AND released_at IS NULL`,
-		workspace, correlationID, now, session.User.ID)
+	current, err := a.loadCorrelation(r.Context(), tx, workspace, correlationID)
 	if err != nil {
 		return err
 	}
-	if result.RowsAffected() != 2 {
+	beforeIDs := correlationActiveMemberIDs(current)
+	now := a.config.Now().UTC()
+	terminal := members == 2
+	var result pgconn.CommandTag
+	if terminal {
+		result, err = tx.Exec(r.Context(), `UPDATE `+a.table("finding_correlation_members")+`
+			SET released_at=$3,released_by=$4
+			WHERE workspace_id=$1 AND correlation_id=$2 AND released_at IS NULL`,
+			workspace, correlationID, now, session.User.ID)
+	} else {
+		result, err = tx.Exec(r.Context(), `UPDATE `+a.table("finding_correlation_members")+`
+			SET released_at=$4,released_by=$5
+			WHERE workspace_id=$1 AND correlation_id=$2 AND finding_id=$3 AND released_at IS NULL`,
+			workspace, correlationID, input.MemberFindingID, now, session.User.ID)
+	}
+	if err != nil {
+		return err
+	}
+	expectedReleased := int64(1)
+	if terminal {
+		expectedReleased = 2
+	}
+	if result.RowsAffected() != expectedReleased {
 		return errConflict
 	}
+	state := "active"
+	afterIDs := slices.DeleteFunc(slices.Clone(beforeIDs), func(id string) bool {
+		return id == input.MemberFindingID
+	})
+	if terminal {
+		state, afterIDs = "split", []string{}
+	}
 	result, err = tx.Exec(r.Context(), `UPDATE `+a.table("finding_correlations")+`
-		SET state='split',revision=revision+1,updated_at=$4
+		SET state=$5,revision=revision+1,updated_at=$4
 		WHERE workspace_id=$1 AND id=$2 AND revision=$3 AND state='active'`,
-		workspace, correlationID, revision, now)
+		workspace, correlationID, revision, now, state)
 	if err != nil {
 		return err
 	}
@@ -632,14 +858,15 @@ func (a *Application) splitFinding(w http.ResponseWriter, r *http.Request, works
 	}
 	before, err := json.Marshal(map[string]any{
 		"state": "active", "primaryFindingId": primaryID,
-		"memberFindingIds": []string{primaryID, input.MemberFindingID},
+		"memberFindingIds": beforeIDs,
 	})
 	if err != nil {
 		return err
 	}
 	after, err := json.Marshal(map[string]any{
-		"state": "split", "primaryFindingId": primaryID, "memberFindingId": input.MemberFindingID,
-		"primaryDecision": primaryDecision, "memberDecision": memberDecision,
+		"state": state, "primaryFindingId": primaryID, "memberFindingId": input.MemberFindingID,
+		"memberFindingIds": afterIDs,
+		"primaryDecision":  primaryDecision, "memberDecision": memberDecision,
 	})
 	if err != nil {
 		return err

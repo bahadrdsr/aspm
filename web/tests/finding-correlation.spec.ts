@@ -35,6 +35,7 @@ const memberDecision = decision(analystId, "in-progress", "none", null);
 function member(id: string, sourceId: string, title: string, current = id === primaryId ? primaryDecision : memberDecision) {
   return {
     findingId: id, sourceId, title, severity: id === primaryId ? "medium" : "high",
+    active: true,
     decisionRevision: id === primaryId ? 3 : 4, evidenceRevision: 1,
     observationCount: 1, noteCount: 1, decision: current,
     originalDecision: id === primaryId ? primaryDecision : memberDecision,
@@ -118,11 +119,13 @@ test("M06C1 Explicit merge and split retain variants, conflict decisions and ref
         primary: member(primaryId, "scanner-a", "Primary scanner issue"),
         other: member(memberId, "scanner-b", "Secondary scanner issue"),
         conflicts: ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"],
+        correlation: null,
       } });
       return;
     }
     if (path === `/api/v1/findings/${primaryId}/merges`) {
       expect(body.otherFindingId).toBe(memberId);
+      expect(body.correlationRevision).toBe(0);
       expect(body.rationale).toBe("Reviewed synthetic cross-source identity.");
       state = "merged";
       await fulfill(route, 201, { correlation: activeCorrelation() });
@@ -143,6 +146,7 @@ test("M06C1 Explicit merge and split retain variants, conflict decisions and ref
       state = "split";
       await fulfill(route, 201, { correlation: {
         ...activeCorrelation(), state: "split", revision: 2,
+        members: activeCorrelation().members.map((value) => ({ ...value, active: false })),
         events: [...activeCorrelation().events, { id: splitEventId, type: "split", actorId: adminId,
           rationale: "Reviewed synthetic split applicability.", createdAt: "2026-10-07T16:05:00Z",
           detailAvailability: "available" }],
@@ -171,7 +175,7 @@ test("M06C1 Explicit merge and split retain variants, conflict decisions and ref
   await row(page, primaryId).getByRole("button", { name: "Primary scanner issue", exact: true }).click();
   dialog = page.getByRole("dialog", { name: "Primary scanner issue", exact: true });
   const active = dialog.getByRole("region", { name: "Finding correlation", exact: true });
-  await active.getByRole("button", { name: "Preview split", exact: true }).click();
+  await active.getByRole("button", { name: "Preview release Secondary scanner issue", exact: true }).click();
   await active.getByRole("textbox", { name: "Split rationale", exact: true }).fill("Reviewed synthetic split applicability.");
   await active.getByRole("button", { name: "Confirm split", exact: true }).click();
   await expect(active.getByRole("button", { name: "Preview merge", exact: true })).toBeVisible();

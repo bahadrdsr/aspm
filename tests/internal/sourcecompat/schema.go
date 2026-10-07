@@ -177,7 +177,7 @@ func ProjectV13(t testing.TB, before, current map[string][]string) map[string][]
 	return result
 }
 
-// ProjectCurrent composes the exact V12 and V13 deltas for current observers.
+// ProjectCurrent composes the exact additive deltas for current observers.
 func ProjectCurrent(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
 	v12, err := expected(before)
@@ -188,7 +188,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV15(t, v13, current)
+	projected := ProjectV16(t, v13, current)
+	projected = ProjectV15(t, v13, projected)
 	projected = ProjectV14(t, v13, projected)
 	return ProjectV12(t, before, ProjectV13(t, v12, projected))
 }
@@ -249,6 +250,10 @@ var v15Relations = []string{
 	"app_retention_runs_pkey|i",
 	"app_retention_runs_workspace_created_idx|i",
 	"app_retention_runs_workspace_id_key|i",
+}
+
+var v16Relations = []string{
+	"app_findings_correlation_candidate_idx|i",
 }
 
 var v14LegacyIndexes = []struct {
@@ -466,6 +471,63 @@ func ProjectV15(t testing.TB, before, current map[string][]string) map[string][]
 	return result
 }
 
+// ProjectV16 validates and projects the exact bounded-candidate finding delta.
+func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	result := clone(current)
+	columns, present := before["findings/columns"]
+	if !present {
+		return result
+	}
+	suffix, err := v15ColumnSuffix(columns)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantColumns := append(slices.Clone(columns),
+		"candidate_uri|text|true|''::text"+suffix,
+		"candidate_line|integer|true|0"+suffix)
+	wantConstraints := slices.Clone(before["findings/constraints"])
+	separator := constraintSeparator(wantConstraints)
+	for _, value := range []struct{ name, definition string }{
+		{"app_findings_candidate_line_check", "CHECK (candidate_line >= 0 AND candidate_line <= 2147483647)"},
+		{"app_findings_candidate_line_not_null", "NOT NULL candidate_line"},
+		{"app_findings_candidate_location_check", "CHECK (candidate_uri = ''::text AND candidate_line = 0 OR candidate_uri <> ''::text AND candidate_line > 0)"},
+		{"app_findings_candidate_uri_check", "CHECK (octet_length(candidate_uri) <= 8192)"},
+		{"app_findings_candidate_uri_not_null", "NOT NULL candidate_uri"},
+	} {
+		wantConstraints = append(wantConstraints, value.name+separator+value.definition)
+	}
+	sortConstraints(wantConstraints)
+	if !reflect.DeepEqual(current["findings/columns"], wantColumns) ||
+		!reflect.DeepEqual(current["findings/constraints"], wantConstraints) {
+		t.Fatal("V16: findings catalog has a missing or unapproved delta")
+	}
+	result["findings/columns"] = slices.Clone(columns)
+	result["findings/constraints"] = slices.Clone(before["findings/constraints"])
+	key := "findings/indexes"
+	if prior, present := before[key]; present {
+		rows := current[key]
+		remaining := make([]string, 0, len(rows))
+		matches := 0
+		for _, row := range rows {
+			if strings.HasPrefix(row, "app_findings_correlation_candidate_idx|") {
+				if !exactV14Index(row, "app_findings_correlation_candidate_idx",
+					"app_findings USING btree (workspace_id, asset_id, scope_branch, candidate_uri, candidate_line, id) WHERE ((candidate_uri <> ''::text) AND (candidate_line > 0))") {
+					t.Fatal("V16: candidate index definition changed")
+				}
+				matches++
+				continue
+			}
+			remaining = append(remaining, row)
+		}
+		if matches != 1 || !reflect.DeepEqual(remaining, prior) {
+			t.Fatal("V16: candidate index missing or ambiguous")
+		}
+		result[key] = slices.Clone(prior)
+	}
+	return result
+}
+
 func relationDifference(left, right []string) []string {
 	present := make(map[string]struct{}, len(right))
 	for _, value := range right {
@@ -514,6 +576,21 @@ func ProjectRelationsV15(t testing.TB, before, current []string) []string {
 	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
 	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
 		t.Fatalf("V15: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
+// ProjectRelationsV16 validates the complete current V13-V16 relation set.
+func ProjectRelationsV16(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	want = append(want, v15Relations...)
+	want = append(want, v16Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V16: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
 			missing, unexpected)
 	}
 	return slices.Clone(before)
@@ -606,6 +683,8 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 		if table == "findings" {
 			additions["decision_revision"] = json.RawMessage("1")
 			additions["evidence_revision"] = json.RawMessage("1")
+			additions["candidate_uri"] = json.RawMessage(`""`)
+			additions["candidate_line"] = json.RawMessage("0")
 		}
 		if table == "imports" {
 			additions["evidence_availability"] = json.RawMessage(`"available"`)
@@ -624,7 +703,7 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 		actual, present := current[table]
 		if !present || !reflect.DeepEqual(canonicalRowsWithValues(t, rows, additions),
 			canonicalRowsWithValues(t, actual, nil)) {
-			t.Fatalf("V15: complete historical business rows changed in %s", table)
+			t.Fatalf("V16: complete historical business rows changed in %s", table)
 		}
 	}
 	return clone(before)

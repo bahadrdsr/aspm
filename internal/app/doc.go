@@ -221,6 +221,7 @@
 // Retention policy, holds, bounded previews, approvals, fenced execution,
 // evidence availability, archive retrieval and observation restoration are
 // implemented. Orphan evidence cleanup and recurring-scan capacity remain
-// separate. Candidate correlation, native connectors, independent verification
-// and supported release qualification also remain separate.
+// separate. Indexed exact-location candidates and reviewed multi-member
+// correlation are implemented; fuzzy/automatic correlation, native connectors,
+// independent verification and supported release qualification remain separate.
 package app

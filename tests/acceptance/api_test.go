@@ -72,6 +72,7 @@ type findingCorrelationMember struct {
 	DecisionRevision, EvidenceRevision   int64
 	ObservationCount, NoteCount          int
 	OriginalDecision                     findingDecision
+	Active                               bool
 }
 type findingCorrelationEvent struct {
 	ID, Type, ActorID, Rationale string
@@ -86,11 +87,24 @@ type findingCorrelation struct {
 type mergePreview struct {
 	Primary, Other findingCorrelationMember
 	Conflicts      []string
+	Correlation    *findingCorrelation
 }
 type splitPreview struct {
 	Correlation findingCorrelation
 	Primary     findingCorrelationMember
 	Member      findingCorrelationMember
+}
+type correlationMatch struct {
+	Kind, Branch, URI string
+	Line              int
+}
+type correlationCandidate struct {
+	Member findingCorrelationMember
+	Match  correlationMatch
+}
+type correlationCandidates struct {
+	Items      []correlationCandidate
+	NextCursor *string
 }
 type retentionPolicy struct {
 	WorkspaceID                                                    string
@@ -166,6 +180,7 @@ type reply struct {
 	Finding                finding
 	MergePreview           mergePreview
 	SplitPreview           splitPreview
+	CorrelationCandidates  correlationCandidates
 	Correlation            findingCorrelation
 	RetentionPolicy        retentionPolicy
 	RetentionHold          retentionHold

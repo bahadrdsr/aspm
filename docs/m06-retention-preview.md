@@ -90,9 +90,9 @@ archive tiers as populated.
 - Browser acceptance covers policy editing, hold creation, per-class impact,
   protected reasons, stale approval refresh and successful non-destructive
   approval.
-- The complete 149-case browser suite passes with the lazy Settings and explicit
+- The complete 150-case browser suite passes with the lazy Settings and explicit
   observation-restoration workflows.
-- The authentic pinned V11 production closure migrates through V15 while
+- The authentic pinned V11 production closure migrates through V16 while
   preserving historical API/native data and exact old business rows.
 
 ## Remaining limits

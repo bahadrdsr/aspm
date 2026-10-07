@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { api, APIError } from "@/api/client";
 import type {
-  FindingCorrelationMember, FindingDecision, FindingDetail, FindingMergePreview,
+  FindingCorrelationCandidate, FindingCorrelationMember, FindingDecision, FindingDetail, FindingMergePreview,
   FindingResponse, FindingSplitPreview,
 } from "@/api/types";
 import { useScopedAction } from "@/lib/use-scoped-action";
@@ -51,7 +51,8 @@ function DecisionEditor({ title, value, owners, disabled, onChange }: {
 function MemberFacts({ member }: { member: FindingCorrelationMember }) {
   return <li><strong>{member.title}</strong>
     <p><code>{member.findingId}</code></p>
-    <p>Source: <code>{member.sourceId}</code>. Severity: {label(member.severity)}.</p>
+    <p>Source: <code>{member.sourceId}</code>. Severity: {label(member.severity)}.
+      {" "}{member.active ? "Active source variant." : "Released source variant."}</p>
     <p>{member.observationCount} observations, {member.noteCount} notes.
       Revisions: decision {member.decisionRevision}, evidence {member.evidenceRevision}.</p>
   </li>;
@@ -66,9 +67,12 @@ export function FindingCorrelationPanel({ finding, current, onBegin, onConfirmed
 }) {
   const { workspace } = useSession();
   const canWrite = workspace.role !== "viewer";
+  const candidateAction = useScopedAction();
   const previewAction = useScopedAction();
   const mutation = useScopedAction();
   const [otherFindingId, setOtherFindingId] = useState("");
+  const [candidates, setCandidates] = useState<FindingCorrelationCandidate[]>([]);
+  const [candidateNext, setCandidateNext] = useState<string | null>(null);
   const [mergePreview, setMergePreview] = useState<FindingMergePreview | null>(null);
   const [mergeDecision, setMergeDecision] = useState<FindingDecision | null>(null);
   const [mergeRationale, setMergeRationale] = useState("");
@@ -79,20 +83,37 @@ export function FindingCorrelationPanel({ finding, current, onBegin, onConfirmed
   const [splitRationale, setSplitRationale] = useState("");
   const [splitIntent, setSplitIntent] = useState("");
   const active = finding.correlation?.state === "active" ? finding.correlation : null;
-  const secondary = active?.members.find((member) => member.findingId !== finding.id) ?? null;
-  const mergeOwners = useMemo(() => mergePreview ? ownerOptions(mergePreview.primary, mergePreview.other) : [],
-    [mergePreview]);
+  const activeMembers = active?.members.filter((member) => member.active) ?? [];
+  const secondaryMembers = activeMembers.filter((member) => member.findingId !== finding.id);
+  const mergeMembers = useMemo(() => mergePreview ? [
+    ...(mergePreview.correlation?.members.filter((member) => member.active) ?? [mergePreview.primary]),
+    mergePreview.other,
+  ] : [], [mergePreview]);
+  const mergeOwners = useMemo(() => ownerOptions(...mergeMembers),
+    [mergeMembers]);
   const splitOwners = useMemo(() => splitPreview ? ownerOptions(splitPreview.primary, splitPreview.member) : [],
     [splitPreview]);
 
-  function previewMerge(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function requestMergePreview(candidateId: string) {
     onBegin();
-    void previewAction.run((signal) => api.previewFindingMerge(finding.id, otherFindingId, signal), (response) => {
+    void previewAction.run((signal) => api.previewFindingMerge(finding.id, candidateId, signal), (response) => {
       setMergePreview(response.mergePreview);
       setMergeDecision(response.mergePreview.primary.decision);
       setMergeRationale("");
       setMergeIntent(crypto.randomUUID());
+    });
+  }
+  function previewMerge(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    requestMergePreview(otherFindingId);
+  }
+  function loadCandidates(cursor: string | null) {
+    onBegin();
+    void candidateAction.run((signal) => api.correlationCandidates(finding.id,
+      { limit: 20, ...(cursor ? { cursor } : {}) }, signal), (response) => {
+      setCandidates((current) => cursor ? [...current, ...response.correlationCandidates.items] :
+        response.correlationCandidates.items);
+      setCandidateNext(response.correlationCandidates.nextCursor);
     });
   }
   function confirmMerge(event: FormEvent<HTMLFormElement>) {
@@ -103,6 +124,7 @@ export function FindingCorrelationPanel({ finding, current, onBegin, onConfirmed
       if (!canWrite) throw new APIError("Your selected workspace role is read only.", "forbidden", false);
       await api.mergeFindings(finding.id, {
         otherFindingId: mergePreview.other.findingId,
+        correlationRevision: mergePreview.correlation?.revision ?? 0,
         primaryDecisionRevision: mergePreview.primary.decisionRevision,
         primaryEvidenceRevision: mergePreview.primary.evidenceRevision,
         otherDecisionRevision: mergePreview.other.decisionRevision,
@@ -114,14 +136,15 @@ export function FindingCorrelationPanel({ finding, current, onBegin, onConfirmed
       setMergePreview(null);
       setMergeDecision(null);
       setOtherFindingId("");
+      setCandidates([]);
+      setCandidateNext(null);
       onConfirmed(response, "Findings merged with retained variants and audit history.");
       onMembershipChanged();
     });
   }
-  function previewSplit() {
-    if (!secondary) return;
+  function previewSplit(memberFindingId: string) {
     onBegin();
-    void previewAction.run((signal) => api.previewFindingSplit(finding.id, secondary.findingId, signal), (response) => {
+    void previewAction.run((signal) => api.previewFindingSplit(finding.id, memberFindingId, signal), (response) => {
       setSplitPreview(response.splitPreview);
       setPrimaryDecision(response.splitPreview.primary.decision);
       setMemberDecision(response.splitPreview.member.originalDecision);
@@ -156,20 +179,54 @@ export function FindingCorrelationPanel({ finding, current, onBegin, onConfirmed
 
   return <section className="detail-section finding-actions" aria-label="Finding correlation">
     <h3>Correlation and source variants</h3>
-    {!active && !mergePreview && <form className="finding-note-form" aria-label="Preview finding merge"
+    {active && !splitPreview && <>
+      <p>Correlation <code>{active.id}</code>, revision {active.revision}. The canonical Work row retains
+        every member's original evidence and decision snapshot.</p>
+      <ul>{active.members.map((member) => <MemberFacts member={member} key={member.findingId} />)}</ul>
+      <details><summary>Correlation audit history</summary><ul>{active.events.map((event) =>
+        <li key={event.id}><strong>{label(event.type)}</strong> by <code>{event.actorId}</code> at{" "}
+          <time dateTime={event.createdAt}>{timestampLabel(event.createdAt)}</time>: {event.rationale}</li>)}</ul></details>
+      <div className="finding-owner-actions">{secondaryMembers.map((member) =>
+        <ActionButton key={member.findingId} variant="outline" disabled={previewAction.pending || !current}
+          onClick={() => previewSplit(member.findingId)}>Preview release {member.title}</ActionButton>)}</div>
+    </>}
+    {!mergePreview && <div className="finding-note-form">
+      <div className="finding-owner-actions"><ActionButton variant="outline"
+        disabled={candidateAction.pending || !current} onClick={() => loadCandidates(null)}>
+        Find exact-location candidates
+      </ActionButton>
+      {candidateNext && <ActionButton variant="outline" disabled={candidateAction.pending || !current}
+        onClick={() => loadCandidates(candidateNext)}>Load more candidates</ActionButton>}</div>
+      {candidates.length > 0 && <ul aria-label="Correlation candidates">{candidates.map((candidate) =>
+        <li key={candidate.member.findingId}><strong>{candidate.member.title}</strong>
+          <p><code>{candidate.member.findingId}</code>, source <code>{candidate.member.sourceId}</code>.</p>
+          <p>{candidate.member.observationCount} observations and {candidate.member.noteCount} notes.</p>
+          <p>Exact location: <code>{candidate.match.uri}:{candidate.match.line}</code> on{" "}
+            <code>{candidate.match.branch}</code>.</p>
+          <ActionButton variant="outline" disabled={previewAction.pending || !current}
+            onClick={() => requestMergePreview(candidate.member.findingId)}>
+            Preview candidate {candidate.member.title}
+          </ActionButton></li>)}</ul>}
+      {candidates.length === 0 && !candidateAction.pending &&
+        <p className="section-note">No candidate read has been loaded. Matching is exact, bounded, and never merges automatically.</p>}
+      <FormError error={candidateAction.error} />
+    </div>}
+    {!mergePreview && <form className="finding-note-form" aria-label="Preview finding merge"
       onSubmit={previewMerge}>
       <label className="finding-edit-field">Other finding ID<input value={otherFindingId} required
         pattern="[a-f0-9]{32}" maxLength={32} autoComplete="off" spellCheck={false}
         onChange={(event) => { setOtherFindingId(event.target.value); onBegin(); }} /></label>
-      <p className="section-note">Preview is read-only. Enter an explicit same-asset finding ID.
-        No path, hostname or model similarity automatically merges identity.</p>
+      <p className="section-note">Preview is read-only. Enter an explicit same-asset finding ID or use the
+        bounded exact-location candidates above. No path, hostname or model similarity automatically merges identity.</p>
       <ActionButton type="submit" variant="outline" disabled={previewAction.pending || !current}>Preview merge</ActionButton>
     </form>}
     {mergePreview && mergeDecision && <form className="finding-note-form" aria-label="Confirm finding merge"
       onSubmit={confirmMerge}>
-      <p>Review retains two source variants, {mergePreview.primary.observationCount + mergePreview.other.observationCount}
-        {" "}observations and {mergePreview.primary.noteCount + mergePreview.other.noteCount} notes.</p>
-      <ul><MemberFacts member={mergePreview.primary} /><MemberFacts member={mergePreview.other} /></ul>
+      <p>Review retains {mergeMembers.length} source variants,{" "}
+        {mergeMembers.reduce((total, member) => total + member.observationCount, 0)} observations and{" "}
+        {mergeMembers.reduce((total, member) => total + member.noteCount, 0)} notes.
+        Existing records remain attached to their source findings.</p>
+      <ul>{mergeMembers.map((member) => <MemberFacts member={member} key={member.findingId} />)}</ul>
       <p>Conflicts: {mergePreview.conflicts.length ? mergePreview.conflicts.map(label).join(", ") : "None"}.</p>
       <DecisionEditor title="Current issue decision" value={mergeDecision} owners={mergeOwners}
         disabled={mutation.pending} onChange={setMergeDecision} />
@@ -179,19 +236,12 @@ export function FindingCorrelationPanel({ finding, current, onBegin, onConfirmed
         onClick={() => { setMergePreview(null); setMergeDecision(null); }}>Cancel preview</Button>
         <ActionButton type="submit" disabled={mutation.pending || !canWrite || !current}>Confirm merge</ActionButton></div>
     </form>}
-    {active && !splitPreview && <>
-      <p>Correlation <code>{active.id}</code>, revision {active.revision}. The canonical Work row retains
-        every member's original evidence and decision snapshot.</p>
-      <ul>{active.members.map((member) => <MemberFacts member={member} key={member.findingId} />)}</ul>
-      <details><summary>Correlation audit history</summary><ul>{active.events.map((event) =>
-        <li key={event.id}><strong>{label(event.type)}</strong> by <code>{event.actorId}</code> at{" "}
-          <time dateTime={event.createdAt}>{timestampLabel(event.createdAt)}</time>: {event.rationale}</li>)}</ul></details>
-      {secondary && <ActionButton variant="outline" disabled={previewAction.pending || !current}
-        onClick={previewSplit}>Preview split</ActionButton>}
-    </>}
     {splitPreview && primaryDecision && memberDecision && <form className="finding-note-form"
       aria-label="Confirm finding split" onSubmit={confirmSplit}>
-      <p>Split restores two Work rows. Choose how current decisions apply; observations and raw evidence never move or duplicate.</p>
+      <p>{splitPreview.correlation.members.filter((member) => member.active).length > 2
+        ? "Release restores the selected member to Work while the remaining source group stays active."
+        : "Release restores both final Work rows and closes the source group."}
+        {" "}Choose how current decisions apply; observations and raw evidence never move or duplicate.</p>
       <DecisionEditor title="Primary issue decision" value={primaryDecision} owners={splitOwners}
         disabled={mutation.pending} onChange={setPrimaryDecision} />
       <DecisionEditor title="Separated issue decision" value={memberDecision} owners={splitOwners}
