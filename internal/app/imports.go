@@ -93,6 +93,13 @@ func (a *Application) upload(w http.ResponseWriter, r *http.Request, workspace s
 	if err := a.decode(w, r, &input, a.config.MaxUploadBytes); err != nil {
 		return err
 	}
+	return a.acceptImport(r.Context(), w, workspace, session, input, []byte(input.Report), false, nil)
+}
+
+type importAuthorityCheck func(context.Context, pgx.Tx) error
+
+func (a *Application) acceptImport(ctx context.Context, w http.ResponseWriter, workspace string,
+	session authenticatedSession, input importInput, report []byte, strictActor bool, additional importAuthorityCheck) error {
 	if !validImport(input) {
 		return errInvalid
 	}
@@ -107,18 +114,27 @@ func (a *Application) upload(w http.ResponseWriter, r *http.Request, workspace s
 		scanned := input.SourceScanAt.UTC()
 		input.SourceScanAt = &scanned
 	}
-	digest, metadata := reportDigest([]byte(input.Report)), metadataDigest(input)
+	input.Report = string(report)
+	digest, metadata := reportDigest(report), metadataDigest(input)
 	check := func(tx pgx.Tx) (importRecord, error) {
-		if err := a.authorizeIntake(r.Context(), tx, session, workspace, input.AssetID); err != nil {
+		if err := a.authorizeIntake(ctx, tx, session, workspace, input.AssetID); err != nil {
 			return importRecord{}, err
 		}
-		existing, err := a.sourceScan(r.Context(), tx, workspace, input)
+		if additional != nil {
+			if err := additional(ctx, tx); err != nil {
+				return importRecord{}, err
+			}
+		}
+		existing, err := a.sourceScan(ctx, tx, workspace, input)
 		if err == nil {
 			err = a.replayAllowed(existing, input, digest, metadata)
+			if err == nil && strictActor && existing.SubmittedBy != session.User.ID {
+				err = errConflict
+			}
 		}
 		return existing, err
 	}
-	preflight, err := a.pool.Begin(r.Context())
+	preflight, err := a.pool.Begin(ctx)
 	if err != nil {
 		return err
 	}
@@ -127,7 +143,7 @@ func (a *Application) upload(w http.ResponseWriter, r *http.Request, workspace s
 		rollback(preflight)
 		return checkErr
 	}
-	if err = preflight.Commit(r.Context()); err != nil {
+	if err = preflight.Commit(ctx); err != nil {
 		rollback(preflight)
 		return err
 	}
@@ -141,24 +157,24 @@ func (a *Application) upload(w http.ResponseWriter, r *http.Request, workspace s
 		SourceScanAt: input.SourceScanAt, CollectedAt: input.CollectedAt,
 		SourceStatus: input.SourceStatus, ScanKind: input.ScanKind, Completeness: input.Completeness, ReportDigest: digest,
 	}}
-	record.ReportSize = int64(len(input.Report))
+	record.ReportSize = int64(len(report))
 	// No SQL connection, transaction or lock is retained during shared S3 I/O.
-	record.ReportKey, err = a.storage.put(r.Context(), workspace, record.ID, []byte(input.Report))
+	record.ReportKey, err = a.storage.put(ctx, workspace, record.ID, report)
 	if err != nil {
 		return err
 	}
-	tx, err := a.pool.Begin(r.Context())
+	tx, err := a.pool.Begin(ctx)
 	if err != nil {
 		return err
 	}
 	defer rollback(tx)
-	if _, err = tx.Exec(r.Context(), `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`,
+	if _, err = tx.Exec(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`,
 		"aspm/app/intake/"+a.config.Schema+"/"+runIdentity(workspace, input)); err != nil {
 		return err
 	}
 	existing, err = check(tx)
 	if err == nil {
-		if err = tx.Commit(r.Context()); err != nil {
+		if err = tx.Commit(ctx); err != nil {
 			return err
 		}
 		importReply(w, existing.Import)
@@ -174,7 +190,7 @@ func (a *Application) upload(w http.ResponseWriter, r *http.Request, workspace s
 	}
 	// A failed/conflicting finalization may leave an unreferenced S3 object,
 	// never an acknowledged queue entry whose original evidence is missing.
-	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("imports")+`
+	if _, err = tx.Exec(ctx, `INSERT INTO `+a.table("imports")+`
 		(id,run_id,workspace_id,asset_id,source_id,scan_id,scope_id,scope_revision,scope_branch,format,mapping,
 		source_scan_at,collected_at,imported_at,source_status,scan_kind,completeness,report_digest,report_key,report_size,metadata_digest,submitted_by)
 		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)`,
@@ -184,10 +200,15 @@ func (a *Application) upload(w http.ResponseWriter, r *http.Request, workspace s
 		record.Completeness, record.ReportDigest, record.ReportKey, record.ReportSize, record.MetadataDigest, record.SubmittedBy); err != nil {
 		return err
 	}
-	if err = a.authorizeIntake(r.Context(), tx, session, workspace, input.AssetID); err != nil {
+	if err = a.authorizeIntake(ctx, tx, session, workspace, input.AssetID); err != nil {
 		return err
 	}
-	if err = tx.Commit(r.Context()); err != nil {
+	if additional != nil {
+		if err = additional(ctx, tx); err != nil {
+			return err
+		}
+	}
+	if err = tx.Commit(ctx); err != nil {
 		return err
 	}
 	importReply(w, record.Import)
@@ -218,6 +239,12 @@ func scanImport(row pgx.Row) (importRecord, error) {
 		&record.MetadataDigest, &mapping, &failureCode, &failureMessage, &record.Fence, &workerID, &submittedBy)
 	if err != nil {
 		return record, err
+	}
+	record.CollectedAt = record.CollectedAt.UTC()
+	record.ImportedAt = record.ImportedAt.UTC()
+	if record.SourceScanAt != nil {
+		scanned := record.SourceScanAt.UTC()
+		record.SourceScanAt = &scanned
 	}
 	if err = json.Unmarshal(mapping, &record.Mapping); err != nil {
 		return record, err

@@ -20,7 +20,7 @@ func init() {
 			Raw: config.Evidence, CollectionStorage: config.CollectionStorage, Key: config.IntegrationEncryptionKey,
 			Listen: config.Listen, Assets: config.Assets, PublicOrigin: config.PublicOrigin,
 			Bootstrap: config.BootstrapToken, WorkerID: config.WorkerID,
-			Lease: config.CollectionLeaseDuration, Endpoint: config.GitHubEndpoint,
+			Lease: config.CollectionLeaseDuration, Endpoint: config.GitHubEndpoint, AzureEndpoint: config.AzureDevOpsEndpoint,
 			Client: config.CollectionClient, CAFile: config.CollectionCAFile, Limits: config.CollectionLimits,
 			ReadinessKey: config.ReadinessKey, NormalizedPrefix: config.NormalizedPrefix, PrepareReadiness: config.PrepareReadiness,
 		}, err
@@ -30,7 +30,7 @@ func init() {
 			Listen: config.Listen, Assets: config.Assets, PublicOrigin: config.PublicOrigin,
 			BootstrapToken: config.Bootstrap, WorkerID: config.WorkerID, IntegrationEncryptionKey: config.Key,
 			Evidence: config.Raw, CollectionStorage: config.CollectionStorage,
-			CollectionLeaseDuration: config.Lease, GitHubEndpoint: config.Endpoint,
+			CollectionLeaseDuration: config.Lease, GitHubEndpoint: config.Endpoint, AzureDevOpsEndpoint: config.AzureEndpoint,
 			CollectionClient: config.Client, CollectionCAFile: config.CAFile, CollectionLimits: config.Limits,
 			ReadinessKey: config.ReadinessKey, NormalizedPrefix: config.NormalizedPrefix, PrepareReadiness: config.PrepareReadiness,
 			Jobs: jobs.Config{DatabaseURL: config.Database.DatabaseURL, Schema: config.Database.Schema,

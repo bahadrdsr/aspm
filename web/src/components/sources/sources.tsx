@@ -7,6 +7,7 @@ import { DataNotice } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import { SourceEditor } from "./source-editor";
 import { SourceCollections } from "./source-collections";
+import { AzureDevOpsSources } from "./azure-devops-sources";
 import { SourceReadState, SourceTime } from "./source-ui";
 import { useSourcePage } from "./use-source-page";
 import "./sources.css";
@@ -20,6 +21,7 @@ export function Sources() {
   const page = useSourcePage(sourcesApi.sources);
   const [editor, setEditor] = useState<{ id: string | null; trigger: HTMLElement } | null>(null);
   const [selected, setSelected] = useState<SourceConnection | null>(null);
+  const [azureDevOpsOpen, setAzureDevOpsOpen] = useState(false);
   const received = selected && page.data?.items.find((source) => source.id === selected.id);
   const currentSource = received ? newestSource(selected, received) : selected;
   // Reconcile before children commit; an absent page entry is not deletion.
@@ -34,6 +36,8 @@ export function Sources() {
       <header className="source-panel-heading"><div><h2>Sources</h2>
         <p className="form-help">Selected GitHub repositories. Configure metadata first; collect only after explicit confirmation.</p></div>
         <div className="source-actions"><ActionButton variant="outline" aria-disabled={page.pending} onClick={page.refresh}>Refresh sources</ActionButton>
+          <ActionButton variant="outline" aria-expanded={azureDevOpsOpen}
+            onClick={() => setAzureDevOpsOpen((value) => !value)}>Azure DevOps sources</ActionButton>
           {workspace.role === "admin" && <ActionButton onClick={(event) => setEditor({ id: null, trigger: event.currentTarget })}>Add source</ActionButton>}
         </div>
       </header>
@@ -65,5 +69,6 @@ export function Sources() {
     </section>
     {currentSource && <SourceCollections key={currentSource.id} source={currentSource} />}
     {workspace.role === "admin" && editor && <SourceEditor id={editor.id} returnFocus={editor.trigger} onClose={() => setEditor(null)} onSaved={saved} />}
+    {azureDevOpsOpen && <AzureDevOpsSources />}
   </>;
 }

@@ -20,7 +20,8 @@ func collectionIsolation(t *testing.T, output rendered, input object) {
 	publisher := settings["s3Secret"].(object)
 	allowed := map[string]bool{
 		"ASPM_DATABASE_URL": true, "ASPM_SCHEMA": true, "ASPM_DB_MAX_CONNECTIONS": true, "ASPM_LISTEN": true,
-		"ASPM_INTEGRATION_ENCRYPTION_KEY": true, "ASPM_COLLECTION_LEASE_DURATION": true, "ASPM_GITHUB_ENDPOINT": true,
+		"ASPM_INTEGRATION_ENCRYPTION_KEY": true, "ASPM_COLLECTION_LEASE_DURATION": true,
+		"ASPM_GITHUB_ENDPOINT": true, "ASPM_AZURE_DEVOPS_ENDPOINT": true,
 	}
 	for _, name := range collectionVariables() {
 		allowed[name] = true
@@ -63,7 +64,8 @@ func collectionIsolation(t *testing.T, output rendered, input object) {
 	}
 }
 
-func requireCollection(t *testing.T, output rendered, input object, replicas int, resources object, lease, endpoint string) {
+func requireCollection(t *testing.T, output rendered, input object, replicas int, resources object,
+	lease, githubEndpoint, azureDevOpsEndpoint string) {
 	t.Helper()
 	main := mainContainer(t, output, "collection")
 	pod := output.Roles["collection"]
@@ -83,7 +85,8 @@ func requireCollection(t *testing.T, output rendered, input object, replicas int
 	requireIntegration(t, env)
 	requireStorage(t, env, input, input["collection"].(object)["s3Secret"].(object))
 	requireString(t, env, "ASPM_COLLECTION_LEASE_DURATION", lease)
-	requireString(t, env, "ASPM_GITHUB_ENDPOINT", endpoint)
+	requireString(t, env, "ASPM_GITHUB_ENDPOINT", githubEndpoint)
+	requireString(t, env, "ASPM_AZURE_DEVOPS_ENDPOINT", azureDevOpsEndpoint)
 	requireIntegration(t, environment(t, mainContainer(t, output, "core")))
 	requireStorage(t, environment(t, mainContainer(t, output, "core")), input, input["core"].(object)["collectionS3Secret"].(object))
 	for _, p := range []struct {
@@ -154,13 +157,14 @@ func TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities(t *testing.T) {
 		requireCollection(t, output, input, 1, object{
 			"requests": object{"cpu": "100m", "memory": "128Mi"},
 			"limits":   object{"cpu": "1", "memory": "512Mi"},
-		}, "15s", "https://api.github.com")
+		}, "15s", "https://api.github.com", "https://dev.azure.com")
 		preserveLegacy(t, baseline, output)
 	})
 	t.Run("selected-settings-coexist-with-delivery-distinct-key-tuples", func(t *testing.T) {
 		input := collectionValues(true, true)
 		selection := input["collection"].(object)
 		selection["replicas"], selection["leaseDuration"], selection["githubEndpoint"] = 2, "30s", "https://gateway.synthetic.invalid/github"
+		selection["azureDevOpsEndpoint"] = "https://gateway.synthetic.invalid/azure-devops"
 		resources := object{"requests": object{"cpu": "137m", "memory": "143Mi"}, "limits": object{"cpu": "700m", "memory": "443Mi"}}
 		selection["resources"] = resources
 		// One Secret can contain two distinct reference tuples; identical tuples, not names alone, are forbidden.
@@ -170,7 +174,8 @@ func TestCollectionDeploymentHelmOptInAndSeparateRoleAuthorities(t *testing.T) {
 		if len(output.Roles) != 5 {
 			t.Fatal("collection and delivery must coexist as independent opt-in roles")
 		}
-		requireCollection(t, output, input, 2, resources, "30s", "https://gateway.synthetic.invalid/github")
+		requireCollection(t, output, input, 2, resources, "30s",
+			"https://gateway.synthetic.invalid/github", "https://gateway.synthetic.invalid/azure-devops")
 		preserveLegacy(t, slack, output)
 	})
 }
@@ -236,6 +241,12 @@ func TestCollectionDeploymentHelmRejectsMissingPartialAndUnsafeSelections(t *tes
 		}},
 		invalidCase{"unsigned-provider-gateway", "collection.githubEndpoint", func(v object) {
 			v["collection"].(object)["githubEndpoint"] = "http://gateway.synthetic.invalid/github"
+		}},
+		invalidCase{"credentials-in-azure-devops-endpoint", "collection.azureDevOpsEndpoint", func(v object) {
+			v["collection"].(object)["azureDevOpsEndpoint"] = "******dev.azure.com"
+		}},
+		invalidCase{"unsigned-azure-devops-gateway", "collection.azureDevOpsEndpoint", func(v object) {
+			v["collection"].(object)["azureDevOpsEndpoint"] = "http://dev.azure.com"
 		}},
 	)
 	for _, invalid := range cases {

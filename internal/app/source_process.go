@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/bahadrdsr/aspm/internal/connectors"
@@ -28,7 +29,7 @@ func (w *CollectionWorker) ProcessNext(ctx context.Context) (bool, error) {
 	if err != nil || job.ID == "" {
 		return processed, err
 	}
-	plain, err := openCredential(w.credentials, sourceCredentialAAD(job.WorkspaceID, job.SourceID), source.ciphertext)
+	plain, err := openCredential(w.credentials, sourceCredentialAAD(job.Profile, job.WorkspaceID, job.SourceID), source.ciphertext)
 	if err != nil {
 		failure := &FindingDeliveryFailure{Code: "credential-unavailable"}
 		cleanup, stop := context.WithTimeout(context.Background(), 3*time.Second)
@@ -37,8 +38,16 @@ func (w *CollectionWorker) ProcessNext(ctx context.Context) (bool, error) {
 	}
 	token := string(plain)
 	clear(plain)
+	endpoint, endpointOK := w.endpoints[job.Profile]
+	client, clientOK := w.clients[job.Profile]
+	if !endpointOK || !clientOK {
+		if settleErr := w.failSource(job, connectors.ErrUnsupported); settleErr != nil {
+			return true, settleErr
+		}
+		return true, nil
+	}
 	collector, err := connectors.OpenCollector(access, connectors.CollectorConfig{
-		Profile: job.Profile, Endpoint: w.endpoint, Token: token, Client: w.client, Limits: w.limits,
+		Profile: job.Profile, Endpoint: endpoint, Token: token, Client: client, Limits: w.limits,
 	})
 	if err != nil {
 		if settleErr := w.failSource(job, err); settleErr != nil {
@@ -53,10 +62,20 @@ func (w *CollectionWorker) ProcessNext(ctx context.Context) (bool, error) {
 		return true, w.finishDeniedSource(ctx, job, err)
 	}
 	stopWatch := w.watchSource(access, cancel, job)
-	result, nativeErr := collector.Collect(access, connectors.CollectRequest{
+	request := connectors.CollectRequest{
 		Identity:   connectors.Identity{WorkspaceID: job.WorkspaceID, SourceID: job.SourceID, RunID: job.ID, ScopeID: job.Repository},
 		Repository: job.Repository,
-	})
+	}
+	if job.Profile == connectors.ADOArtifacts && job.AzureDevOps != nil && job.Selection != nil {
+		request.Identity.ScopeID = azureDevOpsScopeIdentity(*job.AzureDevOps)
+		request.Organization = job.AzureDevOps.Organization
+		request.Project = job.AzureDevOps.ProjectID
+		request.Repository = job.AzureDevOps.RepositoryID
+		request.BuildID = job.Selection.BuildID
+		request.ArtifactName = job.Selection.ArtifactName
+		request.ArtifactPath = job.Selection.ArtifactPath
+	}
+	result, nativeErr := collector.Collect(access, request)
 	if cause := context.Cause(access); cause != nil {
 		stopWatch()
 		return true, w.finishDeniedSource(ctx, job, cause)
@@ -71,7 +90,7 @@ func (w *CollectionWorker) ProcessNext(ctx context.Context) (bool, error) {
 		defer stop()
 		return true, w.settleSource(cleanup, job, "failed", sourceNativeFailure(nativeErr, token))
 	}
-	if source.repositoryID != nil && *source.repositoryID != repository.ID.String() {
+	if source.repositoryID != nil && !strings.EqualFold(*source.repositoryID, repository.ID) {
 		stopWatch()
 		return true, w.failSource(job, sourceIdentityConflict)
 	}

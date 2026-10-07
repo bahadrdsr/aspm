@@ -131,12 +131,18 @@ func TestM07_CatalogHasExactlyEightHonestReadOnlyNativeFamilies(t *testing.T) {
 		}
 		equal(t, "catalog family name", entry.Name, name)
 		equal(t, "native kind", entry.Kind, "native")
-		equal(t, "pre-M08/M09 support is planned", entry.SupportMaturity, "planned")
 		equal(t, "fresh installation is unconfigured", entry.ConnectionState, "unconfigured")
-		equal(t, "planned native family is not ready", entry.ReadyToConnect, false)
 		equal(t, "no native verification has run", entry.LiveVerification.State, "not-run")
 		if entry.LiveVerification.Reason == "" || entry.Capabilities == nil {
 			t.Fatal("catalog needs a truthful verification explanation and capability array")
+		}
+		if entry.ID == "azure-devops" {
+			equal(t, "selected ADO path is experimental", entry.SupportMaturity, "experimental")
+			equal(t, "selected ADO path is ready to configure", entry.ReadyToConnect, true)
+			equal(t, "selected ADO capability count", len(entry.Capabilities), 3)
+		} else {
+			equal(t, "unimplemented family support is planned", entry.SupportMaturity, "planned")
+			equal(t, "planned native family is not ready", entry.ReadyToConnect, false)
 		}
 		delete(expected, entry.ID)
 	}

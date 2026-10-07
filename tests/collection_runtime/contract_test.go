@@ -13,18 +13,18 @@ import (
 )
 
 type runtimeConfig struct {
-	Database                       app.DatabaseConfig
-	Raw                            evidence.Config
-	CollectionStorage              *app.StorageConfig
-	Key                            []byte
-	Listen, Assets, PublicOrigin   string
-	Bootstrap, WorkerID            string
-	Lease                          time.Duration
-	Endpoint, CAFile               string
-	Client                         *http.Client
-	Limits                         connectors.Limits
-	ReadinessKey, NormalizedPrefix string
-	PrepareReadiness               bool
+	Database                        app.DatabaseConfig
+	Raw                             evidence.Config
+	CollectionStorage               *app.StorageConfig
+	Key                             []byte
+	Listen, Assets, PublicOrigin    string
+	Bootstrap, WorkerID             string
+	Lease                           time.Duration
+	Endpoint, AzureEndpoint, CAFile string
+	Client                          *http.Client
+	Limits                          connectors.Limits
+	ReadinessKey, NormalizedPrefix  string
+	PrepareReadiness                bool
 }
 
 var Production struct {

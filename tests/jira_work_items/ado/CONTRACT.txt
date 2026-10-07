@@ -1,0 +1,351 @@
+READ FIRST: AZURE DEVOPS BACKEND A1-A5, OCTOBER 2, 2026
+====================================================
+
+Ownership and stop boundary
+--------------------------
+GPT-6 Astra authors this contract and new tests only. GPT-6.1 Sol implements
+and runs them. No reviewer or nested agent. No author-run compiler, formatter,
+test, fixture, browser, vendor account, dependency restore or production edit.
+File/Git identity reads are not validation execution. Every execution phase
+is NOT RUN, including compilation and baseline RED.
+
+Code baseline: 69f3ef9c2fc154742a168df9329d89cfd4b8a020 (published V11).
+The coordinator's README Current roadmap priority section and external
+C:\bahadr\serious\ASPM_IMPLEMENTATION_PLAN.md are intentional prior edits.
+Preserve them. Do not commit, revert, re-sign or regenerate existing controls.
+Azure DevOps is NEXT. All other unfinished integrations are pinned. In
+particular, do not restart the blocked Teams native/browser check, live-account
+chases, GitLab/AWS/Azure cloud/Jira expansions or OAuth bootstrap.
+Runtime/UI/Helm are bounded follow-up ADO tasks, not completed by this backend
+contract. Finish that usable vertical path, then STOP expansion and resume
+CORE M06 reversible merge/split and retention/archive.
+
+Read source of truth
+--------------------
+internal\connectors\ado.go, collect.go, types.go, http.go, README.txt;
+tests\connectors\repositories_test.go;
+internal\app\source_{connections,collections,types,process,worker,finalize,
+storage,schema}.go, imports.go, import_authorization.go, worker.go,
+worker_constructors.go, membership.go, storage.go;
+internal\service\collection_runtime.go;
+web\src\api\sources.ts and source-types.ts (strict GitHub-only parser);
+existing tests\source_collection and tests\jira_work_items fixtures/upgrade
+observers, and tests\internal\deliverycompat. No old helper is amended here.
+
+Native profile and honest credential limitations
+-----------------------------------------------
+Use existing connectors.ADOArtifacts, "ado-services-build-artifacts", Basic
+authentication of the exact bytes ":" + explicitly configured PAT, REST 7.1.
+Four selected GETs only: repository, build, named artifact, scoped ZIP download.
+Keep the existing client, version/header policy, redirect denial, same HTTPS
+origin/path and exact artifactName/api-version/$format query checks. No latest
+build, organization enumeration, fanout, scanner/pipeline trigger, Boards,
+work-item sync, Azure DevOps Server or disk extraction.
+
+This is an initial explicit organization-scoped PAT credential profile, NOT
+an Entra integration or live-vendor qualification. Operator supplies a
+short-lived PAT with Code (Read) and Build (Read) for the selected organization
+and accessible project/repository/build; minimize expiry and rotate explicitly.
+No ambient CLI/PAT discovery, all-organizations default, token minting or
+automatic credential renewal. Microsoft recommends Entra tokens, managed
+identities or service principals for automation; that migration is not hidden
+inside this slice.
+
+Official references were checked by the coordinator on October 2, 2026:
+https://learn.microsoft.com/en-us/rest/api/azure/devops/build/artifacts/get-artifact?view=azure-devops-rest-7.1
+https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops
+Author has not claimed a fresh browser/vendor check. Any uncertain native fact
+must be checked against Microsoft documentation only, without sending local
+code, credentials, repository names or account data.
+
+Exact API contract, selected before test authorship
+-------------------------------------------------
+Existing apiVersion aspm/v1alpha1, real session/Origin/selected workspace rules.
+All mutation acknowledgements contain metadata only, never report text, PAT,
+key, ciphertext, authorization header or S3 ref/credential.
+
+GET /api/v1/sources
+  No profile parameter: ONLY github-cloud-app, including total/cursor.
+  Exactly one profile=github-cloud-app: same GitHub page.
+  Exactly one profile=ado-services-build-artifacts: ONLY ADO page.
+  Empty, unknown, repeated (even identical), mixed or malformed selector: 400.
+  Do not return a mixed-profile page to the shipped strict GitHub UI.
+  Existing page limit/cursor semantics are unchanged.
+
+POST /api/v1/sources
+  ADO: {profile:"ado-services-build-artifacts", name, enabled:boolean, token,
+        azureDevOps:{organization,projectId,repositoryId}}
+  GitHub: old {profile,name,enabled,token,repository:"owner/repo"} unchanged.
+  Admin only. POST 201. Enabled and token must be explicit.
+  Unknown fields and cross-profile target/repository combinations are 400.
+  No endpoint, headers, actor, key, approval or workspace authority in JSON.
+  Organization uses the existing native name grammar and is stored lowercase;
+  both UUIDs use the existing native UUID grammar and are stored lowercase.
+  Reject whitespace, URL/path/query syntax and non-UUID project/repository.
+  Native organization may contain "."/"-"/"_", as the existing adapter allows.
+  This is profile normalization, not a claim that all such names exist.
+  Name/token/body bounds remain 256/16384/32768 bytes and current opaque-token
+  validation. Do not trim or discover token bytes.
+
+GET/PATCH /api/v1/sources/{sourceId}
+  ADO PATCH accepts name, enabled, token only. A different native target
+  requires a new source in this first cut. Profile/target are not retargetable.
+  GitHub repository PATCH and its historical behavior remain unchanged.
+  Meaningful changes increment revision once; exact no-op does not.
+  ADO DTO has the existing source keys except repository, plus azureDevOps.
+  GitHub DTO has EXACTLY its old keys, without null ADO fields.
+  CredentialConfigured means encrypted material is present, not native
+  permission or successful account verification.
+
+Credential envelope remains byte(1)||12-byte nonce||AES-256-GCM ciphertext/tag.
+AAD for ADO:
+  "aspm/source-credential/v1\0ado-services-build-artifacts\0"+workspace+"\0"+id
+GitHub retains its exact existing profile-specific AAD and byte envelope.
+Slack/Jira/Teams/AI encryption and serialization are not redefined.
+
+POST /api/v1/sources/{sourceId}/collections
+  ADO: {idempotencyKey,buildId,artifactName,artifactPath}
+  GitHub: old {idempotencyKey}, with no ADO selection, unchanged.
+  Build ID is a canonical positive decimal string, 1..20 digits.
+  Artifact name and path follow existing native name/artifactPath bounds.
+  Request <=16 KiB. No latest, pipeline, endpoint, token or target override.
+  Analyst/admin only. API enqueues; it performs zero native GETs/S3 writes.
+  New 202; exact replay 200 with the same immutable job/result.
+  Changed actor/workspace-local source/revision/target/build/name/path binding
+  under the same workspace key is 409. Disabled source is 409.
+  A source may collect different builds without connection edits.
+  Worker independently verifies the stored immutable binding digest before
+  native I/O. Corrupt stored selection/target/actor binding is terminal
+  blocked/binding-conflict, without an asset, record or native request.
+
+Collection DTO retains existing keys except repository for ADO, and adds:
+  azureDevOps:{organization,projectId,repositoryId}
+  selection:{buildId,artifactName,artifactPath}
+repositoryId at collection top level is the native UUID, never an internal key.
+requestedBy is the actual collecting actor. collection ID is NOT a scan ID.
+
+Existing collection/list/record/evidence URLs continue to work without a
+profile parameter. Read the stored parent profile; never reinterpret IDs as
+GitHub numeric IDs or accept caller profile authority. Membership and exact
+workspace/source/collection/record parentage are mandatory. Foreign IDs 404.
+ADO records are repository,pipeline,artifact,report with existing record DTOs;
+repository UUID and parent UUID remain native, build ID is nativeRunId.
+Metadata is separate from raw evidence. Evidence reads return exact verified
+bytes and fail 503 for missing/corrupt/out-of-prefix/integrity-invalid storage.
+
+Stable asset, timestamps and collection semantics
+-----------------------------------------------
+Canonical native scope key inside source_repository_assets.repository_id:
+  organization+"/"+projectId+"/"+repositoryId
+All three components are canonical lowercase, slash-free native identifiers.
+Its existing primary key already includes workspace and profile. GitHub keys
+stay their historical numeric strings. Never expose this key as repositoryId.
+Advisory-lock identity must use the same full scoped key, not UUID alone.
+Same target across connection IDs/builds/reopens/renames reuses one asset.
+Same repository UUID in a different org/project/workspace cannot collide.
+CollectRequest.Identity.ScopeID uses "ado-scope-v1:" plus lowercase SHA256 of
+the compact JSON array [organization,projectId,repositoryId]. The full native
+tuple can exceed the existing 256-byte identity bound; do not widen that bound
+or shorten/crop a target. The asset-link key remains the full tuple above.
+
+First asset: kind repository; name initial valid native name (fallback native
+UUID if absent); owner null, medium criticality, empty environment and tags.
+Repository-response owner/tags/criticality/decisions are untrusted. Subsequent
+collections never overwrite human asset fields, workflow/risk or verification.
+Do not require a display name to match a GUID or conflate project with owner.
+Source's internal pinned repository_id may retain the native UUID; the
+asset-link lookup must use the full immutable selected target.
+
+Valid partial native reads retain all available validated repository/build/
+artifact records, exact bytes, safe errors and gaps. No report may be invented
+when artifact download/ZIP fails. Invalid repository has no accepted asset or
+records. Later wrong-target build/download retains only prior valid records.
+Use terminal partial/failed/blocked and explicit new collection, not retries.
+Complete=true only means all four selected feeds were fetched, not successful
+scan, full coverage, safety, finding closure or a credential certification.
+
+Raw repository, build finish/start, artifact metadata and report scan time
+stay distinct. CollectedAt is observation time. Only the existing unambiguous
+SARIF invocation startTime supplies sourceScanAt. Missing/ambiguous scan time
+remains null even if build.result is succeeded and finishTime is present.
+
+Explicit report-to-findings bridge, SARIF first
+---------------------------------------------
+POST /api/v1/sources/collections/{collectionId}/records/{recordId}/imports
+  {apiVersion:"aspm/v1alpha1",format:"sarif",
+   scope:{id,revision,branch},
+   sourceStatus:"succeeded"|"failed",scanKind:"full"|"delta",
+   completeness:"complete"|"partial"|"unknown"}
+
+All these fields are required, as in existing intake. SARIF 2.1.0 only for this
+bridge. Other formats return 415; no autodetection/fallback/new parser.
+Mapping is omitted for SARIF; nonempty mapping is 400 via existing mapping
+validation. Empty mapping may retain existing intake equivalence.
+Generic mapping UI/other parsers remain supported by the existing upload
+endpoint, but are not claimed for this initial collected-report bridge.
+Caller cannot set report, reportDigest, assetId, sourceId, scanId, collectedAt,
+sourceScanAt, requestedBy, submittedBy or idempotencyKey.
+Non-report records 400; wrong collection/profile/record parentage 404.
+
+The actual requesting analyst/admin authorizes this action, not the historical
+collection requester. Current source must remain enabled at the collected
+revision and identical profile/target; otherwise 409. Require an accepted
+succeeded/partial collection, linked same-workspace asset, native build/path
+record agreement and verified bounded report bytes/SHA. Viewer 403.
+Reading/collecting/opening a report never imports automatically.
+
+Server derives the import asset, bytes/digest, optional sourceScanAt and first
+collectedAt from the actual record and collection. Exact UTF-8 bytes survive;
+invalid UTF-8 400, effective upload bound exceeded 413, storage/integrity 503.
+Valid UTF-8 non-SARIF may queue under explicit sarif and fail invalid-report
+in the existing independent ingestion worker; no API-side parser substitute.
+
+Deterministic identities (UTF-8, standard compact JSON string arrays, lowercase
+64-character SHA256, no "sha256:" inside H):
+  H(x) = lowercase hex SHA256(JSON(x))
+  sourceId = "ado-services-build-artifacts:" +
+    H(["ado-source-v1",organization,projectId,repositoryId])
+  scanId = "ado-report-v1:" +
+    H(["sarif-2.1.0",organization,projectId,repositoryId,
+       buildId,artifactName,artifactPath])
+Existing runIdentity adds workspace. Parser semantics are explicit and fixed.
+Connection ID/revision, collection/record IDs and collectedAt are deliberately
+NOT native scan identity. Different attempts of one immutable report replay
+the same import/run. First persisted collectedAt/importedAt remain unchanged.
+Existing report/metadata digest conflict checks reject changed bytes, source
+scan time, scope/branch/status/kind/completeness/asset. The bridge additionally
+rejects a replay submitted by a different actor (409), without altering the
+upload endpoint's historical actor/replay behavior.
+The existing accepted-time 24-hour window is unchanged: equality at expiry
+returns 409/replay-expired. Retrying never resets importedAt or expiry.
+Metadata ACK is exactly the existing import envelope: queued/processing 202,
+terminal replay 200. No new automatic ingestion API.
+
+Reuse/factor upload validation, preflight, membership, replay, publication and
+finalization. Do not loop back HTTP, synthesize requests, duplicate business SQL
+or bypass authorization in collection worker. Core has the existing read-only
+collection capability and writable rawEvidence capability. Collection worker
+retains publisher PutObject/HeadObject on collection evidence only; ingestion
+retains raw reader. No new bucket probe/list/grant, credential framework or
+collection-worker raw-intake authority.
+No SQL slot/transaction is held during S3 read or write. Recheck source/current
+session+actor/asset membership immediately before commit; active cancellation
+must reach held reads/writes after revocation. Existing ingestion current-actor
+checks remain effective after a queued bridge request.
+
+Exact additive V12 DDL decision
+------------------------------
+No new tables/indexes, no historical V1-V11 edits, no data rewrite.
+Only these three nullable JSONB columns, appended in this order per table:
+  app_source_connections: azure_devops_target jsonb
+  app_source_collections: azure_devops_target jsonb
+                          azure_devops_selection jsonb
+NULL is implicit, not a stored default expression.
+GitHub repository text columns remain NOT NULL with old data unchanged.
+ADO uses repository='' internally; its API omits that legacy field.
+
+Replace existing named profile CHECK on source_connections, source_collections,
+source_repository_assets, preserving each name:
+  CHECK(profile IN ('github-cloud-app','ado-services-build-artifacts'))
+Replace app_source_collection_records_kind_check, preserving its name:
+  CHECK(kind IN ('repository','finding','pipeline','artifact','report'))
+Append app_source_connections_profile_target_check:
+  CHECK((profile='github-cloud-app' AND azure_devops_target IS NULL) OR
+        (profile='ado-services-build-artifacts' AND repository='' AND
+         azure_devops_target IS NOT NULL AND
+         jsonb_typeof(azure_devops_target)='object'))
+Append app_source_collections_profile_target_check:
+  CHECK((profile='github-cloud-app' AND azure_devops_target IS NULL AND
+         azure_devops_selection IS NULL) OR
+        (profile='ado-services-build-artifacts' AND repository='' AND
+         azure_devops_target IS NOT NULL AND
+         jsonb_typeof(azure_devops_target)='object' AND
+         azure_devops_selection IS NOT NULL AND
+         jsonb_typeof(azure_devops_selection)='object'))
+Target/selection contents still need strict application/native validation.
+Every unrelated column, constraint, index, sequence/relation and business row
+must match. New helper validates the ENTIRE expected catalog before projection.
+For business data, compare full rows with exactly the three null additions
+first, then project. Constraint sort is by name, not serialized row. Ledger
+ORDER BY uses qualified integer ledger.version, never its text alias.
+
+Old observer approval, STOP before modifying old controls
+--------------------------------------------------------
+ado\OLD_OBSERVER_PROPOSAL.txt enumerates exact CURRENT observer/legacy-data
+projection changes. It is a proposal only, not applied. Historical starting
+ledgers, seed constants, fixtures, cold-start and legacy serialization hashes
+remain unchanged. Do not update tests merely to mirror producer internals.
+Sol must obtain coordinator approval before any old test/helper/signature edit.
+
+Bindings, fixture reuse and budgets
+----------------------------------
+New test files live alongside tests\jira_work_items with build constraint
+integration && ado_collection; select ONLY ^TestADOA[1-5].
+Reuse its actual HTTP/PG/S3 bootstrap/login/roles, budget, snapshots and native
+TLS construction idioms. No old cases are selected or new all-vendor harness.
+New collection binding is direct app.OpenCollectionWorker with one proposed
+field: CollectionWorkerConfig.AzureDevOpsEndpoint string. Existing Client is
+cloned into profile-selected direct origin transports. Default for that field
+is https://dev.azure.com; GitHubEndpoint/Client/default behavior stays intact.
+This missing field may cause prereq compilation RED at the baseline, not a
+semantic product RED. Astra does not run even the compile phase.
+
+Each independently created fixture uses the existing 90s / 220 API / 1400 SQL
+budget, core pool 1 and each active worker pool 1, native GET cap 64, total
+S3 TCP-write cap 64 plus explicit object-request/byte bounds in new taps.
+No tests call t.Parallel. A4 authority/storage subcases allocate separate
+fixtures from the start; each native-bound family owns one fixture for only
+three related failures, never a cumulative 20-plus-path scenario.
+Planned fixture instances if every authored path executes: A1=1, A2=6, A3=4,
+A4=25, A5=1, aggregate=37. These are planned instances, not observed runs.
+Record counts per fixture and sum them separately. Published child counters
+are included, never portrayed as traced if absent. Cleanup work is counted.
+No aggregate latency/capacity claim from these small fixtures.
+
+Private runtime prerequisite: existing ASPM_JIRA_RUNTIME JSON (loopback PG
+15432, S3 18333), plus ASPM_ADO_CAPABILITIES JSON with existing explicitly
+granted identities:
+  {collectionReader:{accessKey,secretKey},
+   collectionPublisher:{accessKey,secretKey},
+   rawIntake:{accessKey,secretKey},rawReader:{accessKey,secretKey}}
+Use object-scoped collection reader, collection publisher (PUT/HEAD), raw
+intake (PUT/HEAD/GET), raw reader (GET); no role/bucket setup by these tests.
+Grants cover the test-owned jira-work-items/<random>/collection/ and raw/
+prefix families only. Fixture admin identity only inspects/cleans owned data.
+Forwarding taps observe real signed S3 requests without fabricating success or
+permission failures. Missing-scope tests use the real reader identity for a
+write and the publisher identity for a raw read, expecting actual S3 denial.
+Missing credentials or actual grants is BLOCKED, not a mock pass.
+The publisher's HeadObject permission can also permit collection GetObject;
+do not invent an S3 method-only IAM distinction. Cross-prefix denials use a
+raw-only reader on collection data and the collection publisher on raw data.
+Core/worker taps separately enforce their actual intended operations.
+The only new business-SQL fault is one enumerated UPDATE of buildId on an
+already API-created, queued, owned source collection, leaving its binding
+digest unchanged. It is a tamper probe, never a seed or result shim. Other
+business data is API-produced; S3 corruption changes only owned object bytes.
+
+A1 configuration, encryption, strict selector/default compatibility and roles.
+A2 explicit native collection, scoped replay, stable assets, exact records and
+partial evidence; independent target/bound fixtures where appropriate.
+A3 explicit SARIF bridge, server-bound replay/provenance/expiry, independent
+ingestion -> Work/finding observations and no automatic closure.
+A4 independent held native/S3/current authority/pool/fence, wrong-target,
+ZIP/request limits, integrity/UTF-8/storage scopes and missing key fixtures.
+A5 authentic published V11 -> exact additive V12 -> reopen, API-produced old
+GitHub source/queued+completed collections and existing legacy data preserved;
+minimal prior seeder reuse for Slack/Jira/Teams/AI/views, no native expansion.
+
+Published V11 closure recipe
+---------------------------
+Use only pinned Git objects at 69f3ef9, go.mod/go.sum and non-test Go files under
+internal\app, parsers, providers, connectors, evidence (89 files). No repository
+archive/toolchain inventory. A new forwarding-only published-core helper adds
+explicit collection storage and one selected GitHub worker step for A5.
+It contains no business SQL, fixtures, queue or app-result replacement.
+Sol builds with cached Go 1.27.1, -mod=readonly, GOTOOLCHAIN=local, GOENV=off,
+GOWORK=off, GOPROXY=off, GOSUMDB=off and project-local work/cache paths.
+The build receipt pins commit, closure path/blob digest, exact copied file
+digests, helper digest and executable digest. A5 verifies those before launch.
+Only Sol can produce a receipt/run evidence. Unsigned authored inputs are
+not compilation, acceptance, a previous run or vendor certification.

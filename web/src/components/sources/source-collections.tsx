@@ -93,7 +93,8 @@ export function SourceCollections({ source }: { source: SourceConnection }) {
         </>}
       </div>
     </section>
-    {selected && <CollectionDetail key={selected.generation} id={selected.id} sourceId={source.id} initial={selected.initial} />}
+    {selected && <CollectionDetail key={selected.generation} id={selected.id} sourceId={source.id}
+      profile="github-cloud-app" initial={selected.initial} />}
     {confirmation && <CollectSource source={source} returnFocus={confirmation} onClose={() => setConfirmation(null)} onAccepted={accepted} />}
   </div>;
 }

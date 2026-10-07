@@ -10,14 +10,27 @@ M00 was independently accepted at commit
 runtime, installer and application UI increments beyond those foundations.
 The full milestone roadmap is not complete, and this is not a supported release.
 
+### Current roadmap priority
+
+The selected Azure DevOps Services repository/build-artifact collection and
+explicit SARIF intake path is implemented with application UI, worker and Helm
+wiring. Owned synthetic protocol/PG/S3 fixtures passed on October 7, 2026; an
+authorized live Azure DevOps account and Linux/Podman activation were not
+tested.
+
+Work now continues with reversible correlation/merge-split and
+retention/archive in M06, followed by the remaining reporting, installer
+recovery/upgrade and release-hardening gaps. GitLab, AWS, Azure cloud and other
+unfinished integration expansion remain deferred.
+
 The application now has a real PostgreSQL/S3 backend: authenticated workspaces,
 roles, assets, queued report intake, findings and scan history, CSV exports,
 and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
-live posture reports with saved snapshots, and Slack connections with explicit
-finding-notification previews and delivery history, plus selected GitHub source
-configuration, explicit collection intents and raw record/evidence views, plus
+live posture reports with saved snapshots, Slack/Jira/Teams configuration and
+delivery history, selected GitHub source collection, and selected Azure DevOps
+build-artifact collection with explicit report intake, plus
 opt-in persistent AI profile, policy and grant configuration, with an in-finding
 assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the
@@ -31,10 +44,10 @@ deployment, recovery and capacity gates remain open. PostgreSQL role separation
 and production network isolation are not yet qualified.
 
 Eight native integration families and four configurable AI provider adapters
-exist as libraries. Slack notifications and selected GitHub repository collection
-have durable application workflows, as do explicitly reviewed AI assessments.
-Orchestration for the other native families and live vendor/model qualification
-remain incomplete. Assessment source/host images and explicit owned-cluster
+exist as libraries. Slack, Jira and Teams delivery, selected GitHub collection,
+selected Azure DevOps report collection and explicitly reviewed AI assessments
+have durable application workflows. Other native-family orchestration and live
+vendor/model qualification remain incomplete. Assessment source/host images and explicit owned-cluster
 startup have separate qualification; Helm is opt-in and native Quadlet
 activation remains operator work.
 Verification supports

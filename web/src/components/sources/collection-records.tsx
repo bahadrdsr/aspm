@@ -1,16 +1,26 @@
 import { useCallback, useState } from "react";
 import { sourcesApi } from "@/api/sources";
 import type { SourceRecord } from "@/api/source-types";
+import type { ImportReceipt } from "@/api/types";
+import { useSession } from "@/lib/session";
 import { ActionButton } from "@/components/action-button";
+import { ImportStatus } from "@/components/import-status";
 import { Button } from "@/components/ui/button";
+import { AzureDevOpsImportDialog } from "./azure-devops-import";
 import { SourceReadState } from "./source-ui";
 import { SourceEvidenceDialog } from "./source-evidence";
 import { useSourcePage } from "./use-source-page";
 
-export function CollectionRecords({ id }: { id: string }) {
-  const load = useCallback((cursor: string | null, signal: AbortSignal) => sourcesApi.records(id, cursor, signal), [id]);
+export function CollectionRecords({ id, profile }: { id: string; profile: "github-cloud-app" | "ado-services-build-artifacts" }) {
+  const { workspace } = useSession();
+  const load = useCallback((cursor: string | null, signal: AbortSignal) =>
+    profile === "ado-services-build-artifacts"
+      ? sourcesApi.azureDevOpsRecords(id, cursor, signal)
+      : sourcesApi.records(id, cursor, signal), [id, profile]);
   const page = useSourcePage(load);
   const [selected, setSelected] = useState<{ record: SourceRecord; trigger: HTMLElement } | null>(null);
+  const [importing, setImporting] = useState<{ record: SourceRecord; trigger: HTMLElement } | null>(null);
+  const [receipt, setReceipt] = useState<ImportReceipt | null>(null);
   return <section className="source-panel surface" aria-label="Records">
     <header className="source-panel-heading"><h3>Records</h3>
       <ActionButton variant="outline" aria-disabled={page.pending} onClick={page.refresh}>Refresh records</ActionButton></header>
@@ -23,7 +33,11 @@ export function CollectionRecords({ id }: { id: string }) {
             <tbody>{page.data.items.map((record) => <tr key={record.id}>
               <td><code>{record.id}</code><p>{record.kind} - external ID {record.externalId}</p><p>Ordinal: {record.ordinal}</p>
                 <p>{record.state || "No native state supplied"}{record.severity && ` / ${record.severity}`}</p></td>
-              <td><Button type="button" variant="outline" size="sm" onClick={(event) => setSelected({ record, trigger: event.currentTarget })}>View evidence</Button></td>
+              <td><div className="source-actions"><Button type="button" variant="outline" size="sm"
+                onClick={(event) => setSelected({ record, trigger: event.currentTarget })}>View evidence</Button>
+                {profile === "ado-services-build-artifacts" && record.kind === "report" && workspace.role !== "viewer" &&
+                  <Button type="button" size="sm" onClick={(event) => setImporting({ record, trigger: event.currentTarget })}>Import SARIF</Button>}
+              </div></td>
             </tr>)}</tbody>
           </table>
         </div>}
@@ -32,5 +46,8 @@ export function CollectionRecords({ id }: { id: string }) {
       </>}
     </div>
     {selected && <SourceEvidenceDialog key={selected.record.id} record={selected.record} returnFocus={selected.trigger} onClose={() => setSelected(null)} />}
+    {importing && <AzureDevOpsImportDialog key={importing.record.id} record={importing.record} returnFocus={importing.trigger}
+      onClose={() => setImporting(null)} onAccepted={(value) => { setReceipt(value); setImporting(null); }} />}
+    {receipt && <ImportStatus initial={receipt} />}
   </section>;
 }

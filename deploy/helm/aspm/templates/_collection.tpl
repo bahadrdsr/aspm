@@ -31,10 +31,14 @@
 {{- fail (printf "%s must be a mapping" $selection.path) -}}
 {{- end -}}
 {{- end -}}
-{{- include "aspm.collectionStrings" (dict "value" $collection "path" "collection" "fields" (list "leaseDuration" "githubEndpoint")) -}}
+{{- include "aspm.collectionStrings" (dict "value" $collection "path" "collection" "fields" (list "leaseDuration" "githubEndpoint" "azureDevOpsEndpoint")) -}}
 {{- $gateway := $collection.githubEndpoint -}}
 {{- if or (not (regexMatch "^https://[^/?#[:space:]@]+" $gateway)) (regexMatch "^https://[^/?#]*@" $gateway) -}}
 {{- fail "collection.githubEndpoint must be an HTTPS base without credentials" -}}
+{{- end -}}
+{{- $azureDevOps := $collection.azureDevOpsEndpoint -}}
+{{- if or (not (regexMatch "^https://[^/?#[:space:]@]+" $azureDevOps)) (regexMatch "^https://[^/?#]*@" $azureDevOps) -}}
+{{- fail "collection.azureDevOpsEndpoint must be an HTTPS base without credentials" -}}
 {{- end -}}
 {{- if or $collection.enabled (gt (len $storage) 0) (gt (len $reader) 0) (gt (len $publisher) 0) -}}
 {{- include "aspm.collectionStrings" (dict "value" $storage "path" "collection.storage" "fields" (list "endpoint" "bucket" "prefix" "region")) -}}

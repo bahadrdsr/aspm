@@ -174,7 +174,12 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 		if err != nil {
 			return err
 		}
-		config.CollectionClient, err = ownProviderClient(config.CollectionClient, config.GitHubEndpoint, config.CollectionCAFile)
+		config.AzureDevOpsEndpoint, err = app.ValidateAzureDevOpsGateway(config.AzureDevOpsEndpoint)
+		if err != nil {
+			return err
+		}
+		config.CollectionClient, err = ownProviderClient(config.CollectionClient, config.GitHubEndpoint,
+			config.CollectionCAFile, config.AzureDevOpsEndpoint)
 		if err != nil {
 			return err
 		}

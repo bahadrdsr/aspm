@@ -384,7 +384,8 @@ func noCollectionAuthority(t *testing.T, output rendered, roles ...string) {
 		}
 		for _, c := range append(pod.Spec.Template.Spec.InitContainers, pod.Spec.Template.Spec.Containers...) {
 			for name, item := range environment(t, c) {
-				if strings.HasPrefix(name, "ASPM_COLLECTION_") || name == "ASPM_GITHUB_ENDPOINT" {
+				if strings.HasPrefix(name, "ASPM_COLLECTION_") ||
+					name == "ASPM_GITHUB_ENDPOINT" || name == "ASPM_AZURE_DEVOPS_ENDPOINT" {
 					t.Fatalf("unrelated %s container %s received %s", role, c.Name, name)
 				}
 				if item.ValueFrom != nil && strings.HasPrefix(item.ValueFrom.Secret.Name, "synthetic-collection-") {

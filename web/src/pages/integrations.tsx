@@ -60,7 +60,10 @@ export function IntegrationsPage() {
         <div className="integration-footer"><Icon name="lock" size={14} />{item.id === "jira"
           ? <Button type="button" variant="ghost" size="sm" onClick={() => setJiraOpen(true)}>Manage Jira connections</Button>
           : item.id === "teams" ? <Button type="button" variant="ghost" size="sm" onClick={() => setTeamsOpen(true)}>Manage Teams connections</Button>
-          : <span>{item.id === "slack" ? "Outbound destinations are managed in Connections" : item.id === "github" ? "Selected repositories are managed in Sources" : "Setup is not available in this view"}</span>}</div>
+          : <span>{item.id === "slack" ? "Outbound destinations are managed in Connections" :
+            item.id === "github" ? "Selected repositories are managed in Sources" :
+              item.id === "azure-devops" ? "Selected builds and reports are managed in Sources" :
+                "Setup is not available in this view"}</span>}</div>
       </li>;
     })}</ul>}
     <p className="view-footnote"><Icon name="info" size={15} />Report import formats do not count as native integrations. Connection configuration never sends a notification or verifies a catalog family.</p>

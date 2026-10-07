@@ -239,8 +239,9 @@ denial for its explicitly selected owned fixture.
 
 The independent collection Deployment runs `/app/bin/collection-worker` with
 its own replicas/resources, DB settings, integration key, publisher storage,
-`collection.leaseDuration` (default `"15s"`) and `collection.githubEndpoint`
-(default `"https://api.github.com"`). Ingestion, reports and delivery receive
+`collection.leaseDuration` (default `"15s"`), `collection.githubEndpoint`
+(default `"https://api.github.com"`) and `collection.azureDevOpsEndpoint`
+(default `"https://dev.azure.com"`). Ingestion, reports and delivery receive
 none of the collection settings or reader/publisher keys; legacy raw storage
 and managed-service policy remain unchanged. The chart rejects non-string or
 blank fields, credential-bearing endpoints and non-HTTPS provider gateways.
@@ -407,7 +408,9 @@ credential provisioning or TLS trust configuration.
 `aspm-collection.container` likewise remains manual opt-in with no `[Install]`
 configuration. Its only environment source is `/etc/aspm/collection.env`, which
 must be provisioned separately with the explicit publisher identity and other
-runtime inputs. The unit retains the read-only filesystem, bounded temporary
+runtime inputs. Azure DevOps Services uses `ASPM_AZURE_DEVOPS_ENDPOINT`, which
+defaults to `https://dev.azure.com`; this is network destination admission, not
+PAT, organization, project or repository authority. The unit retains the read-only filesystem, bounded temporary
 filesystem and private network, without inline credentials or extra volumes.
 Existing installer bundle/copy/start behavior is unchanged and does not install,
 provision or start this new unit. Rootless Podman 4.9 generation verifies syntax

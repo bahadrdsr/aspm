@@ -1,7 +1,9 @@
 import { useCallback, useRef, useState } from "react";
 import { APIError } from "@/api/client";
 import { sourcesApi } from "@/api/sources";
-import type { CollectionResponse, SourceCollection } from "@/api/source-types";
+import type {
+  AzureDevOpsCollectionResponse, AzureDevOpsSourceCollection, CollectionResponse, SourceCollection,
+} from "@/api/source-types";
 import { useResource } from "@/lib/use-resource";
 import { label } from "@/lib/format";
 import { ActionButton } from "@/components/action-button";
@@ -17,20 +19,35 @@ const explanations = {
   failed: "Collection failed. This is not an empty successful scan.",
   blocked: "Collection was blocked by the service. No source scan or verification is claimed.",
 };
-function binding(value: SourceCollection) {
-  const { id, workspaceId, sourceId, profile, connectionRevision, repository, requestedBy, createdAt } = value;
-  return JSON.stringify({ id, workspaceId, sourceId, profile, connectionRevision, repository, requestedBy, createdAt });
+type CollectionEnvelope = CollectionResponse | AzureDevOpsCollectionResponse;
+type CollectionValue = SourceCollection | AzureDevOpsSourceCollection;
+function binding(value: CollectionValue) {
+  const base = {
+    id: value.id, workspaceId: value.workspaceId, sourceId: value.sourceId, profile: value.profile,
+    connectionRevision: value.connectionRevision, requestedBy: value.requestedBy, createdAt: value.createdAt,
+  };
+  return value.profile === "github-cloud-app"
+    ? JSON.stringify({ ...base, repository: value.repository })
+    : JSON.stringify({ ...base, azureDevOps: value.azureDevOps, selection: value.selection });
 }
-export function CollectionDetail({ id, sourceId, initial }: { id: string; sourceId: string; initial: CollectionResponse | null }) {
+export function CollectionDetail({ id, sourceId, profile, initial }: {
+  id: string;
+  sourceId: string;
+  profile: "github-cloud-app" | "ado-services-build-artifacts";
+  initial: CollectionEnvelope | null;
+}) {
   const [checks, setChecks] = useState(0);
-  const original = useRef<SourceCollection | null>(initial?.collection ?? null);
+  const original = useRef<CollectionValue | null>(initial?.collection ?? null);
   const load = useCallback(async (signal: AbortSignal) => {
-    const response = initial !== null && checks === 0 ? initial : await sourcesApi.collection(id, sourceId, signal);
+    const response: CollectionEnvelope = initial !== null && checks === 0 ? initial :
+      profile === "ado-services-build-artifacts"
+        ? await sourcesApi.azureDevOpsCollection(id, sourceId, signal)
+        : await sourcesApi.collection(id, sourceId, signal);
     signal.throwIfAborted();
     if (original.current && binding(original.current) !== binding(response.collection)) throw new APIError("The service returned a changed immutable collection binding.", "invalid-response", false);
     original.current = response.collection;
     return response;
-  }, [id, sourceId, initial, checks]);
+  }, [id, sourceId, profile, initial, checks]);
   const resource = useResource(load);
   const collection = resource.data?.collection;
   return <>
@@ -55,7 +72,16 @@ export function CollectionDetail({ id, sourceId, initial }: { id: string; source
             </>}
           </div>
           <dl className="source-facts">
-            <div className="full-width"><dt>Selected repository</dt><dd>{collection.repository}</dd></div>
+            {collection.profile === "github-cloud-app"
+              ? <div className="full-width"><dt>Selected repository</dt><dd>{collection.repository}</dd></div>
+              : <>
+                <div><dt>Organization</dt><dd>{collection.azureDevOps.organization}</dd></div>
+                <div><dt>Project ID</dt><dd><code>{collection.azureDevOps.projectId}</code></dd></div>
+                <div><dt>Repository ID</dt><dd><code>{collection.azureDevOps.repositoryId}</code></dd></div>
+                <div><dt>Build ID</dt><dd>{collection.selection.buildId}</dd></div>
+                <div><dt>Artifact</dt><dd>{collection.selection.artifactName}</dd></div>
+                <div className="full-width"><dt>Report path</dt><dd>{collection.selection.artifactPath}</dd></div>
+              </>}
             <div><dt>Connection revision</dt><dd>{collection.connectionRevision}</dd></div>
             <div><dt>Requested by</dt><dd><code>{collection.requestedBy}</code></dd></div>
             <div><dt>Created</dt><dd><SourceTime value={collection.createdAt} /></dd></div>
@@ -70,6 +96,6 @@ export function CollectionDetail({ id, sourceId, initial }: { id: string; source
         </>}
       </div>
     </section>
-    {collection && collection.recordCount > 0 && <CollectionRecords key={collection.id} id={collection.id} />}
+    {collection && collection.recordCount > 0 && <CollectionRecords key={collection.id} id={collection.id} profile={collection.profile} />}
   </>;
 }

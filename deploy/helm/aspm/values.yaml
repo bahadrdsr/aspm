@@ -50,6 +50,7 @@ collection:
   replicas: 1
   leaseDuration: "15s"
   githubEndpoint: "https://api.github.com"
+  azureDevOpsEndpoint: "https://dev.azure.com"
   storage: {}
   s3Secret: {}
   resources:

@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/bahadrdsr/aspm/internal/evidence"
@@ -9,16 +10,17 @@ import (
 )
 
 type SourceConnection struct {
-	ID                   string    `json:"id"`
-	WorkspaceID          string    `json:"workspaceId"`
-	Profile              string    `json:"profile"`
-	Name                 string    `json:"name"`
-	Repository           string    `json:"repository"`
-	Enabled              bool      `json:"enabled"`
-	CredentialConfigured bool      `json:"credentialConfigured"`
-	Revision             int64     `json:"revision"`
-	CreatedAt            time.Time `json:"createdAt"`
-	UpdatedAt            time.Time `json:"updatedAt"`
+	ID                   string             `json:"id"`
+	WorkspaceID          string             `json:"workspaceId"`
+	Profile              string             `json:"profile"`
+	Name                 string             `json:"name"`
+	Repository           string             `json:"repository,omitempty"`
+	Enabled              bool               `json:"enabled"`
+	CredentialConfigured bool               `json:"credentialConfigured"`
+	Revision             int64              `json:"revision"`
+	CreatedAt            time.Time          `json:"createdAt"`
+	UpdatedAt            time.Time          `json:"updatedAt"`
+	AzureDevOps          *AzureDevOpsTarget `json:"azureDevOps,omitempty"`
 }
 
 type sourceConnectionRecord struct {
@@ -28,12 +30,20 @@ type sourceConnectionRecord struct {
 }
 
 const sourceConnectionColumns = `id,workspace_id,profile,name,repository,enabled,
-	revision,created_at,updated_at,credential_ciphertext,repository_id`
+	revision,created_at,updated_at,credential_ciphertext,repository_id,azure_devops_target`
 
 func scanSourceConnection(row pgx.Row) (sourceConnectionRecord, error) {
 	var record sourceConnectionRecord
+	var target []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.Profile, &record.Name, &record.Repository,
-		&record.Enabled, &record.Revision, &record.CreatedAt, &record.UpdatedAt, &record.ciphertext, &record.repositoryID)
+		&record.Enabled, &record.Revision, &record.CreatedAt, &record.UpdatedAt, &record.ciphertext, &record.repositoryID, &target)
+	if err == nil && len(target) > 0 && string(target) != "null" {
+		var selected AzureDevOpsTarget
+		if json.Unmarshal(target, &selected) != nil {
+			return record, errors.New("invalid stored Azure DevOps target")
+		}
+		record.AzureDevOps = &selected
+	}
 	record.CredentialConfigured = len(record.ciphertext) > 0
 	return record, err
 }
@@ -44,7 +54,7 @@ type SourceCollection struct {
 	SourceID           string                  `json:"sourceId"`
 	Profile            string                  `json:"profile"`
 	ConnectionRevision int64                   `json:"connectionRevision"`
-	Repository         string                  `json:"repository"`
+	Repository         string                  `json:"repository,omitempty"`
 	RequestedBy        string                  `json:"requestedBy"`
 	State              string                  `json:"state"`
 	Complete           bool                    `json:"complete"`
@@ -56,6 +66,8 @@ type SourceCollection struct {
 	CollectedAt        *time.Time              `json:"collectedAt"`
 	CompletedAt        *time.Time              `json:"completedAt"`
 	Failure            *FindingDeliveryFailure `json:"failure"`
+	AzureDevOps        *AzureDevOpsTarget      `json:"azureDevOps,omitempty"`
+	Selection          *AzureDevOpsSelection   `json:"selection,omitempty"`
 }
 
 type sourceCollectionRecord struct {
@@ -67,16 +79,16 @@ type sourceCollectionRecord struct {
 
 const sourceCollectionColumns = `id,workspace_id,source_id,profile,connection_revision,repository,
 	requested_by,state,complete,asset_id,repository_id,record_count,gaps,created_at,collected_at,
-	completed_at,failure,binding_digest,COALESCE(worker_id,''),fence`
+	completed_at,failure,binding_digest,COALESCE(worker_id,''),fence,azure_devops_target,azure_devops_selection`
 
 func scanSourceCollection(row pgx.Row) (sourceCollectionRecord, error) {
 	var record sourceCollectionRecord
-	var gaps, failure []byte
+	var gaps, failure, target, selection []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.SourceID, &record.Profile,
 		&record.ConnectionRevision, &record.Repository, &record.RequestedBy, &record.State,
 		&record.Complete, &record.AssetID, &record.RepositoryID, &record.RecordCount, &gaps,
 		&record.CreatedAt, &record.CollectedAt, &record.CompletedAt, &failure, &record.bindingDigest,
-		&record.workerID, &record.fence)
+		&record.workerID, &record.fence, &target, &selection)
 	if err != nil {
 		return record, err
 	}
@@ -85,6 +97,20 @@ func scanSourceCollection(row pgx.Row) (sourceCollectionRecord, error) {
 	}
 	if len(failure) > 0 {
 		err = json.Unmarshal(failure, &record.Failure)
+	}
+	if err == nil && len(target) > 0 && string(target) != "null" {
+		var selected AzureDevOpsTarget
+		if json.Unmarshal(target, &selected) != nil {
+			return record, errors.New("invalid stored Azure DevOps target")
+		}
+		record.AzureDevOps = &selected
+	}
+	if err == nil && len(selection) > 0 && string(selection) != "null" {
+		var selected AzureDevOpsSelection
+		if json.Unmarshal(selection, &selected) != nil {
+			return record, errors.New("invalid stored Azure DevOps selection")
+		}
+		record.Selection = &selected
 	}
 	return record, err
 }

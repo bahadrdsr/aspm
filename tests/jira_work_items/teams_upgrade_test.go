@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+	"github.com/bahadrdsr/aspm/tests/internal/sourcecompat"
 )
 
 func (h *harness) teamsV10Data(names []string) map[string][]string {
@@ -20,7 +21,7 @@ func (h *harness) teamsV10Data(names []string) map[string][]string {
 				h.rows("SELECT id FROM "+h.table(name)+" WHERE teams_target IS NOT NULL"), []string{})
 			projection += "-'teams_target'"
 		}
-		result[name] = h.rows("SELECT ("+projection+")::text FROM "+h.table(name)+" v ORDER BY ("+projection+")::text")
+		result[name] = h.rows("SELECT (" + projection + ")::text FROM " + h.table(name) + " v ORDER BY (" + projection + ")::text")
 	}
 	return result
 }
@@ -60,7 +61,7 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	providerKey := secret(t)
 	h.remember(providerKey)
 	profile := h.json(h.admin, "POST", "/api/v1/ai/profiles", object{
-		"name": "Owned published advisory", "family": "openai", "endpoint": n.common.trap.URL+"/v1",
+		"name": "Owned published advisory", "family": "openai", "endpoint": n.common.trap.URL + "/v1",
 		"model": "operator-reviewed-model", "enabled": true, "structuredOutput": true, "apiKey": providerKey,
 	}, 201).Profile
 	policy := h.json(h.admin, "PATCH", "/api/v1/ai/policy", object{"mode": "approved-hosted"}, 200).Policy
@@ -83,8 +84,8 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		input        any
 		before       object
 	}{
-		{"GET", connectionsPath+"/"+slack.ID, nil, nil},
-		{"GET", connectionsPath+"/"+jira.ID, nil, nil},
+		{"GET", connectionsPath + "/" + slack.ID, nil, nil},
+		{"GET", connectionsPath + "/" + jira.ID, nil, nil},
 		{"GET", deliveryPath(confirmedJob.ID), nil, nil},
 		{"GET", deliveryPath(slackJob.ID), nil, nil},
 		{"GET", deliveryPath(jiraJob.ID), nil, nil},
@@ -116,12 +117,13 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11")
-	same(t, "current Open did not add V11 exactly once over real populated V10", h.ledger(), currentLedger)
-	same(t, "V11 changed the relation/index set", h.relations(), relations)
-	same(t, "V11 must validate the complete exact DDL delta before projection",
-		deliverycompat.ProjectV11(t, definitions, h.definitions(names)), definitions)
-	same(t, "V11 changed old bytes outside the two nullable new columns", h.teamsV10Data(names), before)
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12")
+	same(t, "current Open did not add V11/V12 exactly once over real populated V10", h.ledger(), currentLedger)
+	same(t, "V12 changed the relation/index set", h.relations(), relations)
+	same(t, "V12 must validate the complete exact DDL delta before projection",
+		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
+	same(t, "V12 changed old bytes outside the exact nullable additions",
+		sourcecompat.ProjectRowsV12(t, before, h.teamsV10Data(names)), before)
 	for _, r := range resources {
 		body, _ := h.request(h.ctx, h.admin, r.method, r.path, r.input, 200)
 		same(t, "V11 changed published Slack/Jira DTO/queue/preview/digest bytes", decoded[object](t, body), r.before)
@@ -133,9 +135,10 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	same(t, "V11 changed the published queued advisory", h.json(viewer, "GET", "/api/v1/ai/assessments/"+assessmentID, nil, 200).Assessment, assessment)
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "V11 reopen changed the integer ledger", h.ledger(), currentLedger)
-	same(t, "V11 reopen changed definitions", h.definitions(names), afterDefinitions)
-	same(t, "V11 reopen changed historical business bytes", h.teamsV10Data(names), before)
+	same(t, "V12 reopen changed the integer ledger", h.ledger(), currentLedger)
+	same(t, "V12 reopen changed definitions", h.definitions(names), afterDefinitions)
+	same(t, "V12 reopen changed historical business bytes",
+		sourcecompat.ProjectRowsV12(t, before, h.teamsV10Data(names)), before)
 
 	value := n.workflowURL()
 	c := h.teamsConnection(h.admin, value)
@@ -196,7 +199,11 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 			unrelated = append(unrelated, name)
 		}
 	}
-	for name, rows := range h.snapshot(unrelated) {
+	unrelatedBefore := map[string][]string{}
+	for _, name := range unrelated {
+		unrelatedBefore[name] = before[name]
+	}
+	for name, rows := range sourcecompat.ProjectRowsV12(t, unrelatedBefore, h.snapshot(unrelated)) {
 		same(t, "delivery changed unrelated historical business rows in "+name, rows, before[name])
 	}
 	h.reopen()

@@ -272,7 +272,7 @@ function parseAsset(value: unknown, workspace: string | null): AssetResponse {
   return { apiVersion, asset: asset(versioned(value).asset, workspace) };
 }
 
-function parseImport(value: unknown): ImportReceipt {
+export function parseImportReceipt(value: unknown): ImportReceipt {
   const item = object(versioned(value).import, "import receipt");
   const state = choice(item.state, ["queued", "processing", "succeeded", "failed"], "import state");
   let failure: ImportReceipt["failure"] = null;
@@ -627,9 +627,9 @@ export const api = {
       return result;
     }, { method: "PATCH", body, signal });
   },
-  importReport: (body: ImportInput, signal: AbortSignal) => request("/api/v1/imports", parseImport, { method: "POST", body, signal }),
+  importReport: (body: ImportInput, signal: AbortSignal) => request("/api/v1/imports", parseImportReceipt, { method: "POST", body, signal }),
   importStatus: (id: string, signal: AbortSignal) => request(`/api/v1/imports/${encodeURIComponent(id)}`, (value) => {
-    const result = parseImport(value);
+    const result = parseImportReceipt(value);
     if (result.id !== id) return invalid("import identifier");
     return result;
   }, { signal }),

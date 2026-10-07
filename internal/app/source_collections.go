@@ -7,14 +7,30 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/bahadrdsr/aspm/internal/connectors"
 	"github.com/jackc/pgx/v5"
 )
 
 func sourceCollectionBinding(value SourceCollection) ([]byte, error) {
+	if value.Profile == connectors.GitHubCloudApp {
+		binding := struct {
+			Workspace, Source, Profile, Repository, Actor string
+			Revision                                      int64
+		}{value.WorkspaceID, value.SourceID, value.Profile, value.Repository, value.RequestedBy, value.ConnectionRevision}
+		data, err := json.Marshal(binding)
+		if err != nil {
+			return nil, err
+		}
+		sum := sha256.Sum256(data)
+		return sum[:], nil
+	}
 	binding := struct {
-		Workspace, Source, Profile, Repository, Actor string
-		Revision                                      int64
-	}{value.WorkspaceID, value.SourceID, value.Profile, value.Repository, value.RequestedBy, value.ConnectionRevision}
+		Workspace, Source, Profile, Actor string
+		Revision                          int64
+		Target                            *AzureDevOpsTarget
+		Selection                         *AzureDevOpsSelection
+	}{value.WorkspaceID, value.SourceID, value.Profile, value.RequestedBy, value.ConnectionRevision,
+		value.AzureDevOps, value.Selection}
 	data, err := json.Marshal(binding)
 	if err != nil {
 		return nil, err
@@ -25,7 +41,10 @@ func sourceCollectionBinding(value SourceCollection) ([]byte, error) {
 
 func (a *Application) enqueueSourceCollection(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession, sourceID string) error {
 	var input struct {
-		IdempotencyKey string `json:"idempotencyKey"`
+		IdempotencyKey string           `json:"idempotencyKey"`
+		BuildID        optional[string] `json:"buildId"`
+		ArtifactName   optional[string] `json:"artifactName"`
+		ArtifactPath   optional[string] `json:"artifactPath"`
 	}
 	if err := a.decode(w, r, &input, 16<<10); err != nil {
 		return err
@@ -56,21 +75,57 @@ func (a *Application) enqueueSourceCollection(w http.ResponseWriter, r *http.Req
 	if !source.Enabled {
 		return errConflict
 	}
+	var selection *AzureDevOpsSelection
+	switch source.Profile {
+	case connectors.GitHubCloudApp:
+		if input.BuildID.Set || input.ArtifactName.Set || input.ArtifactPath.Set {
+			return errInvalid
+		}
+	case connectors.ADOArtifacts:
+		if !input.BuildID.Set || input.BuildID.Value == nil ||
+			!input.ArtifactName.Set || input.ArtifactName.Value == nil ||
+			!input.ArtifactPath.Set || input.ArtifactPath.Value == nil ||
+			source.AzureDevOps == nil {
+			return errInvalid
+		}
+		value := AzureDevOpsSelection{BuildID: *input.BuildID.Value,
+			ArtifactName: *input.ArtifactName.Value, ArtifactPath: *input.ArtifactPath.Value}
+		if !validAzureDevOpsSelection(value) {
+			return errInvalid
+		}
+		selection = &value
+	default:
+		return errInvalid
+	}
 	value := SourceCollection{
 		ID: newID(), WorkspaceID: workspace, SourceID: sourceID, Profile: source.Profile,
 		ConnectionRevision: source.Revision, Repository: source.Repository, RequestedBy: session.User.ID,
-		State: "queued", CreatedAt: a.config.Now().UTC(),
+		State: "queued", CreatedAt: a.config.Now().UTC(), AzureDevOps: source.AzureDevOps, Selection: selection,
 	}
 	digest, err := sourceCollectionBinding(value)
 	if err != nil {
 		return err
 	}
+	var targetJSON, selectionJSON any
+	if value.AzureDevOps != nil {
+		targetJSON, err = json.Marshal(value.AzureDevOps)
+		if err != nil {
+			return err
+		}
+	}
+	if value.Selection != nil {
+		selectionJSON, err = json.Marshal(value.Selection)
+		if err != nil {
+			return err
+		}
+	}
 	record, err := scanSourceCollection(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("source_collections")+`
-		(id,workspace_id,source_id,profile,connection_revision,repository,requested_by,idempotency_key,binding_digest,created_at)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+		(id,workspace_id,source_id,profile,connection_revision,repository,requested_by,idempotency_key,binding_digest,created_at,
+		 azure_devops_target,azure_devops_selection)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
 		ON CONFLICT (workspace_id,idempotency_key) DO NOTHING RETURNING `+sourceCollectionColumns,
 		value.ID, workspace, sourceID, source.Profile, source.Revision, source.Repository,
-		session.User.ID, input.IdempotencyKey, digest, value.CreatedAt))
+		session.User.ID, input.IdempotencyKey, digest, value.CreatedAt, targetJSON, selectionJSON))
 	status := http.StatusAccepted
 	if errors.Is(err, pgx.ErrNoRows) {
 		record, err = scanSourceCollection(tx.QueryRow(r.Context(), `SELECT `+sourceCollectionColumns+

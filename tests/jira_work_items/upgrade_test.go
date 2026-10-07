@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+	"github.com/bahadrdsr/aspm/tests/internal/sourcecompat"
 )
 
 const publishedCommit = "4a54db75046f5910705007d800fa34496adc22d8"
@@ -252,12 +253,12 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	output := filepath.Join("..", "..", ".artifacts", "jira-work-items", "published-v9-upgrade-"+nonce(t)+".json")
 	must(t, "record bounded nonsecret actual migration observation", os.WriteFile(output, encoded(t, observation), 0600))
 	t.Log("actual migration observation:", output)
-	same(t, "current app did not add V10/V11 over exact populated published V9",
-		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
+	same(t, "current app did not add V10/V11/V12 over exact populated published V9",
+		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"})
 	same(t, "V11 changed the historical relation set", h.relations(), relations)
 	same(t, "V10/V11 must assert the exact approved DDL delta before any projection",
 		deliverycompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V10 changed actual historical business rows", h.legacyData(names), before)
+	same(t, "V12 changed actual historical business rows", sourcecompat.ProjectRowsV12(t, before, h.legacyData(names)), before)
 	body, _ := h.request(h.ctx, viewer, "GET", connectionsPath+"/"+slackConnection.ID, nil, 200)
 	same(t, "Jira-disabled migration changed exact old Slack metadata keys/values", decoded[object](t, body)["connection"], slackShape)
 	body, _ = h.request(h.ctx, viewer, "GET", deliveryPath(slackJob.ID), nil, 200)
@@ -272,10 +273,10 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	same(t, "reopen repeated/omitted a current migration", h.ledger(), currentLedger)
 	same(t, "reopen altered migrated definitions", h.definitions(names), afterDefinitions)
 	same(t, "reopen changed the historical relation set", h.relations(), relations)
-	same(t, "reopen changed old-column business data", h.legacyData(names), before)
+	same(t, "reopen changed old-column business data", sourcecompat.ProjectRowsV12(t, before, h.legacyData(names)), before)
 	h.assertTypedRow(ownedRow{"integration_connections", h.admin.Workspace, slackConnection.ID}, n.target())
 	h.assertTypedRow(ownedRow{"finding_deliveries", h.admin.Workspace, slackJob.ID}, n.target())
-	same(t, "rolled-back typed-profile probes changed legacy business rows", h.legacyData(names), before)
+	same(t, "rolled-back typed-profile probes changed legacy business rows", sourcecompat.ProjectRowsV12(t, before, h.legacyData(names)), before)
 	token := secret(t)
 	c := h.connection(h.admin, n.target(), token)
 	job := h.queue(h.admin, h.preview(h.admin, f.ID, c), "after-real-v9-upgrade", 202)

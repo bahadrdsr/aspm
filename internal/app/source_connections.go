@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 	"regexp"
 
@@ -17,8 +18,8 @@ func validSourceRepository(repository string) bool {
 	return len(repository) <= 256 && sourceRepositoryName.MatchString(repository)
 }
 
-func sourceCredentialAAD(workspace, id string) []byte {
-	return []byte("aspm/source-credential/v1\x00" + connectors.GitHubCloudApp + "\x00" + workspace + "\x00" + id)
+func sourceCredentialAAD(profile, workspace, id string) []byte {
+	return []byte("aspm/source-credential/v1\x00" + profile + "\x00" + workspace + "\x00" + id)
 }
 
 func (a *Application) sourceSessionRole(ctx context.Context, tx pgx.Tx, session authenticatedSession, workspace string) (string, error) {
@@ -31,17 +32,38 @@ func (a *Application) sourceSessionRole(ctx context.Context, tx pgx.Tx, session 
 
 func (a *Application) createSource(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession) error {
 	var input struct {
-		Profile    string `json:"profile"`
-		Name       string `json:"name"`
-		Repository string `json:"repository"`
-		Token      string `json:"token"`
-		Enabled    *bool  `json:"enabled"`
+		Profile     string                      `json:"profile"`
+		Name        string                      `json:"name"`
+		Repository  optional[string]            `json:"repository"`
+		Token       string                      `json:"token"`
+		Enabled     *bool                       `json:"enabled"`
+		AzureDevOps optional[AzureDevOpsTarget] `json:"azureDevOps"`
 	}
 	if err := a.decode(w, r, &input, 32<<10); err != nil {
 		return err
 	}
-	if input.Profile != connectors.GitHubCloudApp || !validText(input.Name, 256) ||
-		!validSourceRepository(input.Repository) || !validIntegrationToken(input.Token) || input.Enabled == nil {
+	if !validText(input.Name, 256) || !validIntegrationToken(input.Token) || input.Enabled == nil {
+		return errInvalid
+	}
+	repository := ""
+	var target *AzureDevOpsTarget
+	switch input.Profile {
+	case connectors.GitHubCloudApp:
+		if !input.Repository.Set || input.Repository.Value == nil ||
+			!validSourceRepository(*input.Repository.Value) || input.AzureDevOps.Set {
+			return errInvalid
+		}
+		repository = *input.Repository.Value
+	case connectors.ADOArtifacts:
+		if input.Repository.Set || !input.AzureDevOps.Set || input.AzureDevOps.Value == nil {
+			return errInvalid
+		}
+		normalized, valid := normalizeAzureDevOpsTarget(*input.AzureDevOps.Value)
+		if !valid {
+			return errInvalid
+		}
+		target = &normalized
+	default:
 		return errInvalid
 	}
 	if a.integrationCredentials == nil {
@@ -60,14 +82,21 @@ func (a *Application) createSource(w http.ResponseWriter, r *http.Request, works
 		return errForbidden
 	}
 	id := newID()
-	ciphertext, err := sealCredential(a.integrationCredentials, sourceCredentialAAD(workspace, id), input.Token)
+	ciphertext, err := sealCredential(a.integrationCredentials, sourceCredentialAAD(input.Profile, workspace, id), input.Token)
 	if err != nil {
 		return err
 	}
+	var targetJSON any
+	if target != nil {
+		targetJSON, err = json.Marshal(target)
+		if err != nil {
+			return err
+		}
+	}
 	record, err := scanSourceConnection(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("source_connections")+`
-		(id,workspace_id,profile,name,repository,credential_ciphertext,enabled,created_at,updated_at)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$8) RETURNING `+sourceConnectionColumns,
-		id, workspace, input.Profile, input.Name, input.Repository, ciphertext, *input.Enabled, a.config.Now().UTC()))
+		(id,workspace_id,profile,name,repository,credential_ciphertext,enabled,created_at,updated_at,azure_devops_target)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$8,$9) RETURNING `+sourceConnectionColumns,
+		id, workspace, input.Profile, input.Name, repository, ciphertext, *input.Enabled, a.config.Now().UTC(), targetJSON))
 	if err != nil {
 		return err
 	}
@@ -80,18 +109,20 @@ func (a *Application) createSource(w http.ResponseWriter, r *http.Request, works
 
 func (a *Application) updateSource(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession, id string) error {
 	var input struct {
-		Name       optional[string] `json:"name"`
-		Repository optional[string] `json:"repository"`
-		Token      optional[string] `json:"token"`
-		Enabled    optional[bool]   `json:"enabled"`
+		Name        optional[string]            `json:"name"`
+		Repository  optional[string]            `json:"repository"`
+		Token       optional[string]            `json:"token"`
+		Enabled     optional[bool]              `json:"enabled"`
+		Profile     optional[string]            `json:"profile"`
+		AzureDevOps optional[AzureDevOpsTarget] `json:"azureDevOps"`
 	}
 	if err := a.decode(w, r, &input, 32<<10); err != nil {
 		return err
 	}
 	if input.Name.Set && (input.Name.Value == nil || !validText(*input.Name.Value, 256)) ||
-		input.Repository.Set && (input.Repository.Value == nil || !validSourceRepository(*input.Repository.Value)) ||
 		input.Token.Set && (input.Token.Value == nil || !validIntegrationToken(*input.Token.Value)) ||
-		input.Enabled.Set && input.Enabled.Value == nil {
+		input.Enabled.Set && input.Enabled.Value == nil ||
+		input.Profile.Set || input.AzureDevOps.Set {
 		return errInvalid
 	}
 	tx, err := a.pool.Begin(r.Context())
@@ -111,6 +142,10 @@ func (a *Application) updateSource(w http.ResponseWriter, r *http.Request, works
 	if err != nil {
 		return err
 	}
+	if input.Repository.Set && (record.Profile != connectors.GitHubCloudApp ||
+		input.Repository.Value == nil || !validSourceRepository(*input.Repository.Value)) {
+		return errInvalid
+	}
 	changed := false
 	if input.Name.Set && record.Name != *input.Name.Value {
 		record.Name, changed = *input.Name.Value, true
@@ -122,14 +157,14 @@ func (a *Application) updateSource(w http.ResponseWriter, r *http.Request, works
 		record.Enabled, changed = *input.Enabled.Value, true
 	}
 	if input.Token.Set {
-		plain, err := openCredential(a.integrationCredentials, sourceCredentialAAD(workspace, id), record.ciphertext)
+		plain, err := openCredential(a.integrationCredentials, sourceCredentialAAD(record.Profile, workspace, id), record.ciphertext)
 		if err != nil {
 			return err
 		}
 		same := bytes.Equal(plain, []byte(*input.Token.Value))
 		clear(plain)
 		if !same {
-			record.ciphertext, err = sealCredential(a.integrationCredentials, sourceCredentialAAD(workspace, id), *input.Token.Value)
+			record.ciphertext, err = sealCredential(a.integrationCredentials, sourceCredentialAAD(record.Profile, workspace, id), *input.Token.Value)
 			if err != nil {
 				return err
 			}
@@ -163,6 +198,15 @@ func (a *Application) getSource(w http.ResponseWriter, r *http.Request, workspac
 }
 
 func (a *Application) listSources(w http.ResponseWriter, r *http.Request, workspace string) error {
+	values, selected := r.URL.Query()["profile"]
+	profile := connectors.GitHubCloudApp
+	if selected {
+		if len(values) != 1 || values[0] == "" ||
+			(values[0] != connectors.GitHubCloudApp && values[0] != connectors.ADOArtifacts) {
+			return errInvalid
+		}
+		profile = values[0]
+	}
 	limit, cursor, err := pageParameters(r)
 	if err != nil {
 		return err
@@ -174,11 +218,11 @@ func (a *Application) listSources(w http.ResponseWriter, r *http.Request, worksp
 	defer rollback(tx)
 	var total int64
 	if err = tx.QueryRow(r.Context(), `SELECT count(*) FROM `+a.table("source_connections")+`
-		WHERE workspace_id=$1`, workspace).Scan(&total); err != nil {
+		WHERE workspace_id=$1 AND profile=$2`, workspace, profile).Scan(&total); err != nil {
 		return err
 	}
 	rows, err := tx.Query(r.Context(), `SELECT `+sourceConnectionColumns+` FROM `+a.table("source_connections")+`
-		WHERE workspace_id=$1 AND id>$2 ORDER BY id LIMIT $3`, workspace, cursor, limit+1)
+		WHERE workspace_id=$1 AND profile=$2 AND id>$3 ORDER BY id LIMIT $4`, workspace, profile, cursor, limit+1)
 	if err != nil {
 		return err
 	}

@@ -40,6 +40,7 @@ type Config struct {
 	CollectionStorage        *app.StorageConfig `json:"-"`
 	CollectionLeaseDuration  time.Duration
 	GitHubEndpoint           string       `json:"-"`
+	AzureDevOpsEndpoint      string       `json:"-"`
 	CollectionClient         *http.Client `json:"-"`
 	CollectionCAFile         string       `json:"-"`
 	CollectionLimits         connectors.Limits

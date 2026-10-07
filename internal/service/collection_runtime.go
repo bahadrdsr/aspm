@@ -69,8 +69,12 @@ func collectionEnvironment(config *Config) error {
 	if err != nil {
 		return err
 	}
+	config.AzureDevOpsEndpoint, err = app.ValidateAzureDevOpsGateway(os.Getenv("ASPM_AZURE_DEVOPS_ENDPOINT"))
+	if err != nil {
+		return err
+	}
 	config.CollectionCAFile = os.Getenv("ASPM_COLLECTION_CA_FILE")
-	config.CollectionClient, err = newProviderClient(config.GitHubEndpoint, config.CollectionCAFile)
+	config.CollectionClient, err = newProviderClient(config.GitHubEndpoint, config.CollectionCAFile, config.AzureDevOpsEndpoint)
 	return err
 }
 
@@ -83,7 +87,8 @@ func collectionWorkerConfig(config Config) app.CollectionWorkerConfig {
 		Database: databaseConfig(config.Jobs), Storage: storage,
 		EncryptionKey: config.IntegrationEncryptionKey, WorkerID: config.WorkerID,
 		LeaseDuration: config.CollectionLeaseDuration, GitHubEndpoint: config.GitHubEndpoint,
-		Client: config.CollectionClient, Limits: config.CollectionLimits,
+		AzureDevOpsEndpoint: config.AzureDevOpsEndpoint,
+		Client:              config.CollectionClient, Limits: config.CollectionLimits,
 	}
 }
 

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bytes"
 	"context"
 	"crypto/cipher"
 	"crypto/tls"
@@ -18,22 +19,23 @@ import (
 )
 
 type CollectionWorkerConfig struct {
-	Database       DatabaseConfig
-	Storage        StorageConfig
-	EncryptionKey  []byte `json:"-"`
-	WorkerID       string
-	LeaseDuration  time.Duration
-	GitHubEndpoint string       `json:"-"`
-	Client         *http.Client `json:"-"`
-	Limits         connectors.Limits
+	Database            DatabaseConfig
+	Storage             StorageConfig
+	EncryptionKey       []byte `json:"-"`
+	WorkerID            string
+	LeaseDuration       time.Duration
+	GitHubEndpoint      string       `json:"-"`
+	AzureDevOpsEndpoint string       `json:"-"`
+	Client              *http.Client `json:"-"`
+	Limits              connectors.Limits
 }
 
 type CollectionWorker struct {
 	*database
 	store       *reportStore
 	credentials cipher.AEAD
-	client      *http.Client
-	endpoint    string
+	clients     map[string]*http.Client
+	endpoints   map[string]string
 	workerID    string
 	lease       time.Duration
 	limits      connectors.Limits
@@ -55,6 +57,7 @@ const (
 	sourceConnectionChanged    collectionDenial = "connection-changed"
 	sourceLeaseLost            collectionDenial = "lease-lost"
 	sourceIdentityConflict     collectionDenial = "identity-conflict"
+	sourceBindingConflict      collectionDenial = "binding-conflict"
 )
 
 // NormalizeCollectionLimits validates native bounds and supplies their existing defaults.
@@ -158,6 +161,19 @@ func ValidateCollectionGateway(endpoint string) (string, error) {
 	return endpoint, nil
 }
 
+// ValidateAzureDevOpsGateway preserves the selected HTTPS base or the fixed
+// Azure DevOps Services default.
+func ValidateAzureDevOpsGateway(endpoint string) (string, error) {
+	if endpoint == "" {
+		endpoint = "https://dev.azure.com"
+	}
+	endpoint, err := ValidateDeliveryGateway(endpoint)
+	if err != nil {
+		return "", errors.New("collection worker requires a valid trusted Azure DevOps HTTPS gateway")
+	}
+	return endpoint, nil
+}
+
 // ValidateCollectionWorkerConfig performs the constructor's checks without opening resources.
 func ValidateCollectionWorkerConfig(config CollectionWorkerConfig) error {
 	if len(config.EncryptionKey) != 32 {
@@ -180,6 +196,9 @@ func ValidateCollectionWorkerConfig(config CollectionWorkerConfig) error {
 	if _, err := ValidateCollectionGateway(config.GitHubEndpoint); err != nil {
 		return err
 	}
+	if _, err := ValidateAzureDevOpsGateway(config.AzureDevOpsEndpoint); err != nil {
+		return err
+	}
 	return validateSourceNativeClient(config.Client)
 }
 
@@ -195,39 +214,54 @@ func OpenCollectionWorker(ctx context.Context, config CollectionWorkerConfig) (*
 	if err != nil {
 		return nil, err
 	}
-	endpoint, err := ValidateCollectionGateway(config.GitHubEndpoint)
+	githubEndpoint, err := ValidateCollectionGateway(config.GitHubEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	client, err := sourceNativeClient(config.Client, endpoint)
+	azureDevOpsEndpoint, err := ValidateAzureDevOpsGateway(config.AzureDevOpsEndpoint)
 	if err != nil {
+		return nil, err
+	}
+	githubClient, err := sourceNativeClient(config.Client, githubEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	azureDevOpsClient, err := sourceNativeClient(config.Client, azureDevOpsEndpoint)
+	if err != nil {
+		githubClient.CloseIdleConnections()
 		return nil, err
 	}
 	credentials, err := newIntegrationCipher(config.EncryptionKey)
 	if err != nil {
-		client.CloseIdleConnections()
+		githubClient.CloseIdleConnections()
+		azureDevOpsClient.CloseIdleConnections()
 		return nil, err
 	}
 	transport, err := sourceDirectTransport(storage.Endpoint)
 	if err != nil {
-		client.CloseIdleConnections()
+		githubClient.CloseIdleConnections()
+		azureDevOpsClient.CloseIdleConnections()
 		return nil, err
 	}
 	defer transport.CloseIdleConnections()
 	store, err := openReportStoreWithTransport(ctx, storage, limits.Bytes, transport)
 	if err != nil {
-		client.CloseIdleConnections()
+		githubClient.CloseIdleConnections()
+		azureDevOpsClient.CloseIdleConnections()
 		return nil, err
 	}
 	db, err := openDatabase(ctx, config.Database)
 	if err != nil {
 		store.close()
-		client.CloseIdleConnections()
+		githubClient.CloseIdleConnections()
+		azureDevOpsClient.CloseIdleConnections()
 		return nil, err
 	}
 	lifetime, cancel := context.WithCancel(context.Background())
-	return &CollectionWorker{database: db, store: store, credentials: credentials, client: client,
-		endpoint: endpoint, workerID: config.WorkerID, lease: config.LeaseDuration, limits: limits,
+	return &CollectionWorker{database: db, store: store, credentials: credentials,
+		clients:   map[string]*http.Client{connectors.GitHubCloudApp: githubClient, connectors.ADOArtifacts: azureDevOpsClient},
+		endpoints: map[string]string{connectors.GitHubCloudApp: githubEndpoint, connectors.ADOArtifacts: azureDevOpsEndpoint},
+		workerID:  config.WorkerID, lease: config.LeaseDuration, limits: limits,
 		lifetime: lifetime, cancel: cancel}, nil
 }
 
@@ -241,7 +275,9 @@ func (w *CollectionWorker) Close() error {
 		w.mu.Unlock()
 		w.active.Wait()
 		w.store.close()
-		w.client.CloseIdleConnections()
+		for _, client := range w.clients {
+			client.CloseIdleConnections()
+		}
 		_ = w.database.close()
 		w.credentials = nil
 	})
@@ -283,7 +319,8 @@ func (w *CollectionWorker) sourceAuthority(ctx context.Context, db queryRower, j
 	if !source.Enabled {
 		return source, sourceConnectionDisabled
 	}
-	if source.Revision != job.ConnectionRevision || source.Repository != job.Repository || source.Profile != job.Profile {
+	if source.Revision != job.ConnectionRevision || source.Repository != job.Repository || source.Profile != job.Profile ||
+		!sameAzureDevOpsTarget(source.AzureDevOps, job.AzureDevOps) {
 		return source, sourceConnectionChanged
 	}
 	return source, nil
@@ -305,7 +342,8 @@ func sourceFailure(err error) (string, *FindingDeliveryFailure) {
 	var denial collectionDenial
 	if errors.As(err, &denial) {
 		code = string(denial)
-		if denial == sourceAuthorizationRevoked || denial == sourceConnectionChanged || denial == sourceConnectionDisabled {
+		if denial == sourceAuthorizationRevoked || denial == sourceConnectionChanged ||
+			denial == sourceConnectionDisabled || denial == sourceBindingConflict {
 			state = "blocked"
 		}
 	} else if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
@@ -371,6 +409,24 @@ func (w *CollectionWorker) claimSource(ctx context.Context) (sourceCollectionRec
 		}
 		if err != nil {
 			return job, source, false, deliveryInfrastructureError(ctx, "settle expired source collection failed")
+		}
+		return sourceCollectionRecord{}, source, true, nil
+	}
+	digest, bindingErr := sourceCollectionBinding(job.SourceCollection)
+	if bindingErr != nil || !bytes.Equal(digest, job.bindingDigest) {
+		state, failure := sourceFailure(sourceBindingConflict)
+		raw, marshalErr := json.Marshal(failure)
+		if marshalErr != nil {
+			return job, source, false, errors.New("encode source binding failure failed")
+		}
+		_, err = tx.Exec(ctx, `UPDATE `+w.table("source_collections")+`
+			SET state=$3,failure=$4,completed_at=clock_timestamp(),worker_id=$5,fence=fence+1
+			WHERE workspace_id=$1 AND id=$2`, job.WorkspaceID, job.ID, state, raw, w.workerID)
+		if err == nil {
+			err = tx.Commit(ctx)
+		}
+		if err != nil {
+			return job, source, false, deliveryInfrastructureError(ctx, "settle changed source binding failed")
 		}
 		return sourceCollectionRecord{}, source, true, nil
 	}

@@ -25,7 +25,7 @@ export function SourceEvidenceDialog({ record, returnFocus, onClose }: {
   const load = useCallback((signal: AbortSignal) => sourcesApi.evidence(record, signal), [record]);
   const resource = useResource(load);
   return <FormDialog title="Raw source evidence" containFocus returnFocus={returnFocus} onClose={onClose}
-    description="Stored raw source bytes and independently returned record metadata. A raw alert is not a normalized finding, source scan or verified resolution.">
+    description="Stored raw source bytes and independently returned record metadata. A raw record is not a normalized finding, source scan or verified resolution.">
     <div className="source-evidence-content">
       <dl className="source-facts">
         <div><dt>Record ID</dt><dd><code>{record.id}</code></dd></div>

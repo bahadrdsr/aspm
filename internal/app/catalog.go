@@ -28,6 +28,12 @@ func (a *Application) catalog(w http.ResponseWriter) error {
 		}
 		entry.LiveVerification.State = "not-run"
 		entry.LiveVerification.Reason = "Native connector implementation has not landed; report imports do not establish native support."
+		if family[0] == "azure-devops" {
+			entry.SupportMaturity = "experimental"
+			entry.ReadyToConnect = true
+			entry.Capabilities = []string{"repository-inventory", "pipeline-inventory", "security-report-intake"}
+			entry.LiveVerification.Reason = "Selected Azure DevOps Services collection and explicit SARIF intake passed owned synthetic fixtures; no authorized live account has been tested."
+		}
 		items = append(items, entry)
 	}
 	writeJSON(w, 200, map[string]any{"dataOrigin": "live", "items": items})

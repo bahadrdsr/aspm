@@ -12,47 +12,132 @@ import (
 )
 
 type sourceRepository struct {
-	ID       json.Number `json:"id"`
-	FullName string      `json:"full_name"`
+	ID, Name, ScopeKey string
 }
 
 func validateSourceResult(job sourceCollectionRecord, result connectors.Collection, limits connectors.Limits) (sourceRepository, error) {
 	var repository sourceRepository
+	scopeID := job.Repository
+	recordLimit := 1 + limits.Pages*limits.PageSize
+	if job.Profile == connectors.ADOArtifacts {
+		if job.AzureDevOps == nil || job.Selection == nil {
+			return repository, connectors.ErrScope
+		}
+		scopeID = azureDevOpsScopeIdentity(*job.AzureDevOps)
+		recordLimit = 4
+	}
 	if result.Identity.WorkspaceID != job.WorkspaceID || result.Identity.SourceID != job.SourceID ||
-		result.Identity.RunID != job.ID || result.Identity.ScopeID != job.Repository || result.CollectedAt.IsZero() ||
-		len(result.Records) == 0 || len(result.Records) > 1+limits.Pages*limits.PageSize || len(result.Gaps) > 64 {
+		result.Identity.RunID != job.ID || result.Identity.ScopeID != scopeID || result.CollectedAt.IsZero() ||
+		len(result.Records) == 0 || len(result.Records) > recordLimit || len(result.Gaps) > 64 {
 		return repository, connectors.ErrProtocol
 	}
 	var total int64
 	seen := make(map[string]bool, len(result.Records))
-	for index, record := range result.Records {
+	for _, record := range result.Records {
 		total += int64(len(record.Raw))
 		if len(record.Raw) == 0 || int64(len(record.Raw)) > limits.Bytes || total > sourceEvidenceLimit ||
 			len(record.RawURL) > 16384 || len(record.Location) > 4096 || len(record.State) > 256 || len(record.Severity) > 256 {
 			return repository, connectors.ErrLimit
 		}
 		identity := record.Kind + ":" + record.ExternalID
-		if seen[identity] || !sourceRepositoryID.MatchString(record.ExternalID) || record.RawURL == "" ||
-			record.NativeRunID != "" || record.SourceScanAt != nil {
+		if seen[identity] || record.RawURL == "" {
 			return repository, connectors.ErrProtocol
 		}
 		seen[identity] = true
-		if index == 0 {
-			if record.Kind != "repository" || json.Unmarshal(record.Raw, &repository) != nil ||
-				repository.ID.String() != record.ExternalID || !validSourceRepository(repository.FullName) ||
-				!strings.EqualFold(repository.FullName, job.Repository) {
-				return repository, connectors.ErrScope
-			}
-		} else if record.Kind != "finding" || record.ParentID != repository.ID.String() {
-			return repository, connectors.ErrScope
-		}
 	}
 	for _, gap := range result.Gaps {
 		if len(gap) > 256 {
 			return repository, connectors.ErrLimit
 		}
 	}
-	return repository, nil
+	switch job.Profile {
+	case connectors.GitHubCloudApp:
+		return validateGitHubSourceResult(job, result)
+	case connectors.ADOArtifacts:
+		return validateAzureDevOpsSourceResult(job, result)
+	default:
+		return repository, connectors.ErrScope
+	}
+}
+
+func validateGitHubSourceResult(job sourceCollectionRecord, result connectors.Collection) (sourceRepository, error) {
+	var native struct {
+		ID       json.Number `json:"id"`
+		FullName string      `json:"full_name"`
+	}
+	for index, record := range result.Records {
+		if !sourceRepositoryID.MatchString(record.ExternalID) || record.NativeRunID != "" || record.SourceScanAt != nil {
+			return sourceRepository{}, connectors.ErrProtocol
+		}
+		if index == 0 {
+			if record.Kind != "repository" || json.Unmarshal(record.Raw, &native) != nil ||
+				native.ID.String() != record.ExternalID || !validSourceRepository(native.FullName) ||
+				!strings.EqualFold(native.FullName, job.Repository) {
+				return sourceRepository{}, connectors.ErrScope
+			}
+		} else if record.Kind != "finding" || record.ParentID != native.ID.String() {
+			return sourceRepository{}, connectors.ErrScope
+		}
+	}
+	return sourceRepository{ID: native.ID.String(), Name: native.FullName, ScopeKey: native.ID.String()}, nil
+}
+
+func validateAzureDevOpsSourceResult(job sourceCollectionRecord, result connectors.Collection) (sourceRepository, error) {
+	target, targetOK := normalizeAzureDevOpsTarget(*job.AzureDevOps)
+	if !targetOK || target != *job.AzureDevOps || !validAzureDevOpsSelection(*job.Selection) {
+		return sourceRepository{}, connectors.ErrScope
+	}
+	expectedKinds := []string{"repository", "pipeline", "artifact", "report"}
+	var native struct {
+		ID      string `json:"id"`
+		Name    string `json:"name"`
+		Project struct {
+			ID string `json:"id"`
+		} `json:"project"`
+	}
+	artifactID := ""
+	for index, record := range result.Records {
+		if index >= len(expectedKinds) || record.Kind != expectedKinds[index] {
+			return sourceRepository{}, connectors.ErrProtocol
+		}
+		switch record.Kind {
+		case "repository":
+			if record.ParentID != "" || record.NativeRunID != "" || record.SourceScanAt != nil ||
+				json.Unmarshal(record.Raw, &native) != nil ||
+				!strings.EqualFold(native.ID, target.RepositoryID) ||
+				!strings.EqualFold(native.Project.ID, target.ProjectID) ||
+				!strings.EqualFold(record.ExternalID, target.RepositoryID) {
+				return sourceRepository{}, connectors.ErrScope
+			}
+			if native.Name != "" && !sourceAzureDevOpsOrganization.MatchString(native.Name) {
+				return sourceRepository{}, connectors.ErrProtocol
+			}
+		case "pipeline":
+			if record.ExternalID != job.Selection.BuildID ||
+				!strings.EqualFold(record.ParentID, target.RepositoryID) ||
+				record.NativeRunID != job.Selection.BuildID || record.SourceScanAt != nil {
+				return sourceRepository{}, connectors.ErrScope
+			}
+		case "artifact":
+			if !sourceAzureDevOpsBuild.MatchString(record.ExternalID) ||
+				!strings.EqualFold(record.ParentID, target.RepositoryID) ||
+				record.NativeRunID != job.Selection.BuildID || record.SourceScanAt != nil {
+				return sourceRepository{}, connectors.ErrScope
+			}
+			artifactID = record.ExternalID
+		case "report":
+			if artifactID == "" || record.ExternalID != artifactID+":"+job.Selection.ArtifactPath ||
+				!strings.EqualFold(record.ParentID, target.RepositoryID) ||
+				record.NativeRunID != job.Selection.BuildID {
+				return sourceRepository{}, connectors.ErrScope
+			}
+		}
+	}
+	name := native.Name
+	if name == "" {
+		name = target.RepositoryID
+	}
+	return sourceRepository{ID: target.RepositoryID, Name: name, ScopeKey: azureDevOpsScopeKey(target)}, nil
 }
 
 func sourceNativeFailure(cause error, token string) *FindingDeliveryFailure {
@@ -123,29 +208,29 @@ func (w *CollectionWorker) finalizeSource(ctx context.Context, job sourceCollect
 	} else if err != nil {
 		return deliveryInfrastructureError(ctx, "check source finalization lease failed")
 	}
-	repositoryID := repository.ID.String()
-	if source.repositoryID != nil && *source.repositoryID != repositoryID {
+	repositoryID := repository.ID
+	if source.repositoryID != nil && !strings.EqualFold(*source.repositoryID, repositoryID) {
 		return sourceIdentityConflict
 	}
 	// Serialize only this stable repository identity, not unrelated workspace assets.
 	if _, err = tx.Exec(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`,
-		"aspm/source-asset/"+job.WorkspaceID+"/"+job.Profile+"/"+repositoryID); err != nil {
+		"aspm/source-asset/"+job.WorkspaceID+"/"+job.Profile+"/"+repository.ScopeKey); err != nil {
 		return deliveryInfrastructureError(ctx, "lock source asset identity failed")
 	}
 	var assetID string
 	err = tx.QueryRow(ctx, `SELECT asset_id FROM `+w.table("source_repository_assets")+`
-		WHERE workspace_id=$1 AND profile=$2 AND repository_id=$3 FOR SHARE`, job.WorkspaceID, job.Profile, repositoryID).Scan(&assetID)
+		WHERE workspace_id=$1 AND profile=$2 AND repository_id=$3 FOR SHARE`, job.WorkspaceID, job.Profile, repository.ScopeKey).Scan(&assetID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		assetID = newID()
 		if _, err = tx.Exec(ctx, `INSERT INTO `+w.table("assets")+`
 			(id,workspace_id,name,kind,environment,criticality,tags,owner_id,created_at)
 			VALUES($1,$2,$3,'repository','','medium','{}',NULL,clock_timestamp())`,
-			assetID, job.WorkspaceID, repository.FullName); err != nil {
+			assetID, job.WorkspaceID, repository.Name); err != nil {
 			return deliveryInfrastructureError(ctx, "insert collected repository asset failed")
 		}
 		if _, err = tx.Exec(ctx, `INSERT INTO `+w.table("source_repository_assets")+`
 			(workspace_id,profile,repository_id,asset_id) VALUES($1,$2,$3,$4)`,
-			job.WorkspaceID, job.Profile, repositoryID, assetID); err != nil {
+			job.WorkspaceID, job.Profile, repository.ScopeKey, assetID); err != nil {
 			return deliveryInfrastructureError(ctx, "link collected repository asset failed")
 		}
 	} else if err != nil {

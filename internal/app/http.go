@@ -230,17 +230,32 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 	if len(parts) >= 3 && parts[0] == "sources" && parts[1] == "collections" && validID(parts[2]) {
-		if err = requireMethod(w, r, http.MethodGet); err != nil {
-			return err
-		}
 		if len(parts) == 3 {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
 			return a.getSourceCollection(w, r, membership.ID, parts[2])
 		}
 		if len(parts) == 4 && parts[3] == "records" {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
 			return a.listSourceRecords(w, r, membership.ID, parts[2])
 		}
 		if len(parts) == 6 && parts[3] == "records" && validID(parts[4]) && parts[5] == "evidence" {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
 			return a.sourceRecordEvidence(w, r, membership.ID, parts[2], parts[4])
+		}
+		if len(parts) == 6 && parts[3] == "records" && validID(parts[4]) && parts[5] == "imports" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.importSourceRecord(w, r, membership.ID, parts[2], parts[4], session)
 		}
 		return errNotFound
 	}

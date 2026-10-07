@@ -1,0 +1,202 @@
+READ-ONLY PROPOSAL, NOT APPLIED. STOP FOR COORDINATOR APPROVAL.
+=============================================================
+
+Baseline is 69f3ef9c2fc154742a168df9329d89cfd4b8a020.
+No old test/helper/signature/fixture has been edited by this packet.
+The README priority delta was present before authorship and is intentional.
+The snippets below are exact intended CURRENT-observer changes, not a script
+to apply and not permission to unfreeze old controls. Update current labels to
+V12 where shown; historical test names, seed origins and starting ledgers stay.
+
+1. CURRENT version lists only
+-----------------------------
+Every listed replacement appends just "12". No starting ledger is replaced.
+No numeric ORDER BY helper changes: retain qualified integer ledger.version.
+
+--- tests\source_collection\upgrade_test.go
++++ proposed tests\source_collection\upgrade_test.go
+@@ TestSourceCollectionPublishedV5UpgradeA2, current-open assertion (line 180)
+-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}),
+-				"current constructor returned success but did not apply and record v6 through v11 exactly once over actual published v5")
++			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}),
++				"current constructor returned success but did not apply and record v6 through v12 exactly once over actual published v5")
+@@ current reopen assertion (line 224)
+-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}) &&
++			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}) &&
+@@ assertion label only
+-				"reopening v11 repeated migration or changed legacy definitions")
++				"reopening v12 repeated migration or changed legacy definitions")
+
+--- tests\ai_configuration\upgrade_test.go
++++ proposed tests\ai_configuration\upgrade_test.go
+@@ current-open assertion (line 134)
+-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}), "CURRENT core startup did not apply required migrations through v11 exactly once over real published v6")
++	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}), "CURRENT core startup did not apply required migrations through v12 exactly once over real published v6")
+@@ current-reopen assertion (line 147)
+-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v11 reopen repeated migration or changed old schema definitions")
++	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v12 reopen repeated migration or changed old schema definitions")
+
+--- tests\ai_assessments\upgrade_test.go
++++ proposed tests\ai_assessments\upgrade_test.go
+@@ fresh current assertion (line 167)
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}), "fresh current core did not apply through V11")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}), "fresh current core did not apply through V12")
+@@ fresh current reopen assertion (line 178)
+-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}), "reopen repeated or skipped a migration")
++		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}), "reopen repeated or skipped a migration")
+@@ actual V7 -> CURRENT assertion (line 199)
+-		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}),
+-			"CURRENT core did not apply required migrations through V11 exactly once over actual published populated V7")
++		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}),
++			"CURRENT core did not apply required migrations through V12 exactly once over actual published populated V7")
+@@ upgraded current reopen assertion (line 220)
+-		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}) &&
++		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}) &&
+@@ label on that assertion only
+-			reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V11 reopen changed legacy definitions or exact ledger")
++			reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V12 reopen changed legacy definitions or exact ledger")
+
+--- tests\saved_work_views\upgrade_test.go
++++ proposed tests\saved_work_views\upgrade_test.go
+@@ current-open assertion (lines 138-139)
+-	same(t, "current production open did not apply through additive V11 over actual populated published V8",
+-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
++	same(t, "current production open did not apply through additive V12 over actual populated published V8",
++		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"})
+
+--- tests\saved_work_views\views_test.go
++++ proposed tests\saved_work_views\views_test.go
+@@ current fresh/reopen expected ledger (line 122)
+-	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}
+-	same(t, "fresh current core must apply through additive V11 exactly once", h.ledger(), wantLedger)
++	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}
++	same(t, "fresh current core must apply through additive V12 exactly once", h.ledger(), wantLedger)
+
+--- tests\jira_work_items\upgrade_test.go
++++ proposed tests\jira_work_items\upgrade_test.go
+@@ current-open assertion (lines 255-256)
+-	same(t, "current app did not add V10/V11 over exact populated published V9",
+-		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"})
++	same(t, "current app did not add V10/V11/V12 over exact populated published V9",
++		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"})
+
+--- tests\jira_work_items\teams_upgrade_test.go
++++ proposed tests\jira_work_items\teams_upgrade_test.go
+@@ CURRENT ledger derived from unchanged oldLedger V1..V10
+-	currentLedger := append(append([]string{}, oldLedger...), "11")
++	currentLedger := append(append([]string{}, oldLedger...), "11", "12")
+@@ CURRENT catalog comparison, not the historical V11 helper definition
+-		deliverycompat.ProjectV11(t, definitions, h.definitions(names)), definitions)
++		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
+
+This last file remains DEFERRED for execution. The proposed CURRENT observer
+adaptation is NOT authorization to resume Teams native/browser work.
+
+2. Strict CURRENT catalog composition, historical helpers remain strict
+------------------------------------------------------------------------
+--- tests\internal\deliverycompat\teams_schema.go
++++ proposed tests\internal\deliverycompat\teams_schema.go
+@@ imports, add only
++	"github.com/bahadrdsr/aspm/tests/internal/sourcecompat"
+@@ ProjectCurrent, replace the one direct ProjectV11 invocation
+-	projected := ProjectV11(t, v10, current)
++	v11, err := expectedTeams(v10)
++	if err != nil {
++		t.Fatal(err)
++	}
++	projected := ProjectV11(t, v10, sourcecompat.ProjectV12(t, v11, current))
+@@ add CURRENT-only composition for the authentic published V10 observer
++func ProjectCurrentV10(t testing.TB, before, current map[string][]string) map[string][]string {
++	t.Helper()
++	v11, err := expectedTeams(before)
++	if err != nil {
++		t.Fatal(err)
++	}
++	return ProjectV11(t, before, sourcecompat.ProjectV12(t, v11, current))
++}
+
+Project, ProjectV11, expected, expectedTeams, the old V10/V11 canonical CHECK
+constants and old helper calibration tests remain unchanged. New
+sourcecompat.ProjectV12 validates the ENTIRE supplied expected catalog,
+including every unrelated column/constraint/index, before projection. It
+only permits the exact contract's three null columns, four named CHECK
+replacements and two named target CHECK additions. No generic prefix/drop.
+sortConstraints remains by constraint name, not the serialized row string.
+
+3. Full-row V12 equality before null-column projection
+-----------------------------------------------------
+Do not edit old snapshot/legacyData functions or the historical seed calls.
+Add the sourcecompat import ONLY to the following current-observer files:
+  tests\ai_assessments\upgrade_test.go
+  tests\saved_work_views\upgrade_test.go
+  tests\jira_work_items\upgrade_test.go
+  tests\jira_work_items\teams_upgrade_test.go
+
+--- tests\ai_assessments\upgrade_test.go
++++ proposed tests\ai_assessments\upgrade_test.go
+@@ CURRENT oldData comparison (line 202), NOT its pre-upgrade capture
+-		check(t, reflect.DeepEqual(oldData, legacyData(t, f, baseline.LegacyTables)), "V10 changed actual pre-upgrade API-created legacy data")
++		check(t, reflect.DeepEqual(oldData, sourcecompat.ProjectRowsV12(t, oldData, legacyData(t, f, baseline.LegacyTables))), "V12 changed actual pre-upgrade API-created legacy data")
+
+--- tests\saved_work_views\upgrade_test.go
++++ proposed tests\saved_work_views\upgrade_test.go
+@@ first CURRENT data comparison (line 141)
+-	same(t, "V10 changed actual published API-created business rows", f.snapshot(names), before)
++	same(t, "V12 changed actual published API-created business rows", sourcecompat.ProjectRowsV12(t, before, f.snapshot(names)), before)
+@@ CURRENT reopen comparison (line 164)
+-	same(t, "saved preference/reopen changed pre-upgrade legacy rows", f.snapshot(names), before)
++	same(t, "saved preference/reopen changed pre-upgrade legacy rows", sourcecompat.ProjectRowsV12(t, before, f.snapshot(names)), before)
+
+--- tests\jira_work_items\upgrade_test.go
++++ proposed tests\jira_work_items\upgrade_test.go
+@@ first CURRENT data comparison (line 260)
+-	same(t, "V10 changed actual historical business rows", h.legacyData(names), before)
++	same(t, "V12 changed actual historical business rows", sourcecompat.ProjectRowsV12(t, before, h.legacyData(names)), before)
+@@ CURRENT reopen comparison (line 275)
+-	same(t, "reopen changed old-column business data", h.legacyData(names), before)
++	same(t, "reopen changed old-column business data", sourcecompat.ProjectRowsV12(t, before, h.legacyData(names)), before)
+@@ CURRENT rolled-back-probe comparison (line 278)
+-	same(t, "rolled-back typed-profile probes changed legacy business rows", h.legacyData(names), before)
++	same(t, "rolled-back typed-profile probes changed legacy business rows", sourcecompat.ProjectRowsV12(t, before, h.legacyData(names)), before)
+
+--- tests\jira_work_items\teams_upgrade_test.go
++++ proposed tests\jira_work_items\teams_upgrade_test.go
+@@ first CURRENT data comparison
+-	same(t, "V11 changed old bytes outside the two nullable new columns", h.teamsV10Data(names), before)
++	same(t, "V12 changed old bytes outside the exact nullable additions", sourcecompat.ProjectRowsV12(t, before, h.teamsV10Data(names)), before)
+@@ CURRENT reopen data comparison
+-	same(t, "V11 reopen changed historical business bytes", h.teamsV10Data(names), before)
++	same(t, "V12 reopen changed historical business bytes", sourcecompat.ProjectRowsV12(t, before, h.teamsV10Data(names)), before)
+@@ final unrelated business rows comparison, before entering its loop
+-	for name, rows := range h.snapshot(unrelated) {
++	unrelatedBefore := map[string][]string{}
++	for _, name := range unrelated {
++		unrelatedBefore[name] = before[name]
++	}
++	for name, rows := range sourcecompat.ProjectRowsV12(t, unrelatedBefore, h.snapshot(unrelated)) {
+
+ProjectRowsV12 compares complete JSON rows against the observed historical
+rows augmented with exactly azure_devops_target:null on source_connections,
+and exactly azure_devops_target:null/azure_devops_selection:null on
+source_collections, before returning the old projection. It verifies every
+other field/table and exact row counts. Existing V10/V11 projection guards
+still validate their own nullable additions. No serializer hash is replaced.
+
+4. Explicit unchanged controls and approval boundary
+----------------------------------------------------
+Do not change V5/V6/V7/V8/V9/V10/V11 starting ledgers; migration literal seed
+constants; pinned historical file/blob/closure hashes; published business
+seeders; old current API serialization expectations; old cold-start hashes;
+snapshot/ledger helpers in fixture files; runner/signature/receipt controls.
+No expected business output is rewritten to a producer-specific result.
+
+Affected old paths if ALL of this proposal is approved: seven observer Go
+files plus tests\internal\deliverycompat\teams_schema.go. No fixture file,
+seed archive, production path or existing signature is in that scope.
+The existing signatures remain read-only and may require a separately
+approved amendment process. There is no authorization here to regenerate
+them just because a test hash would change.
+
+STOP: request coordinator approval on these exact observer/projection changes
+before editing any old file. The new ADO-tagged tests can remain authored
+without that approval, with unexecuted baseline/producer/regression phases.

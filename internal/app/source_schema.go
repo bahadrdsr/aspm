@@ -55,3 +55,32 @@ CREATE TABLE {{source_collection_records}} (
 );
 CREATE INDEX app_source_collection_records_page_idx ON {{source_collection_records}}(workspace_id,collection_id,id);
 `
+
+const schemaV12 = `
+ALTER TABLE {{source_connections}} ADD COLUMN azure_devops_target jsonb;
+ALTER TABLE {{source_collections}} ADD COLUMN azure_devops_target jsonb;
+ALTER TABLE {{source_collections}} ADD COLUMN azure_devops_selection jsonb;
+
+ALTER TABLE {{source_connections}} DROP CONSTRAINT app_source_connections_profile_check;
+ALTER TABLE {{source_connections}} ADD CONSTRAINT app_source_connections_profile_check
+ CHECK(profile IN ('github-cloud-app','ado-services-build-artifacts'));
+ALTER TABLE {{source_collections}} DROP CONSTRAINT app_source_collections_profile_check;
+ALTER TABLE {{source_collections}} ADD CONSTRAINT app_source_collections_profile_check
+ CHECK(profile IN ('github-cloud-app','ado-services-build-artifacts'));
+ALTER TABLE {{source_repository_assets}} DROP CONSTRAINT app_source_repository_assets_profile_check;
+ALTER TABLE {{source_repository_assets}} ADD CONSTRAINT app_source_repository_assets_profile_check
+ CHECK(profile IN ('github-cloud-app','ado-services-build-artifacts'));
+ALTER TABLE {{source_collection_records}} DROP CONSTRAINT app_source_collection_records_kind_check;
+ALTER TABLE {{source_collection_records}} ADD CONSTRAINT app_source_collection_records_kind_check
+ CHECK(kind IN ('repository','finding','pipeline','artifact','report'));
+
+ALTER TABLE {{source_connections}} ADD CONSTRAINT app_source_connections_profile_target_check
+ CHECK((profile='github-cloud-app' AND azure_devops_target IS NULL) OR
+       (profile='ado-services-build-artifacts' AND repository='' AND
+        azure_devops_target IS NOT NULL AND jsonb_typeof(azure_devops_target)='object'));
+ALTER TABLE {{source_collections}} ADD CONSTRAINT app_source_collections_profile_target_check
+ CHECK((profile='github-cloud-app' AND azure_devops_target IS NULL AND azure_devops_selection IS NULL) OR
+       (profile='ado-services-build-artifacts' AND repository='' AND
+        azure_devops_target IS NOT NULL AND jsonb_typeof(azure_devops_target)='object' AND
+        azure_devops_selection IS NOT NULL AND jsonb_typeof(azure_devops_selection)='object'));
+`

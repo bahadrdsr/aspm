@@ -1,17 +1,26 @@
-import { APIError, request } from "./client";
+import { APIError, parseImportReceipt, request } from "./client";
 import { requestAuthority } from "./authorization";
 import { apiVersion } from "./types";
 import type { DataOrigin } from "./types";
 import type {
-  CollectionResponse, SourceCollection, SourceConnection, SourceEvidence, SourceInput, SourcePage,
-  SourcePatch, SourceRecord, SourceResponse,
+  AzureDevOpsCollectionResponse, AzureDevOpsSelection, AzureDevOpsSourceCollection, AzureDevOpsSourceConnection,
+  AzureDevOpsSourceInput, AzureDevOpsSourcePatch, AzureDevOpsSourceResponse, AzureDevOpsTarget,
+  CollectedSARIFImportInput, CollectionResponse, SourceCollection, SourceConnection, SourceEvidence, SourceInput,
+  SourcePage, SourcePatch, SourceRecord, SourceResponse,
 } from "./source-types";
 
 const encoder = new TextEncoder();
 const repositoryPattern = /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,254}\/[A-Za-z0-9_][A-Za-z0-9_.-]{0,254}$/;
+const nativeNamePattern = /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,254}$/;
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const buildPattern = /^[1-9][0-9]{0,19}$/;
 const sourceFields = ["id", "workspaceId", "profile", "name", "repository", "enabled", "credentialConfigured", "revision", "createdAt", "updatedAt"];
+const azureDevOpsSourceFields = ["id", "workspaceId", "profile", "name", "enabled", "credentialConfigured", "revision", "createdAt", "updatedAt", "azureDevOps"];
 const collectionFields = ["id", "workspaceId", "sourceId", "profile", "connectionRevision", "repository", "requestedBy", "state",
   "complete", "assetId", "repositoryId", "recordCount", "gaps", "createdAt", "collectedAt", "completedAt", "failure"];
+const azureDevOpsCollectionFields = ["id", "workspaceId", "sourceId", "profile", "connectionRevision", "requestedBy", "state",
+  "complete", "assetId", "repositoryId", "recordCount", "gaps", "createdAt", "collectedAt", "completedAt", "failure",
+  "azureDevOps", "selection"];
 const recordFields = ["id", "collectionId", "ordinal", "kind", "externalId", "parentId", "nativeRunId", "state", "severity",
   "location", "rawURL", "sourceScanAt", "sourceUpdatedAt", "evidence"];
 const states = ["queued", "collecting", "succeeded", "partial", "blocked", "failed"] as const;
@@ -53,6 +62,10 @@ function profile(value: unknown): "github-cloud-app" {
   if (value !== "github-cloud-app") return invalid("source profile");
   return value;
 }
+function azureDevOpsProfile(value: unknown): "ado-services-build-artifacts" {
+  if (value !== "ado-services-build-artifacts") return invalid("source profile");
+  return value;
+}
 function repository(value: unknown): string {
   const name = text(value, "selected repository");
   if (encoder.encode(name).byteLength > 256 || !repositoryPattern.test(name)) return invalid("selected repository");
@@ -62,6 +75,37 @@ function nativeId(value: unknown, empty = false): string {
   const id = text(value, "native identifier", empty);
   if (!(empty && id === "") && !/^[1-9][0-9]{0,19}$/.test(id)) return invalid("native identifier");
   return id;
+}
+function uuid(value: unknown, field: string): string {
+  const id = text(value, field);
+  if (!uuidPattern.test(id)) return invalid(field);
+  return id;
+}
+function azureDevOpsTarget(value: unknown): AzureDevOpsTarget {
+  const target = record(value, ["organization", "projectId", "repositoryId"], "Azure DevOps target");
+  const organization = text(target.organization, "Azure DevOps organization");
+  if (!nativeNamePattern.test(organization) || organization !== organization.toLowerCase()) return invalid("Azure DevOps organization");
+  return {
+    organization,
+    projectId: uuid(target.projectId, "Azure DevOps project"),
+    repositoryId: uuid(target.repositoryId, "Azure DevOps repository"),
+  };
+}
+function artifactPath(value: unknown): string {
+  const selected = text(value, "artifact path");
+  if (encoder.encode(selected).byteLength > 2048 || selected.startsWith("/") || selected.endsWith("/") ||
+    selected.includes("\\") || /[%?#:]/.test(selected) || selected.includes("//") ||
+    selected.split("/").length > 32 || selected.split("/").some((part) => part === "" || part === "." || part === "..")) {
+    return invalid("artifact path");
+  }
+  return selected;
+}
+function azureDevOpsSelection(value: unknown): AzureDevOpsSelection {
+  const selection = record(value, ["buildId", "artifactName", "artifactPath"], "Azure DevOps selection");
+  const buildId = text(selection.buildId, "Azure DevOps build");
+  const artifactName = text(selection.artifactName, "Azure DevOps artifact");
+  if (!buildPattern.test(buildId) || !nativeNamePattern.test(artifactName)) return invalid("Azure DevOps selection");
+  return { buildId, artifactName, artifactPath: artifactPath(selection.artifactPath) };
 }
 function envelope(value: unknown, fields: readonly string[]) {
   const body = record(value, ["apiVersion", "dataOrigin", ...fields], "source response");
@@ -88,6 +132,23 @@ function source(value: unknown, workspace: string | null): SourceConnection {
 function sourceResponse(value: unknown, workspace: string | null): SourceResponse {
   const { body, dataOrigin } = envelope(value, ["source"]);
   return { apiVersion, dataOrigin, source: source(body.source, workspace) };
+}
+function azureDevOpsSource(value: unknown, workspace: string | null): AzureDevOpsSourceConnection {
+  const item = record(value, azureDevOpsSourceFields, "Azure DevOps source metadata");
+  const workspaceId = identifier(item.workspaceId, "source workspace");
+  const name = text(item.name, "source name");
+  if (workspaceId !== workspace || encoder.encode(name).byteLength > 256) return invalid("Azure DevOps source metadata");
+  return {
+    id: identifier(item.id, "source identifier"), workspaceId, profile: azureDevOpsProfile(item.profile), name,
+    enabled: boolean(item.enabled, "source enabled state"),
+    credentialConfigured: boolean(item.credentialConfigured, "stored credential metadata"),
+    revision: integer(item.revision, "source revision", 1), createdAt: timestamp(item.createdAt),
+    updatedAt: timestamp(item.updatedAt), azureDevOps: azureDevOpsTarget(item.azureDevOps),
+  };
+}
+function azureDevOpsSourceResponse(value: unknown, workspace: string | null): AzureDevOpsSourceResponse {
+  const { body, dataOrigin } = envelope(value, ["source"]);
+  return { apiVersion, dataOrigin, source: azureDevOpsSource(body.source, workspace) };
 }
 function collection(value: unknown, workspace: string | null, sourceId: string): SourceCollection {
   const item = record(value, collectionFields, "collection");
@@ -124,6 +185,46 @@ function collectionResponse(value: unknown, workspace: string | null, sourceId: 
   const { body, dataOrigin } = envelope(value, ["collection"]);
   return { apiVersion, dataOrigin, collection: collection(body.collection, workspace, sourceId) };
 }
+function collectionOutcome(item: Record<string, unknown>) {
+  const state = states.find((candidate) => candidate === item.state);
+  if (!state) return invalid("collection state");
+  const complete = boolean(item.complete, "selected feed completeness");
+  const completedAt = nullableTime(item.completedAt);
+  if ((complete && state !== "succeeded") || (["queued", "collecting"].includes(state) !== (completedAt === null))) return invalid("collection outcome");
+  let failure: AzureDevOpsSourceCollection["failure"] = null;
+  if (item.failure !== null) {
+    const error = record(item.failure, ["code", "nativeCode", "httpStatus", "retryAfterSeconds", "retryable"], "native failure");
+    if (error.retryable !== false) return invalid("collection retry policy");
+    failure = {
+      code: text(error.code, "collection failure code"), nativeCode: text(error.nativeCode, "native failure code", true),
+      httpStatus: integer(error.httpStatus, "native HTTP status", 0, 599),
+      retryAfterSeconds: integer(error.retryAfterSeconds, "retry-after seconds"), retryable: false,
+    };
+  }
+  if (!Array.isArray(item.gaps)) return invalid("collection gaps");
+  return { state, complete, completedAt, failure, gaps: item.gaps.map((gap) => text(gap, "collection gap")) };
+}
+function azureDevOpsCollection(value: unknown, workspace: string | null, sourceId: string): AzureDevOpsSourceCollection {
+  const item = record(value, azureDevOpsCollectionFields, "Azure DevOps collection");
+  const workspaceId = identifier(item.workspaceId, "collection workspace");
+  if (workspaceId !== workspace || identifier(item.sourceId, "collection source") !== sourceId) return invalid("collection scope");
+  const outcome = collectionOutcome(item);
+  return {
+    id: identifier(item.id, "collection identifier"), workspaceId, sourceId, profile: azureDevOpsProfile(item.profile),
+    connectionRevision: integer(item.connectionRevision, "collection source revision", 1),
+    requestedBy: identifier(item.requestedBy, "collection requester"), state: outcome.state,
+    complete: outcome.complete, assetId: item.assetId === null ? null : identifier(item.assetId, "collection asset"),
+    repositoryId: item.repositoryId === null ? null : uuid(item.repositoryId, "collection repository"),
+    recordCount: integer(item.recordCount, "collection record count", 0, 4), gaps: outcome.gaps,
+    createdAt: timestamp(item.createdAt), collectedAt: nullableTime(item.collectedAt),
+    completedAt: outcome.completedAt, failure: outcome.failure,
+    azureDevOps: azureDevOpsTarget(item.azureDevOps), selection: azureDevOpsSelection(item.selection),
+  };
+}
+function azureDevOpsCollectionResponse(value: unknown, workspace: string | null, sourceId: string): AzureDevOpsCollectionResponse {
+  const { body, dataOrigin } = envelope(value, ["collection"]);
+  return { apiVersion, dataOrigin, collection: azureDevOpsCollection(body.collection, workspace, sourceId) };
+}
 function sourceRecord(value: unknown, collectionId: string): SourceRecord {
   const item = record(value, recordFields, "source record");
   if (identifier(item.collectionId, "record collection") !== collectionId) return invalid("record scope");
@@ -134,6 +235,29 @@ function sourceRecord(value: unknown, collectionId: string): SourceRecord {
   return {
     id: identifier(item.id, "record identifier"), collectionId, ordinal: integer(item.ordinal, "record ordinal", 0, 6400),
     kind: item.kind, externalId: nativeId(item.externalId), parentId: nativeId(item.parentId, true),
+    nativeRunId: text(item.nativeRunId, "native run identifier", true), state: text(item.state, "native state", true),
+    severity: text(item.severity, "native severity", true), location: text(item.location, "source location", true),
+    rawURL: text(item.rawURL, "raw provenance URL", true),
+    sourceScanAt: nullableTime(item.sourceScanAt), sourceUpdatedAt: nullableTime(item.sourceUpdatedAt),
+    evidence: { sha256, sizeBytes: integer(evidence.sizeBytes, "evidence byte count", 0, 32 << 20) },
+  };
+}
+function azureDevOpsSourceRecord(value: unknown, collectionId: string): SourceRecord {
+  const item = record(value, recordFields, "source record");
+  if (identifier(item.collectionId, "record collection") !== collectionId) return invalid("record scope");
+  if (!["repository", "pipeline", "artifact", "report"].includes(String(item.kind))) return invalid("raw record kind");
+  const kind = item.kind as SourceRecord["kind"];
+  const evidence = record(item.evidence, ["sha256", "sizeBytes"], "source evidence metadata");
+  const sha256 = text(evidence.sha256, "evidence digest");
+  if (!/^sha256:[a-f0-9]{64}$/.test(sha256)) return invalid("evidence digest");
+  const externalId = text(item.externalId, "native identifier");
+  if (kind === "repository" ? !uuidPattern.test(externalId) :
+    kind === "report" ? !/^[1-9][0-9]{0,19}:.+/.test(externalId) : !buildPattern.test(externalId)) return invalid("native identifier");
+  const parentId = text(item.parentId, "native parent identifier", true);
+  if (kind !== "repository" && !uuidPattern.test(parentId)) return invalid("native parent identifier");
+  return {
+    id: identifier(item.id, "record identifier"), collectionId,
+    ordinal: integer(item.ordinal, "record ordinal", 0, 3), kind, externalId, parentId,
     nativeRunId: text(item.nativeRunId, "native run identifier", true), state: text(item.state, "native state", true),
     severity: text(item.severity, "native severity", true), location: text(item.location, "source location", true),
     rawURL: text(item.rawURL, "raw provenance URL", true),
@@ -185,7 +309,49 @@ function sourceInput(input: SourcePatch): SourcePatch {
   if (encoder.encode(JSON.stringify(body)).byteLength > 32 << 10) throw new APIError("The encoded source request exceeds 32 KiB.", "too-large", false);
   return body;
 }
-function safeFailure(cause: unknown, operation: "read" | "source" | "enqueue" | "evidence"): never {
+function azureDevOpsInput(input: AzureDevOpsSourcePatch): AzureDevOpsSourcePatch {
+  const body: AzureDevOpsSourcePatch = {};
+  if (input.name !== undefined) { validInput(input.name, "Source name", 256); body.name = input.name; }
+  if (input.token !== undefined) {
+    if (!input.token || encoder.encode(input.token).byteLength > 16384 ||
+      /^\p{White_Space}|\p{White_Space}$/u.test(input.token) || /\p{Cc}/u.test(input.token)) {
+      throw new APIError("Enter an opaque Azure DevOps PAT of at most 16384 UTF-8 bytes, without edge whitespace or control characters.", "invalid-input", false);
+    }
+    body.token = input.token;
+  }
+  if (input.enabled !== undefined) {
+    if (typeof input.enabled !== "boolean") throw new APIError("Choose an explicit enabled state.", "invalid-input", false);
+    body.enabled = input.enabled;
+  }
+  if (encoder.encode(JSON.stringify(body)).byteLength > 32 << 10) throw new APIError("The encoded source request exceeds 32 KiB.", "too-large", false);
+  return body;
+}
+function normalizedAzureDevOpsTarget(input: AzureDevOpsTarget): AzureDevOpsTarget {
+  const target = {
+    organization: input.organization.toLowerCase(),
+    projectId: input.projectId.toLowerCase(),
+    repositoryId: input.repositoryId.toLowerCase(),
+  };
+  if (!nativeNamePattern.test(target.organization) || !uuidPattern.test(target.projectId) || !uuidPattern.test(target.repositoryId)) {
+    throw new APIError("Enter an organization name and canonical project/repository UUIDs, not URLs or display names.", "invalid-input", false);
+  }
+  return target;
+}
+function selectedAzureDevOpsBuild(selection: AzureDevOpsSelection): AzureDevOpsSelection {
+  if (!buildPattern.test(selection.buildId) || !nativeNamePattern.test(selection.artifactName)) {
+    throw new APIError("Enter one canonical positive build ID and one exact artifact name.", "invalid-input", false);
+  }
+  return { ...selection, artifactPath: artifactPath(selection.artifactPath) };
+}
+function profilePagePath(profileName: "ado-services-build-artifacts", cursor: string | null): string {
+  const parameters = new URLSearchParams({ profile: profileName });
+  if (cursor !== null) {
+    if (!/^[a-f0-9]{32}$/.test(cursor)) throw new APIError("A native source cursor is required.", "invalid-input", false);
+    parameters.set("cursor", cursor);
+  }
+  return `/api/v1/sources?${parameters}`;
+}
+function safeFailure(cause: unknown, operation: "read" | "source" | "enqueue" | "evidence" | "import"): never {
   if (!(cause instanceof APIError)) throw cause;
   let message: string;
   switch (cause.code) {
@@ -199,6 +365,7 @@ function safeFailure(cause: unknown, operation: "read" | "source" | "enqueue" | 
       : operation === "enqueue"
         ? "Collection is unavailable or its acknowledgement could not be confirmed. Ask your operator to check collection evidence storage and service configuration. Keep the same intent if you confirm again."
         : operation === "evidence" ? "Raw evidence is unavailable. Storage or integrity could not be confirmed. Retry an authorized evidence read."
+          : operation === "import" ? "The collected report could not be queued for intake. Recheck current source, asset and workspace authority."
           : "The service is unavailable. Source data could not be loaded; retry this read."; break;
     case "invalid-response": message = operation === "enqueue"
       ? "The collection acknowledgement was invalid. Its outcome cannot be confirmed. Keep the same intent and review authorized history."
@@ -272,6 +439,48 @@ export const sourcesApi = {
       return result;
     }, { method: "PATCH", body, signal, expectedStatus: 200 }).catch((cause: unknown) => safeFailure(cause, "source"));
   },
+  azureDevOpsSources: (cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return read(profilePagePath("ado-services-build-artifacts", cursor),
+      (value) => page(value, (item) => azureDevOpsSource(item, workspace), cursor), signal);
+  },
+  azureDevOpsSource: (id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return read(`/api/v1/sources/${encodeURIComponent(id)}`, (value) => {
+      const result = azureDevOpsSourceResponse(value, workspace);
+      if (result.source.id !== id) return invalid("selected Azure DevOps source");
+      return result;
+    }, signal);
+  },
+  createAzureDevOps: (input: AzureDevOpsSourceInput, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    const partial = azureDevOpsInput(input);
+    const body = { profile: "ado-services-build-artifacts" as const, ...partial,
+      azureDevOps: normalizedAzureDevOpsTarget(input.azureDevOps) };
+    if (body.name === undefined || body.token === undefined || body.enabled === undefined) {
+      throw new APIError("Complete the source name, selected Azure DevOps target, PAT and enabled choice.", "invalid-input", false);
+    }
+    if (encoder.encode(JSON.stringify(body)).byteLength > 32 << 10) throw new APIError("The encoded source request exceeds 32 KiB.", "too-large", false);
+    return request("/api/v1/sources", (value) => {
+      const result = azureDevOpsSourceResponse(value, workspace), saved = result.source;
+      if (saved.name !== body.name || saved.enabled !== body.enabled ||
+        JSON.stringify(saved.azureDevOps) !== JSON.stringify(body.azureDevOps) ||
+        !saved.credentialConfigured || saved.revision !== 1) return invalid("created Azure DevOps source acknowledgement");
+      return result;
+    }, { method: "POST", body, signal, expectedStatus: 201 }).catch((cause: unknown) => safeFailure(cause, "source"));
+  },
+  updateAzureDevOps: (original: AzureDevOpsSourceConnection, input: AzureDevOpsSourcePatch, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace, body = azureDevOpsInput(input);
+    return request(`/api/v1/sources/${encodeURIComponent(original.id)}`, (value) => {
+      const result = azureDevOpsSourceResponse(value, workspace), saved = result.source;
+      if (saved.id !== original.id || saved.revision < original.revision ||
+        JSON.stringify(saved.azureDevOps) !== JSON.stringify(original.azureDevOps) ||
+        (body.name !== undefined && saved.name !== body.name) ||
+        (body.enabled !== undefined && saved.enabled !== body.enabled) ||
+        (body.token !== undefined && !saved.credentialConfigured)) return invalid("updated Azure DevOps source acknowledgement");
+      return result;
+    }, { method: "PATCH", body, signal, expectedStatus: 200 }).catch((cause: unknown) => safeFailure(cause, "source"));
+  },
   collections: (sourceId: string, cursor: string | null, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;
     return read(pagePath(`/api/v1/sources/${encodeURIComponent(sourceId)}/collections`, cursor),
@@ -297,9 +506,46 @@ export const sourcesApi = {
       return result;
     }, { method: "POST", body, signal, expectedStatus: [200, 202] }).catch((cause: unknown) => safeFailure(cause, "enqueue"));
   },
+  azureDevOpsCollections: (sourceId: string, cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return read(pagePath(`/api/v1/sources/${encodeURIComponent(sourceId)}/collections`, cursor),
+      (value) => page(value, (item) => azureDevOpsCollection(item, workspace, sourceId), cursor), signal);
+  },
+  azureDevOpsCollection: (id: string, sourceId: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return read(`/api/v1/sources/collections/${encodeURIComponent(id)}`, (value) => {
+      const result = azureDevOpsCollectionResponse(value, workspace, sourceId);
+      if (result.collection.id !== id) return invalid("selected Azure DevOps collection");
+      return result;
+    }, signal);
+  },
+  enqueueAzureDevOps: (sourceId: string, selection: AzureDevOpsSelection, idempotencyKey: string,
+    actorId: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    validInput(idempotencyKey, "Collection intent", 256);
+    const selected = selectedAzureDevOpsBuild(selection);
+    const body = { idempotencyKey, ...selected };
+    return request(`/api/v1/sources/${encodeURIComponent(sourceId)}/collections`, (value, status) => {
+      const result = azureDevOpsCollectionResponse(value, workspace, sourceId), saved = result.collection;
+      if (saved.requestedBy !== actorId || JSON.stringify(saved.selection) !== JSON.stringify(selected) ||
+        (status === 202 && (saved.state !== "queued" || saved.complete || saved.recordCount !== 0 ||
+          saved.failure !== null || saved.collectedAt !== null || saved.assetId !== null ||
+          saved.repositoryId !== null || saved.gaps.length !== 0))) return invalid("queued Azure DevOps collection acknowledgement");
+      return result;
+    }, { method: "POST", body, signal, expectedStatus: [200, 202] }).catch((cause: unknown) => safeFailure(cause, "enqueue"));
+  },
   records: (collectionId: string, cursor: string | null, signal: AbortSignal) =>
     read(pagePath(`/api/v1/sources/collections/${encodeURIComponent(collectionId)}/records`, cursor),
       (value) => page(value, (item) => sourceRecord(item, collectionId), cursor), signal),
+  azureDevOpsRecords: (collectionId: string, cursor: string | null, signal: AbortSignal) =>
+    read(pagePath(`/api/v1/sources/collections/${encodeURIComponent(collectionId)}/records`, cursor),
+      (value) => page(value, (item) => azureDevOpsSourceRecord(item, collectionId), cursor), signal),
+  importAzureDevOpsRecord: (record: SourceRecord, input: CollectedSARIFImportInput, signal: AbortSignal) => {
+    if (record.kind !== "report") throw new APIError("Only an explicitly selected report record can be imported.", "invalid-input", false);
+    return request(`/api/v1/sources/collections/${encodeURIComponent(record.collectionId)}/records/${encodeURIComponent(record.id)}/imports`,
+      parseImportReceipt, { method: "POST", body: input, signal, expectedStatus: [200, 202] })
+      .catch((cause: unknown) => safeFailure(cause, "import"));
+  },
   evidence: async (record: SourceRecord, signal: AbortSignal): Promise<SourceEvidence> => {
     const scopedSignal = AbortSignal.any([signal, requestAuthority().signal]);
     try {

@@ -1,0 +1,193 @@
+package main
+
+import (
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"regexp"
+	"strings"
+	"sync/atomic"
+	"time"
+
+	"github.com/bahadrdsr/aspm/internal/app"
+	"github.com/bahadrdsr/aspm/internal/connectors"
+	"github.com/jackc/pgx/v5"
+)
+
+type storageInput struct {
+	Endpoint, Bucket, Prefix, Region, AccessKey, SecretKey string
+}
+func (s storageInput) config() app.StorageConfig {
+	return app.StorageConfig{Endpoint: s.Endpoint, Bucket: s.Bucket, Prefix: s.Prefix, Region: s.Region,
+		AccessKey: s.AccessKey, SecretKey: s.SecretKey, Timeout: 4 * time.Second}
+}
+type input struct {
+	DatabaseURL, Schema, Bootstrap, AssessmentScope, NativeOrigin string
+	Raw, RawReader, CollectionReader, CollectionPublisher storageInput
+	EncryptionKey, RootDER []byte
+}
+type queryBudget struct{ count atomic.Int32 }
+func (b *queryBudget) TraceQueryStart(ctx context.Context, _ *pgx.Conn, _ pgx.TraceQueryStartData) context.Context {
+	if b.count.Add(1) > 700 {
+		denied, cancel := context.WithCancel(ctx)
+		cancel()
+		return denied
+	}
+	return ctx
+}
+func (*queryBudget) TraceQueryEnd(context.Context, *pgx.Conn, pgx.TraceQueryEndData) {}
+
+func main() {
+	if run() != nil {
+		fmt.Fprintln(os.Stderr, "exact published V11 forwarding fixture failed; private details withheld")
+		os.Exit(1)
+	}
+}
+func run() error {
+	var in input
+	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 128<<10))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&in) != nil || !regexp.MustCompile(`^jira_items_[a-f0-9]{24}$`).MatchString(in.Schema) ||
+		len(in.EncryptionKey) != 32 {
+		return errors.New("unowned published input")
+	}
+	rootPrefix := "jira-work-items/" + strings.TrimPrefix(in.Schema, "jira_items_") + "/"
+	db, err := url.Parse(in.DatabaseURL)
+	if err != nil || (db.Scheme != "postgres" && db.Scheme != "postgresql") || db.Hostname() != "127.0.0.1" || db.Port() != "15432" || db.User == nil {
+		return errors.New("unapproved published database")
+	}
+	allowed := map[string]bool{}
+	for i, storage := range []storageInput{in.Raw, in.RawReader, in.CollectionReader, in.CollectionPublisher} {
+		u, err := url.Parse(storage.Endpoint)
+		wantPrefix := rootPrefix + "raw/"
+		if i >= 2 {
+			wantPrefix = rootPrefix + "collection/"
+		}
+		if err != nil || u.Scheme != "http" || u.Hostname() != "127.0.0.1" || u.Port() == "" ||
+			u.Path != "" || u.User != nil || u.RawQuery != "" || storage.Prefix != wantPrefix ||
+			storage.AccessKey == "" || storage.SecretKey == "" || storage.Bucket == "" {
+			return errors.New("unapproved published object capability")
+		}
+		allowed[u.Host] = true
+	}
+	native, err := url.Parse(in.NativeOrigin)
+	if err != nil || native.Scheme != "https" || native.Hostname() != "127.0.0.1" || native.Port() == "" ||
+		native.Path != "" || native.User != nil || native.RawQuery != "" || native.Fragment != "" {
+		return errors.New("unapproved published native origin")
+	}
+	certificate, err := x509.ParseCertificate(in.RootDER)
+	if err != nil {
+		return errors.New("missing explicit owned certificate")
+	}
+	roots := x509.NewCertPool()
+	roots.AddCert(certificate)
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.Proxy = nil
+	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if !allowed[address] {
+			return nil, errors.New("published ambient network denied")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+	}
+	http.DefaultTransport = transport
+	defer transport.CloseIdleConnections()
+	nativeTransport := &http.Transport{Proxy: nil, TLSClientConfig: &tls.Config{MinVersion: tls.VersionTLS12, RootCAs: roots}}
+	nativeTransport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
+		if address != native.Host {
+			return nil, errors.New("published native origin denied")
+		}
+		return (&net.Dialer{Timeout: time.Second}).DialContext(ctx, network, address)
+	}
+	defer nativeTransport.CloseIdleConnections()
+	nativeClient := &http.Client{Transport: nativeTransport, Timeout: 5 * time.Second}
+	ctx, cancel := context.WithTimeout(context.Background(), 65*time.Second)
+	defer cancel()
+	var queries queryBudget
+	database := app.DatabaseConfig{DatabaseURL: in.DatabaseURL, Schema: in.Schema,
+		ApplicationName: "ado-published-v11", MaxConnections: 1, QueryTracer: &queries, LogOutput: io.Discard}
+	read := in.CollectionReader.config()
+	core, err := app.Open(ctx, app.Config{
+		DatabaseURL: in.DatabaseURL, Schema: in.Schema, ApplicationName: "ado-published-v11-core",
+		MaxConnections: 1, BootstrapToken: in.Bootstrap, IntegrationEncryptionKey: in.EncryptionKey,
+		CollectionStorage: &read, Storage: in.Raw.config(), ManualProcessing: true,
+		PublicOrigin: "https://jira-work-items.synthetic.invalid", AssessmentScope: in.AssessmentScope,
+		SessionTTL: time.Hour, MaxUploadBytes: 64 << 10, QueryTracer: &queries, LogOutput: io.Discard,
+	})
+	if err != nil {
+		return err
+	}
+	defer core.Close()
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return err
+	}
+	server := &http.Server{Handler: core.Handler, ReadHeaderTimeout: 2 * time.Second}
+	defer server.Close()
+	go func() { _ = server.Serve(listener) }()
+	encoder := json.NewEncoder(os.Stdout)
+	outcome := func(steps int) error {
+		return encoder.Encode(struct {
+			OK bool
+			Queries int32
+			Steps int
+			S3ObservedByParent bool
+		}{true, queries.count.Load(), steps, true})
+	}
+	if encoder.Encode(map[string]string{"address": "http://" + listener.Addr().String()}) != nil {
+		return errors.New("published readiness pipe failed")
+	}
+	for i := 0; i < 8; i++ {
+		var command struct{ Operation string }
+		if decoder.Decode(&command) != nil {
+			return errors.New("published bounded control pipe failed")
+		}
+		switch command.Operation {
+		case "imports":
+			worker, err := app.OpenImportWorker(ctx, app.ImportWorkerConfig{
+				Database: database, Storage: in.RawReader.config(), MaxUploadBytes: 64 << 10,
+				NormalizedPrefix: rootPrefix + "normalized/",
+			})
+			if err != nil {
+				return err
+			}
+			err = worker.ProcessImports(ctx)
+			closeErr := worker.Close()
+			if errors.Join(err, closeErr) != nil || outcome(0) != nil {
+				return errors.New("published independent ingestion failed")
+			}
+		case "collect":
+			worker, err := app.OpenCollectionWorker(ctx, app.CollectionWorkerConfig{
+				Database: database, Storage: in.CollectionPublisher.config(), EncryptionKey: in.EncryptionKey,
+				WorkerID: "published-v11-github", LeaseDuration: 4 * time.Second,
+				GitHubEndpoint: in.NativeOrigin, Client: nativeClient,
+				Limits: connectors.Limits{Requests: 4, Pages: 1, PageSize: 1, Bytes: 32 << 10},
+			})
+			if err != nil {
+				return err
+			}
+			processed, err := worker.ProcessNext(ctx)
+			closeErr := worker.Close()
+			if errors.Join(err, closeErr) != nil || !processed || outcome(1) != nil {
+				return errors.New("published independent GitHub collection failed")
+			}
+		case "close":
+			stop, done := context.WithTimeout(context.Background(), 2*time.Second)
+			defer done()
+			if server.Shutdown(stop) != nil || core.Close() != nil {
+				return errors.New("published close failed")
+			}
+			return outcome(0)
+		default:
+			return errors.New("published operation not permitted")
+		}
+	}
+	return errors.New("published control bound exceeded")
+}

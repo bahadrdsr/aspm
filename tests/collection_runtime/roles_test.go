@@ -253,7 +253,9 @@ func TestCollectionRuntimeEnvironmentDefaultsAndLegacyRoleIsolation(t *testing.T
 	config, err := Production.Environment("collection")
 	must(t, "parse independent collection environment", err)
 	check(t, config.CollectionStorage != nil && config.CollectionStorage.AccessKey == f.publish.AccessKey && config.CollectionStorage.Prefix == f.publish.Prefix && bytes.Equal(config.Key, f.key), "collection environment lost its explicitly selected publisher/key")
-	check(t, config.Database.MaxConnections == 1 && config.Lease == 15*time.Second && config.Endpoint == "https://api.github.com", "collection default pool/lease/gateway differs")
+	check(t, config.Database.MaxConnections == 1 && config.Lease == 15*time.Second &&
+		config.Endpoint == "https://api.github.com" && config.AzureEndpoint == "https://dev.azure.com",
+		"collection default pool/lease/gateway differs")
 	check(t, config.Raw == (evidence.Config{}) && config.Bootstrap == "" && config.Assets == "" && config.ReadinessKey == "" && !config.PrepareReadiness, "collection inherited raw storage/bootstrap/assets/readiness authority")
 	check(t, config.Limits == (connectors.Limits{Requests: 32, Pages: 8, PageSize: 50, Bytes: 8 << 20}), "collection default limits are not the accepted bounded native profile")
 	environmentClient(t, config)
@@ -269,6 +271,7 @@ func TestCollectionRuntimeEnvironmentDefaultsAndLegacyRoleIsolation(t *testing.T
 		{"ASPM_INTEGRATION_ENCRYPTION_KEY", base64.StdEncoding.EncodeToString(random(t, 33))},
 		{"ASPM_COLLECTION_LEASE_DURATION", "0s"}, {"ASPM_COLLECTION_LEASE_DURATION", "61s"},
 		{"ASPM_GITHUB_ENDPOINT", "http://127.0.0.1:1"}, {"ASPM_GITHUB_ENDPOINT", "https://127.0.0.1:1/#not-a-request-target"},
+		{"ASPM_AZURE_DEVOPS_ENDPOINT", "http://127.0.0.1:1"}, {"ASPM_AZURE_DEVOPS_ENDPOINT", "https://127.0.0.1:1/#not-a-request-target"},
 		{"ASPM_COLLECTION_CA_FILE", filepath.Join(required(t, "ASPM_COLLECTION_RUNTIME_ARTIFACT_DIR"), "missing-ca.pem")},
 	} {
 		t.Run(item.name+"-invalid", func(t *testing.T) {
@@ -324,7 +327,7 @@ func startCommand(t *testing.T, f *fixture, g *githubFixture) *commandRole {
 	}
 	command.Env = append(command.Env, "ASPM_DATABASE_URL="+f.database.DatabaseURL, "ASPM_SCHEMA="+f.database.Schema, "ASPM_DB_MAX_CONNECTIONS=1", "ASPM_LISTEN="+address,
 		"ASPM_INTEGRATION_ENCRYPTION_KEY="+base64.StdEncoding.EncodeToString(f.key), "ASPM_COLLECTION_LEASE_DURATION=1s",
-		"ASPM_GITHUB_ENDPOINT="+g.server.URL, "ASPM_COLLECTION_CA_FILE="+ca,
+		"ASPM_GITHUB_ENDPOINT="+g.server.URL, "ASPM_AZURE_DEVOPS_ENDPOINT="+g.server.URL, "ASPM_COLLECTION_CA_FILE="+ca,
 		"ASPM_COLLECTION_S3_ENDPOINT="+f.publishTap.server.URL, "ASPM_COLLECTION_S3_BUCKET="+f.publish.Bucket, "ASPM_COLLECTION_S3_PREFIX="+f.publish.Prefix,
 		"ASPM_COLLECTION_S3_REGION="+f.publish.Region, "ASPM_COLLECTION_S3_ACCESS_KEY="+f.publish.AccessKey, "ASPM_COLLECTION_S3_SECRET_KEY="+f.publish.SecretKey, "AWS_EC2_METADATA_DISABLED=true")
 	must(t, "start actual owned collection-worker process", command.Start())

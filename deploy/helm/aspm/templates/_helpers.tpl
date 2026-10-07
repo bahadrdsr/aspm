@@ -157,6 +157,8 @@
   value: {{ $settings.leaseDuration | quote }}
 - name: ASPM_GITHUB_ENDPOINT
   value: {{ $settings.githubEndpoint | quote }}
+- name: ASPM_AZURE_DEVOPS_ENDPOINT
+  value: {{ $settings.azureDevOpsEndpoint | quote }}
 {{- end }}
 {{- if or (eq $role "core") (eq $role "ingestion") }}
 {{- $selected := $settings.s3Secret | default dict }}
