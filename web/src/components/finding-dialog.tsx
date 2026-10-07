@@ -120,6 +120,8 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
             <dl className="detail-facts">
               <div><dt>Human workflow</dt><dd><WorkflowBadge value={finding.workflowState} /></dd></div>
               <div><dt>Disposition</dt><dd>{finding.disposition === undefined ? "Not supplied" : label(finding.disposition)}</dd></div>
+              <div><dt>Latest source change</dt><dd>{label(finding.changeKind)}</dd></div>
+              <div><dt>Change revision</dt><dd>{finding.changeRevision ?? "Not supplied"}</dd></div>
               <div className="full-width"><dt>Scanner-inferred state</dt><dd>{finding.sourceState === undefined ? "Not supplied" : label(finding.sourceState)}</dd></div>
               {finding.disposition === "accepted-risk" && <>
                 <div className="full-width"><dt>Risk acceptance expiry</dt><dd>{finding.acceptedRiskExpiresAt ? <time dateTime={finding.acceptedRiskExpiresAt}>{timestampLabel(finding.acceptedRiskExpiresAt)}</time> : "No expiry supplied"}</dd></div>

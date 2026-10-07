@@ -176,6 +176,12 @@ function observation(value: unknown): Observation {
     evidenceDigest: text(item.evidenceDigest, "evidence digest"),
     evidenceAvailability: choice(item.evidenceAvailability,
       ["available", "archived", "expired", "missing", "corrupt"], "observation evidence availability"),
+    changeKind: item.changeKind === undefined ? "unchanged" : choice(item.changeKind,
+      ["new", "changed", "unchanged", "reopened", "inferred-resolved", "historical", "non-authoritative"],
+      "observation change kind"),
+    changeReasons: item.changeReasons === undefined ? [] :
+      array(item.changeReasons, "observation change reasons")
+        .map((reason) => text(reason, "observation change reason")),
   };
 }
 
@@ -197,6 +203,9 @@ function workItem(value: unknown): WorkItem {
     sourceScanAt: item.sourceScanAt === null ? null : timestamp(item.sourceScanAt, "source scan timestamp"),
     collectedAt: timestamp(item.collectedAt, "collection timestamp"),
     importedAt: timestamp(item.importedAt, "import timestamp"),
+    changeKind: item.changeKind === undefined ? "unchanged" : choice(item.changeKind,
+      ["new", "changed", "unchanged", "reopened", "inferred-resolved"], "finding change kind"),
+    changeAt: item.changeAt === undefined ? null : nullableTimestamp(item.changeAt, "finding change time"),
   };
 }
 
@@ -212,6 +221,8 @@ export function parseWork(value: unknown): WorkResponse {
   return {
     apiVersion, dataOrigin, items, total: body.total,
     nextCursor: body.nextCursor === null ? null : text(body.nextCursor, "pagination cursor"),
+    changeMode: body.changeMode === undefined ? "all" :
+      choice(body.changeMode, ["all", "meaningful"], "work change mode"),
   };
 }
 
@@ -262,6 +273,7 @@ export function parseFinding(value: unknown): FindingResponse {
       verifiedResolution: finding.verifiedResolution === undefined ? undefined : boolean(finding.verifiedResolution, "resolution verification"),
       decisionRevision: finding.decisionRevision === undefined ? undefined : count(finding.decisionRevision, "finding decision revision"),
       evidenceRevision: finding.evidenceRevision === undefined ? undefined : count(finding.evidenceRevision, "finding evidence revision"),
+      changeRevision: finding.changeRevision === undefined ? undefined : count(finding.changeRevision, "finding change revision"),
       correlation: finding.correlation === undefined ? undefined : findingCorrelation(finding.correlation, text(finding.workspaceId, "finding workspace")),
       notes: finding.notes === undefined ? undefined : uniqueIds(array(finding.notes, "analyst notes").map((value) => {
         const note = object(value, "analyst note");
@@ -897,10 +909,11 @@ async function reportRead<T>(path: string, parse: (value: unknown) => T, signal:
 }
 
 export const api = {
-  work: (signal: AbortSignal, options?: { q?: string; cursor?: string }) => {
+  work: (signal: AbortSignal, options?: { q?: string; cursor?: string; meaningfulChanges?: boolean }) => {
     const query = new URLSearchParams();
     const q = workSearchQuery(options?.q ?? "");
     if (q !== "") query.set("q", q);
+    if (options?.meaningfulChanges) query.set("change", "meaningful");
     const cursor = options?.cursor;
     if (cursor !== undefined && (typeof cursor !== "string" || !/^[a-f0-9]{32}$/.test(cursor))) {
       throw new APIError("Finding pages require a native 32-character lowercase hexadecimal cursor.", "invalid-input", false);

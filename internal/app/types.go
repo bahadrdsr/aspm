@@ -46,6 +46,8 @@ type WorkItem struct {
 	SourceScanAt  *time.Time `json:"sourceScanAt"`
 	CollectedAt   time.Time  `json:"collectedAt"`
 	ImportedAt    time.Time  `json:"importedAt"`
+	ChangeKind    string     `json:"changeKind"`
+	ChangeAt      *time.Time `json:"changeAt"`
 }
 
 type Finding struct {
@@ -65,6 +67,7 @@ type Finding struct {
 	VerifiedResolution     bool                `json:"verifiedResolution"`
 	DecisionRevision       int64               `json:"decisionRevision"`
 	EvidenceRevision       int64               `json:"evidenceRevision"`
+	ChangeRevision         int64               `json:"changeRevision"`
 	Notes                  []Note              `json:"notes"`
 	Observations           []Observation       `json:"observations"`
 	NotesNextCursor        *string             `json:"notesNextCursor"`
@@ -226,6 +229,8 @@ type Observation struct {
 	Unmapped             map[string]any   `json:"unmapped"`
 	EvidenceDigest       string           `json:"evidenceDigest"`
 	EvidenceAvailability string           `json:"evidenceAvailability,omitempty"`
+	ChangeKind           string           `json:"changeKind"`
+	ChangeReasons        []string         `json:"changeReasons"`
 }
 
 type Failure struct {

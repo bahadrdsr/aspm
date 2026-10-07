@@ -51,6 +51,9 @@ const ObservationEntry = memo(function ObservationEntry({ observation, canRestor
       <dt>Scope</dt><dd>{observation.scope.id}</dd>
       <dt>Revision / branch</dt><dd>{`${observation.scope.revision} / ${observation.scope.branch}`}</dd>
       <dt>Evidence availability</dt><dd>{label(observation.evidenceAvailability)}</dd>
+      <dt>Source change</dt><dd>{label(observation.changeKind)}</dd>
+      <dt>Change context</dt><dd>{observation.changeReasons.length === 0
+        ? "Current authoritative observation" : observation.changeReasons.map(label).join(", ")}</dd>
     </dl>
     <div className="finding-owner-actions">
       <ActionButton variant="outline" disabled={evidence.pending || observation.evidenceAvailability === "expired"}

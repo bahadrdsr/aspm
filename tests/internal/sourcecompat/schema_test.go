@@ -106,6 +106,21 @@ func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 		"app_findings_candidate_location_check|CHECK (candidate_uri = ''::text AND candidate_line = 0 OR candidate_uri <> ''::text AND candidate_line > 0)",
 		"app_findings_candidate_uri_check|CHECK (octet_length(candidate_uri) <= 8192)",
 		"app_findings_candidate_uri_not_null|NOT NULL candidate_uri")
+	current["findings/columns"] = append(current["findings/columns"],
+		"content_digest|text|true|''::text",
+		"change_kind|text|true|'unchanged'::text",
+		"change_at|timestamp with time zone|false|",
+		"change_run_id|text|true|''::text",
+		"change_revision|bigint|true|1")
+	current["findings/constraints"] = append(current["findings/constraints"],
+		"app_findings_change_kind_check|CHECK (change_kind = ANY (ARRAY['new'::text, 'changed'::text, 'unchanged'::text, 'reopened'::text, 'inferred-resolved'::text]))",
+		"app_findings_change_kind_not_null|NOT NULL change_kind",
+		"app_findings_change_revision_check|CHECK (change_revision > 0)",
+		"app_findings_change_revision_not_null|NOT NULL change_revision",
+		"app_findings_change_run_id_check|CHECK (change_run_id = ''::text OR change_run_id ~ '^[0-9a-f]{32}$'::text)",
+		"app_findings_change_run_id_not_null|NOT NULL change_run_id",
+		"app_findings_content_digest_check|CHECK (content_digest = ''::text OR content_digest ~ '^sha256:[0-9a-f]{64}$'::text)",
+		"app_findings_content_digest_not_null|NOT NULL content_digest")
 	sortConstraints(current["findings/constraints"])
 	if got := ProjectCurrent(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("current projection did not restore the observed legacy catalog")
@@ -169,6 +184,20 @@ func TestProjectRelationsV16AcceptsOnlyExactCandidateIndex(t *testing.T) {
 	}
 }
 
+func TestProjectRelationsV17AcceptsOnlyExactLifecycleIndex(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV17(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V17 relation projection did not restore the prior relation set")
+	}
+}
+
 func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	before := map[string][]string{
 		"imports/indexes":             {"app_imports_pkey|unchanged"},
@@ -196,7 +225,7 @@ func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
 	current := map[string][]string{
 		"source_connections": {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
 		"source_collections": {`{"azure_devops_selection":null,"azure_devops_target":null,"id":"collection","profile":"github-cloud-app"}`},
-		"findings":           {`{"candidate_line":0,"candidate_uri":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
+		"findings":           {`{"candidate_line":0,"candidate_uri":"","change_at":null,"change_kind":"unchanged","change_revision":1,"change_run_id":"","content_digest":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
 	}
 	if got := ProjectRowsCurrent(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("complete current rows were not projected without loss")

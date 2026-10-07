@@ -131,6 +131,12 @@ func assertFindingUnchanged(t *testing.T, before, after app.Finding) {
 		if expectedObservations[index].EvidenceAvailability == "" {
 			expectedObservations[index].EvidenceAvailability = "available"
 		}
+		if expectedObservations[index].ChangeKind == "" {
+			expectedObservations[index].ChangeKind = "unchanged"
+		}
+		if expectedObservations[index].ChangeReasons == nil {
+			expectedObservations[index].ChangeReasons = []string{}
+		}
 	}
 	same(t, "Jira creation changed source observations", after.Observations, expectedObservations)
 }

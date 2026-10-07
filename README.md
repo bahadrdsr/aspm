@@ -29,8 +29,10 @@ retention worker for normalized-history/audit archival, raw/archive expiry,
 explicit availability states, resume, authorized retrieval and observation
 restoration. V16 adds indexed exact-location candidate discovery and reversible
 multi-member source groups with one-member release. Automatic/fuzzy correlation,
-change-focused lifecycle work and recurring-scan capacity qualification remain
-unfinished.
+and enterprise capacity qualification remain unfinished. V17 adds semantic
+new/changed/unchanged/reopened classification, explicit failed/partial/delta/
+out-of-order context, a meaningful-changes Work mode, and bounded recurring-scan
+table/index/WAL regression measurements.
 GitLab, AWS, Azure cloud and other unfinished integration expansion remain
 deferred.
 
@@ -44,7 +46,7 @@ delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
 multi-source finding correlation with bounded candidates, retention
 policy/hold/preview/execution
-controls, plus
+controls, change-focused Work, plus
 opt-in persistent AI profile, policy and grant configuration, with an in-finding
 assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the

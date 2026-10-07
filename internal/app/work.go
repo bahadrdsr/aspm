@@ -11,7 +11,8 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-const workColumns = `f.id,f.title,asset.name,f.severity,owner.name,f.workflow_state,f.source_scan_at,f.collected_at,f.imported_at`
+const workColumns = `f.id,f.title,asset.name,f.severity,owner.name,f.workflow_state,
+	f.source_scan_at,f.collected_at,f.imported_at,f.change_kind,f.change_at`
 
 func (a *Application) workVisible() string {
 	return `NOT EXISTS(SELECT 1 FROM ` + a.table("finding_correlation_members") + ` cm
@@ -21,9 +22,13 @@ func (a *Application) workVisible() string {
 		AND c.primary_finding_id<>f.id)`
 }
 
-func (a *Application) workFilter() string {
-	return `f.workspace_id=$1 AND ` + a.workVisible() + ` AND ($2='' OR strpos(lower(f.title),lower($2))>0
+func (a *Application) workFilter(change string) string {
+	filter := `f.workspace_id=$1 AND ` + a.workVisible() + ` AND ($2='' OR strpos(lower(f.title),lower($2))>0
 		OR strpos(lower(asset.name),lower($2))>0 OR strpos(lower(COALESCE(owner.name,'')),lower($2))>0)`
+	if change == "meaningful" {
+		filter += ` AND f.change_kind IN ('new','changed','reopened')`
+	}
+	return filter
 }
 
 func (a *Application) workFrom() string {
@@ -34,7 +39,7 @@ func (a *Application) workFrom() string {
 
 func workDest(v *WorkItem) []any {
 	return []any{&v.ID, &v.Title, &v.AssetName, &v.Severity, &v.OwnerName,
-		&v.WorkflowState, &v.SourceScanAt, &v.CollectedAt, &v.ImportedAt}
+		&v.WorkflowState, &v.SourceScanAt, &v.CollectedAt, &v.ImportedAt, &v.ChangeKind, &v.ChangeAt}
 }
 
 func scanWork(row pgx.Row) (WorkItem, error) {
@@ -77,12 +82,33 @@ func (a *Application) workQuery(r *http.Request, workspace string, session authe
 	return view.Query, nil
 }
 
+func workChangeMode(r *http.Request) (string, error) {
+	query, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		for _, parameter := range strings.Split(r.URL.RawQuery, "&") {
+			key, _, _ := strings.Cut(parameter, "=")
+			key, _ = url.QueryUnescape(key)
+			if key == "change" {
+				return "", errInvalid
+			}
+		}
+	}
+	values, selected := query["change"]
+	if !selected {
+		return "all", nil
+	}
+	if err != nil || len(values) != 1 || values[0] != "meaningful" {
+		return "", errInvalid
+	}
+	return "meaningful", nil
+}
+
 type workQuerier interface {
 	Query(context.Context, string, ...any) (pgx.Rows, error)
 }
 
-func (a *Application) workPage(ctx context.Context, db workQuerier, workspace, q, cursor string, limit int) ([]WorkItem, *string, error) {
-	rows, err := db.Query(ctx, `SELECT `+workColumns+a.workFrom()+` WHERE `+a.workFilter()+
+func (a *Application) workPage(ctx context.Context, db workQuerier, workspace, q, change, cursor string, limit int) ([]WorkItem, *string, error) {
+	rows, err := db.Query(ctx, `SELECT `+workColumns+a.workFrom()+` WHERE `+a.workFilter(change)+
 		` AND f.id>$3 ORDER BY f.id LIMIT $4`, workspace, q, cursor, limit+1)
 	if err != nil {
 		return nil, nil, err
@@ -112,6 +138,10 @@ func (a *Application) listWork(w http.ResponseWriter, r *http.Request, workspace
 	if err != nil {
 		return err
 	}
+	change, err := workChangeMode(r)
+	if err != nil {
+		return err
+	}
 	limit, cursor, err := pageParameters(r)
 	if err != nil {
 		return err
@@ -122,17 +152,19 @@ func (a *Application) listWork(w http.ResponseWriter, r *http.Request, workspace
 	}
 	defer rollback(tx)
 	var total int
-	if err = tx.QueryRow(r.Context(), `SELECT count(*)`+a.workFrom()+` WHERE `+a.workFilter(), workspace, q).Scan(&total); err != nil {
+	if err = tx.QueryRow(r.Context(), `SELECT count(*)`+a.workFrom()+` WHERE `+a.workFilter(change), workspace, q).Scan(&total); err != nil {
 		return err
 	}
-	items, next, err := a.workPage(r.Context(), tx, workspace, q, cursor, limit)
+	items, next, err := a.workPage(r.Context(), tx, workspace, q, change, cursor, limit)
 	if err != nil {
 		return err
 	}
 	if err = tx.Commit(r.Context()); err != nil {
 		return err
 	}
-	writeJSON(w, 200, map[string]any{"dataOrigin": "live", "items": items, "total": total, "nextCursor": next})
+	writeJSON(w, 200, map[string]any{
+		"dataOrigin": "live", "items": items, "total": total, "nextCursor": next, "changeMode": change,
+	})
 	return nil
 }
 
@@ -160,7 +192,11 @@ func (a *Application) exportWork(w http.ResponseWriter, r *http.Request, workspa
 	if err != nil {
 		return err
 	}
-	items, next, err := a.workPage(r.Context(), a.pool, workspace, q, "", 500)
+	change, err := workChangeMode(r)
+	if err != nil {
+		return err
+	}
+	items, next, err := a.workPage(r.Context(), a.pool, workspace, q, change, "", 500)
 	if err != nil {
 		return err
 	}
@@ -168,7 +204,8 @@ func (a *Application) exportWork(w http.ResponseWriter, r *http.Request, workspa
 	w.Header().Set("Content-Disposition", `attachment; filename="work.csv"`)
 	w.Header().Set("Trailer", "X-ASPM-Export-Status")
 	writer := csv.NewWriter(w)
-	if err := writer.Write([]string{"id", "title", "assetName", "severity", "ownerName", "workflowState", "sourceScanAt", "collectedAt", "importedAt"}); err != nil {
+	if err := writer.Write([]string{"id", "title", "assetName", "severity", "ownerName", "workflowState",
+		"sourceScanAt", "collectedAt", "importedAt", "changeKind", "changeAt"}); err != nil {
 		return nil
 	}
 	for {
@@ -178,7 +215,8 @@ func (a *Application) exportWork(w http.ResponseWriter, r *http.Request, workspa
 				owner = *item.OwnerName
 			}
 			if err := writer.Write([]string{item.ID, csvText(item.Title), csvText(item.AssetName), item.Severity,
-				csvText(owner), item.WorkflowState, csvTime(item.SourceScanAt), csvTime(&item.CollectedAt), csvTime(&item.ImportedAt)}); err != nil {
+				csvText(owner), item.WorkflowState, csvTime(item.SourceScanAt), csvTime(&item.CollectedAt),
+				csvTime(&item.ImportedAt), item.ChangeKind, csvTime(item.ChangeAt)}); err != nil {
 				w.Header().Set("X-ASPM-Export-Status", "failed")
 				return nil
 			}
@@ -192,7 +230,7 @@ func (a *Application) exportWork(w http.ResponseWriter, r *http.Request, workspa
 			w.Header().Set("X-ASPM-Export-Status", "complete")
 			return nil
 		}
-		items, next, err = a.workPage(r.Context(), a.pool, workspace, q, *next, 500)
+		items, next, err = a.workPage(r.Context(), a.pool, workspace, q, change, *next, 500)
 		if err != nil {
 			w.Header().Set("X-ASPM-Export-Status", "failed")
 			a.log.Print("export interrupted requestId=" + w.Header().Get("X-Request-ID"))

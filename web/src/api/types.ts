@@ -4,6 +4,8 @@ export type Severity = "critical" | "high" | "medium" | "low" | "info";
 export type WorkflowState = "open" | "in-progress" | "resolved";
 export type FindingDisposition = "none" | "accepted-risk";
 export type EvidenceAvailability = "available" | "archived" | "expired" | "missing" | "corrupt";
+export type FindingChangeKind = "new" | "changed" | "unchanged" | "reopened" | "inferred-resolved";
+export type ObservationChangeKind = FindingChangeKind | "historical" | "non-authoritative";
 
 export interface Membership {
   id: string;
@@ -28,6 +30,8 @@ export interface WorkItem {
   sourceScanAt: string | null;
   collectedAt: string;
   importedAt: string;
+  changeKind: FindingChangeKind;
+  changeAt: string | null;
 }
 
 export interface WorkResponse {
@@ -36,6 +40,7 @@ export interface WorkResponse {
   items: WorkItem[];
   total: number;
   nextCursor: string | null;
+  changeMode: "all" | "meaningful";
 }
 
 export interface SourceScope { id: string; revision: string; branch: string }
@@ -57,6 +62,8 @@ export interface Observation {
   unmapped: Record<string, JSONValue>;
   evidenceDigest: string;
   evidenceAvailability: EvidenceAvailability;
+  changeKind: ObservationChangeKind;
+  changeReasons: string[];
 }
 
 export interface FindingDetail extends WorkItem {
@@ -79,6 +86,7 @@ export interface FindingDetail extends WorkItem {
   verifiedResolution?: boolean;
   decisionRevision?: number;
   evidenceRevision?: number;
+  changeRevision?: number;
   correlation?: FindingCorrelation;
   notes?: FindingNote[];
   observations?: Observation[];

@@ -9,10 +9,12 @@ export interface ConfirmedWorkUpdates {
   items: ReadonlyMap<string, { revision: number; item: WorkItem }>;
 }
 
-export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQueryConfirmed: (query: string) => void) {
+export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string,
+  onQueryConfirmed: (query: string) => void, meaningfulChanges: boolean) {
   const [read, setRead] = useState<{
-    query: string; cursor: string; sequence: number; search: boolean; suspended: boolean; complete?: () => void;
-  }>({ query, cursor: "", sequence: 0, search: false, suspended: false });
+    query: string; cursor: string; sequence: number; search: boolean; suspended: boolean;
+    meaningful: boolean; complete?: () => void;
+  }>({ query, cursor: "", sequence: 0, search: false, suspended: false, meaningful: meaningfulChanges });
   const rows = useRef(new Map<string, { revision: number; item: WorkItem }>());
   const lastPage = useRef<(WorkResponse & { query: string }) | null>(null);
   const currentRevision = useRef(confirmed.revision);
@@ -41,7 +43,9 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
     const revision = currentRevision.current;
     let page: WorkResponse;
     try {
-      page = await api.work(scopedSignal, read.cursor === "" ? { q: read.query } : { q: read.query, cursor: read.cursor });
+      page = await api.work(scopedSignal, read.cursor === ""
+        ? { q: read.query, meaningfulChanges: read.meaningful }
+        : { q: read.query, cursor: read.cursor, meaningfulChanges: read.meaningful });
     } catch (cause: unknown) {
       scopedSignal.throwIfAborted();
       if (read.sequence !== sequence.current) throw new DOMException("Work read superseded", "AbortError");
@@ -51,6 +55,9 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
     scopedSignal.throwIfAborted();
     if (!mounted.current || read.sequence !== sequence.current || requestAuthority().revision !== authority.revision) {
       throw new DOMException("Work view closed, superseded or workspace changed", "AbortError");
+    }
+    if (page.changeMode !== (read.meaningful ? "meaningful" : "all")) {
+      throw new APIError("The service returned a different Work change mode.", "invalid-response", true);
     }
     const merged = read.cursor === "" ? new Map<string, { revision: number; item: WorkItem }>() : new Map(rows.current);
     for (const item of page.items) merged.set(item.id, { revision, item });
@@ -75,13 +82,14 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
     });
     return { ...page, items, membershipNeedsRefresh };
   }, [resource.data, resource.status, resource.error, confirmed]);
-  function requestPage(query: string, cursor: string, search = false, complete?: () => void) {
+  function requestPage(query: string, cursor: string, search = false, complete?: () => void,
+    meaningful = read.meaningful) {
     if (((resource.status === "loading" && !read.suspended) || scheduled.current) &&
       (!search || (!complete && !read.complete && query === read.query && cursor === read.cursor))) return;
     scheduled.current = true;
     activeRequest.current?.abort();
     sequence.current += 1;
-    setRead({ query, cursor, search, sequence: sequence.current, suspended: false, complete });
+    setRead({ query, cursor, search, sequence: sequence.current, suspended: false, meaningful, complete });
   }
   function suspend() {
     if (resource.status !== "loading" && !scheduled.current) return;
@@ -99,6 +107,7 @@ export function useWorkPages(confirmed: ConfirmedWorkUpdates, query: string, onQ
     pending: !read.suspended && resource.status === "loading",
     continuation: read.cursor !== "", searching: read.search || read.query !== "", loadMore, suspend,
     search: (query: string, complete?: () => void) => requestPage(query, "", true, complete),
+    changeMode: (meaningful: boolean) => requestPage(lastPage.current?.query ?? query, "", false, undefined, meaningful),
     reload: () => requestPage(lastPage.current?.query ?? query, ""),
     retry: () => requestPage(read.query, read.cursor, read.search, read.complete),
   };

@@ -23,6 +23,7 @@ export interface WorkContext {
   selected: Set<string>;
   page: number;
   sort: "source-order" | "severity" | "title";
+  changesOnly: boolean;
 }
 export function matchesWorkQuery(item: WorkItem, query: string): boolean {
   return `${item.title} ${item.assetName} ${item.ownerName ?? ""}`.toLowerCase().includes(query.trim().toLowerCase());
@@ -41,7 +42,7 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
 }) {
   const confirmQuery = useCallback((confirmedQuery: string) => setContext((previous) => previous.confirmedQuery === confirmedQuery
     ? previous : { ...previous, confirmedQuery, selected: new Set(), page: 0 }), [setContext]);
-  const resource = useWorkPages(confirmed, context.confirmedQuery, confirmQuery);
+  const resource = useWorkPages(confirmed, context.confirmedQuery, confirmQuery, context.changesOnly);
   const applyRequest = useRef<AbortController | null>(null);
   const seenMembershipRevision = useRef(membershipRevision);
   const draftRevision = useRef(0);
@@ -55,7 +56,7 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
   const [searchError, setSearchError] = useState<APIError | null>(null);
   const { reducedMotion } = usePreferences();
   const selectPage = useRef<HTMLInputElement>(null);
-  const { query, selected, sort } = context;
+  const { query, selected, sort, changesOnly } = context;
   const matching = useMemo(() => {
     const items = (data?.items ?? []).filter((item) => matchesWorkQuery(item, query));
     if (sort === "severity") items.sort((a, b) => severityRank[a.severity] - severityRank[b.severity]);
@@ -155,12 +156,19 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
             onKeyDown={(event) => { if (event.key === "Enter" && !event.nativeEvent.isComposing) { event.preventDefault(); submitSearch(); } }} />
             {query && <button type="button" className="clear-filter" aria-label="Clear finding filter" onClick={() => { updateQuery(""); filterRef.current?.focus(); }}><Icon name="close" size={15} /></button>}</div>
           <ActionButton variant="outline" onClick={submitSearch}>Search all findings</ActionButton>
+          <Button variant={changesOnly ? "default" : "outline"} aria-pressed={changesOnly}
+            onClick={() => {
+              const next = !changesOnly;
+              setContext((previous) => ({ ...previous, changesOnly: next, page: 0 }));
+              resource.changeMode(next);
+            }}>Meaningful changes only</Button>
           <Button variant="ghost" onClick={clearSearch}>Clear search</Button>
         </div>
       </div>
       <p className="inline-status workspace-search-status" role="status" aria-label="Workspace search"><Icon name="search" size={15} /><span>
         {(data?.query ?? context.confirmedQuery) === "" ? "No server search. Results are scoped to this workspace." :
           <>Confirmed workspace server search: "{data?.query ?? context.confirmedQuery}". Server results for this workspace.</>}
+        {data?.changeMode === "meaningful" && " Showing only new, changed, or reopened source findings."}
         {data?.membershipNeedsRefresh && " Canonical owner changes mean search membership needs refresh; loaded rows and reported counts retain the last read's membership."}
       </span></p>
       {searchError && <div id="work-search-error" className="inline-status"><FormError error={searchError} /></div>}
@@ -200,7 +208,8 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
                 }} /></th>
                 <th className="finding-column" aria-sort={sort === "title" ? "ascending" : "none"}><button type="button" onClick={() => setContext((previous) => ({ ...previous, sort: previous.sort === "title" ? "source-order" : "title", page: 0 }))}>Finding<Icon name="filter" size={13} /></button></th>
                 <th aria-sort={sort === "severity" ? "ascending" : "none"}><button type="button" onClick={() => setContext((previous) => ({ ...previous, sort: previous.sort === "severity" ? "source-order" : "severity", page: 0 }))}>Severity<Icon name="filter" size={13} /></button></th>
-                <th>Owner</th><th>Workflow</th><th title="Original source scan time, not collection or import time">Source scan</th>
+                <th>Owner</th><th>Workflow</th><th>Source change</th>
+                <th title="Original source scan time, not collection or import time">Source scan</th>
               </tr></thead>
               <tbody>{rows.map((item) => <tr key={item.id} className={selected.has(item.id) ? "is-selected" : undefined}>
                 <td className="select-column"><input type="checkbox" aria-label={`Select ${item.title}`} checked={selected.has(item.id)} onChange={(event) => select(item.id, event.target.checked)} /></td>
@@ -208,6 +217,7 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
                 <td><SeverityBadge severity={item.severity} /></td>
                 <td><span className={`owner ${item.ownerName === null ? "unassigned" : ""}`}><span className="avatar">{item.ownerName ? item.ownerName.slice(0, 1).toUpperCase() : <Icon name="user" size={13} />}</span>{item.ownerName ?? "Unassigned"}</span></td>
                 <td><WorkflowBadge value={item.workflowState} /></td>
+                <td><span className={`subtle-pill change-${item.changeKind}`}>{item.changeKind}</span></td>
                 <td className="source-date">{item.sourceScanAt === null ? <span className="unknown-time"><Icon name="clock" size={14} />Unknown</span> : <time dateTime={item.sourceScanAt}>{sourceDate(item.sourceScanAt)}</time>}</td>
               </tr>)}</tbody>
             </table>

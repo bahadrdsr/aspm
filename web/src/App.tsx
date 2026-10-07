@@ -47,15 +47,23 @@ function WorkspaceApplication() {
   const { session, workspace, changeWorkspace, signOut } = useSession();
   const route = useRoute();
   const { warning } = usePreferences();
-  const [workContext, setWorkContext] = useState<WorkContext>({ query: "", confirmedQuery: "", selected: new Set(), page: 0, sort: "source-order" });
+  const [workContext, setWorkContext] = useState<WorkContext>({
+    query: "", confirmedQuery: "", selected: new Set(), page: 0, sort: "source-order", changesOnly: false,
+  });
   const [workUpdates, setWorkUpdates] = useState<ConfirmedWorkUpdates>({ revision: 0, items: new Map() });
   const [workMembershipRevision, setWorkMembershipRevision] = useState(0);
   const confirmFinding = useCallback((finding: WorkItem) => {
     setWorkUpdates((previous) => {
       const revision = previous.revision + 1;
       const items = new Map(previous.items);
-      const { id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt } = finding;
-      items.set(id, { revision, item: { id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt } });
+      const {
+        id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
+        collectedAt, importedAt, changeKind, changeAt,
+      } = finding;
+      items.set(id, { revision, item: {
+        id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
+        collectedAt, importedAt, changeKind, changeAt,
+      } });
       return { revision, items };
     });
   }, []);

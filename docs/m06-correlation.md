@@ -85,7 +85,7 @@ migration literals or business rows outside the approved additive defaults.
   durability.
 - Browser acceptance covers candidate review, manual fallback, adding a third
   source, active/released history, partial release and final Work restoration.
-- The complete 150-case browser suite passes with both two-source and
+- The complete 151-case browser suite passes with both two-source and
   three-source correlation workflows.
 
 ## Remaining limits

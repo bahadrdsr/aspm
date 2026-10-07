@@ -32,15 +32,16 @@ type scope struct {
 	Branch   string `json:"branch"`
 }
 type workItem struct {
-	ID, Title, AssetName, Severity, WorkflowState string
-	OwnerName                                     *string
-	SourceScanAt                                  *time.Time
-	CollectedAt, ImportedAt                       time.Time
+	ID, Title, AssetName, Severity, WorkflowState, ChangeKind string
+	OwnerName                                                 *string
+	SourceScanAt, ChangeAt                                    *time.Time
+	CollectedAt, ImportedAt                                   time.Time
 }
 type observation struct {
 	ID, RunID, SourceID, ScanID, SourceFindingID, SourceSeverity, NormalizedSeverity string
 	EvidenceDigest, Impact, Remediation                                              string
-	EvidenceAvailability                                                             string
+	EvidenceAvailability, ChangeKind                                                 string
+	ChangeReasons                                                                    []string
 	Scope                                                                            scope
 	SourceScanAt                                                                     *time.Time
 	SourceLocation                                                                   struct {
@@ -55,7 +56,7 @@ type finding struct {
 	OwnerID                                                                              *string
 	SourceFreshnessAt, AcceptedRiskExpiresAt                                             *time.Time
 	RiskAcceptanceExpired, VerifiedResolution                                            bool
-	DecisionRevision, EvidenceRevision                                                   int64
+	DecisionRevision, EvidenceRevision, ChangeRevision                                   int64
 	Evidence                                                                             struct{ Text, SourceLabel, VerificationState string }
 	Observations                                                                         []observation
 	Notes                                                                                []struct{ ID, Text string }

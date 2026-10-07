@@ -188,7 +188,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV16(t, v13, current)
+	projected := ProjectV17(t, v13, current)
+	projected = ProjectV16(t, v13, projected)
 	projected = ProjectV15(t, v13, projected)
 	projected = ProjectV14(t, v13, projected)
 	return ProjectV12(t, before, ProjectV13(t, v12, projected))
@@ -254,6 +255,10 @@ var v15Relations = []string{
 
 var v16Relations = []string{
 	"app_findings_correlation_candidate_idx|i",
+}
+
+var v17Relations = []string{
+	"app_findings_meaningful_change_idx|i",
 }
 
 var v14LegacyIndexes = []struct {
@@ -528,6 +533,82 @@ func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]
 	return result
 }
 
+// ProjectV17 validates and projects the exact finding lifecycle delta.
+func ProjectV17(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	result := clone(current)
+	columns, present := current["findings/columns"]
+	if !present {
+		return result
+	}
+	suffix, err := v15ColumnSuffix(columns)
+	if err != nil {
+		t.Fatal(err)
+	}
+	addedColumns := []string{
+		"content_digest|text|true|''::text" + suffix,
+		"change_kind|text|true|'unchanged'::text" + suffix,
+		"change_at|timestamp with time zone|false|" + suffix,
+		"change_run_id|text|true|''::text" + suffix,
+		"change_revision|bigint|true|1" + suffix,
+	}
+	if len(columns) < len(addedColumns) ||
+		!reflect.DeepEqual(columns[len(columns)-len(addedColumns):], addedColumns) {
+		t.Fatal("V17: findings columns have a missing or unapproved delta")
+	}
+	result["findings/columns"] = slices.Clone(columns[:len(columns)-len(addedColumns)])
+	constraints := slices.Clone(current["findings/constraints"])
+	separator := constraintSeparator(constraints)
+	for _, value := range []struct{ name, definition string }{
+		{"app_findings_change_kind_check", "CHECK (change_kind = ANY (ARRAY['new'::text, 'changed'::text, 'unchanged'::text, 'reopened'::text, 'inferred-resolved'::text]))"},
+		{"app_findings_change_kind_not_null", "NOT NULL change_kind"},
+		{"app_findings_change_revision_check", "CHECK (change_revision > 0)"},
+		{"app_findings_change_revision_not_null", "NOT NULL change_revision"},
+		{"app_findings_change_run_id_check", "CHECK (change_run_id = ''::text OR change_run_id ~ '^[0-9a-f]{32}$'::text)"},
+		{"app_findings_change_run_id_not_null", "NOT NULL change_run_id"},
+		{"app_findings_content_digest_check", "CHECK (content_digest = ''::text OR content_digest ~ '^sha256:[0-9a-f]{64}$'::text)"},
+		{"app_findings_content_digest_not_null", "NOT NULL content_digest"},
+	} {
+		expected := value.name + separator + value.definition
+		matches := 0
+		remaining := make([]string, 0, len(constraints))
+		for _, row := range constraints {
+			if row == expected {
+				matches++
+				continue
+			}
+			remaining = append(remaining, row)
+		}
+		if matches != 1 {
+			t.Fatalf("V17: exact %s constraint missing or ambiguous", value.name)
+		}
+		constraints = remaining
+	}
+	result["findings/constraints"] = constraints
+	key := "findings/indexes"
+	if _, present := before[key]; present {
+		rows := current[key]
+		remaining := make([]string, 0, len(rows))
+		matches := 0
+		for _, row := range rows {
+			if strings.HasPrefix(row, "app_findings_meaningful_change_idx|") {
+				if !exactV14Index(row, "app_findings_meaningful_change_idx",
+					"app_findings USING btree (workspace_id, change_kind, id) WHERE (change_kind = ANY (ARRAY['new'::text, 'changed'::text, 'reopened'::text]))") {
+					t.Fatal("V17: meaningful change index definition changed")
+				}
+				matches++
+				continue
+			}
+			remaining = append(remaining, row)
+		}
+		if matches != 1 {
+			t.Fatal("V17: meaningful change index missing or ambiguous")
+		}
+		result[key] = remaining
+	}
+	return result
+}
+
 func relationDifference(left, right []string) []string {
 	present := make(map[string]struct{}, len(right))
 	for _, value := range right {
@@ -591,6 +672,22 @@ func ProjectRelationsV16(t testing.TB, before, current []string) []string {
 	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
 	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
 		t.Fatalf("V16: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
+// ProjectRelationsV17 validates the complete current V13-V17 relation set.
+func ProjectRelationsV17(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	want = append(want, v15Relations...)
+	want = append(want, v16Relations...)
+	want = append(want, v17Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V17: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
 			missing, unexpected)
 	}
 	return slices.Clone(before)
@@ -685,6 +782,11 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 			additions["evidence_revision"] = json.RawMessage("1")
 			additions["candidate_uri"] = json.RawMessage(`""`)
 			additions["candidate_line"] = json.RawMessage("0")
+			additions["content_digest"] = json.RawMessage(`""`)
+			additions["change_kind"] = json.RawMessage(`"unchanged"`)
+			additions["change_at"] = json.RawMessage("null")
+			additions["change_run_id"] = json.RawMessage(`""`)
+			additions["change_revision"] = json.RawMessage("1")
 		}
 		if table == "imports" {
 			additions["evidence_availability"] = json.RawMessage(`"available"`)
@@ -703,7 +805,7 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 		actual, present := current[table]
 		if !present || !reflect.DeepEqual(canonicalRowsWithValues(t, rows, additions),
 			canonicalRowsWithValues(t, actual, nil)) {
-			t.Fatalf("V16: complete historical business rows changed in %s", table)
+			t.Fatalf("V17: complete historical business rows changed in %s", table)
 		}
 	}
 	return clone(before)
