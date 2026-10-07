@@ -63,8 +63,8 @@ asset without overwriting human ownership, environment, criticality or tags.
 - A1-A5: 37 owned fixtures passed together against real PostgreSQL, SeaweedFS,
   separate collection/raw roles and an owned normal-TLS native protocol.
 - A5 built the exact pinned `69f3ef9` V11 production closure, migrated genuine
-  API/native data to V12, reopened it, finished an old queued GitHub collection
-  and exercised the new Azure DevOps intake path.
+  API/native data through current V13, reopened it, finished an old queued
+  GitHub collection and exercised the new Azure DevOps intake path.
 - Twenty-five A4 subcases passed for active revocation, SQL-slot availability,
   binding tamper, leases/fences, exact role denial, evidence integrity,
   UTF-8/size checks, origin/query limits and ZIP safety.
@@ -86,5 +86,6 @@ developer and owned-fixture evidence, not a new independently signed capture.
 - ADO-specific browser variants for lost acknowledgements, workspace switches
   and held late replies remain to be added. Shared GitHub source machinery
   retains its existing coverage for those behaviors.
-- Other integration families remain deferred. The next roadmap work is M06
-  reversible merge/split and retention/archive.
+- Other integration families remain deferred. The first M06 explicit
+  two-finding merge/split increment is implemented; retention/archive is the
+  next roadmap work.

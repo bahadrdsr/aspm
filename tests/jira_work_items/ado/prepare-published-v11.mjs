@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from "node:fs";
+import { isAbsolute, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -39,15 +39,23 @@ const command = join(cache, "cmd", "owned-v11-core");
 mkdirSync(command, { recursive: true });
 writeFileSync(join(command, "main.go"), helper, { flag: "wx" });
 const executable = join(cache, "owned-v11-core.exe");
-const go = join(root, ".cache", "modules", "golang.org", "toolchain@v0.0.1-go1.27.1.windows-amd64", "bin", "go.exe");
-assert.ok(existsSync(go), "Cached Go 1.27.1 required; no automatic install/restore");
+const defaultGo = join(root, ".cache", "modules", "golang.org", "toolchain@v0.0.1-go1.27.1.windows-amd64", "bin", "go.exe");
+const selectedGo = process.env.ASPM_GO || defaultGo;
+assert.ok(isAbsolute(selectedGo) && existsSync(selectedGo) && statSync(selectedGo).isFile(),
+  "Explicit ASPM_GO or the local cached Go 1.27.1 executable is required; no automatic install/restore");
+const go = realpathSync(selectedGo);
+const defaultModuleCache = join(root, ".cache", "modules");
+const selectedModuleCache = process.env.ASPM_GOMODCACHE || defaultModuleCache;
+assert.ok(isAbsolute(selectedModuleCache) && existsSync(selectedModuleCache) && statSync(selectedModuleCache).isDirectory(),
+  "Explicit ASPM_GOMODCACHE or the local locked module cache is required; no automatic install/restore");
+const moduleCache = realpathSync(selectedModuleCache);
 const env = { ...process.env };
 for (const name of Object.keys(env)) {
   if (/^(ASPM_|ASMP_|ADO_|AZDO_|VSS_|TEAMS_|JIRA_|SLACK_|AWS_|AZURE_|OPENAI_|ANTHROPIC_|GITHUB_|GH_)|^(SYSTEM_ACCESSTOKEN|HTTP_PROXY|HTTPS_PROXY|ALL_PROXY)$/i.test(name)) delete env[name];
 }
 Object.assign(env, {
   GOTOOLCHAIN: "local", GOENV: "off", GOWORK: "off", GOFLAGS: "", GOPROXY: "off", GOSUMDB: "off",
-  GOMODCACHE: join(root, ".cache", "modules"), GOCACHE: join(root, ".cache", "build"),
+  GOMODCACHE: moduleCache, GOCACHE: join(root, ".cache", "build"),
   GOPATH: join(root, ".cache", "ado-collection", "gopath"), GOTMPDIR: work, TEMP: work, TMP: work, TMPDIR: work,
 });
 const args = ["build", "-mod=readonly", "-o", executable, ".\\cmd\\owned-v11-core"];

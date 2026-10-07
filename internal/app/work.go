@@ -12,8 +12,19 @@ import (
 )
 
 const workColumns = `f.id,f.title,asset.name,f.severity,owner.name,f.workflow_state,f.source_scan_at,f.collected_at,f.imported_at`
-const workFilter = `f.workspace_id=$1 AND ($2='' OR strpos(lower(f.title),lower($2))>0
-	OR strpos(lower(asset.name),lower($2))>0 OR strpos(lower(COALESCE(owner.name,'')),lower($2))>0)`
+
+func (a *Application) workVisible() string {
+	return `NOT EXISTS(SELECT 1 FROM ` + a.table("finding_correlation_members") + ` cm
+		JOIN ` + a.table("finding_correlations") + ` c
+		ON c.workspace_id=cm.workspace_id AND c.id=cm.correlation_id AND c.state='active'
+		WHERE cm.workspace_id=f.workspace_id AND cm.finding_id=f.id AND cm.released_at IS NULL
+		AND c.primary_finding_id<>f.id)`
+}
+
+func (a *Application) workFilter() string {
+	return `f.workspace_id=$1 AND ` + a.workVisible() + ` AND ($2='' OR strpos(lower(f.title),lower($2))>0
+		OR strpos(lower(asset.name),lower($2))>0 OR strpos(lower(COALESCE(owner.name,'')),lower($2))>0)`
+}
 
 func (a *Application) workFrom() string {
 	return ` FROM ` + a.table("findings") + ` f JOIN ` + a.table("assets") + ` asset
@@ -71,7 +82,7 @@ type workQuerier interface {
 }
 
 func (a *Application) workPage(ctx context.Context, db workQuerier, workspace, q, cursor string, limit int) ([]WorkItem, *string, error) {
-	rows, err := db.Query(ctx, `SELECT `+workColumns+a.workFrom()+` WHERE `+workFilter+
+	rows, err := db.Query(ctx, `SELECT `+workColumns+a.workFrom()+` WHERE `+a.workFilter()+
 		` AND f.id>$3 ORDER BY f.id LIMIT $4`, workspace, q, cursor, limit+1)
 	if err != nil {
 		return nil, nil, err
@@ -111,7 +122,7 @@ func (a *Application) listWork(w http.ResponseWriter, r *http.Request, workspace
 	}
 	defer rollback(tx)
 	var total int
-	if err = tx.QueryRow(r.Context(), `SELECT count(*)`+a.workFrom()+` WHERE `+workFilter, workspace, q).Scan(&total); err != nil {
+	if err = tx.QueryRow(r.Context(), `SELECT count(*)`+a.workFrom()+` WHERE `+a.workFilter(), workspace, q).Scan(&total); err != nil {
 		return err
 	}
 	items, next, err := a.workPage(r.Context(), tx, workspace, q, cursor, limit)

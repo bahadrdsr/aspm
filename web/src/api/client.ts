@@ -1,6 +1,8 @@
 import { apiVersion } from "./types";
 import type {
-  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingNoteResponse, FindingPatch, FindingResponse,
+  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingCorrelation,
+  FindingCorrelationMember, FindingCorrelationResponse, FindingDecision, FindingMergeInput, FindingMergePreviewResponse,
+  FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   Session, SourceScope, WorkItem, WorkResponse,
@@ -79,6 +81,59 @@ function versioned(value: unknown): Record<string, unknown> {
 function sourceScope(value: unknown): SourceScope {
   const scope = object(value, "source scope");
   return { id: text(scope.id, "scope identifier"), revision: text(scope.revision, "scope revision"), branch: text(scope.branch, "source branch") };
+}
+
+function findingDecision(value: unknown): FindingDecision {
+  const item = object(value, "finding decision");
+  return {
+    ownerId: nullableText(item.ownerId, "decision owner"),
+    workflowState: choice(item.workflowState, ["open", "in-progress", "resolved"], "decision workflow"),
+    disposition: choice(item.disposition, ["none", "accepted-risk"], "decision disposition"),
+    acceptedRiskExpiresAt: nullableTimestamp(item.acceptedRiskExpiresAt, "decision expiry"),
+  };
+}
+
+function findingCorrelationMember(value: unknown): FindingCorrelationMember {
+  const item = object(value, "correlation member");
+  return {
+    findingId: reportIdentifier(item.findingId, "member finding"),
+    sourceId: text(item.sourceId, "member source"),
+    title: text(item.title, "member title"),
+    severity: choice(item.severity, ["critical", "high", "medium", "low", "info"], "member severity"),
+    decisionRevision: count(item.decisionRevision, "member decision revision"),
+    evidenceRevision: count(item.evidenceRevision, "member evidence revision"),
+    observationCount: count(item.observationCount, "member observation count"),
+    noteCount: count(item.noteCount, "member note count"),
+    decision: findingDecision(item.decision),
+    originalDecision: findingDecision(item.originalDecision),
+  };
+}
+
+function findingCorrelation(value: unknown, workspace: string | null): FindingCorrelation {
+  const item = object(value, "finding correlation");
+  const workspaceId = text(item.workspaceId, "correlation workspace");
+  if (workspaceId !== workspace) return invalid("correlation workspace");
+  const members = uniqueIds(array(item.members, "correlation members").map(findingCorrelationMember)
+    .map((member) => ({ ...member, id: member.findingId }))).map(({ id: _id, ...member }) => member);
+  const events = uniqueIds(array(item.events, "correlation events").map((value) => {
+    const event = object(value, "correlation event");
+    return {
+      id: reportIdentifier(event.id, "correlation event"),
+      type: choice(event.type, ["merge", "split"], "correlation event type"),
+      actorId: text(event.actorId, "correlation actor"),
+      rationale: text(event.rationale, "correlation rationale"),
+      createdAt: timestamp(event.createdAt, "correlation event time"),
+    };
+  }));
+  const primaryFindingId = reportIdentifier(item.primaryFindingId, "primary finding");
+  if (members.length < 2 || !members.some((member) => member.findingId === primaryFindingId)) {
+    return invalid("correlation membership");
+  }
+  return {
+    id: reportIdentifier(item.id, "correlation identifier"), workspaceId, primaryFindingId,
+    state: choice(item.state, ["active", "split"], "correlation state"),
+    revision: count(item.revision, "correlation revision"), members, events,
+  };
 }
 
 function jsonValue(value: unknown, depth = 0): JSONValue {
@@ -189,6 +244,9 @@ export function parseFinding(value: unknown): FindingResponse {
       acceptedRiskExpiresAt: finding.acceptedRiskExpiresAt === undefined ? undefined : nullableTimestamp(finding.acceptedRiskExpiresAt, "risk acceptance expiry"),
       riskAcceptanceExpired: finding.riskAcceptanceExpired === undefined ? undefined : boolean(finding.riskAcceptanceExpired, "risk acceptance expiry state"),
       verifiedResolution: finding.verifiedResolution === undefined ? undefined : boolean(finding.verifiedResolution, "resolution verification"),
+      decisionRevision: finding.decisionRevision === undefined ? undefined : count(finding.decisionRevision, "finding decision revision"),
+      evidenceRevision: finding.evidenceRevision === undefined ? undefined : count(finding.evidenceRevision, "finding evidence revision"),
+      correlation: finding.correlation === undefined ? undefined : findingCorrelation(finding.correlation, text(finding.workspaceId, "finding workspace")),
       notes: finding.notes === undefined ? undefined : uniqueIds(array(finding.notes, "analyst notes").map((value) => {
         const note = object(value, "analyst note");
         return { id: text(note.id, "note identifier"), text: text(note.text, "note text", true) };
@@ -237,10 +295,34 @@ function validateFindingHistoryPage(items: readonly { id: string }[] | undefined
     !/^[a-f0-9]{32}$/.test(item.id) || item.id <= (index === 0 ? cursor : items[index - 1].id))) return invalid(`${field} history order`);
 }
 
-function findingBodyLimit(body: FindingPatch | { text: string }, bytes: number): void {
+function findingBodyLimit(body: unknown, bytes: number): void {
   if (new TextEncoder().encode(JSON.stringify(body)).byteLength > bytes) {
     throw new APIError("The encoded finding action exceeds the service's request size limit. Shorten the input and retry.", "invalid-input", false);
   }
+}
+
+function parseMergePreview(value: unknown, primary: string, other: string): FindingMergePreviewResponse {
+  const preview = object(versioned(value).mergePreview, "merge preview");
+  const primaryMember = findingCorrelationMember(preview.primary);
+  const otherMember = findingCorrelationMember(preview.other);
+  if (primaryMember.findingId !== primary || otherMember.findingId !== other) return invalid("merge preview binding");
+  const conflicts = array(preview.conflicts, "merge conflicts").map((value) =>
+    choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"], "merge conflict"));
+  return { apiVersion, mergePreview: { primary: primaryMember, other: otherMember, conflicts } };
+}
+
+function parseSplitPreview(value: unknown, workspace: string | null, primary: string, member: string): FindingSplitPreviewResponse {
+  const preview = object(versioned(value).splitPreview, "split preview");
+  const correlation = findingCorrelation(preview.correlation, workspace);
+  const primaryMember = findingCorrelationMember(preview.primary);
+  const splitMember = findingCorrelationMember(preview.member);
+  if (correlation.primaryFindingId !== primary || primaryMember.findingId !== primary ||
+    splitMember.findingId !== member || correlation.state !== "active") return invalid("split preview binding");
+  return { apiVersion, splitPreview: { correlation, primary: primaryMember, member: splitMember } };
+}
+
+function parseCorrelationResponse(value: unknown, workspace: string | null): FindingCorrelationResponse {
+  return { apiVersion, correlation: findingCorrelation(versioned(value).correlation, workspace) };
 }
 
 function asset(value: unknown, workspace: string | null): Asset {
@@ -599,6 +681,61 @@ export const api = {
     findingBodyLimit(body, 32 << 10);
     return request(`/api/v1/findings/${encodeURIComponent(id)}/notes`, (value) => parseFindingNote(value, noteText),
       { method: "POST", body, signal, expectedStatus: 201 });
+  },
+  previewFindingMerge: (id: string, otherFindingId: string, signal: AbortSignal) => {
+    reportIdentifier(id, "primary finding");
+    reportIdentifier(otherFindingId, "other finding");
+    if (id === otherFindingId) throw new APIError("Choose a different finding to correlate.", "invalid-input", false);
+    const body = { otherFindingId };
+    findingBodyLimit(body, 16 << 10);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/merge-previews`,
+      (value) => parseMergePreview(value, id, otherFindingId),
+      { method: "POST", body, signal, expectedStatus: 200 });
+  },
+  mergeFindings: (id: string, input: FindingMergeInput, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "primary finding");
+    reportIdentifier(input.otherFindingId, "other finding");
+    if (input.primaryDecisionRevision < 1 || input.primaryEvidenceRevision < 1 ||
+      input.otherDecisionRevision < 1 || input.otherEvidenceRevision < 1 ||
+      input.rationale.trim() === "" || input.rationale.includes("\0") ||
+      new TextEncoder().encode(input.rationale).byteLength > 8192 ||
+      input.idempotencyKey.trim() === "" || input.idempotencyKey.includes("\0") ||
+      new TextEncoder().encode(input.idempotencyKey).byteLength > 256) {
+      throw new APIError("Merge confirmation requires current revisions, a bounded rationale and an intent key.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 32 << 10);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/merges`,
+      (value) => parseCorrelationResponse(value, workspace),
+      { method: "POST", body: input, signal, expectedStatus: [200, 201] });
+  },
+  previewFindingSplit: (id: string, memberFindingId: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "primary finding");
+    reportIdentifier(memberFindingId, "member finding");
+    if (id === memberFindingId) throw new APIError("Choose a secondary finding to split.", "invalid-input", false);
+    const body = { memberFindingId };
+    findingBodyLimit(body, 16 << 10);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/split-previews`,
+      (value) => parseSplitPreview(value, workspace, id, memberFindingId),
+      { method: "POST", body, signal, expectedStatus: 200 });
+  },
+  splitFinding: (id: string, input: FindingSplitInput, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "primary finding");
+    reportIdentifier(input.memberFindingId, "member finding");
+    if (input.correlationRevision < 1 || input.primaryDecisionRevision < 1 ||
+      input.primaryEvidenceRevision < 1 || input.memberDecisionRevision < 1 ||
+      input.memberEvidenceRevision < 1 || input.rationale.trim() === "" ||
+      input.rationale.includes("\0") || new TextEncoder().encode(input.rationale).byteLength > 8192 ||
+      input.idempotencyKey.trim() === "" || input.idempotencyKey.includes("\0") ||
+      new TextEncoder().encode(input.idempotencyKey).byteLength > 256) {
+      throw new APIError("Split confirmation requires current revisions, a bounded rationale and an intent key.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 32 << 10);
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/splits`,
+      (value) => parseCorrelationResponse(value, workspace),
+      { method: "POST", body: input, signal, expectedStatus: [200, 201] });
   },
   catalog: (signal: AbortSignal) => request("/api/v1/integrations/catalog", parseCatalog, { signal }),
   assets: (signal: AbortSignal, options?: { cursor?: string; limit?: number }) => {

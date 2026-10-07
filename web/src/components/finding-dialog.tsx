@@ -15,6 +15,7 @@ import { FindingNotifications } from "./finding-notifications";
 import { FindingJira } from "./finding-jira";
 import { FindingTeams } from "./finding-teams";
 import { FindingAssessments } from "./finding-assessments/finding-assessments";
+import { FindingCorrelationPanel } from "./finding-correlation";
 import { FindingNoteHistory, FindingObservationHistory } from "./finding-history";
 import { ActionButton } from "./action-button";
 import { FormError } from "./form-dialog";
@@ -43,9 +44,9 @@ function HistoryControls({ stream, resource }: { stream: FindingHistoryStream; r
   </>;
 }
 
-export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirmed, onClose }: {
+export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirmed, onMembershipChanged, onClose }: {
   id: string; initialTitle: string; returnFocus: HTMLElement | null; query: string;
-  onConfirmed: (finding: WorkItem) => void; onClose: () => void;
+  onConfirmed: (finding: WorkItem) => void; onMembershipChanged: () => void; onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -100,6 +101,8 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
           {canWrite && <FindingActions finding={finding} message={message?.target === "decision" ? message.text : null}
             outsideFilter={resource.hasPatched && !matchesWorkQuery(finding, query)}
             onBegin={() => setMessage(null)} onConfirmed={acceptPatch} />}
+          <FindingCorrelationPanel finding={finding} current={resource.status === "ready" && resource.error === null}
+            onBegin={() => setMessage(null)} onConfirmed={acceptPatch} onMembershipChanged={onMembershipChanged} />
           {response && <FindingNotifications finding={finding} origin={response.dataOrigin} />}
           <FindingJira key={`jira:${finding.id}`} finding={finding} current={resource.status === "ready" && resource.error === null} />
           <FindingTeams key={`teams:${finding.id}`} finding={finding} current={resource.status === "ready" && resource.error === null} />

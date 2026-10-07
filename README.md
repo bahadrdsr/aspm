@@ -18,10 +18,14 @@ wiring. Owned synthetic protocol/PG/S3 fixtures passed on October 7, 2026; an
 authorized live Azure DevOps account and Linux/Podman activation were not
 tested.
 
-Work now continues with reversible correlation/merge-split and
-retention/archive in M06, followed by the remaining reporting, installer
-recovery/upgrade and release-hardening gaps. GitLab, AWS, Azure cloud and other
-unfinished integration expansion remain deferred.
+The first M06 correlation increment is also implemented: an analyst or
+administrator can explicitly preview, merge and split exactly two findings in
+the same workspace and asset when they have different source identities.
+Variants, evidence, observations, notes, decisions and audit history remain
+durable. Work now continues with the first previewable retention/archive
+policy. Indexed candidate matching, automatic correlation and multi-member
+groups remain unfinished. GitLab, AWS, Azure cloud and other unfinished
+integration expansion remain deferred.
 
 The application now has a real PostgreSQL/S3 backend: authenticated workspaces,
 roles, assets, queued report intake, findings and scan history, CSV exports,
@@ -30,7 +34,8 @@ login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, Slack/Jira/Teams configuration and
 delivery history, selected GitHub source collection, and selected Azure DevOps
-build-artifact collection with explicit report intake, plus
+build-artifact collection with explicit report intake, explicit reversible
+two-source finding correlation, plus
 opt-in persistent AI profile, policy and grant configuration, with an in-finding
 assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the
@@ -128,6 +133,18 @@ in memory across Settings/Work navigation only, never in browser storage or URLs
 Canonical owner changes preserve acknowledged fields on loaded rows and mark
 server search membership as needing refresh until a later authorized read
 establishes membership. They do not invent results for unloaded findings.
+
+Finding detail has an explicit **Correlation** workflow. A member can enter one
+other finding ID and request a read-only conflict preview. Merge confirmation
+requires analyst or administrator authority, explicit owner/workflow/
+disposition/expiry decisions, a rationale and current finding revisions. An
+active secondary variant leaves Work but remains stored; the primary detail
+shows retained observations and notes from both members. Split is initiated
+from the active primary, requires explicit decisions for both released
+findings, and restores both Work rows. Exact idempotent replay is accepted;
+changed replay and stale decision/evidence revisions are rejected. This slice
+supports only same-workspace, same-asset, different-source pairs and exactly
+two members. See `docs\m06-correlation.md`.
 
 **Saved views** is one closed-by-default inline panel in Work. Only explicitly
 opening it reads your personal preferences in the selected workspace. Every

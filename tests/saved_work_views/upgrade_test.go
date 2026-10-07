@@ -136,10 +136,10 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 		"legacyDefinitionsSHA256": digest(encode(t, definitions)), "businessSQLSeeds": false}
 	output := filepath.Join("..", "..", ".artifacts", "saved-work-views-v1", "published-v8-upgrade-"+nonce(t)+".json")
 	must(t, "record nonsecret actual migration observation", os.WriteFile(output, encode(t, observation), 0600))
-	same(t, "current production open did not apply through additive V12 over actual populated published V8",
-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"})
+	same(t, "current production open did not apply through additive V13 over actual populated published V8",
+		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
 	same(t, "V11 changed a published legacy definition", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
-	same(t, "V12 changed actual published API-created business rows", sourcecompat.ProjectRowsV12(t, before, f.snapshot(names)), before)
+	same(t, "V13 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy := func() {
 		t.Helper()
 		same(t, "upgraded asset changed", h.json(h.admin, "GET", "/api/v1/assets/"+legacy.Asset.ID, nil, 200).Asset, legacy.Asset)
@@ -162,7 +162,7 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 	same(t, "new saved preference lost on upgraded app reopen", h.get(legacy.Viewer, v.ID), v)
 	same(t, "upgraded reopen repeated/skipped migration", f.ledger(), after)
 	same(t, "upgraded reopen altered legacy definitions", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
-	same(t, "saved preference/reopen changed pre-upgrade legacy rows", sourcecompat.ProjectRowsV12(t, before, f.snapshot(names)), before)
+	same(t, "saved preference/reopen changed pre-upgrade legacy rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy()
 	t.Log("actual populated published V8 -> V10, canonical saved view reopen and original human/source/role state reached")
 }

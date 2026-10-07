@@ -47,6 +47,7 @@ function WorkspaceApplication() {
   const { warning } = usePreferences();
   const [workContext, setWorkContext] = useState<WorkContext>({ query: "", confirmedQuery: "", selected: new Set(), page: 0, sort: "source-order" });
   const [workUpdates, setWorkUpdates] = useState<ConfirmedWorkUpdates>({ revision: 0, items: new Map() });
+  const [workMembershipRevision, setWorkMembershipRevision] = useState(0);
   const confirmFinding = useCallback((finding: WorkItem) => {
     setWorkUpdates((previous) => {
       const revision = previous.revision + 1;
@@ -101,7 +102,8 @@ function WorkspaceApplication() {
       <main id="main-content" tabIndex={-1}>
         {warning && <p role="alert" className="preference-warning"><Icon name="warning" />{warning}</p>}
         {route.destination === "work" && <WorkPage context={workContext} setContext={setWorkContext} filterRef={filterRef} confirmed={workUpdates}
-          canWrite={workspace.role !== "viewer"} openFinding={(finding, trigger) => { setOpened({ title: finding.title, trigger }); showFinding(finding.id); }} />}
+          membershipRevision={workMembershipRevision} canWrite={workspace.role !== "viewer"}
+          openFinding={(finding, trigger) => { setOpened({ title: finding.title, trigger }); showFinding(finding.id); }} />}
         {route.destination === "assets" && <AssetsPage />}
         {route.destination === "reports" && <ReportsPage />}
         {route.destination === "integrations" && <IntegrationsPage />}
@@ -110,6 +112,8 @@ function WorkspaceApplication() {
       </main>
     </div>
     {route.findingId && <FindingDialog key={route.findingId} id={route.findingId} initialTitle={opened.title} returnFocus={opened.trigger}
-      query={workContext.query} onConfirmed={confirmFinding} onClose={() => showFinding(null)} />}
+      query={workContext.query} onConfirmed={confirmFinding}
+      onMembershipChanged={() => setWorkMembershipRevision((value) => value + 1)}
+      onClose={() => showFinding(null)} />}
   </div>;
 }

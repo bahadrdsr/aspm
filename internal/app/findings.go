@@ -12,11 +12,17 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 	dest := workDest(&f.WorkItem)
 	dest = append(dest, &f.AssetID, &f.WorkspaceID, &scope.ID, &scope.Revision, &scope.Branch,
 		&f.Description, &f.Remediation, &f.Evidence.Text, &f.Evidence.SourceLabel, &f.OwnerID,
-		&f.SourceState, &f.SourceFreshnessAt, &f.Disposition, &f.AcceptedRiskExpiresAt)
+		&f.SourceState, &f.SourceFreshnessAt, &f.Disposition, &f.AcceptedRiskExpiresAt,
+		&f.DecisionRevision, &f.EvidenceRevision)
 	err := a.pool.QueryRow(r.Context(), `SELECT `+workColumns+`,
 		f.asset_id,f.workspace_id,f.scope_id,f.scope_revision,f.scope_branch,f.description,f.remediation,
-		f.evidence_text,f.source_label,f.owner_id,f.source_state,f.source_freshness_at,f.disposition,f.accepted_risk_expires_at`+
-		a.workFrom()+` WHERE f.workspace_id=$1 AND f.id=$2`, workspace, id).Scan(dest...)
+		f.evidence_text,f.source_label,f.owner_id,f.source_state,f.source_freshness_at,f.disposition,
+		f.accepted_risk_expires_at,f.decision_revision,f.evidence_revision`+
+		a.workFrom()+` WHERE f.workspace_id=$1 AND f.id=$2 AND `+a.workVisible(), workspace, id).Scan(dest...)
+	if err != nil {
+		return err
+	}
+	f.Correlation, err = a.activeCorrelationForPrimary(r.Context(), a.pool, workspace, id)
 	if err != nil {
 		return err
 	}
@@ -29,8 +35,27 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 		return errInvalid
 	}
 	f.Observations, f.Notes = []Observation{}, []Note{}
-	rows, err := a.pool.Query(r.Context(), `SELECT data FROM `+a.table("observations")+`
-		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT 501`, workspace, id, observationsCursor)
+	observationQuery := `SELECT data FROM ` + a.table("observations") + `
+		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT 501`
+	observationArgs := []any{workspace, id, observationsCursor}
+	noteQuery := `SELECT id,text FROM ` + a.table("notes") + `
+		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT 501`
+	noteArgs := []any{workspace, id, notesCursor}
+	if f.Correlation != nil {
+		observationQuery = `SELECT data FROM ` + a.table("observations") + `
+			WHERE workspace_id=$1 AND finding_id IN (
+				SELECT finding_id FROM ` + a.table("finding_correlation_members") + `
+				WHERE workspace_id=$1 AND correlation_id=$2 AND released_at IS NULL
+			) AND id>$3 ORDER BY id LIMIT 501`
+		observationArgs = []any{workspace, f.Correlation.ID, observationsCursor}
+		noteQuery = `SELECT id,text FROM ` + a.table("notes") + `
+			WHERE workspace_id=$1 AND finding_id IN (
+				SELECT finding_id FROM ` + a.table("finding_correlation_members") + `
+				WHERE workspace_id=$1 AND correlation_id=$2 AND released_at IS NULL
+			) AND id>$3 ORDER BY id LIMIT 501`
+		noteArgs = []any{workspace, f.Correlation.ID, notesCursor}
+	}
+	rows, err := a.pool.Query(r.Context(), observationQuery, observationArgs...)
 	if err != nil {
 		return err
 	}
@@ -56,8 +81,7 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 		f.Observations = f.Observations[:500]
 		f.ObservationsNextCursor = &f.Observations[499].ID
 	}
-	rows, err = a.pool.Query(r.Context(), `SELECT id,text FROM `+a.table("notes")+`
-		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT 501`, workspace, id, notesCursor)
+	rows, err = a.pool.Query(r.Context(), noteQuery, noteArgs...)
 	if err != nil {
 		return err
 	}
@@ -99,7 +123,7 @@ func (a *Application) patchFinding(w http.ResponseWriter, r *http.Request, works
 	var workflow, disposition string
 	var expires *time.Time
 	if err = tx.QueryRow(r.Context(), `SELECT owner_id,workflow_state,disposition,accepted_risk_expires_at
-		FROM `+a.table("findings")+` WHERE workspace_id=$1 AND id=$2 FOR UPDATE`,
+		FROM `+a.table("findings")+` f WHERE workspace_id=$1 AND id=$2 AND `+a.workVisible()+` FOR UPDATE`,
 		workspace, id).Scan(&owner, &workflow, &disposition, &expires); err != nil {
 		return err
 	}
@@ -137,7 +161,8 @@ func (a *Application) patchFinding(w http.ResponseWriter, r *http.Request, works
 		return errInvalid
 	}
 	if _, err = tx.Exec(r.Context(), `UPDATE `+a.table("findings")+`
-		SET owner_id=$3,workflow_state=$4,disposition=$5,accepted_risk_expires_at=$6
+		SET owner_id=$3,workflow_state=$4,disposition=$5,accepted_risk_expires_at=$6,
+			decision_revision=decision_revision+1
 		WHERE workspace_id=$1 AND id=$2`, workspace, id, owner, workflow, disposition, expires); err != nil {
 		return err
 	}
@@ -158,7 +183,18 @@ func (a *Application) addNote(w http.ResponseWriter, r *http.Request, workspace,
 		return errInvalid
 	}
 	note := Note{ID: newID(), Text: input.Text}
-	result, err := a.pool.Exec(r.Context(), `INSERT INTO `+a.table("notes")+`(id,workspace_id,finding_id,author_id,text,created_at)
+	tx, err := a.pool.Begin(r.Context())
+	if err != nil {
+		return err
+	}
+	defer rollback(tx)
+	var finding string
+	if err = tx.QueryRow(r.Context(), `SELECT f.id FROM `+a.table("findings")+` f
+		WHERE f.workspace_id=$1 AND f.id=$2 AND `+a.workVisible()+` FOR UPDATE`,
+		workspace, id).Scan(&finding); err != nil {
+		return err
+	}
+	result, err := tx.Exec(r.Context(), `INSERT INTO `+a.table("notes")+`(id,workspace_id,finding_id,author_id,text,created_at)
 		SELECT $1,workspace_id,id,$4,$5,$6 FROM `+a.table("findings")+` WHERE workspace_id=$2 AND id=$3`,
 		note.ID, workspace, id, author, note.Text, a.config.Now().UTC())
 	if err != nil {
@@ -166,6 +202,13 @@ func (a *Application) addNote(w http.ResponseWriter, r *http.Request, workspace,
 	}
 	if result.RowsAffected() == 0 {
 		return errNotFound
+	}
+	if _, err = tx.Exec(r.Context(), `UPDATE `+a.table("findings")+`
+		SET decision_revision=decision_revision+1 WHERE workspace_id=$1 AND id=$2`, workspace, id); err != nil {
+		return err
+	}
+	if err = tx.Commit(r.Context()); err != nil {
+		return err
 	}
 	writeJSON(w, http.StatusCreated, map[string]any{"note": note})
 	return nil

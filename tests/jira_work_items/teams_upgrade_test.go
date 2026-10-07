@@ -117,13 +117,14 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11", "12")
-	same(t, "current Open did not add V11/V12 exactly once over real populated V10", h.ledger(), currentLedger)
-	same(t, "V12 changed the relation/index set", h.relations(), relations)
-	same(t, "V12 must validate the complete exact DDL delta before projection",
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13")
+	same(t, "current Open did not add V11/V12/V13 exactly once over real populated V10", h.ledger(), currentLedger)
+	same(t, "V13 changed the relation/index set",
+		sourcecompat.ProjectRelationsV13(t, relations, h.relations()), relations)
+	same(t, "V13 must validate the complete exact DDL delta before projection",
 		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
-	same(t, "V12 changed old bytes outside the exact nullable additions",
-		sourcecompat.ProjectRowsV12(t, before, h.teamsV10Data(names)), before)
+	same(t, "V13 changed old bytes outside the exact additions",
+		sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Data(names)), before)
 	for _, r := range resources {
 		body, _ := h.request(h.ctx, h.admin, r.method, r.path, r.input, 200)
 		same(t, "V11 changed published Slack/Jira DTO/queue/preview/digest bytes", decoded[object](t, body), r.before)
@@ -135,10 +136,10 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	same(t, "V11 changed the published queued advisory", h.json(viewer, "GET", "/api/v1/ai/assessments/"+assessmentID, nil, 200).Assessment, assessment)
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "V12 reopen changed the integer ledger", h.ledger(), currentLedger)
-	same(t, "V12 reopen changed definitions", h.definitions(names), afterDefinitions)
-	same(t, "V12 reopen changed historical business bytes",
-		sourcecompat.ProjectRowsV12(t, before, h.teamsV10Data(names)), before)
+	same(t, "V13 reopen changed the integer ledger", h.ledger(), currentLedger)
+	same(t, "V13 reopen changed definitions", h.definitions(names), afterDefinitions)
+	same(t, "V13 reopen changed historical business bytes",
+		sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Data(names)), before)
 
 	value := n.workflowURL()
 	c := h.teamsConnection(h.admin, value)
@@ -203,7 +204,7 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	for _, name := range unrelated {
 		unrelatedBefore[name] = before[name]
 	}
-	for name, rows := range sourcecompat.ProjectRowsV12(t, unrelatedBefore, h.snapshot(unrelated)) {
+	for name, rows := range sourcecompat.ProjectRowsCurrent(t, unrelatedBefore, h.snapshot(unrelated)) {
 		same(t, "delivery changed unrelated historical business rows in "+name, rows, before[name])
 	}
 	h.reopen()

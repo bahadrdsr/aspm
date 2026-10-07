@@ -35,18 +35,18 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV11(t, v10, sourcecompat.ProjectV12(t, v11, current))
+	projected := ProjectV11(t, v10, sourcecompat.ProjectCurrent(t, v11, current))
 	return Project(t, before, projected)
 }
 
-// ProjectCurrentV10 composes the authentic V10 -> V11 -> V12 current delta.
+// ProjectCurrentV10 composes the authentic V10 -> V11 -> V12 -> V13 current delta.
 func ProjectCurrentV10(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
 	v11, err := expectedTeams(before)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return ProjectV11(t, before, sourcecompat.ProjectV12(t, v11, current))
+	return ProjectV11(t, before, sourcecompat.ProjectCurrent(t, v11, current))
 }
 
 func teamsCheck(rows []string, name, old, next string) error {

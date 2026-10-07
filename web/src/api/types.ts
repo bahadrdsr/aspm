@@ -75,6 +75,9 @@ export interface FindingDetail extends WorkItem {
   acceptedRiskExpiresAt?: string | null;
   riskAcceptanceExpired?: boolean;
   verifiedResolution?: boolean;
+  decisionRevision?: number;
+  evidenceRevision?: number;
+  correlation?: FindingCorrelation;
   notes?: FindingNote[];
   observations?: Observation[];
   notesNextCursor?: string | null;
@@ -96,6 +99,95 @@ export interface FindingPatch {
 
 export interface FindingNote { id: string; text: string }
 export interface FindingNoteResponse { apiVersion: typeof apiVersion; note: FindingNote }
+
+export interface FindingDecision {
+  ownerId: string | null;
+  workflowState: WorkflowState;
+  disposition: FindingDisposition;
+  acceptedRiskExpiresAt: string | null;
+}
+
+export interface FindingCorrelationMember {
+  findingId: string;
+  sourceId: string;
+  title: string;
+  severity: Severity;
+  decisionRevision: number;
+  evidenceRevision: number;
+  observationCount: number;
+  noteCount: number;
+  decision: FindingDecision;
+  originalDecision: FindingDecision;
+}
+
+export interface FindingCorrelationEvent {
+  id: string;
+  type: "merge" | "split";
+  actorId: string;
+  rationale: string;
+  createdAt: string;
+}
+
+export interface FindingCorrelation {
+  id: string;
+  workspaceId: string;
+  primaryFindingId: string;
+  state: "active" | "split";
+  revision: number;
+  members: FindingCorrelationMember[];
+  events: FindingCorrelationEvent[];
+}
+
+export interface FindingMergePreview {
+  primary: FindingCorrelationMember;
+  other: FindingCorrelationMember;
+  conflicts: Array<"ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt">;
+}
+
+export interface FindingSplitPreview {
+  correlation: FindingCorrelation;
+  primary: FindingCorrelationMember;
+  member: FindingCorrelationMember;
+}
+
+export interface FindingMergeInput {
+  otherFindingId: string;
+  primaryDecisionRevision: number;
+  primaryEvidenceRevision: number;
+  otherDecisionRevision: number;
+  otherEvidenceRevision: number;
+  decision: FindingDecision;
+  rationale: string;
+  idempotencyKey: string;
+}
+
+export interface FindingSplitInput {
+  memberFindingId: string;
+  correlationRevision: number;
+  primaryDecisionRevision: number;
+  primaryEvidenceRevision: number;
+  memberDecisionRevision: number;
+  memberEvidenceRevision: number;
+  primaryDecision: FindingDecision;
+  memberDecision: FindingDecision;
+  rationale: string;
+  idempotencyKey: string;
+}
+
+export interface FindingMergePreviewResponse {
+  apiVersion: typeof apiVersion;
+  mergePreview: FindingMergePreview;
+}
+
+export interface FindingSplitPreviewResponse {
+  apiVersion: typeof apiVersion;
+  splitPreview: FindingSplitPreview;
+}
+
+export interface FindingCorrelationResponse {
+  apiVersion: typeof apiVersion;
+  correlation: FindingCorrelation;
+}
 
 export interface AssetFields {
   name: string;

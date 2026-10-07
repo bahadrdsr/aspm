@@ -54,9 +54,42 @@ type finding struct {
 	OwnerID                                                                              *string
 	SourceFreshnessAt, AcceptedRiskExpiresAt                                             *time.Time
 	RiskAcceptanceExpired, VerifiedResolution                                            bool
+	DecisionRevision, EvidenceRevision                                                   int64
 	Evidence                                                                             struct{ Text, SourceLabel, VerificationState string }
 	Observations                                                                         []observation
 	Notes                                                                                []struct{ ID, Text string }
+	Correlation                                                                          *findingCorrelation
+}
+type findingDecision struct {
+	OwnerID               *string
+	WorkflowState         string
+	Disposition           string
+	AcceptedRiskExpiresAt *time.Time
+}
+type findingCorrelationMember struct {
+	FindingID, SourceID, Title, Severity string
+	DecisionRevision, EvidenceRevision   int64
+	ObservationCount, NoteCount          int
+	OriginalDecision                     findingDecision
+}
+type findingCorrelationEvent struct {
+	ID, Type, ActorID, Rationale string
+	CreatedAt                    time.Time
+}
+type findingCorrelation struct {
+	ID, WorkspaceID, PrimaryFindingID, State string
+	Revision                                 int64
+	Members                                  []findingCorrelationMember
+	Events                                   []findingCorrelationEvent
+}
+type mergePreview struct {
+	Primary, Other findingCorrelationMember
+	Conflicts      []string
+}
+type splitPreview struct {
+	Correlation findingCorrelation
+	Primary     findingCorrelationMember
+	Member      findingCorrelationMember
 }
 type apiFailure struct {
 	Code, Message, RequestID string
@@ -78,6 +111,9 @@ type reply struct {
 	Workspaces             []workspace
 	Asset                  asset
 	Finding                finding
+	MergePreview           mergePreview
+	SplitPreview           splitPreview
+	Correlation            findingCorrelation
 	Import                 imported
 	Items                  []json.RawMessage
 	Total                  int

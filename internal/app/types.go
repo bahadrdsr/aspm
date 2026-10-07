@@ -50,23 +50,26 @@ type WorkItem struct {
 
 type Finding struct {
 	WorkItem
-	AssetID                string          `json:"assetId"`
-	WorkspaceID            string          `json:"workspaceId"`
-	ScopeLabel             string          `json:"scopeLabel"`
-	Description            string          `json:"description"`
-	Remediation            string          `json:"remediation"`
-	Evidence               FindingEvidence `json:"evidence"`
-	OwnerID                *string         `json:"ownerId"`
-	SourceState            string          `json:"sourceState"`
-	SourceFreshnessAt      *time.Time      `json:"sourceFreshnessAt"`
-	Disposition            string          `json:"disposition"`
-	AcceptedRiskExpiresAt  *time.Time      `json:"acceptedRiskExpiresAt"`
-	RiskAcceptanceExpired  bool            `json:"riskAcceptanceExpired"`
-	VerifiedResolution     bool            `json:"verifiedResolution"`
-	Notes                  []Note          `json:"notes"`
-	Observations           []Observation   `json:"observations"`
-	NotesNextCursor        *string         `json:"notesNextCursor"`
-	ObservationsNextCursor *string         `json:"observationsNextCursor"`
+	AssetID                string              `json:"assetId"`
+	WorkspaceID            string              `json:"workspaceId"`
+	ScopeLabel             string              `json:"scopeLabel"`
+	Description            string              `json:"description"`
+	Remediation            string              `json:"remediation"`
+	Evidence               FindingEvidence     `json:"evidence"`
+	OwnerID                *string             `json:"ownerId"`
+	SourceState            string              `json:"sourceState"`
+	SourceFreshnessAt      *time.Time          `json:"sourceFreshnessAt"`
+	Disposition            string              `json:"disposition"`
+	AcceptedRiskExpiresAt  *time.Time          `json:"acceptedRiskExpiresAt"`
+	RiskAcceptanceExpired  bool                `json:"riskAcceptanceExpired"`
+	VerifiedResolution     bool                `json:"verifiedResolution"`
+	DecisionRevision       int64               `json:"decisionRevision"`
+	EvidenceRevision       int64               `json:"evidenceRevision"`
+	Notes                  []Note              `json:"notes"`
+	Observations           []Observation       `json:"observations"`
+	NotesNextCursor        *string             `json:"notesNextCursor"`
+	ObservationsNextCursor *string             `json:"observationsNextCursor"`
+	Correlation            *FindingCorrelation `json:"correlation,omitempty"`
 }
 
 type FindingEvidence struct {
@@ -78,6 +81,56 @@ type FindingEvidence struct {
 type Note struct {
 	ID   string `json:"id"`
 	Text string `json:"text"`
+}
+
+type FindingDecision struct {
+	OwnerID               *string    `json:"ownerId"`
+	WorkflowState         string     `json:"workflowState"`
+	Disposition           string     `json:"disposition"`
+	AcceptedRiskExpiresAt *time.Time `json:"acceptedRiskExpiresAt"`
+}
+
+type FindingCorrelationMember struct {
+	FindingID        string          `json:"findingId"`
+	SourceID         string          `json:"sourceId"`
+	Title            string          `json:"title"`
+	Severity         string          `json:"severity"`
+	DecisionRevision int64           `json:"decisionRevision"`
+	EvidenceRevision int64           `json:"evidenceRevision"`
+	ObservationCount int             `json:"observationCount"`
+	NoteCount        int             `json:"noteCount"`
+	Decision         FindingDecision `json:"decision"`
+	OriginalDecision FindingDecision `json:"originalDecision"`
+}
+
+type FindingCorrelationEvent struct {
+	ID        string    `json:"id"`
+	Type      string    `json:"type"`
+	ActorID   string    `json:"actorId"`
+	Rationale string    `json:"rationale"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type FindingCorrelation struct {
+	ID               string                     `json:"id"`
+	WorkspaceID      string                     `json:"workspaceId"`
+	PrimaryFindingID string                     `json:"primaryFindingId"`
+	State            string                     `json:"state"`
+	Revision         int64                      `json:"revision"`
+	Members          []FindingCorrelationMember `json:"members"`
+	Events           []FindingCorrelationEvent  `json:"events"`
+}
+
+type FindingMergePreview struct {
+	Primary   FindingCorrelationMember `json:"primary"`
+	Other     FindingCorrelationMember `json:"other"`
+	Conflicts []string                 `json:"conflicts"`
+}
+
+type FindingSplitPreview struct {
+	Correlation FindingCorrelation       `json:"correlation"`
+	Primary     FindingCorrelationMember `json:"primary"`
+	Member      FindingCorrelationMember `json:"member"`
 }
 
 type Observation struct {

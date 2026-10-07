@@ -4,6 +4,7 @@ package sourcecompat
 
 import (
 	"reflect"
+	"slices"
 	"testing"
 )
 
@@ -81,5 +82,59 @@ func TestProjectRowsV12PreservesCompleteHistoricalRows(t *testing.T) {
 	}
 	if got := ProjectRowsV12(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("complete historical rows were not projected without loss")
+	}
+}
+
+func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
+	before := observedV11Catalog()
+	before["findings/columns"] = []string{"id|text|true|"}
+	before["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
+	v12, err := expected(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	current, err := expectedV13(v12)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := ProjectCurrent(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("current V12/V13 projection did not restore the observed legacy catalog")
+	}
+}
+
+func TestExpectedV13RejectsMissingOrAmbiguousFindingCatalog(t *testing.T) {
+	for _, value := range []map[string][]string{
+		{"findings/columns": {}, "findings/constraints": {"app_findings_pkey|PRIMARY KEY (id)"}},
+		{"findings/columns": {"unsupported"}, "findings/constraints": {"app_findings_pkey|PRIMARY KEY (id)"}},
+	} {
+		if _, err := expectedV13(value); err == nil {
+			t.Fatal("invalid observed V13 finding catalog was accepted")
+		}
+	}
+}
+
+func TestProjectRelationsV13AcceptsOnlyExactCorrelationRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV13(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V13 relation projection did not restore the prior relation set")
+	}
+}
+
+func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
+	before := map[string][]string{
+		"source_connections": {`{"id":"source","profile":"github-cloud-app"}`},
+		"source_collections": {`{"id":"collection","profile":"github-cloud-app"}`},
+		"findings":           {`{"id":"finding","workflow_state":"open"}`},
+	}
+	current := map[string][]string{
+		"source_connections": {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
+		"source_collections": {`{"azure_devops_selection":null,"azure_devops_target":null,"id":"collection","profile":"github-cloud-app"}`},
+		"findings":           {`{"decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
+	}
+	if got := ProjectRowsCurrent(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("complete current rows were not projected without loss")
 	}
 }

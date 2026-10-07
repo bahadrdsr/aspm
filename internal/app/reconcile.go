@@ -122,7 +122,7 @@ func (a *ImportWorker) reconcile(ctx context.Context, record importRecord, findi
 		// Known, strictly older positive observations are required. Human state
 		// and independent verification are never altered by source absence.
 		if _, err = tx.Exec(ctx, `UPDATE `+a.table("findings")+` f
-			SET source_state='inferred-resolved',source_freshness_at=$7
+			SET source_state='inferred-resolved',source_freshness_at=$7,evidence_revision=evidence_revision+1
 			WHERE `+sameScope+` AND source_scan_at IS NOT NULL AND source_scan_at<$7
 			AND source_state<>'unknown' AND (source_freshness_at IS NULL OR source_freshness_at<$7)
 			AND NOT EXISTS(SELECT 1 FROM `+a.table("observations")+` o WHERE o.finding_id=f.id AND o.run_id=$8)`, args...); err != nil {
@@ -164,6 +164,7 @@ func (a *ImportWorker) findingUpsert() string {
 	updates = append(updates, `source_freshness_at=CASE WHEN $22 AND EXCLUDED.source_freshness_at IS NOT NULL
 		AND (f.source_freshness_at IS NULL OR EXCLUDED.source_freshness_at>f.source_freshness_at)
 		THEN EXCLUDED.source_freshness_at ELSE f.source_freshness_at END`)
+	updates = append(updates, `evidence_revision=f.evidence_revision+1`)
 	return `INSERT INTO ` + a.table("findings") + ` AS f
 		(id,workspace_id,asset_id,source_id,scope_id,scope_revision,scope_branch,identity_key,title,description,
 		remediation,severity,evidence_text,source_label,source_scan_at,collected_at,imported_at,source_freshness_at,source_state,owner_id)

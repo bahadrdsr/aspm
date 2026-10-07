@@ -109,7 +109,7 @@ func (a *Application) selectedFindingDelivery(r *http.Request, tx pgx.Tx, worksp
 		return delivery, errForbidden
 	}
 	finding, err := scanWork(tx.QueryRow(r.Context(), `SELECT `+workColumns+a.workFrom()+
-		` WHERE f.workspace_id=$1 AND f.id=$2 FOR SHARE OF f,asset`, workspace, findingID))
+		` WHERE f.workspace_id=$1 AND f.id=$2 AND `+a.workVisible()+` FOR SHARE OF f,asset`, workspace, findingID))
 	if err != nil {
 		return delivery, err
 	}

@@ -346,6 +346,36 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return a.importResource(w, r, membership.ID, parts[1], len(parts) == 3)
 	case "findings":
+		if len(parts) == 3 && parts[2] == "merge-previews" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			return a.previewFindingMerge(w, r, membership.ID, parts[1])
+		}
+		if len(parts) == 3 && parts[2] == "merges" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.mergeFindings(w, r, membership.ID, session, parts[1])
+		}
+		if len(parts) == 3 && parts[2] == "split-previews" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			return a.previewFindingSplit(w, r, membership.ID, parts[1])
+		}
+		if len(parts) == 3 && parts[2] == "splits" {
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if !canWrite(membership) {
+				return errForbidden
+			}
+			return a.splitFinding(w, r, membership.ID, session, parts[1])
+		}
 		if len(parts) == 3 && parts[2] == "delivery-previews" {
 			if err = requireMethod(w, r, http.MethodPost); err != nil {
 				return err

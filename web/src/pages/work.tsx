@@ -30,20 +30,27 @@ export function matchesWorkQuery(item: WorkItem, query: string): boolean {
 const pageSize = 50;
 const severityRank = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
 
-export function WorkPage({ context, setContext, filterRef, openFinding, confirmed, canWrite }: {
+export function WorkPage({ context, setContext, filterRef, openFinding, confirmed, membershipRevision, canWrite }: {
   context: WorkContext;
   setContext: Dispatch<SetStateAction<WorkContext>>;
   filterRef: RefObject<HTMLInputElement | null>;
   openFinding: (finding: WorkItem, trigger: HTMLButtonElement) => void;
   confirmed: ConfirmedWorkUpdates;
+  membershipRevision: number;
   canWrite: boolean;
 }) {
   const confirmQuery = useCallback((confirmedQuery: string) => setContext((previous) => previous.confirmedQuery === confirmedQuery
     ? previous : { ...previous, confirmedQuery, selected: new Set(), page: 0 }), [setContext]);
   const resource = useWorkPages(confirmed, context.confirmedQuery, confirmQuery);
   const applyRequest = useRef<AbortController | null>(null);
+  const seenMembershipRevision = useRef(membershipRevision);
   const draftRevision = useRef(0);
   useLayoutEffect(() => () => { applyRequest.current?.abort(); }, []);
+  useEffect(() => {
+    if (membershipRevision <= seenMembershipRevision.current) return;
+    seenMembershipRevision.current = membershipRevision;
+    resource.reload();
+  }, [membershipRevision, resource]);
   const data = resource.data;
   const [searchError, setSearchError] = useState<APIError | null>(null);
   const { reducedMotion } = usePreferences();

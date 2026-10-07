@@ -115,6 +115,12 @@ export function useFindingHistory(id: string) {
     if (response.finding.id !== id || response.finding.workspaceId !== requestAuthority().workspace) {
       throw new APIError("The finding acknowledgement belongs to a different scope.", "invalid-response", false);
     }
+    const previousCorrelation = canonical.current?.finding.correlation?.id ?? null;
+    const nextCorrelation = response.finding.correlation?.id ?? null;
+    if (previousCorrelation !== nextCorrelation) {
+      notes.current = history();
+      observations.current = history();
+    }
     const order = ++ackOrder.current;
     canonical.current = response;
     mergePages(response.finding, order);
