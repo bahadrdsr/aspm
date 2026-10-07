@@ -58,11 +58,13 @@ func values() map[string]any {
 			"s3Secret": map[string]any{"name": "synthetic-" + name + "-storage", "accessKeyKey": name + "-s3-access-key", "secretKeyKey": name + "-s3-secret-key"},
 		}
 	}
-	core, ingestion := role("core"), role("ingestion")
+	core, ingestion, retention := role("core"), role("ingestion"), role("retention")
+	core["archivePrefix"] = "archive/team-a/"
 	ingestion["normalizedPrefix"] = "normalized/team-a/"
+	retention["archivePrefix"] = "archive/team-a/"
 	return map[string]any{
 		"existingSecret": "synthetic-operator-control-plane",
-		"core":           core, "ingestion": ingestion, "reports": map[string]any{"replicas": 1},
+		"core": core, "ingestion": ingestion, "retention": retention, "reports": map[string]any{"replicas": 1},
 		"storage": map[string]any{"managed": true, "prefix": "operator-only-not-runtime/"},
 	}
 }
@@ -157,7 +159,7 @@ func deployments(t *testing.T, data []byte) map[string]document {
 			continue
 		}
 		role := item.Metadata.Labels["app.kubernetes.io/component"]
-		if role != "core" && role != "ingestion" && role != "reports" {
+		if role != "core" && role != "ingestion" && role != "retention" && role != "reports" {
 			continue
 		}
 		if _, duplicate := result[role]; duplicate {
@@ -165,8 +167,8 @@ func deployments(t *testing.T, data []byte) map[string]document {
 		}
 		result[role] = item
 	}
-	if len(result) != 3 {
-		t.Fatalf("real chart must render all three selected roles; found %d", len(result))
+	if len(result) != 4 {
+		t.Fatalf("real chart must render all four selected roles; found %d", len(result))
 	}
 	return result
 }

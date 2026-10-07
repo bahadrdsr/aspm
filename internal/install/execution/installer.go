@@ -41,7 +41,8 @@ func Open(ctx context.Context, options Options) (Installer, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if storagepolicy.ValidateRuntimeCredentials(credential(options.RoleKeys.Core), credential(options.RoleKeys.Ingestion)) != nil {
+	if storagepolicy.ValidateRuntimeCredentials(credential(options.RoleKeys.Core), credential(options.RoleKeys.Ingestion),
+		credential(options.RoleKeys.Retention)) != nil {
 		return nil, ErrCredential
 	}
 	if len(options.TrustedKey) != ed25519.PublicKeySize {
@@ -184,7 +185,8 @@ func (i *installer) helmArgs(p prepared) []string {
 
 func (i *installer) containsPrivate(value string, additional []string) bool {
 	values := append([]string{i.options.RoleKeys.Core.AccessKey, i.options.RoleKeys.Core.SecretKey,
-		i.options.RoleKeys.Ingestion.AccessKey, i.options.RoleKeys.Ingestion.SecretKey}, additional...)
+		i.options.RoleKeys.Ingestion.AccessKey, i.options.RoleKeys.Ingestion.SecretKey,
+		i.options.RoleKeys.Retention.AccessKey, i.options.RoleKeys.Retention.SecretKey}, additional...)
 	for _, secret := range values {
 		if secret == "" {
 			continue
@@ -202,7 +204,8 @@ func (i *installer) command(ctx context.Context, p prepared, command Command, se
 	if err := ctx.Err(); err != nil {
 		return CommandResult{}, err
 	}
-	if storagepolicy.ValidateRuntimeCredentials(credential(i.options.RoleKeys.Core), credential(i.options.RoleKeys.Ingestion)) != nil {
+	if storagepolicy.ValidateRuntimeCredentials(credential(i.options.RoleKeys.Core), credential(i.options.RoleKeys.Ingestion),
+		credential(i.options.RoleKeys.Retention)) != nil {
 		return CommandResult{}, ErrCredential
 	}
 	if err := i.requireApprovedBundle(ctx, p); err != nil {

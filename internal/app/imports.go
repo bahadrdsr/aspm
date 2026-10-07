@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -219,7 +218,8 @@ func importColumns(alias string) string {
 	names := []string{"id", "run_id", "state", "workspace_id", "asset_id", "format", "source_id", "scan_id",
 		"scope_id", "scope_revision", "scope_branch", "source_scan_at", "collected_at", "imported_at",
 		"source_status", "scan_kind", "completeness", "report_digest", "observation_count",
-		"report_key", "report_size", "metadata_digest", "mapping", "failure_code", "failure_message", "fence", "worker_id", "submitted_by"}
+		"report_key", "report_size", "metadata_digest", "mapping", "failure_code", "failure_message", "fence", "worker_id", "submitted_by",
+		"evidence_availability", "evidence_revision", "retention_transition"}
 	if alias != "" {
 		for i := range names {
 			names[i] = alias + "." + names[i]
@@ -231,12 +231,13 @@ func importColumns(alias string) string {
 func scanImport(row pgx.Row) (importRecord, error) {
 	var record importRecord
 	var mapping []byte
-	var failureCode, failureMessage, workerID, submittedBy *string
+	var failureCode, failureMessage, workerID, submittedBy, transition *string
 	err := row.Scan(&record.ID, &record.RunID, &record.State, &record.WorkspaceID, &record.AssetID,
 		&record.Format, &record.SourceID, &record.ScanID, &record.Scope.ID, &record.Scope.Revision, &record.Scope.Branch,
 		&record.SourceScanAt, &record.CollectedAt, &record.ImportedAt, &record.SourceStatus, &record.ScanKind,
 		&record.Completeness, &record.ReportDigest, &record.ObservationCount, &record.ReportKey, &record.ReportSize,
-		&record.MetadataDigest, &mapping, &failureCode, &failureMessage, &record.Fence, &workerID, &submittedBy)
+		&record.MetadataDigest, &mapping, &failureCode, &failureMessage, &record.Fence, &workerID, &submittedBy,
+		&record.EvidenceAvailability, &record.EvidenceRevision, &transition)
 	if err != nil {
 		return record, err
 	}
@@ -254,6 +255,9 @@ func scanImport(row pgx.Row) (importRecord, error) {
 	}
 	if submittedBy != nil {
 		record.SubmittedBy = *submittedBy
+	}
+	if transition != nil {
+		record.RetentionTransition = *transition
 	}
 	if failureCode != nil {
 		record.Failure = &Failure{Code: *failureCode}
@@ -273,14 +277,35 @@ func (a *Application) importResource(w http.ResponseWriter, r *http.Request, wor
 		writeJSON(w, 200, map[string]any{"import": record.Import})
 		return nil
 	}
+	if record.EvidenceAvailability == "expired" {
+		return errEvidenceExpired
+	}
+	if record.RetentionTransition != "" {
+		return errUnavailable
+	}
 	data, err := a.storage.read(r.Context(), record)
 	if err != nil {
+		state, problem := evidenceAvailabilityError(err)
+		if state != "" {
+			if _, updateErr := a.pool.Exec(r.Context(), `UPDATE `+a.table("imports")+`
+				SET evidence_availability=$4,evidence_revision=evidence_revision+1
+				WHERE workspace_id=$1 AND id=$2 AND evidence_revision=$3
+				AND evidence_availability IN ('available','missing','corrupt')`,
+				workspace, id, record.EvidenceRevision, state); updateErr != nil {
+				return updateErr
+			}
+			return problem
+		}
 		return err
 	}
-	w.Header().Set("Content-Type", "application/octet-stream")
-	w.Header().Set("Content-Disposition", `attachment; filename="report.txt"`)
-	w.Header().Set("Content-Length", strconv.Itoa(len(data)))
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(data)
+	if record.EvidenceAvailability != "available" {
+		if _, err = a.pool.Exec(r.Context(), `UPDATE `+a.table("imports")+`
+			SET evidence_availability='available',evidence_revision=evidence_revision+1
+			WHERE workspace_id=$1 AND id=$2 AND evidence_revision=$3
+			AND evidence_availability IN ('missing','corrupt')`, workspace, id, record.EvidenceRevision); err != nil {
+			return err
+		}
+	}
+	writeEvidenceBytes(w, "application/octet-stream", "report.txt", data)
 	return nil
 }

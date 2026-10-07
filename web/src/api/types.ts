@@ -3,6 +3,7 @@ export type DataOrigin = "synthetic" | "live";
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
 export type WorkflowState = "open" | "in-progress" | "resolved";
 export type FindingDisposition = "none" | "accepted-risk";
+export type EvidenceAvailability = "available" | "archived" | "expired" | "missing" | "corrupt";
 
 export interface Membership {
   id: string;
@@ -55,6 +56,7 @@ export interface Observation {
   remediation: string;
   unmapped: Record<string, JSONValue>;
   evidenceDigest: string;
+  evidenceAvailability: EvidenceAvailability;
 }
 
 export interface FindingDetail extends WorkItem {
@@ -126,6 +128,7 @@ export interface FindingCorrelationEvent {
   actorId: string;
   rationale: string;
   createdAt: string;
+  detailAvailability: EvidenceAvailability;
 }
 
 export interface FindingCorrelation {
@@ -286,6 +289,51 @@ export interface RetentionPreviewResponse {
   retentionPreview: RetentionPreview;
 }
 
+export type RetentionRunState = "queued" | "processing" | "succeeded" | "partial" | "failed";
+export type RetentionRunItemState =
+  "queued" | "processing" | "succeeded" | "protected" | "missing" | "corrupt" | "failed";
+
+export interface RetentionRunItem {
+  id: string;
+  class: RetentionClass;
+  resourceKind: RetentionResourceKind;
+  resourceId: string;
+  action: RetentionAction | "restore-archive";
+  state: RetentionRunItemState;
+  protectedReasons: string[];
+  outcome: string;
+  failure: { code: string; message: string; retryable: boolean } | null;
+  startedAt: string | null;
+  completedAt: string | null;
+}
+
+export interface RetentionRun {
+  id: string;
+  workspaceId: string;
+  operation: "apply-preview" | "restore-observation";
+  previewId: string | null;
+  targetKind: "observation" | null;
+  targetId: string | null;
+  state: RetentionRunState;
+  requestedBy: string;
+  rationale: string;
+  createdAt: string;
+  completedAt: string | null;
+  total: number;
+  succeeded: number;
+  protected: number;
+  missing: number;
+  corrupt: number;
+  failed: number;
+  failure: { code: string; message: string; retryable: boolean } | null;
+  items: RetentionRunItem[];
+}
+
+export interface RetentionRunResponse {
+  apiVersion: typeof apiVersion;
+  retentionRun: RetentionRun;
+}
+
 export interface AssetFields {
   name: string;
   kind: string;
@@ -345,6 +393,7 @@ export interface ImportReceipt {
   collectedAt: string;
   importedAt: string;
   reportDigest: string;
+  evidenceAvailability: EvidenceAvailability;
   observationCount: number;
   failure: { code: string; message: string } | null;
 }
@@ -487,7 +536,9 @@ export interface FindingDeliveryResponse {
 export interface ErrorResponse {
   apiVersion: typeof apiVersion;
   error: {
-    code: "unauthorized" | "forbidden" | "not-found" | "unavailable" | "invalid-input" | "conflict" | "replay-expired" | "too-large" | "unsupported-format" | "method-not-allowed";
+    code: "unauthorized" | "forbidden" | "not-found" | "unavailable" | "invalid-input" | "conflict" |
+      "replay-expired" | "too-large" | "unsupported-format" | "method-not-allowed" |
+      "evidence-expired" | "evidence-missing" | "evidence-corrupt";
     message: string;
     requestId: string;
     retryable: boolean;

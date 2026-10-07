@@ -19,6 +19,7 @@ export interface ActionObservation {
   remediation: string;
   unmapped: Record<string, string>;
   evidenceDigest: string;
+  evidenceAvailability: "available" | "archived" | "expired" | "missing" | "corrupt";
 }
 export interface ActionFinding extends WorkItem {
   assetId: string;
@@ -82,6 +83,7 @@ export const actionObservations: ActionObservation[] = [1, 2].map((index) => ({
   remediation: `Synthetic preserved remediation ${index}.`,
   unmapped: { retained: `Synthetic source context ${index}` },
   evidenceDigest: `sha256:${String(index).repeat(64)}`,
+  evidenceAvailability: "available",
 }));
 export const primaryFinding: ActionFinding = {
   id: "51000000000000000000000000000001",

@@ -25,10 +25,12 @@ type Config struct {
 	RawPrefix        string
 	NormalizedPrefix string
 	ApprovedPrefix   string
+	ArchivePrefix    string
 	Operator         Credential `json:"-"`
 	Core             Credential `json:"-"`
 	Ingestion        Credential `json:"-"`
 	AI               Credential `json:"-"`
+	Retention        Credential `json:"-"`
 }
 
 func (Config) String() string   { return "storage policy configuration [credentials redacted]" }
@@ -59,7 +61,7 @@ func Build(config Config) (json.RawMessage, error) {
 	if !validBucket(config.Bucket) {
 		return nil, ErrInvalid
 	}
-	prefixes := []string{config.RawPrefix, config.NormalizedPrefix, config.ApprovedPrefix}
+	prefixes := []string{config.RawPrefix, config.NormalizedPrefix, config.ApprovedPrefix, config.ArchivePrefix}
 	for i, prefix := range prefixes {
 		if !validPrefix(prefix) {
 			return nil, ErrInvalid
@@ -70,7 +72,7 @@ func Build(config Config) (json.RawMessage, error) {
 			}
 		}
 	}
-	credentials := []Credential{config.Operator, config.Core, config.Ingestion, config.AI}
+	credentials := []Credential{config.Operator, config.Core, config.Ingestion, config.AI, config.Retention}
 	seen := make(map[string]struct{}, 8)
 	for _, credential := range credentials {
 		// Also reject a secret reused as an access key: access-key disclosure
@@ -88,11 +90,13 @@ func Build(config Config) (json.RawMessage, error) {
 	raw := config.Bucket + "/" + config.RawPrefix + "*"
 	normalized := config.Bucket + "/" + config.NormalizedPrefix + "*"
 	approved := config.Bucket + "/" + config.ApprovedPrefix + "*"
+	archive := config.Bucket + "/" + config.ArchivePrefix + "*"
 	policy := seaweedPolicy{Identities: []identity{
 		role("operator", config.Operator, "Admin"),
-		role("core", config.Core, "Read:"+raw, "Write:"+raw, "Read:"+approved, "Write:"+approved),
+		role("core", config.Core, "Read:"+raw, "Write:"+raw, "Read:"+approved, "Write:"+approved, "Read:"+archive),
 		role("ingestion", config.Ingestion, "Read:"+raw, "Write:"+normalized),
 		role("ai", config.AI, "Read:"+approved),
+		role("retention", config.Retention, "Read:"+raw, "Write:"+raw, "Read:"+archive, "Write:"+archive),
 	}}
 	encoded, err := json.Marshal(policy)
 	if err != nil {

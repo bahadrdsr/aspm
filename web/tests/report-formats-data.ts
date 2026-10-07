@@ -39,7 +39,8 @@ export interface IntakeBody extends IntakeMetadata {
 }
 export interface IntakeReceipt extends IntakeMetadata {
   id: string; runId: string; state: IntakeState; format: ReportProfile; collectedAt: string; importedAt: string;
-  reportDigest: string; observationCount: number; failure: { code: string; message: string; retryable: false } | null;
+  reportDigest: string; evidenceAvailability: "available" | "archived" | "expired" | "missing" | "corrupt";
+  observationCount: number; failure: { code: string; message: string; retryable: false } | null;
 }
 export interface ReportFile { format: ReportProfile; name: string; mimeType: string; buffer: Buffer }
 export function metadata(scan: string, changes: Partial<IntakeMetadata> = {}): IntakeMetadata {

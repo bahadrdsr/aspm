@@ -1,7 +1,7 @@
 # M06 retention and archive preview
 
 Implemented on October 7, 2026. This is the policy, hold, preview and approval
-increment. It does not execute archive or expiry operations.
+increment. Execution is documented separately in `m06-retention-execution.md`.
 
 ## Policy classes
 
@@ -66,7 +66,8 @@ recomputes policy, holds, decisions and references inside the approval
 transaction. Any change marks the preview stale and rejects approval. Exact
 replay returns the existing receipt; changed replay conflicts.
 
-Approval is review evidence only. It does not start an executor.
+Approval is review evidence only. A separate explicit execution request is
+required before the independent retention worker can act.
 
 ## Current preview scope
 
@@ -74,8 +75,8 @@ Approval is review evidence only. It does not start an executor.
 - Raw-report preview evaluates terminal imports and their immutable object
   manifests.
 - Audit preview currently evaluates finding-correlation events.
-- Archived evidence has an explicit policy/summary but no candidates until the
-  archive executor creates archive manifests.
+- Archived evidence candidates appear after execution creates verified archive
+  manifests.
 
 This scope is intentionally explicit rather than presenting unimplemented
 archive tiers as populated.
@@ -89,20 +90,17 @@ archive tiers as populated.
 - Browser acceptance covers policy editing, hold creation, per-class impact,
   protected reasons, stale approval refresh and successful non-destructive
   approval.
-- The complete 148-case browser suite passes with the lazy Settings workflow.
-- The authentic pinned V11 production closure migrates through V14 while
+- The complete 149-case browser suite passes with the lazy Settings and explicit
+  observation-restoration workflows.
+- The authentic pinned V11 production closure migrates through V15 while
   preserving historical API/native data and exact old business rows.
 
 ## Remaining limits
 
-- No archive, expiry, compaction or deletion executor.
-- No available/archived/expired/missing/corrupt evidence download state yet.
-- No interrupted-operation resume, archive retrieval or restore.
 - No orphan-object garbage collection.
 - No recurring-scan storage/index/WAL growth measurement.
 - Preview is whole-workspace and capped at 200 resources; scoped/paginated
   enterprise preview remains future work.
 
-The next M06 increment is fenced archive/expiry execution with honest
-availability states, idempotent resume, authorized archive retrieval and
-bounded restoration.
+See `m06-retention-execution.md` for the implemented worker, availability and
+restoration boundary.

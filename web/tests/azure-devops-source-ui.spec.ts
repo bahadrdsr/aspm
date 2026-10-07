@@ -95,7 +95,8 @@ test("ADO1 Explicit Azure DevOps setup, selected collection and reviewed SARIF i
         id: importId, runId: nativeID("a6", 1), state: "queued", assetId, format: "sarif",
         sourceId: `${profile}:${"1".repeat(64)}`, scanId: `ado-report-v1:${"2".repeat(64)}`,
         scope: body.scope, sourceScanAt: null, collectedAt, importedAt: "2026-10-07T12:02:00Z",
-        reportDigest: `sha256:${"3".repeat(64)}`, observationCount: 0, failure: null,
+        reportDigest: `sha256:${"3".repeat(64)}`, evidenceAvailability: "available",
+        observationCount: 0, failure: null,
       } }); return;
     }
     await response(404, { error: { code: "not-found", message: "Synthetic ADO route not found", requestId: "ado-ui", retryable: false } });

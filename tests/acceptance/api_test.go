@@ -40,6 +40,7 @@ type workItem struct {
 type observation struct {
 	ID, RunID, SourceID, ScanID, SourceFindingID, SourceSeverity, NormalizedSeverity string
 	EvidenceDigest, Impact, Remediation                                              string
+	EvidenceAvailability                                                             string
 	Scope                                                                            scope
 	SourceScanAt                                                                     *time.Time
 	SourceLocation                                                                   struct {
@@ -134,11 +135,26 @@ type apiFailure struct {
 }
 type imported struct {
 	ID, RunID, State, Format, SourceID, ScanID, ReportDigest string
+	EvidenceAvailability                                     string
 	Scope                                                    scope
 	SourceScanAt                                             *time.Time
 	CollectedAt, ImportedAt                                  time.Time
 	ObservationCount                                         int
 	Failure                                                  *apiFailure
+}
+type retentionRunItem struct {
+	ID, Class, ResourceKind, ResourceID, Action, State, Outcome string
+	ProtectedReasons                                            []string
+	Failure                                                     *apiFailure
+}
+type retentionRun struct {
+	ID, WorkspaceID, Operation, State, RequestedBy, Rationale string
+	PreviewID, TargetKind, TargetID                           *string
+	CreatedAt                                                 time.Time
+	CompletedAt                                               *time.Time
+	Total, Succeeded, Protected, Missing, Corrupt, Failed     int
+	Failure                                                   *apiFailure
+	Items                                                     []retentionRunItem
 }
 type reply struct {
 	APIVersion, DataOrigin string
@@ -155,6 +171,7 @@ type reply struct {
 	RetentionHold          retentionHold
 	RetentionHolds         []retentionHold
 	RetentionPreview       retentionPreview
+	RetentionRun           retentionRun
 	Import                 imported
 	Items                  []json.RawMessage
 	Total                  int

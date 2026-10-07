@@ -35,14 +35,14 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 		return errInvalid
 	}
 	f.Observations, f.Notes = []Observation{}, []Note{}
-	observationQuery := `SELECT data FROM ` + a.table("observations") + `
+	observationQuery := `SELECT COALESCE(data,summary),evidence_availability FROM ` + a.table("observations") + `
 		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT 501`
 	observationArgs := []any{workspace, id, observationsCursor}
 	noteQuery := `SELECT id,text FROM ` + a.table("notes") + `
 		WHERE workspace_id=$1 AND finding_id=$2 AND id>$3 ORDER BY id LIMIT 501`
 	noteArgs := []any{workspace, id, notesCursor}
 	if f.Correlation != nil {
-		observationQuery = `SELECT data FROM ` + a.table("observations") + `
+		observationQuery = `SELECT COALESCE(data,summary),evidence_availability FROM ` + a.table("observations") + `
 			WHERE workspace_id=$1 AND finding_id IN (
 				SELECT finding_id FROM ` + a.table("finding_correlation_members") + `
 				WHERE workspace_id=$1 AND correlation_id=$2 AND released_at IS NULL
@@ -62,7 +62,7 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 	for rows.Next() {
 		var raw []byte
 		var observation Observation
-		if err = rows.Scan(&raw); err != nil {
+		if err = rows.Scan(&raw, &observation.EvidenceAvailability); err != nil {
 			rows.Close()
 			return err
 		}

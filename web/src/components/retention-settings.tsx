@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { api } from "@/api/client";
 import type {
-  RetentionHold, RetentionPolicyInput, RetentionPreview, RetentionResourceKind,
+  RetentionHold, RetentionPolicyInput, RetentionPreview, RetentionResourceKind, RetentionRun,
 } from "@/api/types";
 import { label, timestampLabel } from "@/lib/format";
 import { useResource } from "@/lib/use-resource";
@@ -110,21 +110,32 @@ function HoldHistory({ holds, disabled, onReleased }: {
   </div>;
 }
 
-function Preview({ preview, canApprove, onRefresh, onApproved }: {
+function Preview({ preview, canApprove, onRefresh, onApproved, onQueued }: {
   preview: RetentionPreview;
   canApprove: boolean;
   onRefresh: () => void;
   onApproved: (preview: RetentionPreview) => void;
+  onQueued?: (run: RetentionRun) => void;
 }) {
   const action = useScopedAction();
+  const execution = useScopedAction();
   const [rationale, setRationale] = useState("");
   const [intent] = useState(() => crypto.randomUUID());
+  const [executionRationale, setExecutionRationale] = useState("");
+  const [executionIntent] = useState(() => crypto.randomUUID());
   function approve(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void action.run((signal) => api.approveRetentionPreview(preview.id, {
       revision: preview.revision, snapshotDigest: preview.snapshotDigest,
       rationale, idempotencyKey: intent,
     }, signal), (response) => onApproved(response.retentionPreview));
+  }
+  function execute(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void execution.run((signal) => api.executeRetentionPreview(preview.id, {
+      revision: preview.revision, snapshotDigest: preview.snapshotDigest,
+      rationale: executionRationale, idempotencyKey: executionIntent,
+    }, signal), (response) => onQueued?.(response.retentionRun));
   }
   return <section aria-label="Retention preview result">
     <div className="section-heading"><div><h3>Preview {preview.state}</h3>
@@ -155,10 +166,42 @@ function Preview({ preview, canApprove, onRefresh, onApproved }: {
       <FormError error={action.error} />
       <ActionButton type="submit" disabled={!canApprove || action.pending}>Approve exact preview</ActionButton>
     </form>}
-    {preview.state === "approved" && <p role="status">Approved by <code>{preview.approvedBy}</code> at{" "}
-      <time dateTime={preview.approvedAt ?? ""}>{preview.approvedAt ? timestampLabel(preview.approvedAt) : ""}</time>.
-      This approval is non-destructive and does not start an executor.</p>}
+    {preview.state === "approved" && <>
+      <p role="status">Approved by <code>{preview.approvedBy}</code> at{" "}
+        <time dateTime={preview.approvedAt ?? ""}>{preview.approvedAt ? timestampLabel(preview.approvedAt) : ""}</time>.
+        Approval alone is non-destructive and does not start an executor.</p>
+      <form className="application-form" aria-label="Queue retention execution" onSubmit={execute}>
+        <label>Execution rationale<textarea value={executionRationale} required rows={3} maxLength={8192}
+          onChange={(event) => setExecutionRationale(event.target.value)} /></label>
+        <FormError error={execution.error} />
+        <ActionButton type="submit" disabled={!canApprove || execution.pending}>Queue approved execution</ActionButton>
+      </form>
+    </>}
     {preview.state === "stale" && <p role="alert">This preview is stale. Create a new preview after reviewing current policy, holds and references.</p>}
+  </section>;
+}
+
+function RetentionRunStatus({ run, pending, error, onRefresh }: {
+  run: RetentionRun;
+  pending: boolean;
+  error: ReturnType<typeof useScopedAction>["error"];
+  onRefresh: () => void;
+}) {
+  return <section aria-label="Retention execution status">
+    <div className="section-heading"><div><h3>Execution {label(run.state)}</h3>
+      <p><code>{run.id}</code>, {label(run.operation)}.</p></div>
+      <ActionButton variant="outline" disabled={pending} onClick={onRefresh}>Refresh execution</ActionButton></div>
+    <FormError error={error} />
+    <p>{run.succeeded} succeeded, {run.protected} protected, {run.missing} missing,
+      {" "}{run.corrupt} corrupt, {run.failed} failed, {run.total} total.</p>
+    <ul className="history-list">{run.items.map((item) => <li key={item.id}>
+      <strong>{label(item.action)}: {label(item.state)}</strong>
+      <p><code>{item.resourceId}</code> ({label(item.resourceKind)}).</p>
+      {item.protectedReasons.length > 0 && <p>Protected: {item.protectedReasons.map(label).join(", ")}.</p>}
+      {item.outcome && <p>Outcome: {label(item.outcome)}.</p>}
+      {item.failure && <p role="alert">{item.failure.message}</p>}
+    </li>)}</ul>
+    <p className="muted small">Execution advances only in the independent retention worker. Refresh is manual and never retries an item.</p>
   </section>;
 }
 
@@ -174,10 +217,13 @@ function RetentionControls({ onClose }: { onClose: () => void }) {
   const resource = useResource(load);
   const previewAction = useScopedAction();
   const refreshAction = useScopedAction();
+  const runRefresh = useScopedAction();
   const [preview, setPreview] = useState<RetentionPreview | null>(null);
+  const [run, setRun] = useState<RetentionRun | null>(null);
   useEffect(() => setPreview(null), [workspace.id]);
   const changed = () => {
     setPreview(null);
+    setRun(null);
     resource.reload();
   };
   function createPreview() {
@@ -188,6 +234,11 @@ function RetentionControls({ onClose }: { onClose: () => void }) {
     if (!preview) return;
     void refreshAction.run((signal) => api.retentionPreview(preview.id, signal),
       (response) => setPreview(response.retentionPreview));
+  }
+  function refreshRun() {
+    if (!run) return;
+    void runRefresh.run((signal) => api.retentionRun(run.id, signal),
+      (response) => setRun(response.retentionRun));
   }
   const policy = resource.data?.policy;
   return <section className="surface settings-card full-width" aria-label="Retention and archive">
@@ -219,7 +270,9 @@ function RetentionControls({ onClose }: { onClose: () => void }) {
       </div>
       <FormError error={previewAction.error ?? refreshAction.error} />
       {preview && <Preview key={preview.id} preview={preview} canApprove={canAdminister}
-        onRefresh={refreshPreview} onApproved={setPreview} />}
+        onRefresh={refreshPreview} onApproved={setPreview} onQueued={setRun} />}
+      {run && <RetentionRunStatus run={run} pending={runRefresh.pending}
+        error={runRefresh.error} onRefresh={refreshRun} />}
     </>}
     <p className="muted small">This increment implements policy, holds, preview and stale approval fencing only.
       Physical archive, expiry, resume, restore and availability-state downloads remain disabled.</p>

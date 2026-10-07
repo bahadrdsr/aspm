@@ -137,7 +137,9 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
             <HistoryControls stream="notes" resource={resource} />
           </section>
           <section className="detail-section"><div className="section-heading"><h3>Observations</h3>{" "}{finding.observations && <span className="subtle-pill">{finding.observations.length} loaded</span>}</div>
-            {finding.observations && finding.observations.length > 0 ? <FindingObservationHistory observations={finding.observations} /> : <p>{finding.observations === undefined ? "Observation history was not supplied." : "No observations in this response."}</p>}
+            {finding.observations && finding.observations.length > 0 ? <FindingObservationHistory
+              observations={finding.observations} canRestore={workspace.role === "admin"} onChanged={resource.retry} /> :
+              <p>{finding.observations === undefined ? "Observation history was not supplied." : "No observations in this response."}</p>}
             <HistoryControls stream="observations" resource={resource} />
           </section>
         </>}

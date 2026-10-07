@@ -64,7 +64,9 @@ function detail(id: string, merged: boolean) {
       sourceScanAt: "2026-10-07T12:00:00Z", sourceFindingId: primary ? "A-1" : "B-1",
       sourceSeverity: primary ? "warning" : "error", normalizedSeverity: primary ? "medium" : "high",
       sourceLocation: { uri: primary ? "src/a.go" : "src/b.go", line: primary ? 10 : 20 },
-      impact: "Synthetic impact.", remediation: "Synthetic remediation.", unmapped: {}, evidenceDigest: `sha256:${primary ? "1" : "2"}`.repeat(1).padEnd(71, primary ? "1" : "2"),
+      impact: "Synthetic impact.", remediation: "Synthetic remediation.", unmapped: {},
+      evidenceDigest: `sha256:${primary ? "1" : "2"}`.repeat(1).padEnd(71, primary ? "1" : "2"),
+      evidenceAvailability: "available",
     }],
     notesNextCursor: null, observationsNextCursor: null,
     ...(primary && merged ? { correlation: activeCorrelation() } : {}),
@@ -77,7 +79,7 @@ function activeCorrelation() {
     members: [member(primaryId, "scanner-a", "Primary scanner issue"),
       member(memberId, "scanner-b", "Secondary scanner issue")],
     events: [{ id: mergeEventId, type: "merge", actorId: adminId,
-      rationale: "Reviewed synthetic cross-source identity.", createdAt: now }],
+      rationale: "Reviewed synthetic cross-source identity.", createdAt: now, detailAvailability: "available" }],
   };
 }
 
@@ -142,7 +144,8 @@ test("M06C1 Explicit merge and split retain variants, conflict decisions and ref
       await fulfill(route, 201, { correlation: {
         ...activeCorrelation(), state: "split", revision: 2,
         events: [...activeCorrelation().events, { id: splitEventId, type: "split", actorId: adminId,
-          rationale: "Reviewed synthetic split applicability.", createdAt: "2026-10-07T16:05:00Z" }],
+          rationale: "Reviewed synthetic split applicability.", createdAt: "2026-10-07T16:05:00Z",
+          detailAvailability: "available" }],
       } });
       return;
     }

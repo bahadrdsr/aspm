@@ -1,3 +1,24 @@
+Retention runtime
+=================
+
+cmd/retention-worker runs service.Environment("retention") and service.Run with
+interrupt/SIGTERM cancellation. It owns one database pool, one selected raw S3
+scope and one selected archive S3 scope. It does not serve Core API/UI routes,
+bootstrap, authentication, provider requests, ingestion or reporting.
+
+Required environment:
+  ASPM_DATABASE_URL and the existing explicit selected-schema DB settings
+  ASPM_S3_ENDPOINT, ASPM_S3_REGION, ASPM_S3_BUCKET
+  ASPM_S3_ACCESS_KEY_ID, ASPM_S3_SECRET_ACCESS_KEY
+  ASPM_S3_RAW_PREFIX, ASPM_S3_ARCHIVE_PREFIX
+
+The loop processes one durable item at a time. It uses database leases and
+fences, verifies SHA-256/length before evidence transitions, and rechecks live
+holds/references immediately before mutation. Idle waits are bounded; database
+or storage infrastructure errors stop the service instead of being reported as
+successful retention work. It owns product archive/delete operations but has no
+permission outside the selected raw/archive prefixes.
+
 Delivery runtime
 ================
 

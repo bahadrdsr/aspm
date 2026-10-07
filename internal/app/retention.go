@@ -329,7 +329,7 @@ func (a *Application) appendHotHistory(ctx context.Context, db retentionDB, work
 		FROM `+a.table("observations")+` o
 		JOIN `+a.table("imports")+` i ON i.workspace_id=o.workspace_id AND i.run_id=o.run_id
 		JOIN `+a.table("findings")+` f ON f.workspace_id=o.workspace_id AND f.id=o.finding_id
-		WHERE o.workspace_id=$1 AND i.imported_at<=$2
+		WHERE o.workspace_id=$1 AND i.imported_at<=$2 AND o.evidence_availability='available'
 		ORDER BY o.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err
@@ -398,6 +398,7 @@ func (a *Application) appendRawReports(ctx context.Context, db retentionDB, work
 		   AND held.id=h.resource_id)))),'')
 		FROM `+a.table("imports")+` i
 		WHERE i.workspace_id=$1 AND i.imported_at<=$2 AND i.state IN ('succeeded','failed')
+		AND i.evidence_availability='available'
 		ORDER BY i.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err
@@ -442,7 +443,7 @@ func (a *Application) appendAudit(ctx context.Context, db retentionDB, workspace
 		FROM `+a.table("finding_correlation_events")+` e
 		JOIN `+a.table("finding_correlations")+` c
 		ON c.workspace_id=e.workspace_id AND c.id=e.correlation_id
-		WHERE e.workspace_id=$1 AND e.created_at<=$2
+		WHERE e.workspace_id=$1 AND e.created_at<=$2 AND e.detail_availability='available'
 		ORDER BY e.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err
@@ -464,6 +465,59 @@ func (a *Application) appendAudit(ctx context.Context, db retentionDB, workspace
 		}
 		item.binding = strings.Join([]string{item.ResourceID, timeString(item.ObservedAt),
 			intString(item.SizeBytes), state, intString(revision), holds}, "|")
+		addRetentionItem(snapshot, item)
+		if len(snapshot.Items) > retentionPreviewLimit {
+			return errTooLarge
+		}
+	}
+	return rows.Err()
+}
+
+func (a *Application) appendArchivedEvidence(ctx context.Context, db retentionDB, workspace string,
+	cutoff time.Time, snapshot *retentionSnapshot) error {
+	rows, err := db.Query(ctx, `SELECT o.id,i.id,o.archived_at,o.archive_size,o.evidence_revision,
+		f.id,f.decision_revision,f.evidence_revision,
+		(f.owner_id IS NOT NULL OR f.workflow_state<>'open' OR f.disposition<>'none'
+		 OR EXISTS(SELECT 1 FROM `+a.table("notes")+` n
+		  WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id)
+		 OR EXISTS(SELECT 1 FROM `+a.table("finding_correlation_members")+` cm
+		  JOIN `+a.table("finding_correlations")+` c
+		  ON c.workspace_id=cm.workspace_id AND c.id=cm.correlation_id AND c.state='active'
+		  WHERE cm.workspace_id=f.workspace_id AND cm.finding_id=f.id AND cm.released_at IS NULL)),
+		COALESCE((SELECT string_agg(h.id||':'||h.revision::text,',' ORDER BY h.id)
+		 FROM `+a.table("retention_holds")+` h
+		 WHERE h.workspace_id=o.workspace_id AND h.released_at IS NULL
+		 AND ((h.resource_kind='observation' AND h.resource_id=o.id)
+		  OR (h.resource_kind='import' AND h.resource_id=i.id))),'')
+		,EXISTS(SELECT 1 FROM `+a.table("assessment_previews")+` p
+		 WHERE p.workspace_id=o.workspace_id AND p.observation_id=o.id)
+		FROM `+a.table("observations")+` o
+		JOIN `+a.table("imports")+` i ON i.workspace_id=o.workspace_id AND i.run_id=o.run_id
+		JOIN `+a.table("findings")+` f ON f.workspace_id=o.workspace_id AND f.id=o.finding_id
+		WHERE o.workspace_id=$1 AND o.archived_at<=$2 AND o.evidence_availability='archived'
+		ORDER BY o.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var item retentionSnapshotItem
+		var importID, findingID, holds string
+		var revision, decisionRevision, evidenceRevision int64
+		var decision, assessment bool
+		if err = rows.Scan(&item.ResourceID, &importID, &item.ObservedAt, &item.SizeBytes, &revision,
+			&findingID, &decisionRevision, &evidenceRevision, &decision, &holds, &assessment); err != nil {
+			return err
+		}
+		item.Class, item.ResourceKind, item.Action = "archived-evidence", "observation", "expire-archive"
+		item.ObservedAt = item.ObservedAt.UTC()
+		item.ProtectedReasons = retentionReasons(holds != "", decision, false, "")
+		if assessment {
+			item.ProtectedReasons = append(item.ProtectedReasons, "assessment-reference")
+		}
+		item.binding = strings.Join([]string{item.ResourceID, importID, findingID, timeString(item.ObservedAt),
+			intString(item.SizeBytes), intString(revision), intString(decisionRevision),
+			intString(evidenceRevision), holds, boolString(assessment)}, "|")
 		addRetentionItem(snapshot, item)
 		if len(snapshot.Items) > retentionPreviewLimit {
 			return errTooLarge
@@ -528,6 +582,10 @@ func (a *Application) buildRetentionSnapshot(ctx context.Context, db retentionDB
 	}
 	if err = a.appendRawReports(ctx, db, workspace,
 		now.AddDate(0, 0, -policy.RawReportDays), &snapshot); err != nil {
+		return retentionSnapshot{}, err
+	}
+	if err = a.appendArchivedEvidence(ctx, db, workspace,
+		now.AddDate(0, 0, -policy.ArchivedEvidenceDays), &snapshot); err != nil {
 		return retentionSnapshot{}, err
 	}
 	if err = a.appendAudit(ctx, db, workspace,

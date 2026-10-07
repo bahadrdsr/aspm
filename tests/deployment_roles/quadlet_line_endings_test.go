@@ -20,7 +20,7 @@ func lineEndingBaseline(t *testing.T, role string) ([]byte, QuadletRoleConfig) {
 }
 
 func TestDeploymentQuadletPreservesLFAndCRLF(t *testing.T) {
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		for _, style := range []string{"LF", "CRLF"} {
 			t.Run(role+"/"+style, func(t *testing.T) {
 				source, config := lineEndingBaseline(t, role)
@@ -65,7 +65,7 @@ func TestDeploymentQuadletPreservesLFAndCRLF(t *testing.T) {
 }
 
 func TestDeploymentQuadletRejectsMalformedCRBoundaries(t *testing.T) {
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		t.Run(role, func(t *testing.T) {
 			source, config := lineEndingBaseline(t, role)
 			marker := []byte("RestartSec=11\n")

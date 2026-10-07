@@ -96,6 +96,8 @@ func TestM03Execution_ChangedApprovalInputsRejectBeforeMutation(t *testing.T) {
 	f.input.RuntimeRoles.Ingestion.RawPrefix = f.input.RuntimeRoles.Core.RawPrefix
 	f.input.RuntimeRoles.Ingestion.ReadinessKey = "raw/another-selected-scope/ingestion-ready.txt"
 	f.input.RuntimeRoles.Ingestion.NormalizedPrefix = "normalized/another-selected-scope/"
+	f.input.RuntimeRoles.Retention.RawPrefix = f.input.RuntimeRoles.Core.RawPrefix
+	f.input.RuntimeRoles.Retention.ReadinessKey = "raw/another-selected-scope/retention-ready.txt"
 	f.rejected(f.input, p.ID, ErrApproval)
 	if f.plan().ID == p.ID {
 		t.Fatal("changed selected role scopes reused deployment approval")
@@ -221,6 +223,7 @@ func TestM03Execution_KubernetesUsesOwnedChartAndProtectedSecretChannels(t *test
 	}
 	f.roleSecret(f.input.RuntimeRoles.Core, f.options.RoleKeys.Core)
 	f.roleSecret(f.input.RuntimeRoles.Ingestion, f.options.RoleKeys.Ingestion)
+	f.roleSecret(f.input.RuntimeRoles.Retention, f.options.RoleKeys.Retention)
 	var upgrade *Command
 	for i := range f.calls {
 		if f.calls[i].Tool == "helm" && slices.Contains(f.calls[i].Args, "upgrade") {
@@ -338,6 +341,54 @@ func TestM03Execution_FailureResumeAndReapplyRetainCredentialsAndState(t *testin
 	}
 }
 
+func TestM03Execution_ApprovedReapplyAddsRetentionToExistingV2CredentialMaterial(t *testing.T) {
+	f := newFixture(t, "kubernetes")
+	plan := f.plan()
+	f.execute(plan)
+	const material = "etc/aspm/installer-credentials.json"
+	before, err := f.files.ReadFile(material)
+	ok(t, "read current v2 credential material", err)
+	var legacy map[string]json.RawMessage
+	ok(t, "decode current v2 credential material", json.Unmarshal(before, &legacy))
+	retained := map[string]json.RawMessage{}
+	for _, name := range []string{"core", "ingestion", "operator", "postgresPassword", "bootstrapToken", "databaseUrl"} {
+		retained[name] = bytes.Clone(legacy[name])
+	}
+	delete(legacy, "retention")
+	legacyBytes, err := json.Marshal(legacy)
+	ok(t, "encode pre-retention v2 credential material", err)
+	ok(t, "stage pre-retention v2 credential material", f.files.WriteFile(material, legacyBytes, 0600))
+	ok(t, "remove only the absent legacy retention environment", f.files.Remove("etc/aspm/retention.env"))
+
+	f.reopen()
+	reapplied := f.execute(plan)
+	equal(t, "approved additive reapply remains applied", reapplied.Phase, "applied")
+	if !slices.Contains(reapplied.SecretFiles, "etc/aspm/retention.env") {
+		t.Fatal("approved additive reapply omitted the retention credential file")
+	}
+	after, err := f.files.ReadFile(material)
+	ok(t, "read augmented v2 credential material", err)
+	var augmented map[string]json.RawMessage
+	ok(t, "decode augmented v2 credential material", json.Unmarshal(after, &augmented))
+	for name, value := range retained {
+		if !bytes.Equal(augmented[name], value) {
+			t.Fatalf("additive retention migration changed existing %s credential material", name)
+		}
+	}
+	var retention struct {
+		AccessKey string `json:"accessKey"`
+		SecretKey string `json:"secretKey"`
+	}
+	ok(t, "decode added retention identity", json.Unmarshal(augmented["retention"], &retention))
+	equal(t, "additive retention access key", retention.AccessKey, f.options.RoleKeys.Retention.AccessKey)
+	equal(t, "additive retention secret key", retention.SecretKey, f.options.RoleKeys.Retention.SecretKey)
+	environment, _ := f.environment("retention.env")
+	equal(t, "additive retention environment access key",
+		environment["ASPM_S3_ACCESS_KEY"], f.options.RoleKeys.Retention.AccessKey)
+	equal(t, "additive retention environment secret key",
+		environment["ASPM_S3_SECRET_KEY"], f.options.RoleKeys.Retention.SecretKey)
+}
+
 func TestM03Execution_UninstallPreservesDataUnlessSeparatelyApproved(t *testing.T) {
 	f := newFixture(t, "kubernetes")
 	apply := f.plan()
@@ -449,17 +500,22 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 	}
 	core, coreBytes := f.environment("core.env")
 	ingestion, ingestionBytes := f.environment("ingestion.env")
+	retention, retentionBytes := f.environment("retention.env")
 	reports, reportsBytes := f.environment("reports.env")
 	postgres, _ := f.environment("postgres.env")
 	if core["ASPM_DATABASE_URL"] == "" || core["ASPM_BOOTSTRAP_TOKEN"] == "" || postgres["POSTGRES_PASSWORD"] == "" {
 		t.Fatal("database/core bootstrap credentials were lost during role separation")
 	}
 	equal(t, "ingestion retains its database configuration", ingestion["ASPM_DATABASE_URL"], core["ASPM_DATABASE_URL"])
+	equal(t, "retention retains its database configuration", retention["ASPM_DATABASE_URL"], core["ASPM_DATABASE_URL"])
 	equal(t, "reports retains only database credentials", reports["ASPM_DATABASE_URL"], core["ASPM_DATABASE_URL"])
-	for name, selected := range map[string]RoleSelection{"core": f.input.RuntimeRoles.Core, "ingestion": f.input.RuntimeRoles.Ingestion} {
+	for name, selected := range map[string]RoleSelection{"core": f.input.RuntimeRoles.Core,
+		"ingestion": f.input.RuntimeRoles.Ingestion, "retention": f.input.RuntimeRoles.Retention} {
 		env, key := core, f.options.RoleKeys.Core
 		if name == "ingestion" {
 			env, key = ingestion, f.options.RoleKeys.Ingestion
+		} else if name == "retention" {
+			env, key = retention, f.options.RoleKeys.Retention
 		}
 		equal(t, name+" runtime role access key", env["ASPM_S3_ACCESS_KEY"], key.AccessKey)
 		equal(t, name+" runtime role secret key", env["ASPM_S3_SECRET_KEY"], key.SecretKey)
@@ -468,6 +524,8 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 		f.secrets[name] = map[string]string{"access": key.AccessKey, "secret": key.SecretKey, "database-url": env["ASPM_DATABASE_URL"]}
 	}
 	equal(t, "ingestion normalized scope", ingestion["ASPM_S3_NORMALIZED_PREFIX"], f.input.RuntimeRoles.Ingestion.NormalizedPrefix)
+	equal(t, "core archive scope", core["ASPM_S3_ARCHIVE_PREFIX"], f.input.RuntimeRoles.Core.ArchivePrefix)
+	equal(t, "retention archive scope", retention["ASPM_S3_ARCHIVE_PREFIX"], f.input.RuntimeRoles.Retention.ArchivePrefix)
 	if _, present := ingestion["ASPM_BOOTSTRAP_TOKEN"]; present {
 		t.Fatal("ingestion received a core-only bootstrap credential")
 	}
@@ -481,20 +539,29 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 	f.secrets["operator-policy"] = map[string]string{"s3.json": string(policy)}
 	f.secret = map[string]string{"postgres-password": postgres["POSTGRES_PASSWORD"], "bootstrap-token": core["ASPM_BOOTSTRAP_TOKEN"]}
 	for _, value := range f.operatorKeys() {
-		if bytes.Contains(coreBytes, []byte(value)) || bytes.Contains(ingestionBytes, []byte(value)) || bytes.Contains(reportsBytes, []byte(value)) {
+		if bytes.Contains(coreBytes, []byte(value)) || bytes.Contains(ingestionBytes, []byte(value)) ||
+			bytes.Contains(retentionBytes, []byte(value)) || bytes.Contains(reportsBytes, []byte(value)) {
 			t.Fatal("operator storage-policy credential was copied into an application role file")
 		}
 	}
-	for _, key := range []RoleCredential{f.options.RoleKeys.Core, f.options.RoleKeys.Ingestion} {
+	for _, key := range []RoleCredential{f.options.RoleKeys.Core, f.options.RoleKeys.Ingestion, f.options.RoleKeys.Retention} {
 		if bytes.Contains(reportsBytes, []byte(key.AccessKey)) || bytes.Contains(reportsBytes, []byte(key.SecretKey)) {
 			t.Fatal("DB-only reports.env received an application storage credential")
 		}
 	}
 	if bytes.Contains(coreBytes, []byte(f.options.RoleKeys.Ingestion.AccessKey)) ||
 		bytes.Contains(coreBytes, []byte(f.options.RoleKeys.Ingestion.SecretKey)) ||
+		bytes.Contains(coreBytes, []byte(f.options.RoleKeys.Retention.AccessKey)) ||
+		bytes.Contains(coreBytes, []byte(f.options.RoleKeys.Retention.SecretKey)) ||
 		bytes.Contains(ingestionBytes, []byte(f.options.RoleKeys.Core.AccessKey)) ||
-		bytes.Contains(ingestionBytes, []byte(f.options.RoleKeys.Core.SecretKey)) {
-		t.Fatal("core and ingestion environment files share another role's credential")
+		bytes.Contains(ingestionBytes, []byte(f.options.RoleKeys.Core.SecretKey)) ||
+		bytes.Contains(ingestionBytes, []byte(f.options.RoleKeys.Retention.AccessKey)) ||
+		bytes.Contains(ingestionBytes, []byte(f.options.RoleKeys.Retention.SecretKey)) ||
+		bytes.Contains(retentionBytes, []byte(f.options.RoleKeys.Core.AccessKey)) ||
+		bytes.Contains(retentionBytes, []byte(f.options.RoleKeys.Core.SecretKey)) ||
+		bytes.Contains(retentionBytes, []byte(f.options.RoleKeys.Ingestion.AccessKey)) ||
+		bytes.Contains(retentionBytes, []byte(f.options.RoleKeys.Ingestion.SecretKey)) {
+		t.Fatal("application environment files share another role's credential")
 	}
 	f.noLeaks(state, nil)
 	started, reloaded := map[string]bool{}, false
@@ -506,7 +573,8 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 		}
 		reloaded = reloaded || (call.Tool == "systemctl" && slices.Contains(call.Args, "daemon-reload"))
 	}
-	for _, name := range []string{"aspm-core.service", "aspm-ingestion@1.service", "aspm-reports.service", "aspm-postgres.service", "aspm-storage.service"} {
+	for _, name := range []string{"aspm-core.service", "aspm-ingestion@1.service", "aspm-retention.service",
+		"aspm-reports.service", "aspm-postgres.service", "aspm-storage.service"} {
 		if !started[name] {
 			t.Fatal("local apply did not activate every declared service")
 		}

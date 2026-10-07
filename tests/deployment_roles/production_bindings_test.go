@@ -14,6 +14,7 @@ func init() {
 			RawPrefix:        config.RawPrefix,
 			ReadinessKey:     config.ReadinessKey,
 			NormalizedPrefix: config.NormalizedPrefix,
+			ArchivePrefix:    config.ArchivePrefix,
 		})
 	}
 }

@@ -134,6 +134,18 @@ func TestProjectRelationsV14AcceptsOnlyExactRetentionRelations(t *testing.T) {
 	}
 }
 
+func TestProjectRelationsV15AcceptsOnlyExactExecutionRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV15(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V15 relation projection did not restore the prior relation set")
+	}
+}
+
 func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	before := map[string][]string{
 		"imports/indexes":             {"app_imports_pkey|unchanged"},

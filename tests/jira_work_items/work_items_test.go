@@ -126,7 +126,13 @@ func assertFindingUnchanged(t *testing.T, before, after app.Finding) {
 		before.Disposition == after.Disposition && before.VerifiedResolution == after.VerifiedResolution,
 		"Jira creation changed finding lifecycle or verification")
 	same(t, "Jira creation changed notes", after.Notes, before.Notes)
-	same(t, "Jira creation changed source observations", after.Observations, before.Observations)
+	expectedObservations := append([]app.Observation(nil), before.Observations...)
+	for index := range expectedObservations {
+		if expectedObservations[index].EvidenceAvailability == "" {
+			expectedObservations[index].EvidenceAvailability = "available"
+		}
+	}
+	same(t, "Jira creation changed source observations", after.Observations, expectedObservations)
 }
 
 func TestJiraJ1ConnectionPrivacyRolesAndStrictLocalPreview(t *testing.T) {

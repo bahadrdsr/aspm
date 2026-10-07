@@ -104,11 +104,12 @@ type FindingCorrelationMember struct {
 }
 
 type FindingCorrelationEvent struct {
-	ID        string    `json:"id"`
-	Type      string    `json:"type"`
-	ActorID   string    `json:"actorId"`
-	Rationale string    `json:"rationale"`
-	CreatedAt time.Time `json:"createdAt"`
+	ID                 string    `json:"id"`
+	Type               string    `json:"type"`
+	ActorID            string    `json:"actorId"`
+	Rationale          string    `json:"rationale"`
+	CreatedAt          time.Time `json:"createdAt"`
+	DetailAvailability string    `json:"detailAvailability"`
 }
 
 type FindingCorrelation struct {
@@ -196,20 +197,21 @@ type RetentionPreview struct {
 }
 
 type Observation struct {
-	ID                 string           `json:"id"`
-	RunID              string           `json:"runId"`
-	SourceID           string           `json:"sourceId"`
-	ScanID             string           `json:"scanId"`
-	Scope              Scope            `json:"scope"`
-	SourceScanAt       *time.Time       `json:"sourceScanAt"`
-	SourceFindingID    string           `json:"sourceFindingId"`
-	SourceSeverity     string           `json:"sourceSeverity"`
-	NormalizedSeverity string           `json:"normalizedSeverity"`
-	SourceLocation     parsers.Location `json:"sourceLocation"`
-	Impact             string           `json:"impact"`
-	Remediation        string           `json:"remediation"`
-	Unmapped           map[string]any   `json:"unmapped"`
-	EvidenceDigest     string           `json:"evidenceDigest"`
+	ID                   string           `json:"id"`
+	RunID                string           `json:"runId"`
+	SourceID             string           `json:"sourceId"`
+	ScanID               string           `json:"scanId"`
+	Scope                Scope            `json:"scope"`
+	SourceScanAt         *time.Time       `json:"sourceScanAt"`
+	SourceFindingID      string           `json:"sourceFindingId"`
+	SourceSeverity       string           `json:"sourceSeverity"`
+	NormalizedSeverity   string           `json:"normalizedSeverity"`
+	SourceLocation       parsers.Location `json:"sourceLocation"`
+	Impact               string           `json:"impact"`
+	Remediation          string           `json:"remediation"`
+	Unmapped             map[string]any   `json:"unmapped"`
+	EvidenceDigest       string           `json:"evidenceDigest"`
+	EvidenceAvailability string           `json:"evidenceAvailability,omitempty"`
 }
 
 type Failure struct {
@@ -220,35 +222,74 @@ type Failure struct {
 }
 
 type Import struct {
-	ID               string     `json:"id"`
-	RunID            string     `json:"runId"`
-	State            string     `json:"state"`
-	AssetID          string     `json:"assetId"`
-	Format           string     `json:"format"`
-	SourceID         string     `json:"sourceId"`
-	ScanID           string     `json:"scanId"`
-	Scope            Scope      `json:"scope"`
-	SourceScanAt     *time.Time `json:"sourceScanAt"`
-	CollectedAt      time.Time  `json:"collectedAt"`
-	ImportedAt       time.Time  `json:"importedAt"`
-	SourceStatus     string     `json:"sourceStatus"`
-	ScanKind         string     `json:"scanKind"`
-	Completeness     string     `json:"completeness"`
-	ReportDigest     string     `json:"reportDigest"`
-	ObservationCount int        `json:"observationCount"`
-	Failure          *Failure   `json:"failure"`
+	ID                   string     `json:"id"`
+	RunID                string     `json:"runId"`
+	State                string     `json:"state"`
+	AssetID              string     `json:"assetId"`
+	Format               string     `json:"format"`
+	SourceID             string     `json:"sourceId"`
+	ScanID               string     `json:"scanId"`
+	Scope                Scope      `json:"scope"`
+	SourceScanAt         *time.Time `json:"sourceScanAt"`
+	CollectedAt          time.Time  `json:"collectedAt"`
+	ImportedAt           time.Time  `json:"importedAt"`
+	SourceStatus         string     `json:"sourceStatus"`
+	ScanKind             string     `json:"scanKind"`
+	Completeness         string     `json:"completeness"`
+	ReportDigest         string     `json:"reportDigest"`
+	EvidenceAvailability string     `json:"evidenceAvailability"`
+	ObservationCount     int        `json:"observationCount"`
+	Failure              *Failure   `json:"failure"`
 }
 
 type importRecord struct {
 	Import
-	WorkspaceID    string
-	SubmittedBy    string
-	ReportKey      string
-	ReportSize     int64
-	MetadataDigest string
-	Mapping        parsers.Mapping
-	Fence          int64
-	WorkerID       string
+	WorkspaceID         string
+	SubmittedBy         string
+	ReportKey           string
+	ReportSize          int64
+	MetadataDigest      string
+	Mapping             parsers.Mapping
+	Fence               int64
+	WorkerID            string
+	EvidenceRevision    int64
+	RetentionTransition string
+}
+
+type RetentionRunItem struct {
+	ID               string     `json:"id"`
+	Class            string     `json:"class"`
+	ResourceKind     string     `json:"resourceKind"`
+	ResourceID       string     `json:"resourceId"`
+	Action           string     `json:"action"`
+	State            string     `json:"state"`
+	ProtectedReasons []string   `json:"protectedReasons"`
+	Outcome          string     `json:"outcome"`
+	Failure          *Failure   `json:"failure"`
+	StartedAt        *time.Time `json:"startedAt"`
+	CompletedAt      *time.Time `json:"completedAt"`
+}
+
+type RetentionRun struct {
+	ID          string             `json:"id"`
+	WorkspaceID string             `json:"workspaceId"`
+	Operation   string             `json:"operation"`
+	PreviewID   *string            `json:"previewId"`
+	TargetKind  *string            `json:"targetKind"`
+	TargetID    *string            `json:"targetId"`
+	State       string             `json:"state"`
+	RequestedBy string             `json:"requestedBy"`
+	Rationale   string             `json:"rationale"`
+	CreatedAt   time.Time          `json:"createdAt"`
+	CompletedAt *time.Time         `json:"completedAt"`
+	Total       int                `json:"total"`
+	Succeeded   int                `json:"succeeded"`
+	Protected   int                `json:"protected"`
+	Missing     int                `json:"missing"`
+	Corrupt     int                `json:"corrupt"`
+	Failed      int                `json:"failed"`
+	Failure     *Failure           `json:"failure"`
+	Items       []RetentionRunItem `json:"items"`
 }
 
 type optional[T any] struct {

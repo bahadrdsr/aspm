@@ -25,9 +25,11 @@ Variants, evidence, observations, notes, decisions and audit history remain
 durable. The first retention increment is implemented too: each workspace has
 separate hot-history, raw-report, archived-evidence and audit lifetimes,
 explicit holds, exact impact previews and stale approval fencing. Preview and
-approval are deliberately non-destructive. Physical archive/expiry execution,
-availability-state downloads, resume and restore remain next. Indexed candidate
-matching, automatic correlation and multi-member groups remain unfinished.
+approval are deliberately non-destructive. V15 adds an independent fenced
+retention worker for normalized-history/audit archival, raw/archive expiry,
+explicit availability states, resume, authorized retrieval and observation
+restoration. Indexed candidate matching, automatic correlation, multi-member
+groups and recurring-scan capacity qualification remain unfinished.
 GitLab, AWS, Azure cloud and other unfinished integration expansion remain
 deferred.
 
@@ -39,14 +41,16 @@ server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with saved snapshots, Slack/Jira/Teams configuration and
 delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
-two-source finding correlation, retention policy/hold/preview controls, plus
+two-source finding correlation, retention policy/hold/preview/execution
+controls, plus
 opt-in persistent AI profile, policy and grant configuration, with an in-finding
 assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the
 assessment workflow have separate owned HTTPS qualification.
 
-Core API, ingestion and reporting run as separate processes. Core and ingestion
-use distinct scoped storage identities; reporting is database-only. The separate
+Core API, ingestion, retention and reporting run as separate processes.
+Core, ingestion and retention use distinct scoped storage identities; reporting
+is database-only. The separate
 assessment worker uses database state and approved provider requests, without
 raw-storage credentials. Real local flows have been exercised, but further backend authorization/concurrency,
 deployment, recovery and capacity gates remain open. PostgreSQL role separation
@@ -96,9 +100,10 @@ acceptance tests instead mock the declared HTTP boundary, including the bounded
 asset/import and snapshot-creation writes, not React components. Their synthetic corpus is never in
 production imports; these checks do not prove live backend permissions.
 
-For the actual application, use `cmd\core-api`, `cmd\ingestion` and
-`cmd\report-worker` with an existing database, existing evidence bucket and
-protected role-specific configuration described in `docs\m02-runtime.md`.
+For the actual application, use `cmd\core-api`, `cmd\ingestion`,
+`cmd\retention-worker` and `cmd\report-worker` with an existing database,
+existing evidence bucket and protected role-specific configuration described in
+`docs\m02-runtime.md`.
 Do not share an operator S3 credential across those processes.
 
 ### Application UI workflows
@@ -164,6 +169,15 @@ change makes the preview stale. Approval persists review intent but starts no
 archive, expiry, compaction, deletion, restore or evidence-availability
 transition. Preview is capped at 200 resources and expires after 15 minutes.
 See `docs\m06-retention-preview.md`.
+
+After approval, an administrator can explicitly queue the exact preview for the
+independent retention worker and manually refresh its item-level status.
+Execution rechecks current protections, archives normalized observations and
+correlation detail, expires selected raw/archive objects, and reports protected,
+missing, corrupt or failed outcomes without changing Work or source state.
+Finding observation history labels availability and supports explicit verified
+archive retrieval plus administrator restoration. See
+`docs\m06-retention-execution.md`.
 
 **Saved views** is one closed-by-default inline panel in Work. Only explicitly
 opening it reads your personal preferences in the selected workspace. Every

@@ -61,7 +61,8 @@ func TestInstallerV3_ManagedHelmValuesOptInOnlyCoreReadiness(t *testing.T) {
 		if core["prepareReadiness"] != true {
 			t.Error("managed Helm producer omitted core.prepareReadiness=true")
 		}
-		for role, selected := range map[string]RoleSelection{"core": f.input.RuntimeRoles.Core, "ingestion": f.input.RuntimeRoles.Ingestion} {
+		for role, selected := range map[string]RoleSelection{"core": f.input.RuntimeRoles.Core,
+			"ingestion": f.input.RuntimeRoles.Ingestion, "retention": f.input.RuntimeRoles.Retention} {
 			actual := section(t, values, role)
 			equal(t, role+" raw scope unchanged", actual["rawPrefix"], selected.RawPrefix)
 			equal(t, role+" readiness key unchanged", actual["readinessKey"], selected.ReadinessKey)
@@ -69,8 +70,11 @@ func TestInstallerV3_ManagedHelmValuesOptInOnlyCoreReadiness(t *testing.T) {
 			equal(t, role+" private key reference unchanged", secret["name"], selected.S3Secret.Name)
 			equal(t, role+" access selector unchanged", secret["accessKeyKey"], selected.S3Secret.AccessKeyKey)
 			equal(t, role+" secret selector unchanged", secret["secretKeyKey"], selected.S3Secret.SecretKeyKey)
+			if role == "core" || role == "retention" {
+				equal(t, role+" archive scope unchanged", actual["archivePrefix"], selected.ArchivePrefix)
+			}
 		}
-		for _, role := range []string{"ingestion", "reports"} {
+		for _, role := range []string{"ingestion", "retention", "reports"} {
 			if _, present := section(t, values, role)["prepareReadiness"]; present {
 				t.Errorf("%s must receive no readiness preparation flag", role)
 			}
@@ -78,6 +82,7 @@ func TestInstallerV3_ManagedHelmValuesOptInOnlyCoreReadiness(t *testing.T) {
 	}
 	f.roleSecret(f.input.RuntimeRoles.Core, f.options.RoleKeys.Core)
 	f.roleSecret(f.input.RuntimeRoles.Ingestion, f.options.RoleKeys.Ingestion)
+	f.roleSecret(f.input.RuntimeRoles.Retention, f.options.RoleKeys.Retention)
 	f.secretFiles(state)
 	f.noLeaks(state, nil)
 }
@@ -87,7 +92,8 @@ func TestInstallerV3_ManagedLinuxFilesOptInOnlyCoreReadiness(t *testing.T) {
 	state := f.execute(v3ManagedPlan(t, f))
 	equal(t, "real Linux execution completes behind its tool boundary", state.Phase, "applied")
 	f.secretFiles(state)
-	for role, selected := range map[string]RoleSelection{"core": f.input.RuntimeRoles.Core, "ingestion": f.input.RuntimeRoles.Ingestion} {
+	for role, selected := range map[string]RoleSelection{"core": f.input.RuntimeRoles.Core,
+		"ingestion": f.input.RuntimeRoles.Ingestion, "retention": f.input.RuntimeRoles.Retention} {
 		env, _ := f.environment(role + ".env")
 		if role == "core" && env["ASPM_S3_PREPARE_READINESS"] != "true" {
 			t.Error("managed core.env omitted literal ASPM_S3_PREPARE_READINESS=true")
@@ -104,11 +110,16 @@ func TestInstallerV3_ManagedLinuxFilesOptInOnlyCoreReadiness(t *testing.T) {
 		key := f.options.RoleKeys.Core
 		if role == "ingestion" {
 			key = f.options.RoleKeys.Ingestion
+		} else if role == "retention" {
+			key = f.options.RoleKeys.Retention
 		}
 		equal(t, role+" raw scope unchanged", env["ASPM_S3_PREFIX"], selected.RawPrefix)
 		equal(t, role+" readiness key unchanged", env["ASPM_S3_READINESS_KEY"], selected.ReadinessKey)
 		equal(t, role+" exact role access bytes unchanged", env["ASPM_S3_ACCESS_KEY"], key.AccessKey)
 		equal(t, role+" exact role secret bytes unchanged", env["ASPM_S3_SECRET_KEY"], key.SecretKey)
+		if role == "core" || role == "retention" {
+			equal(t, role+" archive scope unchanged", env["ASPM_S3_ARCHIVE_PREFIX"], selected.ArchivePrefix)
+		}
 	}
 	reports, _ := f.environment("reports.env")
 	if reports["ASPM_DATABASE_URL"] == "" {

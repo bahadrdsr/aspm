@@ -29,6 +29,7 @@ type Config struct {
 	Schema, ApplicationName  string
 	MaxConnections           int32
 	Storage                  StorageConfig
+	ArchiveStorage           *StorageConfig `json:"-"`
 	CollectionStorage        *StorageConfig `json:"-"`
 	BootstrapToken           string         `json:"-"`
 	IntegrationEncryptionKey []byte         `json:"-"`
@@ -54,6 +55,7 @@ type Application struct {
 	imports                *ImportWorker
 	integrationCredentials cipher.AEAD
 	collectionEvidence     *sourceEvidenceReader
+	archiveEvidence        *sourceEvidenceReader
 
 	bootstrapEnabled bool
 	bootstrapHash    [32]byte
@@ -133,14 +135,25 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 			return nil, err
 		}
 	}
+	if config.ArchiveStorage != nil {
+		a.archiveEvidence, err = openSourceEvidenceReader(ctx, *config.ArchiveStorage)
+		a.config.ArchiveStorage = nil
+		if err != nil {
+			a.collectionEvidence.close()
+			a.storage.close()
+			return nil, err
+		}
+	}
 	a.database, err = openDatabase(ctx, dbConfig)
 	if err != nil {
+		a.archiveEvidence.close()
 		a.collectionEvidence.close()
 		a.storage.close()
 		return nil, err
 	}
 	if config.AssessmentScope != "" {
 		if err = a.registerAssessmentScope(ctx, config.AssessmentScope, nil); err != nil {
+			a.archiveEvidence.close()
 			a.collectionEvidence.close()
 			a.storage.close()
 			_ = a.database.close()
@@ -151,6 +164,7 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		storage: a.storage.config, maxUploadBytes: config.MaxUploadBytes}
 	a.dummyPassword, err = a.hashPassword(ctx, randomToken())
 	if err != nil {
+		a.archiveEvidence.close()
 		a.collectionEvidence.close()
 		a.storage.close()
 		a.pool.Close()
@@ -179,6 +193,7 @@ func (a *Application) Close() error {
 			a.oidc.close()
 		}
 		a.storage.close()
+		a.archiveEvidence.close()
 		a.collectionEvidence.close()
 		_ = a.database.close()
 	})

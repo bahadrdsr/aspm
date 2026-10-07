@@ -119,8 +119,8 @@ func TestSavedWorkViewsFreshReopenNativePagesAndRevisionRaces(t *testing.T) {
 	h := newHarness(t)
 	values := []savedView{h.create(h.admin, "Third title", "needle", "title"),
 		h.create(h.admin, "First title", "", "source-order"), h.create(h.admin, "Second title", "literal%_", "severity")}
-	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"}
-	same(t, "fresh current core must apply through additive V14 exactly once", h.ledger(), wantLedger)
+	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}
+	same(t, "fresh current core must apply through additive V15 exactly once", h.ledger(), wantLedger)
 	other := h.workspace()
 	h.create(other, "Not in selected list", "", "title")
 	sort.Slice(values, func(i, j int) bool { return values[i].ID < values[j].ID })

@@ -59,13 +59,13 @@ func deployment(args []string, output io.Writer) error {
 		return errors.New("private role-key input is missing, unsafe or invalid")
 	}
 	var supplied struct {
-		Core, Ingestion struct {
+		Core, Ingestion, Retention struct {
 			AccessKey string `json:"accessKey"`
 			SecretKey string `json:"secretKey"`
 		}
 	}
 	if boundedJSON(roleData, &supplied) != nil {
-		return errors.New("private role-key file must contain explicit core and ingestion entries")
+		return errors.New("private role-key file must contain explicit core, ingestion and retention entries")
 	}
 	publicFile, err := filepath.Abs(*trustPath)
 	if err != nil || !filepath.IsLocal(*bundlePath) {
@@ -87,6 +87,7 @@ func deployment(args []string, output io.Writer) error {
 		RoleKeys: execution.RoleCredentials{
 			Core:      execution.RoleCredential{AccessKey: supplied.Core.AccessKey, SecretKey: supplied.Core.SecretKey},
 			Ingestion: execution.RoleCredential{AccessKey: supplied.Ingestion.AccessKey, SecretKey: supplied.Ingestion.SecretKey},
+			Retention: execution.RoleCredential{AccessKey: supplied.Retention.AccessKey, SecretKey: supplied.Retention.SecretKey},
 		},
 	})
 	if err != nil {

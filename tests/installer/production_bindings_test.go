@@ -22,6 +22,7 @@ func init() {
 			RoleKeys: execution.RoleCredentials{
 				Core:      execution.RoleCredential{AccessKey: input.RoleKeys.Core.AccessKey, SecretKey: input.RoleKeys.Core.SecretKey},
 				Ingestion: execution.RoleCredential{AccessKey: input.RoleKeys.Ingestion.AccessKey, SecretKey: input.RoleKeys.Ingestion.SecretKey},
+				Retention: execution.RoleCredential{AccessKey: input.RoleKeys.Retention.AccessKey, SecretKey: input.RoleKeys.Retention.SecretKey},
 			},
 			LocalHost: execution.Host{OS: input.LocalHost.OS, EUID: input.LocalHost.EUID},
 		})
@@ -45,6 +46,7 @@ func (a installerAdapter) Plan(ctx context.Context, input Intent) (Plan, error) 
 		RuntimeRoles: RuntimeRoles{
 			Core:      installerSelection(result.RuntimeRoles.Core),
 			Ingestion: installerSelection(result.RuntimeRoles.Ingestion),
+			Retention: installerSelection(result.RuntimeRoles.Retention),
 		},
 	}, installerError(err)
 }
@@ -70,6 +72,7 @@ func executionIntent(input Intent) execution.Intent {
 		RuntimeRoles: execution.RuntimeRoles{
 			Core:      executionSelection(input.RuntimeRoles.Core),
 			Ingestion: executionSelection(input.RuntimeRoles.Ingestion),
+			Retention: executionSelection(input.RuntimeRoles.Retention),
 		},
 	}
 }
@@ -79,7 +82,8 @@ func executionSelection(input RoleSelection) execution.RoleSelection {
 		S3Secret: execution.SecretSelection{
 			Name: input.S3Secret.Name, AccessKeyKey: input.S3Secret.AccessKeyKey, SecretKeyKey: input.S3Secret.SecretKeyKey,
 		},
-		RawPrefix: input.RawPrefix, ReadinessKey: input.ReadinessKey, NormalizedPrefix: input.NormalizedPrefix,
+		RawPrefix: input.RawPrefix, ReadinessKey: input.ReadinessKey,
+		NormalizedPrefix: input.NormalizedPrefix, ArchivePrefix: input.ArchivePrefix,
 	}
 }
 
@@ -88,7 +92,8 @@ func installerSelection(input execution.RoleSelection) RoleSelection {
 		S3Secret: SecretSelection{
 			Name: input.S3Secret.Name, AccessKeyKey: input.S3Secret.AccessKeyKey, SecretKeyKey: input.S3Secret.SecretKeyKey,
 		},
-		RawPrefix: input.RawPrefix, ReadinessKey: input.ReadinessKey, NormalizedPrefix: input.NormalizedPrefix,
+		RawPrefix: input.RawPrefix, ReadinessKey: input.ReadinessKey,
+		NormalizedPrefix: input.NormalizedPrefix, ArchivePrefix: input.ArchivePrefix,
 	}
 }
 

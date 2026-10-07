@@ -59,7 +59,7 @@ func loaderBaseline(t *testing.T, role string) ([]byte, QuadletRoleConfig) {
 }
 
 func TestDeploymentQuadletLoaderBaselinePreservesSafeSettings(t *testing.T) {
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		t.Run(role, func(t *testing.T) { loaderBaseline(t, role) })
 	}
 }
@@ -81,7 +81,7 @@ func TestDeploymentQuadletRejectsAdditionalConfigurationSources(t *testing.T) {
 		{"pass-config-selectors", "Service", "PassEnvironment=CONTAINERS_CONF CONTAINERS_STORAGE_CONF CONTAINERS_REGISTRIES_CONF"},
 		{"pass-credential-selectors", "Service", "PassEnvironment=ASPM_S3_ACCESS_KEY AWS_ACCESS_KEY_ID ASPM_BOOTSTRAP_TOKEN"},
 	}
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		t.Run(role, func(t *testing.T) {
 			source, config := loaderBaseline(t, role)
 			for _, item := range cases {

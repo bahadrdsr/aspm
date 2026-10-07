@@ -74,7 +74,8 @@ func digest(data []byte) string {
 }
 
 func privateRoleDigest(keys RoleCredentials) string {
-	data, _ := json.Marshal([]string{keys.Core.AccessKey, keys.Core.SecretKey, keys.Ingestion.AccessKey, keys.Ingestion.SecretKey})
+	data, _ := json.Marshal([]string{keys.Core.AccessKey, keys.Core.SecretKey,
+		keys.Ingestion.AccessKey, keys.Ingestion.SecretKey, keys.Retention.AccessKey, keys.Retention.SecretKey})
 	return digest(append([]byte("aspm-installer-role-identities-v1\x00"), data...))
 }
 
@@ -122,17 +123,25 @@ func (i *installer) resolve(ctx context.Context, input Intent) (install.Plan, co
 		(input.DeleteData && input.Operation != "uninstall") || input.DevelopmentPolicy != "" {
 		return install.Plan{}, configuration{}, ErrUnsupported
 	}
-	if storagepolicy.ValidateRuntimeCredentials(credential(i.options.RoleKeys.Core), credential(i.options.RoleKeys.Ingestion)) != nil {
+	if storagepolicy.ValidateRuntimeCredentials(credential(i.options.RoleKeys.Core), credential(i.options.RoleKeys.Ingestion),
+		credential(i.options.RoleKeys.Retention)) != nil {
 		return install.Plan{}, configuration{}, ErrCredential
 	}
-	if validateSelection(input.RuntimeRoles.Core) != nil || validateSelection(input.RuntimeRoles.Ingestion) != nil {
+	if validateSelection(input.RuntimeRoles.Core) != nil || validateSelection(input.RuntimeRoles.Ingestion) != nil ||
+		validateSelection(input.RuntimeRoles.Retention) != nil {
 		return install.Plan{}, configuration{}, ErrCredential
 	}
-	if input.RuntimeRoles.Core.S3Secret.Name == input.RuntimeRoles.Ingestion.S3Secret.Name {
+	if input.RuntimeRoles.Core.S3Secret.Name == input.RuntimeRoles.Ingestion.S3Secret.Name ||
+		input.RuntimeRoles.Core.S3Secret.Name == input.RuntimeRoles.Retention.S3Secret.Name ||
+		input.RuntimeRoles.Ingestion.S3Secret.Name == input.RuntimeRoles.Retention.S3Secret.Name {
 		return install.Plan{}, configuration{}, ErrCredential
 	}
-	if input.RuntimeRoles.Core.NormalizedPrefix != "" ||
-		input.RuntimeRoles.Core.RawPrefix != input.RuntimeRoles.Ingestion.RawPrefix {
+	if input.RuntimeRoles.Core.NormalizedPrefix != "" || input.RuntimeRoles.Ingestion.ArchivePrefix != "" ||
+		input.RuntimeRoles.Retention.NormalizedPrefix != "" ||
+		input.RuntimeRoles.Core.RawPrefix != input.RuntimeRoles.Ingestion.RawPrefix ||
+		input.RuntimeRoles.Core.RawPrefix != input.RuntimeRoles.Retention.RawPrefix ||
+		input.RuntimeRoles.Core.ArchivePrefix == "" ||
+		input.RuntimeRoles.Core.ArchivePrefix != input.RuntimeRoles.Retention.ArchivePrefix {
 		return install.Plan{}, configuration{}, ErrUnsupported
 	}
 	preview, err := install.Resolve(ctx, input.Configuration)
@@ -148,7 +157,8 @@ func (i *installer) resolve(ctx context.Context, input Intent) (install.Plan, co
 		return install.Plan{}, configuration{}, ErrUnsupported
 	}
 	if storagepolicy.ValidateRuntimeSelection(config.ObjectStore.Bucket, input.RuntimeRoles.Core.RawPrefix,
-		input.RuntimeRoles.Ingestion.RawPrefix, input.RuntimeRoles.Ingestion.NormalizedPrefix) != nil {
+		input.RuntimeRoles.Ingestion.RawPrefix, input.RuntimeRoles.Ingestion.NormalizedPrefix,
+		input.RuntimeRoles.Retention.ArchivePrefix) != nil {
 		return install.Plan{}, configuration{}, ErrUnsupported
 	}
 	core, ingestion, reconciliation, reports := config.Services["core-api"], config.Services["ingestion-parser"],

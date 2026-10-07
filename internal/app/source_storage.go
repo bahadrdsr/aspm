@@ -74,16 +74,24 @@ func openSourceEvidenceReader(ctx context.Context, config StorageConfig) (*sourc
 }
 
 func (reader *sourceEvidenceReader) read(ctx context.Context, workspace string, ref evidence.Ref) ([]byte, error) {
-	if ref.SizeBytes < 0 || ref.SizeBytes > sourceEvidenceLimit {
-		return nil, errUnavailable
-	}
-	body, err := reader.reader.Open(ctx, workspace, ref)
+	data, err := reader.readExact(ctx, workspace, ref)
 	if err != nil {
 		return nil, errUnavailable
 	}
+	return data, nil
+}
+
+func (reader *sourceEvidenceReader) readExact(ctx context.Context, workspace string, ref evidence.Ref) ([]byte, error) {
+	if ref.SizeBytes < 0 || ref.SizeBytes > sourceEvidenceLimit {
+		return nil, evidence.ErrInvalid
+	}
+	body, err := reader.reader.Open(ctx, workspace, ref)
+	if err != nil {
+		return nil, err
+	}
 	data, err := io.ReadAll(io.LimitReader(body, ref.SizeBytes+1))
 	if err = errors.Join(err, body.Close()); err != nil {
-		return nil, errUnavailable
+		return nil, err
 	}
 	return data, nil
 }

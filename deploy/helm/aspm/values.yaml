@@ -14,6 +14,7 @@ core:
     accessKeyKey: core-s3-access-key
     secretKeyKey: core-s3-secret-key
   rawPrefix: evidence/
+  archivePrefix: archive/
   readinessKey: evidence/system/readiness.txt
   resources:
     requests: {cpu: 100m, memory: 128Mi}
@@ -27,6 +28,18 @@ ingestion:
   rawPrefix: evidence/
   readinessKey: evidence/system/readiness.txt
   normalizedPrefix: normalized/
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: "1", memory: 512Mi}
+retention:
+  replicas: 1
+  s3Secret:
+    name: aspm-retention-storage
+    accessKeyKey: retention-s3-access-key
+    secretKeyKey: retention-s3-secret-key
+  rawPrefix: evidence/
+  archivePrefix: archive/
+  readinessKey: evidence/system/readiness.txt
   resources:
     requests: {cpu: 100m, memory: 128Mi}
     limits: {cpu: "1", memory: 512Mi}

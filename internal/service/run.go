@@ -97,6 +97,23 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 		})
 		return runtime, nil
 	}
+	if role == "retention" {
+		archive := storageConfig(config.Evidence)
+		archive.Prefix = config.ArchivePrefix
+		worker, openErr := app.OpenRetentionWorker(ctx, app.RetentionWorkerConfig{
+			Database: databaseConfig(config.Jobs), RawStorage: storageConfig(config.Evidence),
+			ArchiveStorage: archive, MaxEvidenceBytes: 32 << 20, Lease: config.Jobs.MaxLease,
+		})
+		if openErr != nil {
+			return runtime, openErr
+		}
+		runtime.closers = append(runtime.closers, worker.Close)
+		runtime.checks = append(runtime.checks, worker.Ping)
+		runtime.workers = append(runtime.workers, func(ctx context.Context) error {
+			return runQueuedWork(ctx, "retention", worker.ProcessNext)
+		})
+		return runtime, nil
+	}
 	jobConfig := config.Jobs
 	jobConfig.MaxConnections = max(1, config.Jobs.MaxConnections/3)
 	queue, err := jobs.Open(ctx, jobConfig)
@@ -109,6 +126,12 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 	db.ApplicationName = applicationLabel(db.ApplicationName)
 	db.MaxConnections -= jobConfig.MaxConnections
 	if role == "core" {
+		var archive *app.StorageConfig
+		if config.ArchivePrefix != "" {
+			selected := storageConfig(config.Evidence)
+			selected.Prefix = config.ArchivePrefix
+			archive = &selected
+		}
 		application, openErr := app.Open(ctx, app.Config{
 			DatabaseURL: db.DatabaseURL, Schema: db.Schema, ApplicationName: db.ApplicationName,
 			MaxConnections: db.MaxConnections, Storage: storageConfig(config.Evidence),
@@ -116,6 +139,7 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			BootstrapToken:    config.BootstrapToken, PublicOrigin: config.PublicOrigin,
 			IntegrationEncryptionKey: config.IntegrationEncryptionKey,
 			AssessmentScope:          config.AssessmentScope,
+			ArchiveStorage:           archive,
 			Now:                      db.Now, LogOutput: db.LogOutput, SessionTTL: 8 * time.Hour, MaxUploadBytes: 8 << 20,
 			ManualProcessing: true,
 		})

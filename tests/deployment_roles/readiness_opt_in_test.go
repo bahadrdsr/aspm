@@ -80,7 +80,7 @@ func TestDeploymentHelmPrepareReadinessExplicitCoreOptIn(t *testing.T) {
 				t.Fatalf("valid complete role selection failed real rendering: %s (%T)", diagnostic, err)
 			}
 			roles := deployments(t, output)
-			for _, role := range []string{"core", "ingestion", "reports"} {
+			for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 				env := environment(t, roles[role], role)
 				if role == "core" {
 					flag, present := env[prepareReadinessEnv]
@@ -131,7 +131,7 @@ func TestDeploymentHelmPrepareReadinessRejectsNonBoolean(t *testing.T) {
 }
 
 func TestDeploymentShippingUnitsDoNotOverrideReadinessOptIn(t *testing.T) {
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		t.Run(role, func(t *testing.T) {
 			sections := unit(t, shippedUnit(t, role))
 			roleEnvironment(t, sections, role, "/etc/aspm/"+role+".env")

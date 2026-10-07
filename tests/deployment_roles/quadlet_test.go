@@ -14,7 +14,7 @@ import (
 )
 
 type QuadletRoleConfig struct {
-	Role, EnvironmentFile, RawPrefix, ReadinessKey, NormalizedPrefix string
+	Role, EnvironmentFile, RawPrefix, ReadinessKey, NormalizedPrefix, ArchivePrefix string
 }
 
 var Production struct {
@@ -125,6 +125,9 @@ func selectedScope(role, raw, normalized string) QuadletRoleConfig {
 	if role == "ingestion" {
 		config.NormalizedPrefix = normalized
 	}
+	if role == "core" || role == "retention" {
+		config.ArchivePrefix = "archive/selected-tenant/"
+	}
 	return config
 }
 
@@ -143,14 +146,14 @@ func renderQuadlet(t *testing.T, source []byte, config QuadletRoleConfig) ([]byt
 }
 
 func TestDeploymentQuadletRoleFilesAndNarrowScopes(t *testing.T) {
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		t.Run("shipped-"+role, func(t *testing.T) {
 			roleEnvironment(t, unit(t, shippedUnit(t, role)), role, "/etc/aspm/"+role+".env")
 		})
 	}
 	t.Run("selected-production-rendering", func(t *testing.T) {
 		for _, selection := range [][2]string{{"evidence/", "normalized/"}, {"raw/selected-tenant/", "normalized/selected-tenant/"}} {
-			for _, role := range []string{"core", "ingestion", "reports"} {
+			for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 				config := selectedScope(role, selection[0], selection[1])
 				source := shippedUnit(t, role)
 				rendered, err := renderQuadlet(t, source, config)
@@ -165,9 +168,13 @@ func TestDeploymentQuadletRoleFilesAndNarrowScopes(t *testing.T) {
 				if role == "ingestion" && env["ASPM_S3_NORMALIZED_PREFIX"] != config.NormalizedPrefix {
 					t.Error("ingestion output did not preserve the caller-selected normalized prefix")
 				}
+				if (role == "core" || role == "retention") && env["ASPM_S3_ARCHIVE_PREFIX"] != config.ArchivePrefix {
+					t.Errorf("%s output did not preserve the caller-selected archive prefix", role)
+				}
 				for _, assignment := range before["Container"]["Environment"] {
 					key, value, _ := strings.Cut(assignment, "=")
-					if key != "ASPM_S3_PREFIX" && key != "ASPM_S3_READINESS_KEY" && key != "ASPM_S3_NORMALIZED_PREFIX" && env[key] != value {
+					if key != "ASPM_S3_PREFIX" && key != "ASPM_S3_READINESS_KEY" &&
+						key != "ASPM_S3_NORMALIZED_PREFIX" && key != "ASPM_S3_ARCHIVE_PREFIX" && env[key] != value {
 						t.Errorf("scope renderer changed unrelated environment %s", key)
 					}
 				}
@@ -185,8 +192,10 @@ func TestDeploymentQuadletRoleFilesAndNarrowScopes(t *testing.T) {
 		for _, item := range []struct{ role, field string }{
 			{"core", "EnvironmentFile"}, {"core", "RawPrefix"}, {"core", "ReadinessKey"},
 			{"ingestion", "EnvironmentFile"}, {"ingestion", "RawPrefix"}, {"ingestion", "ReadinessKey"}, {"ingestion", "NormalizedPrefix"},
+			{"retention", "EnvironmentFile"}, {"retention", "RawPrefix"}, {"retention", "ReadinessKey"}, {"retention", "ArchivePrefix"},
 			{"reports", "EnvironmentFile"}, {"reports", "storage-not-admitted"}, {"core", "common-file-not-admitted"},
-			{"core", "readiness-outside-selection"}, {"ingestion", "overlapping-normalized"},
+			{"core", "readiness-outside-selection"}, {"core", "overlapping-archive"},
+			{"ingestion", "overlapping-normalized"}, {"retention", "overlapping-archive"},
 		} {
 			config := selectedScope(item.role, "evidence/", "normalized/")
 			switch item.field {
@@ -198,6 +207,8 @@ func TestDeploymentQuadletRoleFilesAndNarrowScopes(t *testing.T) {
 				config.ReadinessKey = ""
 			case "NormalizedPrefix":
 				config.NormalizedPrefix = ""
+			case "ArchivePrefix":
+				config.ArchivePrefix = ""
 			case "storage-not-admitted":
 				config.RawPrefix = "evidence/"
 			case "common-file-not-admitted":
@@ -206,9 +217,11 @@ func TestDeploymentQuadletRoleFilesAndNarrowScopes(t *testing.T) {
 				config.ReadinessKey = "outside-selected-prefix/ready.txt"
 			case "overlapping-normalized":
 				config.NormalizedPrefix = config.RawPrefix + "normalized/"
+			case "overlapping-archive":
+				config.ArchivePrefix = config.RawPrefix + "archive/"
 			}
 			// Deliberate stale defaults in a test-owned copy are not production policy.
-			source := append(shippedUnit(t, item.role), []byte("\n[Container]\nEnvironment=ASPM_S3_PREFIX=operator-default/\nEnvironment=ASPM_S3_READINESS_KEY=operator-default/ready.txt\nEnvironment=ASPM_S3_NORMALIZED_PREFIX=operator-normalized/\n")...)
+			source := append(shippedUnit(t, item.role), []byte("\n[Container]\nEnvironment=ASPM_S3_PREFIX=operator-default/\nEnvironment=ASPM_S3_READINESS_KEY=operator-default/ready.txt\nEnvironment=ASPM_S3_NORMALIZED_PREFIX=operator-normalized/\nEnvironment=ASPM_S3_ARCHIVE_PREFIX=operator-archive/\n")...)
 			rendered, err := renderQuadlet(t, source, config)
 			if err == nil || len(rendered) != 0 {
 				t.Errorf("%s %s must reject missing/forbidden selection without using source/operator defaults", item.role, item.field)

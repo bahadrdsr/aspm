@@ -117,13 +117,13 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14")
-	same(t, "current Open did not add V11/V12/V13/V14 exactly once over real populated V10", h.ledger(), currentLedger)
-	same(t, "V14 changed the relation/index set",
-		sourcecompat.ProjectRelationsV14(t, relations, h.relations()), relations)
-	same(t, "V14 must validate the complete exact DDL delta before projection",
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15")
+	same(t, "current Open did not add V11/V12/V13/V14/V15 exactly once over real populated V10", h.ledger(), currentLedger)
+	same(t, "V15 changed the relation/index set",
+		sourcecompat.ProjectRelationsV15(t, relations, h.relations()), relations)
+	same(t, "V15 must validate the complete exact DDL delta before projection",
 		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
-	same(t, "V14 changed old bytes outside the exact additions",
+	same(t, "V15 changed old bytes outside the exact additions",
 		sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Data(names)), before)
 	for _, r := range resources {
 		body, _ := h.request(h.ctx, h.admin, r.method, r.path, r.input, 200)
@@ -136,9 +136,9 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	same(t, "V11 changed the published queued advisory", h.json(viewer, "GET", "/api/v1/ai/assessments/"+assessmentID, nil, 200).Assessment, assessment)
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "V14 reopen changed the integer ledger", h.ledger(), currentLedger)
-	same(t, "V14 reopen changed definitions", h.definitions(names), afterDefinitions)
-	same(t, "V14 reopen changed historical business bytes",
+	same(t, "V15 reopen changed the integer ledger", h.ledger(), currentLedger)
+	same(t, "V15 reopen changed definitions", h.definitions(names), afterDefinitions)
+	same(t, "V15 reopen changed historical business bytes",
 		sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Data(names)), before)
 
 	value := n.workflowURL()

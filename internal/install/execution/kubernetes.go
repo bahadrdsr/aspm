@@ -73,6 +73,12 @@ func (i *installer) kubernetesApply(ctx context.Context, p prepared, material *c
 				selected.AccessKeyKey: material.Ingestion.AccessKey, selected.SecretKeyKey: material.Ingestion.SecretKey,
 			}, *material)
 		}},
+		{name: "retention-storage-secret", run: func() error {
+			selected := p.input.RuntimeRoles.Retention.S3Secret
+			return i.applySecret(ctx, p, selected.Name, map[string]string{
+				selected.AccessKeyKey: material.Retention.AccessKey, selected.SecretKeyKey: material.Retention.SecretKey,
+			}, *material)
+		}},
 		{name: "operator-storage-policy", run: func() error {
 			policy, err := i.read(ctx, "etc/aspm/s3.json", maxInputBytes)
 			if err != nil {
@@ -123,8 +129,9 @@ func helmValues(p prepared) ([]byte, error) {
 		RawPrefix        string          `json:"rawPrefix"`
 		ReadinessKey     string          `json:"readinessKey"`
 		NormalizedPrefix string          `json:"normalizedPrefix,omitempty"`
+		ArchivePrefix    string          `json:"archivePrefix,omitempty"`
 	}
-	core, ingestion := p.input.RuntimeRoles.Core, p.input.RuntimeRoles.Ingestion
+	core, ingestion, retention := p.input.RuntimeRoles.Core, p.input.RuntimeRoles.Ingestion, p.input.RuntimeRoles.Retention
 	values := struct {
 		ExistingSecret string `json:"existingSecret"`
 		PublicOrigin   string `json:"publicOrigin"`
@@ -134,6 +141,7 @@ func helmValues(p prepared) ([]byte, error) {
 		} `json:"image"`
 		Core      roleValues `json:"core"`
 		Ingestion roleValues `json:"ingestion"`
+		Retention roleValues `json:"retention"`
 		Reports   struct {
 			Replicas int `json:"replicas"`
 		} `json:"reports"`
@@ -159,9 +167,12 @@ func helmValues(p prepared) ([]byte, error) {
 		} `json:"storage"`
 	}{ExistingSecret: commonSecretName, PublicOrigin: p.config.Access.BaseURL,
 		Core: roleValues{Replicas: p.config.Services["core-api"].Replicas, PrepareReadiness: true,
-			S3Secret: core.S3Secret, RawPrefix: core.RawPrefix, ReadinessKey: core.ReadinessKey},
+			S3Secret: core.S3Secret, RawPrefix: core.RawPrefix, ReadinessKey: core.ReadinessKey,
+			ArchivePrefix: core.ArchivePrefix},
 		Ingestion: roleValues{Replicas: p.config.Services["ingestion-parser"].Replicas, S3Secret: ingestion.S3Secret,
-			RawPrefix: ingestion.RawPrefix, ReadinessKey: ingestion.ReadinessKey, NormalizedPrefix: ingestion.NormalizedPrefix}}
+			RawPrefix: ingestion.RawPrefix, ReadinessKey: ingestion.ReadinessKey, NormalizedPrefix: ingestion.NormalizedPrefix},
+		Retention: roleValues{Replicas: 1, S3Secret: retention.S3Secret,
+			RawPrefix: retention.RawPrefix, ReadinessKey: retention.ReadinessKey, ArchivePrefix: retention.ArchivePrefix}}
 	values.Image.Repository, values.Image.Tag = image[:colon], image[colon+1:]
 	values.Reports.Replicas = p.config.Services["background-worker"].Replicas
 	values.Database.Managed, values.Database.Image = true, p.plan.Images["postgres"]
@@ -205,7 +216,8 @@ func (i *installer) kubernetesUninstall(ctx context.Context, p prepared, materia
 				}
 			}
 		}
-		for _, name := range []string{commonSecretName, policySecretName, p.input.RuntimeRoles.Core.S3Secret.Name, p.input.RuntimeRoles.Ingestion.S3Secret.Name} {
+		for _, name := range []string{commonSecretName, policySecretName, p.input.RuntimeRoles.Core.S3Secret.Name,
+			p.input.RuntimeRoles.Ingestion.S3Secret.Name, p.input.RuntimeRoles.Retention.S3Secret.Name} {
 			if _, err := i.command(ctx, p, Command{Tool: "kubectl", Args: append(i.kubeArgs(p), "delete", "secret", name, "--ignore-not-found=true")}, material.values()); err != nil {
 				return err
 			}

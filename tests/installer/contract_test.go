@@ -48,11 +48,13 @@ type RoleSelection struct {
 	RawPrefix        string          `json:"rawPrefix"`
 	ReadinessKey     string          `json:"readinessKey"`
 	NormalizedPrefix string          `json:"normalizedPrefix,omitempty"`
+	ArchivePrefix    string          `json:"archivePrefix,omitempty"`
 }
 
 type RuntimeRoles struct {
 	Core      RoleSelection `json:"core"`
 	Ingestion RoleSelection `json:"ingestion"`
+	Retention RoleSelection `json:"retention"`
 }
 
 type RoleCredential struct {
@@ -60,9 +62,7 @@ type RoleCredential struct {
 	SecretKey string `json:"-"`
 }
 
-type RoleCredentials struct {
-	Core, Ingestion RoleCredential
-}
+type RoleCredentials struct{ Core, Ingestion, Retention RoleCredential }
 
 type Options struct {
 	Root       string

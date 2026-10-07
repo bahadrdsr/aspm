@@ -47,6 +47,7 @@ type Config struct {
 	ReadinessKey             string
 	PrepareReadiness         bool
 	NormalizedPrefix         string
+	ArchivePrefix            string
 	Jobs                     jobs.Config
 	Evidence                 evidence.Config
 
@@ -65,7 +66,8 @@ type Config struct {
 }
 
 func Environment(role string) (Config, error) {
-	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" && role != "collection" && role != "assessment" {
+	if role != "core" && role != "ingestion" && role != "reports" && role != "retention" &&
+		role != "delivery" && role != "collection" && role != "assessment" {
 		return Config{}, errors.New("unsupported service role")
 	}
 	prepare := false
@@ -85,10 +87,10 @@ func Environment(role string) (Config, error) {
 	}
 	connections := int64(5)
 	minimum := int64(2)
-	if role == "reports" || role == "delivery" || role == "collection" || role == "assessment" {
+	if role == "reports" || role == "retention" || role == "delivery" || role == "collection" || role == "assessment" {
 		minimum = 1
 	}
-	if role == "delivery" || role == "collection" || role == "assessment" {
+	if role == "retention" || role == "delivery" || role == "collection" || role == "assessment" {
 		connections = 1
 	}
 	if value := os.Getenv("ASPM_DB_MAX_CONNECTIONS"); value != "" {
@@ -133,6 +135,9 @@ func Environment(role string) (Config, error) {
 	}
 	if role == "ingestion" {
 		config.NormalizedPrefix = env("ASPM_S3_NORMALIZED_PREFIX", "normalized/")
+	}
+	if role == "core" || role == "retention" {
+		config.ArchivePrefix = env("ASPM_S3_ARCHIVE_PREFIX", "archive/")
 	}
 	if role == "delivery" {
 		config.WorkerID = "delivery-" + jobs.NewID()
@@ -180,7 +185,8 @@ func databaseConfig(config jobs.Config) app.DatabaseConfig {
 // Validate the complete caller configuration before EnsureSchema, pool opens,
 // storage probes, listeners, or worker goroutines can perform I/O.
 func validateConfig(role string, config Config) error {
-	if role != "core" && role != "ingestion" && role != "reports" && role != "delivery" && role != "collection" && role != "assessment" {
+	if role != "core" && role != "ingestion" && role != "reports" && role != "retention" &&
+		role != "delivery" && role != "collection" && role != "assessment" {
 		return errors.New("unsupported service role")
 	}
 	if role == "delivery" {
@@ -220,6 +226,8 @@ func validateConfig(role string, config Config) error {
 				return err
 			}
 		}
+	}
+	if role == "core" || role == "ingestion" {
 		if config.Jobs.MaxConnections < 2 {
 			return errors.New("application and integrity pools require at least two total database connections")
 		}
@@ -229,12 +237,20 @@ func validateConfig(role string, config Config) error {
 			return errors.New("invalid durable job configuration")
 		}
 	}
+	if role == "retention" && (config.Jobs.MaxLease < time.Second || config.Jobs.MaxLease > 5*time.Minute) {
+		return errors.New("invalid retention lease configuration")
+	}
 	if role == "ingestion" {
 		if err := app.ValidateNormalizedPrefix(config.Evidence.Prefix, config.NormalizedPrefix); err != nil {
 			return err
 		}
 		if strings.TrimSpace(config.WorkerID) == "" || len(config.WorkerID) > 512 || strings.ContainsRune(config.WorkerID, 0) {
 			return errors.New("an explicit bounded worker identity is required")
+		}
+	}
+	if role == "core" || role == "retention" {
+		if app.ValidateNormalizedPrefix(config.Evidence.Prefix, config.ArchivePrefix) != nil {
+			return errors.New("raw and archive prefixes must be explicit and disjoint")
 		}
 	}
 	if err := app.ValidateDatabaseConfig(databaseConfig(config.Jobs)); err != nil {

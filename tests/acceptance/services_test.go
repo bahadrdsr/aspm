@@ -63,6 +63,8 @@ func ownedServices(t *testing.T) *services {
 		MaxConnections: 4, MaxUploadBytes: 64 << 10, SessionTTL: 30 * time.Minute, ManualProcessing: true,
 		Storage: StorageConfig{Endpoint: endpoint.String(), Bucket: bucket, Prefix: "acceptance/" + id + "/",
 			AccessKey: os.Getenv(names[2]), SecretKey: os.Getenv(names[3]), Region: "us-east-1"},
+		ArchiveStorage: StorageConfig{Endpoint: endpoint.String(), Bucket: bucket, Prefix: "acceptance-archive/" + id + "/",
+			AccessKey: os.Getenv(names[2]), SecretKey: os.Getenv(names[3]), Region: "us-east-1"},
 	}}
 	pg, err := pgxpool.ParseConfig(f.cfg.DatabaseURL)
 	ok(t, "parse fixture connection configuration", err)
@@ -93,32 +95,36 @@ func ownedServices(t *testing.T) *services {
 func (f *services) cleanup(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
+	id := strings.TrimPrefix(f.cfg.Schema, "acceptance_")
 	if !regexp.MustCompile(`^acceptance_[a-f0-9]{24}$`).MatchString(f.cfg.Schema) ||
-		f.cfg.Storage.Prefix != "acceptance/"+strings.TrimPrefix(f.cfg.Schema, "acceptance_")+"/" {
+		f.cfg.Storage.Prefix != "acceptance/"+id+"/" ||
+		f.cfg.ArchiveStorage.Prefix != "acceptance-archive/"+id+"/" {
 		t.Error("refusing cleanup of a namespace not owned by this fixture")
 		return
 	}
-	pages := s3.NewListObjectsV2Paginator(f.s3, &s3.ListObjectsV2Input{
-		Bucket: aws.String(f.cfg.Storage.Bucket), Prefix: aws.String(f.cfg.Storage.Prefix), MaxKeys: aws.Int32(100),
-	})
-	for n := 0; pages.HasMorePages(); n++ {
-		if n == 4 {
-			t.Error("owned S3 cleanup exceeded four pages")
-			break
-		}
-		page, err := pages.NextPage(ctx)
-		if err != nil {
-			t.Errorf("owned S3 cleanup listing failed (%T; details withheld)", err)
-			break
-		}
-		for _, item := range page.Contents {
-			if !strings.HasPrefix(aws.ToString(item.Key), f.cfg.Storage.Prefix) {
-				t.Error("refusing S3 deletion outside the owned prefix")
-				continue
+	for _, prefix := range []string{f.cfg.Storage.Prefix, f.cfg.ArchiveStorage.Prefix} {
+		pages := s3.NewListObjectsV2Paginator(f.s3, &s3.ListObjectsV2Input{
+			Bucket: aws.String(f.cfg.Storage.Bucket), Prefix: aws.String(prefix), MaxKeys: aws.Int32(100),
+		})
+		for n := 0; pages.HasMorePages(); n++ {
+			if n == 4 {
+				t.Error("owned S3 cleanup exceeded four pages")
+				break
 			}
-			_, err := f.s3.DeleteObject(ctx, &s3.DeleteObjectInput{Bucket: aws.String(f.cfg.Storage.Bucket), Key: item.Key})
+			page, err := pages.NextPage(ctx)
 			if err != nil {
-				t.Errorf("owned S3 cleanup failed (%T; details withheld)", err)
+				t.Errorf("owned S3 cleanup listing failed (%T; details withheld)", err)
+				break
+			}
+			for _, item := range page.Contents {
+				if !strings.HasPrefix(aws.ToString(item.Key), prefix) {
+					t.Error("refusing S3 deletion outside the owned prefix")
+					continue
+				}
+				_, err := f.s3.DeleteObject(ctx, &s3.DeleteObjectInput{Bucket: aws.String(f.cfg.Storage.Bucket), Key: item.Key})
+				if err != nil {
+					t.Errorf("owned S3 cleanup failed (%T; details withheld)", err)
+				}
 			}
 		}
 	}

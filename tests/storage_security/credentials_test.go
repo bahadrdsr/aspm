@@ -54,7 +54,7 @@ func clients(t *testing.T) (map[string]*s3.Client, string) {
 	region := required(t, "ASPM_STORAGE_TEST_REGION")
 	result := make(map[string]*s3.Client)
 	identities := make(map[string]bool)
-	for _, role := range []string{"admin", "ai", "ingestion", "core"} {
+	for _, role := range []string{"admin", "ai", "ingestion", "core", "retention"} {
 		prefix := "ASPM_STORAGE_TEST_" + strings.ToUpper(role)
 		key, secret := required(t, prefix+"_ACCESS_KEY"), required(t, prefix+"_SECRET_KEY")
 		if identities[key] {
@@ -130,9 +130,10 @@ func TestStorageRoleCredentials(t *testing.T) {
 		{"raw-team-a", "raw/team-a/"}, {"raw-team-b", "raw/team-b/"},
 		{"approved-grant-1", "approved/team-a/grant-1/"}, {"approved-grant-2", "approved/team-a/grant-2/"},
 		{"approved-team-b", "approved/team-b/"}, {"normalized-team-a", "normalized/team-a/"},
-		{"normalized-team-b", "normalized/team-b/"}, {"other", "other/"},
+		{"normalized-team-b", "normalized/team-b/"}, {"archive-team-a", "archive/team-a/"},
+		{"archive-team-b", "archive/team-b/"}, {"other", "other/"},
 	}
-	for _, role := range []string{"ai", "ingestion", "core"} {
+	for _, role := range []string{"ai", "ingestion", "core", "retention"} {
 		t.Run(role, func(t *testing.T) {
 			for _, path := range paths {
 				t.Run(path.name, func(t *testing.T) {
@@ -160,12 +161,17 @@ func TestStorageRoleCredentials(t *testing.T) {
 					if !bytes.Equal(seeded, original) {
 						t.Fatal("admin could not verify exact seeded bytes; denial would not be meaningful")
 					}
-					coreScope := strings.HasPrefix(path.prefix, "raw/") || strings.HasPrefix(path.prefix, "approved/")
-					readAllowed := role == "core" && coreScope ||
+					coreRead := path.prefix == "raw/team-a/" || path.prefix == "approved/team-a/grant-1/" ||
+						path.prefix == "archive/team-a/"
+					coreWrite := path.prefix == "raw/team-a/" || path.prefix == "approved/team-a/grant-1/"
+					retentionScope := path.prefix == "raw/team-a/" || path.prefix == "archive/team-a/"
+					readAllowed := role == "core" && coreRead ||
 						role == "ai" && path.prefix == "approved/team-a/grant-1/" ||
-						role == "ingestion" && path.prefix == "raw/team-a/"
-					writeAllowed := role == "core" && coreScope ||
-						role == "ingestion" && path.prefix == "normalized/team-a/"
+						role == "ingestion" && path.prefix == "raw/team-a/" ||
+						role == "retention" && retentionScope
+					writeAllowed := role == "core" && coreWrite ||
+						role == "ingestion" && path.prefix == "normalized/team-a/" ||
+						role == "retention" && retentionScope
 					t.Run("read", func(t *testing.T) {
 						data, readErr := get(ctx, stores[role], bucket, key)
 						if !readAllowed {
@@ -190,6 +196,27 @@ func TestStorageRoleCredentials(t *testing.T) {
 						must(t, "admin verify object after role write", verifyErr)
 						if !bytes.Equal(persisted, expected) {
 							t.Error("actual object bytes contradict the required role write permission")
+						}
+					})
+					t.Run("delete", func(t *testing.T) {
+						_, deleteErr := stores[role].DeleteObject(ctx, &s3.DeleteObjectInput{
+							Bucket: aws.String(bucket), Key: aws.String(key),
+						})
+						if !writeAllowed {
+							denied(t, "DeleteObject", deleteErr)
+							persisted, verifyErr := get(ctx, stores["admin"], bucket, key)
+							must(t, "admin verify denied delete retained object", verifyErr)
+							if len(persisted) == 0 {
+								t.Error("denied delete did not retain object bytes")
+							}
+						} else {
+							must(t, "permitted role DeleteObject", deleteErr)
+							_, verifyErr := get(ctx, stores["admin"], bucket, key)
+							if verifyErr == nil {
+								t.Error("permitted role delete left the object readable")
+							}
+							must(t, "admin restore owned object after delete probe",
+								put(ctx, stores["admin"], bucket, key, original))
 						}
 					})
 				})

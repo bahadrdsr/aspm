@@ -10,6 +10,8 @@ later authenticated application services; it is not milestone or release closure
 - `cmd/core-api` serves the built UI and separate liveness/readiness endpoints.
 - `cmd/ingestion` runs durable import processing independently of the UI, alongside
   the original deterministic byte-integrity check pipeline.
+- `cmd/retention-worker` applies exact approved retention manifests with
+  independent database fencing and selected raw/archive storage authority.
 - `cmd/report-worker` processes persisted report snapshot jobs using PostgreSQL
   only. It has no storage credential requirement or application/auth API.
 - `internal/jobs` owns its PostgreSQL table, scoped enqueue receipts, bounded
@@ -21,7 +23,7 @@ later authenticated application services; it is not milestone or release closure
 - `internal/ingestion` joins these real components for deterministic integrity
   jobs. It does not execute reports, scanner commands or model-supplied tools.
 
-All roles need `ASPM_DATABASE_URL`. Core and ingestion additionally need explicit
+All roles need `ASPM_DATABASE_URL`. Core, ingestion and retention additionally need explicit
 `ASPM_S3_ENDPOINT`, `ASPM_S3_ACCESS_KEY`, `ASPM_S3_SECRET_KEY`, and
 `ASPM_S3_BUCKET`, supplied through protected role-specific process environments
 or orchestrator secret references. Their access keys and signing secrets must be
@@ -32,10 +34,12 @@ Use `ASPM_S3_PREFIX` for the selected raw evidence scope and
 `ASPM_S3_READINESS_KEY` for an operator-preseeded, nonsecret object inside that
 scope. A scoped ingestion reader does not need bucket-wide HEAD/list permission.
 `ASPM_S3_NORMALIZED_PREFIX` selects ingestion's separate publication scope.
+`ASPM_S3_ARCHIVE_PREFIX` selects Core's read-only archive scope and retention's
+read/write archive scope.
 The reviewed SeaweedFS policy grants core raw/approved reads and writes,
-ingestion raw reads and normalized writes, and an AI identity approved reads
-only. Policy generation rejects missing/reused role credentials and overlapping
-or unsafe prefixes. AI application/job integration is still incomplete.
+ingestion raw reads and normalized writes, retention selected raw/archive
+mutation, and an AI identity approved reads only. Policy generation rejects
+missing/reused role credentials and overlapping or unsafe prefixes.
 
 Reporting needs no `ASPM_S3_*`, `AWS_*` or `ASPM_BOOTSTRAP_TOKEN` values.
 Only core consumes bootstrap/public-origin configuration and serves the
@@ -50,7 +54,7 @@ fall back to memory/filesystem state.
 
 Core can explicitly opt into preparing its selected nonsecret readiness object
 with `ASPM_S3_PREPARE_READINESS=true`. This is off by default and is rejected for
-ingestion/reporting. Core uses only its existing raw-scope credential and a
+ingestion/retention/reporting. Core uses only its existing raw-scope credential and a
 conditional create, then confirms readable-object access. Existing bytes are
 not overwritten, permission failures remain failures, and no bucket-listing or
 Admin permission is added.
@@ -152,25 +156,27 @@ core-bootstrap inputs; it is not a runtime S3 fallback. Managed storage requires
 its separate `storage.policySecret.name` and `storage.policySecret.key`
 selection, mounted as `s3.json` only in the storage container. Missing policy
 selectors fail rendering instead of falling back to the application Secret.
-`core.s3Secret` and `ingestion.s3Secret` each select a required secret name,
+`core.s3Secret`, `ingestion.s3Secret` and `retention.s3Secret` each select a required secret name,
 access-key key and secret-key key. Role-specific `rawPrefix`, `readinessKey`
-and ingestion's `normalizedPrefix` select the storage scope. Reports receives
-database settings only. Values contain references, not credential values.
+and ingestion's `normalizedPrefix` select the storage scope. Core and retention
+also select the same non-overlapping `archivePrefix`; only retention receives
+archive mutation authority. Reports receives database settings only. Values
+contain references, not credential values.
 Internal services do not publish database/S3 ports externally. Enabling ingress
 requires a host and TLS Secret.
 
 `core.prepareReadiness` is a strict boolean, defaulting to `false`. Only an
 explicit `true` enables the core preparation flag; the rendered environment
-value is a string. Ingestion and reporting never receive that flag. Shipped
+value is a string. Ingestion, retention and reporting never receive that flag. Shipped
 Quadlets do not impose inline overrides, so an approved installer can opt in
 through the protected `core.env` without changing worker authority.
 
 Delivery packaging is opt-in. `delivery.enabled` is a strict boolean and defaults
-to `false`, leaving the original three application roles unchanged. An explicit
+to `false`, leaving the four base application roles unchanged. An explicit
 `integrationKeySecret.name` and `.key` select an existing integration-encryption
 Secret key for core, including when the worker is disabled. Partial selections
 are rejected. Enabling delivery requires both selectors and gives only core and
-delivery that required reference; ingestion and reports never receive it.
+delivery that required reference; ingestion, retention and reports never receive it.
 The delivery Deployment has its own replicas/resources, runs
 `/app/bin/delivery-worker`, and receives database configuration, the selected
 integration key, `delivery.leaseDuration` (default `"15s"`) and
@@ -373,8 +379,9 @@ configuration, not arbitrary operator-supplied environments.
 
 `deploy/quadlet` declares separate Linux/systemd services, private container
 networking, persistent database/storage volumes and external credential files.
-Core, ingestion and reports require their separate `core.env`, `ingestion.env`
-and `reports.env` files. The pure Go `internal/install/quadlet` renderer takes
+Core, ingestion, retention and reports require their separate `core.env`,
+`ingestion.env`, `retention.env` and `reports.env` files. The pure Go
+`internal/install/quadlet` renderer takes
 explicit nonsecret scope selections, preserves unrelated unit directives and
 rejects missing/unsafe scope, shared-file fallback or report storage inputs.
 It does not resolve credentials, run tools or grant installation approval.
@@ -468,8 +475,8 @@ assembly, not a signed-release or reproducibility certificate. The later full
 source-image build is recorded separately as `aspm:0.1.0-source`.
 
 The source and host-build command inventories include `assessment-worker`,
-`collection-worker` and `delivery-worker` alongside core, ingestion, reporting
-and `aspmctl`, for seven actual command targets. Both image
+`collection-worker`, `delivery-worker` and `retention-worker` alongside core,
+ingestion, reporting and `aspmctl`, for eight actual command targets. Both image
 recipes retain the complete
 binary directory and default to `/app/bin/core-api`; adding a worker does not
 change the default process. These recipe changes alone do not prove that a

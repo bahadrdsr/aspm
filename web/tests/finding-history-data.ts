@@ -37,6 +37,7 @@ export function observationAt(index: number): HistoryObservation {
       sourceFields: ["retained", `variant-${index}`],
     },
     evidenceDigest: `sha256:${index.toString(16).padStart(64, "0")}`,
+    evidenceAvailability: "available",
   };
 }
 export const historyFinding: HistoryFinding = {

@@ -267,7 +267,7 @@ func (a *Application) loadCorrelation(ctx context.Context, db correlationDB, wor
 	if err != nil {
 		return correlation, err
 	}
-	rows, err = db.Query(ctx, `SELECT id,event_type,actor_id,rationale,created_at
+	rows, err = db.Query(ctx, `SELECT id,event_type,actor_id,rationale,created_at,detail_availability
 		FROM `+a.table("finding_correlation_events")+`
 		WHERE workspace_id=$1 AND correlation_id=$2 ORDER BY sequence`, workspace, id)
 	if err != nil {
@@ -276,7 +276,8 @@ func (a *Application) loadCorrelation(ctx context.Context, db correlationDB, wor
 	defer rows.Close()
 	for rows.Next() {
 		var event FindingCorrelationEvent
-		if err = rows.Scan(&event.ID, &event.Type, &event.ActorID, &event.Rationale, &event.CreatedAt); err != nil {
+		if err = rows.Scan(&event.ID, &event.Type, &event.ActorID, &event.Rationale, &event.CreatedAt,
+			&event.DetailAvailability); err != nil {
 			return correlation, err
 		}
 		correlation.Events = append(correlation.Events, event)

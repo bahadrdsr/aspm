@@ -250,7 +250,8 @@ export class ReportFormatsAPI {
           sourceId: body.sourceId, scanId: body.scanId, scope: body.scope,
           sourceScanAt: body.sourceScanAt === null ? null : utc(body.sourceScanAt), collectedAt: utc(body.collectedAt),
           importedAt: acceptedAt, sourceStatus: body.sourceStatus, scanKind: body.scanKind, completeness: body.completeness,
-          reportDigest: digest(Buffer.from(body.report)), observationCount: 0, failure: null,
+          reportDigest: digest(Buffer.from(body.report)), evidenceAvailability: "available",
+          observationCount: 0, failure: null,
         };
         this.imports.set(receipt.id, { workspace, receipt: structuredClone(receipt), body: structuredClone(body) });
         await this.respond(route, call, 202, { apiVersion, dataOrigin: "synthetic", import: receipt }, reply);

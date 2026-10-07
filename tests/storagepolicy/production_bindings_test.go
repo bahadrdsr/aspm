@@ -11,6 +11,7 @@ func init() {
 		return storagepolicy.Build(storagepolicy.Config{
 			Bucket: config.Bucket, RawPrefix: config.RawPrefix,
 			NormalizedPrefix: config.NormalizedPrefix, ApprovedPrefix: config.ApprovedPrefix,
+			ArchivePrefix: config.ArchivePrefix,
 			Operator: storagepolicy.Credential{
 				AccessKey: config.Operator.AccessKey, SecretKey: config.Operator.SecretKey,
 			},
@@ -22,6 +23,9 @@ func init() {
 			},
 			AI: storagepolicy.Credential{
 				AccessKey: config.AI.AccessKey, SecretKey: config.AI.SecretKey,
+			},
+			Retention: storagepolicy.Credential{
+				AccessKey: config.Retention.AccessKey, SecretKey: config.Retention.SecretKey,
 			},
 		})
 	}

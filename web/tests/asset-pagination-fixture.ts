@@ -245,7 +245,7 @@ export class AssetPagingAPI {
         const receipt: IntakeReceipt = {
           ...expected, id: "e5000000000000000000000000000001", runId: "e6000000000000000000000000000001",
           state: "queued", format: "manual", collectedAt: utc(input.collectedAt), importedAt: "2026-09-17T03:04:05.123456Z",
-          reportDigest: digest(manualFile.buffer), observationCount: 0, failure: null,
+          reportDigest: digest(manualFile.buffer), evidenceAvailability: "available", observationCount: 0, failure: null,
         };
         this.imports.set(receipt.id, { workspace, receipt });
         await this.respond(route, call, 202, { apiVersion, import: receipt }, reply);

@@ -2,7 +2,7 @@
 {{- include "aspm.validateDelivery" . -}}
 {{- include "aspm.validateAssessment" . -}}
 {{- $root := . -}}
-{{- $roles := list "core" "ingestion" "reports" -}}
+{{- $roles := list "core" "ingestion" "retention" "reports" -}}
 {{- $delivery := .Values.delivery | default dict -}}
 {{- if get $delivery "enabled" -}}
 {{- $roles = append $roles "delivery" -}}
@@ -44,7 +44,7 @@ spec:
         - name: {{ $role }}
           image: {{ printf "%s:%s" $root.Values.image.repository $root.Values.image.tag | quote }}
           imagePullPolicy: {{ $root.Values.image.pullPolicy }}
-          command: [{{ if eq $role "core" }}"/app/bin/core-api"{{ else if eq $role "reports" }}"/app/bin/report-worker"{{ else if eq $role "delivery" }}"/app/bin/delivery-worker"{{ else if eq $role "collection" }}"/app/bin/collection-worker"{{ else if eq $role "assessment" }}"/app/bin/assessment-worker"{{ else }}"/app/bin/ingestion"{{ end }}]
+          command: [{{ if eq $role "core" }}"/app/bin/core-api"{{ else if eq $role "reports" }}"/app/bin/report-worker"{{ else if eq $role "retention" }}"/app/bin/retention-worker"{{ else if eq $role "delivery" }}"/app/bin/delivery-worker"{{ else if eq $role "collection" }}"/app/bin/collection-worker"{{ else if eq $role "assessment" }}"/app/bin/assessment-worker"{{ else }}"/app/bin/ingestion"{{ end }}]
           ports: [{name: http, containerPort: 8080}]
           env:
             {{- include "aspm.environment" (dict "root" $root "role" $role) | nindent 12 }}

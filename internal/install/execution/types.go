@@ -56,6 +56,7 @@ func (RoleCredential) GoString() string { return "role credential [redacted]" }
 type RoleCredentials struct {
 	Core      RoleCredential `json:"-"`
 	Ingestion RoleCredential `json:"-"`
+	Retention RoleCredential `json:"-"`
 }
 
 type Options struct {
@@ -80,11 +81,13 @@ type RoleSelection struct {
 	RawPrefix        string          `json:"rawPrefix"`
 	ReadinessKey     string          `json:"readinessKey"`
 	NormalizedPrefix string          `json:"normalizedPrefix,omitempty"`
+	ArchivePrefix    string          `json:"archivePrefix,omitempty"`
 }
 
 type RuntimeRoles struct {
 	Core      RoleSelection `json:"core"`
 	Ingestion RoleSelection `json:"ingestion"`
+	Retention RoleSelection `json:"retention"`
 }
 
 type Intent struct {

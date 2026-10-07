@@ -32,7 +32,8 @@ export const observations = ["synthetic-scan-one", "synthetic-scan-two"].map((sc
   sourceFindingId: "synthetic-stable-result", sourceSeverity: "warning", normalizedSeverity: "medium",
   sourceLocation: { uri: "src/synthetic.ts", line: index === 0 ? 12 : 36 },
   impact: "Synthetic preserved impact.", remediation: "Review synthetic configuration.",
-  unmapped: { vendorNote: `Synthetic retained note ${index + 1}` }, evidenceDigest: `sha256:${String(index + 1).repeat(64)}`,
+  unmapped: { vendorNote: `Synthetic retained note ${index + 1}` },
+  evidenceDigest: `sha256:${String(index + 1).repeat(64)}`, evidenceAvailability: "available",
 }));
 export const detailedFinding = {
   ...findingResponse.finding, assetId: originalAsset.id, workspaceId: alpha.id, ownerId: null,
@@ -138,6 +139,7 @@ export class ApplicationAPI {
       sourceId: body.sourceId, scanId: body.scanId, scope: body.scope, sourceScanAt: body.sourceScanAt,
       collectedAt: body.collectedAt, importedAt: value.importedAt,
       reportDigest: `sha256:${createHash("sha256").update(String(body.report)).digest("hex")}`,
+      evidenceAvailability: "available",
       observationCount: state === "succeeded" ? 1 : 0,
       failure: state === "failed" ? { code: "invalid-report", message: "Synthetic parser rejected this report." } : null };
   }

@@ -38,6 +38,7 @@ type ApplicationConfig struct {
 	Schema, ApplicationName string
 	MaxConnections          int32
 	Storage                 StorageConfig
+	ArchiveStorage          StorageConfig
 	BootstrapToken          string           `json:"-"`
 	Now                     func() time.Time `json:"-"`
 	LogOutput               io.Writer        `json:"-"`
@@ -55,10 +56,27 @@ type Application struct {
 	ProcessReports func(context.Context) error
 }
 
+type RetentionWorkerConfig struct {
+	DatabaseURL             string `json:"-"`
+	Schema, ApplicationName string
+	MaxConnections          int32
+	RawStorage              StorageConfig
+	ArchiveStorage          StorageConfig
+	Now                     func() time.Time `json:"-"`
+	LogOutput               io.Writer        `json:"-"`
+	Lease                   time.Duration
+}
+
+type RetentionWorker struct {
+	ProcessNext func(context.Context) (bool, error)
+	Close       func() error
+}
+
 // The coder owns forwarding-only bindings, never test-side business logic or SQL.
 var Production struct {
-	Plan            func(context.Context, json.RawMessage) (InstallationPlan, error)
-	OpenApplication func(context.Context, ApplicationConfig) (Application, error)
+	Plan                func(context.Context, json.RawMessage) (InstallationPlan, error)
+	OpenApplication     func(context.Context, ApplicationConfig) (Application, error)
+	OpenRetentionWorker func(context.Context, RetentionWorkerConfig) (RetentionWorker, error)
 }
 
 type object = map[string]any
@@ -101,5 +119,12 @@ func requireApplication(t *testing.T) {
 	t.Helper()
 	if Production.OpenApplication == nil {
 		t.Fatal("production binding missing: OpenApplication; coder must forward to real application and workers")
+	}
+}
+
+func requireRetentionWorker(t *testing.T) {
+	t.Helper()
+	if Production.OpenRetentionWorker == nil {
+		t.Fatal("production binding missing: OpenRetentionWorker; coder must forward to the independent retention worker")
 	}
 }

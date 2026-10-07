@@ -68,8 +68,8 @@ migration literals or business rows outside the approved additive defaults.
   evidence-byte preservation and reopen durability.
 - Browser acceptance covers explicit preview, decision selection, merge audit,
   Work collapse, split and Work restoration.
-- The complete 148-case browser suite passes with the correlation and retention
-  preview workflows.
+- The complete 149-case browser suite passes with the correlation and retention
+  preview/execution workflows.
 
 ## Remaining limits
 

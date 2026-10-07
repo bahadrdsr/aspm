@@ -11,6 +11,7 @@ const eligibleImportId = "d2000000000000000000000000000002";
 const holdId = "d3000000000000000000000000000003";
 const firstPreviewId = "d4000000000000000000000000000004";
 const secondPreviewId = "d5000000000000000000000000000005";
+const executionId = "d6000000000000000000000000000006";
 const createdAt = "2026-10-07T18:00:00Z";
 
 function policy(revision: number, days = [90, 180, 365, 730]) {
@@ -61,6 +62,34 @@ function preview(id: string, state: "ready" | "stale" | "approved") {
   };
 }
 
+function execution(state: "queued" | "partial") {
+  const terminal = state === "partial";
+  return {
+    id: executionId, workspaceId: alpha.id, operation: "apply-preview",
+    previewId: secondPreviewId, targetKind: null, targetId: null, state,
+    requestedBy: adminId, rationale: "Apply exact synthetic preview.", createdAt,
+    completedAt: terminal ? "2026-10-07T18:10:00Z" : null,
+    total: 2, succeeded: terminal ? 1 : 0, protected: terminal ? 1 : 0, missing: 0, corrupt: 0, failed: 0,
+    failure: null,
+    items: [
+      {
+        id: "d7000000000000000000000000000007", class: "raw-report", resourceKind: "import",
+        resourceId: eligibleImportId, action: "expire-raw-report",
+        state: terminal ? "succeeded" : "queued", protectedReasons: [],
+        outcome: terminal ? "expired" : "", failure: null,
+        startedAt: terminal ? createdAt : null, completedAt: terminal ? "2026-10-07T18:09:00Z" : null,
+      },
+      {
+        id: "d8000000000000000000000000000008", class: "raw-report", resourceKind: "import",
+        resourceId: heldImportId, action: "expire-raw-report",
+        state: terminal ? "protected" : "queued", protectedReasons: terminal ? ["legal-hold"] : [],
+        outcome: terminal ? "protected" : "", failure: null,
+        startedAt: terminal ? createdAt : null, completedAt: terminal ? "2026-10-07T18:10:00Z" : null,
+      },
+    ],
+  };
+}
+
 async function fulfill(route: Route, status: number, body: Record<string, unknown>) {
   await route.fulfill({ status, json: { apiVersion, ...body } });
 }
@@ -71,6 +100,7 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
   let currentPolicy = policy(1);
   let holds: ReturnType<typeof hold>[] = [];
   let firstStale = false;
+  let executionComplete = false;
   const writes: Array<{ path: string; body: Record<string, unknown> }> = [];
 
   await page.route("**/api/v1/retention/**", async (route) => {
@@ -88,6 +118,11 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
     }
     if (method === "GET" && path === `/api/v1/retention/previews/${firstPreviewId}`) {
       await fulfill(route, 200, { retentionPreview: preview(firstPreviewId, "stale") });
+      return;
+    }
+    if (method === "GET" && path === `/api/v1/retention/runs/${executionId}`) {
+      executionComplete = true;
+      await fulfill(route, 200, { retentionRun: execution("partial") });
       return;
     }
     const body = request.postDataJSON() as Record<string, unknown>;
@@ -130,6 +165,12 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
       await fulfill(route, 201, { retentionPreview: preview(secondPreviewId, "approved") });
       return;
     }
+    if (path === `/api/v1/retention/previews/${secondPreviewId}/executions` && method === "POST") {
+      expect(body.rationale).toBe("Apply exact synthetic preview.");
+      expect(body.idempotencyKey).toMatch(/^[0-9a-f-]{36}$/);
+      await fulfill(route, 202, { retentionRun: execution("queued") });
+      return;
+    }
     await route.abort("blockedbyclient");
   });
 
@@ -162,7 +203,15 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
   await region.getByRole("button", { name: "Create retention preview", exact: true }).click();
   await region.getByLabel("Approval rationale", { exact: true }).fill("Approve exact synthetic preview.");
   await region.getByRole("button", { name: "Approve exact preview", exact: true }).click();
-  await expect(region).toContainText("This approval is non-destructive and does not start an executor.");
+  await expect(region).toContainText("Approval alone is non-destructive and does not start an executor.");
+  await region.getByLabel("Execution rationale", { exact: true }).fill("Apply exact synthetic preview.");
+  await region.getByRole("button", { name: "Queue approved execution", exact: true }).click();
+  const run = region.getByRole("region", { name: "Retention execution status", exact: true });
+  await expect(run).toContainText("Execution Queued");
+  await run.getByRole("button", { name: "Refresh execution", exact: true }).click();
+  await expect(run).toContainText("Execution Partial");
+  await expect(run).toContainText("1 succeeded, 1 protected");
+  expect(executionComplete).toBe(true);
   await region.getByRole("button", { name: "Close retention controls", exact: true }).click();
   await expect(page.getByRole("button", { name: "Open retention controls", exact: true })).toBeFocused();
 
@@ -173,6 +222,8 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
     `/api/v1/retention/previews/${firstPreviewId}/approvals`,
     "/api/v1/retention/previews",
     `/api/v1/retention/previews/${secondPreviewId}/approvals`,
+    `/api/v1/retention/previews/${secondPreviewId}/executions`,
   ]);
-  expect(writes.some((write) => /execut|apply|archive|expire/.test(write.path))).toBe(false);
+  expect(writes.filter((write) => write.path.endsWith("/executions"))).toHaveLength(1);
+  expect(writes.some((write) => /\/(apply|archive|expire)$/.test(write.path))).toBe(false);
 });

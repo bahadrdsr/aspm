@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bahadrdsr/aspm/internal/app"
 	"github.com/bahadrdsr/aspm/tests/internal/sourcecompat"
 )
 
@@ -119,17 +120,17 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 		adoHistoricalMigrations(t, filepath.Join("..", "..")), adoHistoricalMigrations(t, filepath.Dir(build.Executable)))
 
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14")
-	same(t, "current app failed to add exact V12/V13/V14 migrations", h.ledger(), currentLedger)
-	same(t, "V14 changed the relation/index set",
-		sourcecompat.ProjectRelationsV14(t, relations, h.relations()), relations)
-	same(t, "V14 contains a missing or unapproved catalog delta",
+	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15")
+	same(t, "current app failed to add exact V12/V13/V14/V15 migrations", h.ledger(), currentLedger)
+	same(t, "V15 changed the relation/index set",
+		sourcecompat.ProjectRelationsV15(t, relations, h.relations()), relations)
+	same(t, "V15 contains a missing or unapproved catalog delta",
 		sourcecompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V14 changed complete historical business rows outside exact additions",
+	same(t, "V15 changed complete historical business rows outside exact additions",
 		sourcecompat.ProjectRowsCurrent(t, before, h.snapshot(names)), before)
 	for _, path := range paths {
 		body, _ := h.request(h.ctx, viewer, "GET", path, nil, 200)
-		same(t, "V14 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
+		same(t, "V15 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
 	}
 	h.adoEncrypted(github, githubToken)
 	same(t, "current queued GitHub replay changed its historical body/binding", h.adoJSON(h.admin, "POST", legacyQueuePath,
@@ -140,7 +141,7 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 	assertFindingUnchanged(t, finding, h.finding(viewer, finding.ID))
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "reopen repeated/omitted V14", h.ledger(), currentLedger)
+	same(t, "reopen repeated/omitted V15", h.ledger(), currentLedger)
 	same(t, "reopen changed migrated definitions", h.definitions(names), afterDefinitions)
 	same(t, "reopen changed old business rows", sourcecompat.ProjectRowsCurrent(t, before, h.snapshot(names)), before)
 
@@ -168,11 +169,15 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 	h.reopen()
 	migratedFinding := h.finding(viewer, finding.ID)
 	check(t, migratedFinding.DecisionRevision == 1 && migratedFinding.EvidenceRevision == 1 &&
-		migratedFinding.Correlation == nil, "V14 finding defaults or inactive correlation projection changed")
-	migratedFinding.DecisionRevision, migratedFinding.EvidenceRevision =
-		finding.DecisionRevision, finding.EvidenceRevision
-	same(t, "upgrade/new ADO path altered historical human/source finding state", migratedFinding, finding)
+		migratedFinding.Correlation == nil, "V15 finding defaults or inactive correlation projection changed")
+	expectedFinding := finding
+	expectedFinding.DecisionRevision, expectedFinding.EvidenceRevision = 1, 1
+	expectedFinding.Observations = append([]app.Observation(nil), finding.Observations...)
+	for index := range expectedFinding.Observations {
+		expectedFinding.Observations[index].EvidenceAvailability = "available"
+	}
+	same(t, "upgrade/new ADO path altered historical human/source finding state", migratedFinding, expectedFinding)
 	check(t, h.json(viewer, "GET", "/api/v1/work", nil, 200).Total == 2, "post-upgrade canonical Work lost historical/new finding")
-	t.Logf("V11->V14 genuine API/native data preservation; published SQL=%d, parent SQL=%d; S3 traced once by parent object forwarders",
+	t.Logf("V11->V15 genuine API/native data preservation; published SQL=%d, parent SQL=%d; S3 traced once by parent object forwarders",
 		h.publishedQueries.Load(), h.queries.calls.Load())
 }

@@ -20,7 +20,7 @@ import (
 const materialPath = "etc/aspm/installer-credentials.json"
 
 var credentialPaths = []string{materialPath, "etc/aspm/core.env", "etc/aspm/ingestion.env",
-	"etc/aspm/reports.env", "etc/aspm/postgres.env", "etc/aspm/s3.json"}
+	"etc/aspm/retention.env", "etc/aspm/reports.env", "etc/aspm/postgres.env", "etc/aspm/s3.json"}
 
 type privateCredential struct {
 	AccessKey string `json:"accessKey"`
@@ -33,6 +33,7 @@ type credentialMaterial struct {
 	ReferencesDigest  string            `json:"referencesDigest"`
 	Core              privateCredential `json:"core"`
 	Ingestion         privateCredential `json:"ingestion"`
+	Retention         privateCredential `json:"retention"`
 	Operator          privateCredential `json:"operator"`
 	PostgresPassword  string            `json:"postgresPassword"`
 	BootstrapToken    string            `json:"bootstrapToken"`
@@ -91,6 +92,15 @@ func (i *installer) materialize(ctx context.Context, p prepared) (credentialMate
 			!usableSecret(material.Operator.AccessKey) || !usableSecret(material.Operator.SecretKey) {
 			return credentialMaterial{}, ErrCredential
 		}
+		retention := privateCredential{i.options.RoleKeys.Retention.AccessKey, i.options.RoleKeys.Retention.SecretKey}
+		if material.Retention == (privateCredential{}) {
+			if p.input.Operation != "apply" {
+				return credentialMaterial{}, ErrApproval
+			}
+			material.Retention = retention
+		} else if material.Retention != retention {
+			return credentialMaterial{}, ErrCredential
+		}
 	} else {
 		if !errors.Is(statErr, fs.ErrNotExist) {
 			return material, ErrCredential
@@ -101,7 +111,8 @@ func (i *installer) materialize(ctx context.Context, p prepared) (credentialMate
 		var err error
 		material = credentialMaterial{Version: stateVersion, TargetFingerprint: p.plan.TargetFingerprint, ReferencesDigest: referencesDigest,
 			Core:      privateCredential{i.options.RoleKeys.Core.AccessKey, i.options.RoleKeys.Core.SecretKey},
-			Ingestion: privateCredential{i.options.RoleKeys.Ingestion.AccessKey, i.options.RoleKeys.Ingestion.SecretKey}}
+			Ingestion: privateCredential{i.options.RoleKeys.Ingestion.AccessKey, i.options.RoleKeys.Ingestion.SecretKey},
+			Retention: privateCredential{i.options.RoleKeys.Retention.AccessKey, i.options.RoleKeys.Retention.SecretKey}}
 		material.PostgresPassword, err = i.applicationSecret(ctx, p.config.Postgres.CredentialRef)
 		if err != nil {
 			return credentialMaterial{}, err
@@ -132,9 +143,12 @@ func (i *installer) materialize(ctx context.Context, p prepared) (credentialMate
 	material.DatabaseURL = databaseURL
 	policy, err := storagepolicy.BuildRuntime(storagepolicy.RuntimeConfig{
 		Bucket: p.config.ObjectStore.Bucket, CoreRawPrefix: p.input.RuntimeRoles.Core.RawPrefix,
-		IngestionRawPrefix: p.input.RuntimeRoles.Ingestion.RawPrefix, NormalizedPrefix: p.input.RuntimeRoles.Ingestion.NormalizedPrefix,
-		Operator: storagepolicy.Credential{AccessKey: material.Operator.AccessKey, SecretKey: material.Operator.SecretKey},
-		Core:     credential(i.options.RoleKeys.Core), Ingestion: credential(i.options.RoleKeys.Ingestion),
+		IngestionRawPrefix: p.input.RuntimeRoles.Ingestion.RawPrefix,
+		NormalizedPrefix:   p.input.RuntimeRoles.Ingestion.NormalizedPrefix,
+		ArchivePrefix:      p.input.RuntimeRoles.Retention.ArchivePrefix,
+		Operator:           storagepolicy.Credential{AccessKey: material.Operator.AccessKey, SecretKey: material.Operator.SecretKey},
+		Core:               credential(i.options.RoleKeys.Core), Ingestion: credential(i.options.RoleKeys.Ingestion),
+		Retention: credential(i.options.RoleKeys.Retention),
 	})
 	if err != nil {
 		return credentialMaterial{}, ErrCredential
@@ -163,6 +177,7 @@ func (i *installer) materialize(ctx context.Context, p prepared) (credentialMate
 
 func (m credentialMaterial) values() []string {
 	return []string{m.Core.AccessKey, m.Core.SecretKey, m.Ingestion.AccessKey, m.Ingestion.SecretKey,
+		m.Retention.AccessKey, m.Retention.SecretKey,
 		m.Operator.AccessKey, m.Operator.SecretKey, m.PostgresPassword, m.BootstrapToken, m.DatabaseURL}
 }
 
@@ -194,11 +209,13 @@ func roleEnvironments(p prepared, m credentialMaterial) (map[string][]byte, erro
 	result := map[string][]byte{
 		"postgres": postgres,
 	}
-	for _, role := range []string{"core", "ingestion", "reports"} {
+	for _, role := range []string{"core", "ingestion", "retention", "reports"} {
 		service := "core-api"
 		listen := "0.0.0.0:8080"
 		if role == "ingestion" {
 			service, listen = "ingestion-parser", "0.0.0.0:8081"
+		} else if role == "retention" {
+			service, listen = "background-worker", "0.0.0.0:8083"
 		} else if role == "reports" {
 			service, listen = "background-worker", "0.0.0.0:8082"
 		}
@@ -209,11 +226,16 @@ func roleEnvironments(p prepared, m credentialMaterial) (map[string][]byte, erro
 			if role == "ingestion" {
 				key, selected = m.Ingestion, p.input.RuntimeRoles.Ingestion
 				values["ASPM_S3_NORMALIZED_PREFIX"] = selected.NormalizedPrefix
+			} else if role == "retention" {
+				key, selected = m.Retention, p.input.RuntimeRoles.Retention
 			}
 			values["ASPM_S3_ENDPOINT"] = "http://aspm-storage:8333"
 			values["ASPM_S3_BUCKET"], values["ASPM_S3_REGION"] = p.config.ObjectStore.Bucket, "us-east-1"
 			values["ASPM_S3_ACCESS_KEY"], values["ASPM_S3_SECRET_KEY"] = key.AccessKey, key.SecretKey
 			values["ASPM_S3_PREFIX"], values["ASPM_S3_READINESS_KEY"] = selected.RawPrefix, selected.ReadinessKey
+			if role == "core" || role == "retention" {
+				values["ASPM_S3_ARCHIVE_PREFIX"] = selected.ArchivePrefix
+			}
 		}
 		if role == "core" {
 			values["ASPM_PUBLIC_ORIGIN"], values["ASPM_BOOTSTRAP_TOKEN"] = p.config.Access.BaseURL, m.BootstrapToken

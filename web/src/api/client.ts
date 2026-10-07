@@ -7,6 +7,7 @@ import type {
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
   RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
+  RetentionRun, RetentionRunItem, RetentionRunResponse,
   Session, SourceScope, WorkItem, WorkResponse,
 } from "./types";
 import { rejectSession, requestAuthority } from "./authorization";
@@ -14,7 +15,10 @@ import { rejectSession, requestAuthority } from "./authorization";
 export class APIError extends Error {
   constructor(
     message: string,
-    readonly code: "unauthorized" | "forbidden" | "not-found" | "unavailable" | "network" | "invalid-response" | "invalid-input" | "conflict" | "replay-expired" | "too-large" | "unsupported-format" | "method-not-allowed",
+    readonly code: "unauthorized" | "forbidden" | "not-found" | "unavailable" | "network" |
+      "invalid-response" | "invalid-input" | "conflict" | "replay-expired" | "too-large" |
+      "unsupported-format" | "method-not-allowed" | "evidence-expired" | "evidence-missing" |
+      "evidence-corrupt",
     readonly retryable: boolean,
     readonly requestId: string | null = null,
     readonly httpStatus: number | null = null,
@@ -125,6 +129,8 @@ function findingCorrelation(value: unknown, workspace: string | null): FindingCo
       actorId: text(event.actorId, "correlation actor"),
       rationale: text(event.rationale, "correlation rationale"),
       createdAt: timestamp(event.createdAt, "correlation event time"),
+      detailAvailability: choice(event.detailAvailability,
+        ["available", "archived", "expired", "missing", "corrupt"], "correlation detail availability"),
     };
   }));
   const primaryFindingId = reportIdentifier(item.primaryFindingId, "primary finding");
@@ -162,6 +168,8 @@ function observation(value: unknown): Observation {
     impact: text(item.impact, "source impact", true), remediation: text(item.remediation, "observation remediation", true),
     unmapped: Object.fromEntries(Object.entries(unmapped).map(([key, value]) => [key, jsonValue(value)])),
     evidenceDigest: text(item.evidenceDigest, "evidence digest"),
+    evidenceAvailability: choice(item.evidenceAvailability,
+      ["available", "archived", "expired", "missing", "corrupt"], "observation evidence availability"),
   };
 }
 
@@ -470,6 +478,76 @@ function parseRetentionPreview(value: unknown, workspace: string | null): Retent
   return { apiVersion, retentionPreview: retentionPreview(versioned(value).retentionPreview, workspace) };
 }
 
+function retentionFailure(value: unknown, field: string): RetentionRun["failure"] {
+  if (value === null) return null;
+  const item = object(value, field);
+  return {
+    code: text(item.code, `${field} code`), message: text(item.message, `${field} message`),
+    retryable: boolean(item.retryable, `${field} retry policy`),
+  };
+}
+
+function retentionRunItem(value: unknown): RetentionRunItem {
+  const item = object(value, "retention run item");
+  const state = choice(item.state,
+    ["queued", "processing", "succeeded", "protected", "missing", "corrupt", "failed"],
+    "retention item state");
+  const failure = retentionFailure(item.failure, "retention item failure");
+  const completedAt = nullableTimestamp(item.completedAt, "retention item completion time");
+  if ((["succeeded", "protected", "missing", "corrupt", "failed"].includes(state)) !== (completedAt !== null) ||
+    (state === "failed" && failure === null) ||
+    (["succeeded", "protected", "missing", "corrupt"].includes(state) && failure !== null) ||
+    (failure?.retryable === true && state !== "queued")) return invalid("retention item lifecycle");
+  return {
+    id: reportIdentifier(item.id, "retention item"),
+    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit"], "retention item class"),
+    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event"], "retention item resource kind"),
+    resourceId: reportIdentifier(item.resourceId, "retention item resource"),
+    action: choice(item.action,
+      ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "restore-archive"],
+      "retention item action"),
+    state,
+    protectedReasons: array(item.protectedReasons, "retention execution protection reasons")
+      .map((reason) => text(reason, "retention execution protection reason")),
+    outcome: text(item.outcome, "retention item outcome", true),
+    failure,
+    startedAt: nullableTimestamp(item.startedAt, "retention item start time"),
+    completedAt,
+  };
+}
+
+function parseRetentionRun(value: unknown, workspace: string | null): RetentionRunResponse {
+  const item = object(versioned(value).retentionRun, "retention run");
+  const workspaceId = text(item.workspaceId, "retention run workspace");
+  if (workspaceId !== workspace) return invalid("retention run workspace");
+  const operation = choice(item.operation, ["apply-preview", "restore-observation"], "retention operation");
+  const state = choice(item.state, ["queued", "processing", "succeeded", "partial", "failed"], "retention run state");
+  const completedAt = nullableTimestamp(item.completedAt, "retention run completion time");
+  const failure = retentionFailure(item.failure, "retention run failure");
+  const items = uniqueIds(array(item.items, "retention run items").map(retentionRunItem));
+  const result: RetentionRun = {
+    id: reportIdentifier(item.id, "retention run"), workspaceId, operation,
+    previewId: item.previewId === null ? null : reportIdentifier(item.previewId, "retention preview"),
+    targetKind: item.targetKind === null ? null : choice(item.targetKind, ["observation"], "retention target kind"),
+    targetId: item.targetId === null ? null : reportIdentifier(item.targetId, "retention target"),
+    state, requestedBy: text(item.requestedBy, "retention requester"),
+    rationale: text(item.rationale, "retention rationale"),
+    createdAt: timestamp(item.createdAt, "retention creation time"), completedAt,
+    total: count(item.total, "retention item total"), succeeded: count(item.succeeded, "retention succeeded count"),
+    protected: count(item.protected, "retention protected count"), missing: count(item.missing, "retention missing count"),
+    corrupt: count(item.corrupt, "retention corrupt count"), failed: count(item.failed, "retention failed count"),
+    failure, items,
+  };
+  if ((["succeeded", "partial", "failed"].includes(state)) !== (completedAt !== null) ||
+    (state === "failed") !== (failure !== null) || result.total !== items.length ||
+    result.succeeded + result.protected + result.missing + result.corrupt + result.failed > result.total ||
+    (operation === "apply-preview") !== (result.previewId !== null) ||
+    (operation === "restore-observation") !== (result.targetKind === "observation" && result.targetId !== null)) {
+    return invalid("retention run lifecycle");
+  }
+  return { apiVersion, retentionRun: result };
+}
+
 function asset(value: unknown, workspace: string | null): Asset {
   const item = object(value, "asset");
   const workspaceId = text(item.workspaceId, "asset workspace");
@@ -514,7 +592,10 @@ export function parseImportReceipt(value: unknown): ImportReceipt {
     sourceId: text(item.sourceId, "import source"), scanId: text(item.scanId, "import scan"),
     scope: sourceScope(item.scope), sourceScanAt: nullableTimestamp(item.sourceScanAt, "source scan time"),
     collectedAt: timestamp(item.collectedAt, "collection time"), importedAt: timestamp(item.importedAt, "acceptance time"),
-    reportDigest: text(item.reportDigest, "report digest"), observationCount: count(item.observationCount, "observation count"), failure,
+    reportDigest: text(item.reportDigest, "report digest"),
+    evidenceAvailability: choice(item.evidenceAvailability,
+      ["available", "archived", "expired", "missing", "corrupt"], "import evidence availability"),
+    observationCount: count(item.observationCount, "observation count"), failure,
   };
 }
 
@@ -752,7 +833,9 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
       const error = object(body.error, "error detail");
       throw new APIError(
         text(error.message, "error message"),
-        choice(error.code, ["unauthorized", "forbidden", "not-found", "unavailable", "invalid-input", "conflict", "replay-expired", "too-large", "unsupported-format", "method-not-allowed"], "error code"),
+        choice(error.code, ["unauthorized", "forbidden", "not-found", "unavailable", "invalid-input", "conflict",
+          "replay-expired", "too-large", "unsupported-format", "method-not-allowed",
+          "evidence-expired", "evidence-missing", "evidence-corrupt"], "error code"),
         boolean(error.retryable, "retry policy"),
         text(error.requestId, "request identifier"),
         response.status,
@@ -956,6 +1039,55 @@ export const api = {
     return request(`/api/v1/retention/previews/${encodeURIComponent(id)}/approvals`,
       (value) => parseRetentionPreview(value, workspace),
       { method: "POST", body: input, signal, expectedStatus: [200, 201] });
+  },
+  executeRetentionPreview: (id: string, input: {
+    revision: number; snapshotDigest: string; rationale: string; idempotencyKey: string;
+  }, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "retention preview");
+    if (input.revision < 1 || !/^sha256:[a-f0-9]{64}$/.test(input.snapshotDigest) ||
+      input.rationale.trim() === "" || input.rationale.includes("\0") ||
+      new TextEncoder().encode(input.rationale).byteLength > 8192 ||
+      input.idempotencyKey.trim() === "" || input.idempotencyKey.includes("\0") ||
+      new TextEncoder().encode(input.idempotencyKey).byteLength > 256) {
+      throw new APIError("Execution requires the exact approved preview, rationale and intent key.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 16 << 10);
+    return request(`/api/v1/retention/previews/${encodeURIComponent(id)}/executions`,
+      (value) => parseRetentionRun(value, workspace),
+      { method: "POST", body: input, signal, expectedStatus: [200, 202] });
+  },
+  retentionRun: (id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "retention run");
+    return request(`/api/v1/retention/runs/${encodeURIComponent(id)}`,
+      (value) => parseRetentionRun(value, workspace), { signal, expectedStatus: 200 });
+  },
+  observationEvidence: (id: string, signal: AbortSignal) => {
+    reportIdentifier(id, "observation");
+    return request(`/api/v1/observations/${encodeURIComponent(id)}/evidence`,
+      (value) => {
+        if (!(value instanceof ArrayBuffer)) return invalid("observation evidence bytes");
+        return value;
+      }, {
+        signal, expectedStatus: 200, headers: { Accept: "application/json" },
+        decodeBody: (response) => response.arrayBuffer(),
+      });
+  },
+  restoreObservation: (id: string, input: { rationale: string; idempotencyKey: string },
+    signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "observation");
+    if (input.rationale.trim() === "" || input.rationale.includes("\0") ||
+      new TextEncoder().encode(input.rationale).byteLength > 8192 ||
+      input.idempotencyKey.trim() === "" || input.idempotencyKey.includes("\0") ||
+      new TextEncoder().encode(input.idempotencyKey).byteLength > 256) {
+      throw new APIError("Restoration requires a bounded rationale and intent key.", "invalid-input", false);
+    }
+    findingBodyLimit(input, 16 << 10);
+    return request(`/api/v1/observations/${encodeURIComponent(id)}/restorations`,
+      (value) => parseRetentionRun(value, workspace),
+      { method: "POST", body: input, signal, expectedStatus: [200, 202] });
   },
   catalog: (signal: AbortSignal) => request("/api/v1/integrations/catalog", parseCatalog, { signal }),
   assets: (signal: AbortSignal, options?: { cursor?: string; limit?: number }) => {

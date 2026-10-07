@@ -25,11 +25,12 @@ type Config struct {
 	RawPrefix        string
 	ReadinessKey     string
 	NormalizedPrefix string
+	ArchivePrefix    string
 }
 
 func ValidateConfig(config Config) error {
 	switch config.Role {
-	case "core", "ingestion", "reports":
+	case "core", "ingestion", "retention", "reports":
 	default:
 		return ErrConfiguration
 	}
@@ -37,7 +38,7 @@ func ValidateConfig(config Config) error {
 		return ErrConfiguration
 	}
 	if config.Role == "reports" {
-		if config.RawPrefix != "" || config.ReadinessKey != "" || config.NormalizedPrefix != "" {
+		if config.RawPrefix != "" || config.ReadinessKey != "" || config.NormalizedPrefix != "" || config.ArchivePrefix != "" {
 			return ErrConfiguration
 		}
 		return nil
@@ -47,7 +48,17 @@ func ValidateConfig(config Config) error {
 		return ErrConfiguration
 	}
 	if config.Role == "core" {
-		if config.NormalizedPrefix != "" {
+		if config.NormalizedPrefix != "" || !validKey(config.ArchivePrefix, true) ||
+			strings.HasPrefix(config.ArchivePrefix, config.RawPrefix) ||
+			strings.HasPrefix(config.RawPrefix, config.ArchivePrefix) {
+			return ErrConfiguration
+		}
+		return nil
+	}
+	if config.Role == "retention" {
+		if config.NormalizedPrefix != "" || !validKey(config.ArchivePrefix, true) ||
+			strings.HasPrefix(config.ArchivePrefix, config.RawPrefix) ||
+			strings.HasPrefix(config.RawPrefix, config.ArchivePrefix) {
 			return ErrConfiguration
 		}
 		return nil
@@ -106,6 +117,9 @@ func RenderRole(ctx context.Context, source []byte, config Config) ([]byte, erro
 	}
 	if config.Role == "ingestion" {
 		selected = append(selected, "Environment=ASPM_S3_NORMALIZED_PREFIX="+config.NormalizedPrefix)
+	}
+	if config.Role == "core" || config.Role == "retention" {
+		selected = append(selected, "Environment=ASPM_S3_ARCHIVE_PREFIX="+config.ArchivePrefix)
 	}
 	replacement := strings.Join(selected, newline) + newline
 	var result strings.Builder

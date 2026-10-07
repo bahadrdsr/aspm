@@ -25,15 +25,18 @@ type apiError struct {
 func (e *apiError) Error() string { return e.message }
 
 var (
-	errUnauthorized = &apiError{401, "unauthorized", "Authentication is required"}
-	errForbidden    = &apiError{403, "forbidden", "This operation is not permitted"}
-	errNotFound     = &apiError{404, "not-found", "The requested resource was not found"}
-	errConflict     = &apiError{409, "conflict", "The request conflicts with existing state"}
-	errInvalid      = &apiError{400, "invalid-input", "The request is invalid"}
-	errTooLarge     = &apiError{413, "too-large", "The request exceeds the configured size limit"}
-	errUnsupported  = &apiError{415, "unsupported-format", "The content or report format is not supported"}
-	errMethod       = &apiError{405, "method-not-allowed", "The method is not allowed for this resource"}
-	errUnavailable  = &apiError{503, "unavailable", "The operation could not be completed"}
+	errUnauthorized    = &apiError{401, "unauthorized", "Authentication is required"}
+	errForbidden       = &apiError{403, "forbidden", "This operation is not permitted"}
+	errNotFound        = &apiError{404, "not-found", "The requested resource was not found"}
+	errConflict        = &apiError{409, "conflict", "The request conflicts with existing state"}
+	errInvalid         = &apiError{400, "invalid-input", "The request is invalid"}
+	errTooLarge        = &apiError{413, "too-large", "The request exceeds the configured size limit"}
+	errUnsupported     = &apiError{415, "unsupported-format", "The content or report format is not supported"}
+	errMethod          = &apiError{405, "method-not-allowed", "The method is not allowed for this resource"}
+	errUnavailable     = &apiError{503, "unavailable", "The operation could not be completed"}
+	errEvidenceExpired = &apiError{410, "evidence-expired", "The evidence was removed by an approved retention operation"}
+	errEvidenceMissing = &apiError{424, "evidence-missing", "The evidence object is unexpectedly missing"}
+	errEvidenceCorrupt = &apiError{422, "evidence-corrupt", "The evidence object failed integrity verification"}
 )
 
 func (a *Application) serveHTTP(w http.ResponseWriter, r *http.Request) {
@@ -243,6 +246,29 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		return a.createRetentionPreview(w, r, membership.ID, session.User.ID)
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/api/v1/"), "/")
+	if len(parts) == 3 && parts[0] == "retention" && parts[1] == "runs" && validID(parts[2]) {
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		return a.getRetentionRun(w, r, membership.ID, parts[2])
+	}
+	if len(parts) == 3 && parts[0] == "observations" && validID(parts[1]) {
+		switch parts[2] {
+		case "evidence":
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
+			return a.observationEvidence(w, r, membership.ID, parts[1])
+		case "restorations":
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if membership.Role != "admin" {
+				return errForbidden
+			}
+			return a.queueObservationRestore(w, r, membership.ID, session.User.ID, parts[1])
+		}
+	}
 	if len(parts) == 3 && parts[0] == "retention" && parts[1] == "previews" && validID(parts[2]) {
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
@@ -267,6 +293,14 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 				return errForbidden
 			}
 			return a.approveRetentionPreview(w, r, membership.ID, session.User.ID, parts[2])
+		case "previews/executions":
+			if err = requireMethod(w, r, http.MethodPost); err != nil {
+				return err
+			}
+			if membership.Role != "admin" {
+				return errForbidden
+			}
+			return a.queueRetentionExecution(w, r, membership.ID, session.User.ID, parts[2])
 		}
 	}
 	if len(parts) == 3 && parts[0] == "work" && parts[1] == "views" && validID(parts[2]) {

@@ -151,6 +151,7 @@ func newFixture(t *testing.T, target string) *fixture {
 	f.options.RoleKeys = RoleCredentials{
 		Core:      RoleCredential{AccessKey: "synthetic-core-access-" + scopeID, SecretKey: "synthetic-core-secret-" + scopeID},
 		Ingestion: RoleCredential{AccessKey: "synthetic-ingestion-access-" + scopeID, SecretKey: "synthetic-ingestion-secret-" + scopeID},
+		Retention: RoleCredential{AccessKey: "synthetic-retention-access-" + scopeID, SecretKey: "synthetic-retention-secret-" + scopeID},
 	}
 	for name, value := range map[string]string{"ASPM_S3_ACCESS_KEY": operatorAccess, "ASPM_S3_SECRET_KEY": operatorSecret,
 		"AWS_ACCESS_KEY_ID": operatorAccess, "AWS_SECRET_ACCESS_KEY": operatorSecret} {
@@ -221,14 +222,19 @@ func newFixture(t *testing.T, target string) *fixture {
 	}
 	f.input = Intent{Configuration: encoded(t, f.config), BundleDir: "bundle", Operation: "apply"}
 	rawPrefix := "raw/selected-" + scopeID + "/"
+	archivePrefix := "archive/selected-" + scopeID + "/"
 	f.input.RuntimeRoles = RuntimeRoles{
 		Core: RoleSelection{
 			S3Secret:  SecretSelection{Name: "core-" + scopeID, AccessKeyKey: "read-access", SecretKeyKey: "read-secret"},
-			RawPrefix: rawPrefix, ReadinessKey: rawPrefix + "readiness.txt",
+			RawPrefix: rawPrefix, ReadinessKey: rawPrefix + "readiness.txt", ArchivePrefix: archivePrefix,
 		},
 		Ingestion: RoleSelection{
 			S3Secret:  SecretSelection{Name: "ingestion-" + scopeID, AccessKeyKey: "worker-access", SecretKeyKey: "worker-secret"},
 			RawPrefix: rawPrefix, ReadinessKey: rawPrefix + "readiness.txt", NormalizedPrefix: "normalized/selected-" + scopeID + "/",
+		},
+		Retention: RoleSelection{
+			S3Secret:  SecretSelection{Name: "retention-" + scopeID, AccessKeyKey: "retention-access", SecretKeyKey: "retention-secret"},
+			RawPrefix: rawPrefix, ReadinessKey: rawPrefix + "readiness.txt", ArchivePrefix: archivePrefix,
 		},
 	}
 	manifest, err := root.ReadFile(filepath.Join("bundle", "manifest.json"))
@@ -401,7 +407,8 @@ func (f *fixture) noLeaks(state State, err error) {
 	}
 	values := []string{callerToken, operatorAccess, operatorSecret}
 	for _, value := range []string{f.options.RoleKeys.Core.AccessKey, f.options.RoleKeys.Core.SecretKey,
-		f.options.RoleKeys.Ingestion.AccessKey, f.options.RoleKeys.Ingestion.SecretKey} {
+		f.options.RoleKeys.Ingestion.AccessKey, f.options.RoleKeys.Ingestion.SecretKey,
+		f.options.RoleKeys.Retention.AccessKey, f.options.RoleKeys.Retention.SecretKey} {
 		if value != "" {
 			values = append(values, value)
 		}
@@ -480,9 +487,14 @@ func (f *fixture) operatorKeys() []string {
 	bucket, _ := section(f.t, f.config, "objectStore")["bucket"].(string)
 	expectedActions := map[string][]string{
 		"core": {"Read:" + bucket + "/" + f.input.RuntimeRoles.Core.RawPrefix + "*",
-			"Write:" + bucket + "/" + f.input.RuntimeRoles.Core.RawPrefix + "*"},
+			"Write:" + bucket + "/" + f.input.RuntimeRoles.Core.RawPrefix + "*",
+			"Read:" + bucket + "/" + f.input.RuntimeRoles.Core.ArchivePrefix + "*"},
 		"ingestion": {"Read:" + bucket + "/" + f.input.RuntimeRoles.Ingestion.RawPrefix + "*",
 			"Write:" + bucket + "/" + f.input.RuntimeRoles.Ingestion.NormalizedPrefix + "*"},
+		"retention": {"Read:" + bucket + "/" + f.input.RuntimeRoles.Retention.RawPrefix + "*",
+			"Write:" + bucket + "/" + f.input.RuntimeRoles.Retention.RawPrefix + "*",
+			"Read:" + bucket + "/" + f.input.RuntimeRoles.Retention.ArchivePrefix + "*",
+			"Write:" + bucket + "/" + f.input.RuntimeRoles.Retention.ArchivePrefix + "*"},
 	}
 	for _, data := range f.secrets {
 		if data["s3.json"] == "" {
@@ -497,7 +509,8 @@ func (f *fixture) operatorKeys() []string {
 		ok(f.t, "decode private storage control-plane policy", json.Unmarshal([]byte(data["s3.json"]), &policy))
 		for _, identity := range policy.Identities {
 			for _, key := range identity.Credentials {
-				for role, expected := range map[string]RoleCredential{"core": f.options.RoleKeys.Core, "ingestion": f.options.RoleKeys.Ingestion} {
+				for role, expected := range map[string]RoleCredential{"core": f.options.RoleKeys.Core,
+					"ingestion": f.options.RoleKeys.Ingestion, "retention": f.options.RoleKeys.Retention} {
 					if key.AccessKey == expected.AccessKey && key.SecretKey == expected.SecretKey {
 						got, want := slices.Clone(identity.Actions), slices.Clone(expectedActions[role])
 						slices.Sort(got)
@@ -521,7 +534,7 @@ func (f *fixture) operatorKeys() []string {
 	if !found {
 		f.t.Fatal("managed storage policy must retain separate control-plane provisioning credentials")
 	}
-	if !roles["core"] || !roles["ingestion"] {
+	if !roles["core"] || !roles["ingestion"] || !roles["retention"] {
 		f.t.Fatal("managed policy did not bind the supplied role keys to caller-selected scopes")
 	}
 	return values

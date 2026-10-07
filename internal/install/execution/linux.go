@@ -13,6 +13,7 @@ import (
 var activationUnits = []struct{ file, service string }{
 	{"aspm-core.container", "aspm-core.service"},
 	{"aspm-ingestion@.container", "aspm-ingestion@1.service"},
+	{"aspm-retention.container", "aspm-retention.service"},
 	{"aspm-reports.container", "aspm-reports.service"},
 	{"aspm-storage.container", "aspm-storage.service"},
 	{"aspm-postgres.container", "aspm-postgres.service"},
@@ -79,16 +80,21 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 			for _, unit := range []struct{ name, image, role string }{
 				{"aspm-postgres.container", "postgres", ""}, {"aspm-storage.container", "storage", ""},
 				{"aspm-core.container", "application", "core"}, {"aspm-ingestion@.container", "application", "ingestion"},
+				{"aspm-retention.container", "application", "retention"},
 				{"aspm-reports.container", "application", "reports"},
 			} {
 				data := p.bundle.files["deploy/quadlet/"+unit.name]
 				if unit.role != "" {
 					selection := quadlet.Config{Role: unit.role, EnvironmentFile: "/etc/aspm/" + unit.role + ".env"}
 					if unit.role == "core" {
-						selection.RawPrefix, selection.ReadinessKey = p.input.RuntimeRoles.Core.RawPrefix, p.input.RuntimeRoles.Core.ReadinessKey
+						selection.RawPrefix, selection.ReadinessKey, selection.ArchivePrefix =
+							p.input.RuntimeRoles.Core.RawPrefix, p.input.RuntimeRoles.Core.ReadinessKey, p.input.RuntimeRoles.Core.ArchivePrefix
 					} else if unit.role == "ingestion" {
 						selection.RawPrefix, selection.ReadinessKey, selection.NormalizedPrefix =
 							p.input.RuntimeRoles.Ingestion.RawPrefix, p.input.RuntimeRoles.Ingestion.ReadinessKey, p.input.RuntimeRoles.Ingestion.NormalizedPrefix
+					} else if unit.role == "retention" {
+						selection.RawPrefix, selection.ReadinessKey, selection.ArchivePrefix =
+							p.input.RuntimeRoles.Retention.RawPrefix, p.input.RuntimeRoles.Retention.ReadinessKey, p.input.RuntimeRoles.Retention.ArchivePrefix
 					}
 					var err error
 					data, err = quadlet.RenderRole(ctx, data, selection)
@@ -127,7 +133,7 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 		}},
 		{name: "start-application-roles", run: func() error {
 			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start",
-				"aspm-core.service", "aspm-ingestion@1.service", "aspm-reports.service"}}, material.values())
+				"aspm-core.service", "aspm-ingestion@1.service", "aspm-retention.service", "aspm-reports.service"}}, material.values())
 			return err
 		}},
 	}

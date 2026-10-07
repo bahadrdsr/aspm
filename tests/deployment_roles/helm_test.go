@@ -9,7 +9,7 @@ import (
 
 func TestDeploymentHelmDistinctRuntimeSecretsAndScopes(t *testing.T) {
 	roles := rendered(t)
-	for _, role := range []string{"core", "ingestion"} {
+	for _, role := range []string{"core", "ingestion", "retention"} {
 		env := environment(t, roles[role], role)
 		for _, item := range []struct{ name, key string }{
 			{"ASPM_S3_ACCESS_KEY", role + "-s3-access-key"}, {"ASPM_S3_SECRET_KEY", role + "-s3-secret-key"},
@@ -27,6 +27,9 @@ func TestDeploymentHelmDistinctRuntimeSecretsAndScopes(t *testing.T) {
 		}
 		if role == "ingestion" && env["ASPM_S3_NORMALIZED_PREFIX"].Value != "normalized/team-a/" {
 			t.Error("ingestion must declare its separate normalized/team-a/ output prefix")
+		}
+		if (role == "core" || role == "retention") && env["ASPM_S3_ARCHIVE_PREFIX"].Value != "archive/team-a/" {
+			t.Errorf("%s must declare the selected archive/team-a/ prefix", role)
 		}
 	}
 }
@@ -56,7 +59,7 @@ func TestDeploymentHelmMissingSelectedRoleSecretsCannotFallback(t *testing.T) {
 		t.Fatalf("positive real-render control failed: %s (%T)", diagnostic, err)
 	}
 	deployments(t, output)
-	for _, role := range []string{"core", "ingestion"} {
+	for _, role := range []string{"core", "ingestion", "retention"} {
 		for _, field := range []string{"name", "accessKeyKey", "secretKeyKey"} {
 			t.Run(role+"-"+field, func(t *testing.T) {
 				input := values()

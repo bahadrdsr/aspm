@@ -18,6 +18,7 @@ func TestInstallerV2_EnvFilesPreserveNativeLiteralBytes(t *testing.T) {
 	f.options.RoleKeys = RoleCredentials{
 		Core:      RoleCredential{AccessKey: `core"access\segment=value`, SecretKey: `"core-secret\folder=a=b"`},
 		Ingestion: RoleCredential{AccessKey: `ingestion'access\segment=value`, SecretKey: `ingestion-secret\folder=="quoted"`},
+		Retention: RoleCredential{AccessKey: `retention'access\segment=value`, SecretKey: `retention-secret\folder=="quoted"`},
 	}
 	f.reopen()
 	password := `synthetic-db"password\segment=a=b'`

@@ -218,9 +218,9 @@
 // Source inference never verifies resolution or changes human decisions.
 // Accepted-risk expiry is computed using Now without rewriting the decision.
 // Imported content is untrusted data; no scanner, script, or proof is executed.
-// Retention policy, holds, bounded previews and non-destructive approvals are
-// implemented. Physical archive/expiry execution, orphan evidence cleanup,
-// availability transitions, resume and restore remain separate. Candidate
-// correlation, native connectors, independent verification and installer
-// operation also remain separate.
+// Retention policy, holds, bounded previews, approvals, fenced execution,
+// evidence availability, archive retrieval and observation restoration are
+// implemented. Orphan evidence cleanup and recurring-scan capacity remain
+// separate. Candidate correlation, native connectors, independent verification
+// and supported release qualification also remain separate.
 package app

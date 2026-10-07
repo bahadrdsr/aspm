@@ -87,7 +87,8 @@ func (i *installer) verifyBundle(ctx context.Context, directory string, config c
 	required := []string{"deploy/helm/aspm/Chart.yaml", "deploy/helm/aspm/values.yaml"}
 	if config.Target.Kind == "linux" {
 		required = append(required, "deploy/quadlet/aspm-core.container", "deploy/quadlet/aspm-ingestion@.container",
-			"deploy/quadlet/aspm-reports.container", "deploy/quadlet/aspm-postgres.container", "deploy/quadlet/aspm-storage.container",
+			"deploy/quadlet/aspm-retention.container", "deploy/quadlet/aspm-reports.container",
+			"deploy/quadlet/aspm-postgres.container", "deploy/quadlet/aspm-storage.container",
 			"deploy/quadlet/aspm.network", "deploy/quadlet/aspm-postgres.volume", "deploy/quadlet/aspm-storage.volume")
 	}
 	for _, name := range required {

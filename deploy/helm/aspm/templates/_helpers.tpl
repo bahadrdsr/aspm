@@ -160,7 +160,7 @@
 - name: ASPM_AZURE_DEVOPS_ENDPOINT
   value: {{ $settings.azureDevOpsEndpoint | quote }}
 {{- end }}
-{{- if or (eq $role "core") (eq $role "ingestion") }}
+{{- if or (eq $role "core") (eq $role "ingestion") (eq $role "retention") }}
 {{- $selected := $settings.s3Secret | default dict }}
 {{- $secretName := required (printf "%s.s3Secret.name is required" $role) $selected.name }}
 {{- $accessKey := required (printf "%s.s3Secret.accessKeyKey is required" $role) $selected.accessKeyKey }}
@@ -184,6 +184,10 @@
 {{- if eq $role "ingestion" }}
 - name: ASPM_S3_NORMALIZED_PREFIX
   value: {{ required "ingestion.normalizedPrefix is required" $settings.normalizedPrefix | quote }}
+{{- end }}
+{{- if or (eq $role "core") (eq $role "retention") }}
+- name: ASPM_S3_ARCHIVE_PREFIX
+  value: {{ required (printf "%s.archivePrefix is required" $role) $settings.archivePrefix | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}

@@ -9,8 +9,8 @@ import (
 
 type Credential struct{ AccessKey, SecretKey string }
 type Config struct {
-	Bucket, RawPrefix, NormalizedPrefix, ApprovedPrefix string
-	Operator, Core, Ingestion, AI                       Credential
+	Bucket, RawPrefix, NormalizedPrefix, ApprovedPrefix, ArchivePrefix string
+	Operator, Core, Ingestion, AI, Retention                           Credential
 }
 
 var Production struct {
@@ -19,11 +19,13 @@ var Production struct {
 
 func configuration() Config {
 	return Config{
-		Bucket: "aspm-isolation", RawPrefix: "raw/team-a/", NormalizedPrefix: "normalized/team-a/", ApprovedPrefix: "approved/team-a/grant-1/",
+		Bucket: "aspm-isolation", RawPrefix: "raw/team-a/", NormalizedPrefix: "normalized/team-a/",
+		ApprovedPrefix: "approved/team-a/grant-1/", ArchivePrefix: "archive/team-a/",
 		Operator:  Credential{"synthetic-operator-key", "synthetic-operator-secret"},
 		Core:      Credential{"synthetic-core-key", "synthetic-core-secret"},
 		Ingestion: Credential{"synthetic-ingestion-key", "synthetic-ingestion-secret"},
 		AI:        Credential{"synthetic-ai-key", "synthetic-ai-secret"},
+		Retention: Credential{"synthetic-retention-key", "synthetic-retention-secret"},
 	}
 }
 
@@ -51,16 +53,18 @@ func TestStoragePolicyRolesReceiveOnlyDeclaredCapabilities(t *testing.T) {
 	if err := json.Unmarshal(raw, &policy); err != nil {
 		t.Fatal("role policy is not valid SeaweedFS identity JSON")
 	}
-	if len(policy.Identities) != 4 {
-		t.Fatal("expected distinct operator, core, ingestion and AI identities")
+	if len(policy.Identities) != 5 {
+		t.Fatal("expected distinct operator, core, ingestion, AI and retention identities")
 	}
 	expected := map[string][]string{
 		"operator":  {"Admin"},
-		"core":      {"Read:aspm-isolation/raw/team-a/*", "Write:aspm-isolation/raw/team-a/*", "Read:aspm-isolation/approved/team-a/grant-1/*", "Write:aspm-isolation/approved/team-a/grant-1/*"},
+		"core":      {"Read:aspm-isolation/raw/team-a/*", "Write:aspm-isolation/raw/team-a/*", "Read:aspm-isolation/approved/team-a/grant-1/*", "Write:aspm-isolation/approved/team-a/grant-1/*", "Read:aspm-isolation/archive/team-a/*"},
 		"ingestion": {"Read:aspm-isolation/raw/team-a/*", "Write:aspm-isolation/normalized/team-a/*"},
 		"ai":        {"Read:aspm-isolation/approved/team-a/grant-1/*"},
+		"retention": {"Read:aspm-isolation/raw/team-a/*", "Write:aspm-isolation/raw/team-a/*", "Read:aspm-isolation/archive/team-a/*", "Write:aspm-isolation/archive/team-a/*"},
 	}
-	keys := map[string]Credential{"operator": config.Operator, "core": config.Core, "ingestion": config.Ingestion, "ai": config.AI}
+	keys := map[string]Credential{"operator": config.Operator, "core": config.Core, "ingestion": config.Ingestion,
+		"ai": config.AI, "retention": config.Retention}
 	seen := map[string]bool{}
 	for _, identity := range policy.Identities {
 		want, exists := expected[identity.Name]
@@ -94,8 +98,10 @@ func TestStoragePolicyMissingCredentialsCannotUseAmbientOrOperatorFallback(t *te
 		func(c *Config) { c.Core.AccessKey = "" }, func(c *Config) { c.Core.SecretKey = "" },
 		func(c *Config) { c.Ingestion.AccessKey = "" }, func(c *Config) { c.Ingestion.SecretKey = "" },
 		func(c *Config) { c.AI.AccessKey = "" }, func(c *Config) { c.AI.SecretKey = "" },
+		func(c *Config) { c.Retention.AccessKey = "" }, func(c *Config) { c.Retention.SecretKey = "" },
 		func(c *Config) { c.AI.AccessKey = c.Operator.AccessKey },
 		func(c *Config) { c.AI.SecretKey = c.Operator.SecretKey },
+		func(c *Config) { c.Retention.AccessKey = c.Core.AccessKey },
 	} {
 		input := configuration()
 		mutate(&input)
@@ -114,7 +120,9 @@ func TestStoragePolicyRejectsOverlappingOrEscapingPrefixes(t *testing.T) {
 		func(c *Config) { c.ApprovedPrefix = "*" },
 		func(c *Config) { c.ApprovedPrefix = "approved/../raw/" },
 		func(c *Config) { c.ApprovedPrefix = "/approved/" },
+		func(c *Config) { c.ArchivePrefix = "" },
 		func(c *Config) { c.NormalizedPrefix = c.RawPrefix },
+		func(c *Config) { c.ArchivePrefix = c.RawPrefix },
 		func(c *Config) { c.ApprovedPrefix = c.RawPrefix + "approved/" },
 		func(c *Config) { c.RawPrefix = "approved/" },
 	} {
