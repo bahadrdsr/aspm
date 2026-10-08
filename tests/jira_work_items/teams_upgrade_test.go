@@ -117,13 +117,13 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17")
-	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17 exactly once over real populated V10", h.ledger(), currentLedger)
-	same(t, "V17 changed the relation/index set",
-		sourcecompat.ProjectRelationsV17(t, relations, h.relations()), relations)
-	same(t, "V17 must validate the complete exact DDL delta before projection",
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18")
+	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18 exactly once over real populated V10", h.ledger(), currentLedger)
+	same(t, "V18 changed the relation/index set",
+		sourcecompat.ProjectRelationsV18(t, relations, h.relations()), relations)
+	same(t, "V18 must validate the complete exact DDL delta before projection",
 		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
-	same(t, "V17 changed old bytes outside the exact additions",
+	same(t, "V18 changed old bytes outside the exact additions",
 		sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Data(names)), before)
 	for _, r := range resources {
 		body, _ := h.request(h.ctx, h.admin, r.method, r.path, r.input, 200)
@@ -136,9 +136,9 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	same(t, "V11 changed the published queued advisory", h.json(viewer, "GET", "/api/v1/ai/assessments/"+assessmentID, nil, 200).Assessment, assessment)
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "V17 reopen changed the integer ledger", h.ledger(), currentLedger)
-	same(t, "V17 reopen changed definitions", h.definitions(names), afterDefinitions)
-	same(t, "V17 reopen changed historical business bytes",
+	same(t, "V18 reopen changed the integer ledger", h.ledger(), currentLedger)
+	same(t, "V18 reopen changed definitions", h.definitions(names), afterDefinitions)
+	same(t, "V18 reopen changed historical business bytes",
 		sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Data(names)), before)
 
 	value := n.workflowURL()

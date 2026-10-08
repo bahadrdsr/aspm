@@ -133,6 +133,7 @@ type retentionPreviewItem struct {
 	ObservedAt                              time.Time
 	SizeBytes                               int64
 	ProtectedReasons                        []string
+	ObjectKey                               *string
 }
 type retentionPreview struct {
 	ID, WorkspaceID, State, SnapshotDigest, CreatedBy string
@@ -161,6 +162,7 @@ type retentionRunItem struct {
 	ID, Class, ResourceKind, ResourceID, Action, State, Outcome string
 	ProtectedReasons                                            []string
 	Failure                                                     *apiFailure
+	ObjectKey                                                   *string
 }
 type retentionRun struct {
 	ID, WorkspaceID, Operation, State, RequestedBy, Rationale string

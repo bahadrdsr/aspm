@@ -70,7 +70,7 @@ func scanRetentionRunItem(row pgx.Row) (RetentionRunItem, error) {
 	var failureCode, failureMessage *string
 	err := row.Scan(&item.ID, &item.Class, &item.ResourceKind, &item.ResourceID, &item.Action,
 		&item.State, &reasons, &item.Outcome, &failureCode, &failureMessage,
-		&item.StartedAt, &item.CompletedAt)
+		&item.StartedAt, &item.CompletedAt, &item.ObjectKey, &item.ObjectDigest, &item.ObjectRevision)
 	if err != nil {
 		return item, err
 	}
@@ -105,7 +105,8 @@ func (a *Application) loadRetentionRun(ctx context.Context, db retentionDB,
 		return run, err
 	}
 	rows, err := db.Query(ctx, `SELECT id,class,resource_kind,resource_id,action,state,
-		protected_reasons,outcome,failure_code,failure_message,started_at,completed_at
+		protected_reasons,outcome,failure_code,failure_message,started_at,completed_at,
+		object_key,object_digest,object_revision
 		FROM `+a.table("retention_run_items")+`
 		WHERE workspace_id=$1 AND run_id=$2 ORDER BY ordinal`, workspace, id)
 	if err != nil {
@@ -220,7 +221,8 @@ func (a *Application) queueRetentionExecution(w http.ResponseWriter, r *http.Req
 		runID, workspace, previewID, actor, input.Rationale, input.IdempotencyKey, binding, now); err != nil {
 		return err
 	}
-	rows, err := tx.Query(r.Context(), `SELECT ordinal,class,resource_kind,resource_id,action
+	rows, err := tx.Query(r.Context(), `SELECT ordinal,class,resource_kind,resource_id,action,
+		object_key,object_digest,object_revision
 		FROM `+a.table("retention_preview_items")+`
 		WHERE workspace_id=$1 AND preview_id=$2 ORDER BY ordinal`, workspace, previewID)
 	if err != nil {
@@ -229,12 +231,15 @@ func (a *Application) queueRetentionExecution(w http.ResponseWriter, r *http.Req
 	type previewItem struct {
 		ordinal                       int
 		class, kind, resource, action string
+		key, digest                   *string
+		revision                      *int64
 	}
 	items := []previewItem{}
 	ordinal := 0
 	for rows.Next() {
 		var item previewItem
-		if err = rows.Scan(&item.ordinal, &item.class, &item.kind, &item.resource, &item.action); err != nil {
+		if err = rows.Scan(&item.ordinal, &item.class, &item.kind, &item.resource, &item.action,
+			&item.key, &item.digest, &item.revision); err != nil {
 			rows.Close()
 			return err
 		}
@@ -252,9 +257,11 @@ func (a *Application) queueRetentionExecution(w http.ResponseWriter, r *http.Req
 	}
 	for _, item := range items {
 		if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("retention_run_items")+`
-			(id,workspace_id,run_id,ordinal,class,resource_kind,resource_id,action)
-			VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
-			newID(), workspace, runID, item.ordinal, item.class, item.kind, item.resource, item.action); err != nil {
+			(id,workspace_id,run_id,ordinal,class,resource_kind,resource_id,action,
+			 object_key,object_digest,object_revision)
+			VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+			newID(), workspace, runID, item.ordinal, item.class, item.kind, item.resource, item.action,
+			item.key, item.digest, item.revision); err != nil {
 			return err
 		}
 	}

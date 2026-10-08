@@ -216,9 +216,10 @@ export interface FindingCorrelationResponse {
   correlation: FindingCorrelation;
 }
 
-export type RetentionClass = "hot-history" | "archived-evidence" | "raw-report" | "audit";
-export type RetentionResourceKind = "import" | "observation" | "correlation-event";
-export type RetentionAction = "archive-history" | "expire-archive" | "expire-raw-report" | "archive-audit";
+export type RetentionClass = "hot-history" | "archived-evidence" | "raw-report" | "audit" | "orphan-archive";
+export type RetentionResourceKind = "import" | "observation" | "correlation-event" | "archive-object";
+export type RetentionAction =
+  "archive-history" | "expire-archive" | "expire-raw-report" | "archive-audit" | "delete-orphan";
 
 export interface RetentionPolicy {
   workspaceId: string;
@@ -287,8 +288,11 @@ export interface RetentionPreviewItem {
   sizeBytes: number;
   protectedReasons: Array<
     "legal-hold" | "active-decision" | "shared-observation-references" |
-    "assessment-reference" | "active-correlation"
+    "assessment-reference" | "active-correlation" | "archive-reference"
   >;
+  objectKey: string | null;
+  objectDigest: string | null;
+  objectRevision: number | null;
 }
 
 export interface RetentionPreview {
@@ -327,6 +331,9 @@ export interface RetentionRunItem {
   protectedReasons: string[];
   outcome: string;
   failure: { code: string; message: string; retryable: boolean } | null;
+  objectKey: string | null;
+  objectDigest: string | null;
+  objectRevision: number | null;
   startedAt: string | null;
   completedAt: string | null;
 }

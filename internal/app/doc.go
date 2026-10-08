@@ -223,6 +223,7 @@
 // implemented. Orphan evidence cleanup and recurring-scan capacity remain
 // separate. Indexed exact-location candidates, reviewed multi-member
 // correlation, source change classification and meaningful Work are
-// implemented; fuzzy/automatic correlation, native connectors, independent
+// implemented. Archive publication reconciliation cleans only old ledgered
+// product objects. Fuzzy/automatic correlation, native connectors, independent
 // verification and supported release qualification remain separate.
 package app

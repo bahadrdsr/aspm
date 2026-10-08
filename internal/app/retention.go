@@ -285,6 +285,7 @@ func newRetentionSummaries(policy RetentionPolicy) []RetentionClassSummary {
 		{Class: "archived-evidence", Action: "expire-archive", RetainDays: policy.ArchivedEvidenceDays},
 		{Class: "raw-report", Action: "expire-raw-report", RetainDays: policy.RawReportDays},
 		{Class: "audit", Action: "archive-audit", RetainDays: policy.AuditDays},
+		{Class: "orphan-archive", Action: "delete-orphan", RetainDays: 1},
 	}
 }
 
@@ -526,6 +527,48 @@ func (a *Application) appendArchivedEvidence(ctx context.Context, db retentionDB
 	return rows.Err()
 }
 
+func (a *Application) appendOrphanArchives(ctx context.Context, db retentionDB, workspace string,
+	cutoff time.Time, snapshot *retentionSnapshot) error {
+	rows, err := db.Query(ctx, `SELECT p.id,p.object_key,p.object_digest,p.object_size,p.state,
+		p.revision,p.updated_at,
+		EXISTS(SELECT 1 FROM `+a.table("observations")+` o
+		 WHERE o.workspace_id=p.workspace_id AND o.archive_key=p.object_key)
+		OR EXISTS(SELECT 1 FROM `+a.table("finding_correlation_events")+` e
+		 WHERE e.workspace_id=p.workspace_id AND e.archive_key=p.object_key)
+		FROM `+a.table("archive_publications")+` p
+		WHERE p.workspace_id=$1 AND p.state IN ('publishing','orphan') AND p.updated_at<=$2
+		ORDER BY p.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var item retentionSnapshotItem
+		var key, digest, state string
+		var revision int64
+		var referenced bool
+		if err = rows.Scan(&item.ResourceID, &key, &digest, &item.SizeBytes,
+			&state, &revision, &item.ObservedAt, &referenced); err != nil {
+			return err
+		}
+		item.Class, item.ResourceKind, item.Action = "orphan-archive", "archive-object", "delete-orphan"
+		item.ObservedAt = item.ObservedAt.UTC()
+		item.ObjectKey, item.ObjectDigest, item.ObjectRevision = &key, &digest, &revision
+		if referenced {
+			item.ProtectedReasons = []string{"archive-reference"}
+		} else {
+			item.ProtectedReasons = []string{}
+		}
+		item.binding = strings.Join([]string{item.ResourceID, key, digest, intString(item.SizeBytes),
+			state, intString(revision), timeString(item.ObservedAt), boolString(referenced)}, "|")
+		addRetentionItem(snapshot, item)
+		if len(snapshot.Items) > retentionPreviewLimit {
+			return errTooLarge
+		}
+	}
+	return rows.Err()
+}
+
 func timeString(value time.Time) string { return value.UTC().Format(time.RFC3339Nano) }
 func intString(value int64) string      { return strconv.FormatInt(value, 10) }
 func boolString(value bool) string {
@@ -592,8 +635,14 @@ func (a *Application) buildRetentionSnapshot(ctx context.Context, db retentionDB
 		now.AddDate(0, 0, -policy.AuditDays), &snapshot); err != nil {
 		return retentionSnapshot{}, err
 	}
+	if err = a.appendOrphanArchives(ctx, db, workspace,
+		now.Add(-orphanArchiveGrace), &snapshot); err != nil {
+		return retentionSnapshot{}, err
+	}
 	slices.SortFunc(snapshot.Items, func(left, right retentionSnapshotItem) int {
-		rank := map[string]int{"hot-history": 0, "archived-evidence": 1, "raw-report": 2, "audit": 3}
+		rank := map[string]int{
+			"hot-history": 0, "archived-evidence": 1, "raw-report": 2, "audit": 3, "orphan-archive": 4,
+		}
 		if rank[left.Class] != rank[right.Class] {
 			return rank[left.Class] - rank[right.Class]
 		}
@@ -653,10 +702,12 @@ func (a *Application) createRetentionPreview(w http.ResponseWriter, r *http.Requ
 			return err
 		}
 		if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("retention_preview_items")+`
-			(preview_id,workspace_id,ordinal,class,resource_kind,resource_id,action,observed_at,size_bytes,protected_reasons)
-			VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+			(preview_id,workspace_id,ordinal,class,resource_kind,resource_id,action,observed_at,size_bytes,
+			 protected_reasons,object_key,object_digest,object_revision)
+			VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
 			preview.ID, workspace, ordinal, item.Class, item.ResourceKind, item.ResourceID,
-			item.Action, item.ObservedAt, item.SizeBytes, reasons); err != nil {
+			item.Action, item.ObservedAt, item.SizeBytes, reasons,
+			item.ObjectKey, item.ObjectDigest, item.ObjectRevision); err != nil {
 			return err
 		}
 	}
@@ -693,7 +744,8 @@ func (a *Application) loadRetentionPreview(ctx context.Context, db retentionDB,
 	if err = json.Unmarshal(summary, &preview.Summaries); err != nil {
 		return preview, err
 	}
-	rows, err := db.Query(ctx, `SELECT class,resource_kind,resource_id,action,observed_at,size_bytes,protected_reasons
+	rows, err := db.Query(ctx, `SELECT class,resource_kind,resource_id,action,observed_at,size_bytes,
+		protected_reasons,object_key,object_digest,object_revision
 		FROM `+a.table("retention_preview_items")+`
 		WHERE workspace_id=$1 AND preview_id=$2 ORDER BY ordinal`, workspace, id)
 	if err != nil {
@@ -704,7 +756,8 @@ func (a *Application) loadRetentionPreview(ctx context.Context, db retentionDB,
 		var item RetentionPreviewItem
 		var reasons []byte
 		if err = rows.Scan(&item.Class, &item.ResourceKind, &item.ResourceID, &item.Action,
-			&item.ObservedAt, &item.SizeBytes, &reasons); err != nil {
+			&item.ObservedAt, &item.SizeBytes, &reasons,
+			&item.ObjectKey, &item.ObjectDigest, &item.ObjectRevision); err != nil {
 			return preview, err
 		}
 		item.ObservedAt = item.ObservedAt.UTC()

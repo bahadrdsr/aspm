@@ -93,7 +93,7 @@ independent worker and a manual status refresh.
   expiry, normalized archival, interrupted raw/archive delete finalization,
   missing/corrupt controls, foreign-workspace denial, audit archival and exact
   restoration.
-- The authentic pinned published V11 closure migrates through V17 while
+- The authentic pinned published V11 closure migrates through V18 while
   preserving historical API/native data and exact old business rows.
 - Installer tests cover the additive retention credential, secret, Helm values,
   Quadlet unit, service activation and explicit reapply binding.
@@ -108,11 +108,9 @@ independent worker and a manual status refresh.
 - Restoration currently covers normalized observations, not expired raw reports
   or archived correlation detail.
 - Restored observations retain their verified archive copy.
-- Policy-authorized deletion can leave an unreferenced archive object if the
-  database finalization loses its fence after an archive write; orphan garbage
-  collection remains separate.
-- Recurring-scan storage/index/WAL growth and restore-duration budgets are not
-  yet measured.
+- Product-created archive publications are reconciled through the V18 ledger
+  and old unreferenced keys are previewed/deleted after a fixed grace period.
+- Restore-duration and enterprise throughput budgets are not yet measured.
 - Linux activation and a supported release still require their broader M13
   qualification.
 

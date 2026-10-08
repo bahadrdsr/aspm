@@ -32,7 +32,8 @@ multi-member source groups with one-member release. Automatic/fuzzy correlation,
 and enterprise capacity qualification remain unfinished. V17 adds semantic
 new/changed/unchanged/reopened classification, explicit failed/partial/delta/
 out-of-order context, a meaningful-changes Work mode, and bounded recurring-scan
-table/index/WAL regression measurements.
+table/index/WAL regression measurements. V18 adds a product archive publication
+ledger and previewed orphan cleanup without bucket-wide listing.
 GitLab, AWS, Azure cloud and other unfinished integration expansion remain
 deferred.
 

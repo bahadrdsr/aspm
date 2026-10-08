@@ -194,6 +194,9 @@ type RetentionPreviewItem struct {
 	ObservedAt       time.Time `json:"observedAt"`
 	SizeBytes        int64     `json:"sizeBytes"`
 	ProtectedReasons []string  `json:"protectedReasons"`
+	ObjectKey        *string   `json:"objectKey"`
+	ObjectDigest     *string   `json:"objectDigest"`
+	ObjectRevision   *int64    `json:"objectRevision"`
 }
 
 type RetentionPreview struct {
@@ -285,6 +288,9 @@ type RetentionRunItem struct {
 	ProtectedReasons []string   `json:"protectedReasons"`
 	Outcome          string     `json:"outcome"`
 	Failure          *Failure   `json:"failure"`
+	ObjectKey        *string    `json:"objectKey"`
+	ObjectDigest     *string    `json:"objectDigest"`
+	ObjectRevision   *int64     `json:"objectRevision"`
 	StartedAt        *time.Time `json:"startedAt"`
 	CompletedAt      *time.Time `json:"completedAt"`
 }

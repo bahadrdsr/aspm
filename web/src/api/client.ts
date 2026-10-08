@@ -445,8 +445,11 @@ function parseRetentionHolds(value: unknown, workspace: string | null): Retentio
 function retentionSummary(value: unknown): RetentionClassSummary {
   const item = object(value, "retention summary");
   const result: RetentionClassSummary = {
-    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit"], "retention class"),
-    action: choice(item.action, ["archive-history", "expire-archive", "expire-raw-report", "archive-audit"], "retention action"),
+    class: choice(item.class,
+      ["hot-history", "archived-evidence", "raw-report", "audit", "orphan-archive"], "retention class"),
+    action: choice(item.action,
+      ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "delete-orphan"],
+      "retention action"),
     retainDays: count(item.retainDays, "retention days"),
     totalCount: count(item.totalCount, "retention total"),
     eligibleCount: count(item.eligibleCount, "retention eligible count"),
@@ -455,7 +458,7 @@ function retentionSummary(value: unknown): RetentionClassSummary {
   };
   const actions: Record<RetentionClassSummary["class"], RetentionClassSummary["action"]> = {
     "hot-history": "archive-history", "archived-evidence": "expire-archive",
-    "raw-report": "expire-raw-report", audit: "archive-audit",
+    "raw-report": "expire-raw-report", audit: "archive-audit", "orphan-archive": "delete-orphan",
   };
   if (result.retainDays < 1 || result.eligibleCount + result.protectedCount !== result.totalCount ||
     actions[result.class] !== result.action) return invalid("retention summary consistency");
@@ -465,21 +468,30 @@ function retentionSummary(value: unknown): RetentionClassSummary {
 function retentionPreviewItem(value: unknown): RetentionPreviewItem {
   const item = object(value, "retention preview item");
   const result: RetentionPreviewItem = {
-    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit"], "retention item class"),
-    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event"], "retention item kind"),
+    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit", "orphan-archive"], "retention item class"),
+    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event", "archive-object"], "retention item kind"),
     resourceId: reportIdentifier(item.resourceId, "retention item resource"),
-    action: choice(item.action, ["archive-history", "expire-archive", "expire-raw-report", "archive-audit"], "retention item action"),
+    action: choice(item.action,
+      ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "delete-orphan"],
+      "retention item action"),
     observedAt: timestamp(item.observedAt, "retention item time"),
     sizeBytes: count(item.sizeBytes, "retention item bytes"),
     protectedReasons: array(item.protectedReasons, "retention protection reasons").map((reason) =>
       choice(reason, ["legal-hold", "active-decision", "shared-observation-references",
-        "assessment-reference", "active-correlation"], "retention protection reason")),
+        "assessment-reference", "active-correlation", "archive-reference"], "retention protection reason")),
+    objectKey: item.objectKey === undefined ? null : nullableText(item.objectKey, "retention object key"),
+    objectDigest: item.objectDigest === undefined ? null : nullableText(item.objectDigest, "retention object digest"),
+    objectRevision: item.objectRevision === undefined || item.objectRevision === null
+      ? null : count(item.objectRevision, "retention object revision"),
   };
   const actions: Record<RetentionPreviewItem["class"], RetentionPreviewItem["action"]> = {
     "hot-history": "archive-history", "archived-evidence": "expire-archive",
-    "raw-report": "expire-raw-report", audit: "archive-audit",
+    "raw-report": "expire-raw-report", audit: "archive-audit", "orphan-archive": "delete-orphan",
   };
   if (actions[result.class] !== result.action ||
+    (result.resourceKind === "archive-object") !== (result.objectKey !== null) ||
+    (result.objectKey === null) !== (result.objectDigest === null) ||
+    (result.objectDigest === null) !== (result.objectRevision === null) ||
     new Set(result.protectedReasons).size !== result.protectedReasons.length) {
     return invalid("retention preview item consistency");
   }
@@ -491,7 +503,7 @@ function retentionPreview(value: unknown, workspace: string | null): RetentionPr
   const workspaceId = text(item.workspaceId, "retention preview workspace");
   if (workspaceId !== workspace) return invalid("retention preview workspace");
   const summaries = array(item.summaries, "retention summaries").map(retentionSummary);
-  if (summaries.length !== 4 || new Set(summaries.map((summary) => summary.class)).size !== 4) {
+  if (summaries.length !== 5 || new Set(summaries.map((summary) => summary.class)).size !== 5) {
     return invalid("retention summary classes");
   }
   const items = array(item.items, "retention preview items").map(retentionPreviewItem);
@@ -549,17 +561,22 @@ function retentionRunItem(value: unknown): RetentionRunItem {
     (failure?.retryable === true && state !== "queued")) return invalid("retention item lifecycle");
   return {
     id: reportIdentifier(item.id, "retention item"),
-    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit"], "retention item class"),
-    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event"], "retention item resource kind"),
+    class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit", "orphan-archive"], "retention item class"),
+    resourceKind: choice(item.resourceKind,
+      ["import", "observation", "correlation-event", "archive-object"], "retention item resource kind"),
     resourceId: reportIdentifier(item.resourceId, "retention item resource"),
     action: choice(item.action,
-      ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "restore-archive"],
+      ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "restore-archive", "delete-orphan"],
       "retention item action"),
     state,
     protectedReasons: array(item.protectedReasons, "retention execution protection reasons")
       .map((reason) => text(reason, "retention execution protection reason")),
     outcome: text(item.outcome, "retention item outcome", true),
     failure,
+    objectKey: item.objectKey === undefined ? null : nullableText(item.objectKey, "retention execution object key"),
+    objectDigest: item.objectDigest === undefined ? null : nullableText(item.objectDigest, "retention execution object digest"),
+    objectRevision: item.objectRevision === undefined || item.objectRevision === null
+      ? null : count(item.objectRevision, "retention execution object revision"),
     startedAt: nullableTimestamp(item.startedAt, "retention item start time"),
     completedAt,
   };

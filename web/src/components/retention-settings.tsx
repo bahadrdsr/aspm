@@ -155,6 +155,7 @@ function Preview({ preview, canApprove, onRefresh, onApproved, onQueued }: {
         <strong>{label(item.class)} / {label(item.action)}</strong>
         <p><code>{item.resourceId}</code> ({label(item.resourceKind)}), {bytesLabel(item.sizeBytes)},
           observed <time dateTime={item.observedAt}>{timestampLabel(item.observedAt)}</time>.</p>
+        {item.objectKey && <p>Exact product archive key: <code>{item.objectKey}</code>.</p>}
         <p>{item.protectedReasons.length === 0 ? "Eligible in this preview." :
           `Protected: ${item.protectedReasons.map(label).join(", ")}.`}</p>
       </li>)}</ul>
@@ -197,6 +198,7 @@ function RetentionRunStatus({ run, pending, error, onRefresh }: {
     <ul className="history-list">{run.items.map((item) => <li key={item.id}>
       <strong>{label(item.action)}: {label(item.state)}</strong>
       <p><code>{item.resourceId}</code> ({label(item.resourceKind)}).</p>
+      {item.objectKey && <p>Exact product archive key: <code>{item.objectKey}</code>.</p>}
       {item.protectedReasons.length > 0 && <p>Protected: {item.protectedReasons.map(label).join(", ")}.</p>}
       {item.outcome && <p>Outcome: {label(item.outcome)}.</p>}
       {item.failure && <p role="alert">{item.failure.message}</p>}
@@ -274,8 +276,8 @@ function RetentionControls({ onClose }: { onClose: () => void }) {
       {run && <RetentionRunStatus run={run} pending={runRefresh.pending}
         error={runRefresh.error} onRefresh={refreshRun} />}
     </>}
-    <p className="muted small">This increment implements policy, holds, preview and stale approval fencing only.
-      Physical archive, expiry, resume, restore and availability-state downloads remain disabled.</p>
+    <p className="muted small">Preview and approval remain non-destructive. Execution, archive retrieval,
+      observation restoration and old product-publication orphan cleanup advance only in the independent retention worker.</p>
   </section>;
 }
 

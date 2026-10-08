@@ -47,6 +47,7 @@ type retentionOutcome struct {
 
 type retentionArchiveWrite struct {
 	key, digest string
+	publication archivePublication
 }
 
 func OpenRetentionWorker(ctx context.Context, config RetentionWorkerConfig) (*RetentionWorker, error) {
@@ -187,13 +188,14 @@ func (w *RetentionWorker) claimRetentionItem(ctx context.Context) (retentionRunR
 	var reasons []byte
 	var failureCode, failureMessage *string
 	err = tx.QueryRow(ctx, `SELECT id,class,resource_kind,resource_id,action,state,
-		protected_reasons,outcome,attempts,failure_code,failure_message,started_at,completed_at
+		protected_reasons,outcome,attempts,failure_code,failure_message,started_at,completed_at,
+		object_key,object_digest,object_revision
 		FROM `+w.table("retention_run_items")+`
 		WHERE workspace_id=$1 AND run_id=$2 AND state IN ('queued','processing')
 		ORDER BY ordinal LIMIT 1 FOR UPDATE`, run.WorkspaceID, run.ID).Scan(
 		&item.ID, &item.Class, &item.ResourceKind, &item.ResourceID, &item.Action, &item.State,
 		&reasons, &item.Outcome, &item.Attempts, &failureCode, &failureMessage,
-		&item.StartedAt, &item.CompletedAt)
+		&item.StartedAt, &item.CompletedAt, &item.ObjectKey, &item.ObjectDigest, &item.ObjectRevision)
 	if errors.Is(err, pgx.ErrNoRows) {
 		if err = w.finalizeRetentionRunTx(ctx, tx, run); err != nil {
 			return retentionRunRecord{}, retentionItemRecord{}, false, err
@@ -445,9 +447,82 @@ func (w *RetentionWorker) processRetentionItem(ctx context.Context,
 		return w.archiveAuditEvent(ctx, run, item)
 	case "restore-archive":
 		return w.restoreObservation(ctx, run, item)
+	case "delete-orphan":
+		return w.deleteOrphanArchive(ctx, run, item)
 	default:
 		return retentionOutcome{}, errors.New("unsupported retention action")
 	}
+}
+
+func (w *RetentionWorker) deleteOrphanArchive(ctx context.Context,
+	run retentionRunRecord, item retentionItemRecord) (retentionOutcome, error) {
+	if item.ObjectKey == nil || item.ObjectDigest == nil || item.ObjectRevision == nil {
+		return retentionOutcome{}, errors.New("orphan cleanup item omitted exact object binding")
+	}
+	if err := w.renewRetentionLease(ctx, run); err != nil {
+		return retentionOutcome{}, err
+	}
+	tx, err := w.pool.Begin(ctx)
+	if err != nil {
+		return retentionOutcome{}, err
+	}
+	defer rollback(tx)
+	publication, err := scanArchivePublication(tx.QueryRow(ctx, `SELECT id,workspace_id,object_key,
+			resource_kind,resource_id,object_digest,object_size,state,revision,created_at,updated_at
+			FROM `+w.table("archive_publications")+`
+			WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, run.WorkspaceID, item.ResourceID))
+	if err != nil {
+		return retentionOutcome{}, err
+	}
+	if publication.ObjectKey != *item.ObjectKey || publication.ObjectDigest != *item.ObjectDigest ||
+		publication.Revision != *item.ObjectRevision ||
+		(publication.State != "publishing" && publication.State != "orphan") ||
+		publication.UpdatedAt.After(w.now().Add(-orphanArchiveGrace)) {
+		if err = tx.Commit(ctx); err != nil {
+			return retentionOutcome{}, err
+		}
+		return retentionOutcome{state: "protected", outcome: "state-changed",
+			reasons: []string{"state-changed"}}, nil
+	}
+	referenced, err := archiveReferenceExists(ctx, tx, w.table, run.WorkspaceID, publication.ObjectKey)
+	if err != nil {
+		return retentionOutcome{}, err
+	}
+	if referenced {
+		if err = w.finishArchivePublication(ctx, tx, publication, "referenced"); err != nil {
+			return retentionOutcome{}, err
+		}
+		if err = tx.Commit(ctx); err != nil {
+			return retentionOutcome{}, err
+		}
+		return retentionOutcome{state: "protected", outcome: "protected",
+			reasons: []string{"archive-reference"}}, nil
+	}
+	_, readErr := withRetentionLease(ctx, w, run, func(storageContext context.Context) ([]byte, error) {
+		return w.store.readArchive(storageContext, run.WorkspaceID, publication.ObjectKey,
+			publication.ObjectDigest, publication.ObjectSize)
+	})
+	if readErr != nil && !errors.Is(readErr, evidence.ErrNotFound) &&
+		!errors.Is(readErr, evidence.ErrIntegrity) {
+		return retentionOutcome{}, readErr
+	}
+	outcome := "deleted"
+	if errors.Is(readErr, evidence.ErrNotFound) {
+		outcome = "already-missing"
+	} else {
+		if _, err = withRetentionLease(ctx, w, run, func(storageContext context.Context) (struct{}, error) {
+			return struct{}{}, w.store.deleteArchive(storageContext, run.WorkspaceID, publication.ObjectKey)
+		}); err != nil {
+			return retentionOutcome{}, err
+		}
+	}
+	if err = w.finishArchivePublication(ctx, tx, publication, "deleted"); err != nil {
+		return retentionOutcome{}, err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return retentionOutcome{}, err
+	}
+	return retentionOutcome{state: "succeeded", outcome: outcome}, nil
 }
 
 func compactObservation(data []byte) ([]byte, error) {
@@ -489,10 +564,14 @@ func (w *RetentionWorker) archiveObservation(ctx context.Context,
 	if err != nil {
 		return retentionOutcome{}, err
 	}
+	publication, err := w.beginArchivePublication(ctx, run, item, "observations", data)
+	if err != nil {
+		return retentionOutcome{}, err
+	}
 	published, err := withRetentionLease(ctx, w, run, func(storageContext context.Context) (retentionArchiveWrite, error) {
 		key, digest, writeErr := w.store.putArchive(
 			storageContext, run.WorkspaceID, "observations", item.ResourceID, data)
-		return retentionArchiveWrite{key: key, digest: digest}, writeErr
+		return retentionArchiveWrite{key: key, digest: digest, publication: publication}, writeErr
 	})
 	if err != nil {
 		return retentionOutcome{}, err
@@ -510,6 +589,9 @@ func (w *RetentionWorker) archiveObservation(ctx context.Context,
 		return retentionOutcome{}, err
 	}
 	if len(reasons) != 0 {
+		if err = w.finishArchivePublication(ctx, tx, publication, "orphan"); err != nil {
+			return retentionOutcome{}, err
+		}
 		if err = tx.Commit(ctx); err != nil {
 			return retentionOutcome{}, err
 		}
@@ -526,6 +608,9 @@ func (w *RetentionWorker) archiveObservation(ctx context.Context,
 	}
 	if result.RowsAffected() != 1 {
 		return retentionOutcome{}, errRetentionLeaseLost
+	}
+	if err = w.finishArchivePublication(ctx, tx, published.publication, "referenced"); err != nil {
+		return retentionOutcome{}, err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return retentionOutcome{}, err
@@ -724,10 +809,14 @@ func (w *RetentionWorker) archiveAuditEvent(ctx context.Context,
 	if err != nil {
 		return retentionOutcome{}, err
 	}
+	publication, err := w.beginArchivePublication(ctx, run, item, "correlation-events", payload)
+	if err != nil {
+		return retentionOutcome{}, err
+	}
 	published, err := withRetentionLease(ctx, w, run, func(storageContext context.Context) (retentionArchiveWrite, error) {
 		key, digest, writeErr := w.store.putArchive(
 			storageContext, run.WorkspaceID, "correlation-events", item.ResourceID, payload)
-		return retentionArchiveWrite{key: key, digest: digest}, writeErr
+		return retentionArchiveWrite{key: key, digest: digest, publication: publication}, writeErr
 	})
 	if err != nil {
 		return retentionOutcome{}, err
@@ -745,6 +834,9 @@ func (w *RetentionWorker) archiveAuditEvent(ctx context.Context,
 		return retentionOutcome{}, err
 	}
 	if len(reasons) != 0 {
+		if err = w.finishArchivePublication(ctx, tx, publication, "orphan"); err != nil {
+			return retentionOutcome{}, err
+		}
 		if err = tx.Commit(ctx); err != nil {
 			return retentionOutcome{}, err
 		}
@@ -761,6 +853,9 @@ func (w *RetentionWorker) archiveAuditEvent(ctx context.Context,
 	}
 	if result.RowsAffected() != 1 {
 		return retentionOutcome{}, errRetentionLeaseLost
+	}
+	if err = w.finishArchivePublication(ctx, tx, published.publication, "referenced"); err != nil {
+		return retentionOutcome{}, err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return retentionOutcome{}, err
@@ -904,16 +999,23 @@ func (w *RetentionWorker) expireObservationArchive(ctx context.Context,
 	if err = w.lockRetentionRun(ctx, tx, run); err != nil {
 		return retentionOutcome{}, err
 	}
+	expiredAt := w.now()
 	result, err := tx.Exec(ctx, `UPDATE `+w.table("observations")+`
 		SET evidence_availability='expired',evidence_expired_at=$4,retention_transition=NULL,
 			evidence_revision=evidence_revision+1
 		WHERE workspace_id=$1 AND id=$2 AND evidence_revision=$3 AND retention_transition='expiring'`,
-		run.WorkspaceID, item.ResourceID, revision, w.now())
+		run.WorkspaceID, item.ResourceID, revision, expiredAt)
 	if err != nil {
 		return retentionOutcome{}, err
 	}
 	if result.RowsAffected() != 1 {
 		return retentionOutcome{}, errRetentionLeaseLost
+	}
+	if _, err = tx.Exec(ctx, `UPDATE `+w.table("archive_publications")+`
+		SET state='deleted',revision=revision+1,updated_at=$3,referenced_at=NULL,deleted_at=$3
+		WHERE workspace_id=$1 AND object_key=$2 AND state<>'deleted'`,
+		run.WorkspaceID, key, expiredAt); err != nil {
+		return retentionOutcome{}, err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return retentionOutcome{}, err

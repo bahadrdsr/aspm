@@ -12,6 +12,8 @@ const holdId = "d3000000000000000000000000000003";
 const firstPreviewId = "d4000000000000000000000000000004";
 const secondPreviewId = "d5000000000000000000000000000005";
 const executionId = "d6000000000000000000000000000006";
+const orphanId = "da00000000000000000000000000000a";
+const orphanKey = `archive/${alpha.id}/observations/db00000000000000000000000000000b/${"b".repeat(64)}`;
 const createdAt = "2026-10-07T18:00:00Z";
 
 function policy(revision: number, days = [90, 180, 365, 730]) {
@@ -47,6 +49,8 @@ function preview(id: string, state: "ready" | "stale" | "approved") {
         totalCount: 2, eligibleCount: 1, protectedCount: 1, sizeBytes: 2048 },
       { class: "audit", action: "archive-audit", retainDays: 240,
         totalCount: 1, eligibleCount: 1, protectedCount: 0, sizeBytes: 256 },
+      { class: "orphan-archive", action: "delete-orphan", retainDays: 1,
+        totalCount: 1, eligibleCount: 1, protectedCount: 0, sizeBytes: 128 },
     ],
     items: [
       { class: "raw-report", resourceKind: "import", resourceId: eligibleImportId,
@@ -55,6 +59,10 @@ function preview(id: string, state: "ready" | "stale" | "approved") {
       { class: "raw-report", resourceKind: "import", resourceId: heldImportId,
         action: "expire-raw-report", observedAt: "2026-01-01T00:00:00Z",
         sizeBytes: 1024, protectedReasons: ["legal-hold"] },
+      { class: "orphan-archive", resourceKind: "archive-object", resourceId: orphanId,
+        action: "delete-orphan", observedAt: "2026-10-01T00:00:00Z",
+        sizeBytes: 128, protectedReasons: [], objectKey: orphanKey,
+        objectDigest: `sha256:${"b".repeat(64)}`, objectRevision: 1 },
     ],
     approvedBy: approved ? adminId : null,
     approvedAt: approved ? "2026-10-07T18:05:00Z" : null,
@@ -69,7 +77,7 @@ function execution(state: "queued" | "partial") {
     previewId: secondPreviewId, targetKind: null, targetId: null, state,
     requestedBy: adminId, rationale: "Apply exact synthetic preview.", createdAt,
     completedAt: terminal ? "2026-10-07T18:10:00Z" : null,
-    total: 2, succeeded: terminal ? 1 : 0, protected: terminal ? 1 : 0, missing: 0, corrupt: 0, failed: 0,
+    total: 3, succeeded: terminal ? 2 : 0, protected: terminal ? 1 : 0, missing: 0, corrupt: 0, failed: 0,
     failure: null,
     items: [
       {
@@ -84,6 +92,14 @@ function execution(state: "queued" | "partial") {
         resourceId: heldImportId, action: "expire-raw-report",
         state: terminal ? "protected" : "queued", protectedReasons: terminal ? ["legal-hold"] : [],
         outcome: terminal ? "protected" : "", failure: null,
+        startedAt: terminal ? createdAt : null, completedAt: terminal ? "2026-10-07T18:10:00Z" : null,
+      },
+      {
+        id: "d9000000000000000000000000000009", class: "orphan-archive", resourceKind: "archive-object",
+        resourceId: orphanId, action: "delete-orphan", objectKey: orphanKey,
+        objectDigest: `sha256:${"b".repeat(64)}`, objectRevision: 1,
+        state: terminal ? "succeeded" : "queued", protectedReasons: [],
+        outcome: terminal ? "deleted" : "", failure: null,
         startedAt: terminal ? createdAt : null, completedAt: terminal ? "2026-10-07T18:10:00Z" : null,
       },
     ],
@@ -194,6 +210,7 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
   await region.getByRole("button", { name: "Create retention preview", exact: true }).click();
   await expect(region.getByRole("region", { name: "Retention preview result", exact: true })).toContainText("1 / 2");
   await expect(region).toContainText("Protected: Legal Hold.");
+  await expect(region).toContainText(orphanKey);
   await region.getByLabel("Approval rationale", { exact: true }).fill("Approve stale synthetic preview.");
   await region.getByRole("button", { name: "Approve exact preview", exact: true }).click();
   await expect(region.getByRole("alert")).toContainText(/stale|conflict/i);
@@ -210,7 +227,8 @@ test("M06R1 Retention policy, holds and stale approval remain preview-only", asy
   await expect(run).toContainText("Execution Queued");
   await run.getByRole("button", { name: "Refresh execution", exact: true }).click();
   await expect(run).toContainText("Execution Partial");
-  await expect(run).toContainText("1 succeeded, 1 protected");
+  await expect(run).toContainText("2 succeeded, 1 protected");
+  await expect(run).toContainText(orphanKey);
   expect(executionComplete).toBe(true);
   await region.getByRole("button", { name: "Close retention controls", exact: true }).click();
   await expect(page.getByRole("button", { name: "Open retention controls", exact: true })).toBeFocused();

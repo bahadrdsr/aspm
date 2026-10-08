@@ -105,13 +105,11 @@ func (s *retentionStore) readArchive(ctx context.Context, workspace, key, digest
 }
 
 func (s *retentionStore) putArchive(ctx context.Context, workspace, kind, id string, data []byte) (string, string, error) {
-	if !storageSegment.MatchString(workspace) || !storageSegment.MatchString(kind) ||
-		!validID(id) || int64(len(data)) > s.maxEvidenceBytes {
-		return "", "", evidence.ErrInvalid
+	key, digest, err := s.archiveIdentity(workspace, kind, id, data)
+	if err != nil {
+		return "", "", err
 	}
-	digest := reportDigest(data)
-	key := s.archive.Prefix + workspace + "/" + kind + "/" + id + "/" + strings.TrimPrefix(digest, "sha256:")
-	_, err := s.client.PutObject(ctx, &s3.PutObjectInput{
+	_, err = s.client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(s.archive.Bucket), Key: aws.String(key), Body: bytes.NewReader(data),
 		ContentLength: aws.Int64(int64(len(data))), ContentType: aws.String("application/json"),
 		Metadata: map[string]string{"sha256": strings.TrimPrefix(digest, "sha256:")},
@@ -130,6 +128,16 @@ func (s *retentionStore) putArchive(ctx context.Context, workspace, kind, id str
 	if err != nil || !bytes.Equal(verified, data) {
 		return "", "", errors.New("archive evidence publication failed exact verification")
 	}
+	return key, digest, nil
+}
+
+func (s *retentionStore) archiveIdentity(workspace, kind, id string, data []byte) (string, string, error) {
+	if !storageSegment.MatchString(workspace) || !storageSegment.MatchString(kind) ||
+		!validID(id) || int64(len(data)) > s.maxEvidenceBytes {
+		return "", "", evidence.ErrInvalid
+	}
+	digest := reportDigest(data)
+	key := s.archive.Prefix + workspace + "/" + kind + "/" + id + "/" + strings.TrimPrefix(digest, "sha256:")
 	return key, digest, nil
 }
 

@@ -261,6 +261,14 @@ var v17Relations = []string{
 	"app_findings_meaningful_change_idx|i",
 }
 
+var v18Relations = []string{
+	"app_archive_publications|r",
+	"app_archive_publications_object_key|i",
+	"app_archive_publications_orphan_idx|i",
+	"app_archive_publications_pkey|i",
+	"app_archive_publications_workspace_id_key|i",
+}
+
 var v14LegacyIndexes = []struct {
 	table, name, definition string
 }{
@@ -688,6 +696,23 @@ func ProjectRelationsV17(t testing.TB, before, current []string) []string {
 	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
 	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
 		t.Fatalf("V17: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
+// ProjectRelationsV18 validates the complete current V13-V18 relation set.
+func ProjectRelationsV18(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	want = append(want, v15Relations...)
+	want = append(want, v16Relations...)
+	want = append(want, v17Relations...)
+	want = append(want, v18Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V18: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
 			missing, unexpected)
 	}
 	return slices.Clone(before)
