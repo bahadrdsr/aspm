@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -12,8 +13,12 @@ import (
 
 const (
 	defaultFreshnessDays = 7
+	defaultTrendDays     = 30
+	reportTrendLimit     = 100
 	reportQueryTime      = 15 * time.Second
 )
+
+const historicalTrendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification."
 
 type PostureTotals struct {
 	Assets              int64 `json:"assets"`
@@ -63,6 +68,46 @@ type PostureReport struct {
 	} `json:"verification"`
 }
 
+type HistoricalTrendPoint struct {
+	SnapshotID  string          `json:"snapshotId"`
+	Name        string          `json:"name"`
+	CompletedAt time.Time       `json:"completedAt"`
+	AsOf        time.Time       `json:"asOf"`
+	Totals      PostureTotals   `json:"totals"`
+	BySeverity  SeverityCounts  `json:"bySeverity"`
+	Coverage    PostureCoverage `json:"coverage"`
+}
+
+type HistoricalTrendDelta struct {
+	Findings               int64 `json:"findings"`
+	OpenFindings           int64 `json:"openFindings"`
+	AcceptedRisk           int64 `json:"acceptedRisk"`
+	Suppressed             int64 `json:"suppressed"`
+	FalsePositive          int64 `json:"falsePositive"`
+	Critical               int64 `json:"critical"`
+	High                   int64 `json:"high"`
+	Medium                 int64 `json:"medium"`
+	Low                    int64 `json:"low"`
+	Info                   int64 `json:"info"`
+	ScannedAssets          int64 `json:"scannedAssets"`
+	UnscannedAssets        int64 `json:"unscannedAssets"`
+	StaleAssets            int64 `json:"staleAssets"`
+	UnknownFreshnessAssets int64 `json:"unknownFreshnessAssets"`
+}
+
+type HistoricalTrend struct {
+	WorkspaceID  string                 `json:"workspaceId"`
+	From         time.Time              `json:"from"`
+	To           time.Time              `json:"to"`
+	Days         int                    `json:"days"`
+	Points       []HistoricalTrendPoint `json:"points"`
+	Delta        *HistoricalTrendDelta  `json:"delta"`
+	Verification struct {
+		State  string `json:"state"`
+		Reason string `json:"reason"`
+	} `json:"verification"`
+}
+
 func validFreshnessDays(days int) bool { return days >= 1 && days <= 365 }
 
 func overviewFreshnessDays(rawQuery string) (int, error) {
@@ -78,6 +123,35 @@ func overviewFreshnessDays(rawQuery string) (int, error) {
 	values, provided := query["freshnessDays"]
 	if !provided {
 		return defaultFreshnessDays, nil
+	}
+	if len(values) != 1 || len(values[0]) == 0 || len(values[0]) > 3 {
+		return 0, errInvalid
+	}
+	for _, char := range values[0] {
+		if char < '0' || char > '9' {
+			return 0, errInvalid
+		}
+	}
+	days, err := strconv.Atoi(values[0])
+	if err != nil || !validFreshnessDays(days) {
+		return 0, errInvalid
+	}
+	return days, nil
+}
+
+func historicalTrendDays(rawQuery string) (int, error) {
+	query, err := url.ParseQuery(rawQuery)
+	if err != nil {
+		return 0, errInvalid
+	}
+	for key := range query {
+		if key != "days" {
+			return 0, errInvalid
+		}
+	}
+	values, provided := query["days"]
+	if !provided {
+		return defaultTrendDays, nil
 	}
 	if len(values) != 1 || len(values[0]) == 0 || len(values[0]) > 3 {
 		return 0, errInvalid
@@ -114,6 +188,91 @@ func (a *Application) reportOverview(w http.ResponseWriter, r *http.Request, wor
 		return err
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"dataOrigin": "live", "report": report})
+	return nil
+}
+
+func historicalDelta(first, last HistoricalTrendPoint) *HistoricalTrendDelta {
+	return &HistoricalTrendDelta{
+		Findings:               last.Totals.Findings - first.Totals.Findings,
+		OpenFindings:           last.Totals.OpenFindings - first.Totals.OpenFindings,
+		AcceptedRisk:           last.Totals.AcceptedRisk - first.Totals.AcceptedRisk,
+		Suppressed:             last.Totals.Suppressed - first.Totals.Suppressed,
+		FalsePositive:          last.Totals.FalsePositive - first.Totals.FalsePositive,
+		Critical:               last.BySeverity.Critical - first.BySeverity.Critical,
+		High:                   last.BySeverity.High - first.BySeverity.High,
+		Medium:                 last.BySeverity.Medium - first.BySeverity.Medium,
+		Low:                    last.BySeverity.Low - first.BySeverity.Low,
+		Info:                   last.BySeverity.Info - first.BySeverity.Info,
+		ScannedAssets:          last.Coverage.ScannedAssets - first.Coverage.ScannedAssets,
+		UnscannedAssets:        last.Coverage.UnscannedAssets - first.Coverage.UnscannedAssets,
+		StaleAssets:            last.Coverage.StaleAssets - first.Coverage.StaleAssets,
+		UnknownFreshnessAssets: last.Coverage.UnknownFreshnessAssets - first.Coverage.UnknownFreshnessAssets,
+	}
+}
+
+func (a *Application) reportTrends(w http.ResponseWriter, r *http.Request, workspace string) error {
+	days, err := historicalTrendDays(r.URL.RawQuery)
+	if err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), reportQueryTime)
+	defer cancel()
+	tx, err := a.pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
+	if err != nil {
+		return err
+	}
+	defer rollback(tx)
+	now := a.config.Now().UTC()
+	trend := HistoricalTrend{
+		WorkspaceID: workspace, From: now.Add(-time.Duration(days) * 24 * time.Hour),
+		To: now, Days: days, Points: []HistoricalTrendPoint{},
+	}
+	trend.Verification.State = "not-run"
+	trend.Verification.Reason = historicalTrendVerificationReason
+	rows, err := tx.Query(ctx, `SELECT id,name,completed_at,report
+		FROM `+a.table("report_snapshots")+`
+		WHERE workspace_id=$1 AND state='succeeded' AND report IS NOT NULL
+		AND completed_at>=$2 AND completed_at<=$3
+		ORDER BY completed_at,id LIMIT $4`, workspace, trend.From, trend.To, reportTrendLimit+1)
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var point HistoricalTrendPoint
+		var raw []byte
+		if err = rows.Scan(&point.SnapshotID, &point.Name, &point.CompletedAt, &raw); err != nil {
+			rows.Close()
+			return err
+		}
+		var report PostureReport
+		if err = json.Unmarshal(raw, &report); err != nil {
+			rows.Close()
+			return err
+		}
+		point.CompletedAt = point.CompletedAt.UTC()
+		if !report.AsOf.Equal(point.CompletedAt) {
+			rows.Close()
+			return errInvalid
+		}
+		point.AsOf, point.Totals, point.BySeverity, point.Coverage =
+			report.AsOf.UTC(), report.Totals, report.BySeverity, report.Coverage
+		trend.Points = append(trend.Points, point)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return err
+	}
+	if len(trend.Points) > reportTrendLimit {
+		return errTooLarge
+	}
+	if len(trend.Points) >= 2 {
+		trend.Delta = historicalDelta(trend.Points[0], trend.Points[len(trend.Points)-1])
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return err
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"dataOrigin": "live", "trend": trend})
 	return nil
 }
 

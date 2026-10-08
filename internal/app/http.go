@@ -215,6 +215,11 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		return a.reportOverview(w, r, membership.ID)
+	case "/api/v1/reports/trends":
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		return a.reportTrends(w, r, membership.ID)
 	case "/api/v1/reports/snapshots":
 		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
 			return err

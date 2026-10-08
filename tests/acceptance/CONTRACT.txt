@@ -1,4 +1,4 @@
-M03-M08 ACCEPTANCE CONTRACT
+M03-M10 ACCEPTANCE CONTRACT
 ==========================
 Bounded milestone tests plus one real-service gate; all input is synthetic. These are
 bounded implementation slices, not completion of the full milestone roadmap.
@@ -810,3 +810,96 @@ The new per-finding decision events are ordinary V23/V24 audit candidates after
 the existing age cutoff. Existing preview, approval, archive execution, exact
 retrieval, protection, fencing and immutable payload semantics apply without a
 V25 resource kind, queue, worker or archive format.
+
+M10 SNAPSHOT-BACKED HISTORICAL TRENDS:
+This is the first bounded remaining M10 slice. It reads only existing immutable
+app_report_snapshots rows and their saved PostureReport JSON. It adds no table,
+column, index, migration, queue, worker, object, provider call or browser
+storage. The current schema and migration ledger remain exactly versions 1..24.
+Existing snapshot creation, history, detail, report-worker and live overview
+bytes and behavior remain compatible.
+
+GET /api/v1/reports/trends accepts either no query or exactly one days value.
+Omission means 30. A supplied value is one decimal integer from 1
+through 365. Duplicate days values, empty or malformed values, values outside
+the bound and every other query key are 400 invalid-input.
+
+Any current selected-workspace member, including a viewer, may read trends.
+The authenticated selected membership is the only workspace authority. Missing
+authentication is 401, a forged or unavailable membership is 403, and no
+workspace ID is accepted from the query or body. Trend reads never grant
+snapshot creation or any other write permission.
+
+One request captures server Now once and uses one repeatable-read, read-only
+transaction. Its inclusive window is [Now-days, Now]. It selects only current
+workspace rows with state succeeded, nonnull saved report and completed_at in
+that window. Queued, processing, failed, future-completed and older rows are
+excluded. Order is completed_at ascending, then snapshot ID ascending.
+
+The entire window is capped at 100 succeeded points. If a 101st qualifying row
+exists, the request returns 413 too-large. It never truncates, pages, samples,
+interpolates or silently changes the requested window.
+
+The exact success envelope is:
+{apiVersion,dataOrigin:"live",trend:{workspaceId,from,to,days,points,delta,
+verification}}. from is Now-days, to is Now and days is the accepted value.
+verification is always exactly
+{state:"not-run",reason:"Historical snapshot trends are not an SLA, forecast, or independent verification."}.
+
+Each point is one exact saved snapshot projection:
+{snapshotId,name,completedAt,asOf,totals,bySeverity,coverage}. snapshotId and
+name are server values. completedAt is the row completion time. asOf, totals,
+bySeverity and coverage are copied from the saved PostureReport without
+recomputation or reclassification. The existing snapshot invariant remains:
+saved report asOf equals completedAt. Points may share a completion time and
+remain distinct in snapshot ID order.
+
+delta is null for zero or one point. With two or more points it is last minus
+first for exactly these integer metrics:
+findings,openFindings,acceptedRisk,suppressed,falsePositive,critical,high,
+medium,low,info,scannedAssets,unscannedAssets,staleAssets,
+unknownFreshnessAssets. Negative, zero and positive values are valid. There
+are no percentages, rates, SLA calculations, inferred verification, severity
+reclassification, missing-day fill, trend-line interpolation or forecast.
+
+Real acceptance seeds controlled succeeded snapshots plus queued, processing,
+failed, future, old and foreign controls. It proves exact inclusive window
+membership, chronological tie ordering, exact first-to-last arithmetic, the
+100/101 boundary, viewer access, forged-scope rejection, invalid queries,
+repeatable-read transaction and snapshot stability, unchanged snapshot bytes,
+unchanged schema ledger 1..24 and no report-worker, scan, provider, object-store
+or database write side effect.
+
+The Reports UI adds a closed-by-default or otherwise bounded Historical trends
+section. It has a labelled days input with native bounds 1..365 and an explicit
+Refresh trends control. Editing days does not fetch. Opening the section or
+activating Refresh trends performs only GET /api/v1/reports/trends?days=N.
+There is no polling, automatic refresh, snapshot creation or other write.
+
+The section shows exact from and to timestamps, point count, the fixed not-run
+reason, a chronological accessible table of snapshot name, completion time and
+selected exact metrics, plus signed first-to-last deltas. Zero points is an
+authorized empty state. One point says history is insufficient for a delta.
+When timestamps have gaps, the UI states that points are saved snapshots and
+missing periods are not filled.
+
+Viewer sessions can use trend reads while snapshot creation remains unavailable.
+Workspace change, session replacement, logout and protected 401 cancel and
+clear trend points and reject late old-scope responses. A 503 after authorized
+data preserves that data with an unavailable diagnostic. A 403 or 404 withholds
+prior trend data and stays withheld through loading and 503 until a matching
+authorized response succeeds. A malformed 200 is invalid-response, loads no
+replacement data and never grants authority.
+
+Client parsing is strict. It rejects a wrong workspace, from/to/days window,
+point order, duplicate snapshot ID, more than 100 points, timestamp outside the
+window, point asOf/completedAt mismatch, unknown or invalid metric shape,
+inconsistent nested counts, wrong delta keys or arithmetic, nonnull delta with
+fewer than two points, null delta with at least two points, changed verification
+state or wording, wrong API version or wrong data origin.
+
+At 390px with reduced motion, section controls, table and refresh remain
+keyboard reachable without page-level overflow. Opening and refreshing preserve
+deliberately moved focus and surrounding Reports context. No report, snapshot
+or trend payload is written to localStorage, sessionStorage or another browser
+storage surface.

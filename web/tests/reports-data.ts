@@ -39,13 +39,43 @@ export interface SnapshotPage {
   total: number;
   nextCursor: string | null;
 }
+export interface SyntheticTrendPoint {
+  snapshotId: string;
+  name: string;
+  completedAt: string;
+  asOf: string;
+  totals: SyntheticPostureReport["totals"];
+  bySeverity: SyntheticPostureReport["bySeverity"];
+  coverage: SyntheticPostureReport["coverage"];
+}
+export interface SyntheticTrendDelta {
+  findings: number; openFindings: number; acceptedRisk: number; suppressed: number; falsePositive: number;
+  critical: number; high: number; medium: number; low: number; info: number;
+  scannedAssets: number; unscannedAssets: number; staleAssets: number; unknownFreshnessAssets: number;
+}
+export interface SyntheticTrend {
+  workspaceId: string;
+  from: string;
+  to: string;
+  days: number;
+  points: SyntheticTrendPoint[];
+  delta: SyntheticTrendDelta | null;
+  verification: { state: "not-run"; reason: string };
+}
+export interface SyntheticTrendResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  trend: SyntheticTrend;
+}
 
 export const reportAlpha = { id: "1".repeat(32), name: "Synthetic Reports Alpha workspace", role: "admin" as ReportRole };
 export const reportBeta = { id: "3".repeat(32), name: "Synthetic Reports Beta workspace", role: "analyst" as ReportRole };
 export const reportUser = { id: "a".repeat(32), name: "Synthetic reporting analyst", email: "reports@synthetic.invalid" };
 export const verificationReason = "Independent verified-resolution results are not integrated with canonical findings.";
+export const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
 export const overviewPath = "/api/v1/reports/overview";
 export const snapshotsPath = "/api/v1/reports/snapshots";
+export const trendsPath = "/api/v1/reports/trends";
 
 export function withFreshness(report: SyntheticPostureReport, days: number): SyntheticPostureReport {
   if (!Number.isInteger(days) || days < 1 || days > 365) throw new Error("Invalid synthetic freshness window.");
@@ -89,6 +119,96 @@ export const savedReport = withFreshness({
   bySeverity: { critical: 11, high: 19, medium: 31, low: 41, info: 47 },
   coverage: { scannedAssets: 61, unscannedAssets: 10, staleAssets: 13, unknownFreshnessAssets: 3, freshnessWindowDays: 7 },
 }, 7);
+
+const trendMetrics = [
+  {
+    totals: { assets: 10, findings: 10, openFindings: 8, acceptedRisk: 1, expiredAcceptedRisk: 0,
+      suppressed: 2, expiredSuppression: 0, falsePositive: 0, inferredResolved: 1, verifiedResolved: 0 },
+    bySeverity: { critical: 1, high: 2, medium: 3, low: 3, info: 1 },
+    coverage: { scannedAssets: 8, unscannedAssets: 2, staleAssets: 3, unknownFreshnessAssets: 1, freshnessWindowDays: 7 },
+  },
+  {
+    totals: { assets: 12, findings: 12, openFindings: 9, acceptedRisk: 2, expiredAcceptedRisk: 0,
+      suppressed: 1, expiredSuppression: 0, falsePositive: 1, inferredResolved: 0, verifiedResolved: 0 },
+    bySeverity: { critical: 2, high: 3, medium: 3, low: 3, info: 1 },
+    coverage: { scannedAssets: 9, unscannedAssets: 3, staleAssets: 2, unknownFreshnessAssets: 1, freshnessWindowDays: 7 },
+  },
+  {
+    totals: { assets: 9, findings: 7, openFindings: 4, acceptedRisk: 3, expiredAcceptedRisk: 0,
+      suppressed: 1, expiredSuppression: 0, falsePositive: 1, inferredResolved: 0, verifiedResolved: 0 },
+    bySeverity: { critical: 2, high: 1, medium: 1, low: 2, info: 1 },
+    coverage: { scannedAssets: 5, unscannedAssets: 4, staleAssets: 2, unknownFreshnessAssets: 1, freshnessWindowDays: 7 },
+  },
+] satisfies Array<Pick<SyntheticTrendPoint, "totals" | "bySeverity" | "coverage">>;
+
+function trendDelta(first: SyntheticTrendPoint, last: SyntheticTrendPoint): SyntheticTrendDelta {
+  return {
+    findings: last.totals.findings - first.totals.findings,
+    openFindings: last.totals.openFindings - first.totals.openFindings,
+    acceptedRisk: last.totals.acceptedRisk - first.totals.acceptedRisk,
+    suppressed: last.totals.suppressed - first.totals.suppressed,
+    falsePositive: last.totals.falsePositive - first.totals.falsePositive,
+    critical: last.bySeverity.critical - first.bySeverity.critical,
+    high: last.bySeverity.high - first.bySeverity.high,
+    medium: last.bySeverity.medium - first.bySeverity.medium,
+    low: last.bySeverity.low - first.bySeverity.low,
+    info: last.bySeverity.info - first.bySeverity.info,
+    scannedAssets: last.coverage.scannedAssets - first.coverage.scannedAssets,
+    unscannedAssets: last.coverage.unscannedAssets - first.coverage.unscannedAssets,
+    staleAssets: last.coverage.staleAssets - first.coverage.staleAssets,
+    unknownFreshnessAssets: last.coverage.unknownFreshnessAssets - first.coverage.unknownFreshnessAssets,
+  };
+}
+
+export function syntheticTrend(workspaceId: string, days = 30, count = 3): SyntheticTrend {
+  if (![reportAlpha.id, reportBeta.id].includes(workspaceId) || !Number.isInteger(days) || days < 1 || days > 365 ||
+    !Number.isInteger(count) || count < 0 || count > 3) {
+    throw new Error("Only bounded synthetic historical trends may be generated.");
+  }
+  const to = new Date("2026-10-08T13:58:54.000Z");
+  const fractions = count === 0 ? [] : count === 1 ? [0.2] : count === 2 ? [0.85, 0.1] : [0.9, 0.45, 0.05];
+  const prefix = workspaceId === reportAlpha.id ? "9" : "8";
+  const points = fractions.map((fraction, index): SyntheticTrendPoint => {
+    const completedAt = new Date(to.getTime() - Math.max(1, Math.floor(days * 86_400_000 * fraction))).toISOString();
+    const metrics = trendMetrics[count === 1 ? 1 : index === count - 1 ? 2 : index];
+    return {
+      snapshotId: `${prefix}${(index + 1).toString(16).padStart(31, "0")}`,
+      name: `Synthetic ${workspaceId === reportAlpha.id ? "Alpha" : "Beta"} historical point ${index + 1}`,
+      completedAt, asOf: completedAt,
+      totals: structuredClone(metrics.totals),
+      bySeverity: structuredClone(metrics.bySeverity),
+      coverage: structuredClone(metrics.coverage),
+    };
+  });
+  return {
+    workspaceId,
+    from: new Date(to.getTime() - days * 86_400_000).toISOString(),
+    to: to.toISOString(),
+    days,
+    points,
+    delta: points.length < 2 ? null : trendDelta(points[0], points.at(-1)!),
+    verification: { state: "not-run", reason: trendVerificationReason },
+  };
+}
+
+export function syntheticTrendResponse(workspaceId: string, days = 30, count = 3): SyntheticTrendResponse {
+  return { apiVersion, dataOrigin: "live", trend: syntheticTrend(workspaceId, days, count) };
+}
+
+export const trendStorageCanaries = (() => {
+  const trends = [
+    syntheticTrend(reportAlpha.id, 30),
+    syntheticTrend(reportAlpha.id, 7),
+    syntheticTrend(reportBeta.id, 30),
+  ];
+  return [
+    trendVerificationReason,
+    ...trends.flatMap((trend) => [
+      trend.from, trend.to,
+      ...trend.points.flatMap((point) => [point.snapshotId, point.name, point.completedAt]),
+    ]),
+  ];
+})();
 
 export function emptyReport(workspaceId = reportAlpha.id) {
   return withFreshness({
@@ -145,4 +265,16 @@ export function snapshotParameters(url: URL): { limit: number; cursor: string } 
     throw new Error("Snapshot history requires limit 1..500 and a lower-case 32-hex cursor.");
   }
   return { limit, cursor };
+}
+
+export function trendDays(url: URL): number {
+  const values = url.searchParams.getAll("days");
+  if ([...url.searchParams.keys()].some((key) => key !== "days") || values.length > 1) {
+    throw new Error("Historical trends accept exactly one days parameter and no other query keys.");
+  }
+  if (values.length === 0) return 30;
+  if (!/^\d{1,3}$/.test(values[0]) || Number(values[0]) < 1 || Number(values[0]) > 365) {
+    throw new Error("Historical trend days must be one integer from 1 through 365.");
+  }
+  return Number(values[0]);
 }

@@ -540,6 +540,49 @@ export interface ReportOverviewResponse {
   report: PostureReport;
 }
 
+export interface HistoricalTrendPoint {
+  snapshotId: string;
+  name: string;
+  completedAt: string;
+  asOf: string;
+  totals: PostureReport["totals"];
+  bySeverity: PostureReport["bySeverity"];
+  coverage: PostureReport["coverage"];
+}
+
+export interface HistoricalTrendDelta {
+  findings: number;
+  openFindings: number;
+  acceptedRisk: number;
+  suppressed: number;
+  falsePositive: number;
+  critical: number;
+  high: number;
+  medium: number;
+  low: number;
+  info: number;
+  scannedAssets: number;
+  unscannedAssets: number;
+  staleAssets: number;
+  unknownFreshnessAssets: number;
+}
+
+export interface HistoricalTrend {
+  workspaceId: string;
+  from: string;
+  to: string;
+  days: number;
+  points: HistoricalTrendPoint[];
+  delta: HistoricalTrendDelta | null;
+  verification: { state: "not-run"; reason: string };
+}
+
+export interface HistoricalTrendResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  trend: HistoricalTrend;
+}
+
 export type ReportSnapshotState = "queued" | "processing" | "succeeded" | "failed";
 export interface ReportSnapshotInput { name: string; freshnessDays: number }
 export interface ReportSnapshotSummary extends ReportSnapshotInput {

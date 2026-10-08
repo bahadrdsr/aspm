@@ -4,6 +4,7 @@ import type {
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
   FindingDecision, FindingDecisionEvent, FindingDispositionApproval, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
+  HistoricalTrendDelta, HistoricalTrendPoint, HistoricalTrendResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportIntakeSummary, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
@@ -38,6 +39,14 @@ function object(value: unknown, field: string): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
+function exactObject(value: unknown, field: string, keys: readonly string[]): Record<string, unknown> {
+  const result = object(value, field);
+  const actual = Object.keys(result).sort();
+  const expected = [...keys].sort();
+  if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) return invalid(field);
+  return result;
+}
+
 function text(value: unknown, field: string, allowEmpty = false): string {
   if (typeof value !== "string" || (!allowEmpty && value.trim() === "")) return invalid(field);
   return value;
@@ -68,6 +77,11 @@ function timestamp(value: unknown, field: string): string {
 
 function count(value: unknown, field: string): number {
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) return invalid(field);
+  return value;
+}
+
+function signedInteger(value: unknown, field: string): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value)) return invalid(field);
   return value;
 }
 
@@ -879,6 +893,141 @@ function parseReportOverview(value: unknown, workspace: string | null, days: num
   return { apiVersion, dataOrigin, report: postureReport(body.report, workspace, days) };
 }
 
+const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
+const trendTotalKeys = ["assets", "findings", "openFindings", "acceptedRisk", "expiredAcceptedRisk",
+  "suppressed", "expiredSuppression", "falsePositive", "inferredResolved", "verifiedResolved"] as const;
+const trendSeverityKeys = ["critical", "high", "medium", "low", "info"] as const;
+const trendCoverageKeys = ["scannedAssets", "unscannedAssets", "staleAssets",
+  "unknownFreshnessAssets", "freshnessWindowDays"] as const;
+const trendDeltaKeys = ["findings", "openFindings", "acceptedRisk", "suppressed", "falsePositive",
+  "critical", "high", "medium", "low", "info", "scannedAssets", "unscannedAssets",
+  "staleAssets", "unknownFreshnessAssets"] as const;
+
+function trendPoint(value: unknown): HistoricalTrendPoint {
+  const item = exactObject(value, "historical trend point",
+    ["snapshotId", "name", "completedAt", "asOf", "totals", "bySeverity", "coverage"]);
+  const totals = exactObject(item.totals, "historical trend totals", trendTotalKeys);
+  const severity = exactObject(item.bySeverity, "historical trend severity", trendSeverityKeys);
+  const coverage = exactObject(item.coverage, "historical trend coverage", trendCoverageKeys);
+  const result: HistoricalTrendPoint = {
+    snapshotId: reportIdentifier(item.snapshotId, "historical trend snapshot"),
+    name: text(item.name, "historical trend snapshot name"),
+    completedAt: timestamp(item.completedAt, "historical trend completion time"),
+    asOf: timestamp(item.asOf, "historical trend as-of time"),
+    totals: {
+      assets: count(totals.assets, "historical trend assets"),
+      findings: count(totals.findings, "historical trend findings"),
+      openFindings: count(totals.openFindings, "historical trend open findings"),
+      acceptedRisk: count(totals.acceptedRisk, "historical trend accepted risk"),
+      expiredAcceptedRisk: count(totals.expiredAcceptedRisk, "historical trend expired accepted risk"),
+      suppressed: count(totals.suppressed, "historical trend suppressed"),
+      expiredSuppression: count(totals.expiredSuppression, "historical trend expired suppression"),
+      falsePositive: count(totals.falsePositive, "historical trend false positives"),
+      inferredResolved: count(totals.inferredResolved, "historical trend inferred resolved"),
+      verifiedResolved: count(totals.verifiedResolved, "historical trend verified resolved"),
+    },
+    bySeverity: {
+      critical: count(severity.critical, "historical trend critical"),
+      high: count(severity.high, "historical trend high"),
+      medium: count(severity.medium, "historical trend medium"),
+      low: count(severity.low, "historical trend low"),
+      info: count(severity.info, "historical trend info"),
+    },
+    coverage: {
+      scannedAssets: count(coverage.scannedAssets, "historical trend scanned assets"),
+      unscannedAssets: count(coverage.unscannedAssets, "historical trend unscanned assets"),
+      staleAssets: count(coverage.staleAssets, "historical trend stale assets"),
+      unknownFreshnessAssets: count(coverage.unknownFreshnessAssets, "historical trend unknown freshness"),
+      freshnessWindowDays: reportFreshness(coverage.freshnessWindowDays),
+    },
+  };
+  if (Date.parse(result.asOf) !== Date.parse(result.completedAt) ||
+    Object.values(result.bySeverity).reduce((sum, item) => sum + item, 0) !== result.totals.findings ||
+    result.coverage.scannedAssets + result.coverage.unscannedAssets !== result.totals.assets ||
+    result.coverage.staleAssets > result.coverage.scannedAssets ||
+    result.coverage.unknownFreshnessAssets > result.coverage.scannedAssets) {
+    return invalid("historical trend point consistency");
+  }
+  return result;
+}
+
+function trendDelta(value: unknown): HistoricalTrendDelta {
+  const item = exactObject(value, "historical trend delta", trendDeltaKeys);
+  const metric = (key: typeof trendDeltaKeys[number]) =>
+    signedInteger(item[key], `historical trend ${key} delta`);
+  return {
+    findings: metric("findings"),
+    openFindings: metric("openFindings"),
+    acceptedRisk: metric("acceptedRisk"),
+    suppressed: metric("suppressed"),
+    falsePositive: metric("falsePositive"),
+    critical: metric("critical"),
+    high: metric("high"),
+    medium: metric("medium"),
+    low: metric("low"),
+    info: metric("info"),
+    scannedAssets: metric("scannedAssets"),
+    unscannedAssets: metric("unscannedAssets"),
+    staleAssets: metric("staleAssets"),
+    unknownFreshnessAssets: metric("unknownFreshnessAssets"),
+  };
+}
+
+function parseHistoricalTrend(value: unknown, workspace: string | null, days: number): HistoricalTrendResponse {
+  const { body, dataOrigin } = envelope(value);
+  if (dataOrigin !== "live") return invalid("historical trend data origin");
+  const trend = exactObject(body.trend, "historical trend",
+    ["workspaceId", "from", "to", "days", "points", "delta", "verification"]);
+  const workspaceId = text(trend.workspaceId, "historical trend workspace");
+  const from = timestamp(trend.from, "historical trend from");
+  const to = timestamp(trend.to, "historical trend to");
+  const parsedDays = count(trend.days, "historical trend days");
+  if (workspaceId !== workspace || parsedDays !== days ||
+    Date.parse(to) - Date.parse(from) !== days * 24 * 60 * 60 * 1000) {
+    return invalid("historical trend window");
+  }
+  const points = array(trend.points, "historical trend points").map(trendPoint);
+  if (new Set(points.map((point) => point.snapshotId)).size !== points.length ||
+    points.length > 100 || points.some((point, index) =>
+    Date.parse(point.completedAt) < Date.parse(from) || Date.parse(point.completedAt) > Date.parse(to) ||
+    index > 0 && (Date.parse(point.completedAt) < Date.parse(points[index - 1].completedAt) ||
+      Date.parse(point.completedAt) === Date.parse(points[index - 1].completedAt) &&
+      point.snapshotId <= points[index - 1].snapshotId))) {
+    return invalid("historical trend point order");
+  }
+  const delta = trend.delta === null ? null : trendDelta(trend.delta);
+  if ((points.length < 2) !== (delta === null)) return invalid("historical trend delta presence");
+  if (delta !== null) {
+    const first = points[0], last = points[points.length - 1];
+    const expected: HistoricalTrendDelta = {
+      findings: last.totals.findings - first.totals.findings,
+      openFindings: last.totals.openFindings - first.totals.openFindings,
+      acceptedRisk: last.totals.acceptedRisk - first.totals.acceptedRisk,
+      suppressed: last.totals.suppressed - first.totals.suppressed,
+      falsePositive: last.totals.falsePositive - first.totals.falsePositive,
+      critical: last.bySeverity.critical - first.bySeverity.critical,
+      high: last.bySeverity.high - first.bySeverity.high,
+      medium: last.bySeverity.medium - first.bySeverity.medium,
+      low: last.bySeverity.low - first.bySeverity.low,
+      info: last.bySeverity.info - first.bySeverity.info,
+      scannedAssets: last.coverage.scannedAssets - first.coverage.scannedAssets,
+      unscannedAssets: last.coverage.unscannedAssets - first.coverage.unscannedAssets,
+      staleAssets: last.coverage.staleAssets - first.coverage.staleAssets,
+      unknownFreshnessAssets: last.coverage.unknownFreshnessAssets - first.coverage.unknownFreshnessAssets,
+    };
+    if (trendDeltaKeys.some((key) => delta[key] !== expected[key])) return invalid("historical trend delta arithmetic");
+  }
+  const verification = exactObject(trend.verification, "historical trend verification", ["state", "reason"]);
+  if (verification.state !== "not-run" || verification.reason !== trendVerificationReason) {
+    return invalid("historical trend verification");
+  }
+  return {
+    apiVersion, dataOrigin: "live",
+    trend: { workspaceId, from, to, days, points, delta,
+      verification: { state: "not-run", reason: trendVerificationReason } },
+  };
+}
+
 function reportSnapshotSummary(value: unknown, workspace: string | null): ReportSnapshotSummary {
   const item = object(value, "snapshot summary");
   const workspaceId = text(item.workspaceId, "snapshot workspace");
@@ -1485,6 +1634,14 @@ export const api = {
     const workspace = requestAuthority().workspace;
     return reportRead(`/api/v1/reports/overview?freshnessDays=${days}`,
       (value) => parseReportOverview(value, workspace, days), signal);
+  },
+  reportTrends: (days: number, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    if (!Number.isInteger(days) || days < 1 || days > 365) {
+      throw new APIError("Historical trend days must be an integer from 1 through 365.", "invalid-input", false);
+    }
+    return reportRead(`/api/v1/reports/trends?days=${days}`,
+      (value) => parseHistoricalTrend(value, workspace, days), signal);
   },
   reportSnapshots: (limit: number, cursor: string | null, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

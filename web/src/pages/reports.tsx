@@ -11,6 +11,7 @@ import { Icon } from "@/components/icon";
 import { ReportMetrics } from "@/components/report-metrics";
 import { ReportSnapshotCreate } from "@/components/report-snapshot-create";
 import { ReportSnapshotDetail } from "@/components/report-snapshot-detail";
+import { ReportTrends } from "@/components/report-trends";
 import { DataNotice, LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import "./reports.css";
@@ -138,6 +139,7 @@ export function ReportsPage() {
         <span className="subtle-pill">Read only</span>}</div>
     </header>
     <LiveOverview days={days} applyDays={setDays} />
+    <ReportTrends key={workspace.id} />
     <div className="report-saved-layout">
       {selection ? <ReportSnapshotDetail key={selection.generation} id={selection.id} initial={selection.initial} /> :
         <section className="surface report-panel report-selected" aria-label="Selected snapshot">
@@ -147,7 +149,7 @@ export function ReportsPage() {
         </section>}
       <SavedSnapshots onSelect={select} refreshRevision={historyRevision} />
     </div>
-    <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes each read and creation. Snapshots do not run scans or independently verify resolutions. No trends or report exports are generated here.</p>
+    <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes each read and creation. Snapshots and historical points do not run scans, interpolate missing periods, or independently verify resolutions. Report exports are not generated here.</p>
     {canWrite && form && <ReportSnapshotCreate freshnessDays={days} returnFocus={form.trigger} onClose={() => setForm(null)}
       onAccepted={(response) => { setForm(null); select(response.snapshot.id, response); setHistoryRevision((value) => value + 1); }} />}
   </div>;

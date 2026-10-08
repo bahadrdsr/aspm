@@ -6,11 +6,14 @@ import { catalogResponse, findingResponse, workResponse } from "./fixtures";
 import { emptySlackNavigation } from "./slack-navigation";
 import {
   alphaOverview, betaOverview, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
-  savedReport, savedSnapshots, snapshotParameters, snapshotSummary, snapshotsPath, withFreshness,
+  savedReport, savedSnapshots, snapshotParameters, snapshotSummary, snapshotsPath, syntheticTrendResponse,
+  trendDays, trendsPath, trendStorageCanaries, withFreshness,
 } from "./reports-data";
-import type { ReportRole, SnapshotPage, SnapshotState, SyntheticPostureReport, SyntheticSnapshot } from "./reports-data";
+import type {
+  ReportRole, SnapshotPage, SnapshotState, SyntheticPostureReport, SyntheticSnapshot, SyntheticTrend,
+} from "./reports-data";
 
-type Denial = 401 | 403 | 404 | 503;
+type Denial = 401 | 403 | 404 | 413 | 503;
 type Reply<T> = { status: 200; value: T } | { status: Denial };
 export interface ReportCall {
   method: string; path: string; workspace: string | undefined; query: Record<string, string>;
@@ -46,6 +49,7 @@ export class ReportsAPI {
   private historyReplies = new Map<string, Scheduled<SnapshotPage>[]>();
   private historyHolds = new Map<string, Gate[]>();
   private snapshotReplies = new Map<string, Scheduled<SyntheticSnapshot>[]>();
+  private trendReplies = new Map<string, Scheduled<unknown>[]>();
   private createGates: Gate[] = [];
   private callsByRequest = new Map<Request, ReportCall>();
 
@@ -109,6 +113,21 @@ export class ReportsAPI {
     return this.queue(this.snapshotReplies, id, reply, held);
   }
 
+  queueTrend(workspace: string, reply: Reply<SyntheticTrend>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 && reply.value.workspaceId !== workspace) {
+      throw new Error("Queued historical trends must belong to their known synthetic workspace.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: { apiVersion, dataOrigin: "live", trend: structuredClone(reply.value) } }
+      : reply;
+    return this.queue(this.trendReplies, workspace, wrapped, held);
+  }
+
+  queueTrendRaw(workspace: string, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw historical trend replies require a known synthetic workspace.");
+    return this.queue(this.trendReplies, workspace, { status: 200, value: structuredClone(value) }, held);
+  }
+
   holdCreation(): ReportResponseControl {
     const gate = this.gate(true);
     this.createGates.push(gate);
@@ -140,10 +159,11 @@ export class ReportsAPI {
 
   private async error(route: Route, status: number, message?: string) {
     const code = status === 401 ? "unauthorized" : status === 403 ? "forbidden" : status === 404 ? "not-found" :
-      status === 400 ? "invalid-input" : status === 429 ? "rate-limited" : "unavailable";
+      status === 400 ? "invalid-input" : status === 413 ? "too-large" : status === 429 ? "rate-limited" : "unavailable";
     await route.fulfill({ status, json: { apiVersion, error: {
       code, message: message ?? (status === 401 ? "Synthetic reporting session ended." : status === 403 ? "Synthetic report access denied." :
-        status === 404 ? "Synthetic snapshot not found." : "Synthetic report service unavailable."),
+        status === 404 ? "Synthetic snapshot not found." : status === 413 ? "Synthetic historical trend window is too large." :
+          "Synthetic report service unavailable."),
       requestId: "synthetic-reports-request", retryable: false,
     } } });
   }
@@ -160,6 +180,23 @@ export class ReportsAPI {
         const json = key ? { apiVersion, dataOrigin: "synthetic", [key]: reply.value } : reply.value;
         if (key === null) this.pages.push({ call, response: structuredClone(reply.value as SnapshotPage) });
         await route.fulfill({ json });
+      }
+    } finally {
+      gate?.complete();
+      if (gate) this.gates.delete(gate);
+    }
+  }
+
+  private async deliverEnvelope(route: Route, call: ReportCall, scheduled: Scheduled<unknown> | undefined, value: unknown) {
+    const reply = structuredClone(scheduled?.reply ?? { status: 200 as const, value });
+    const gate = scheduled?.gate;
+    try {
+      if (gate) { gate.call = call; gate.arrive(); await gate.wait; }
+      if (reply.status !== 200) {
+        if (reply.status === 401) this.authenticated = false;
+        await this.error(route, reply.status);
+      } else {
+        await route.fulfill({ json: reply.value });
       }
     } finally {
       gate?.complete();
@@ -283,6 +320,15 @@ export class ReportsAPI {
         const scheduled = this.overviewReplies.get(workspace)?.shift();
         if (scheduled?.reply.status === 200) scheduled.reply.value = withFreshness(scheduled.reply.value, days);
         await this.deliver(route, call, scheduled, withFreshness(this.overviews.get(workspace)!, days), "report");
+      } else if (path === trendsPath && method === "GET") {
+        let days: number;
+        try { days = trendDays(url); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic historical trend query.");
+          return;
+        }
+        await this.deliverEnvelope(route, call, this.trendReplies.get(workspace)?.shift(),
+          syntheticTrendResponse(workspace, days));
       } else if (path === snapshotsPath && method === "GET") {
         let parameters: ReturnType<typeof snapshotParameters>;
         try { parameters = snapshotParameters(url); } catch (error) {
@@ -356,7 +402,16 @@ export const test = base.extend<{ reports: ReportsAPI }>({
           visible: document.body.innerText, cookie: document.cookie,
           storage: [...Object.entries(localStorage), ...Object.entries(sessionStorage)],
         }));
+        const storageText = JSON.stringify(snapshot.storage);
         expect.soft(snapshot.storage.map(([key]) => key).filter((key) => /token|api.?key|password|secret|credential/i.test(key))).toEqual([]);
+        const reportCanaries = [
+          alphaOverview.asOf, betaOverview.asOf, savedReport.asOf,
+          ...savedSnapshots(reportAlpha.id, 2).flatMap((item) => [item.id, item.name]),
+          ...trendStorageCanaries,
+        ];
+        for (const canary of reportCanaries) {
+          expect.soft(storageText, "Report, snapshot and trend data must not enter browser storage.").not.toContain(canary);
+        }
         for (const secret of secretCanaries) {
           expect.soft(JSON.stringify(snapshot) + page.url() + consoleText.join("\n"),
             "Synthetic credentials must not leak into DOM, URL, readable cookies, storage or console.").not.toContain(secret);

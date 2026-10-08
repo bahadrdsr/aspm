@@ -47,8 +47,9 @@ roles, assets, queued report intake, findings and scan history, CSV exports,
 and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
-live posture reports with saved snapshots, Slack/Jira/Teams configuration and
-delivery history, selected GitHub source collection, and selected Azure DevOps
+live posture reports with saved snapshots and bounded snapshot-backed historical
+trends, Slack/Jira/Teams configuration and delivery history, selected GitHub
+source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
 multi-source finding correlation with bounded candidates, retention
 policy/hold/preview/execution
@@ -788,8 +789,22 @@ and details but cannot create snapshots; server authorization remains authoritat
 continuation failure and retries that same cursor. Creation refreshes history;
 **Refresh history** otherwise starts again from the first page. Workspace or
 session changes clear reports and cancel old reads. Denied or missing selected
-details remain cleared until an authorized response succeeds. There is no
-automatic polling, report storage in the browser, trend engine or Reports export UI.
+details remain cleared until an authorized response succeeds.
+
+**Historical trends** is closed by default and reads only succeeded immutable
+saved snapshots in an explicit 1 through 365 day window, initially 30 days.
+Opening it performs one bounded read. Editing **Trend days** performs no request;
+**Refresh trends** explicitly applies the draft. A complete window may contain
+at most 100 points and is never truncated, sampled, paged, interpolated, or
+filled across missing periods. The table preserves each snapshot's saved
+completion/as-of time and selected exact metrics. Deltas subtract the first
+point from the last point; they are not rates, forecasts, SLA results, or
+independent verification.
+Viewers can read trends but still cannot create snapshots. Workspace/session
+changes and authorization denials clear scoped points; transient failures keep
+the last authorized result. There is no automatic polling, report storage in
+the browser, or Reports export UI. See `docs\m10-historical-trends.md`.
+
 Synthetic browser workflows do not qualify the real reporting worker, durable
 storage or live authorization; those require separate backend and HTTPS checks.
 

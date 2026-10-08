@@ -45,7 +45,9 @@ export function ReportMetrics({ report, origin }: { report: PostureReport; origi
       </dl>
       <div className="report-window"><strong>Freshness window: {report.freshnessWindow.days} days.</strong>
         <p><time dateTime={report.freshnessWindow.from}>{timestampLabel(report.freshnessWindow.from)}</time>
-          <span> to </span><time dateTime={report.freshnessWindow.to}>{timestampLabel(report.freshnessWindow.to)}</time></p>
+          <span> to </span>{report.freshnessWindow.to === report.asOf ?
+            <span>{timestampLabel(report.freshnessWindow.to)}</span> :
+            <time dateTime={report.freshnessWindow.to}>{timestampLabel(report.freshnessWindow.to)}</time>}</p>
       </div>
       <p className="report-help">Scanned assets have a successful, complete full-scan import. Stale and unknown source freshness are distinct from unscanned assets; unknown does not mean current.</p>
     </div>
