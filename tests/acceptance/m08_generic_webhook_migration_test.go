@@ -62,21 +62,31 @@ func priorV22Catalog(t *testing.T, current map[string][]string) map[string][]str
 	return prior
 }
 
-func TestM08_V22GenericWebhookMigrationRemainsExactThroughV23(t *testing.T) {
+func TestM08_V22GenericWebhookMigrationRemainsExactThroughV24(t *testing.T) {
 	h := newNotificationHarness(t)
 	ledger := notificationCatalogRows(t, h,
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+` AS ledger ORDER BY ledger.version`)
 	wantLedger := []string{
 		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
+		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
 	}
 	if !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("V23 migration ledger got %v, want %v", ledger, wantLedger)
+		t.Fatalf("V24 migration ledger got %v, want %v", ledger, wantLedger)
 	}
 
 	names := append(sourcecompat.CurrentTables(), "integration_connections", "finding_deliveries")
 	currentCatalog := notificationDefinitions(t, h, names)
-	v22 := priorV23Catalog(t, currentCatalog)
+	core := catalogForTables(currentCatalog, sourcecompat.CurrentTables())
+	sourcecompat.ValidateCurrentCatalog(t, core)
+	v23Core := sourcecompat.ProjectV24Current(t, core)
+	v23 := make(map[string][]string, len(currentCatalog))
+	for key, rows := range currentCatalog {
+		v23[key] = slices.Clone(rows)
+	}
+	for key, rows := range v23Core {
+		v23[key] = slices.Clone(rows)
+	}
+	v22 := priorV23Catalog(t, v23)
 	policyCatalog := catalogForTables(v22, sourcecompat.V22Tables())
 	if differences := v21CatalogDifferences(policyCatalog, sourcecompat.ExpectedV22Catalog()); len(differences) != 0 {
 		t.Fatalf("V22 notification-policy catalog differences:\n%s", strings.Join(differences, "\n"))

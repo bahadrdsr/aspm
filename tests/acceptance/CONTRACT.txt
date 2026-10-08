@@ -550,3 +550,158 @@ Historical V1-V22 SQL and complete rows remain exact. Current startup and
 published V5-V11 upgrade paths record versions 1..23 exactly once, validate the
 exact V23 projector/catalog delta, preserve old API/native rows, and reopen
 without repeating migration.
+
+M08 V24 HISTORY ARCHIVE EXECUTION AND VERIFIED RETRIEVAL:
+V24 enables execution only for the exact four V23 history kinds. It reuses the
+existing retention previews, approvals, runs, run items, leases, fences,
+bounded attempts, archive publication ledger, orphan reconciliation and S3
+authority. It adds no parallel queue, worker, action, class, policy field or
+provider call. Correlation-event archive execution remains byte-compatible.
+
+An approved V23 preview queues through
+POST /api/v1/retention/previews/{previewId}/executions with the existing exact
+revision, snapshotDigest, nonblank rationale and idempotencyKey contract.
+History items become ordinary apply-preview retention run items. Exact replay
+returns the same run and a changed replay conflicts. The V23 preview-only error
+is removed only for V24 current schemas. The worker dispatches archive-audit by
+resourceKind and uses these exact archive directories:
+- finding-decision-event -> finding-decision-events
+- notification-policy-revision -> notification-policy-revisions
+- finding-change-event -> finding-change-events
+- notification-policy-event -> notification-policy-events
+Object identity remains configured prefix/workspace/directory/resourceId/
+lowercase payload digest through retentionStore. The publication ledger stores
+the singular API resourceKind and exact resourceId.
+
+Each eligible item archives the exact canonical V23 bytes already fixed above.
+Before object I/O the worker reads the live row, canonicalizes those bytes,
+checks current V23 protection, and commits publication intent and attempt
+authority. No SQL transaction or checked-out SQL connection is retained during
+PUT, HEAD or exact read verification. One eligible attempt performs at most one
+PUT. It verifies exact bytes, lowercase sha256 digest and byte size before
+opening a short fenced transaction. That transaction locks the current run and
+item, re-reads the event plus all current V23 protection authority, and requires
+the same payload bytes and detail revision that authorized the write.
+
+The exact protection reason order remains legal-hold,
+current-policy-revision, pending-policy-evaluation, active-delivery after
+removing inapplicable reasons. Finding-change state, worker, fence and lease,
+current policy identity, pending evaluation dependencies, linked delivery
+state, hold state, candidate membership and every canonical payload field are
+rechecked after object I/O. If any authority changed, no event row references
+the object. The publication is durably orphan, the item is protected with the
+current exact reasons when any apply, otherwise state-changed, and existing
+grace/reconciliation owns later cleanup. The worker never deletes that object
+inline. A stale worker result cannot overwrite a newer run, item or event
+revision.
+
+Successful attachment changes only detail_availability, detail_revision,
+archive_key, archive_digest, archive_size and archived_at on the event row.
+Every original V23 payload column remains byte/semantically identical. The
+publication becomes referenced and the item becomes succeeded with outcome
+archived. A row already archived with the exact complete reference is durable
+succeeded/already-archived and performs no PUT. Available history is selected
+by later previews; archived, missing and corrupt history is excluded. V24 does
+not null, compact, rewrite or delete event payload fields and makes no physical
+database savings claim.
+
+Cancellation, worker close, lease expiry and process loss preserve existing
+bounded resumable semantics. A verified object without an attached row remains
+publishing/orphan authority for existing reconciliation and grace handling.
+Missing or corrupt write verification settles the item truthfully and never
+attaches an unverified object. No automatic delivery or other provider I/O is
+permitted.
+
+GET /api/v1/retention/history/{resourceKind}/{resourceId} is the only core
+history archive retrieval route. It accepts exactly finding-decision-event,
+notification-policy-revision, finding-change-event and
+notification-policy-event plus a lowercase 32-hex resourceId. Every current
+workspace member may retrieve. A foreign workspace, missing row or ID supplied
+under the wrong kind returns 404 not-found. An undeclared kind returns 404
+not-found. A malformed ID returns 400 invalid-input. An available row returns
+409 history-not-archived without S3 I/O.
+
+Archived, missing and corrupt rows retain one complete immutable archive
+reference. Retrieval reads that exact key through configured archive storage,
+verifies exact size and sha256 digest, then returns the object bytes unchanged
+with status 200 and these exact metadata headers:
+- Content-Type: application/json
+- Content-Disposition:
+  attachment; filename="history-{resourceKind}-{resourceId}.json"
+- Content-Length: exact decimal byte size
+- X-ASPM-History-Resource-Kind: exact singular resourceKind
+- X-ASPM-History-Resource-ID: exact resourceId
+- X-ASPM-History-Availability: archived
+- X-ASPM-Archive-Digest: exact lowercase sha256 digest
+- X-ASPM-Archive-Size: exact decimal byte size
+- X-ASPM-Detail-Revision: exact positive row revision returned by the read
+The common no-store and nosniff headers remain required. The body is not wrapped,
+reformatted or logged.
+
+An absent referenced object returns 424 evidence-missing and revision-fenced
+state missing. A size, digest or byte mismatch returns 422 evidence-corrupt and
+revision-fenced state corrupt. An archived read never rewrites the object. A
+later exact valid read from missing or corrupt may revision-fence the row back
+to archived and returns the valid bytes. Concurrent retrieval cannot overwrite
+a newer event revision or availability.
+
+The existing decision, finding-change, notification-policy and delivery APIs
+remain byte-compatible because V24 retains every original event payload field.
+Archive retrieval is separate and explicit. Archive reference/orphan preview
+logic checks archive_key on observations, finding_correlation_events and all
+four V24 event tables. A referenced history object is never an orphan candidate.
+A crash-created unreferenced publication becomes eligible only through the
+existing publication state, reconciliation and grace period.
+
+Retention Settings removes the V23 history preview-only message. An approved
+history preview displays the ordinary Queue retention execution form for an
+admin. Queueing is one explicit action. Progress changes only after manual
+Refresh execution; the UI never polls. Viewers keep no policy, hold, approval
+or execution mutation controls, but current backend membership permits explicit
+retrieval.
+
+Run items display protected, succeeded, missing, corrupt and failed states
+without relabeling. A succeeded archived item for one of the four history kinds
+offers exactly one Retrieve archived history action. Retrieval keeps the exact
+server body as inert text, validates the response metadata and JSON syntax, and
+offers display/download without reconstructing event fields or executing
+content. It stores no retrieved body, archive reference or secret in browser
+storage or logs. Workspace change, session loss, logout and 401 clear the body
+and metadata, abort the request and ignore any late old-scope response. Mobile,
+reduced-motion focus behavior and the legacy retention UI remain intact.
+
+The strict client accepts the four declared history kinds and exact run item
+states only. It rejects undeclared kinds, undeclared availability values,
+partial or malformed archive metadata, a response kind or ID that differs from
+the request, a digest/size mismatch, and a retrieval body that is not JSON.
+The prior valid receipt or retrieved body remains displayed after a rejected
+refresh only while the same authorized workspace/session is still current.
+
+V24 MIGRATION: additive version 24 appends these columns in this exact order to
+app_finding_decision_events, app_notification_policy_revisions,
+app_finding_change_events and app_notification_policy_events:
+- detail_availability text NOT NULL DEFAULT 'available'
+- detail_revision bigint NOT NULL DEFAULT 1
+- archive_key text NULL
+- archive_digest text NULL
+- archive_size bigint NULL
+- archived_at timestamptz NULL
+Each table has an exact named detail availability CHECK allowing only available,
+archived, missing and corrupt, an exact named detail revision CHECK requiring
+detail_revision>0, and an exact named archive reference CHECK requiring all four
+archive reference fields to be null or all four to be nonnull. Constraint names
+are app_{table}_detail_availability_check,
+app_{table}_detail_revision_check and app_{table}_archive_reference_check.
+
+V24 widens only app_retention_run_items_resource_kind_check from import,
+observation, correlation-event and archive-object to those kinds followed by
+the four V23 history kinds. It widens only
+app_archive_publications_resource_kind_check from observation and
+correlation-event to those kinds followed by the four history kinds. V23 hold
+and preview constraints remain exact. No relation, index, foreign key, worker
+action, class, policy field or original event payload column changes. Acceptance
+fixes no V24 index because bounded execution and exact-ID retrieval use existing
+primary/unique identities. Historical V1-V23 SQL and complete rows remain exact.
+Fresh current and actual populated published V5, V6, V7, V8, V9, V10 and V11
+upgrades record versions 1..24 exactly once, preserve historical rows and API
+bytes, validate the exact V24 catalog projector, and reopen without repetition.

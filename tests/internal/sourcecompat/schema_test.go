@@ -341,11 +341,125 @@ func TestValidateCurrentCatalogComposesV22AndV23Exactly(t *testing.T) {
 		}
 		t.Fatal("synthetic V23 current catalog fixture drifted from the exact expected catalog")
 	}
-	ValidateCurrentCatalog(t, current)
+	ValidateV23CurrentCatalog(t, current)
 	prior := ProjectV23Current(t, current)
 	if !reflect.DeepEqual(catalogSubset(prior, v21Tables), exactV22Catalog) {
 		t.Fatal("V23 current catalog did not project to the exact V22 notification-policy catalog")
 	}
+}
+
+func TestProjectV24AcceptsOnlyExactHistoryArchiveColumnsAndChecks(t *testing.T) {
+	before := clone(exactV23CurrentCatalogForV24)
+	current, err := expectedV24Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ValidateV24Catalog(t, before, current)
+	if got := ProjectV24(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V24 projection did not restore the V23 catalog")
+	}
+	wantTail := []string{
+		"detail_availability|text|true|'available'::text",
+		"detail_revision|bigint|true|1",
+		"archive_key|text|false|",
+		"archive_digest|text|false|",
+		"archive_size|bigint|false|",
+		"archived_at|timestamp with time zone|false|",
+	}
+	for _, table := range v24HistoryTables {
+		columns := current[table+"/columns"]
+		if len(columns) < len(wantTail) ||
+			!reflect.DeepEqual(columns[len(columns)-len(wantTail):], wantTail) {
+			t.Fatalf("V24 %s archive columns were missing or reordered", table)
+		}
+		if !reflect.DeepEqual(current[table+"/indexes"], before[table+"/indexes"]) {
+			t.Fatalf("V24 added an unapproved %s index", table)
+		}
+		for _, value := range []struct{ name, definition string }{
+			{"app_" + table + "_archive_reference_check", V24ArchiveReferenceCheck},
+			{"app_" + table + "_detail_availability_check", V24DetailAvailabilityCheck},
+			{"app_" + table + "_detail_revision_check", V24DetailRevisionCheck},
+		} {
+			if !slices.Contains(current[table+"/constraints"], value.name+"|"+value.definition) {
+				t.Fatalf("V24 %s exact constraint %s is missing", table, value.name)
+			}
+		}
+	}
+	if !slices.Contains(current["retention_run_items/constraints"],
+		"app_retention_run_items_resource_kind_check|"+V24RetentionRunItemResourceKindCheck) {
+		t.Fatal("V24 did not widen the retention run item resource kinds exactly")
+	}
+	if !slices.Contains(current["archive_publications/constraints"],
+		"app_archive_publications_resource_kind_check|"+V24ArchivePublicationResourceKindCheck) {
+		t.Fatal("V24 did not widen the archive publication resource kinds exactly")
+	}
+	if !reflect.DeepEqual(V24Tables(), []string{
+		"finding_decision_events", "notification_policy_revisions",
+		"finding_change_events", "notification_policy_events",
+		"retention_run_items", "archive_publications",
+	}) {
+		t.Fatal("V24 touched-table enumeration changed")
+	}
+}
+
+func TestProjectV24RejectsUnapprovedHistoryArchiveDeltas(t *testing.T) {
+	before := clone(exactV23CurrentCatalogForV24)
+	valid, err := expectedV24Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, mutate := range []func(map[string][]string){
+		func(value map[string][]string) {
+			columns := value["finding_decision_events/columns"]
+			value["finding_decision_events/columns"] = append(
+				slices.Clone(columns[:len(columns)-1]), "unapproved|text|false|")
+		},
+		func(value map[string][]string) {
+			rows := value["notification_policy_revisions/constraints"]
+			for index, row := range rows {
+				if row == "app_notification_policy_revisions_archive_reference_check|"+V24ArchiveReferenceCheck {
+					rows[index] = "app_notification_policy_revisions_archive_reference_check|CHECK (archive_key IS NULL)"
+				}
+			}
+		},
+		func(value map[string][]string) {
+			value["finding_change_events/indexes"] = append(value["finding_change_events/indexes"],
+				"app_finding_change_events_archive_idx|unexpected")
+		},
+		func(value map[string][]string) {
+			rows := value["retention_run_items/constraints"]
+			for index, row := range rows {
+				if row == "app_retention_run_items_resource_kind_check|"+V24RetentionRunItemResourceKindCheck {
+					rows[index] = "app_retention_run_items_resource_kind_check|" +
+						V23RetentionRunItemResourceKindCheck
+				}
+			}
+		},
+		func(value map[string][]string) {
+			value["archive_publications/columns"] = append(value["archive_publications/columns"],
+				"unapproved|text|false|")
+		},
+	} {
+		current := clone(valid)
+		mutate(current)
+		if _, err := projectV24(before, current); err == nil {
+			t.Fatal("V24 accepted an unapproved history archive catalog delta")
+		}
+	}
+}
+
+func TestValidateCurrentCatalogComposesV23AndV24Exactly(t *testing.T) {
+	current := ExpectedV24Catalog()
+	ValidateCurrentCatalog(t, current)
+	prior := ProjectV24Current(t, current)
+	if !reflect.DeepEqual(prior, exactV23CurrentCatalogForV24) {
+		t.Fatal("V24 current catalog did not project to the exact expanded V23 catalog")
+	}
+	v23 := map[string][]string{}
+	for key := range exactV23Catalog {
+		v23[key] = slices.Clone(prior[key])
+	}
+	ValidateV23CurrentCatalog(t, v23)
 }
 
 func catalogSubset(source map[string][]string, tables []string) map[string][]string {
@@ -589,6 +703,25 @@ func TestProjectRelationsV23AcceptsOnlyFourCandidateIndexes(t *testing.T) {
 	slices.Reverse(current)
 	if got := ProjectRelationsV23(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("V23 relation projection did not preserve the V22 relation set")
+	}
+}
+
+func TestProjectRelationsV24AddsNoRelationOrIndex(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	current = append(current, v21Relations...)
+	current = append(current, v23Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV24(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("V24 relation projection did not preserve the V23 relation set")
 	}
 }
 

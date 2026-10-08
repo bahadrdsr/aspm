@@ -404,7 +404,7 @@ func v23Approval(preview retentionPreview, rationale, key string) object {
 	}
 }
 
-func TestM08_V23HistoryRetentionPreviewHoldsBytesAndExecutionGate(t *testing.T) {
+func TestM08_V23HistoryRetentionPreviewHoldsBytesAndApprovalRemainNonDestructive(t *testing.T) {
 	h, objectStore := newV23HistoryHarness(t)
 	provider := &providerTripwire{}
 	fixture := seedV23HistoryRetention(t, h, provider)
@@ -561,27 +561,15 @@ func TestM08_V23HistoryRetentionPreviewHoldsBytesAndExecutionGate(t *testing.T) 
 	changedApproval := v23Approval(preview, "Changed V23 replay must conflict.", "v23-history-approval")
 	h.denied(h.admin, "POST", "/api/v1/retention/previews/"+preview.ID+"/approvals",
 		changedApproval, 409, "conflict")
-	var runsBefore, itemsBefore int
-	ok(t, "count V23 runs before execution gate", h.services.db.QueryRow(h.services.ctx,
+	var runsAfterApproval, itemsAfterApproval int
+	ok(t, "count V23 runs after approval", h.services.db.QueryRow(h.services.ctx,
 		`SELECT count(*) FROM `+notificationTable(h, "retention_runs")+` WHERE workspace_id=$1`,
-		h.admin.workspace).Scan(&runsBefore))
-	ok(t, "count V23 run items before execution gate", h.services.db.QueryRow(h.services.ctx,
+		h.admin.workspace).Scan(&runsAfterApproval))
+	ok(t, "count V23 run items after approval", h.services.db.QueryRow(h.services.ctx,
 		`SELECT count(*) FROM `+notificationTable(h, "retention_run_items")+` WHERE workspace_id=$1`,
-		h.admin.workspace).Scan(&itemsBefore))
-	h.denied(h.admin, "POST", "/api/v1/retention/previews/"+preview.ID+"/executions", object{
-		"revision": approved.Revision, "snapshotDigest": approved.SnapshotDigest,
-		"rationale":      "V23 history execution must remain unavailable.",
-		"idempotencyKey": "v23-history-execution-gate",
-	}, 409, "preview-only")
-	var runsAfter, itemsAfter int
-	ok(t, "count V23 runs after execution gate", h.services.db.QueryRow(h.services.ctx,
-		`SELECT count(*) FROM `+notificationTable(h, "retention_runs")+` WHERE workspace_id=$1`,
-		h.admin.workspace).Scan(&runsAfter))
-	ok(t, "count V23 run items after execution gate", h.services.db.QueryRow(h.services.ctx,
-		`SELECT count(*) FROM `+notificationTable(h, "retention_run_items")+` WHERE workspace_id=$1`,
-		h.admin.workspace).Scan(&itemsAfter))
-	equal(t, "V23 execution gate created no run", runsAfter, runsBefore)
-	equal(t, "V23 execution gate created no run item", itemsAfter, itemsBefore)
+		h.admin.workspace).Scan(&itemsAfterApproval))
+	equal(t, "V23 approval created no run", runsAfterApproval, 0)
+	equal(t, "V23 approval created no run item", itemsAfterApproval, 0)
 	for id, before := range beforePayloads {
 		var current []byte
 		switch fixture.kinds[id] {
@@ -599,7 +587,7 @@ func TestM08_V23HistoryRetentionPreviewHoldsBytesAndExecutionGate(t *testing.T) 
 		}
 	}
 	if provider.calls.Load() != 0 || objectStore.calls.Load() != 0 {
-		t.Fatal("V23 preview, approval or execution gate performed provider or object-store I/O")
+		t.Fatal("V23 preview or approval performed provider or object-store I/O")
 	}
 }
 

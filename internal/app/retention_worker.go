@@ -444,6 +444,9 @@ func (w *RetentionWorker) processRetentionItem(ctx context.Context,
 	case "expire-archive":
 		return w.expireObservationArchive(ctx, run, item)
 	case "archive-audit":
+		if isHistoryRetentionKind(item.ResourceKind) {
+			return w.archiveHistoryEvent(ctx, run, item)
+		}
 		return w.archiveAuditEvent(ctx, run, item)
 	case "restore-archive":
 		return w.restoreObservation(ctx, run, item)

@@ -77,19 +77,21 @@ func v21CatalogDifferences(got, want map[string][]string) []string {
 	return differences
 }
 
-func TestM08_V21NotificationPolicyCatalogRemainsExactThroughV23(t *testing.T) {
+func TestM08_V21NotificationPolicyCatalogRemainsExactThroughV24(t *testing.T) {
 	h := newNotificationHarness(t)
 	ledger := notificationCatalogRows(t, h,
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+` AS ledger ORDER BY ledger.version`)
 	wantLedger := []string{
 		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
+		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
 	}
 	if !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("V23 migration ledger got %v, want %v", ledger, wantLedger)
+		t.Fatalf("V24 migration ledger got %v, want %v", ledger, wantLedger)
 	}
 	currentCatalog := notificationDefinitions(t, h, sourcecompat.CurrentTables())
-	v22 := priorV23Catalog(t, currentCatalog)
+	sourcecompat.ValidateCurrentCatalog(t, currentCatalog)
+	v23 := sourcecompat.ProjectV24Current(t, currentCatalog)
+	v22 := priorV23Catalog(t, catalogForTables(v23, sourcecompat.V23CurrentTables()))
 	catalog := priorV22Catalog(t, catalogForTables(v22, sourcecompat.V22Tables()))
 	if differences := v21CatalogDifferences(catalog, sourcecompat.ExpectedV21Catalog()); len(differences) != 0 {
 		t.Fatalf("projected V21 catalog differences:\n%s", strings.Join(differences, "\n"))

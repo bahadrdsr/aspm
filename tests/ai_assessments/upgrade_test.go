@@ -183,7 +183,7 @@ func seedPublishedV7(t *testing.T, f *fixture) (legacySeed, string) {
 func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
 	t.Run("fresh-v8-and-reopen", func(t *testing.T) {
 		h := newHarness(t, false)
-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}), "fresh current core did not apply through V23")
+		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}), "fresh current core did not apply through V24")
 		finding := h.seed()
 		p, key := h.profile("local", true)
 		pol, grant := h.approve(p)
@@ -194,7 +194,7 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
 		w := h.worker(h.configForWorker("fresh-v8"))
 		process(t, h.ctx, w, true)
 		h.assertResult(h.job(h.admin, job.ID), p, v, "inconclusive")
-		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}), "reopen repeated or skipped a migration")
+		check(t, reflect.DeepEqual(ledger(t, h.fixture), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}), "reopen repeated or skipped a migration")
 	})
 	t.Run("published-v7-upgrade", func(t *testing.T) {
 		f := newFixture(t)
@@ -215,11 +215,11 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
 		target := filepath.Join(required(t, "ASPM_ASSESSMENT_ARTIFACT_DIR"), "published-v7-upgrade-"+nonce(t)+".json")
 		must(t, "record nonsecret actual V7 upgrade observation", os.WriteFile(target, encoded(t, observation), 0600))
 		t.Log("actual published-v7 upgrade observation:", target)
-		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}),
-			"CURRENT core did not apply required migrations through V23 exactly once over actual published populated V7")
+		check(t, reflect.DeepEqual(after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}),
+			"CURRENT core did not apply required migrations through V24 exactly once over actual published populated V7")
 		sourcecompat.ValidateCurrentCatalog(t, v21Definitions(t, f))
-		check(t, reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V23 changed a legacy definition")
-		check(t, reflect.DeepEqual(oldData, sourcecompat.ProjectRowsCurrent(t, oldData, legacyData(t, f, baseline.LegacyTables))), "V23 changed actual pre-upgrade API-created legacy data")
+		check(t, reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V24 changed a legacy definition")
+		check(t, reflect.DeepEqual(oldData, sourcecompat.ProjectRowsCurrent(t, oldData, legacyData(t, f, baseline.LegacyTables))), "V24 changed actual pre-upgrade API-created legacy data")
 		must(t, "close migration probe before enabled core", current.Close())
 		h := &harness{fixture: f, admin: actor{ID: legacy.UserID, Workspace: legacy.WorkspaceID, Cookie: legacy.Cookie}}
 		h.open()
@@ -237,10 +237,10 @@ func TestAA8PublishedV7ToV8KeepsLegacyAPIDataAndReopens(t *testing.T) {
 		h.reopen()
 		fresh := h.worker(h.configForWorker("upgraded-reopened-worker"))
 		process(t, h.ctx, fresh, false)
-		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}) &&
-			reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V23 reopen changed legacy definitions or exact ledger")
+		check(t, reflect.DeepEqual(ledger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}) &&
+			reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, definitions(t, f, baseline.LegacyTables))), "V24 reopen changed legacy definitions or exact ledger")
 		sourcecompat.ValidateCurrentCatalog(t, v21Definitions(t, f))
 		check(t, h.job(h.admin, job.ID).State == "succeeded", "upgraded durable advisory lost on independent reopen")
-		t.Log("AA8 populated published-V7 -> current through V23 and legacy contracts/reopen verified")
+		t.Log("AA8 populated published-V7 -> current through V24 and legacy contracts/reopen verified")
 	})
 }

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { api } from "@/api/client";
 import type {
-  RetentionHold, RetentionPolicyInput, RetentionPreview, RetentionResourceKind, RetentionRun,
+  ArchivedHistory, HistoryRetentionResourceKind, RetentionHold, RetentionPolicyInput,
+  RetentionPreview, RetentionResourceKind, RetentionRun, RetentionRunItem,
 } from "@/api/types";
 import { label, timestampLabel } from "@/lib/format";
 import { useResource } from "@/lib/use-resource";
@@ -14,6 +15,11 @@ import { Button } from "./ui/button";
 
 function bytesLabel(value: number) {
   return `${new Intl.NumberFormat().format(value)} bytes`;
+}
+
+function historyKind(value: RetentionResourceKind): value is HistoryRetentionResourceKind {
+  return ["finding-decision-event", "notification-policy-revision",
+    "finding-change-event", "notification-policy-event"].includes(value);
 }
 
 function PolicyEditor({ policy, disabled, onSaved }: {
@@ -128,10 +134,6 @@ function Preview({ preview, canApprove, onRefresh, onApproved, onQueued }: {
   const [intent] = useState(() => crypto.randomUUID());
   const [executionRationale, setExecutionRationale] = useState("");
   const [executionIntent] = useState(() => crypto.randomUUID());
-  const historyPreviewOnly = preview.items.some((item) => [
-    "finding-decision-event", "notification-policy-revision",
-    "finding-change-event", "notification-policy-event",
-  ].includes(item.resourceKind));
   function approve(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void action.run((signal) => api.approveRetentionPreview(preview.id, {
@@ -180,13 +182,12 @@ function Preview({ preview, canApprove, onRefresh, onApproved, onQueued }: {
       <p role="status">Approved by <code>{preview.approvedBy}</code> at{" "}
         <time dateTime={preview.approvedAt ?? ""}>{preview.approvedAt ? timestampLabel(preview.approvedAt) : ""}</time>.
         Approval alone is non-destructive and does not start an executor.</p>
-      {historyPreviewOnly ? <p>Preview only: history archive execution is unavailable until V24.</p> :
       <form className="application-form" aria-label="Queue retention execution" onSubmit={execute}>
         <label>Execution rationale<textarea value={executionRationale} required rows={3} maxLength={8192}
           onChange={(event) => setExecutionRationale(event.target.value)} /></label>
         <FormError error={execution.error} />
         <ActionButton type="submit" disabled={!canApprove || execution.pending}>Queue approved execution</ActionButton>
-      </form>}
+      </form>
     </>}
     {preview.state === "stale" && <p role="alert">This preview is stale. Create a new preview after reviewing current policy, holds and references.</p>}
   </section>;
@@ -198,6 +199,22 @@ function RetentionRunStatus({ run, pending, error, onRefresh }: {
   error: ReturnType<typeof useScopedAction>["error"];
   onRefresh: () => void;
 }) {
+  const retrieval = useScopedAction();
+  const [history, setHistory] = useState<ArchivedHistory | null>(null);
+  function retrieve(item: RetentionRunItem) {
+    if (!historyKind(item.resourceKind)) return;
+    const kind = item.resourceKind;
+    void retrieval.run((signal) => api.retentionHistory(kind, item.resourceId, signal), setHistory);
+  }
+  function download() {
+    if (!history) return;
+    const url = URL.createObjectURL(new Blob([history.text], { type: "application/json" }));
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = history.filename;
+    anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
   return <section aria-label="Retention execution status">
     <div className="section-heading"><div><h3>Execution {label(run.state)}</h3>
       <p><code>{run.id}</code>, {label(run.operation)}.</p></div>
@@ -211,8 +228,21 @@ function RetentionRunStatus({ run, pending, error, onRefresh }: {
       {item.objectKey && <p>Exact product archive key: <code>{item.objectKey}</code>.</p>}
       {item.protectedReasons.length > 0 && <p>Protected: {item.protectedReasons.map(label).join(", ")}.</p>}
       {item.outcome && <p>Outcome: {label(item.outcome)}.</p>}
-      {item.failure && <p role="alert">{item.failure.message}</p>}
+      {item.failure && <p>{item.failure.message}</p>}
+      {item.state === "succeeded" && historyKind(item.resourceKind) &&
+        (item.outcome === "archived" || item.outcome === "already-archived") &&
+        <ActionButton variant="outline" disabled={retrieval.pending}
+          onClick={() => retrieve(item)}>Retrieve archived history</ActionButton>}
     </li>)}</ul>
+    {history && <section aria-label="Archived history retrieval">
+      <h4>Archived history retrieval</h4>
+      <p>{label(history.resourceKind)} <code>{history.resourceId}</code>.</p>
+      <p><code>{history.digest}</code>, {bytesLabel(history.sizeBytes)}, Detail revision {history.detailRevision}.</p>
+      <FormError error={retrieval.error} />
+      <pre>{history.text}</pre>
+      <Button type="button" variant="outline" onClick={download}>Download archived history</Button>
+    </section>}
+    {!history && <FormError error={retrieval.error} />}
     <p className="muted small">Execution advances only in the independent retention worker. Refresh is manual and never retries an item.</p>
   </section>;
 }

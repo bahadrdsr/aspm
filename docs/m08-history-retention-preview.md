@@ -39,10 +39,9 @@ in the preview binding. Any relevant change makes approval stale.
 The existing 200-resource whole-workspace cap, 15-minute expiry, exact
 approval digest, rationale, idempotency, and replay behavior remain unchanged.
 
-An approved preview containing any V23 history resource is deliberately
-preview-only. Attempting to queue it returns `409 preview-only` before creating
-a retention run or item. Legacy-only previews retain the existing M06 execution
-path. History archive execution and retrieval are deferred to V24.
+V23 originally stopped at approval. V24 now enables the ordinary retention run
+for these history resources, archives exact canonical bytes, and provides
+verified authorized retrieval. See `m08-history-archive-execution.md`.
 
 ## Migration
 

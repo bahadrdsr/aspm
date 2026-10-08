@@ -25,19 +25,19 @@ type apiError struct {
 func (e *apiError) Error() string { return e.message }
 
 var (
-	errUnauthorized    = &apiError{401, "unauthorized", "Authentication is required"}
-	errForbidden       = &apiError{403, "forbidden", "This operation is not permitted"}
-	errNotFound        = &apiError{404, "not-found", "The requested resource was not found"}
-	errConflict        = &apiError{409, "conflict", "The request conflicts with existing state"}
-	errInvalid         = &apiError{400, "invalid-input", "The request is invalid"}
-	errTooLarge        = &apiError{413, "too-large", "The request exceeds the configured size limit"}
-	errUnsupported     = &apiError{415, "unsupported-format", "The content or report format is not supported"}
-	errMethod          = &apiError{405, "method-not-allowed", "The method is not allowed for this resource"}
-	errUnavailable     = &apiError{503, "unavailable", "The operation could not be completed"}
-	errEvidenceExpired = &apiError{410, "evidence-expired", "The evidence was removed by an approved retention operation"}
-	errEvidenceMissing = &apiError{424, "evidence-missing", "The evidence object is unexpectedly missing"}
-	errEvidenceCorrupt = &apiError{422, "evidence-corrupt", "The evidence object failed integrity verification"}
-	errPreviewOnly     = &apiError{409, "preview-only", "This approved preview contains history resources whose archive execution is not yet available"}
+	errUnauthorized       = &apiError{401, "unauthorized", "Authentication is required"}
+	errForbidden          = &apiError{403, "forbidden", "This operation is not permitted"}
+	errNotFound           = &apiError{404, "not-found", "The requested resource was not found"}
+	errConflict           = &apiError{409, "conflict", "The request conflicts with existing state"}
+	errInvalid            = &apiError{400, "invalid-input", "The request is invalid"}
+	errTooLarge           = &apiError{413, "too-large", "The request exceeds the configured size limit"}
+	errUnsupported        = &apiError{415, "unsupported-format", "The content or report format is not supported"}
+	errMethod             = &apiError{405, "method-not-allowed", "The method is not allowed for this resource"}
+	errUnavailable        = &apiError{503, "unavailable", "The operation could not be completed"}
+	errEvidenceExpired    = &apiError{410, "evidence-expired", "The evidence was removed by an approved retention operation"}
+	errEvidenceMissing    = &apiError{424, "evidence-missing", "The evidence object is unexpectedly missing"}
+	errEvidenceCorrupt    = &apiError{422, "evidence-corrupt", "The evidence object failed integrity verification"}
+	errHistoryNotArchived = &apiError{409, "history-not-archived", "This history resource has not been archived"}
 )
 
 func (a *Application) serveHTTP(w http.ResponseWriter, r *http.Request) {
@@ -260,6 +260,18 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		return a.getRetentionRun(w, r, membership.ID, parts[2])
+	}
+	if len(parts) == 4 && parts[0] == "retention" && parts[1] == "history" {
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		if !validID(parts[3]) {
+			return errInvalid
+		}
+		if !isHistoryRetentionKind(parts[2]) {
+			return errNotFound
+		}
+		return a.historyEvidence(w, r, membership.ID, parts[2], parts[3])
 	}
 	if len(parts) == 3 && parts[0] == "observations" && validID(parts[1]) {
 		switch parts[2] {

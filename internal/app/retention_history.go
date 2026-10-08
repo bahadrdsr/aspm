@@ -169,7 +169,7 @@ func (a *Application) appendFindingDecisionHistory(ctx context.Context, db reten
 		 WHERE h.workspace_id=e.workspace_id AND h.resource_kind='finding-decision-event'
 		 AND h.resource_id=e.id AND h.released_at IS NULL),'')
 		FROM `+a.table("finding_decision_events")+` e
-		WHERE e.workspace_id=$1 AND e.created_at<=$2
+		WHERE e.workspace_id=$1 AND e.created_at<=$2 AND e.detail_availability='available'
 		ORDER BY e.created_at,e.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err
@@ -234,7 +234,7 @@ func (a *Application) appendNotificationPolicyRevisionHistory(ctx context.Contex
 		 WHERE h.workspace_id=r.workspace_id AND h.resource_kind='notification-policy-revision'
 		 AND h.resource_id=r.id AND h.released_at IS NULL),'')
 		FROM `+a.table("notification_policy_revisions")+` r
-		WHERE r.workspace_id=$1 AND r.created_at<=$2
+		WHERE r.workspace_id=$1 AND r.created_at<=$2 AND r.detail_availability='available'
 		ORDER BY r.created_at,r.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err
@@ -281,7 +281,7 @@ func (a *Application) appendFindingChangeHistory(ctx context.Context, db retenti
 		 WHERE h.workspace_id=e.workspace_id AND h.resource_kind='finding-change-event'
 		 AND h.resource_id=e.id AND h.released_at IS NULL),'')
 		FROM `+a.table("finding_change_events")+` e
-		WHERE e.workspace_id=$1 AND e.change_at<=$2
+		WHERE e.workspace_id=$1 AND e.change_at<=$2 AND e.detail_availability='available'
 		ORDER BY e.change_at,e.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err
@@ -335,7 +335,7 @@ func (a *Application) appendNotificationPolicyEventHistory(ctx context.Context, 
 		FROM `+a.table("notification_policy_events")+` e
 		LEFT JOIN `+a.table("finding_deliveries")+` d
 		ON d.workspace_id=e.workspace_id AND d.id=e.delivery_id
-		WHERE e.workspace_id=$1 AND e.created_at<=$2
+		WHERE e.workspace_id=$1 AND e.created_at<=$2 AND e.detail_availability='available'
 		ORDER BY e.created_at,e.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)
 	if err != nil {
 		return err

@@ -1,6 +1,6 @@
 import { apiVersion } from "./types";
 import type {
-  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingBulkPatch, FindingBulkResponse, FindingCorrelation,
+  ArchivedHistory, Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingBulkPatch, FindingBulkResponse, FindingCorrelation,
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
   FindingDecision, FindingDecisionEvent, FindingDispositionApproval, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
@@ -8,7 +8,7 @@ import type {
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
   RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
-  RetentionRun, RetentionRunItem, RetentionRunResponse,
+  HistoryRetentionResourceKind, RetentionRun, RetentionRunItem, RetentionRunResponse,
   Session, SourceScope, WorkItem, WorkResponse,
 } from "./types";
 import { rejectSession, requestAuthority } from "./authorization";
@@ -19,7 +19,7 @@ export class APIError extends Error {
     readonly code: "unauthorized" | "forbidden" | "not-found" | "unavailable" | "network" |
       "invalid-response" | "invalid-input" | "conflict" | "replay-expired" | "too-large" |
       "unsupported-format" | "method-not-allowed" | "evidence-expired" | "evidence-missing" |
-      "evidence-corrupt",
+      "evidence-corrupt" | "history-not-archived",
     readonly retryable: boolean,
     readonly requestId: string | null = null,
     readonly httpStatus: number | null = null,
@@ -663,7 +663,9 @@ function retentionRunItem(value: unknown): RetentionRunItem {
     id: reportIdentifier(item.id, "retention item"),
     class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit", "orphan-archive"], "retention item class"),
     resourceKind: choice(item.resourceKind,
-      ["import", "observation", "correlation-event", "archive-object"], "retention item resource kind"),
+      ["import", "observation", "correlation-event", "archive-object",
+        "finding-decision-event", "notification-policy-revision",
+        "finding-change-event", "notification-policy-event"], "retention item resource kind"),
     resourceId: reportIdentifier(item.resourceId, "retention item resource"),
     action: choice(item.action,
       ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "restore-archive", "delete-orphan"],
@@ -712,6 +714,44 @@ function parseRetentionRun(value: unknown, workspace: string | null): RetentionR
     return invalid("retention run lifecycle");
   }
   return { apiVersion, retentionRun: result };
+}
+
+function archivedHistory(value: unknown, workspace: string | null,
+  expectedKind: HistoryRetentionResourceKind, expectedId: string): ArchivedHistory {
+  const item = object(value, "archived history response");
+  const resourceKind = choice(item.resourceKind, [
+    "finding-decision-event", "notification-policy-revision",
+    "finding-change-event", "notification-policy-event",
+  ], "archived history resource kind");
+  const availability = choice(item.availability, ["archived"], "archived history availability");
+  const resourceId = reportIdentifier(item.resourceId, "archived history resource");
+  const digest = text(item.digest, "archived history archive reference");
+  const sizeBytes = count(item.sizeBytes, "archived history archive reference");
+  const detailRevision = count(item.detailRevision, "archived history detail revision");
+  const filename = text(item.filename, "archived history filename");
+  const body = text(item.text, "archived history body", true);
+  const actualDigest = text(item.actualDigest, "archived history archive reference");
+  const contentLength = count(item.contentLength, "archived history archive reference");
+  if (resourceKind !== expectedKind || resourceId !== expectedId) {
+    return invalid("archived history resource identity");
+  }
+  if (!/^sha256:[a-f0-9]{64}$/.test(digest) || digest !== actualDigest ||
+    sizeBytes !== new TextEncoder().encode(body).byteLength || contentLength !== sizeBytes ||
+    detailRevision < 2 ||
+    filename !== `history-${resourceKind}-${resourceId}.json`) {
+    return invalid("archived history archive reference");
+  }
+  let payload: Record<string, unknown>;
+  try {
+    payload = object(JSON.parse(body), "archived history JSON");
+  } catch {
+    return invalid("archived history JSON");
+  }
+  if (payload.schemaVersion !== 1 || payload.resourceKind !== resourceKind ||
+    payload.id !== resourceId || payload.workspaceId !== workspace) {
+    return invalid("archived history resource identity");
+  }
+  return { resourceKind, resourceId, availability, digest, sizeBytes, detailRevision, filename, text: body };
 }
 
 function asset(value: unknown, workspace: string | null): Asset {
@@ -1025,7 +1065,7 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
         text(error.message, "error message"),
         choice(error.code, ["unauthorized", "forbidden", "not-found", "unavailable", "invalid-input", "conflict",
           "replay-expired", "too-large", "unsupported-format", "method-not-allowed",
-          "evidence-expired", "evidence-missing", "evidence-corrupt"], "error code"),
+          "evidence-expired", "evidence-missing", "evidence-corrupt", "history-not-archived"], "error code"),
         boolean(error.retryable, "retry policy"),
         text(error.requestId, "request identifier"),
         response.status,
@@ -1317,6 +1357,42 @@ export const api = {
     reportIdentifier(id, "retention run");
     return request(`/api/v1/retention/runs/${encodeURIComponent(id)}`,
       (value) => parseRetentionRun(value, workspace), { signal, expectedStatus: 200 });
+  },
+  retentionHistory: (kind: HistoryRetentionResourceKind, id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "history resource");
+    return request(`/api/v1/retention/history/${encodeURIComponent(kind)}/${encodeURIComponent(id)}`,
+      (value) => archivedHistory(value, workspace, kind, id), {
+        signal, expectedStatus: 200,
+        decodeBody: async (response) => {
+          const bytes = new Uint8Array(await response.arrayBuffer());
+          let body: string;
+          try {
+            body = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+          } catch {
+            return invalid("archived history JSON", response.status);
+          }
+          const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+          const actualDigest = `sha256:${Array.from(hash, (value) => value.toString(16).padStart(2, "0")).join("")}`;
+          const headers = response.headers;
+          const resourceKind = headers.get("X-ASPM-History-Resource-Kind");
+          const resourceId = headers.get("X-ASPM-History-Resource-ID");
+          const availability = headers.get("X-ASPM-History-Availability");
+          const digest = headers.get("X-ASPM-Archive-Digest");
+          const size = headers.get("X-ASPM-Archive-Size");
+          const revision = headers.get("X-ASPM-Detail-Revision");
+          const disposition = headers.get("Content-Disposition");
+          const length = headers.get("Content-Length");
+          const contentType = headers.get("Content-Type");
+          if (contentType !== "application/json") return invalid("archived history JSON", response.status);
+          return {
+            resourceKind, resourceId, availability, digest,
+            sizeBytes: Number(size), detailRevision: Number(revision),
+            filename: disposition?.match(/^attachment; filename="([^"]+)"$/)?.[1],
+            text: body, actualDigest, contentLength: Number(length),
+          };
+        },
+      });
   },
   observationEvidence: (id: string, signal: AbortSignal) => {
     reportIdentifier(id, "observation");

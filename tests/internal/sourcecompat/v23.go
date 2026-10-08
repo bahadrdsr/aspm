@@ -92,7 +92,7 @@ var exactV23Catalog = func() map[string][]string {
 
 func V23Tables() []string { return slices.Clone(v23Tables) }
 
-func CurrentTables() []string {
+func V23CurrentTables() []string {
 	result := slices.Clone(v23Tables)
 	for _, table := range v21Tables {
 		if !slices.Contains(result, table) {
@@ -114,7 +114,7 @@ func V23IndexNames() []string {
 
 func ProjectV23Current(t testing.TB, current map[string][]string) map[string][]string {
 	t.Helper()
-	wantKeys := len(CurrentTables()) * 3
+	wantKeys := len(V23CurrentTables()) * 3
 	if len(current) != wantKeys {
 		t.Fatalf("V23: current catalog key count=%d, want %d", len(current), wantKeys)
 	}
@@ -158,7 +158,7 @@ func ProjectV23Current(t testing.TB, current map[string][]string) map[string][]s
 	return prior
 }
 
-func ValidateCurrentCatalog(t testing.TB, current map[string][]string) {
+func ValidateV23CurrentCatalog(t testing.TB, current map[string][]string) {
 	t.Helper()
 	if !reflect.DeepEqual(current, exactV23Catalog) {
 		t.Fatal("V23: current catalog contains a missing or unapproved delta")

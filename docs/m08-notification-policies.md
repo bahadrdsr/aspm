@@ -76,6 +76,8 @@ resolution, and bulk risk acceptance remain separate.
 
 V23 adds exact retention holds and non-destructive audit previews for immutable
 policy revisions, finding-change events, and policy evaluation events. Current
-revisions, pending evaluations, and active deliveries are protected. Archive
-execution for these resources remains deferred to V24. See
-`m08-history-retention-preview.md`.
+revisions, pending evaluations, and active deliveries are protected. V24
+archives exact approved history bytes through the existing retention worker and
+supports verified current-workspace retrieval without changing existing policy
+API bytes. See `m08-history-retention-preview.md` and
+`m08-history-archive-execution.md`.

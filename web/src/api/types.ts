@@ -278,6 +278,9 @@ export type RetentionResourceKind =
   "import" | "observation" | "correlation-event" | "archive-object" |
   "finding-decision-event" | "notification-policy-revision" |
   "finding-change-event" | "notification-policy-event";
+export type HistoryRetentionResourceKind =
+  "finding-decision-event" | "notification-policy-revision" |
+  "finding-change-event" | "notification-policy-event";
 export type RetentionAction =
   "archive-history" | "expire-archive" | "expire-raw-report" | "archive-audit" | "delete-orphan";
 
@@ -424,6 +427,17 @@ export interface RetentionRun {
 export interface RetentionRunResponse {
   apiVersion: typeof apiVersion;
   retentionRun: RetentionRun;
+}
+
+export interface ArchivedHistory {
+  resourceKind: HistoryRetentionResourceKind;
+  resourceId: string;
+  availability: "archived";
+  digest: string;
+  sizeBytes: number;
+  detailRevision: number;
+  filename: string;
+  text: string;
 }
 
 export interface AssetFields {

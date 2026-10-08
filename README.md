@@ -36,7 +36,9 @@ table/index/WAL regression measurements. V18 adds a product archive publication
 ledger and previewed orphan cleanup without bucket-wide listing.
 V23 extends the non-destructive audit preview and hold model to finding
 decisions, notification policy revisions, finding changes, and policy
-evaluation events. Their archive execution remains explicitly unavailable.
+evaluation events. V24 executes those approved items through the existing
+retention worker and provides exact verified archive retrieval without
+compacting or deleting the original event rows.
 GitLab, AWS, Azure cloud and other unfinished integration expansion remain
 deferred.
 
@@ -209,9 +211,11 @@ Finding observation history labels availability and supports explicit verified
 archive retrieval plus administrator restoration. See
 `docs\m06-retention-execution.md`.
 
-M08 history resources currently stop at preview and approval. An approved
-preview containing one returns `409 preview-only` before any retention run is
-created. See `docs\m08-history-retention-preview.md`.
+M08 history resources use the same explicit retention run and worker. Successful
+items retain exact archive references and can be retrieved by current workspace
+members. Hot event rows are not compacted or deleted. See
+`docs\m08-history-retention-preview.md` and
+`docs\m08-history-archive-execution.md`.
 
 **Saved views** is one closed-by-default inline panel in Work. Only explicitly
 opening it reads your personal preferences in the selected workspace. Every
@@ -613,8 +617,8 @@ failed, or confirmed Jira intent.
 Retention Settings includes exact audit previews and holds for decision,
 policy-revision, finding-change, and policy-evaluation history. Current policy
 revisions, pending evaluations, and active deliveries remain protected.
-Approval is non-destructive, and V23 history archive execution is explicitly
-deferred.
+Approval is non-destructive. V24 execution is explicit, manually refreshed, and
+offers exact archived JSON retrieval only after verified worker success.
 
 **Webhook connections** is a separate non-native outbound profile. Operators
 first allow exact HTTPS origins through `ASPM_WEBHOOK_ORIGINS`; workspace admins

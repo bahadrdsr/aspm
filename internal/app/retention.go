@@ -541,6 +541,14 @@ func (a *Application) appendOrphanArchives(ctx context.Context, db retentionDB, 
 		 WHERE o.workspace_id=p.workspace_id AND o.archive_key=p.object_key)
 		OR EXISTS(SELECT 1 FROM `+a.table("finding_correlation_events")+` e
 		 WHERE e.workspace_id=p.workspace_id AND e.archive_key=p.object_key)
+		OR EXISTS(SELECT 1 FROM `+a.table("finding_decision_events")+` e
+		 WHERE e.workspace_id=p.workspace_id AND e.archive_key=p.object_key)
+		OR EXISTS(SELECT 1 FROM `+a.table("notification_policy_revisions")+` e
+		 WHERE e.workspace_id=p.workspace_id AND e.archive_key=p.object_key)
+		OR EXISTS(SELECT 1 FROM `+a.table("finding_change_events")+` e
+		 WHERE e.workspace_id=p.workspace_id AND e.archive_key=p.object_key)
+		OR EXISTS(SELECT 1 FROM `+a.table("notification_policy_events")+` e
+		 WHERE e.workspace_id=p.workspace_id AND e.archive_key=p.object_key)
 		FROM `+a.table("archive_publications")+` p
 		WHERE p.workspace_id=$1 AND p.state IN ('publishing','orphan') AND p.updated_at<=$2
 		ORDER BY p.id LIMIT $3`, workspace, cutoff, retentionPreviewLimit+1)

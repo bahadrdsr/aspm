@@ -120,11 +120,13 @@ selection. It remains outside the eight native catalog families. See
 
 V23 extends retention holds and exact audit preview to finding decision events,
 notification policy revisions, finding-change events, and policy evaluation
-events. Approval remains non-destructive, and history archive execution is
-explicitly deferred to V24. See `m08-history-retention-preview.md`.
+events. V24 executes approved history items, records immutable verified archive
+references, and supports exact authorized retrieval without compacting the
+original rows. See `m08-history-retention-preview.md` and
+`m08-history-archive-execution.md`.
 
 Still separate:
 
 - Bulk risk acceptance.
-- M08 history archive execution and retrieval.
+- M08 history hot-row compaction and archive expiry.
 - Deferred live-account and status-linkage integration follow-ups.

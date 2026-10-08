@@ -58,10 +58,20 @@ func (w *RetentionWorker) beginArchivePublication(ctx context.Context, run reten
 }
 
 func kindToResource(kind string) string {
-	if kind == "correlation-events" {
+	switch kind {
+	case "correlation-events":
 		return "correlation-event"
+	case "finding-decision-events":
+		return retentionFindingDecisionEvent
+	case "notification-policy-revisions":
+		return retentionNotificationPolicyRev
+	case "finding-change-events":
+		return retentionFindingChangeEvent
+	case "notification-policy-events":
+		return retentionNotificationPolicyEvent
+	default:
+		return "observation"
 	}
-	return "observation"
 }
 
 func (w *RetentionWorker) finishArchivePublication(ctx context.Context, tx pgx.Tx,
@@ -95,6 +105,14 @@ func archiveReferenceExists(ctx context.Context, db queryRower, table func(strin
 		EXISTS(SELECT 1 FROM `+table("observations")+`
 		 WHERE workspace_id=$1 AND archive_key=$2)
 		OR EXISTS(SELECT 1 FROM `+table("finding_correlation_events")+`
+		 WHERE workspace_id=$1 AND archive_key=$2)
+		OR EXISTS(SELECT 1 FROM `+table("finding_decision_events")+`
+		 WHERE workspace_id=$1 AND archive_key=$2)
+		OR EXISTS(SELECT 1 FROM `+table("notification_policy_revisions")+`
+		 WHERE workspace_id=$1 AND archive_key=$2)
+		OR EXISTS(SELECT 1 FROM `+table("finding_change_events")+`
+		 WHERE workspace_id=$1 AND archive_key=$2)
+		OR EXISTS(SELECT 1 FROM `+table("notification_policy_events")+`
 		 WHERE workspace_id=$1 AND archive_key=$2)`, workspace, key).Scan(&referenced)
 	return referenced, err
 }
