@@ -137,6 +137,7 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			MaxConnections: db.MaxConnections, Storage: storageConfig(config.Evidence),
 			CollectionStorage: config.CollectionStorage,
 			BootstrapToken:    config.BootstrapToken, PublicOrigin: config.PublicOrigin,
+			WebhookOrigins:           config.WebhookOrigins,
 			IntegrationEncryptionKey: config.IntegrationEncryptionKey,
 			AssessmentScope:          config.AssessmentScope,
 			ArchiveStorage:           archive,
@@ -174,6 +175,7 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 	if role == "delivery" {
 		config.JiraAPIOrigins = append([]string(nil), config.JiraAPIOrigins...)
 		config.TeamsWorkflowOrigins = append([]string(nil), config.TeamsWorkflowOrigins...)
+		config.WebhookOrigins = append([]string(nil), config.WebhookOrigins...)
 	}
 	if (role == "core" || role == "collection") && config.CollectionStorage != nil {
 		storage := *config.CollectionStorage

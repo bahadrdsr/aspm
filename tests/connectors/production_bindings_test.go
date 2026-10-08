@@ -13,6 +13,7 @@ func init() {
 			Profile: config.Profile, Endpoint: config.Endpoint, Token: config.Token, WorkspaceID: config.WorkspaceID,
 			Project: config.Project, IssueType: config.IssueType, Channel: config.Channel, StatusMap: config.StatusMap,
 			Client: config.Client, Limits: native.Limits(config.Limits),
+			AllowedOrigins: append([]string(nil), config.AllowedOrigins...),
 		})
 		if err != nil {
 			return nil, bindingError(err)
@@ -39,7 +40,8 @@ func bindingError(err error) error {
 	for _, pair := range [][2]error{
 		{native.ErrAuth, ErrAuth}, {native.ErrRateLimited, ErrRateLimited}, {native.ErrUncertain, ErrUncertain},
 		{native.ErrRequiredFields, ErrRequiredFields}, {native.ErrScope, ErrScope}, {native.ErrLimit, ErrLimit},
-		{native.ErrUnavailable, ErrUnavailable},
+		{native.ErrUnavailable, ErrUnavailable}, {native.ErrProtocol, ErrProtocol},
+		{native.ErrUnsupported, ErrUnsupported},
 	} {
 		if errors.Is(err, pair[0]) {
 			translated = append(translated, pair[1])
@@ -56,7 +58,13 @@ func bindingAction(action Action) native.Action {
 	}
 	return native.Action{
 		WorkspaceID: action.WorkspaceID, IntentID: action.IntentID, ApprovalRef: action.ApprovalRef, FindingID: action.FindingID,
-		Title: action.Title, Body: action.Body, DeepLink: action.DeepLink, Fields: action.Fields, Prior: prior,
+		Title: action.Title, Body: action.Body, DeepLink: action.DeepLink, Fields: action.Fields,
+		Trigger: native.DeliveryTrigger{
+			Kind: action.Trigger.Kind, PolicyID: action.Trigger.PolicyID,
+			PolicyRevision:        action.Trigger.PolicyRevision,
+			FindingChangeRevision: action.Trigger.FindingChangeRevision,
+		},
+		Prior: prior,
 	}
 }
 

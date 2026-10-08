@@ -7,7 +7,7 @@ export const policyPath = (id: string) => `${policiesPath}/${id}`;
 export const policyEventsPath = (id: string) => `${policyPath(id)}/events`;
 export const stamp = "2026-10-08T03:30:00.123456Z";
 export const updatedStamp = "2026-10-08T03:31:00.123456Z";
-export type NativeProfile = "slack-workspace-bot" | "teams-workflows-channel" | "jira-cloud-v3";
+export type NativeProfile = "slack-workspace-bot" | "teams-workflows-channel" | "jira-cloud-v3" | "generic-webhook-v1";
 export type ChangeKind = "new" | "changed" | "reopened";
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
 export type PolicyOutcome = "queued" | "duplicate-ticket" | "connection-stale" | "invalid-payload";

@@ -79,6 +79,9 @@ func validConnectionToken(profile, token string) bool {
 		_, valid := teamsWorkflowOrigin(token)
 		return valid
 	}
+	if profile == connectors.GenericWebhookV1 {
+		return validWebhookSecret(token)
+	}
 	return validIntegrationToken(token) &&
 		(profile != connectors.JiraCloudV3 || !strings.ContainsFunc(token, unicode.IsSpace))
 }
@@ -88,7 +91,9 @@ func deliveryProfile(r *http.Request) (string, error) {
 	if !present {
 		return connectors.SlackWorkspaceBot, nil
 	}
-	if len(values) != 1 || values[0] != connectors.SlackWorkspaceBot && values[0] != connectors.JiraCloudV3 && values[0] != connectors.TeamsWorkflows {
+	if len(values) != 1 || values[0] != connectors.SlackWorkspaceBot &&
+		values[0] != connectors.JiraCloudV3 && values[0] != connectors.TeamsWorkflows &&
+		values[0] != connectors.GenericWebhookV1 {
 		return "", errInvalid
 	}
 	return values[0], nil
@@ -125,7 +130,7 @@ func (a *Application) selectedFindingDelivery(r *http.Request, tx pgx.Tx, worksp
 	delivery = FindingDelivery{
 		WorkspaceID: workspace, FindingID: findingID, ConnectionID: connection.ID,
 		ConnectionRevision: connection.Revision, Profile: connection.Profile, Channel: connection.Channel,
-		RequestedBy: session.User.ID, Jira: connection.Jira,
+		RequestedBy: session.User.ID, Jira: connection.Jira, Webhook: connection.Webhook,
 		Payload: FindingNotification{
 			Title: finding.Title, Body: "Severity: " + finding.Severity + "\nAsset: " + finding.AssetName,
 			DeepLink: a.config.PublicOrigin + "/#/work?finding=" + url.QueryEscape(finding.ID),
@@ -163,6 +168,13 @@ func (a *Application) selectedFindingDelivery(r *http.Request, tx pgx.Tx, worksp
 			return FindingDelivery{}, errInvalid
 		}
 	}
+	if delivery.Profile == connectors.GenericWebhookV1 {
+		if !validWebhookTarget(delivery.Webhook) ||
+			!webhookOriginAllowed(delivery.Webhook.Origin, a.config.WebhookOrigins) ||
+			connection.Jira != nil || connection.Teams != nil || connection.Channel != "" {
+			return FindingDelivery{}, errConflict
+		}
+	}
 	return delivery, nil
 }
 
@@ -188,7 +200,9 @@ func (a *Application) previewFindingDelivery(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return err
 	}
-	if delivery.Profile != connectors.JiraCloudV3 && delivery.Profile != connectors.TeamsWorkflows {
+	if delivery.Profile != connectors.JiraCloudV3 &&
+		delivery.Profile != connectors.TeamsWorkflows &&
+		delivery.Profile != connectors.GenericWebhookV1 {
 		return errInvalid
 	}
 	digest, err := deliveryBinding(delivery)
@@ -200,6 +214,10 @@ func (a *Application) previewFindingDelivery(w http.ResponseWriter, r *http.Requ
 	}
 	if delivery.Profile == connectors.TeamsWorkflows {
 		a.writeTeamsPreview(w, delivery, "sha256:"+hex.EncodeToString(digest))
+		return nil
+	}
+	if delivery.Profile == connectors.GenericWebhookV1 {
+		a.writeWebhookPreview(w, delivery, "sha256:"+hex.EncodeToString(digest))
 		return nil
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"preview": struct {

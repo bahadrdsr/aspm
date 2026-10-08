@@ -9,6 +9,7 @@ import type {
 import { jiraApi } from "@/api/jira";
 import { slackApi } from "@/api/slack";
 import { teamsApi } from "@/api/teams";
+import { webhookApi } from "@/api/generic-webhooks";
 import { useResource } from "@/lib/use-resource";
 import { useScopedAction } from "@/lib/use-scoped-action";
 import { useSession } from "@/lib/session";
@@ -24,6 +25,7 @@ const orderedChanges: NotificationChangeKind[] = ["new", "changed", "reopened"];
 function profileLabel(profile: NotificationPolicy["connectionProfile"]) {
   if (profile === "jira-cloud-v3") return "Jira";
   if (profile === "teams-workflows-channel") return "Teams";
+  if (profile === "generic-webhook-v1") return "Webhook";
   return "Slack";
 }
 
@@ -46,15 +48,17 @@ function NotificationPolicyEditor({ policy, onClose, onSaved }: {
   const action = useScopedAction();
   const loadConnections = useCallback(async (signal: AbortSignal) => {
     if (policy) return [policy.connection];
-    const [slack, jira, teams] = await Promise.all([
+    const [slack, jira, teams, webhooks] = await Promise.all([
       slackApi.connections(100, null, signal),
       jiraApi.connections(null, signal),
       teamsApi.connections(null, signal),
+      webhookApi.connections(null, signal),
     ]);
     return [
       ...slack.items.map(policyConnection),
       ...jira.items.map(policyConnection),
       ...teams.items.map(policyConnection),
+      ...webhooks.items.map(policyConnection),
     ];
   }, [policy]);
   const connections = useResource(loadConnections);

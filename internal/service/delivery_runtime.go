@@ -44,7 +44,7 @@ func deliveryEnvironment(config *Config) error {
 	}
 	config.DeliveryCAFile = os.Getenv("ASPM_DELIVERY_CA_FILE")
 	config.DeliveryClient, err = newGatewayProviderClient(config.SlackEndpoint, config.DeliveryCAFile,
-		config.JiraAPIOrigins, config.TeamsWorkflowOrigins)
+		config.JiraAPIOrigins, config.TeamsWorkflowOrigins, config.WebhookOrigins)
 	return err
 }
 
@@ -64,7 +64,8 @@ func deliveryWorkerConfig(config Config) app.DeliveryWorkerConfig {
 	return app.DeliveryWorkerConfig{
 		Database: databaseConfig(config.Jobs), EncryptionKey: config.IntegrationEncryptionKey,
 		WorkerID: config.WorkerID, LeaseDuration: config.DeliveryLeaseDuration,
-		PublicOrigin: config.PublicOrigin, SlackEndpoint: config.SlackEndpoint, Client: config.DeliveryClient,
+		PublicOrigin: config.PublicOrigin, WebhookOrigins: config.WebhookOrigins,
+		SlackEndpoint: config.SlackEndpoint, Client: config.DeliveryClient,
 	}
 }
 
@@ -73,6 +74,9 @@ func validateDeliveryConfig(config Config) error {
 		return err
 	}
 	if _, err := teamsOriginAddresses(config.TeamsWorkflowOrigins); err != nil {
+		return err
+	}
+	if _, err := webhookOriginAddresses(config.WebhookOrigins); err != nil {
 		return err
 	}
 	if err := app.ValidateDeliveryWorkerConfig(deliveryWorkerConfig(config)); err != nil {

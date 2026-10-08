@@ -34,6 +34,7 @@ type Config struct {
 	SlackEndpoint            string             `json:"-"`
 	JiraAPIOrigins           []string           `json:"-"`
 	TeamsWorkflowOrigins     []string           `json:"-"`
+	WebhookOrigins           []string           `json:"-"`
 	DeliveryClient           *http.Client       `json:"-"`
 	DeliveryCAFile           string             `json:"-"`
 	CollectionStorage        *app.StorageConfig `json:"-"`
@@ -120,6 +121,13 @@ func Environment(role string) (Config, error) {
 	}
 	if role == "core" || role == "delivery" {
 		config.PublicOrigin = os.Getenv("ASPM_PUBLIC_ORIGIN")
+		config.WebhookOrigins, err = originEnvironment("ASPM_WEBHOOK_ORIGINS")
+		if err != nil {
+			return Config{}, err
+		}
+		if _, err = webhookOriginAddresses(config.WebhookOrigins); err != nil {
+			return Config{}, err
+		}
 	}
 	if role == "core" {
 		config.AssessmentScope = os.Getenv("ASPM_ASSESSMENT_SCOPE")
@@ -267,6 +275,9 @@ func validateConfig(role string, config Config) error {
 	}
 	if role == "core" || role == "delivery" {
 		if err := app.ValidatePublicOrigin(config.PublicOrigin); err != nil {
+			return err
+		}
+		if err := app.ValidateWebhookOrigins(config.WebhookOrigins); err != nil {
 			return err
 		}
 	}

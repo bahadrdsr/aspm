@@ -1,7 +1,7 @@
 M08-M09 FIRST ADAPTER GATES
 ==========================
 Run from aspm: go test -mod=readonly -count=1 -timeout=45s .\tests\connectors
-Nine top-level gates; synthetic TLS httptest only, no accounts or provisioning.
+Nineteen top-level gates; synthetic TLS httptest only, no accounts or provisioning.
 Missing Production factories FAIL, never skip. Passing fixtures establish
 adapter mapping, NOT live support, OAuth installation, permissions or delivery.
 
@@ -123,6 +123,27 @@ redirect downloads, all cloud resources/regions, STS/Entra/OAuth bootstrap,
 M10 reports/exports, deployed workers or live vendor certification.
 Live status for every profile remains UNVERIFIED until separately authorized,
 timestamped real-account evidence exists. No catalog promotion from mocks.
+
+V22 generic outbound webhook adapter
+------------------------------------
+generic-webhook-v1 is a non-native DeliveryAdapter profile. DeliveryConfig adds
+AllowedOrigins, an explicit list of at most 16 unique canonical HTTPS origins.
+Action adds Trigger with kind manual|notification-policy and nullable policy ID,
+policy revision and finding change revision. The generic adapter uses Token only
+as the already decrypted 32..4096-byte HMAC key. It performs no discovery,
+preview I/O, proxy, redirect, cookie, credential fallback or native status call.
+
+Send performs one exact HTTPS POST to Endpoint only when its origin is in
+AllowedOrigins. It sends the fixed aspm/webhook/v1 body and server-owned headers
+declared by tests/connectors/generic_webhook_test.go. X-ASPM-Signature is
+lowercase HMAC-SHA256 over the exact body bytes. Manual trigger policy fields are
+null; notification-policy fields are present and positive. Caller Fields,
+approval references and other native/provider data are excluded.
+
+HTTP 200..299 is accepted without a remote receipt. 400..499 except 429 is
+failed, 429 is rate-limited with bounded literal Retry-After, and timeout,
+dropped acknowledgement, malformed transport or 5xx after POST is uncertain.
+Redirect is blocked. Terminal Prior values never cause a fresh POST.
 
 Primary protocol sources consulted (2026-09-15)
 ---------------------------------------------

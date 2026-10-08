@@ -4,7 +4,8 @@ import { apiVersion } from "./types";
 import type { Severity } from "./types";
 
 export type NotificationChangeKind = "new" | "changed" | "reopened";
-export type NotificationProfile = "slack-workspace-bot" | "teams-workflows-channel" | "jira-cloud-v3";
+export type NotificationProfile =
+  "slack-workspace-bot" | "teams-workflows-channel" | "jira-cloud-v3" | "generic-webhook-v1";
 export type NotificationPolicyOutcome = "queued" | "duplicate-ticket" | "connection-stale" | "invalid-payload";
 
 export interface NotificationPolicyConnection {
@@ -67,7 +68,9 @@ interface Page<T> {
 }
 
 const identifier = /^[a-f0-9]{32}$/;
-const profiles: NotificationProfile[] = ["slack-workspace-bot", "teams-workflows-channel", "jira-cloud-v3"];
+const profiles: NotificationProfile[] = [
+  "slack-workspace-bot", "teams-workflows-channel", "jira-cloud-v3", "generic-webhook-v1",
+];
 const changes: NotificationChangeKind[] = ["new", "changed", "reopened"];
 const severities: Severity[] = ["critical", "high", "medium", "low", "info"];
 const encoder = new TextEncoder();

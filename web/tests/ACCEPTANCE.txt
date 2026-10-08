@@ -262,3 +262,37 @@ small-screen/zoom/keyboard/focus states, coherent tokens, copied-source/licensin
 review, full dependency/SBOM and release-signing review, and final independent
 review on the exact passing revision. Non-web infrastructure/repository/CI work
 from M01 is outside this test-author scope. Nothing here closes M00 or M01.
+
+M08 V22 generic webhook browser increment (October 8, 2026)
+-----------------------------------------------------------
+generic-webhook-ui.spec.ts and its isolated fixture add browser acceptance for
+the non-native generic-webhook-v1 profile. This profile does not add a ninth
+Native integrations card. The existing catalog count remains exactly eight.
+
+Integrations has a separate region and disclosure named "Webhook connections".
+An admin can add or edit name, enabled state, one exact operator-approved HTTPS
+webhook URL and a write-only HMAC secret. The secret field is password-masked.
+An edit starts with a blank secret and omits that field when unchanged. Public
+rows show only origin, path, hmac-sha256, enabled/revision state and
+not-verified permission state. Viewers see read-only safe metadata. Add/edit
+never test-sends or contacts a receiver.
+
+Finding detail has one explicit "Send webhook" action. It loads configured
+generic webhook metadata, performs one local review request, displays the
+server-derived title/body/deep link plus operator-origin/signature requirements,
+and excludes evidence, notes and remediation. "Queue webhook" sends exactly
+connectionId,idempotencyKey,previewDigest,confirm:true. A queued response is
+labelled queued and not sent. Manual webhook history is selected with
+profile=generic-webhook-v1. accepted is labelled endpoint accepted and
+downstream processing not confirmed. uncertain offers no resend or retry action.
+
+Notification policy list/edit admits a configured generic webhook connection
+while preserving the existing Slack, Jira and Teams policy cases. Policy save
+performs no preview, delivery or receiver request.
+
+Workspace/session invalidation closes webhook dialogs, clears URL and secret
+drafts, aborts held old-scope responses and discards pending intent state. HMAC
+keys, webhook URLs and idempotency keys are absent from browser storage. Secrets
+are absent from readable DOM text, attributes, URLs, console output and the
+attached HTTP ledger. The Playwright fixture blocks all external HTTP, undeclared
+test-send/provider routes, caller credential headers and automatic resend.

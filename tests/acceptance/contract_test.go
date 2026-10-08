@@ -41,6 +41,7 @@ type ApplicationConfig struct {
 	ArchiveStorage           StorageConfig
 	BootstrapToken           string `json:"-"`
 	IntegrationEncryptionKey []byte `json:"-"`
+	WebhookOrigins           []string
 	PublicOrigin             string
 	Now                      func() time.Time `json:"-"`
 	LogOutput                io.Writer        `json:"-"`
@@ -82,6 +83,7 @@ type DeliveryWorkerConfig struct {
 	WorkerID                string
 	LeaseDuration           time.Duration
 	PublicOrigin            string
+	WebhookOrigins          []string
 	SlackEndpoint           string       `json:"-"`
 	Client                  *http.Client `json:"-"`
 	LogOutput               io.Writer    `json:"-"`
@@ -90,6 +92,7 @@ type DeliveryWorkerConfig struct {
 
 type DeliveryWorker struct {
 	ProcessNext func(context.Context) (bool, error)
+	Ping        func(context.Context) error
 	Close       func() error
 }
 

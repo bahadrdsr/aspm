@@ -38,6 +38,8 @@ Delivery-specific settings:
   ASPM_DELIVERY_LEASE_DURATION: defaults to 15s; accepted range 250ms..1m
   ASPM_PUBLIC_ORIGIN: trusted HTTPS browser origin used only for automatic
     finding links; must match core
+  ASPM_WEBHOOK_ORIGINS: optional JSON array of at most 16 canonical HTTPS
+    origins; supplied identically to core and delivery
   ASPM_SLACK_ENDPOINT: defaults to https://slack.com; trusted HTTPS base only
   ASPM_JIRA_API_ORIGINS: optional JSON array of at most 16 canonical HTTPS origins
   ASPM_TEAMS_WORKFLOW_ORIGINS: independent optional JSON array with the same rules

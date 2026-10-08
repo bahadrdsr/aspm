@@ -16,7 +16,7 @@
 {{- end -}}
 {{- $enabled = $delivery.enabled -}}
 {{- end -}}
-{{- range $field := list "jiraAPIOrigins" "teamsWorkflowOrigins" -}}
+{{- range $field := list "jiraAPIOrigins" "teamsWorkflowOrigins" "webhookOrigins" -}}
 {{- if hasKey $delivery $field -}}
 {{- $origins := get $delivery $field -}}
 {{- if not (kindIs "invalid" $origins) -}}
@@ -126,6 +126,11 @@
 {{- if or (eq $role "core") (eq $role "delivery") }}
 - name: ASPM_PUBLIC_ORIGIN
   value: {{ if $root.Values.ingress.enabled }}{{ printf "https://%s" $root.Values.ingress.host | quote }}{{ else }}{{ $root.Values.publicOrigin | default "" | quote }}{{ end }}
+{{- $deliverySettings := $root.Values.delivery | default dict }}
+{{- if $deliverySettings.webhookOrigins }}
+- name: ASPM_WEBHOOK_ORIGINS
+  value: {{ $deliverySettings.webhookOrigins | mustToJson | quote }}
+{{- end }}
 {{- end }}
 {{- if eq $role "core" }}
 {{- if not (kindIs "bool" $settings.prepareReadiness) }}

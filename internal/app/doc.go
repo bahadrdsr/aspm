@@ -226,6 +226,7 @@
 // implemented. Archive publication reconciliation cleans only old ledgered
 // product objects. Explicit epoch-scoped notification policies queue the common
 // outbox and conservatively prevent duplicate Jira ticket intents. Generic
-// webhooks, fuzzy/automatic correlation, independent verification and supported
-// release qualification remain separate.
+// webhooks use fixed HMAC-signed payloads and operator-approved origins. Arbitrary
+// integration flows, fuzzy/automatic correlation, independent verification and
+// supported release qualification remain separate.
 package app

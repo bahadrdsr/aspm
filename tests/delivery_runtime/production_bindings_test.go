@@ -19,7 +19,8 @@ func init() {
 			},
 			Listen: config.Listen, WorkerID: config.WorkerID, EncryptionKey: config.IntegrationEncryptionKey,
 			LeaseDuration: config.DeliveryLeaseDuration, SlackEndpoint: config.SlackEndpoint,
-			Client: config.DeliveryClient, CAFile: config.DeliveryCAFile,
+			WebhookOrigins: config.WebhookOrigins,
+			Client:         config.DeliveryClient, CAFile: config.DeliveryCAFile,
 			Evidence: config.Evidence, BootstrapToken: config.BootstrapToken,
 		}, err
 	}
@@ -27,6 +28,7 @@ func init() {
 		return service.Run(ctx, "delivery", service.Config{
 			Listen: config.Listen, WorkerID: config.WorkerID, IntegrationEncryptionKey: config.EncryptionKey,
 			DeliveryLeaseDuration: config.LeaseDuration, SlackEndpoint: config.SlackEndpoint,
+			WebhookOrigins: config.WebhookOrigins,
 			DeliveryClient: config.Client, DeliveryCAFile: config.CAFile,
 			Evidence: config.Evidence, BootstrapToken: config.BootstrapToken,
 			Jobs: jobs.Config{

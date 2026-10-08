@@ -34,6 +34,7 @@ type Config struct {
 	BootstrapToken           string         `json:"-"`
 	IntegrationEncryptionKey []byte         `json:"-"`
 	AssessmentScope          string
+	WebhookOrigins           []string
 	Now                      func() time.Time `json:"-"`
 	LogOutput                io.Writer        `json:"-"`
 	SessionTTL               time.Duration
@@ -115,6 +116,9 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 	if err := ValidatePublicOrigin(config.PublicOrigin); err != nil {
 		return nil, err
 	}
+	if err := ValidateWebhookOrigins(config.WebhookOrigins); err != nil {
+		return nil, err
+	}
 	dbConfig := DatabaseConfig{DatabaseURL: config.DatabaseURL, Schema: config.Schema,
 		ApplicationName: config.ApplicationName, MaxConnections: config.MaxConnections, Now: config.Now, LogOutput: config.LogOutput,
 		QueryTracer: config.QueryTracer}
@@ -134,6 +138,7 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		bootstrapHash:          sha256.Sum256([]byte(config.BootstrapToken)),
 		hashSlots:              make(chan struct{}, 2),
 	}
+	a.config.WebhookOrigins = append([]string(nil), config.WebhookOrigins...)
 	a.config.BootstrapToken = ""
 	if config.CollectionStorage != nil {
 		a.collectionEvidence, err = openSourceEvidenceReader(ctx, *config.CollectionStorage)

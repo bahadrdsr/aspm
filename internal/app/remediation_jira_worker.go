@@ -82,6 +82,12 @@ func (w *DeliveryWorker) deliveryDispatchAuthority(ctx context.Context, db query
 		!reflect.DeepEqual(&TeamsDestination{connection.Name, *connection.Teams}, prior.Destination)) {
 		return current, deliveryDenial("connection-changed")
 	}
+	if prior.Profile == connectors.GenericWebhookV1 &&
+		(!validWebhookTarget(connection.Webhook) ||
+			!reflect.DeepEqual(connection.Webhook, prior.Webhook) ||
+			!webhookOriginAllowed(connection.Webhook.Origin, w.webhookOrigins)) {
+		return current, deliveryDenial("connection-changed")
+	}
 	return current, nil
 }
 
@@ -179,7 +185,7 @@ func jiraInterruptedOutcome(cause error, attempted bool) (string, *FindingDelive
 
 func guardedDeliveryInterruptedOutcome(profile string, cause error, attempted bool) (string, *FindingDeliveryFailure) {
 	state, failure := jiraInterruptedOutcome(cause, attempted)
-	if profile == connectors.TeamsWorkflows {
+	if profile == connectors.TeamsWorkflows || profile == connectors.GenericWebhookV1 {
 		failure.Stage = ""
 	}
 	return state, failure
@@ -255,6 +261,7 @@ func (w *DeliveryWorker) processJiraDelivery(ctx context.Context, dispatch *deli
 		WorkspaceID: record.WorkspaceID, IntentID: record.ID, ApprovalRef: record.approvalRef,
 		FindingID: record.FindingID, Title: record.Payload.Title, Body: record.Payload.Body,
 		DeepLink: record.Payload.DeepLink, Fields: record.Payload.Fields,
+		Trigger: deliveryTrigger(record),
 	}
 	preview, err := dispatch.adapter.Preview(nativeCtx, action)
 	if err != nil {

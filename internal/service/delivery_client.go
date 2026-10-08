@@ -103,6 +103,10 @@ func teamsOriginAddresses(origins []string) ([]string, error) {
 	return providerOriginAddresses(origins, "ASPM_TEAMS_WORKFLOW_ORIGINS/TeamsWorkflowOrigins")
 }
 
+func webhookOriginAddresses(origins []string) ([]string, error) {
+	return providerOriginAddresses(origins, "ASPM_WEBHOOK_ORIGINS/WebhookOrigins")
+}
+
 func providerOriginAddresses(origins []string, field string) ([]string, error) {
 	invalid := errors.New(field + " requires at most 16 unique canonical HTTPS origins")
 	if len(origins) > jiraAPIOriginLimit {
@@ -178,10 +182,10 @@ func providerOriginAddresses(origins []string, field string) ([]string, error) {
 }
 
 func deliveryOrigins(endpoint string, jiraOrigins []string) ([]string, error) {
-	return deliveryOriginUnion(endpoint, jiraOrigins, nil)
+	return deliveryOriginUnion(endpoint, jiraOrigins, nil, nil)
 }
 
-func deliveryOriginUnion(endpoint string, jiraOrigins, teamsOrigins []string) ([]string, error) {
+func deliveryOriginUnion(endpoint string, jiraOrigins, teamsOrigins, webhookOrigins []string) ([]string, error) {
 	origin, err := deliveryOrigin(endpoint)
 	if err != nil {
 		return nil, err
@@ -194,8 +198,13 @@ func deliveryOriginUnion(endpoint string, jiraOrigins, teamsOrigins []string) ([
 	if err != nil {
 		return nil, err
 	}
+	webhooks, err := webhookOriginAddresses(webhookOrigins)
+	if err != nil {
+		return nil, err
+	}
 	all := append([]string{origin}, additional...)
 	all = append(all, teams...)
+	all = append(all, webhooks...)
 	union := make([]string, 0, len(all))
 	seen := make(map[string]struct{}, len(all))
 	for _, address := range all {
@@ -223,11 +232,12 @@ func deliveryOriginDial(origins []string, dial deliveryDial) deliveryDial {
 }
 
 func newProviderClient(endpoint, caFile string, jiraOrigins ...string) (*http.Client, error) {
-	return newGatewayProviderClient(endpoint, caFile, jiraOrigins, nil)
+	return newGatewayProviderClient(endpoint, caFile, jiraOrigins, nil, nil)
 }
 
-func newGatewayProviderClient(endpoint, caFile string, jiraOrigins, teamsOrigins []string) (*http.Client, error) {
-	origins, err := deliveryOriginUnion(endpoint, jiraOrigins, teamsOrigins)
+func newGatewayProviderClient(endpoint, caFile string,
+	jiraOrigins, teamsOrigins, webhookOrigins []string) (*http.Client, error) {
+	origins, err := deliveryOriginUnion(endpoint, jiraOrigins, teamsOrigins, webhookOrigins)
 	if err != nil {
 		return nil, err
 	}
@@ -301,14 +311,15 @@ func validateDeliveryClient(client *http.Client, endpoint string) error {
 
 func ownDeliveryClient(config Config) (*http.Client, error) {
 	return ownGatewayProviderClient(config.DeliveryClient, config.SlackEndpoint, config.DeliveryCAFile,
-		config.JiraAPIOrigins, config.TeamsWorkflowOrigins)
+		config.JiraAPIOrigins, config.TeamsWorkflowOrigins, config.WebhookOrigins)
 }
 
 func ownProviderClient(supplied *http.Client, gateway, caFile string, jiraOrigins ...string) (*http.Client, error) {
-	return ownGatewayProviderClient(supplied, gateway, caFile, jiraOrigins, nil)
+	return ownGatewayProviderClient(supplied, gateway, caFile, jiraOrigins, nil, nil)
 }
 
-func ownGatewayProviderClient(supplied *http.Client, gateway, caFile string, jiraOrigins, teamsOrigins []string) (*http.Client, error) {
+func ownGatewayProviderClient(supplied *http.Client, gateway, caFile string,
+	jiraOrigins, teamsOrigins, webhookOrigins []string) (*http.Client, error) {
 	endpoint, err := app.ValidateDeliveryGateway(gateway)
 	if err != nil {
 		return nil, err
@@ -316,7 +327,7 @@ func ownGatewayProviderClient(supplied *http.Client, gateway, caFile string, jir
 	if err = validateDeliveryClient(supplied, endpoint); err != nil {
 		return nil, err
 	}
-	origins, err := deliveryOriginUnion(endpoint, jiraOrigins, teamsOrigins)
+	origins, err := deliveryOriginUnion(endpoint, jiraOrigins, teamsOrigins, webhookOrigins)
 	if err != nil {
 		return nil, err
 	}

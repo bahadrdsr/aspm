@@ -1,0 +1,24 @@
+.webhook-entry,
+.webhook-connections {
+  display: grid;
+  gap: .75rem;
+}
+
+.webhook-form {
+  min-width: min(38rem, 90vw);
+}
+
+.webhook-checkbox {
+  align-items: center;
+  display: flex;
+  gap: .5rem;
+}
+
+.webhook-finding,
+.webhook-review,
+.webhook-history,
+.webhook-delivery,
+.webhook-send-form {
+  display: grid;
+  gap: .75rem;
+}

@@ -20,6 +20,8 @@ func (h *harness) teamsV10Rows(names []string, stripV21 bool) map[string][]strin
 			same(h.t, "legacy rows acquired Teams metadata",
 				h.rows("SELECT id FROM "+h.table(name)+" WHERE teams_target IS NOT NULL"), []string{})
 			projection += "-'teams_target'"
+			same(h.t, "legacy rows acquired generic webhook metadata",
+				h.rows("SELECT id FROM "+h.table(name)+" WHERE webhook_target IS NOT NULL"), []string{})
 		}
 		if name == "finding_deliveries" {
 			same(h.t, "historical deliveries acquired nondefault V21 trigger metadata",
@@ -27,8 +29,10 @@ func (h *harness) teamsV10Rows(names []string, stripV21 bool) map[string][]strin
 					" WHERE trigger_kind<>'manual' OR policy_id IS NOT NULL OR policy_revision IS NOT NULL OR finding_change_revision IS NOT NULL"),
 				[]string{})
 			if stripV21 {
-				projection += "-'trigger_kind'-'policy_id'-'policy_revision'-'finding_change_revision'"
+				projection += "-'trigger_kind'-'policy_id'-'policy_revision'-'finding_change_revision'-'webhook_target'"
 			}
+		} else if name == "integration_connections" && stripV21 {
+			projection += "-'webhook_target'"
 		}
 		result[name] = h.rows("SELECT (" + projection + ")::text FROM " + h.table(name) + " v ORDER BY (" + projection + ")::text")
 	}
@@ -43,7 +47,7 @@ func (h *harness) projectTeamsV10Data(t *testing.T, before map[string][]string, 
 	t.Helper()
 	projected := sourcecompat.ProjectRowsCurrent(t, before, h.teamsV10Rows(names, false))
 	historical := h.teamsV10Data([]string{"finding_deliveries"})
-	same(t, "V21 changed exact published finding delivery bytes", historical["finding_deliveries"], before["finding_deliveries"])
+	same(t, "V22 changed exact published finding delivery bytes", historical["finding_deliveries"], before["finding_deliveries"])
 	return projected
 }
 
@@ -138,14 +142,14 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21")
-	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21 exactly once over real populated V10", h.ledger(), currentLedger)
-	sourcecompat.ValidateV21Catalog(t, h.v21Definitions())
-	same(t, "V21 changed the relation/index set",
-		sourcecompat.ProjectRelationsV21(t, relations, h.relations()), relations)
-	same(t, "V21 must validate the complete exact DDL delta before projection",
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22")
+	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22 exactly once over real populated V10", h.ledger(), currentLedger)
+	sourcecompat.ValidateV22Catalog(t, h.v21Definitions())
+	same(t, "V22 changed the relation/index set",
+		sourcecompat.ProjectRelationsV22(t, relations, h.relations()), relations)
+	same(t, "V22 must validate the complete exact DDL delta before projection",
 		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
-	same(t, "V21 changed old bytes outside the exact additions",
+	same(t, "V22 changed old bytes outside the exact additions",
 		h.projectTeamsV10Data(t, before, names), before)
 	same(t, "V21 did not backfill exactly one earliest Jira effect without rewriting deliveries",
 		h.rows("SELECT connection_id||'|'||finding_id||'|'||delivery_id FROM "+h.table("jira_finding_effects")+
@@ -162,10 +166,10 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	same(t, "V11 changed the published queued advisory", h.json(viewer, "GET", "/api/v1/ai/assessments/"+assessmentID, nil, 200).Assessment, assessment)
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "V21 reopen changed the integer ledger", h.ledger(), currentLedger)
-	same(t, "V21 reopen changed definitions", h.definitions(names), afterDefinitions)
-	sourcecompat.ValidateV21Catalog(t, h.v21Definitions())
-	same(t, "V21 reopen changed historical business bytes",
+	same(t, "V22 reopen changed the integer ledger", h.ledger(), currentLedger)
+	same(t, "V22 reopen changed definitions", h.definitions(names), afterDefinitions)
+	sourcecompat.ValidateV22Catalog(t, h.v21Definitions())
+	same(t, "V22 reopen changed historical business bytes",
 		h.projectTeamsV10Data(t, before, names), before)
 
 	value := n.workflowURL()
@@ -215,11 +219,11 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		"new Teams flow is not usable through the migrated common worker")
 	process(t, h.ctx, w, false)
 	same(t, "typed probes or new dispatch rewrote the published native receipt",
-		h.rows("SELECT (to_jsonb(v)-'teams_target'-'trigger_kind'-'policy_id'-'policy_revision'-'finding_change_revision')::text FROM "+
+		h.rows("SELECT (to_jsonb(v)-'teams_target'-'trigger_kind'-'policy_id'-'policy_revision'-'finding_change_revision'-'webhook_target')::text FROM "+
 			h.table("finding_deliveries")+" v WHERE workspace_id=$1 AND id=$2", h.admin.Workspace, confirmedJob.ID), oldConfirmedRow)
 	same(t, "migration/new profile changed historical connection bytes",
-		h.rows("SELECT (to_jsonb(v)-'teams_target')::text FROM "+h.table("integration_connections")+
-			" v WHERE id=ANY($1::text[]) ORDER BY (to_jsonb(v)-'teams_target')::text", []string{slack.ID, jira.ID}),
+		h.rows("SELECT (to_jsonb(v)-'teams_target'-'webhook_target')::text FROM "+h.table("integration_connections")+
+			" v WHERE id=ANY($1::text[]) ORDER BY (to_jsonb(v)-'teams_target'-'webhook_target')::text", []string{slack.ID, jira.ID}),
 		before["integration_connections"])
 	unrelated := []string{}
 	for _, name := range names {

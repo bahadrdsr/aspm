@@ -23,6 +23,8 @@ var (
 	ErrScope          = errors.New("connector scope denied")
 	ErrLimit          = errors.New("connector collection limit reached")
 	ErrUnavailable    = errors.New("source or artifact unavailable")
+	ErrProtocol       = errors.New("invalid connector response")
+	ErrUnsupported    = errors.New("unsupported connector operation")
 )
 
 type Limits struct {
@@ -35,11 +37,20 @@ type DeliveryConfig struct {
 	StatusMap                                                          map[string]string
 	Client                                                             *http.Client
 	Limits                                                             Limits
+	AllowedOrigins                                                     []string
+}
+
+type DeliveryTrigger struct {
+	Kind                  string
+	PolicyID              *string
+	PolicyRevision        *int64
+	FindingChangeRevision *int64
 }
 
 type Action struct {
 	WorkspaceID, IntentID, ApprovalRef, FindingID, Title, Body, DeepLink string
 	Fields                                                               map[string]string
+	Trigger                                                              DeliveryTrigger
 	Prior                                                                *Delivery
 }
 

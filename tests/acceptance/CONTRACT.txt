@@ -298,3 +298,127 @@ record versions 1..21 exactly once, validate the complete V21 relation/catalog
 delta, preserve old API/native rows, and reopen without repeating migration.
 No generic webhooks, live-vendor claims, provider status linkage, automatic
 resolution or bulk risk acceptance are included.
+
+M08 V22 GENERIC OUTBOUND WEBHOOK DELIVERY:
+V22 adds generic-webhook-v1 as a non-native delivery profile inside the existing
+integration connection, finding delivery, outbox and notification-policy
+frameworks. It is not a ninth native catalog family. The native catalog remains
+exactly github,gitlab,azure-devops,aws,azure,jira,teams,slack. V22 adds no
+Node-RED/custom scripting, generic body templates, provider status linkage,
+live-vendor claim, automatic finding resolution or bulk risk acceptance.
+
+Core and delivery receive one explicit operator-owned ASPM_WEBHOOK_ORIGINS/config
+list. It is a JSON array of at most 16 unique canonical HTTPS origins. There is
+no ambient default, wildcard, HTTP downgrade, userinfo, path, query, fragment,
+duplicate effective port, proxy, redirect, cookie jar or credential discovery.
+An administrator can select only an exact configured origin. Tenant/admin input
+cannot add an origin or override transport, method, headers, TLS, timeout,
+routing or endpoint. An explicitly listed synthetic loopback TLS origin is
+admitted for tests, but any other host/port and every redirect remain denied.
+This exact list is the generic-webhook SSRF boundary.
+
+POST /api/v1/integrations/connections, GET/list, GET/{id} and PATCH/{id}
+serve generic-webhook-v1. Create accepts exactly
+{profile:"generic-webhook-v1",name,enabled,webhookUrl,secret}. webhookUrl is a
+canonical absolute HTTPS URL of at most 16 KiB whose exact origin is configured.
+Its explicit bounded absolute path is public routing configuration. Userinfo,
+query, fragment, backslash, controls, dot-segments and encoded path separators
+are invalid. There is no signed-URL/query-secret mode. secret is a write-only
+HMAC key of 32..4096 UTF-8 bytes with no NUL/control or edge whitespace. It is
+encrypted by the existing integration key with generic-webhook-specific AAD.
+It is never returned, logged, stored by the browser, placed in a URL or replaced
+by a fallback credential.
+
+Generic connection metadata is exactly id,workspaceId,profile,name,enabled,
+revision,createdAt,updatedAt,credentialConfigured,webhook and permissionState.
+webhook={origin,path,signature:"hmac-sha256"} and permissionState="not-verified".
+Sparse PATCH accepts only name,enabled,webhookUrl,secret. Omission preserves;
+null/unknown fields are invalid. The UI omits a blank secret rather than sending
+it. A real target or secret change increments revision exactly once; a no-op
+changes neither revision nor ciphertext. Only workspace admins configure.
+Members may read safe metadata. Foreign resources return 404.
+
+POST /api/v1/findings/{id}/delivery-previews with {connectionId} is local only
+and performs zero receiver I/O. A generic preview returns exact workspace,
+finding, connection, connectionRevision, profile and requestedBy identity,
+public webhook metadata, the server-derived canonical title/body/deepLink,
+lowercase sha256 bindingDigest, nativeValidation="not-run", and
+reviewRequirements exactly ["explicit-queue-consent","operator-approved-origin",
+"receiver-signature-verification"]. Opening or canceling a preview persists
+nothing and sends nothing.
+
+POST /api/v1/findings/{id}/deliveries requires exactly connectionId,
+idempotencyKey,previewDigest,confirm:true for generic webhooks. Missing/false
+consent and malformed, forged or stale digests fail. Viewers cannot queue.
+The same binding/key replays 200. A changed key or binding follows the existing
+manual idempotency rules and never silently replaces an intent. 202 means queued,
+not sent. Queueing performs no receiver I/O.
+
+The worker sends exactly one HTTPS POST to the approved connection URL. Its only
+application-owned headers are Content-Type: application/json,
+Accept: application/json, X-ASPM-Event: finding.notification.v1,
+X-ASPM-Delivery-ID:<durable delivery ID>, and X-ASPM-Signature:sha256=<lowercase
+HMAC-SHA256 of the exact request body using the decrypted connection secret>.
+There is no Authorization header, cookie, caller header, query secret, alternate
+method, redirect or caller-selected body.
+
+The exact body is:
+{"apiVersion":"aspm/webhook/v1","event":"finding.notification",
+"deliveryId":"...","workspaceId":"...","findingId":"...",
+"trigger":{"kind":"manual|notification-policy","policyId":null|string,
+"policyRevision":null|number,"findingChangeRevision":null|number},
+"notification":{"title":"...","body":"...","deepLink":"..."}}
+Manual policy fields are null. Notification-policy fields are exact and
+positive. The bounded notification uses only the canonical title,
+severity/asset/change text already admitted by the common notification payload,
+and the trusted finding deep link. It excludes evidence, notes, remediation,
+unmapped/source-extra fields, credentials, approval references, source text and
+executable content. Exact body bytes and HMAC are stable for an immutable
+delivery and independently verifiable by the synthetic TLS receiver.
+
+Generic dispatch reuses finding_deliveries, connection revision and credential
+identity checks, current requester authority, leases, fencing, cancellation
+watching and the existing create/outbound attempt marker. It creates no parallel
+queue. The attempt marker commits before POST and no SQL connection, transaction
+or lock is held during receiver HTTP. HTTP 200..299 becomes accepted with no
+remote receipt and no downstream-processing claim. HTTP 400..499 except 429 is
+failed with bounded code/status. 429 is rate-limited with literal bounded
+Retry-After. Timeout, dropped acknowledgement, malformed transport result or
+HTTP 5xx after POST is uncertain. Redirect is blocked. There is no automatic
+retry or fresh-key duplicate.
+
+Requester role loss, connection disablement, target/secret revision or operator
+origin removal before POST blocks with no attempt marker or receiver call.
+The same change during/after a possible POST cancels the request and records
+uncertain. Terminal outcomes never resurrect after regrant, re-enable or reopen.
+
+V22 widens V21 notification-policy current and immutable revision profile checks
+to generic-webhook-v1. The Integrations policy editor can select a configured
+generic webhook. Eligible evaluation creates one ordinary policy delivery per
+matching finding change revision with the existing unique policy effect key.
+Evaluation itself performs no receiver I/O. Stale connection/origin records
+connection-stale; an invalid bounded payload records invalid-payload. Generic
+webhooks never use app_jira_finding_effects. Dispatch uses the same fixed body
+and signature with the exact policy ID/revision/finding-change revision.
+
+Integrations exposes a Webhook connections section. Admins add/edit the exact
+approved URL, enabled state and write-only secret. Viewers see only safe
+metadata. Configuration never test-sends. Finding detail exposes Send webhook,
+local review, explicit Queue webhook, selected delivery detail and manual webhook
+history. accepted is labeled endpoint accepted and downstream processing not
+confirmed. uncertain has no resend action. Notification policy list/edit supports
+webhook connections without changing Slack/Jira/Teams behavior. Workspace or
+session loss clears drafts/intents, aborts late responses, and stores no URL,
+secret, idempotency key or pending intent beyond the existing bounded scoped
+intent behavior.
+
+V22 MIGRATION: additive version 22 appends nullable webhook_target jsonb to
+integration_connections and finding_deliveries. It widens only their exact
+profile and profile/target consistency CHECKs from three delivery profiles to
+four. It widens only notification_policies and notification_policy_revisions
+connection_profile CHECKs to include generic-webhook-v1. There is no historical
+row rewrite and no new relation/index. V1-V21 migrations and business rows are
+preserved. Exact sourcecompat and authentic published V5, V6, V7, V8, V9, V10
+and V11 upgrades record versions 1..22 once, preserve prior rows and DTO bytes,
+validate PostgreSQL 18 normalized catalog text, and reopen without repeating
+migration. webhook fields are omitted for every non-webhook connection/delivery.

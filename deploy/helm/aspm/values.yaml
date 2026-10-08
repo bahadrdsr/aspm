@@ -52,6 +52,7 @@ delivery:
   enabled: false
   jiraAPIOrigins: []
   teamsWorkflowOrigins: []
+  webhookOrigins: []
   replicas: 1
   leaseDuration: "15s"
   slackEndpoint: "https://slack.com"

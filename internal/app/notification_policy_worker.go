@@ -109,7 +109,7 @@ func (w *DeliveryWorker) policyFindingDelivery(event findingChangeEventRecord,
 		ID: newID(), WorkspaceID: event.WorkspaceID, FindingID: event.FindingID,
 		ConnectionID: connection.ID, ConnectionRevision: connection.Revision,
 		Profile: connection.Profile, Channel: connection.Channel, RequestedBy: revision.ActorID,
-		State: "queued", CreatedAt: w.now().UTC(), Jira: connection.Jira,
+		State: "queued", CreatedAt: w.now().UTC(), Jira: connection.Jira, Webhook: connection.Webhook,
 		TriggerKind: "notification-policy", PolicyID: &policyID,
 		PolicyRevision: &policyRevision, FindingChangeRevision: &changeRevision,
 		Payload: FindingNotification{
@@ -150,6 +150,12 @@ func (w *DeliveryWorker) policyFindingDelivery(event findingChangeEventRecord,
 		}
 		delivery.Destination = &TeamsDestination{connection.Name, *connection.Teams}
 		if !teamsPayloadValid(delivery.Payload) {
+			return FindingDelivery{}, false
+		}
+	case connectors.GenericWebhookV1:
+		if delivery.Jira != nil || connection.Teams != nil || delivery.Channel != "" ||
+			!validWebhookTarget(delivery.Webhook) ||
+			!webhookOriginAllowed(delivery.Webhook.Origin, w.webhookOrigins) {
 			return FindingDelivery{}, false
 		}
 	default:
@@ -221,7 +227,10 @@ func (w *DeliveryWorker) evaluateFindingChangeEvent(ctx context.Context,
 			event.WorkspaceID, revision.ConnectionID))
 		if errors.Is(connectionErr, pgx.ErrNoRows) ||
 			connectionErr == nil && (!connection.Enabled || connection.Profile != revision.ConnectionProfile ||
-				connection.Revision != revision.ConnectionRevision) {
+				connection.Revision != revision.ConnectionRevision ||
+				connection.Profile == connectors.GenericWebhookV1 &&
+					(!validWebhookTarget(connection.Webhook) ||
+						!webhookOriginAllowed(connection.Webhook.Origin, w.webhookOrigins))) {
 			if err = w.insertNotificationPolicyEvent(ctx, tx, event, revision, "connection-stale", nil); err != nil {
 				return deliveryInfrastructureError(ctx, "record stale notification-policy outcome failed")
 			}

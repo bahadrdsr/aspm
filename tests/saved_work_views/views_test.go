@@ -119,8 +119,8 @@ func TestSavedWorkViewsFreshReopenNativePagesAndRevisionRaces(t *testing.T) {
 	h := newHarness(t)
 	values := []savedView{h.create(h.admin, "Third title", "needle", "title"),
 		h.create(h.admin, "First title", "", "source-order"), h.create(h.admin, "Second title", "literal%_", "severity")}
-	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"}
-	same(t, "fresh current core must apply through additive V21 exactly once", h.ledger(), wantLedger)
+	wantLedger := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"}
+	same(t, "fresh current core must apply through additive V22 exactly once", h.ledger(), wantLedger)
 	other := h.workspace()
 	h.create(other, "Not in selected list", "", "title")
 	sort.Slice(values, func(i, j int) bool { return values[i].ID < values[j].ID })
@@ -213,5 +213,5 @@ func TestSavedWorkViewsFreshReopenNativePagesAndRevisionRaces(t *testing.T) {
 	h.reopen()
 	same(t, "race winner lost on second app reopen", h.get(h.admin, winner.ID), winner)
 	same(t, "reopen repeated/skipped migration", h.ledger(), wantLedger)
-	t.Log("fresh V21, actual reopen, native ID pages, stale revisions and atomic mutation races reached")
+	t.Log("fresh V22, actual reopen, native ID pages, stale revisions and atomic mutation races reached")
 }

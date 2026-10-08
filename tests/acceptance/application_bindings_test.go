@@ -29,7 +29,8 @@ func init() {
 			DatabaseURL: config.DatabaseURL, Schema: config.Schema, ApplicationName: config.ApplicationName,
 			MaxConnections: config.MaxConnections, BootstrapToken: config.BootstrapToken,
 			IntegrationEncryptionKey: config.IntegrationEncryptionKey, PublicOrigin: config.PublicOrigin,
-			Now: config.Now, LogOutput: config.LogOutput, SessionTTL: config.SessionTTL,
+			WebhookOrigins: config.WebhookOrigins,
+			Now:            config.Now, LogOutput: config.LogOutput, SessionTTL: config.SessionTTL,
 			MaxUploadBytes: config.MaxUploadBytes, ManualProcessing: config.ManualProcessing,
 			OIDC: oidc, QueryTracer: config.QueryTracer,
 			ArchiveStorage: archive,
@@ -75,11 +76,12 @@ func init() {
 				MaxConnections: config.MaxConnections, LogOutput: config.LogOutput, QueryTracer: config.QueryTracer,
 			},
 			EncryptionKey: config.EncryptionKey, WorkerID: config.WorkerID, LeaseDuration: config.LeaseDuration,
-			PublicOrigin: config.PublicOrigin, SlackEndpoint: config.SlackEndpoint, Client: config.Client,
+			PublicOrigin: config.PublicOrigin, WebhookOrigins: config.WebhookOrigins,
+			SlackEndpoint: config.SlackEndpoint, Client: config.Client,
 		})
 		if err != nil {
 			return DeliveryWorker{}, err
 		}
-		return DeliveryWorker{ProcessNext: worker.ProcessNext, Close: worker.Close}, nil
+		return DeliveryWorker{ProcessNext: worker.ProcessNext, Ping: worker.Ping, Close: worker.Close}, nil
 	}
 }

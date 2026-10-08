@@ -69,6 +69,7 @@ type FindingDelivery struct {
 	Failure               *FindingDeliveryFailure `json:"failure"`
 	Jira                  *JiraTarget             `json:"jira,omitempty"`
 	Destination           *TeamsDestination       `json:"destination,omitempty"`
+	Webhook               *WebhookTarget          `json:"webhook,omitempty"`
 	CreateAttemptedAt     *time.Time              `json:"-"`
 	TriggerKind           string                  `json:"-"`
 	PolicyID              *string                 `json:"-"`
@@ -81,6 +82,37 @@ func (delivery FindingDelivery) MarshalJSON() ([]byte, error) {
 	trigger := ""
 	if delivery.TriggerKind == "notification-policy" {
 		trigger = delivery.TriggerKind
+	}
+	if delivery.Profile == connectors.GenericWebhookV1 {
+		return json.Marshal(struct {
+			ID                    string                  `json:"id"`
+			WorkspaceID           string                  `json:"workspaceId"`
+			FindingID             string                  `json:"findingId"`
+			ConnectionID          string                  `json:"connectionId"`
+			ConnectionRevision    int64                   `json:"connectionRevision"`
+			Profile               string                  `json:"profile"`
+			RequestedBy           string                  `json:"requestedBy"`
+			State                 string                  `json:"state"`
+			Payload               FindingNotification     `json:"payload"`
+			CreatedAt             time.Time               `json:"createdAt"`
+			DispatchStartedAt     *time.Time              `json:"dispatchStartedAt"`
+			OutboundAttemptedAt   *time.Time              `json:"outboundAttemptedAt"`
+			CompletedAt           *time.Time              `json:"completedAt"`
+			Receipt               *FindingDeliveryReceipt `json:"receipt"`
+			Failure               *FindingDeliveryFailure `json:"failure"`
+			Webhook               *WebhookTarget          `json:"webhook"`
+			TriggerKind           string                  `json:"triggerKind,omitempty"`
+			PolicyID              *string                 `json:"policyId,omitempty"`
+			PolicyRevision        *int64                  `json:"policyRevision,omitempty"`
+			FindingChangeRevision *int64                  `json:"findingChangeRevision,omitempty"`
+		}{
+			delivery.ID, delivery.WorkspaceID, delivery.FindingID, delivery.ConnectionID,
+			delivery.ConnectionRevision, delivery.Profile, delivery.RequestedBy, delivery.State,
+			delivery.Payload, delivery.CreatedAt, delivery.DispatchStartedAt,
+			delivery.CreateAttemptedAt, delivery.CompletedAt, delivery.Receipt, delivery.Failure,
+			delivery.Webhook, trigger, delivery.PolicyID, delivery.PolicyRevision,
+			delivery.FindingChangeRevision,
+		})
 	}
 	if delivery.Profile == connectors.JiraCloudV3 {
 		return json.Marshal(struct {
@@ -125,17 +157,18 @@ type findingDeliveryRecord struct {
 const findingDeliveryColumns = `id,workspace_id,finding_id,connection_id,connection_revision,
 	profile,channel,requested_by,state,payload,created_at,dispatch_started_at,completed_at,
 	receipt,failure,binding_digest,approval_ref,fence,idempotency_key,jira_target,create_attempted_at,teams_target,
-	trigger_kind,policy_id,policy_revision,finding_change_revision`
+	trigger_kind,policy_id,policy_revision,finding_change_revision,webhook_target`
 
 func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 	var record findingDeliveryRecord
-	var payload, receipt, failure, target, teams []byte
+	var payload, receipt, failure, target, teams, webhook []byte
 	err := row.Scan(&record.ID, &record.WorkspaceID, &record.FindingID, &record.ConnectionID,
 		&record.ConnectionRevision, &record.Profile, &record.Channel, &record.RequestedBy, &record.State,
 		&payload, &record.CreatedAt, &record.DispatchStartedAt, &record.CompletedAt,
 		&receipt, &failure, &record.bindingDigest, &record.approvalRef, &record.fence,
 		&record.idempotencyKey, &target, &record.CreateAttemptedAt, &teams,
-		&record.TriggerKind, &record.PolicyID, &record.PolicyRevision, &record.FindingChangeRevision)
+		&record.TriggerKind, &record.PolicyID, &record.PolicyRevision, &record.FindingChangeRevision,
+		&webhook)
 	if err != nil {
 		return record, err
 	}
@@ -149,6 +182,11 @@ func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 	}
 	if len(teams) != 0 {
 		if err = json.Unmarshal(teams, &record.Destination); err != nil {
+			return record, err
+		}
+	}
+	if len(webhook) != 0 {
+		if err = json.Unmarshal(webhook, &record.Webhook); err != nil {
 			return record, err
 		}
 	}
@@ -186,6 +224,11 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 			Binding     any
 			Destination *TeamsDestination
 		}{value, delivery.Destination}
+	} else if delivery.Profile == connectors.GenericWebhookV1 {
+		binding = struct {
+			Binding any
+			Webhook *WebhookTarget
+		}{value, delivery.Webhook}
 	}
 	if delivery.TriggerKind == "notification-policy" {
 		binding = struct {
@@ -207,7 +250,9 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 
 func deliveryIntentBinding(delivery FindingDelivery, key string) ([]byte, error) {
 	binding, err := deliveryBinding(delivery)
-	if err != nil || delivery.Profile != connectors.JiraCloudV3 && delivery.Profile != connectors.TeamsWorkflows {
+	if err != nil || delivery.Profile != connectors.JiraCloudV3 &&
+		delivery.Profile != connectors.TeamsWorkflows &&
+		delivery.Profile != connectors.GenericWebhookV1 {
 		return binding, err
 	}
 	data, err := json.Marshal(struct {
@@ -255,6 +300,11 @@ func validDeliveryBinding(record findingDeliveryRecord) bool {
 		!validTeamsDestination(record.Destination) || !teamsPayloadValid(record.Payload)) {
 		return false
 	}
+	if record.Profile == connectors.GenericWebhookV1 &&
+		(record.Jira != nil || record.Destination != nil || record.Channel != "" ||
+			record.Payload.Fields != nil || !validWebhookTarget(record.Webhook)) {
+		return false
+	}
 	binding, err := deliveryIntentBinding(record.FindingDelivery, record.idempotencyKey)
 	return err == nil && bytes.Equal(binding, record.bindingDigest)
 }
@@ -270,7 +320,7 @@ func (a *database) insertFindingDelivery(ctx context.Context, tx pgx.Tx, deliver
 	if err != nil {
 		return findingDeliveryRecord{}, err
 	}
-	var target, teams []byte
+	var target, teams, webhook []byte
 	if delivery.Jira != nil {
 		target, err = json.Marshal(delivery.Jira)
 		if err != nil {
@@ -283,16 +333,22 @@ func (a *database) insertFindingDelivery(ctx context.Context, tx pgx.Tx, deliver
 			return findingDeliveryRecord{}, err
 		}
 	}
+	if delivery.Webhook != nil {
+		webhook, err = json.Marshal(delivery.Webhook)
+		if err != nil {
+			return findingDeliveryRecord{}, err
+		}
+	}
 	return scanFindingDelivery(tx.QueryRow(ctx, `INSERT INTO `+a.table("finding_deliveries")+`
 		(id,workspace_id,finding_id,connection_id,connection_revision,profile,channel,requested_by,
 		 idempotency_key,binding_digest,approval_ref,payload,created_at,jira_target,teams_target,
-		 trigger_kind,policy_id,policy_revision,finding_change_revision)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+		 trigger_kind,policy_id,policy_revision,finding_change_revision,webhook_target)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
 		RETURNING `+findingDeliveryColumns,
 		delivery.ID, delivery.WorkspaceID, delivery.FindingID, delivery.ConnectionID,
 		delivery.ConnectionRevision, delivery.Profile, delivery.Channel, delivery.RequestedBy,
 		key, digest, approvalRef, payload, delivery.CreatedAt, target, teams, delivery.TriggerKind,
-		delivery.PolicyID, delivery.PolicyRevision, delivery.FindingChangeRevision))
+		delivery.PolicyID, delivery.PolicyRevision, delivery.FindingChangeRevision, webhook))
 }
 
 func lockJiraFindingEffect(ctx context.Context, tx pgx.Tx, workspace, connection, finding string) error {
@@ -343,12 +399,13 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return err
 	}
-	if delivery.Profile == connectors.JiraCloudV3 || delivery.Profile == connectors.TeamsWorkflows {
+	if delivery.Profile == connectors.JiraCloudV3 || delivery.Profile == connectors.TeamsWorkflows ||
+		delivery.Profile == connectors.GenericWebhookV1 {
 		if input.Confirm.Value == nil || !*input.Confirm.Value || input.PreviewDigest.Value == nil ||
 			len(*input.PreviewDigest.Value) != 71 {
 			return errInvalid
 		}
-		if delivery.Profile == connectors.TeamsWorkflows {
+		if delivery.Profile == connectors.TeamsWorkflows || delivery.Profile == connectors.GenericWebhookV1 {
 			raw, err := hex.DecodeString((*input.PreviewDigest.Value)[7:])
 			if !strings.HasPrefix(*input.PreviewDigest.Value, "sha256:") || err != nil || len(raw) != 32 ||
 				strings.ToLower(*input.PreviewDigest.Value) != *input.PreviewDigest.Value {

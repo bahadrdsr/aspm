@@ -20,30 +20,32 @@ import (
 )
 
 type DeliveryWorkerConfig struct {
-	Database      DatabaseConfig
-	EncryptionKey []byte `json:"-"`
-	WorkerID      string
-	LeaseDuration time.Duration
-	PublicOrigin  string
-	SlackEndpoint string       `json:"-"`
-	Client        *http.Client `json:"-"`
+	Database       DatabaseConfig
+	EncryptionKey  []byte `json:"-"`
+	WorkerID       string
+	LeaseDuration  time.Duration
+	PublicOrigin   string
+	WebhookOrigins []string
+	SlackEndpoint  string       `json:"-"`
+	Client         *http.Client `json:"-"`
 }
 
 // DeliveryWorker owns a separate database pool and no application HTTP or S3 capability.
 type DeliveryWorker struct {
 	*database
-	credentials  cipher.AEAD
-	workerID     string
-	lease        time.Duration
-	endpoint     string
-	publicOrigin string
-	client       *http.Client
-	lifetime     context.Context
-	cancel       context.CancelFunc
-	mu           sync.Mutex
-	closed       bool
-	active       sync.WaitGroup
-	closeOnce    sync.Once
+	credentials    cipher.AEAD
+	workerID       string
+	lease          time.Duration
+	endpoint       string
+	publicOrigin   string
+	webhookOrigins []string
+	client         *http.Client
+	lifetime       context.Context
+	cancel         context.CancelFunc
+	mu             sync.Mutex
+	closed         bool
+	active         sync.WaitGroup
+	closeOnce      sync.Once
 }
 
 // ValidateDeliveryGateway checks a trusted HTTPS base without performing I/O.
@@ -95,6 +97,9 @@ func ValidateDeliveryWorkerConfig(config DeliveryWorkerConfig) error {
 	if err := ValidatePublicOrigin(config.PublicOrigin); err != nil {
 		return err
 	}
+	if err := ValidateWebhookOrigins(config.WebhookOrigins); err != nil {
+		return err
+	}
 	return ValidateDatabaseConfig(config.Database)
 }
 
@@ -126,7 +131,9 @@ func OpenDeliveryWorker(ctx context.Context, config DeliveryWorkerConfig) (*Deli
 	lifetime, cancel := context.WithCancel(context.Background())
 	return &DeliveryWorker{
 		database: db, credentials: credentials, workerID: config.WorkerID, lease: config.LeaseDuration,
-		endpoint: endpoint, publicOrigin: config.PublicOrigin, client: &client, lifetime: lifetime, cancel: cancel,
+		endpoint: endpoint, publicOrigin: config.PublicOrigin,
+		webhookOrigins: append([]string(nil), config.WebhookOrigins...),
+		client:         &client, lifetime: lifetime, cancel: cancel,
 	}, nil
 }
 
@@ -191,7 +198,8 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 	if record.State == "dispatching" {
 		// An expired possible write is terminal, never a fresh send.
 		state, code := "uncertain", "uncertain"
-		if (record.Profile == connectors.JiraCloudV3 || record.Profile == connectors.TeamsWorkflows) && record.CreateAttemptedAt == nil {
+		if (record.Profile == connectors.JiraCloudV3 || record.Profile == connectors.TeamsWorkflows ||
+			record.Profile == connectors.GenericWebhookV1) && record.CreateAttemptedAt == nil {
 			state, code = "blocked", "lease-expired"
 		}
 		if err = w.settleClaim(ctx, tx, record, state, code); err != nil {
@@ -234,6 +242,11 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 			reason = "connection-changed"
 		case record.Profile == connectors.TeamsWorkflows && (!validTeamsMetadata(connection.Teams) ||
 			!reflect.DeepEqual(&TeamsDestination{connection.Name, *connection.Teams}, record.Destination)):
+			reason = "connection-changed"
+		case record.Profile == connectors.GenericWebhookV1 &&
+			(!validWebhookTarget(connection.Webhook) ||
+				!reflect.DeepEqual(connection.Webhook, record.Webhook) ||
+				!webhookOriginAllowed(connection.Webhook.Origin, w.webhookOrigins)):
 			reason = "connection-changed"
 		}
 	}
@@ -280,6 +293,10 @@ func (w *DeliveryWorker) claimDelivery(ctx context.Context) (*deliveryDispatch, 
 						closeClient = config.Client.CloseIdleConnections
 					}
 				}
+			}
+			if record.Profile == connectors.GenericWebhookV1 {
+				config.Endpoint, config.AllowedOrigins = webhookEndpoint(record.Webhook),
+					append([]string(nil), w.webhookOrigins...)
 			}
 			if reason == "" {
 				adapter, err = connectors.OpenDelivery(ctx, config)
@@ -408,9 +425,13 @@ func (w *DeliveryWorker) ProcessNext(ctx context.Context) (bool, error) {
 	if record.Profile == connectors.TeamsWorkflows {
 		return true, w.processTeamsDelivery(requestCtx, dispatch)
 	}
+	if record.Profile == connectors.GenericWebhookV1 {
+		return true, w.processGenericWebhookDelivery(requestCtx, dispatch)
+	}
 	result, nativeErr := dispatch.adapter.Send(requestCtx, connectors.Action{
 		WorkspaceID: record.WorkspaceID, IntentID: record.ID, ApprovalRef: record.approvalRef,
 		FindingID: record.FindingID, Title: record.Payload.Title, Body: record.Payload.Body, DeepLink: record.Payload.DeepLink,
+		Trigger: deliveryTrigger(record),
 	})
 	state, receipt, failure := deliveryOutcome(requestCtx, result, nativeErr, dispatch.token)
 	if err = w.finishDelivery(record, state, receipt, failure); err != nil {
@@ -420,4 +441,12 @@ func (w *DeliveryWorker) ProcessNext(ctx context.Context) (bool, error) {
 		return true, err
 	}
 	return true, nil
+}
+
+func deliveryTrigger(record findingDeliveryRecord) connectors.DeliveryTrigger {
+	return connectors.DeliveryTrigger{
+		Kind: record.TriggerKind, PolicyID: record.PolicyID,
+		PolicyRevision:        record.PolicyRevision,
+		FindingChangeRevision: record.FindingChangeRevision,
+	}
 }

@@ -9,7 +9,7 @@ It does not implement another outbox, change the accepted backend or A2
 assertions/bindings, edit old service/runtime tests, add dependencies, deploy
 containers, or add UI/Helm/Quadlet/installer scheduling.
 
-Four top-level integration tests are authored. The exact forwarding-only
+Seven top-level integration tests are authored. The exact forwarding-only
 production binding calls real service.Environment and service.Run. Missing
 configuration fields and a missing command are compile/build-prerequisite RED,
 not passing behavior or a fabricated runtime. Helpers compile separately only
@@ -138,7 +138,7 @@ its specific owned PID only after durable terminal/new-work checks, for bounded
 test cleanup. That cleanup is NOT evidence of OS-signal graceful shutdown or
 proof of rollback of an accepted remote request.
 
-Four narratives
+Core narratives
 ---------------
 1. Actual service role drains a real actor-owned core intent, confirms one
    native receipt, has truthful responsive health/readiness, and no core route.
@@ -181,3 +181,19 @@ Parent verifies these compile/build RED prerequisites and seals NEW controls.
 The separate coder implements the actual runtime/command; independent review
 then verifies the real health, processing, TLS and lifecycle checks. Deployment
 scheduling and UI remain separate, unqualified next increments.
+
+V22 explicit generic webhook origins (October 8, 2026)
+------------------------------------------------------
+Core and delivery parse ASPM_WEBHOOK_ORIGINS as one JSON array of at most 16
+unique canonical HTTPS origins and expose the same WebhookOrigins config list.
+Missing input means an empty list, never an ambient destination. Invalid JSON,
+null, wildcard, HTTP, userinfo, path/query/fragment, noncanonical host/port,
+duplicate origin or duplicate effective :443 input fails before DB, provider or
+listener I/O. Other service roles receive no webhook egress capability.
+
+The delivery client's direct normal-TLS transport includes only Slack/Jira/
+Teams origins already selected by their existing configuration plus the exact
+generic webhook origins. It retains Proxy:nil, no cookie jar, bounded timeout,
+normal hostname/certificate verification and rejecting redirects. An explicitly
+listed synthetic loopback TLS host/port is reachable in the owned fixture; a
+different host or port is denied before dialing.

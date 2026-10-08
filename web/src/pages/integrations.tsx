@@ -10,6 +10,7 @@ import { SlackConnections } from "@/components/slack-connections";
 import { JiraConnections } from "@/components/jira-connections";
 import { TeamsConnections } from "@/components/teams-connections";
 import { NotificationPolicies } from "@/components/notification-policies";
+import { WebhookConnections } from "@/components/webhook-connections";
 import { Sources } from "@/components/sources/sources";
 import { AISettings } from "@/components/ai-settings/ai-settings";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export function IntegrationsPage() {
   const [aiOpen, setAIOpen] = useState(false);
   const [jiraOpen, setJiraOpen] = useState(false);
   const [teamsOpen, setTeamsOpen] = useState(false);
+  const [webhooksOpen, setWebhooksOpen] = useState(false);
   const aiEntry = useRef<HTMLButtonElement>(null);
   const normalizedQuery = query.toLowerCase();
   const items = resource.data?.items.filter((item) =>
@@ -45,6 +47,7 @@ export function IntegrationsPage() {
     <Sources />
     <JiraConnections open={jiraOpen} onToggle={() => setJiraOpen((value) => !value)} />
     <TeamsConnections open={teamsOpen} onToggle={() => setTeamsOpen((value) => !value)} />
+    <WebhookConnections open={webhooksOpen} onToggle={() => setWebhooksOpen((value) => !value)} />
     <NotificationPolicies />
     <div className="ai-entry"><Button ref={aiEntry} type="button" variant="outline" aria-expanded={aiOpen}
       onClick={() => setAIOpen(true)}>AI settings</Button></div>

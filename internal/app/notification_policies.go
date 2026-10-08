@@ -107,7 +107,8 @@ func (a *Application) notificationPolicyFrom() string {
 func validNotificationConnectionProfile(profile string) bool {
 	return profile == connectors.SlackWorkspaceBot ||
 		profile == connectors.TeamsWorkflows ||
-		profile == connectors.JiraCloudV3
+		profile == connectors.JiraCloudV3 ||
+		profile == connectors.GenericWebhookV1
 }
 
 func validNotificationSeverity(value string) bool {

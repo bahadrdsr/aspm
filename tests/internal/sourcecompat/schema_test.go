@@ -161,6 +161,66 @@ func TestValidateV21CatalogAcceptsOnlyTheDeclaredNewTables(t *testing.T) {
 	}
 }
 
+func TestValidateV22CatalogWidensOnlyNotificationConnectionProfiles(t *testing.T) {
+	current := clone(exactV22Catalog)
+	ValidateV22Catalog(t, current)
+	if !reflect.DeepEqual(V22Tables(), V21Tables()) {
+		t.Fatal("V22 unexpectedly added or removed a notification-policy relation")
+	}
+	for _, table := range []string{"notification_policies", "notification_policy_revisions"} {
+		key := table + "/constraints"
+		if slices.Contains(current[key],
+			"app_"+table+"_connection_profile_check|"+V21NotificationProfileCheck) ||
+			!slices.Contains(current[key],
+				"app_"+table+"_connection_profile_check|"+V22NotificationProfileCheck) {
+			t.Fatalf("V22 %s profile CHECK was not widened exactly", table)
+		}
+	}
+}
+
+func TestProjectV22AcceptsOnlyExactWebhookColumnsAndChecks(t *testing.T) {
+	before := map[string][]string{
+		"integration_connections/columns": {
+			"id|text|true|", "jira_target|jsonb|false|", "teams_target|jsonb|false|",
+		},
+		"integration_connections/constraints": {
+			"app_integration_connections_profile_check|" + V21DeliveryProfileCheck,
+			"app_integration_connections_profile_target_check|" + V21DeliveryTargetCheck,
+		},
+		"finding_deliveries/columns": {
+			"id|text|true|", "jira_target|jsonb|false|", "create_attempted_at|timestamp with time zone|false|",
+			"teams_target|jsonb|false|", "trigger_kind|text|true|'manual'::text",
+			"policy_id|text|false|", "policy_revision|bigint|false|", "finding_change_revision|bigint|false|",
+		},
+		"finding_deliveries/constraints": {
+			"app_finding_deliveries_profile_check|" + V21DeliveryProfileCheck,
+			"app_finding_deliveries_profile_target_check|" + V21DeliveryTargetCheck,
+		},
+		"notification_policies/constraints": {
+			"app_notification_policies_connection_profile_check|" + V21NotificationProfileCheck,
+		},
+		"notification_policy_revisions/constraints": {
+			"app_notification_policy_revisions_connection_profile_check|" + V21NotificationProfileCheck,
+		},
+	}
+	current := clone(before)
+	for _, table := range []string{"integration_connections", "finding_deliveries"} {
+		current[table+"/columns"] = append(current[table+"/columns"], "webhook_target|jsonb|false|")
+		current[table+"/constraints"] = []string{
+			"app_" + table + "_profile_check|" + V22DeliveryProfileCheck,
+			"app_" + table + "_profile_target_check|" + V22DeliveryTargetCheck,
+		}
+	}
+	for _, table := range []string{"notification_policies", "notification_policy_revisions"} {
+		current[table+"/constraints"] = []string{
+			"app_" + table + "_connection_profile_check|" + V22NotificationProfileCheck,
+		}
+	}
+	if got := ProjectV22(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V22 projection did not restore the V21 catalog")
+	}
+}
+
 func TestProjectV21AcceptsOnlyExactLegacyNotificationPolicyDelta(t *testing.T) {
 	before := map[string][]string{
 		"workspaces/columns":             {"id|text|true|"},
@@ -357,6 +417,24 @@ func TestProjectRelationsV21AcceptsOnlyExactNotificationPolicyRelations(t *testi
 	}
 }
 
+func TestProjectRelationsV22RequiresNoNewRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	current = append(current, v21Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV22(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("V22 relation projection did not preserve the prior relation set")
+	}
+}
+
 func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	before := map[string][]string{
 		"imports/indexes":             {"app_imports_pkey|unchanged"},
@@ -377,18 +455,20 @@ func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 
 func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
 	before := map[string][]string{
-		"source_connections": {`{"id":"source","profile":"github-cloud-app"}`},
-		"source_collections": {`{"id":"collection","profile":"github-cloud-app"}`},
-		"workspaces":         {`{"id":"workspace"}`},
-		"finding_deliveries": {`{"id":"delivery"}`},
-		"findings":           {`{"id":"finding","workflow_state":"open"}`},
+		"source_connections":      {`{"id":"source","profile":"github-cloud-app"}`},
+		"source_collections":      {`{"id":"collection","profile":"github-cloud-app"}`},
+		"workspaces":              {`{"id":"workspace"}`},
+		"integration_connections": {`{"id":"connection","profile":"slack-workspace-bot"}`},
+		"finding_deliveries":      {`{"id":"delivery"}`},
+		"findings":                {`{"id":"finding","workflow_state":"open"}`},
 	}
 	current := map[string][]string{
-		"source_connections": {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
-		"source_collections": {`{"azure_devops_selection":null,"azure_devops_target":null,"id":"collection","profile":"github-cloud-app"}`},
-		"workspaces":         {`{"id":"workspace","notification_policy_epoch":0}`},
-		"finding_deliveries": {`{"finding_change_revision":null,"id":"delivery","policy_id":null,"policy_revision":null,"trigger_kind":"manual"}`},
-		"findings":           {`{"candidate_line":0,"candidate_uri":"","change_at":null,"change_kind":"unchanged","change_revision":1,"change_run_id":"","content_digest":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
+		"source_connections":      {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
+		"source_collections":      {`{"azure_devops_selection":null,"azure_devops_target":null,"id":"collection","profile":"github-cloud-app"}`},
+		"workspaces":              {`{"id":"workspace","notification_policy_epoch":0}`},
+		"integration_connections": {`{"id":"connection","profile":"slack-workspace-bot","webhook_target":null}`},
+		"finding_deliveries":      {`{"finding_change_revision":null,"id":"delivery","policy_id":null,"policy_revision":null,"trigger_kind":"manual","webhook_target":null}`},
+		"findings":                {`{"candidate_line":0,"candidate_uri":"","change_at":null,"change_kind":"unchanged","change_revision":1,"change_run_id":"","content_digest":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
 	}
 	if got := ProjectRowsCurrent(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("complete current rows were not projected without loss")

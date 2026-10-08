@@ -13,7 +13,7 @@ Workspace members can read policies and immutable evaluation history. Only an
 administrator can create or revise a policy. Each approval records:
 
 - A name and enabled state.
-- One current Slack, Jira, or Teams connection snapshot.
+- One current Slack, Jira, Teams, or generic webhook connection snapshot.
 - A nonempty subset of `new`, `changed`, and `reopened`.
 - A minimum severity.
 - The actor, rationale, revision, workspace policy epoch, and time.
@@ -66,10 +66,10 @@ prevents automatic duplicate creation and is referenced by the policy outcome.
 ## UI and limits
 
 Integrations includes a Notification policies section. Administrators can review
-the native connection, triggers, severity threshold, enabled state, and rationale.
+the selected connection, triggers, severity threshold, enabled state, and rationale.
 Viewers see read-only policy and event history. Stale and duplicate outcomes are
 explicit, and queued outcomes are labeled as not delivered.
 
-Generic outbound webhooks, live-provider qualification, provider status linkage,
-automatic finding resolution, bulk risk acceptance, and policy/event retention
-remain separate work.
+Generic webhooks now use the same policy engine through the fixed signed V22
+profile. Live-provider qualification, provider status linkage, automatic finding
+resolution, bulk risk acceptance, and policy/event retention remain separate.

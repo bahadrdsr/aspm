@@ -46,6 +46,10 @@ func OpenDelivery(ctx context.Context, config DeliveryConfig) (DeliveryAdapter, 
 			strings.ContainsFunc(signature, unicode.IsSpace) {
 			return nil, connectorError(ErrAuth)
 		}
+	} else if config.Profile == GenericWebhookV1 {
+		if !validWebhookSecret(config.Token) {
+			return nil, connectorError(ErrAuth)
+		}
 	} else if !textID(config.Token, 16384) {
 		return nil, connectorError(ErrAuth)
 	}
@@ -82,6 +86,11 @@ func OpenDelivery(ctx context.Context, config DeliveryConfig) (DeliveryAdapter, 
 			return nil, connectorError(ErrScope)
 		}
 		return &notificationDelivery{deliveryBase: common}, nil
+	case GenericWebhookV1:
+		if err := validateGenericWebhookConfig(config, base); err != nil {
+			return nil, err
+		}
+		return &genericWebhookDelivery{deliveryBase: common}, nil
 	default:
 		return nil, connectorError(ErrUnsupported)
 	}

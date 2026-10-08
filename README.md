@@ -64,7 +64,8 @@ Administrators can also approve bounded automatic notification policies for
 authoritative new, changed, and reopened findings. Policy evaluation uses the
 existing outbox, preserves immutable revision history, and prevents duplicate
 Jira ticket intents per finding and destination. See
-`docs/m08-triage-history.md` and `docs/m08-notification-policies.md`.
+`docs/m08-triage-history.md`, `docs/m08-notification-policies.md`, and
+`docs/m08-generic-webhooks.md`.
 
 The seven report intake profiles are registered through the public compiled-in
 adapter contract in `pkg/reportadapter`. Their exact supported-version metadata,
@@ -585,7 +586,7 @@ denials remain authoritative. If credential encryption is unavailable, an operat
 must configure the service; the browser never requests an encryption key.
 
 **Notification policies** provides explicit admin-approved automation across
-configured Slack, Jira, and Teams connections. A policy selects meaningful
+configured Slack, Jira, Teams, and generic webhook connections. A policy selects meaningful
 finding changes, a minimum severity, one exact connection revision, an enabled
 state, and a required rationale. Imports record only authoritative full/complete
 new, changed, or reopened events after the workspace has an approved policy.
@@ -598,6 +599,14 @@ policy and evaluation history without mutation controls. Jira shares one durable
 finding/connection effect key across manual and automatic creation, so a different
 intent cannot create a second ticket after any prior queued, attempted, uncertain,
 failed, or confirmed Jira intent.
+
+**Webhook connections** is a separate non-native outbound profile. Operators
+first allow exact HTTPS origins through `ASPM_WEBHOOK_ORIGINS`; workspace admins
+can then configure an explicit path and write-only HMAC secret. Finding review
+and queueing use the same digest-bound consent and durable outbox as other
+reviewed deliveries. The worker sends one fixed JSON envelope signed with
+HMAC-SHA256. No arbitrary headers, templates, query secrets, scripts, redirects,
+proxies, automatic retries, or receiver-processing claims are available.
 
 In the existing finding dialog, admins and analysts can **Notify**, review the
 selected enabled connection and a title/severity/asset/link-only preview, then

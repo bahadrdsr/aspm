@@ -21,6 +21,7 @@ type roleConfig struct {
 	EncryptionKey    []byte
 	LeaseDuration    time.Duration
 	SlackEndpoint    string
+	WebhookOrigins   []string
 	Client           *http.Client
 	CAFile           string
 	Evidence         evidence.Config

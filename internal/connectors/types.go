@@ -15,6 +15,7 @@ const (
 	JiraCloudV3       = "jira-cloud-v3"
 	TeamsWorkflows    = "teams-workflows-channel"
 	SlackWorkspaceBot = "slack-workspace-bot"
+	GenericWebhookV1  = "generic-webhook-v1"
 	GitHubCloudApp    = "github-cloud-app"
 	GitLabArtifacts   = "gitlab-com-artifacts-v4"
 	ADOArtifacts      = "ado-services-build-artifacts"
@@ -56,11 +57,20 @@ type DeliveryConfig struct {
 	StatusMap                                                          map[string]string
 	Client                                                             *http.Client
 	Limits                                                             Limits
+	AllowedOrigins                                                     []string
+}
+
+type DeliveryTrigger struct {
+	Kind                  string
+	PolicyID              *string
+	PolicyRevision        *int64
+	FindingChangeRevision *int64
 }
 
 type Action struct {
 	WorkspaceID, IntentID, ApprovalRef, FindingID, Title, Body, DeepLink string
 	Fields                                                               map[string]string
+	Trigger                                                              DeliveryTrigger
 	// Prior must come from the caller's trusted, serialized durable outbox.
 	Prior *Delivery
 }

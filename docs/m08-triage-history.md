@@ -112,9 +112,14 @@ provider I/O. The independent delivery worker evaluates the policy revision that
 existed at the event epoch and queues the existing outbox. See
 `m08-notification-policies.md`.
 
+V22 adds the separate generic outbound webhook profile with operator-owned
+origin allowlisting, encrypted HMAC secrets, fixed signed JSON, explicit local
+review/queue consent, honest accepted/uncertain outcomes, and notification-policy
+selection. It remains outside the eight native catalog families. See
+`m08-generic-webhooks.md`.
+
 Still separate:
 
 - Bulk risk acceptance.
-- Generic outbound webhooks.
 - Decision-event archive/retention policy.
 - Deferred live-account and status-linkage integration follow-ups.
