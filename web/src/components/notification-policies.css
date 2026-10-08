@@ -1,0 +1,77 @@
+.notification-policies {
+  display: grid;
+  gap: 1rem;
+}
+
+.notification-policies > header,
+.notification-policy-editor > header,
+.notification-policy-events > header {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.notification-policies table,
+.notification-policy-events table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.notification-policies th,
+.notification-policies td,
+.notification-policy-events th,
+.notification-policy-events td {
+  border-bottom: 1px solid var(--border);
+  padding: .75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.notification-policy-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.notification-policy-editor,
+.notification-policy-events {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: grid;
+  gap: .75rem;
+  padding: 1rem;
+}
+
+.notification-policy-editor label,
+.notification-policy-editor fieldset {
+  display: grid;
+  gap: .35rem;
+}
+
+.notification-policy-editor fieldset label {
+  align-items: center;
+  display: flex;
+  gap: .5rem;
+}
+
+.notification-policy-editor footer {
+  display: flex;
+  gap: .5rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 760px) {
+  .notification-policies {
+    overflow-x: auto;
+  }
+
+  .notification-policies > header,
+  .notification-policy-editor > header,
+  .notification-policy-events > header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

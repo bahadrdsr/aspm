@@ -127,9 +127,16 @@ func (h *harness) mutateOwned(row ownedRow, assignment string, values []any, rej
 }
 
 func TestJiraJ4HeldIORevocationFencingCrashAndReopen(t *testing.T) {
+	t.Run("queued-predispatch-revocation", testJiraJ4QueuedPredispatchRevocation)
+	t.Run("held-metadata-create-revocation", testJiraJ4HeldMetadataCreateRevocation)
+	t.Run("binding-and-target-corruption", testJiraJ4BindingAndTargetCorruption)
+	t.Run("natural-fencing-and-child-crash", testJiraJ4NaturalFencingAndChildCrash)
+}
+
+func testJiraJ4QueuedPredispatchRevocation(t *testing.T) {
 	h, n := newHarness(t), newJira(t)
 	writer := h.user("analyst")
-	f := h.seed(h.admin, "Held Jira I/O source")
+	f := h.seed(h.admin, "Queued Jira revocation source")
 	w := h.worker(n, "active-owner", 4*time.Second)
 	other := h.worker(n, "other-owner", 4*time.Second)
 	for _, kind := range []string{"role", "disable", "rotate"} {
@@ -150,6 +157,15 @@ func TestJiraJ4HeldIORevocationFencingCrashAndReopen(t *testing.T) {
 		}
 		process(t, h.ctx, other, false)
 	}
+	assertFindingUnchanged(t, f, h.finding(h.admin, f.ID))
+}
+
+func testJiraJ4HeldMetadataCreateRevocation(t *testing.T) {
+	h, n := newHarness(t), newJira(t)
+	writer := h.user("analyst")
+	f := h.seed(h.admin, "Held Jira revocation source")
+	w := h.worker(n, "active-owner", 4*time.Second)
+	other := h.worker(n, "other-owner", 4*time.Second)
 	for _, phase := range []string{"metadata", "create"} {
 		for _, kind := range []string{"role", "disable", "rotate"} {
 			token := secret(t)
@@ -204,7 +220,14 @@ func TestJiraJ4HeldIORevocationFencingCrashAndReopen(t *testing.T) {
 			check(t, n.calls.Load() == before, "terminal revoked work generated fresh native I/O")
 		}
 	}
+	assertFindingUnchanged(t, f, h.finding(h.admin, f.ID))
+}
 
+func testJiraJ4BindingAndTargetCorruption(t *testing.T) {
+	h, n := newHarness(t), newJira(t)
+	writer := h.user("analyst")
+	f := h.seed(h.admin, "Jira corruption source")
+	other := h.worker(n, "other-owner", 4*time.Second)
 	// Explicit fault injection on already API-created rows, never business seeds.
 	for _, field := range []string{"payload", "approval_ref", "idempotency_key", "binding_digest", "target", "profile"} {
 		token := secret(t)
@@ -233,6 +256,14 @@ func TestJiraJ4HeldIORevocationFencingCrashAndReopen(t *testing.T) {
 		check(t, blocked.State == "blocked" && blocked.Receipt == nil && blocked.CreateAttemptedAt == nil &&
 			n.calls.Load() == before, "corrupt reserved target/user key/profile approval reached native I/O")
 	}
+	assertFindingUnchanged(t, f, h.finding(h.admin, f.ID))
+}
+
+func testJiraJ4NaturalFencingAndChildCrash(t *testing.T) {
+	h, n := newHarness(t), newJira(t)
+	writer := h.user("analyst")
+	f := h.seed(h.admin, "Jira fencing and crash source")
+	other := h.worker(n, "other-owner", 4*time.Second)
 
 	token := secret(t)
 	c := h.connection(h.admin, n.target(), token)
@@ -255,8 +286,10 @@ func TestJiraJ4HeldIORevocationFencingCrashAndReopen(t *testing.T) {
 	check(t, uncertain.State == "uncertain" && uncertain.Receipt == nil && p.posts.Load() == 1,
 		"expired Jira creation became confirmed/retryable or was resent")
 
-	crashed := h.queue(writer, h.preview(writer, f.ID, c), "real-crash", 202)
-	p = n.arm(token, "ok", "hold", func() error { return h.marker(crashed.ID) })
+	crashToken := secret(t)
+	crashConnection := h.connection(h.admin, n.target(), crashToken)
+	crashed := h.queue(writer, h.preview(writer, f.ID, crashConnection), "real-crash", 202)
+	p = n.arm(crashToken, "ok", "hold", func() error { return h.marker(crashed.ID) })
 	child := h.crashWorker(n)
 	awaitCall(t, p.postArrived)
 	child.kill(t)

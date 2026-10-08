@@ -105,10 +105,16 @@ AI output, proof non-reproduction, and scanner-inferred resolution cannot create
 or remove an approval. Correlation recreates the selected approval semantics on
 the target finding rather than reusing another finding's approval identity.
 
+V21 adds explicit admin-approved automatic notification policies, immutable
+policy revisions, authoritative meaningful-change events, durable evaluation
+outcomes, and shared Jira duplicate-ticket prevention. Scan commits perform no
+provider I/O. The independent delivery worker evaluates the policy revision that
+existed at the event epoch and queues the existing outbox. See
+`m08-notification-policies.md`.
+
 Still separate:
 
 - Bulk risk acceptance.
-- Automatic notification policies.
 - Generic outbound webhooks.
 - Decision-event archive/retention policy.
 - Deferred live-account and status-linkage integration follow-ups.

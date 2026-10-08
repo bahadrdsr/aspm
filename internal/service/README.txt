@@ -36,6 +36,8 @@ Required environment:
 Delivery-specific settings:
   ASPM_DB_MAX_CONNECTIONS: defaults to 1; values 1..100 are supported
   ASPM_DELIVERY_LEASE_DURATION: defaults to 15s; accepted range 250ms..1m
+  ASPM_PUBLIC_ORIGIN: trusted HTTPS browser origin used only for automatic
+    finding links; must match core
   ASPM_SLACK_ENDPOINT: defaults to https://slack.com; trusted HTTPS base only
   ASPM_JIRA_API_ORIGINS: optional JSON array of at most 16 canonical HTTPS origins
   ASPM_TEAMS_WORKFLOW_ORIGINS: independent optional JSON array with the same rules

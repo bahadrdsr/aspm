@@ -1,4 +1,5 @@
 import type { apiVersion } from "./types";
+import type { PolicyDeliveryProvenance } from "./types";
 
 export const teamsProfile = "teams-workflows-channel" as const;
 export interface TeamsDeclaration { channelType: "standard"; ownershipAcknowledged: true }
@@ -28,6 +29,8 @@ export interface TeamsDelivery {
   payload: TeamsPayload; destination: TeamsDestination; createdAt: string; dispatchStartedAt: string | null;
   outboundAttemptedAt: string | null; completedAt: string | null; receipt: null;
   failure: { code: string; nativeCode: ""; httpStatus: number; retryAfterSeconds: number; retryable: false } | null;
+  triggerKind?: PolicyDeliveryProvenance["triggerKind"]; policyId?: string;
+  policyRevision?: number; findingChangeRevision?: number;
 }
 export interface TeamsPage<T> { apiVersion: typeof apiVersion; items: T[]; total: number; nextCursor: string | null }
 export interface TeamsConnectionResponse { apiVersion: typeof apiVersion; connection: TeamsConnection }

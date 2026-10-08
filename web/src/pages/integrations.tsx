@@ -9,6 +9,7 @@ import { Icon } from "@/components/icon";
 import { SlackConnections } from "@/components/slack-connections";
 import { JiraConnections } from "@/components/jira-connections";
 import { TeamsConnections } from "@/components/teams-connections";
+import { NotificationPolicies } from "@/components/notification-policies";
 import { Sources } from "@/components/sources/sources";
 import { AISettings } from "@/components/ai-settings/ai-settings";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export function IntegrationsPage() {
     <Sources />
     <JiraConnections open={jiraOpen} onToggle={() => setJiraOpen((value) => !value)} />
     <TeamsConnections open={teamsOpen} onToggle={() => setTeamsOpen((value) => !value)} />
+    <NotificationPolicies />
     <div className="ai-entry"><Button ref={aiEntry} type="button" variant="outline" aria-expanded={aiOpen}
       onClick={() => setAIOpen(true)}>AI settings</Button></div>
     {aiOpen && <AISettings onClose={() => { setAIOpen(false); aiEntry.current?.focus({ preventScroll: true }); }} />}

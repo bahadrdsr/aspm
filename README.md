@@ -60,7 +60,11 @@ Finding detail can copy a permission-checked plain-text developer handoff with
 bounded evidence references but without raw evidence, notes, or scanner extras.
 Accepted risk, scoped suppression, and false-positive decisions require explicit
 human rationale and retain immutable approval provenance and expiry semantics.
-See `docs/m08-triage-history.md`.
+Administrators can also approve bounded automatic notification policies for
+authoritative new, changed, and reopened findings. Policy evaluation uses the
+existing outbox, preserves immutable revision history, and prevents duplicate
+Jira ticket intents per finding and destination. See
+`docs/m08-triage-history.md` and `docs/m08-notification-policies.md`.
 
 The seven report intake profiles are registered through the public compiled-in
 adapter contract in `pkg/reportadapter`. Their exact supported-version metadata,
@@ -580,6 +584,21 @@ and revision are metadata, not a connected or live-verified claim. Server permis
 denials remain authoritative. If credential encryption is unavailable, an operator
 must configure the service; the browser never requests an encryption key.
 
+**Notification policies** provides explicit admin-approved automation across
+configured Slack, Jira, and Teams connections. A policy selects meaningful
+finding changes, a minimum severity, one exact connection revision, an enabled
+state, and a required rationale. Imports record only authoritative full/complete
+new, changed, or reopened events after the workspace has an approved policy.
+The delivery worker evaluates those events later and queues the existing
+provider-specific outbox without provider I/O in the scan transaction.
+
+Policy history distinguishes queued, stale-connection, duplicate-ticket, and
+invalid-payload outcomes. Queued means not delivered. Viewers can read the same
+policy and evaluation history without mutation controls. Jira shares one durable
+finding/connection effect key across manual and automatic creation, so a different
+intent cannot create a second ticket after any prior queued, attempted, uncertain,
+failed, or confirmed Jira intent.
+
 In the existing finding dialog, admins and analysts can **Notify**, review the
 selected enabled connection and a title/severity/asset/link-only preview, then
 explicitly confirm. Opening or cancelling a preview does not enqueue anything.
@@ -637,7 +656,8 @@ For managed Slack, Jira and Teams delivery, core and `cmd\delivery-worker`
 must receive the same independently generated 32-byte key through protected
 `ASPM_INTEGRATION_ENCRYPTION_KEY` configuration, encoded as canonical standard
 base64. Do not derive it from database, bootstrap or storage credentials.
-The delivery process also needs the selected database URL/schema; it does not
+The delivery process also needs the selected database URL/schema and the same
+trusted `ASPM_PUBLIC_ORIGIN` used to build automatic finding links; it does not
 need S3 or bootstrap credentials. After provisioning those values in its own
 protected process environment, run:
 

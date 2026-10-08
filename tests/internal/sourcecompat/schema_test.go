@@ -150,6 +150,87 @@ func TestExpectedV13RejectsMissingOrAmbiguousFindingCatalog(t *testing.T) {
 	}
 }
 
+func TestValidateV21CatalogAcceptsOnlyTheDeclaredNewTables(t *testing.T) {
+	current := clone(exactV21Catalog)
+	ValidateV21Catalog(t, current)
+	if !reflect.DeepEqual(V21Tables(), []string{
+		"notification_policies", "notification_policy_revisions", "finding_change_events",
+		"notification_policy_events", "jira_finding_effects",
+	}) {
+		t.Fatal("V21 table enumeration changed")
+	}
+}
+
+func TestProjectV21AcceptsOnlyExactLegacyNotificationPolicyDelta(t *testing.T) {
+	before := map[string][]string{
+		"workspaces/columns":             {"id|text|true|"},
+		"workspaces/constraints":         {"app_workspaces_pkey|PRIMARY KEY (id)"},
+		"finding_deliveries/columns":     {"id|text|true|"},
+		"finding_deliveries/constraints": {"app_finding_deliveries_pkey|PRIMARY KEY (id)"},
+		"finding_deliveries/indexes":     {"app_finding_deliveries_pkey|unchanged"},
+	}
+	current := clone(before)
+	current["workspaces/columns"] = append(current["workspaces/columns"],
+		"notification_policy_epoch|bigint|true|0")
+	current["workspaces/constraints"] = append(current["workspaces/constraints"],
+		"app_workspaces_notification_policy_epoch_check|CHECK (notification_policy_epoch >= 0)")
+	sortConstraints(current["workspaces/constraints"])
+	current["finding_deliveries/columns"] = append(current["finding_deliveries/columns"],
+		"trigger_kind|text|true|'manual'::text", "policy_id|text|false|",
+		"policy_revision|bigint|false|", "finding_change_revision|bigint|false|")
+	current["finding_deliveries/constraints"] = append(current["finding_deliveries/constraints"],
+		"app_finding_deliveries_policy_binding_check|CHECK (trigger_kind = 'manual'::text AND policy_id IS NULL AND policy_revision IS NULL AND finding_change_revision IS NULL OR trigger_kind = 'notification-policy'::text AND policy_id IS NOT NULL AND policy_revision IS NOT NULL AND policy_revision > 0 AND finding_change_revision IS NOT NULL AND finding_change_revision > 0)",
+		"app_finding_deliveries_trigger_kind_check|CHECK (trigger_kind = ANY (ARRAY['manual'::text, 'notification-policy'::text]))")
+	sortConstraints(current["finding_deliveries/constraints"])
+	current["finding_deliveries/indexes"] = append(current["finding_deliveries/indexes"],
+		"app_finding_deliveries_policy_effect_key|CREATE UNIQUE INDEX app_finding_deliveries_policy_effect_key ON acceptance_schema.app_finding_deliveries USING btree (workspace_id, policy_id, finding_id, finding_change_revision) WHERE (trigger_kind = 'notification-policy'::text)")
+	if got := ProjectV21(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact qualified V21 legacy-table projection did not restore the prior catalog")
+	}
+	stripped := clone(current)
+	stripped["finding_deliveries/indexes"][1] =
+		"app_finding_deliveries_policy_effect_key|CREATE UNIQUE INDEX app_finding_deliveries_policy_effect_key ON app_finding_deliveries USING btree (workspace_id, policy_id, finding_id, finding_change_revision) WHERE (trigger_kind = 'notification-policy'::text)"
+	if got := ProjectV21(t, before, stripped); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact schema-stripped V21 legacy-table projection did not restore the prior catalog")
+	}
+}
+
+func TestProjectV21ProjectsOnlyExactPG18TypedNotNullAdditions(t *testing.T) {
+	before := map[string][]string{
+		"workspaces/columns": {"id|text|true|||"},
+		"workspaces/constraints": {
+			"app_workspaces_id_not_null|n|NOT NULL id",
+			"app_workspaces_pkey|p|PRIMARY KEY (id)",
+		},
+		"finding_deliveries/columns": {"id|text|true|||"},
+		"finding_deliveries/constraints": {
+			"app_finding_deliveries_id_not_null|n|NOT NULL id",
+			"app_finding_deliveries_pkey|p|PRIMARY KEY (id)",
+		},
+		"finding_deliveries/indexes": {"app_finding_deliveries_pkey|unchanged"},
+	}
+	current := clone(before)
+	current["workspaces/columns"] = append(current["workspaces/columns"],
+		"notification_policy_epoch|bigint|true|0||")
+	current["workspaces/constraints"] = append(current["workspaces/constraints"],
+		"app_workspaces_notification_policy_epoch_check|c|CHECK (notification_policy_epoch >= 0)",
+		"app_workspaces_notification_policy_epoch_not_null|n|NOT NULL notification_policy_epoch")
+	sortConstraints(current["workspaces/constraints"])
+	current["finding_deliveries/columns"] = append(current["finding_deliveries/columns"],
+		"trigger_kind|text|true|'manual'::text||", "policy_id|text|false|||",
+		"policy_revision|bigint|false|||", "finding_change_revision|bigint|false|||")
+	current["finding_deliveries/constraints"] = append(current["finding_deliveries/constraints"],
+		"app_finding_deliveries_policy_binding_check|c|CHECK (trigger_kind = 'manual'::text AND policy_id IS NULL AND policy_revision IS NULL AND finding_change_revision IS NULL OR trigger_kind = 'notification-policy'::text AND policy_id IS NOT NULL AND policy_revision IS NOT NULL AND policy_revision > 0 AND finding_change_revision IS NOT NULL AND finding_change_revision > 0)",
+		"app_finding_deliveries_trigger_kind_check|c|CHECK (trigger_kind = ANY (ARRAY['manual'::text, 'notification-policy'::text]))",
+		"app_finding_deliveries_trigger_kind_not_null|n|NOT NULL trigger_kind")
+	sortConstraints(current["finding_deliveries/constraints"])
+	current["finding_deliveries/indexes"] = append(current["finding_deliveries/indexes"],
+		"app_finding_deliveries_policy_effect_key|CREATE UNIQUE INDEX app_finding_deliveries_policy_effect_key ON app_finding_deliveries USING btree (workspace_id, policy_id, finding_id, finding_change_revision) WHERE (trigger_kind = 'notification-policy'::text)")
+	if got := ProjectV21(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact PG18 typed NOT NULL projection did not preserve the prior catalog")
+	}
+}
+
 func TestProjectRelationsV13AcceptsOnlyExactCorrelationRelations(t *testing.T) {
 	before := []string{"app_findings|r", "app_findings_pkey|i"}
 	current := append(slices.Clone(before), v13Relations...)
@@ -258,6 +339,24 @@ func TestProjectRelationsV20AcceptsOnlyExactDispositionApprovalRelations(t *test
 	}
 }
 
+func TestProjectRelationsV21AcceptsOnlyExactNotificationPolicyRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	current = append(current, v21Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV21(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V21 relation projection did not restore the prior relation set")
+	}
+}
+
 func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	before := map[string][]string{
 		"imports/indexes":             {"app_imports_pkey|unchanged"},
@@ -280,11 +379,15 @@ func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
 	before := map[string][]string{
 		"source_connections": {`{"id":"source","profile":"github-cloud-app"}`},
 		"source_collections": {`{"id":"collection","profile":"github-cloud-app"}`},
+		"workspaces":         {`{"id":"workspace"}`},
+		"finding_deliveries": {`{"id":"delivery"}`},
 		"findings":           {`{"id":"finding","workflow_state":"open"}`},
 	}
 	current := map[string][]string{
 		"source_connections": {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
 		"source_collections": {`{"azure_devops_selection":null,"azure_devops_target":null,"id":"collection","profile":"github-cloud-app"}`},
+		"workspaces":         {`{"id":"workspace","notification_policy_epoch":0}`},
+		"finding_deliveries": {`{"finding_change_revision":null,"id":"delivery","policy_id":null,"policy_revision":null,"trigger_kind":"manual"}`},
 		"findings":           {`{"candidate_line":0,"candidate_uri":"","change_at":null,"change_kind":"unchanged","change_revision":1,"change_run_id":"","content_digest":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
 	}
 	if got := ProjectRowsCurrent(t, before, current); !reflect.DeepEqual(got, before) {

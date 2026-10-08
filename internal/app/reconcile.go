@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/bahadrdsr/aspm/internal/parsers"
 	"github.com/jackc/pgx/v5"
@@ -42,6 +43,17 @@ func findingContentDigest(finding parsers.Finding) string {
 	return reportDigest(data)
 }
 
+func boundedNotificationSnapshot(value string, limit int) string {
+	if len(value) <= limit {
+		return value
+	}
+	end := limit
+	for end > 0 && !utf8.ValidString(value[:end]) {
+		end--
+	}
+	return value[:end]
+}
+
 func observationChange(record importRecord, digest string, result reconciledFinding) (string, []string) {
 	reasons := []string{}
 	if record.SourceStatus != "succeeded" {
@@ -54,6 +66,7 @@ func observationChange(record importRecord, digest string, result reconciledFind
 	} else if digest != result.ContentDigest {
 		reasons = append(reasons, "out-of-order")
 	}
+
 	if record.Completeness == "partial" {
 		reasons = append(reasons, "partial-scan")
 	} else if record.Completeness == "unknown" {
@@ -106,8 +119,12 @@ func (a *ImportWorker) reconcile(ctx context.Context, record importRecord, findi
 		return err
 	}
 	var owner *string
-	if err = tx.QueryRow(ctx, `SELECT owner_id FROM `+a.table("assets")+` WHERE workspace_id=$1 AND id=$2`,
-		record.WorkspaceID, record.AssetID).Scan(&owner); err != nil {
+	var assetName string
+	var policyEpoch int64
+	if err = tx.QueryRow(ctx, `SELECT a.owner_id,a.name,w.notification_policy_epoch
+		FROM `+a.table("assets")+` a JOIN `+a.table("workspaces")+` w ON w.id=a.workspace_id
+		WHERE a.workspace_id=$1 AND a.id=$2`,
+		record.WorkspaceID, record.AssetID).Scan(&owner, &assetName, &policyEpoch); err != nil {
 		return err
 	}
 	var coverage *time.Time
@@ -180,6 +197,19 @@ func (a *ImportWorker) reconcile(ctx context.Context, record importRecord, findi
 			batch.Queue(`INSERT INTO `+a.table("observations")+`(id,workspace_id,finding_id,run_id,ordinal,data)
 				VALUES($1,$2,$3,$4,$5,$6)`, observation.ID, record.WorkspaceID,
 				reconciled[offset].ID, record.RunID, start+offset, data)
+			change := reconciled[offset]
+			if policyEpoch > 0 && record.comparable() && change.ChangeRunID == record.RunID &&
+				slices.Contains(notificationChangeKinds, change.ChangeKind) && change.ChangeAt != nil {
+				batch.Queue(`INSERT INTO `+a.table("finding_change_events")+`
+					(id,workspace_id,finding_id,policy_epoch,title,severity,asset_name,change_kind,
+					 change_revision,change_at)
+					VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+					ON CONFLICT(workspace_id,finding_id,change_revision) DO NOTHING`,
+					newID(), record.WorkspaceID, change.ID, policyEpoch,
+					boundedNotificationSnapshot(f.Title, 1024), f.Severity,
+					boundedNotificationSnapshot(assetName, 256), change.ChangeKind,
+					change.ChangeRevision, *change.ChangeAt)
+			}
 		}
 		if err = tx.SendBatch(ctx, batch).Close(); err != nil {
 			return err

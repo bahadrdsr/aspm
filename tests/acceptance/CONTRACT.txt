@@ -197,3 +197,104 @@ Reversible merge/split and retention policy/hold/preview now have dedicated M06
 gates. Physical archive/expiry execution, enterprise performance, full installer
 operation, native network connectors and independent verification remain
 separate gates. After handoff, expectation changes require a real issue.
+
+M08 V21 AUTOMATIC NOTIFICATION POLICIES:
+GET/POST /api/v1/integrations/notification-policies, GET/PATCH
+/api/v1/integrations/notification-policies/{id}, and GET
+/api/v1/integrations/notification-policies/{id}/events are workspace-scoped. Any
+member can read. Only admins create or update. Create accepts exactly name,
+connectionId,enabled,changeKinds,minimumSeverity,rationale. Patch accepts only
+optional name,connectionId,enabled,changeKinds,minimumSeverity plus required
+rationale, and must change at least one behavior field. Caller-supplied profile,
+connection revision, actor, epoch, payload, endpoint, headers and secret fields
+are invalid. Name is 1..256 UTF-8 bytes and rationale is 1..8192 UTF-8 bytes;
+both are nonblank and NUL-free. changeKinds is a nonempty unique subset
+of new|changed|reopened. minimumSeverity is
+critical|high|medium|low|info. A workspace has at most 32 current policies.
+The selected connection must exist in the current workspace with profile
+slack-workspace-bot|teams-workflows-channel|jira-cloud-v3. Each policy snapshots
+connectionId, connectionProfile and connectionRevision. Responses also include
+current nonsecret connection id/name/profile/revision/enabled and current=true
+only when profile and revision still equal the snapshot. A real create/update
+atomically increments workspaces.notification_policy_epoch and appends one
+immutable complete notification_policy_revisions row with revision, epoch,
+actor ID/name, rationale and time. No-op updates are 409; rationale-only patches
+are 400. Historical revisions are never rewritten.
+
+Only a succeeded, complete, full import with a nonnull authoritative sourceScanAt
+and workspace notification_policy_epoch greater than zero may append
+app_finding_change_events. An authoritative import at epoch zero creates no policy
+event or worker-visible policy work. An eligible import appends one event per canonical
+finding change revision for new, changed or reopened. Unchanged,
+inferred-resolved, failed, partial, delta, historical/out-of-order and unknown
+source-time observations append none. The event snapshots the current workspace
+policy epoch plus bounded title (1..1024 UTF-8 bytes), severity, asset name
+(1..256 UTF-8 bytes), finding ID, change kind, change revision and change time.
+Its schema has no raw evidence, note, remediation, unmapped, credential or
+scanner-extra column. Import success and transaction commit do not depend on a
+delivery worker or provider. Without a worker the event remains pending.
+
+One independent delivery-worker ProcessNext step evaluates one durable change
+event transactionally and performs no provider I/O. DeliveryWorkerConfig carries
+the explicit validated PublicOrigin used to build the permission-checked finding
+deep link; V21 stores no origin or deep-link column. For each policy it uses the
+latest immutable revision with epoch <= event.policyEpoch. Later policy creation
+or edits never affect an older event. A revision matches only when enabled, the
+change kind is selected, and severity meets minimumSeverity using
+critical>high>medium>low>info. A selected connection that is disabled, missing,
+or differs in profile/revision records connection-stale and queues nothing.
+A match creates one ordinary finding_deliveries row with requestedBy equal to
+the revision actor, the exact connection snapshot, triggerKind=
+notification-policy, policyId, policyRevision and findingChangeRevision. Its
+idempotency key is notification-policy:<policyId>:<findingId>:<base-10-changeRevision>.
+The server-derived payload contains only title, severity, asset, change kind and
+the permission-checked finding deep link. It excludes raw evidence, notes,
+remediation, unmapped fields, secrets and executable content. Evaluation records
+one immutable queued|duplicate-ticket|connection-stale|invalid-payload outcome;
+queued and duplicate-ticket include a deliveryId, the other outcomes do not.
+Unique policy+finding+change-revision storage prevents replay duplicates. Slack
+and Teams can queue one notification for each matching finding change revision.
+Evaluation, scan and enqueue never claim provider delivery, never auto-retry and
+never fabricate provider success.
+
+Jira uses app_jira_finding_effects as the shared serialized effect key with
+primary key (workspace_id,connection_id,finding_id). V21 backfills one link to
+the earliest existing Jira delivery for every historical connection/finding
+pair without updating finding_deliveries. Replaying the same manual idempotency
+key remains 200 with the original delivery. A different manual key for an
+already linked Jira connection/finding is 409 and creates no row. A prior Jira
+intent in queued, dispatching, confirmed, uncertain, blocked, failed or
+rate-limited state prevents automatic creation; policy evaluation records
+duplicate-ticket with that existing delivery ID. Slack, Teams and their existing
+manual idempotency behavior are unchanged.
+
+Policy event history accepts limit=1..100 and an optional 32-lowercase-hex
+exclusive cursor, returns ascending immutable IDs, exact total and nextCursor,
+and is readable by viewers. Integrations has a Notification policies section.
+Admins can review the native connection, selected triggers, severity threshold
+and rationale, then save an explicit policy change. Viewers see the same policy
+and event state without mutation controls. Stale connection and duplicate-ticket
+are explicit outcomes. queued is labeled queued for delivery and never as sent,
+accepted or delivered. Existing integration setup and exact manual review text
+remain unchanged except for a tightly coupled policy clarification.
+
+V21 MIGRATION: additive version 21 adds
+app_notification_policies, app_notification_policy_revisions,
+app_finding_change_events, app_notification_policy_events and
+app_jira_finding_effects. workspaces appends notification_policy_epoch bigint
+NOT NULL DEFAULT 0 with a nonnegative CHECK. finding_deliveries appends, in
+order, trigger_kind text NOT NULL DEFAULT 'manual', policy_id text NULL,
+policy_revision bigint NULL and finding_change_revision bigint NULL. Its CHECKs
+allow manual only with all policy fields null, or notification-policy only with
+all policy fields present and positive. The partial unique index
+app_finding_deliveries_policy_effect_key covers
+(workspace_id,policy_id,finding_id,finding_change_revision) for automatic rows.
+New table and index names, column order/types/defaults, named CHECK/foreign/unique
+constraints and bounded predicates are fixed by sourcecompat.ValidateV21Catalog.
+V21 does not update historical business rows except inserting Jira effect links;
+historical delivery rows remain byte-for-byte equal after projecting the four
+additive columns. Authentic published V5, V6, V7, V8, V9, V10 and V11 paths must
+record versions 1..21 exactly once, validate the complete V21 relation/catalog
+delta, preserve old API/native rows, and reopen without repeating migration.
+No generic webhooks, live-vendor claims, provider status linkage, automatic
+resolution or bulk risk acceptance are included.

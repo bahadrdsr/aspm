@@ -115,6 +115,23 @@ func (f *fixture) definitions(names []string) map[string][]string {
 	}
 	return result
 }
+func (f *fixture) v21Definitions() map[string][]string {
+	result := map[string][]string{}
+	normalize := func(rows []string) []string {
+		quoted, unquoted := `"`+f.config.Schema+`".`, f.config.Schema+"."
+		for index := range rows {
+			rows[index] = strings.ReplaceAll(rows[index], quoted, "")
+			rows[index] = strings.ReplaceAll(rows[index], unquoted, "")
+		}
+		return rows
+	}
+	for _, name := range sourcecompat.V21Tables() {
+		result[name+"/columns"] = f.rows(`SELECT a.attname||'|'||format_type(a.atttypid,a.atttypmod)||'|'||a.attnotnull::text||'|'||COALESCE(pg_get_expr(d.adbin,d.adrelid),'') FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attrelid=to_regclass($1) AND a.attnum>0 AND NOT a.attisdropped ORDER BY a.attnum`, f.table(name))
+		result[name+"/constraints"] = normalize(f.rows(`SELECT conname||'|'||pg_get_constraintdef(oid,true) FROM pg_constraint WHERE conrelid=to_regclass($1) AND contype<>'n' ORDER BY conname`, f.table(name)))
+		result[name+"/indexes"] = normalize(f.rows(`SELECT indexname||'|'||indexdef FROM pg_indexes WHERE schemaname=$1 AND tablename=$2 ORDER BY indexname`, f.config.Schema, "app_"+name))
+	}
+	return result
+}
 
 func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 	f := newFixture(t)
@@ -136,10 +153,11 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 		"legacyDefinitionsSHA256": digest(encode(t, definitions)), "businessSQLSeeds": false}
 	output := filepath.Join("..", "..", ".artifacts", "saved-work-views-v1", "published-v8-upgrade-"+nonce(t)+".json")
 	must(t, "record nonsecret actual migration observation", os.WriteFile(output, encode(t, observation), 0600))
-	same(t, "current production open did not apply through additive V20 over actual populated published V8",
-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"})
+	same(t, "current production open did not apply through additive V21 over actual populated published V8",
+		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
+	sourcecompat.ValidateV21Catalog(t, f.v21Definitions())
 	same(t, "V11 changed a published legacy definition", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
-	same(t, "V20 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
+	same(t, "V21 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy := func() {
 		t.Helper()
 		utc := func(value *time.Time) *time.Time {
@@ -184,7 +202,8 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 	same(t, "new saved preference lost on upgraded app reopen", h.get(legacy.Viewer, v.ID), v)
 	same(t, "upgraded reopen repeated/skipped migration", f.ledger(), after)
 	same(t, "upgraded reopen altered legacy definitions", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
+	sourcecompat.ValidateV21Catalog(t, f.v21Definitions())
 	same(t, "saved preference/reopen changed pre-upgrade legacy rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy()
-	t.Log("actual populated published V8 -> V20, canonical saved view reopen and original human/source/role state reached")
+	t.Log("actual populated published V8 -> V21, canonical saved view reopen and original human/source/role state reached")
 }

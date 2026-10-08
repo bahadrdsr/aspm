@@ -120,17 +120,22 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 		adoHistoricalMigrations(t, filepath.Join("..", "..")), adoHistoricalMigrations(t, filepath.Dir(build.Executable)))
 
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15", "16", "17", "18", "19", "20")
-	same(t, "current app failed to add exact V12/V13/V14/V15/V16/V17/V18/V19 migrations", h.ledger(), currentLedger)
-	same(t, "V20 changed the relation/index set",
-		sourcecompat.ProjectRelationsV20(t, relations, h.relations()), relations)
-	same(t, "V20 contains a missing or unapproved catalog delta",
+	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15", "16", "17", "18", "19", "20", "21")
+	same(t, "current app failed to add exact V12/V13/V14/V15/V16/V17/V18/V19/V20/V21 migrations", h.ledger(), currentLedger)
+	sourcecompat.ValidateV21Catalog(t, h.v21Definitions())
+	same(t, "V21 changed the relation/index set",
+		sourcecompat.ProjectRelationsV21(t, relations, h.relations()), relations)
+	same(t, "V21 contains a missing or unapproved catalog delta",
 		sourcecompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V20 changed complete historical business rows outside exact additions",
+	same(t, "V21 changed complete historical business rows outside exact additions",
 		sourcecompat.ProjectRowsCurrent(t, before, h.snapshot(names)), before)
+	same(t, "V21 did not backfill the authentic queued Jira effect",
+		h.rows("SELECT connection_id||'|'||finding_id||'|'||delivery_id FROM "+h.table("jira_finding_effects")+
+			" WHERE workspace_id=$1 ORDER BY connection_id,finding_id", h.admin.Workspace),
+		[]string{jira.ID + "|" + finding.ID + "|" + jiraJob.ID})
 	for _, path := range paths {
 		body, _ := h.request(h.ctx, viewer, "GET", path, nil, 200)
-		same(t, "V20 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
+		same(t, "V21 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
 	}
 	h.adoEncrypted(github, githubToken)
 	same(t, "current queued GitHub replay changed its historical body/binding", h.adoJSON(h.admin, "POST", legacyQueuePath,
@@ -143,6 +148,7 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 	h.reopen()
 	same(t, "reopen repeated/omitted V19", h.ledger(), currentLedger)
 	same(t, "reopen changed migrated definitions", h.definitions(names), afterDefinitions)
+	sourcecompat.ValidateV21Catalog(t, h.v21Definitions())
 	same(t, "reopen changed old business rows", sourcecompat.ProjectRowsCurrent(t, before, h.snapshot(names)), before)
 
 	worker := h.adoWorker(h.adoWorkerConfig())
@@ -183,6 +189,6 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 	}
 	same(t, "upgrade/new ADO path altered historical human/source finding state", migratedFinding, expectedFinding)
 	check(t, h.json(viewer, "GET", "/api/v1/work", nil, 200).Total == 2, "post-upgrade canonical Work lost historical/new finding")
-	t.Logf("V11->V20 genuine API/native data preservation; published SQL=%d, parent SQL=%d; S3 traced once by parent object forwarders",
+	t.Logf("V11->V21 genuine API/native data preservation; published SQL=%d, parent SQL=%d; S3 traced once by parent object forwarders",
 		h.publishedQueries.Load(), h.queries.calls.Load())
 }

@@ -68,6 +68,18 @@ type Application struct {
 
 var schemaName = regexp.MustCompile(`^[a-z][a-z0-9_]{0,62}$`)
 
+func ValidatePublicOrigin(value string) error {
+	if value == "" {
+		return nil
+	}
+	u, err := url.Parse(value)
+	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil ||
+		u.Path != "" || u.RawQuery != "" || u.Fragment != "" {
+		return errors.New("public origin must be an HTTPS origin without a path")
+	}
+	return nil
+}
+
 // Open migrates only app-owned tables in an existing, explicitly selected
 // schema. It does not create databases, schemas, buckets, or M02 job tables.
 func Open(ctx context.Context, config Config) (*Application, error) {
@@ -100,12 +112,8 @@ func Open(ctx context.Context, config Config) (*Application, error) {
 		(config.BootstrapToken != "" && len(config.BootstrapToken) < 32) {
 		return nil, errors.New("invalid application configuration")
 	}
-	if config.PublicOrigin != "" {
-		u, err := url.Parse(config.PublicOrigin)
-		if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil ||
-			u.Path != "" || u.RawQuery != "" || u.Fragment != "" {
-			return nil, errors.New("public origin must be an HTTPS origin without a path")
-		}
+	if err := ValidatePublicOrigin(config.PublicOrigin); err != nil {
+		return nil, err
 	}
 	dbConfig := DatabaseConfig{DatabaseURL: config.DatabaseURL, Schema: config.Schema,
 		ApplicationName: config.ApplicationName, MaxConnections: config.MaxConnections, Now: config.Now, LogOutput: config.LogOutput,

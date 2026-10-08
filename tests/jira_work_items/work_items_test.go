@@ -428,7 +428,6 @@ func TestJiraJ3NativeFailuresDiagnosticsAndNoBlindRetry(t *testing.T) {
 	h, n := newHarness(t), newJira(t)
 	f := h.seed(h.admin, "Native failure source")
 	token := secret(t)
-	c := h.connection(h.admin, n.target(), token)
 	w := h.worker(n, "native-failures", 4*time.Second)
 	cases := []struct {
 		label, meta, create, state, code, stage string
@@ -450,6 +449,7 @@ func TestJiraJ3NativeFailuresDiagnosticsAndNoBlindRetry(t *testing.T) {
 		{"timed-out-create", "ok", "hold", "uncertain", "uncertain", "create", 0, 1, nil},
 	}
 	for _, tc := range cases {
+		c := h.connection(h.admin, n.target(), token)
 		v := h.preview(h.admin, f.ID, c)
 		job := h.queue(h.admin, v, tc.label, 202)
 		p := n.arm(token, tc.meta, tc.create, func() error { return h.marker(job.ID) })

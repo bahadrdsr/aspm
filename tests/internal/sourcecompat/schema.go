@@ -202,7 +202,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV20(t, v13, current)
+	projected := ProjectV21(t, v13, current)
+	projected = ProjectV20(t, v13, projected)
 	projected = ProjectV19(t, v13, projected)
 	projected = ProjectV17(t, v13, projected)
 	projected = ProjectV16(t, v13, projected)
@@ -300,6 +301,42 @@ var v20Relations = []string{
 	"app_finding_disposition_approvals_pkey|i",
 	"app_finding_disposition_approvals_workspace_id_key|i",
 }
+
+var v21Relations = []string{
+	"app_finding_change_events|r",
+	"app_finding_change_events_claim_idx|i",
+	"app_finding_change_events_finding_revision_key|i",
+	"app_finding_change_events_pkey|i",
+	"app_finding_change_events_workspace_id_key|i",
+	"app_finding_deliveries_policy_effect_key|i",
+	"app_jira_finding_effects|r",
+	"app_jira_finding_effects_delivery_key|i",
+	"app_jira_finding_effects_pkey|i",
+	"app_notification_policies|r",
+	"app_notification_policies_pkey|i",
+	"app_notification_policies_workspace_id_key|i",
+	"app_notification_policy_events|r",
+	"app_notification_policy_events_pkey|i",
+	"app_notification_policy_events_policy_finding_revision_key|i",
+	"app_notification_policy_events_policy_idx|i",
+	"app_notification_policy_events_workspace_id_key|i",
+	"app_notification_policy_revisions|r",
+	"app_notification_policy_revisions_pkey|i",
+	"app_notification_policy_revisions_policy_revision_key|i",
+	"app_notification_policy_revisions_workspace_epoch_key|i",
+	"app_notification_policy_revisions_workspace_id_key|i",
+}
+
+var v21Tables = []string{
+	"notification_policies",
+	"notification_policy_revisions",
+	"finding_change_events",
+	"notification_policy_events",
+	"jira_finding_effects",
+}
+
+// V21Tables returns the exact additive V21 table set for catalog observers.
+func V21Tables() []string { return slices.Clone(v21Tables) }
 
 var v14LegacyIndexes = []struct {
 	table, name, definition string
@@ -566,6 +603,100 @@ func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]
 		}
 		if matches != 1 || !reflect.DeepEqual(remaining, prior) {
 			t.Fatal("V16: candidate index missing or ambiguous")
+		}
+		result[key] = slices.Clone(prior)
+	}
+	return result
+}
+
+func exactV21Index(row, name, definition string) bool {
+	prefix := name + "|CREATE UNIQUE INDEX " + name + " ON "
+	if !strings.HasPrefix(row, prefix) {
+		return false
+	}
+	actual := strings.TrimPrefix(row, prefix)
+	if actual == definition {
+		return true
+	}
+	schema, qualified, present := strings.Cut(actual, ".")
+	return present && observedSchemaName.MatchString(schema) && qualified == definition
+}
+
+func appendObservedV21NotNull(before, current []string, name, column string) []string {
+	definition := "NOT NULL " + column
+	separator := constraintSeparator(before, definition)
+	row := name + separator + definition
+	if separator == "|n|" || slices.Contains(current, row) {
+		return append(before, row)
+	}
+	return before
+}
+
+// ProjectV21 validates and projects the exact automatic-policy delta on legacy tables.
+func ProjectV21(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	result := clone(current)
+	for _, table := range []string{"workspaces", "finding_deliveries"} {
+		columns, present := before[table+"/columns"]
+		if !present {
+			continue
+		}
+		suffix, err := v15ColumnSuffix(columns)
+		if err != nil {
+			t.Fatal(err)
+		}
+		wantColumns := slices.Clone(columns)
+		wantConstraints := slices.Clone(before[table+"/constraints"])
+		if table == "workspaces" {
+			wantColumns = append(wantColumns, "notification_policy_epoch|bigint|true|0"+suffix)
+			definition := "CHECK (notification_policy_epoch >= 0)"
+			wantConstraints = append(wantConstraints,
+				"app_workspaces_notification_policy_epoch_check"+
+					constraintSeparator(wantConstraints, definition)+definition)
+			wantConstraints = appendObservedV21NotNull(wantConstraints, current[table+"/constraints"],
+				"app_workspaces_notification_policy_epoch_not_null", "notification_policy_epoch")
+		} else {
+			wantColumns = append(wantColumns,
+				"trigger_kind|text|true|'manual'::text"+suffix,
+				"policy_id|text|false|"+suffix,
+				"policy_revision|bigint|false|"+suffix,
+				"finding_change_revision|bigint|false|"+suffix)
+			wantConstraints = appendObservedV21NotNull(wantConstraints, current[table+"/constraints"],
+				"app_finding_deliveries_trigger_kind_not_null", "trigger_kind")
+			for _, value := range []struct{ name, definition string }{
+				{"app_finding_deliveries_policy_binding_check", "CHECK (trigger_kind = 'manual'::text AND policy_id IS NULL AND policy_revision IS NULL AND finding_change_revision IS NULL OR trigger_kind = 'notification-policy'::text AND policy_id IS NOT NULL AND policy_revision IS NOT NULL AND policy_revision > 0 AND finding_change_revision IS NOT NULL AND finding_change_revision > 0)"},
+				{"app_finding_deliveries_trigger_kind_check", "CHECK (trigger_kind = ANY (ARRAY['manual'::text, 'notification-policy'::text]))"},
+			} {
+				wantConstraints = append(wantConstraints,
+					value.name+constraintSeparator(wantConstraints, value.definition)+value.definition)
+			}
+		}
+		sortConstraints(wantConstraints)
+		if !reflect.DeepEqual(current[table+"/columns"], wantColumns) ||
+			!reflect.DeepEqual(current[table+"/constraints"], wantConstraints) {
+			t.Fatalf("V21: %s catalog has a missing or unapproved delta", table)
+		}
+		result[table+"/columns"] = slices.Clone(columns)
+		result[table+"/constraints"] = slices.Clone(before[table+"/constraints"])
+	}
+	key := "finding_deliveries/indexes"
+	if prior, present := before[key]; present {
+		rows := current[key]
+		remaining := make([]string, 0, len(rows))
+		matches := 0
+		for _, row := range rows {
+			if strings.HasPrefix(row, "app_finding_deliveries_policy_effect_key|") {
+				if !exactV21Index(row, "app_finding_deliveries_policy_effect_key",
+					"app_finding_deliveries USING btree (workspace_id, policy_id, finding_id, finding_change_revision) WHERE (trigger_kind = 'notification-policy'::text)") {
+					t.Fatal("V21: policy delivery effect index definition changed")
+				}
+				matches++
+				continue
+			}
+			remaining = append(remaining, row)
+		}
+		if matches != 1 || !reflect.DeepEqual(remaining, prior) {
+			t.Fatal("V21: policy delivery effect index is missing or ambiguous")
 		}
 		result[key] = slices.Clone(prior)
 	}
@@ -849,6 +980,26 @@ func ProjectRelationsV20(t testing.TB, before, current []string) []string {
 	return slices.Clone(before)
 }
 
+// ProjectRelationsV21 validates the complete current V13-V21 relation set.
+func ProjectRelationsV21(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	want = append(want, v15Relations...)
+	want = append(want, v16Relations...)
+	want = append(want, v17Relations...)
+	want = append(want, v18Relations...)
+	want = append(want, v19Relations...)
+	want = append(want, v20Relations...)
+	want = append(want, v21Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V21: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
 func canonicalRows(t testing.TB, rows []string, additions []string) []string {
 	t.Helper()
 	result := make([]string, 0, len(rows))
@@ -923,7 +1074,7 @@ func canonicalRowsWithValues(t testing.TB, rows []string, additions map[string]j
 func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
 	if len(before) != len(current) {
-		t.Fatal("V13: business table set changed")
+		t.Fatal("V21: business table set changed")
 	}
 	for table, rows := range before {
 		additions := map[string]json.RawMessage{}
@@ -932,6 +1083,15 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 		}
 		if table == "source_collections" {
 			additions["azure_devops_selection"] = json.RawMessage("null")
+		}
+		if table == "workspaces" {
+			additions["notification_policy_epoch"] = json.RawMessage("0")
+		}
+		if table == "finding_deliveries" {
+			additions["trigger_kind"] = json.RawMessage(`"manual"`)
+			for _, name := range []string{"policy_id", "policy_revision", "finding_change_revision"} {
+				additions[name] = json.RawMessage("null")
+			}
 		}
 		if table == "findings" {
 			additions["decision_revision"] = json.RawMessage("1")
@@ -961,7 +1121,7 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 		actual, present := current[table]
 		if !present || !reflect.DeepEqual(canonicalRowsWithValues(t, rows, additions),
 			canonicalRowsWithValues(t, actual, nil)) {
-			t.Fatalf("V17: complete historical business rows changed in %s", table)
+			t.Fatalf("V21: complete historical business rows changed in %s", table)
 		}
 	}
 	return clone(before)

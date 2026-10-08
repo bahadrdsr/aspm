@@ -166,6 +166,28 @@ func (f *fixture) definitions(names []string) map[string][]string {
 	}
 	return result
 }
+func (f *fixture) v21Definitions() map[string][]string {
+	result := map[string][]string{}
+	normalize := func(rows []string) []string {
+		quoted, unquoted := `"`+f.cfg.Schema+`".`, f.cfg.Schema+"."
+		for index := range rows {
+			rows[index] = strings.ReplaceAll(rows[index], quoted, "")
+			rows[index] = strings.ReplaceAll(rows[index], unquoted, "")
+		}
+		return rows
+	}
+	for _, name := range sourcecompat.V21Tables() {
+		result[name+"/columns"] = f.rows(`SELECT a.attname||'|'||format_type(a.atttypid,a.atttypmod)||'|'||
+			a.attnotnull::text||'|'||COALESCE(pg_get_expr(d.adbin,d.adrelid),'')
+			FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum
+			WHERE a.attrelid=to_regclass($1) AND a.attnum>0 AND NOT a.attisdropped ORDER BY a.attnum`, f.table(name))
+		result[name+"/constraints"] = normalize(f.rows(`SELECT conname||'|'||pg_get_constraintdef(oid,true)
+			FROM pg_constraint WHERE conrelid=to_regclass($1) AND contype<>'n' ORDER BY conname`, f.table(name)))
+		result[name+"/indexes"] = normalize(f.rows(`SELECT indexname||'|'||indexdef FROM pg_indexes
+			WHERE schemaname=$1 AND tablename=$2 ORDER BY indexname`, f.cfg.Schema, "app_"+name))
+	}
+	return result
+}
 func (h *harness) assertTypedRow(row ownedRow, target jiraTarget) {
 	h.t.Helper()
 	h.mutateOwned(row, "profile=profile,channel=channel,jira_target=jira_target", nil, false, false)
@@ -253,13 +275,14 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	output := filepath.Join("..", "..", ".artifacts", "jira-work-items", "published-v9-upgrade-"+nonce(t)+".json")
 	must(t, "record bounded nonsecret actual migration observation", os.WriteFile(output, encoded(t, observation), 0600))
 	t.Log("actual migration observation:", output)
-	same(t, "current app did not add V10/V11/V12/V13/V14/V15/V16/V17/V18/V19/V20 over exact populated published V9",
-		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"})
-	same(t, "V20 changed the historical relation set",
-		sourcecompat.ProjectRelationsV20(t, relations, h.relations()), relations)
+	same(t, "current app did not add V10/V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21 over exact populated published V9",
+		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
+	sourcecompat.ValidateV21Catalog(t, h.v21Definitions())
+	same(t, "V21 changed the historical relation set",
+		sourcecompat.ProjectRelationsV21(t, relations, h.relations()), relations)
 	same(t, "V10/V11 must assert the exact approved DDL delta before any projection",
 		deliverycompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V20 changed actual historical business rows", sourcecompat.ProjectRowsCurrent(t, before, h.legacyData(names)), before)
+	same(t, "V21 changed actual historical business rows", sourcecompat.ProjectRowsCurrent(t, before, h.legacyData(names)), before)
 	body, _ := h.request(h.ctx, viewer, "GET", connectionsPath+"/"+slackConnection.ID, nil, 200)
 	same(t, "Jira-disabled migration changed exact old Slack metadata keys/values", decoded[object](t, body)["connection"], slackShape)
 	body, _ = h.request(h.ctx, viewer, "GET", deliveryPath(slackJob.ID), nil, 200)
@@ -273,8 +296,9 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	h.reopen()
 	same(t, "reopen repeated/omitted a current migration", h.ledger(), currentLedger)
 	same(t, "reopen altered migrated definitions", h.definitions(names), afterDefinitions)
+	sourcecompat.ValidateV21Catalog(t, h.v21Definitions())
 	same(t, "reopen changed the historical relation set",
-		sourcecompat.ProjectRelationsV20(t, relations, h.relations()), relations)
+		sourcecompat.ProjectRelationsV21(t, relations, h.relations()), relations)
 	same(t, "reopen changed old-column business data", sourcecompat.ProjectRowsCurrent(t, before, h.legacyData(names)), before)
 	h.assertTypedRow(ownedRow{"integration_connections", h.admin.Workspace, slackConnection.ID}, n.target())
 	h.assertTypedRow(ownedRow{"finding_deliveries", h.admin.Workspace, slackJob.ID}, n.target())

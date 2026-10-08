@@ -224,6 +224,8 @@
 // separate. Indexed exact-location candidates, reviewed multi-member
 // correlation, source change classification and meaningful Work are
 // implemented. Archive publication reconciliation cleans only old ledgered
-// product objects. Fuzzy/automatic correlation, native connectors, independent
-// verification and supported release qualification remain separate.
+// product objects. Explicit epoch-scoped notification policies queue the common
+// outbox and conservatively prevent duplicate Jira ticket intents. Generic
+// webhooks, fuzzy/automatic correlation, independent verification and supported
+// release qualification remain separate.
 package app

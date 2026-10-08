@@ -135,7 +135,8 @@ function preview(value: unknown, finding: FindingDetail, selected: JiraConnectio
 const states: readonly JiraState[] = ["queued", "dispatching", "confirmed", "accepted", "blocked", "failed", "rate-limited", "uncertain"];
 function delivery(value: unknown, workspace: string | null, findingId: string): JiraDelivery {
   const item = record(value, ["id", "workspaceId", "findingId", "connectionId", "connectionRevision", "profile", "channel",
-    "requestedBy", "state", "jira", "payload", "createdAt", "dispatchStartedAt", "createAttemptedAt", "completedAt", "receipt", "failure"]);
+    "requestedBy", "state", "jira", "payload", "createdAt", "dispatchStartedAt", "createAttemptedAt", "completedAt", "receipt", "failure"],
+  ["triggerKind", "policyId", "policyRevision", "findingChangeRevision"]);
   const state = states.find((state) => state === item.state), jira = target(item.jira);
   if (!state || id(item.workspaceId) !== workspace || id(item.findingId) !== findingId ||
     item.profile !== jiraProfile || item.channel !== "") return invalid("delivery scope or state");
@@ -171,11 +172,24 @@ function delivery(value: unknown, workspace: string | null, findingId: string): 
     createAttemptedAt !== null && dispatchStartedAt === null || failure?.stage === "metadata" && createAttemptedAt !== null) {
     return invalid("delivery outcome");
   }
+  const policyFields = [item.triggerKind, item.policyId, item.policyRevision, item.findingChangeRevision];
+  const automatic = policyFields.some((value) => value !== undefined);
+  if (automatic && (item.triggerKind !== "notification-policy" ||
+    !jiraNativeID.test(String(item.policyId)) ||
+    typeof item.policyRevision !== "number" || !Number.isSafeInteger(item.policyRevision) || item.policyRevision < 1 ||
+    typeof item.findingChangeRevision !== "number" ||
+    !Number.isSafeInteger(item.findingChangeRevision) || item.findingChangeRevision < 1)) {
+    return invalid("delivery policy provenance");
+  }
   return {
     id: id(item.id), workspaceId: workspace!, findingId, connectionId: id(item.connectionId),
     connectionRevision: integer(item.connectionRevision, 1), profile: jiraProfile, channel: "", requestedBy: id(item.requestedBy),
     state, jira, payload: payload(item.payload, findingId, jira), createdAt: time(item.createdAt),
     dispatchStartedAt, createAttemptedAt, completedAt, receipt, failure,
+    ...(automatic && {
+      triggerKind: "notification-policy" as const, policyId: item.policyId as string,
+      policyRevision: item.policyRevision as number, findingChangeRevision: item.findingChangeRevision as number,
+    }),
   };
 }
 function deliveryResponse(value: unknown, workspace: string | null, findingId: string): JiraDeliveryResponse {

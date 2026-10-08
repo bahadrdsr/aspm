@@ -4,6 +4,7 @@ import { isDeepStrictEqual } from "node:util";
 import { expect, test as base } from "@playwright/test";
 import type { Page, Request, Route } from "@playwright/test";
 import { catalogResponse } from "./fixtures";
+import { notificationPoliciesPath } from "./slack-navigation";
 import {
   aiAlpha, aiBeta, aiCookie, aiGamma, aiPassword, aiUser, apiVersion, backendID, betaProfile, changedAt,
   defaultPolicy, disabledProfile, draftKey, exactKeys, gammaProfile, grantFields, grantsPath, hostedProfile,
@@ -291,7 +292,7 @@ export class AISettingsHTTP {
       const denied = !this.serverRoles.has(workspace) || ai && write && this.serverRoles.get(workspace) !== "admin";
       if (denied) { await this.deliver(route, call, 403, this.error(403), reply); return; }
       try {
-        if (method === "GET" && ["/api/v1/integrations/connections", "/api/v1/sources"].includes(path)) {
+        if (method === "GET" && ["/api/v1/integrations/connections", "/api/v1/sources", notificationPoliciesPath].includes(path)) {
           pageParameters(url); await this.deliver(route, call, 200, { apiVersion, items: [], total: 0, nextCursor: null }); return;
         }
         if (method === "GET" && path === "/api/v1/integrations/catalog" && url.search === "") {

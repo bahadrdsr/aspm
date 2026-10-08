@@ -64,7 +64,7 @@ func deliveryWorkerConfig(config Config) app.DeliveryWorkerConfig {
 	return app.DeliveryWorkerConfig{
 		Database: databaseConfig(config.Jobs), EncryptionKey: config.IntegrationEncryptionKey,
 		WorkerID: config.WorkerID, LeaseDuration: config.DeliveryLeaseDuration,
-		SlackEndpoint: config.SlackEndpoint, Client: config.DeliveryClient,
+		PublicOrigin: config.PublicOrigin, SlackEndpoint: config.SlackEndpoint, Client: config.DeliveryClient,
 	}
 }
 

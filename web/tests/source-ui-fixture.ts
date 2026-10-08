@@ -3,6 +3,7 @@ import { expect, test as base } from "@playwright/test";
 import type { Page, Request, Route } from "@playwright/test";
 import { bootstrapToken, password, sessionCookie, wrongPassword } from "./application-fixture";
 import { catalogResponse } from "./fixtures";
+import { notificationPoliciesPath } from "./slack-navigation";
 import {
   apiVersion, betaSource, collectionResult, disabledSource, githubSource, nativeID, pageOf, pageParameters,
   queuedCollection, rawDigest, recordsFor, replacementSourceToken, sourceAlpha, sourceBeta, sourceCookie,
@@ -322,6 +323,8 @@ export class SourcesUIAPI {
           await this.deliver(route, call, 200, { ...catalogResponse });
         } else if (method === "GET" && path === "/api/v1/integrations/connections") {
           pageParameters(url); await this.deliver(route, call, 200, { apiVersion, items: [], total: 0, nextCursor: null });
+        } else if (method === "GET" && path === notificationPoliciesPath && url.search === "") {
+          await this.deliver(route, call, 200, { apiVersion, items: [], total: 0, nextCursor: null });
         } else if (method === "GET" && ["/api/v1/assets", "/api/v1/work"].includes(path) && url.search === "") {
           await this.deliver(route, call, 200, { apiVersion, dataOrigin: "synthetic", items: [], total: 0, nextCursor: null });
         } else {

@@ -34,19 +34,21 @@ type OIDCConfig struct {
 }
 
 type ApplicationConfig struct {
-	DatabaseURL             string `json:"-"`
-	Schema, ApplicationName string
-	MaxConnections          int32
-	Storage                 StorageConfig
-	ArchiveStorage          StorageConfig
-	BootstrapToken          string           `json:"-"`
-	Now                     func() time.Time `json:"-"`
-	LogOutput               io.Writer        `json:"-"`
-	SessionTTL              time.Duration
-	MaxUploadBytes          int64
-	ManualProcessing        bool
-	OIDC                    *OIDCConfig
-	QueryTracer             pgx.QueryTracer `json:"-"`
+	DatabaseURL              string `json:"-"`
+	Schema, ApplicationName  string
+	MaxConnections           int32
+	Storage                  StorageConfig
+	ArchiveStorage           StorageConfig
+	BootstrapToken           string `json:"-"`
+	IntegrationEncryptionKey []byte `json:"-"`
+	PublicOrigin             string
+	Now                      func() time.Time `json:"-"`
+	LogOutput                io.Writer        `json:"-"`
+	SessionTTL               time.Duration
+	MaxUploadBytes           int64
+	ManualProcessing         bool
+	OIDC                     *OIDCConfig
+	QueryTracer              pgx.QueryTracer `json:"-"`
 }
 
 type Application struct {
@@ -72,11 +74,31 @@ type RetentionWorker struct {
 	Close       func() error
 }
 
+type DeliveryWorkerConfig struct {
+	DatabaseURL             string `json:"-"`
+	Schema, ApplicationName string
+	MaxConnections          int32
+	EncryptionKey           []byte `json:"-"`
+	WorkerID                string
+	LeaseDuration           time.Duration
+	PublicOrigin            string
+	SlackEndpoint           string       `json:"-"`
+	Client                  *http.Client `json:"-"`
+	LogOutput               io.Writer    `json:"-"`
+	QueryTracer             pgx.QueryTracer
+}
+
+type DeliveryWorker struct {
+	ProcessNext func(context.Context) (bool, error)
+	Close       func() error
+}
+
 // The coder owns forwarding-only bindings, never test-side business logic or SQL.
 var Production struct {
 	Plan                func(context.Context, json.RawMessage) (InstallationPlan, error)
 	OpenApplication     func(context.Context, ApplicationConfig) (Application, error)
 	OpenRetentionWorker func(context.Context, RetentionWorkerConfig) (RetentionWorker, error)
+	OpenDeliveryWorker  func(context.Context, DeliveryWorkerConfig) (DeliveryWorker, error)
 }
 
 type object = map[string]any
@@ -126,5 +148,12 @@ func requireRetentionWorker(t *testing.T) {
 	t.Helper()
 	if Production.OpenRetentionWorker == nil {
 		t.Fatal("production binding missing: OpenRetentionWorker; coder must forward to the independent retention worker")
+	}
+}
+
+func requireDeliveryWorker(t *testing.T) {
+	t.Helper()
+	if Production.OpenDeliveryWorker == nil {
+		t.Fatal("production binding missing: OpenDeliveryWorker; coder must forward to the independent delivery worker")
 	}
 }

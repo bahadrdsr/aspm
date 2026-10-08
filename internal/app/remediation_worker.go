@@ -24,6 +24,7 @@ type DeliveryWorkerConfig struct {
 	EncryptionKey []byte `json:"-"`
 	WorkerID      string
 	LeaseDuration time.Duration
+	PublicOrigin  string
 	SlackEndpoint string       `json:"-"`
 	Client        *http.Client `json:"-"`
 }
@@ -31,17 +32,18 @@ type DeliveryWorkerConfig struct {
 // DeliveryWorker owns a separate database pool and no application HTTP or S3 capability.
 type DeliveryWorker struct {
 	*database
-	credentials cipher.AEAD
-	workerID    string
-	lease       time.Duration
-	endpoint    string
-	client      *http.Client
-	lifetime    context.Context
-	cancel      context.CancelFunc
-	mu          sync.Mutex
-	closed      bool
-	active      sync.WaitGroup
-	closeOnce   sync.Once
+	credentials  cipher.AEAD
+	workerID     string
+	lease        time.Duration
+	endpoint     string
+	publicOrigin string
+	client       *http.Client
+	lifetime     context.Context
+	cancel       context.CancelFunc
+	mu           sync.Mutex
+	closed       bool
+	active       sync.WaitGroup
+	closeOnce    sync.Once
 }
 
 // ValidateDeliveryGateway checks a trusted HTTPS base without performing I/O.
@@ -90,6 +92,9 @@ func ValidateDeliveryWorkerConfig(config DeliveryWorkerConfig) error {
 	if _, err := ValidateDeliveryGateway(config.SlackEndpoint); err != nil {
 		return err
 	}
+	if err := ValidatePublicOrigin(config.PublicOrigin); err != nil {
+		return err
+	}
 	return ValidateDatabaseConfig(config.Database)
 }
 
@@ -121,7 +126,7 @@ func OpenDeliveryWorker(ctx context.Context, config DeliveryWorkerConfig) (*Deli
 	lifetime, cancel := context.WithCancel(context.Background())
 	return &DeliveryWorker{
 		database: db, credentials: credentials, workerID: config.WorkerID, lease: config.LeaseDuration,
-		endpoint: endpoint, client: &client, lifetime: lifetime, cancel: cancel,
+		endpoint: endpoint, publicOrigin: config.PublicOrigin, client: &client, lifetime: lifetime, cancel: cancel,
 	}, nil
 }
 
@@ -383,8 +388,14 @@ func (w *DeliveryWorker) ProcessNext(ctx context.Context) (bool, error) {
 		cancel()
 	}
 	dispatch, processed, err := w.claimDelivery(requestCtx)
-	if err != nil || dispatch == nil {
+	if err != nil {
 		return processed, err
+	}
+	if dispatch == nil {
+		if processed {
+			return true, nil
+		}
+		return w.processNextFindingChangeEvent(requestCtx)
 	}
 	record := dispatch.record
 	if dispatch.closeClient != nil {

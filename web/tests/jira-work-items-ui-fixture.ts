@@ -9,7 +9,7 @@ import { SavedViewsAPI } from "./saved-work-views-fixture";
 import type { WorkCall } from "./saved-work-views-fixture";
 import { cookie, password } from "./work-search-data";
 import { catalogResponse } from "./fixtures";
-import { emptySlackNavigation } from "./slack-navigation";
+import { emptySlackNavigation, notificationPoliciesPath } from "./slack-navigation";
 import { emptySourceNavigation } from "./source-navigation";
 import {
   alpha, apiVersion, beta, connectionsPath, draftToken, findingPath, first, profile, replacementToken,
@@ -229,6 +229,11 @@ export class JiraUIAPI extends SavedViewsAPI {
           const body: unknown = request.postDataJSON();
           if (!body || typeof body !== "object" || Array.isArray(body)) throw new Error("JSON must be an object.");
           call.body = body as Record<string, unknown>;
+        }
+        if (call.method === "GET" && call.path === notificationPoliciesPath) {
+          if (url.search !== "") throw new Error("Notification-policy navigation has no implicit query.");
+          call.status = 200; call.response = { apiVersion, items: [], total: 0, nextCursor: null };
+          await route.fulfill({ status: 200, json: call.response }); return;
         }
         reply = this.scripts.find((value) => !value.closed && value.calls.length < value.maximum &&
           value.method === call.method && value.path === call.path && value.workspace === workspace && isDeepStrictEqual(value.query, call.query));

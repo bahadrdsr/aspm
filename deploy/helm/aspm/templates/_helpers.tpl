@@ -123,14 +123,16 @@
 - name: ASPM_ASSESSMENT_MAX_RESPONSE_BYTES
   value: {{ $settings.maxResponseBytes | quote }}
 {{- end }}
+{{- if or (eq $role "core") (eq $role "delivery") }}
+- name: ASPM_PUBLIC_ORIGIN
+  value: {{ if $root.Values.ingress.enabled }}{{ printf "https://%s" $root.Values.ingress.host | quote }}{{ else }}{{ $root.Values.publicOrigin | default "" | quote }}{{ end }}
+{{- end }}
 {{- if eq $role "core" }}
 {{- if not (kindIs "bool" $settings.prepareReadiness) }}
 {{- fail "core.prepareReadiness must be a boolean" }}
 {{- end }}
 - name: ASPM_S3_PREPARE_READINESS
   value: {{ $settings.prepareReadiness | quote }}
-- name: ASPM_PUBLIC_ORIGIN
-  value: {{ if $root.Values.ingress.enabled }}{{ printf "https://%s" $root.Values.ingress.host | quote }}{{ else }}{{ $root.Values.publicOrigin | default "" | quote }}{{ end }}
 - name: ASPM_BOOTSTRAP_TOKEN
   valueFrom:
     secretKeyRef: {name: {{ $root.Values.existingSecret | quote }}, key: bootstrap-token, optional: true}

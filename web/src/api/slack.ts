@@ -10,7 +10,8 @@ const encoder = new TextEncoder();
 const channelPattern = /^[CG][A-Z0-9]{2,127}$/;
 const connectionFields = ["id", "workspaceId", "profile", "name", "channel", "enabled", "credentialConfigured", "revision", "createdAt", "updatedAt"];
 const deliveryFields = ["id", "workspaceId", "findingId", "connectionId", "connectionRevision", "profile", "channel", "requestedBy",
-  "state", "payload", "createdAt", "dispatchStartedAt", "completedAt", "receipt", "failure"];
+  "state", "payload", "createdAt", "dispatchStartedAt", "completedAt", "receipt", "failure",
+  "triggerKind", "policyId", "policyRevision", "findingChangeRevision"];
 const states = ["queued", "dispatching", "confirmed", "accepted", "blocked", "failed", "rate-limited", "uncertain"] as const;
 
 function invalid(field: string): never {
@@ -140,12 +141,25 @@ function delivery(value: unknown, workspace: string | null, findingId: string): 
     (state === "confirmed" && (!receipt || !new RegExp(`^${selectedChannel}:[0-9]{1,20}\\.[0-9]{1,10}$`).test(receipt.remoteId)))) {
     return invalid("delivery outcome");
   }
+  const policyFields = [item.triggerKind, item.policyId, item.policyRevision, item.findingChangeRevision];
+  const automatic = policyFields.some((value) => value !== undefined);
+  const policyId = automatic ? identifier(item.policyId, "delivery policy identifier") : undefined;
+  if (automatic && (item.triggerKind !== "notification-policy" ||
+    typeof item.policyRevision !== "number" || !Number.isSafeInteger(item.policyRevision) || item.policyRevision < 1 ||
+    typeof item.findingChangeRevision !== "number" ||
+    !Number.isSafeInteger(item.findingChangeRevision) || item.findingChangeRevision < 1)) {
+    return invalid("delivery policy provenance");
+  }
   return {
     id: identifier(item.id, "delivery identifier"), workspaceId, findingId,
     connectionId: identifier(item.connectionId, "delivery connection"), connectionRevision: integer(item.connectionRevision, "connection revision", 1),
     profile: profile(item.profile), channel: selectedChannel, requestedBy: identifier(item.requestedBy, "delivery requester"), state,
     payload: { title: text(payload.title, "notification title"), body: text(payload.body, "notification body"), deepLink },
     createdAt: timestamp(item.createdAt), dispatchStartedAt, completedAt, receipt, failure,
+    ...(automatic && {
+      triggerKind: "notification-policy" as const, policyId: policyId!,
+      policyRevision: item.policyRevision as number, findingChangeRevision: item.findingChangeRevision as number,
+    }),
   };
 }
 

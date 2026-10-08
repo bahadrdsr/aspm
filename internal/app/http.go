@@ -354,6 +354,41 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return errNotFound
 	}
+	if len(parts) >= 2 && parts[0] == "integrations" && parts[1] == "notification-policies" {
+		if len(parts) == 2 {
+			if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+				return err
+			}
+			if r.Method == http.MethodGet {
+				return a.listNotificationPolicies(w, r, membership.ID)
+			}
+			if membership.Role != "admin" {
+				return errForbidden
+			}
+			return a.createNotificationPolicy(w, r, membership.ID, session)
+		}
+		if len(parts) >= 3 && validID(parts[2]) {
+			if len(parts) == 3 {
+				if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
+					return err
+				}
+				if r.Method == http.MethodGet {
+					return a.getNotificationPolicy(w, r, membership.ID, parts[2])
+				}
+				if membership.Role != "admin" {
+					return errForbidden
+				}
+				return a.updateNotificationPolicy(w, r, membership.ID, session, parts[2])
+			}
+			if len(parts) == 4 && parts[3] == "events" {
+				if err = requireMethod(w, r, http.MethodGet); err != nil {
+					return err
+				}
+				return a.listNotificationPolicyEvents(w, r, membership.ID, parts[2])
+			}
+		}
+		return errNotFound
+	}
 	if len(parts) == 3 && parts[0] == "integrations" && validID(parts[2]) {
 		if parts[1] == "connections" {
 			if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {

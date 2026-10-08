@@ -1,4 +1,5 @@
 import type { apiVersion } from "./types";
+import type { PolicyDeliveryProvenance } from "./types";
 
 export const jiraProfile = "jira-cloud-v3" as const;
 export const jiraFieldSources = ["finding.id", "finding.title", "finding.severity", "asset.name", "finding.deepLink"] as const;
@@ -82,6 +83,10 @@ export interface JiraDelivery {
     stage?: "metadata" | "create";
     missingFields?: string[];
   } | null;
+  triggerKind?: PolicyDeliveryProvenance["triggerKind"];
+  policyId?: string;
+  policyRevision?: number;
+  findingChangeRevision?: number;
 }
 export interface JiraDeliveryResponse { apiVersion: typeof apiVersion; delivery: JiraDelivery }
 export interface JiraQueueInput {

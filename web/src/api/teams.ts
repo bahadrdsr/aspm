@@ -15,9 +15,10 @@ import {
 function invalid(): never {
   throw new APIError("The service returned invalid Teams metadata. The result could not be confirmed; its fields are withheld.", "invalid-response", false);
 }
-function record(value: unknown, keys: readonly string[]): Record<string, unknown> {
+function record(value: unknown, keys: readonly string[], optional: readonly string[] = []): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value) ||
-    Object.keys(value).length !== keys.length || keys.some((key) => !Object.hasOwn(value, key))) return invalid();
+    Object.keys(value).some((key) => !keys.includes(key) && !optional.includes(key)) ||
+    keys.some((key) => !Object.hasOwn(value, key))) return invalid();
   return value as Record<string, unknown>;
 }
 function text(value: unknown): string {
@@ -101,7 +102,7 @@ const failureCodes = new Set(["auth", "scope", "rate_limited", "uncertain", "una
 function delivery(value: unknown, workspace: string | null, findingId: string): TeamsDelivery {
   const item = record(value, ["id", "workspaceId", "findingId", "connectionId", "connectionRevision", "profile", "channel",
     "requestedBy", "state", "payload", "createdAt", "dispatchStartedAt", "completedAt", "receipt", "failure",
-    "destination", "outboundAttemptedAt"]);
+    "destination", "outboundAttemptedAt"], ["triggerKind", "policyId", "policyRevision", "findingChangeRevision"]);
   const state = states.find((state) => state === item.state);
   if (!state || id(item.workspaceId) !== workspace || id(item.findingId) !== findingId ||
     item.profile !== teamsProfile || item.channel !== "" || item.receipt !== null) return invalid();
@@ -122,10 +123,21 @@ function delivery(value: unknown, workspace: string | null, findingId: string): 
     state === "accepted" && (failure !== null || outboundAttemptedAt === null) ||
     !waiting && state !== "accepted" && failure === null ||
     outboundAttemptedAt !== null && dispatchStartedAt === null) return invalid();
+  const policyFields = [item.triggerKind, item.policyId, item.policyRevision, item.findingChangeRevision];
+  const automatic = policyFields.some((value) => value !== undefined);
+  if (automatic && (item.triggerKind !== "notification-policy" ||
+    !teamsNativeID.test(String(item.policyId)) ||
+    typeof item.policyRevision !== "number" || !Number.isSafeInteger(item.policyRevision) || item.policyRevision < 1 ||
+    typeof item.findingChangeRevision !== "number" ||
+    !Number.isSafeInteger(item.findingChangeRevision) || item.findingChangeRevision < 1)) return invalid();
   return { id: id(item.id), workspaceId: workspace!, findingId, connectionId: id(item.connectionId),
     connectionRevision: integer(item.connectionRevision, 1), profile: teamsProfile, channel: "", requestedBy: id(item.requestedBy),
     state, payload: payload(item.payload, findingId), destination: destination(item.destination),
-    createdAt: time(item.createdAt), dispatchStartedAt, outboundAttemptedAt, completedAt, receipt: null, failure };
+    createdAt: time(item.createdAt), dispatchStartedAt, outboundAttemptedAt, completedAt, receipt: null, failure,
+    ...(automatic && {
+      triggerKind: "notification-policy" as const, policyId: item.policyId as string,
+      policyRevision: item.policyRevision as number, findingChangeRevision: item.findingChangeRevision as number,
+    }) };
 }
 function deliveryResponse(value: unknown, workspace: string | null, findingId: string): TeamsDeliveryResponse {
   return { apiVersion, delivery: delivery(envelope(value, ["delivery"]).delivery, workspace, findingId) };

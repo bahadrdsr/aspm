@@ -2,6 +2,7 @@ import { expect, test as base } from "@playwright/test";
 import type { Page, Request, Route } from "@playwright/test";
 import { bootstrapToken, password, sessionCookie, wrongPassword } from "./application-fixture";
 import { catalogResponse } from "./fixtures";
+import { notificationPoliciesPath } from "./slack-navigation";
 import { emptySourceNavigation } from "./source-navigation";
 import { emptyReport, overviewDays, overviewPath, snapshotParameters, snapshotsPath, withFreshness } from "./reports-data";
 import {
@@ -409,6 +410,8 @@ export class SlackUIAPI {
           else await this.read(route, call, { apiVersion, dataOrigin: "synthetic", finding }, scheduled);
         } else if (method === "GET" && path === "/api/v1/integrations/catalog" && url.search === "") {
           await this.read(route, call, { ...catalogResponse }, scheduled);
+        } else if (method === "GET" && path === notificationPoliciesPath && url.search === "") {
+          await this.read(route, call, { apiVersion, items: [], total: 0, nextCursor: null }, scheduled);
         } else if (method === "GET" && path === "/api/v1/assets" && url.search === "") {
           await this.read(route, call, { apiVersion, dataOrigin: "synthetic", items: [], total: 0, nextCursor: null }, scheduled);
         } else if (method === "GET" && path === overviewPath) {

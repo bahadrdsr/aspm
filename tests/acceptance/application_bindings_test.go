@@ -28,6 +28,7 @@ func init() {
 		instance, err := app.Open(ctx, app.Config{
 			DatabaseURL: config.DatabaseURL, Schema: config.Schema, ApplicationName: config.ApplicationName,
 			MaxConnections: config.MaxConnections, BootstrapToken: config.BootstrapToken,
+			IntegrationEncryptionKey: config.IntegrationEncryptionKey, PublicOrigin: config.PublicOrigin,
 			Now: config.Now, LogOutput: config.LogOutput, SessionTTL: config.SessionTTL,
 			MaxUploadBytes: config.MaxUploadBytes, ManualProcessing: config.ManualProcessing,
 			OIDC: oidc, QueryTracer: config.QueryTracer,
@@ -66,5 +67,19 @@ func init() {
 			return RetentionWorker{}, err
 		}
 		return RetentionWorker{ProcessNext: worker.ProcessNext, Close: worker.Close}, nil
+	}
+	Production.OpenDeliveryWorker = func(ctx context.Context, config DeliveryWorkerConfig) (DeliveryWorker, error) {
+		worker, err := app.OpenDeliveryWorker(ctx, app.DeliveryWorkerConfig{
+			Database: app.DatabaseConfig{
+				DatabaseURL: config.DatabaseURL, Schema: config.Schema, ApplicationName: config.ApplicationName,
+				MaxConnections: config.MaxConnections, LogOutput: config.LogOutput, QueryTracer: config.QueryTracer,
+			},
+			EncryptionKey: config.EncryptionKey, WorkerID: config.WorkerID, LeaseDuration: config.LeaseDuration,
+			PublicOrigin: config.PublicOrigin, SlackEndpoint: config.SlackEndpoint, Client: config.Client,
+		})
+		if err != nil {
+			return DeliveryWorker{}, err
+		}
+		return DeliveryWorker{ProcessNext: worker.ProcessNext, Close: worker.Close}, nil
 	}
 }

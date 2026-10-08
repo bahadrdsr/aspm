@@ -12,10 +12,12 @@ import (
 	"reflect"
 	"regexp"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/bahadrdsr/aspm/tests/internal/deliverycompat"
+	"github.com/bahadrdsr/aspm/tests/internal/sourcecompat"
 )
 
 const publishedV5Commit = "7281edf4466c2b940eea7aa95c377d25e7f4c2b0"
@@ -65,6 +67,32 @@ func legacyDefinitionSnapshot(t *testing.T, f *fixture, names []string) map[stri
 		result[name+"/indexes"] = legacyRows(t, f, `SELECT indexname||'|'||indexdef FROM pg_indexes
 			WHERE schemaname=$1 AND tablename=$2 ORDER BY indexname`, f.database.Schema, "app_"+name)
 		require(t, len(result[name+"/columns"]) > 0, "published legacy relation was not actually created")
+	}
+	return result
+}
+
+func currentDefinitionSnapshot(t *testing.T, f *fixture, names []string) map[string][]string {
+	t.Helper()
+	result := map[string][]string{}
+	normalize := func(rows []string) []string {
+		quoted, unquoted := `"`+f.database.Schema+`".`, f.database.Schema+"."
+		for index := range rows {
+			rows[index] = strings.ReplaceAll(rows[index], quoted, "")
+			rows[index] = strings.ReplaceAll(rows[index], unquoted, "")
+		}
+		return rows
+	}
+	for _, name := range names {
+		relation := f.table(name)
+		result[name+"/columns"] = legacyRows(t, f, `SELECT
+			a.attname||'|'||format_type(a.atttypid,a.atttypmod)||'|'||a.attnotnull::text||'|'||
+			COALESCE(pg_get_expr(d.adbin,d.adrelid),'')
+			FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum
+			WHERE a.attrelid=to_regclass($1) AND a.attnum>0 AND NOT a.attisdropped ORDER BY a.attnum`, relation)
+		result[name+"/constraints"] = normalize(legacyRows(t, f, `SELECT conname||'|'||pg_get_constraintdef(oid,true)
+			FROM pg_constraint WHERE conrelid=to_regclass($1) AND contype<>'n' ORDER BY conname`, relation))
+		result[name+"/indexes"] = normalize(legacyRows(t, f, `SELECT indexname||'|'||indexdef FROM pg_indexes
+			WHERE schemaname=$1 AND tablename=$2 ORDER BY indexname`, f.database.Schema, "app_"+name))
 	}
 	return result
 }
@@ -177,8 +205,9 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
 			}
 			opened = true
 			afterOpenVersions, afterOpenTables = versionLedger(t, f), actualTables(t, f)
-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"}),
-				"current constructor returned success but did not apply and record v6 through v20 exactly once over actual published v5")
+			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"}),
+				"current constructor returned success but did not apply and record v6 through v21 exactly once over actual published v5")
+			sourcecompat.ValidateV21Catalog(t, currentDefinitionSnapshot(t, f, sourcecompat.V21Tables()))
 			for _, name := range []string{"source_connections", "source_collections", "source_repository_assets", "source_collection_records"} {
 				found := false
 				for _, table := range afterOpenTables {
@@ -221,9 +250,10 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
 			must(t, "close worker before v6 idempotent reopen", worker.Close())
 			fresh := h.openWorker(h.workerConfig(native, "idempotent-v6"))
 			process(t, h.ctx, fresh, false)
-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"}) &&
+			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"}) &&
 				reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
-				"reopening v20 repeated migration or changed legacy definitions")
+				"reopening v21 repeated migration or changed legacy definitions")
+			sourcecompat.ValidateV21Catalog(t, currentDefinitionSnapshot(t, f, sourcecompat.V21Tables()))
 			require(t, h.collection(h.admin, job.ID).State == "succeeded" && len(h.assets(h.admin)) == 1,
 				"current API-produced post-upgrade data did not survive repeat core/worker opens")
 			apiTailExecuted = true

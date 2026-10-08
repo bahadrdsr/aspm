@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"regexp"
 	"strconv"
@@ -119,10 +118,12 @@ func Environment(role string) (Config, error) {
 		}
 		config.ReadinessKey = os.Getenv("ASPM_S3_READINESS_KEY")
 	}
+	if role == "core" || role == "delivery" {
+		config.PublicOrigin = os.Getenv("ASPM_PUBLIC_ORIGIN")
+	}
 	if role == "core" {
 		config.AssessmentScope = os.Getenv("ASPM_ASSESSMENT_SCOPE")
 		config.Assets = env("ASPM_ASSETS", "web/dist")
-		config.PublicOrigin = os.Getenv("ASPM_PUBLIC_ORIGIN")
 		config.BootstrapToken = os.Getenv("ASPM_BOOTSTRAP_TOKEN")
 		config.IntegrationEncryptionKey, err = integrationEncryptionKey(os.Getenv("ASPM_INTEGRATION_ENCRYPTION_KEY"), false)
 		if err != nil {
@@ -264,19 +265,17 @@ func validateConfig(role string, config Config) error {
 	if (config.TLSCertFile == "") != (config.TLSKeyFile == "") {
 		return errors.New("both TLS certificate and key files are required for direct HTTPS")
 	}
+	if role == "core" || role == "delivery" {
+		if err := app.ValidatePublicOrigin(config.PublicOrigin); err != nil {
+			return err
+		}
+	}
 	if role == "core" {
 		if len(config.IntegrationEncryptionKey) != 0 && len(config.IntegrationEncryptionKey) != 32 {
 			return errors.New("core integration encryption requires an explicit 32-byte key")
 		}
 		if config.Assets == "" || (config.BootstrapToken != "" && len(config.BootstrapToken) < 32) {
 			return errors.New("invalid core assets or bootstrap configuration")
-		}
-		if config.PublicOrigin != "" {
-			origin, err := url.Parse(config.PublicOrigin)
-			if err != nil || origin.Scheme != "https" || origin.Host == "" || origin.User != nil ||
-				origin.Path != "" || origin.RawQuery != "" || origin.Fragment != "" {
-				return errors.New("public origin must be an HTTPS origin without a path")
-			}
 		}
 	}
 	return nil

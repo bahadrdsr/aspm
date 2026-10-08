@@ -2,11 +2,13 @@ package app
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -50,41 +52,66 @@ type FindingDeliveryFailure struct {
 }
 
 type FindingDelivery struct {
-	ID                 string                  `json:"id"`
-	WorkspaceID        string                  `json:"workspaceId"`
-	FindingID          string                  `json:"findingId"`
-	ConnectionID       string                  `json:"connectionId"`
-	ConnectionRevision int64                   `json:"connectionRevision"`
-	Profile            string                  `json:"profile"`
-	Channel            string                  `json:"channel"`
-	RequestedBy        string                  `json:"requestedBy"`
-	State              string                  `json:"state"`
-	Payload            FindingNotification     `json:"payload"`
-	CreatedAt          time.Time               `json:"createdAt"`
-	DispatchStartedAt  *time.Time              `json:"dispatchStartedAt"`
-	CompletedAt        *time.Time              `json:"completedAt"`
-	Receipt            *FindingDeliveryReceipt `json:"receipt"`
-	Failure            *FindingDeliveryFailure `json:"failure"`
-	Jira               *JiraTarget             `json:"jira,omitempty"`
-	Destination        *TeamsDestination       `json:"destination,omitempty"`
-	CreateAttemptedAt  *time.Time              `json:"-"`
+	ID                    string                  `json:"id"`
+	WorkspaceID           string                  `json:"workspaceId"`
+	FindingID             string                  `json:"findingId"`
+	ConnectionID          string                  `json:"connectionId"`
+	ConnectionRevision    int64                   `json:"connectionRevision"`
+	Profile               string                  `json:"profile"`
+	Channel               string                  `json:"channel"`
+	RequestedBy           string                  `json:"requestedBy"`
+	State                 string                  `json:"state"`
+	Payload               FindingNotification     `json:"payload"`
+	CreatedAt             time.Time               `json:"createdAt"`
+	DispatchStartedAt     *time.Time              `json:"dispatchStartedAt"`
+	CompletedAt           *time.Time              `json:"completedAt"`
+	Receipt               *FindingDeliveryReceipt `json:"receipt"`
+	Failure               *FindingDeliveryFailure `json:"failure"`
+	Jira                  *JiraTarget             `json:"jira,omitempty"`
+	Destination           *TeamsDestination       `json:"destination,omitempty"`
+	CreateAttemptedAt     *time.Time              `json:"-"`
+	TriggerKind           string                  `json:"-"`
+	PolicyID              *string                 `json:"-"`
+	PolicyRevision        *int64                  `json:"-"`
+	FindingChangeRevision *int64                  `json:"-"`
 }
 
 func (delivery FindingDelivery) MarshalJSON() ([]byte, error) {
 	type value FindingDelivery
+	trigger := ""
+	if delivery.TriggerKind == "notification-policy" {
+		trigger = delivery.TriggerKind
+	}
 	if delivery.Profile == connectors.JiraCloudV3 {
 		return json.Marshal(struct {
 			value
-			CreateAttemptedAt *time.Time `json:"createAttemptedAt"`
-		}{value(delivery), delivery.CreateAttemptedAt})
+			TriggerKind           string     `json:"triggerKind,omitempty"`
+			PolicyID              *string    `json:"policyId,omitempty"`
+			PolicyRevision        *int64     `json:"policyRevision,omitempty"`
+			FindingChangeRevision *int64     `json:"findingChangeRevision,omitempty"`
+			CreateAttemptedAt     *time.Time `json:"createAttemptedAt"`
+		}{value(delivery), trigger, delivery.PolicyID, delivery.PolicyRevision,
+			delivery.FindingChangeRevision, delivery.CreateAttemptedAt})
 	}
 	if delivery.Profile == connectors.TeamsWorkflows {
 		return json.Marshal(struct {
 			value
-			OutboundAttemptedAt *time.Time `json:"outboundAttemptedAt"`
-		}{value(delivery), delivery.CreateAttemptedAt})
+			TriggerKind           string     `json:"triggerKind,omitempty"`
+			PolicyID              *string    `json:"policyId,omitempty"`
+			PolicyRevision        *int64     `json:"policyRevision,omitempty"`
+			FindingChangeRevision *int64     `json:"findingChangeRevision,omitempty"`
+			OutboundAttemptedAt   *time.Time `json:"outboundAttemptedAt"`
+		}{value(delivery), trigger, delivery.PolicyID, delivery.PolicyRevision,
+			delivery.FindingChangeRevision, delivery.CreateAttemptedAt})
 	}
-	return json.Marshal(value(delivery))
+	return json.Marshal(struct {
+		value
+		TriggerKind           string  `json:"triggerKind,omitempty"`
+		PolicyID              *string `json:"policyId,omitempty"`
+		PolicyRevision        *int64  `json:"policyRevision,omitempty"`
+		FindingChangeRevision *int64  `json:"findingChangeRevision,omitempty"`
+	}{value(delivery), trigger, delivery.PolicyID, delivery.PolicyRevision,
+		delivery.FindingChangeRevision})
 }
 
 type findingDeliveryRecord struct {
@@ -97,7 +124,8 @@ type findingDeliveryRecord struct {
 
 const findingDeliveryColumns = `id,workspace_id,finding_id,connection_id,connection_revision,
 	profile,channel,requested_by,state,payload,created_at,dispatch_started_at,completed_at,
-	receipt,failure,binding_digest,approval_ref,fence,idempotency_key,jira_target,create_attempted_at,teams_target`
+	receipt,failure,binding_digest,approval_ref,fence,idempotency_key,jira_target,create_attempted_at,teams_target,
+	trigger_kind,policy_id,policy_revision,finding_change_revision`
 
 func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 	var record findingDeliveryRecord
@@ -106,7 +134,8 @@ func scanFindingDelivery(row pgx.Row) (findingDeliveryRecord, error) {
 		&record.ConnectionRevision, &record.Profile, &record.Channel, &record.RequestedBy, &record.State,
 		&payload, &record.CreatedAt, &record.DispatchStartedAt, &record.CompletedAt,
 		&receipt, &failure, &record.bindingDigest, &record.approvalRef, &record.fence,
-		&record.idempotencyKey, &target, &record.CreateAttemptedAt, &teams)
+		&record.idempotencyKey, &target, &record.CreateAttemptedAt, &teams,
+		&record.TriggerKind, &record.PolicyID, &record.PolicyRevision, &record.FindingChangeRevision)
 	if err != nil {
 		return record, err
 	}
@@ -146,21 +175,29 @@ func deliveryBinding(delivery FindingDelivery) ([]byte, error) {
 		Actor: delivery.RequestedBy, Profile: delivery.Profile, Channel: delivery.Channel,
 		Revision: delivery.ConnectionRevision, Payload: delivery.Payload,
 	}
-	var data []byte
-	var err error
+	var binding any = value
 	if delivery.Profile == connectors.JiraCloudV3 {
-		data, err = json.Marshal(struct {
+		binding = struct {
 			Binding any
 			Jira    *JiraTarget
-		}{value, delivery.Jira})
+		}{value, delivery.Jira}
 	} else if delivery.Profile == connectors.TeamsWorkflows {
-		data, err = json.Marshal(struct {
+		binding = struct {
 			Binding     any
 			Destination *TeamsDestination
-		}{value, delivery.Destination})
-	} else {
-		data, err = json.Marshal(value)
+		}{value, delivery.Destination}
 	}
+	if delivery.TriggerKind == "notification-policy" {
+		binding = struct {
+			Binding               any
+			TriggerKind           string
+			PolicyID              *string
+			PolicyRevision        *int64
+			FindingChangeRevision *int64
+		}{binding, delivery.TriggerKind, delivery.PolicyID,
+			delivery.PolicyRevision, delivery.FindingChangeRevision}
+	}
+	data, err := json.Marshal(binding)
 	if err != nil {
 		return nil, err
 	}
@@ -185,8 +222,26 @@ func deliveryIntentBinding(delivery FindingDelivery, key string) ([]byte, error)
 }
 
 func validDeliveryBinding(record findingDeliveryRecord) bool {
-	if record.approvalRef != "aspm:remediation:"+record.WorkspaceID+":"+record.ID ||
-		!validText(record.idempotencyKey, 256) {
+	if !validText(record.idempotencyKey, 256) {
+		return false
+	}
+	switch record.TriggerKind {
+	case "manual":
+		if record.PolicyID != nil || record.PolicyRevision != nil || record.FindingChangeRevision != nil ||
+			record.approvalRef != "aspm:remediation:"+record.WorkspaceID+":"+record.ID {
+			return false
+		}
+	case "notification-policy":
+		if record.PolicyID == nil || !validID(*record.PolicyID) ||
+			record.PolicyRevision == nil || *record.PolicyRevision < 1 ||
+			record.FindingChangeRevision == nil || *record.FindingChangeRevision < 1 ||
+			record.idempotencyKey != "notification-policy:"+*record.PolicyID+":"+
+				record.FindingID+":"+strconv.FormatInt(*record.FindingChangeRevision, 10) ||
+			record.approvalRef != "aspm:notification-policy:"+record.WorkspaceID+":"+
+				*record.PolicyID+":"+strconv.FormatInt(*record.PolicyRevision, 10) {
+			return false
+		}
+	default:
 		return false
 	}
 	if record.Profile == connectors.JiraCloudV3 &&
@@ -202,6 +257,65 @@ func validDeliveryBinding(record findingDeliveryRecord) bool {
 	}
 	binding, err := deliveryIntentBinding(record.FindingDelivery, record.idempotencyKey)
 	return err == nil && bytes.Equal(binding, record.bindingDigest)
+}
+
+func lockDeliveryKey(ctx context.Context, tx pgx.Tx, scope, key string) error {
+	_, err := tx.Exec(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`, scope+"/"+key)
+	return err
+}
+
+func (a *database) insertFindingDelivery(ctx context.Context, tx pgx.Tx, delivery FindingDelivery,
+	key string, digest []byte, approvalRef string) (findingDeliveryRecord, error) {
+	payload, err := json.Marshal(delivery.Payload)
+	if err != nil {
+		return findingDeliveryRecord{}, err
+	}
+	var target, teams []byte
+	if delivery.Jira != nil {
+		target, err = json.Marshal(delivery.Jira)
+		if err != nil {
+			return findingDeliveryRecord{}, err
+		}
+	}
+	if delivery.Destination != nil {
+		teams, err = json.Marshal(delivery.Destination)
+		if err != nil {
+			return findingDeliveryRecord{}, err
+		}
+	}
+	return scanFindingDelivery(tx.QueryRow(ctx, `INSERT INTO `+a.table("finding_deliveries")+`
+		(id,workspace_id,finding_id,connection_id,connection_revision,profile,channel,requested_by,
+		 idempotency_key,binding_digest,approval_ref,payload,created_at,jira_target,teams_target,
+		 trigger_kind,policy_id,policy_revision,finding_change_revision)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+		RETURNING `+findingDeliveryColumns,
+		delivery.ID, delivery.WorkspaceID, delivery.FindingID, delivery.ConnectionID,
+		delivery.ConnectionRevision, delivery.Profile, delivery.Channel, delivery.RequestedBy,
+		key, digest, approvalRef, payload, delivery.CreatedAt, target, teams, delivery.TriggerKind,
+		delivery.PolicyID, delivery.PolicyRevision, delivery.FindingChangeRevision))
+}
+
+func lockJiraFindingEffect(ctx context.Context, tx pgx.Tx, workspace, connection, finding string) error {
+	return lockDeliveryKey(ctx, tx, "aspm/jira-finding-effect",
+		workspace+"/"+connection+"/"+finding)
+}
+
+func (a *database) jiraFindingEffect(ctx context.Context, tx pgx.Tx,
+	workspace, connection, finding string) (string, error) {
+	var delivery string
+	err := tx.QueryRow(ctx, `SELECT delivery_id FROM `+a.table("jira_finding_effects")+`
+		WHERE workspace_id=$1 AND connection_id=$2 AND finding_id=$3`,
+		workspace, connection, finding).Scan(&delivery)
+	return delivery, err
+}
+
+func (a *database) insertJiraFindingEffect(ctx context.Context, tx pgx.Tx,
+	delivery FindingDelivery) error {
+	_, err := tx.Exec(ctx, `INSERT INTO `+a.table("jira_finding_effects")+`
+		(workspace_id,connection_id,finding_id,delivery_id,created_at)
+		VALUES($1,$2,$3,$4,$5)`,
+		delivery.WorkspaceID, delivery.ConnectionID, delivery.FindingID, delivery.ID, delivery.CreatedAt)
+	return err
 }
 
 func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Request, workspace string, session authenticatedSession, findingID string) error {
@@ -251,55 +365,56 @@ func (a *Application) enqueueFindingDelivery(w http.ResponseWriter, r *http.Requ
 	} else if input.Confirm.Set || input.PreviewDigest.Set {
 		return errInvalid
 	}
-	delivery.ID, delivery.State, delivery.CreatedAt = newID(), "queued", a.config.Now().UTC()
+	delivery.ID, delivery.State, delivery.CreatedAt, delivery.TriggerKind =
+		newID(), "queued", a.config.Now().UTC(), "manual"
 	digest, err := deliveryIntentBinding(delivery, input.IdempotencyKey)
 	if err != nil {
 		return err
 	}
-	payload, err := json.Marshal(delivery.Payload)
-	if err != nil {
+	if err = lockDeliveryKey(r.Context(), tx, "aspm/finding-delivery-intent",
+		workspace+"/"+input.IdempotencyKey); err != nil {
 		return err
 	}
-	var target, teams []byte
-	if delivery.Jira != nil {
-		target, err = json.Marshal(delivery.Jira)
-		if err != nil {
-			return err
-		}
-	}
-	if delivery.Destination != nil {
-		teams, err = json.Marshal(delivery.Destination)
-		if err != nil {
-			return err
-		}
-	}
-	record, err := scanFindingDelivery(tx.QueryRow(r.Context(), `INSERT INTO `+a.table("finding_deliveries")+`
-		(id,workspace_id,finding_id,connection_id,connection_revision,profile,channel,requested_by,
-		 idempotency_key,binding_digest,approval_ref,payload,created_at,jira_target,teams_target)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
-		ON CONFLICT (workspace_id,idempotency_key) DO NOTHING RETURNING `+findingDeliveryColumns,
-		delivery.ID, workspace, findingID, delivery.ConnectionID, delivery.ConnectionRevision, delivery.Profile,
-		delivery.Channel, session.User.ID, input.IdempotencyKey, digest,
-		"aspm:remediation:"+workspace+":"+delivery.ID, payload, delivery.CreatedAt, target, teams))
-	status := http.StatusAccepted
-	if errors.Is(err, pgx.ErrNoRows) {
-		record, err = scanFindingDelivery(tx.QueryRow(r.Context(), `SELECT `+findingDeliveryColumns+
-			` FROM `+a.table("finding_deliveries")+` WHERE workspace_id=$1 AND idempotency_key=$2`,
-			workspace, input.IdempotencyKey))
-		if err != nil {
-			return err
-		}
+	record, lookupErr := scanFindingDelivery(tx.QueryRow(r.Context(), `SELECT `+findingDeliveryColumns+
+		` FROM `+a.table("finding_deliveries")+` WHERE workspace_id=$1 AND idempotency_key=$2`,
+		workspace, input.IdempotencyKey))
+	if lookupErr == nil {
 		if !bytes.Equal(record.bindingDigest, digest) || !validDeliveryBinding(record) {
 			return errConflict
 		}
-		status = http.StatusOK
-	} else if err != nil {
+		if err = tx.Commit(r.Context()); err != nil {
+			return err
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"delivery": record.FindingDelivery})
+		return nil
+	}
+	if !errors.Is(lookupErr, pgx.ErrNoRows) {
+		return lookupErr
+	}
+	if delivery.Profile == connectors.JiraCloudV3 {
+		if err = lockJiraFindingEffect(r.Context(), tx, workspace, delivery.ConnectionID, findingID); err != nil {
+			return err
+		}
+		if _, err = a.jiraFindingEffect(r.Context(), tx, workspace, delivery.ConnectionID, findingID); err == nil {
+			return errConflict
+		} else if !errors.Is(err, pgx.ErrNoRows) {
+			return err
+		}
+	}
+	record, err = a.insertFindingDelivery(r.Context(), tx, delivery, input.IdempotencyKey, digest,
+		"aspm:remediation:"+workspace+":"+delivery.ID)
+	if err != nil {
 		return err
+	}
+	if delivery.Profile == connectors.JiraCloudV3 {
+		if err = a.insertJiraFindingEffect(r.Context(), tx, delivery); err != nil {
+			return err
+		}
 	}
 	if err = tx.Commit(r.Context()); err != nil {
 		return err
 	}
-	writeJSON(w, status, map[string]any{"delivery": record.FindingDelivery})
+	writeJSON(w, http.StatusAccepted, map[string]any{"delivery": record.FindingDelivery})
 	return nil
 }
 

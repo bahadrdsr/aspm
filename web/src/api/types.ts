@@ -617,6 +617,12 @@ export interface SlackPage<T> {
 }
 
 export type FindingDeliveryState = "queued" | "dispatching" | "confirmed" | "accepted" | "blocked" | "failed" | "rate-limited" | "uncertain";
+export interface PolicyDeliveryProvenance {
+  triggerKind: "notification-policy";
+  policyId: string;
+  policyRevision: number;
+  findingChangeRevision: number;
+}
 export interface FindingDelivery {
   id: string;
   workspaceId: string;
@@ -633,6 +639,10 @@ export interface FindingDelivery {
   completedAt: string | null;
   receipt: { remoteId: string; remoteUrl: string } | null;
   failure: { code: string; nativeCode: string; httpStatus: number; retryAfterSeconds: number; retryable: false } | null;
+  triggerKind?: PolicyDeliveryProvenance["triggerKind"];
+  policyId?: string;
+  policyRevision?: number;
+  findingChangeRevision?: number;
 }
 export interface FindingDeliveryInput { connectionId: string; idempotencyKey: string }
 export interface FindingDeliveryResponse {
