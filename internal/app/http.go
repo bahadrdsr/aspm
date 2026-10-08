@@ -185,6 +185,14 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return a.listWorkViews(w, r, membership.ID, session)
 		}
 		return a.createWorkView(w, r, membership.ID, session)
+	case "/api/v1/findings":
+		if err = requireMethod(w, r, http.MethodPatch); err != nil {
+			return err
+		}
+		if !canWrite(membership) {
+			return errForbidden
+		}
+		return a.bulkPatchFindings(w, r, membership.ID, session.User.ID)
 	case "/api/v1/integrations/catalog":
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err
@@ -530,7 +538,7 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			if !canWrite(membership) {
 				return errForbidden
 			}
-			return a.patchFinding(w, r, membership.ID, parts[1])
+			return a.patchFinding(w, r, membership.ID, session.User.ID, parts[1])
 		}
 		return a.findingResponse(w, r, membership.ID, parts[1])
 	}

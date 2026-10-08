@@ -131,7 +131,7 @@ func testPublishedUpgrade(t *testing.T) {
 		must(t, "record actual published-v6 upgrade observation", os.WriteFile(file, encode(t, observation), 0600))
 		t.Log("actual schema upgrade observation:", file)
 	}
-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"}), "CURRENT core startup did not apply required migrations through v18 exactly once over real published v6")
+	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"}), "CURRENT core startup did not apply required migrations through v19 exactly once over real published v6")
 	check(t, reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
 	h.enroll()
 	key := secret(t)
@@ -144,7 +144,7 @@ func testPublishedUpgrade(t *testing.T) {
 	must(t, "close resolver for upgrade persistence probe", r.Close())
 	fresh := h.resolver()
 	assertResolved(t, fresh, h.ctx, h.admin, h.get(h.admin, p.ID), h.json(h.admin, "GET", policyPath, nil, 200).Policy, &g, key)
-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v18 reopen repeated migration or changed old schema definitions")
+	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v19 reopen repeated migration or changed old schema definitions")
 	h.networkNone()
 	t.Log("real schema-only v6 upgrade and API-created post-upgrade configuration persistence; no legacy customer-data migration claim")
 }

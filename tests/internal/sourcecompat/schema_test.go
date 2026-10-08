@@ -88,7 +88,10 @@ func TestProjectRowsV12PreservesCompleteHistoricalRows(t *testing.T) {
 func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 	before := observedV11Catalog()
 	before["findings/columns"] = []string{"id|text|true|"}
-	before["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
+	before["findings/constraints"] = []string{
+		"app_findings_pkey|PRIMARY KEY (id)",
+		"app_findings_workflow_state_check|" + LegacyWorkflowStateCheck,
+	}
 	v12, err := expected(before)
 	if err != nil {
 		t.Fatal(err)
@@ -121,6 +124,11 @@ func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 		"app_findings_change_run_id_not_null|NOT NULL change_run_id",
 		"app_findings_content_digest_check|CHECK (content_digest = ''::text OR content_digest ~ '^sha256:[0-9a-f]{64}$'::text)",
 		"app_findings_content_digest_not_null|NOT NULL content_digest")
+	for i, row := range current["findings/constraints"] {
+		if row == "app_findings_workflow_state_check|"+LegacyWorkflowStateCheck {
+			current["findings/constraints"][i] = "app_findings_workflow_state_check|" + WorkflowStateCheck
+		}
+	}
 	sortConstraints(current["findings/constraints"])
 	if got := ProjectCurrent(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("current projection did not restore the observed legacy catalog")
@@ -210,6 +218,22 @@ func TestProjectRelationsV18AcceptsOnlyExactPublicationRelations(t *testing.T) {
 	slices.Reverse(current)
 	if got := ProjectRelationsV18(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("exact V18 relation projection did not restore the prior relation set")
+	}
+}
+
+func TestProjectRelationsV19AcceptsOnlyExactDecisionHistoryRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV19(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V19 relation projection did not restore the prior relation set")
 	}
 }
 

@@ -16,7 +16,7 @@ import { FindingJira } from "./finding-jira";
 import { FindingTeams } from "./finding-teams";
 import { FindingAssessments } from "./finding-assessments/finding-assessments";
 import { FindingCorrelationPanel } from "./finding-correlation";
-import { FindingNoteHistory, FindingObservationHistory } from "./finding-history";
+import { FindingDecisionHistory, FindingNoteHistory, FindingObservationHistory } from "./finding-history";
 import { ActionButton } from "./action-button";
 import { FormError } from "./form-dialog";
 import { Button } from "./ui/button";
@@ -130,6 +130,13 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
             </dl>
             {finding.sourceState === "inferred-resolved" && <p className="section-note">Source absence supports an inferred resolution only. It does not change the analyst's workflow, risk acceptance or verification.</p>}
             <p className="section-note">{finding.verifiedResolution === true ? "The service records an independently verified resolution." : finding.verifiedResolution === false ? "No independently verified resolution is recorded." : "Independent resolution verification was not supplied."}</p>
+          </section>
+          <section className="detail-section"><div className="section-heading"><h3>Decision history</h3>{" "}
+            {finding.decisionEvents && <span className="subtle-pill">{finding.decisionEvents.length} loaded</span>}</div>
+            {finding.decisionEvents && finding.decisionEvents.length > 0 ?
+              <FindingDecisionHistory events={finding.decisionEvents} /> :
+              <p>{finding.decisionEvents === undefined ? "Decision history was not supplied." : "No recorded decision changes."}</p>}
+            <HistoryControls stream="decisions" resource={resource} />
           </section>
           <section className="detail-section"><div className="section-heading"><h3>Analyst notes</h3>{" "}
             {finding.notes && <span className="subtle-pill">{finding.notes.length} loaded</span>}</div>

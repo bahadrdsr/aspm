@@ -6,7 +6,9 @@ import {
   actionAlpha, actionBeta, actionCookie, actionUser, apiVersion, backendID, betaFinding, companionFinding,
   currentOwner, findingPath, notesPath, primaryFinding, serverNow, validExpiry, validNoteText, workItem, workPath,
 } from "./finding-actions-data";
-import type { ActionFinding, ActionFindingResponse, ActionNote, ActionRole, ActionWorkResponse } from "./finding-actions-data";
+import type {
+  ActionDecision, ActionDecisionEvent, ActionFinding, ActionFindingResponse, ActionNote, ActionRole, ActionWorkResponse,
+} from "./finding-actions-data";
 
 type Denial = 400 | 401 | 403 | 503;
 type Payload = Record<string, unknown> | ActionFindingResponse | ActionWorkResponse;
@@ -48,6 +50,7 @@ export class FindingActionsAPI {
   ]);
   private sessionCompleted = false;
   private noteSequence = 0;
+  private decisionSequence = 0;
   private gates = new Set<Gate>();
   private scheduled = new Map<string, Scheduled[]>();
   private byRequest = new Map<Request, FindingActionCall>();
@@ -65,7 +68,8 @@ export class FindingActionsAPI {
       finding.ownerId !== null && !this.members.get(finding.workspaceId)?.has(finding.ownerId) ||
       finding.notes.some((note) => !backendID(note.id) || !validNoteText(note.text)) ||
       new Set(finding.notes.map((note) => note.id)).size !== finding.notes.length ||
-      finding.notesNextCursor !== null || finding.observationsNextCursor !== null) {
+      finding.notesNextCursor !== null || finding.observationsNextCursor !== null ||
+      finding.decisionEventsNextCursor !== null || finding.decisionRevision < 1) {
       throw new Error("Seed complete synthetic server records with valid membership, note IDs and text; cursors are derived, not invented.");
     }
     this.findings.set(finding.id, structuredClone(finding));
@@ -152,18 +156,25 @@ export class FindingActionsAPI {
   private detail(finding: ActionFinding, url: URL): ActionFindingResponse {
     const notesCursor = url.searchParams.get("notesCursor") ?? "";
     const observationsCursor = url.searchParams.get("observationsCursor") ?? "";
-    if ([...url.searchParams.keys()].some((key) => !["notesCursor", "observationsCursor"].includes(key)) ||
-      notesCursor !== "" && !backendID(notesCursor) || observationsCursor !== "" && !backendID(observationsCursor)) {
-      throw new Error("Finding reads support only the existing valid notesCursor and observationsCursor.");
+    const decisionsCursor = url.searchParams.get("decisionsCursor") ?? "";
+    if ([...url.searchParams.keys()].some((key) => !["notesCursor", "observationsCursor", "decisionsCursor"].includes(key)) ||
+      notesCursor !== "" && !backendID(notesCursor) || observationsCursor !== "" && !backendID(observationsCursor) ||
+      decisionsCursor !== "" && !/^\d{20}$/.test(decisionsCursor)) {
+      throw new Error("Finding reads support only valid native history cursors.");
     }
     const notes = finding.notes.filter((note) => note.id > notesCursor).sort((a, b) => a.id.localeCompare(b.id));
     const observations = finding.observations.filter((item) => item.id > observationsCursor).sort((a, b) => a.id.localeCompare(b.id));
+    const decisionRevision = decisionsCursor === "" ? 0 : Number(decisionsCursor);
+    const decisions = finding.decisionEvents.filter((item) => item.decisionRevision > decisionRevision)
+      .sort((a, b) => a.decisionRevision - b.decisionRevision);
     return { apiVersion, dataOrigin: "synthetic", finding: {
       ...structuredClone(finding),
       notes: notes.slice(0, 500),
       observations: observations.slice(0, 500),
+      decisionEvents: decisions.slice(0, 100),
       notesNextCursor: notes.length > 500 ? notes[499].id : null,
       observationsNextCursor: observations.length > 500 ? observations[499].id : null,
+      decisionEventsNextCursor: decisions.length > 100 ? decisions[99].decisionRevision.toString().padStart(20, "0") : null,
     } };
   }
 
@@ -186,10 +197,12 @@ export class FindingActionsAPI {
   }
 
   private patch(finding: ActionFinding, body: Record<string, unknown>): ActionFinding | null {
-    if (Object.keys(body).some((key) => !["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"].includes(key))) {
-      this.violations.push("PATCH accepts selected owner/workflow/disposition/expiry fields only, not UI authority or revision fields.");
+    if (Object.keys(body).some((key) => !["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt", "rationale"].includes(key))) {
+      this.violations.push("PATCH accepts selected owner/workflow/disposition/expiry/rationale fields only, not UI authority or revision fields.");
       return null;
     }
+    if ("rationale" in body && (typeof body.rationale !== "string" || body.rationale.includes("\0") ||
+      Buffer.byteLength(body.rationale, "utf8") > 8192 || body.rationale !== "" && body.rationale.trim() === "")) return null;
     const next = structuredClone(finding);
     if ("ownerId" in body) {
       if (body.ownerId !== null && !backendID(body.ownerId)) return null;
@@ -198,7 +211,7 @@ export class FindingActionsAPI {
     if (next.ownerId !== null && !this.members.get(next.workspaceId)?.has(next.ownerId)) return null;
     next.ownerName = next.ownerId === null ? null : this.members.get(next.workspaceId)!.get(next.ownerId)!;
     if ("workflowState" in body) {
-      if (typeof body.workflowState !== "string" || !["open", "in-progress", "resolved"].includes(body.workflowState)) return null;
+      if (typeof body.workflowState !== "string" || !["open", "in-progress", "pending-retest", "resolved"].includes(body.workflowState)) return null;
       next.workflowState = body.workflowState as ActionFinding["workflowState"];
     }
     if ("disposition" in body) {
@@ -215,6 +228,38 @@ export class FindingActionsAPI {
     next.riskAcceptanceExpired = next.disposition === "accepted-risk" && next.acceptedRiskExpiresAt !== null &&
       Date.parse(next.acceptedRiskExpiresAt) <= Date.parse(serverNow);
     return next;
+  }
+
+  private decision(finding: ActionFinding): ActionDecision {
+    return {
+      ownerId: finding.ownerId, workflowState: finding.workflowState, disposition: finding.disposition,
+      acceptedRiskExpiresAt: finding.acceptedRiskExpiresAt,
+    };
+  }
+
+  private recordDecision(before: ActionFinding, after: ActionFinding, action: ActionDecisionEvent["action"],
+    rationale: string): ActionFinding {
+    const changedFields: ActionDecisionEvent["changedFields"] = [];
+    if (before.ownerId !== after.ownerId) changedFields.push("ownerId");
+    if (before.workflowState !== after.workflowState) changedFields.push("workflowState");
+    if (before.disposition !== after.disposition) changedFields.push("disposition");
+    if (before.acceptedRiskExpiresAt !== after.acceptedRiskExpiresAt) changedFields.push("acceptedRiskExpiresAt");
+    after.decisionRevision = before.decisionRevision + 1;
+    after.decisionEvents.push({
+      id: `f100000000000000${(++this.decisionSequence).toString(16).padStart(16, "0")}`,
+      decisionRevision: after.decisionRevision,
+      actorId: actionUser.id,
+      actorName: actionUser.name,
+      beforeOwnerName: before.ownerName,
+      afterOwnerName: after.ownerName,
+      action,
+      rationale,
+      changedFields,
+      before: this.decision(before),
+      after: this.decision(after),
+      createdAt: serverNow,
+    });
+    return after;
   }
 
   async install(page: Page, origin: string) {
@@ -255,7 +300,7 @@ export class FindingActionsAPI {
       if (headers["if-match"] || headers["if-unmodified-since"] || headers["x-aspm-revision"]) {
         this.violations.push("The finding API has no conditional-write/revision contract.");
       }
-      const declaredWrite = method === "PATCH" && path === findingPath ||
+      const declaredWrite = method === "PATCH" && (path === findingPath || path === "/api/v1/findings") ||
         method === "POST" && [notesPath, "/api/v1/login", "/api/v1/logout"].includes(path);
       if (method !== "GET" && !declaredWrite) {
         this.violations.push(`Undeclared finding write: ${method} ${path}.`);
@@ -276,7 +321,8 @@ export class FindingActionsAPI {
             return;
           }
           call.body = parsed as Record<string, unknown>;
-          const limit = method === "PATCH" ? 16 << 10 : 32 << 10;
+          const limit = method === "PATCH" && path === "/api/v1/findings" ? 64 << 10 :
+            method === "PATCH" ? 16 << 10 : 32 << 10;
           if (Buffer.byteLength(request.postData() ?? "", "utf8") > limit) {
             await this.deliver(route, call, 413, this.failure(413));
             return;
@@ -333,6 +379,44 @@ export class FindingActionsAPI {
         }
         return;
       }
+      if (method === "PATCH" && path === "/api/v1/findings") {
+        let status = 200;
+        let response: Payload = this.failure(400);
+        const keys = Object.keys(call.body);
+        const findingIds = call.body.findingIds;
+        const rationale = call.body.rationale;
+        if (!["admin", "analyst"].includes(this.serverRoles.get(workspace)!)) status = 403;
+        else if (keys.some((key) => !["findingIds", "ownerId", "workflowState", "rationale"].includes(key)) ||
+          !Array.isArray(findingIds) || findingIds.length < 1 || findingIds.length > 100 ||
+          new Set(findingIds).size !== findingIds.length || findingIds.some((id) => !backendID(id)) ||
+          typeof rationale !== "string" || !validNoteText(rationale) ||
+          !("ownerId" in call.body) && !("workflowState" in call.body)) status = 400;
+        else {
+          const selected = findingIds.map((id) => this.findings.get(String(id)));
+          if (selected.some((item) => !item || item.workspaceId !== workspace)) status = 404;
+          else {
+            const updates: ActionFinding[] = [];
+            for (const current of selected as ActionFinding[]) {
+              const updated = this.patch(current, {
+                ...("ownerId" in call.body ? { ownerId: call.body.ownerId } : {}),
+                ...("workflowState" in call.body ? { workflowState: call.body.workflowState } : {}),
+              });
+              if (!updated) { status = 400; break; }
+              updates.push(this.recordDecision(current, updated, "bulk-update", rationale));
+            }
+            if (status === 200) {
+              for (const updated of updates) this.findings.set(updated.id, updated);
+              response = {
+                apiVersion, dataOrigin: "synthetic", items: updates.map(workItem),
+                total: updates.length, nextCursor: null,
+              };
+            }
+          }
+        }
+        if (status >= 400) response = this.failure(status);
+        await this.deliver(route, call, status, response);
+        return;
+      }
       try {
         const empty = emptySlackNavigation(url, method, workspace, new Map([...this.roles.keys()].map((id) => [
           id, [...this.findings.values()].filter((item) => item.workspaceId === id).map((item) => item.id),
@@ -364,8 +448,9 @@ export class FindingActionsAPI {
         if (status === 200 && finding) {
           const updated = this.patch(finding, call.body);
           if (updated) {
-            this.findings.set(id, updated);
-            response = this.detail(updated, url);
+            const recorded = this.recordDecision(finding, updated, "update", String(call.body.rationale ?? ""));
+            this.findings.set(id, recorded);
+            response = this.detail(recorded, url);
           } else status = 400;
         } else if (status === 201 && finding) {
           if (Object.keys(call.body).join(",") !== "text") {

@@ -37,6 +37,7 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
   const { session, workspace } = useSession();
   const action = useScopedAction();
   const [intent, setIntent] = useState<"owner" | "workflow" | "risk">("owner");
+  const [workflowRationale, setWorkflowRationale] = useState("");
   const workflow = useDraft<string>(finding.workflowState);
   const disposition = useDraft<string>(finding.disposition ?? "none");
   const expiry = useDraft(finding.acceptedRiskExpiresAt ?? "");
@@ -51,7 +52,7 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
       if (workspace.role === "viewer") throw new APIError("Your selected workspace role is read only.", "forbidden", false);
       return api.updateFinding(finding.id, fields(), signal);
     }, (response) => {
-      if (kind === "workflow") workflow.reset();
+      if (kind === "workflow") { workflow.reset(); setWorkflowRationale(""); }
       if (kind === "risk") { disposition.reset(); expiry.reset(); }
       onConfirmed(response, kind === "owner" ? "Owner updated from the service." :
         kind === "workflow" ? "Human workflow saved." : "Risk acceptance saved.");
@@ -60,9 +61,13 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
   function saveWorkflow(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!event.currentTarget.reportValidity()) return;
-    save("workflow", () => ({
-      workflowState: inputChoice(workflow.value, ["open", "in-progress", "resolved"] as const, "workflow state"),
-    }));
+    save("workflow", () => {
+      const patch: FindingPatch = {
+        workflowState: inputChoice(workflow.value, ["open", "in-progress", "pending-retest", "resolved"] as const, "workflow state"),
+      };
+      if (workflowRationale !== "") patch.rationale = workflowRationale;
+      return patch;
+    });
   }
   function saveRisk(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -86,8 +91,12 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
     <form aria-label="Change finding workflow" className="finding-workflow-form" onSubmit={saveWorkflow}>
       <label className="finding-edit-field">Workflow<select value={workflow.value} disabled={action.pending}
         onChange={(event) => workflow.change(event.target.value)}>
-        <option value="open">Open</option><option value="in-progress">In progress</option><option value="resolved">Resolved</option>
+        <option value="open">Open</option><option value="in-progress">In progress</option>
+        <option value="pending-retest">Pending retest</option><option value="resolved">Resolved</option>
       </select></label>
+      <label className="finding-edit-field">Decision rationale (optional)
+        <textarea rows={2} maxLength={8192} value={workflowRationale} disabled={action.pending}
+          onChange={(event) => setWorkflowRationale(event.target.value)} /></label>
       <ActionButton type="submit" variant="outline" disabled={action.pending || workflow.value === finding.workflowState}>Save workflow</ActionButton>
     </form>
     <form aria-label="Change risk acceptance" className="finding-risk-form" onSubmit={saveRisk}>

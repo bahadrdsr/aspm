@@ -60,6 +60,8 @@ type finding struct {
 	Evidence                                                                             struct{ Text, SourceLabel, VerificationState string }
 	Observations                                                                         []observation
 	Notes                                                                                []struct{ ID, Text string }
+	DecisionEvents                                                                       []findingDecisionEvent
+	DecisionEventsNextCursor                                                             *string
 	Correlation                                                                          *findingCorrelation
 }
 type findingDecision struct {
@@ -67,6 +69,14 @@ type findingDecision struct {
 	WorkflowState         string
 	Disposition           string
 	AcceptedRiskExpiresAt *time.Time
+}
+type findingDecisionEvent struct {
+	ID, ActorID, ActorName, Action, Rationale string
+	DecisionRevision                          int64
+	ChangedFields                             []string
+	BeforeOwnerName, AfterOwnerName           *string
+	Before, After                             findingDecision
+	CreatedAt                                 time.Time
 }
 type findingCorrelationMember struct {
 	FindingID, SourceID, Title, Severity string
@@ -433,8 +443,12 @@ func (h *harness) input(assetID, format string, report []byte) object {
 }
 
 func (h *harness) upload(input object) imported {
+	return h.uploadAs(h.admin, input)
+}
+
+func (h *harness) uploadAs(a actor, input object) imported {
 	h.t.Helper()
-	rr := h.request(h.admin, "POST", "/api/v1/imports", encode(h.t, input), 0)
+	rr := h.request(a, "POST", "/api/v1/imports", encode(h.t, input), 0)
 	if rr.Code != 202 && rr.Code != 200 {
 		h.t.Fatalf("upload returned %d, want queued 202 or idempotent replay 200", rr.Code)
 	}
@@ -446,6 +460,10 @@ func (h *harness) upload(input object) imported {
 }
 
 func (h *harness) finish(id, state string) imported {
+	return h.finishAs(h.admin, id, state)
+}
+
+func (h *harness) finishAs(a actor, id, state string) imported {
 	h.t.Helper()
 	if h.app.ProcessImports == nil {
 		h.t.Fatal("production binding missing: ProcessImports (required for M05+ intake tests)")
@@ -453,7 +471,7 @@ func (h *harness) finish(id, state string) imported {
 	ctx, cancel := context.WithTimeout(h.services.ctx, 20*time.Second)
 	defer cancel()
 	ok(h.t, "process actual queued imports to terminal state", h.app.ProcessImports(ctx))
-	r := h.json(h.admin, "GET", "/api/v1/imports/"+id, nil, 200).Import
+	r := h.json(a, "GET", "/api/v1/imports/"+id, nil, 200).Import
 	equal(h.t, "terminal processing state, not merely queued", r.State, state)
 	return r
 }

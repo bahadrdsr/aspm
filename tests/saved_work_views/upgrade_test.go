@@ -136,15 +136,37 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 		"legacyDefinitionsSHA256": digest(encode(t, definitions)), "businessSQLSeeds": false}
 	output := filepath.Join("..", "..", ".artifacts", "saved-work-views-v1", "published-v8-upgrade-"+nonce(t)+".json")
 	must(t, "record nonsecret actual migration observation", os.WriteFile(output, encode(t, observation), 0600))
-	same(t, "current production open did not apply through additive V18 over actual populated published V8",
-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"})
+	same(t, "current production open did not apply through additive V19 over actual populated published V8",
+		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"})
 	same(t, "V11 changed a published legacy definition", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
-	same(t, "V18 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
+	same(t, "V19 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy := func() {
 		t.Helper()
+		utc := func(value *time.Time) *time.Time {
+			if value == nil {
+				return nil
+			}
+			result := value.UTC()
+			return &result
+		}
 		same(t, "upgraded asset changed", h.json(h.admin, "GET", "/api/v1/assets/"+legacy.Asset.ID, nil, 200).Asset, legacy.Asset)
-		same(t, "upgraded import/source provenance changed", h.json(h.admin, "GET", "/api/v1/imports/"+legacy.Import.ID, nil, 200).Import, legacy.Import)
-		same(t, "upgraded finding, notes or ownership changed", h.json(legacy.Viewer, "GET", "/api/v1/findings/"+legacy.Finding.ID, nil, 200).Finding, legacy.Finding)
+		expectedImport := legacy.Import
+		expectedImport.EvidenceAvailability = "available"
+		expectedImport.SourceScanAt = utc(expectedImport.SourceScanAt)
+		expectedImport.CollectedAt, expectedImport.ImportedAt = expectedImport.CollectedAt.UTC(), expectedImport.ImportedAt.UTC()
+		same(t, "upgraded import/source provenance changed",
+			h.json(h.admin, "GET", "/api/v1/imports/"+legacy.Import.ID, nil, 200).Import, expectedImport)
+		expectedFinding := legacy.Finding
+		expectedFinding.DecisionRevision, expectedFinding.EvidenceRevision, expectedFinding.ChangeRevision = 1, 1, 1
+		expectedFinding.ChangeKind = "unchanged"
+		expectedFinding.Observations = append([]app.Observation(nil), legacy.Finding.Observations...)
+		for index := range expectedFinding.Observations {
+			expectedFinding.Observations[index].EvidenceAvailability = "available"
+			expectedFinding.Observations[index].ChangeKind = "unchanged"
+			expectedFinding.Observations[index].ChangeReasons = []string{}
+		}
+		same(t, "upgraded finding, notes or ownership changed",
+			h.json(legacy.Viewer, "GET", "/api/v1/findings/"+legacy.Finding.ID, nil, 200).Finding, expectedFinding)
 		for _, row := range []struct {
 			who  actor
 			role string
@@ -164,5 +186,5 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 	same(t, "upgraded reopen altered legacy definitions", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
 	same(t, "saved preference/reopen changed pre-upgrade legacy rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy()
-	t.Log("actual populated published V8 -> V10, canonical saved view reopen and original human/source/role state reached")
+	t.Log("actual populated published V8 -> V19, canonical saved view reopen and original human/source/role state reached")
 }

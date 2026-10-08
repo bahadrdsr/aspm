@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 )
 
 func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, workspace, id string) error {
@@ -31,8 +30,12 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 	f.RiskAcceptanceExpired = f.Disposition == "accepted-risk" && f.AcceptedRiskExpiresAt != nil &&
 		!a.config.Now().Before(*f.AcceptedRiskExpiresAt)
 	observationsCursor, notesCursor := r.URL.Query().Get("observationsCursor"), r.URL.Query().Get("notesCursor")
+	decisionsCursor, cursorErr := decisionCursor(r.URL.Query().Get("decisionsCursor"))
 	if (observationsCursor != "" && !validID(observationsCursor)) || (notesCursor != "" && !validID(notesCursor)) {
 		return errInvalid
+	}
+	if cursorErr != nil {
+		return cursorErr
 	}
 	f.Observations, f.Notes = []Observation{}, []Note{}
 	observationQuery := `SELECT COALESCE(data,summary),evidence_availability FROM ` + a.table("observations") + `
@@ -106,17 +109,17 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 		f.Notes = f.Notes[:500]
 		f.NotesNextCursor = &f.Notes[499].ID
 	}
+	f.DecisionEvents, f.DecisionEventsNextCursor, err =
+		a.readFindingDecisionEvents(r.Context(), workspace, id, decisionsCursor)
+	if err != nil {
+		return err
+	}
 	writeJSON(w, 200, map[string]any{"dataOrigin": "live", "finding": f})
 	return nil
 }
 
-func (a *Application) patchFinding(w http.ResponseWriter, r *http.Request, workspace, id string) error {
-	var input struct {
-		OwnerID               optional[string]    `json:"ownerId"`
-		WorkflowState         optional[string]    `json:"workflowState"`
-		Disposition           optional[string]    `json:"disposition"`
-		AcceptedRiskExpiresAt optional[time.Time] `json:"acceptedRiskExpiresAt"`
-	}
+func (a *Application) patchFinding(w http.ResponseWriter, r *http.Request, workspace, actor, id string) error {
+	var input findingDecisionPatch
 	if err := a.decode(w, r, &input, 16<<10); err != nil {
 		return err
 	}
@@ -125,51 +128,7 @@ func (a *Application) patchFinding(w http.ResponseWriter, r *http.Request, works
 		return err
 	}
 	defer rollback(tx)
-	var owner *string
-	var workflow, disposition string
-	var expires *time.Time
-	if err = tx.QueryRow(r.Context(), `SELECT owner_id,workflow_state,disposition,accepted_risk_expires_at
-		FROM `+a.table("findings")+` f WHERE workspace_id=$1 AND id=$2 AND `+a.workVisible()+` FOR UPDATE`,
-		workspace, id).Scan(&owner, &workflow, &disposition, &expires); err != nil {
-		return err
-	}
-	if input.OwnerID.Set {
-		owner = input.OwnerID.Value
-	}
-	if err = a.checkOwner(r.Context(), tx, workspace, owner); err != nil {
-		return err
-	}
-	if input.WorkflowState.Set {
-		if input.WorkflowState.Value == nil {
-			return errInvalid
-		}
-		workflow = *input.WorkflowState.Value
-	}
-	if workflow != "open" && workflow != "in-progress" && workflow != "resolved" {
-		return errInvalid
-	}
-	if input.Disposition.Set {
-		if input.Disposition.Value == nil {
-			return errInvalid
-		}
-		disposition = *input.Disposition.Value
-		if disposition == "none" && !input.AcceptedRiskExpiresAt.Set {
-			expires = nil
-		}
-	}
-	if disposition != "none" && disposition != "accepted-risk" {
-		return errInvalid
-	}
-	if input.AcceptedRiskExpiresAt.Set {
-		expires = input.AcceptedRiskExpiresAt.Value
-	}
-	if expires != nil && (expires.IsZero() || disposition != "accepted-risk") {
-		return errInvalid
-	}
-	if _, err = tx.Exec(r.Context(), `UPDATE `+a.table("findings")+`
-		SET owner_id=$3,workflow_state=$4,disposition=$5,accepted_risk_expires_at=$6,
-			decision_revision=decision_revision+1
-		WHERE workspace_id=$1 AND id=$2`, workspace, id, owner, workflow, disposition, expires); err != nil {
+	if _, err = a.applyFindingDecisionPatch(r.Context(), tx, workspace, id, actor, "update", input); err != nil {
 		return err
 	}
 	if err = tx.Commit(r.Context()); err != nil {

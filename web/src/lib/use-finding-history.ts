@@ -1,13 +1,14 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { api, APIError } from "@/api/client";
 import { requestAuthority } from "@/api/authorization";
-import type { FindingDetail, FindingNote, FindingResponse, Observation } from "@/api/types";
+import type { FindingDecisionEvent, FindingDetail, FindingNote, FindingResponse, Observation } from "@/api/types";
 import { useResource } from "./use-resource";
 
-export type FindingHistoryStream = "notes" | "observations";
+export type FindingHistoryStream = "notes" | "observations" | "decisions";
 interface HistoryRead {
   notesCursor: string;
   observationsCursor: string;
+  decisionsCursor: string;
   target: FindingHistoryStream | null;
   sequence: number;
 }
@@ -22,7 +23,8 @@ interface History<T> {
 function history<T>(): History<T> {
   return { items: new Map(), ordered: undefined, supplied: false, frontier: "", next: undefined, paged: false };
 }
-function merge<T extends { id: string }>(state: History<T>, items: readonly T[] | undefined) {
+function merge<T extends { id: string }>(state: History<T>, items: readonly T[] | undefined,
+  compare: (left: T, right: T) => number = (left, right) => left.id.localeCompare(right.id)) {
   if (items === undefined) return;
   let changed = !state.supplied;
   state.supplied = true;
@@ -33,7 +35,7 @@ function merge<T extends { id: string }>(state: History<T>, items: readonly T[] 
       changed = true;
     }
   }
-  if (changed) state.ordered = [...state.items.values()].sort((a, b) => a.id.localeCompare(b.id));
+  if (changed) state.ordered = [...state.items.values()].sort(compare);
 }
 function advance<T>(state: History<T>, requested: string, next: string | null | undefined) {
   if (next === undefined || requested < state.frontier) return;
@@ -43,10 +45,13 @@ function advance<T>(state: History<T>, requested: string, next: string | null | 
 }
 
 export function useFindingHistory(id: string) {
-  const [read, setRead] = useState<HistoryRead>({ notesCursor: "", observationsCursor: "", target: null, sequence: 0 });
+  const [read, setRead] = useState<HistoryRead>({
+    notesCursor: "", observationsCursor: "", decisionsCursor: "", target: null, sequence: 0,
+  });
   const [acknowledgement, renderAcknowledgement] = useState(0);
   const notes = useRef(history<FindingNote>());
   const observations = useRef(history<Observation>());
+  const decisions = useRef(history<FindingDecisionEvent>());
   const canonical = useRef<FindingResponse | null>(null);
   const noteReceipts = useRef(new Map<string, { order: number; note: FindingNote }>());
   const ackOrder = useRef(0);
@@ -56,6 +61,7 @@ export function useFindingHistory(id: string) {
   const clear = useCallback(() => {
     notes.current = history();
     observations.current = history();
+    decisions.current = history();
     canonical.current = null;
     noteReceipts.current.clear();
     hasPatched.current = false;
@@ -72,6 +78,8 @@ export function useFindingHistory(id: string) {
       return receipt && receipt.order > startedBefore ? receipt.note : note;
     }));
     merge(observations.current, finding.observations);
+    merge(decisions.current, finding.decisionEvents,
+      (left, right) => left.decisionRevision - right.decisionRevision);
   }, []);
   const load = useCallback(async (signal: AbortSignal) => {
     scheduled.current = false;
@@ -79,7 +87,10 @@ export function useFindingHistory(id: string) {
     const startedBefore = ackOrder.current;
     let response: FindingResponse;
     try {
-      response = await api.finding(id, scopedSignal, { notesCursor: read.notesCursor, observationsCursor: read.observationsCursor });
+      response = await api.finding(id, scopedSignal, {
+        notesCursor: read.notesCursor, observationsCursor: read.observationsCursor,
+        decisionsCursor: read.decisionsCursor,
+      });
     } catch (cause: unknown) {
       scopedSignal.throwIfAborted();
       if (cause instanceof APIError && !["network", "unavailable"].includes(cause.code)) clear();
@@ -90,6 +101,7 @@ export function useFindingHistory(id: string) {
     mergePages(response.finding, startedBefore);
     advance(notes.current, read.notesCursor, response.finding.notesNextCursor);
     advance(observations.current, read.observationsCursor, response.finding.observationsNextCursor);
+    advance(decisions.current, read.decisionsCursor, response.finding.decisionEventsNextCursor);
     // Only local request/ACK ordering is known, never a server revision or atomic snapshot.
     if (canonical.current === null || startedBefore >= ackOrder.current) canonical.current = response;
     return response;
@@ -102,7 +114,9 @@ export function useFindingHistory(id: string) {
       ...response.finding,
       notes: notes.current.ordered,
       observations: observations.current.ordered,
+      decisionEvents: decisions.current.ordered,
       notesNextCursor: notes.current.next, observationsNextCursor: observations.current.next,
+      decisionEventsNextCursor: decisions.current.next,
     } };
   }, [resource.data, resource.status, resource.error, acknowledgement]);
   function requireDetail() {
@@ -137,13 +151,15 @@ export function useFindingHistory(id: string) {
   }
   function loadMore(stream: FindingHistoryStream) {
     if (resource.status === "loading" || scheduled.current) return;
-    const next = stream === "notes" ? notes.current.next : observations.current.next;
+    const next = stream === "notes" ? notes.current.next :
+      stream === "observations" ? observations.current.next : decisions.current.next;
     if (next == null) return;
     scheduled.current = true;
     setRead((previous) => ({
       ...previous, target: stream, sequence: previous.sequence + 1,
       notesCursor: stream === "notes" ? next : previous.notesCursor,
       observationsCursor: stream === "observations" ? next : previous.observationsCursor,
+      decisionsCursor: stream === "decisions" ? next : previous.decisionsCursor,
     }));
   }
   function retry() {
@@ -157,6 +173,7 @@ export function useFindingHistory(id: string) {
     pages: {
       notes: { visible: notes.current.paged, next: notes.current.next },
       observations: { visible: observations.current.paged, next: observations.current.next },
+      decisions: { visible: decisions.current.paged, next: decisions.current.next },
     },
   };
 }

@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import type { FindingNote, Observation } from "@/api/types";
+import type { FindingDecisionEvent, FindingNote, Observation } from "@/api/types";
 import { api } from "@/api/client";
 import { label, timestampLabel } from "@/lib/format";
 import { useScopedAction } from "@/lib/use-scoped-action";
@@ -92,4 +92,27 @@ export const FindingNoteHistory = memo(function FindingNoteHistory({ notes }: { 
   return <ul className="analyst-notes finding-history-notes" aria-label="Analyst notes" tabIndex={0}>
     {notes.map((note) => <li key={note.id}>{note.text}</li>)}
   </ul>;
+});
+
+function ownerLabel(value: string | null): string {
+  return value ?? "Unassigned";
+}
+
+export const FindingDecisionHistory = memo(function FindingDecisionHistory({ events }: {
+  events: readonly FindingDecisionEvent[];
+}) {
+  return <ol className="observations-list finding-history-decisions" aria-label="Decision history" tabIndex={0}>
+    {events.map((event) => <li key={event.id}>
+      <h4>{event.action === "bulk-update" ? "Bulk triage" : "Finding update"} by {event.actorName}</h4>
+      <p>{event.rationale || "No rationale was supplied for this update."}</p>
+      <dl>
+        <dt>Revision</dt><dd>{event.decisionRevision}</dd>
+        <dt>Changed</dt><dd>{event.changedFields.length === 0 ? "No decision fields" : event.changedFields.map(label).join(", ")}</dd>
+        <dt>Workflow change</dt><dd>{label(event.before.workflowState)} to {label(event.after.workflowState)}</dd>
+        <dt>Owner change</dt><dd>{ownerLabel(event.beforeOwnerName)} to {ownerLabel(event.afterOwnerName)}</dd>
+        <dt>Disposition change</dt><dd>{label(event.before.disposition)} to {label(event.after.disposition)}</dd>
+        <dt>Recorded</dt><dd><time dateTime={event.createdAt}>{timestampLabel(event.createdAt)}</time></dd>
+      </dl>
+    </li>)}
+  </ol>;
 });

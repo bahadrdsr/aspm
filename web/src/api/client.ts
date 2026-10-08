@@ -1,8 +1,8 @@
 import { apiVersion } from "./types";
 import type {
-  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingCorrelation,
+  Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingBulkPatch, FindingBulkResponse, FindingCorrelation,
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
-  FindingDecision, FindingMergeInput, FindingMergePreviewResponse,
+  FindingDecision, FindingDecisionEvent, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportIntakeSummary, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
@@ -94,9 +94,32 @@ function findingDecision(value: unknown): FindingDecision {
   const item = object(value, "finding decision");
   return {
     ownerId: nullableText(item.ownerId, "decision owner"),
-    workflowState: choice(item.workflowState, ["open", "in-progress", "resolved"], "decision workflow"),
+    workflowState: choice(item.workflowState, ["open", "in-progress", "pending-retest", "resolved"], "decision workflow"),
     disposition: choice(item.disposition, ["none", "accepted-risk"], "decision disposition"),
     acceptedRiskExpiresAt: nullableTimestamp(item.acceptedRiskExpiresAt, "decision expiry"),
+  };
+}
+
+function findingDecisionEvent(value: unknown): FindingDecisionEvent {
+  const item = object(value, "finding decision event");
+  const revision = count(item.decisionRevision, "decision event revision");
+  if (revision < 2) return invalid("decision event revision");
+  const changedFields = array(item.changedFields, "decision changed fields").map((value) =>
+    choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"], "decision changed field"));
+  if (new Set(changedFields).size !== changedFields.length) return invalid("decision changed fields");
+  return {
+    id: reportIdentifier(item.id, "decision event"),
+    decisionRevision: revision,
+    actorId: reportIdentifier(item.actorId, "decision actor"),
+    actorName: text(item.actorName, "decision actor name"),
+    beforeOwnerName: nullableText(item.beforeOwnerName, "prior owner name"),
+    afterOwnerName: nullableText(item.afterOwnerName, "next owner name"),
+    action: choice(item.action, ["update", "bulk-update"], "decision action"),
+    rationale: text(item.rationale, "decision rationale", true),
+    changedFields,
+    before: findingDecision(item.before),
+    after: findingDecision(item.after),
+    createdAt: timestamp(item.createdAt, "decision event time"),
   };
 }
 
@@ -199,7 +222,7 @@ function workItem(value: unknown): WorkItem {
     assetName: text(item.assetName, "asset name"),
     severity: choice(item.severity, ["critical", "high", "medium", "low", "info"], "severity"),
     ownerName: item.ownerName === null ? null : text(item.ownerName, "owner name"),
-    workflowState: choice(item.workflowState, ["open", "in-progress", "resolved"], "workflow state"),
+    workflowState: choice(item.workflowState, ["open", "in-progress", "pending-retest", "resolved"], "workflow state"),
     sourceScanAt: item.sourceScanAt === null ? null : timestamp(item.sourceScanAt, "source scan timestamp"),
     collectedAt: timestamp(item.collectedAt, "collection timestamp"),
     importedAt: timestamp(item.importedAt, "import timestamp"),
@@ -280,8 +303,12 @@ export function parseFinding(value: unknown): FindingResponse {
         return { id: text(note.id, "note identifier"), text: text(note.text, "note text", true) };
       })),
       observations: finding.observations === undefined ? undefined : uniqueIds(array(finding.observations, "observations").map(observation)),
+      decisionEvents: finding.decisionEvents === undefined ? undefined :
+        uniqueIds(array(finding.decisionEvents, "decision events").map(findingDecisionEvent)),
       notesNextCursor: finding.notesNextCursor === undefined ? undefined : nullableText(finding.notesNextCursor, "notes cursor"),
       observationsNextCursor: finding.observationsNextCursor === undefined ? undefined : nullableText(finding.observationsNextCursor, "observations cursor"),
+      decisionEventsNextCursor: finding.decisionEventsNextCursor === undefined ? undefined :
+        nullableText(finding.decisionEventsNextCursor, "decision events cursor"),
     },
   };
 }
@@ -315,12 +342,44 @@ function findingCursor(value: string | undefined): string {
   return value;
 }
 
+function decisionHistoryCursor(value: string | undefined): string {
+  if (value === undefined) return "";
+  if (typeof value !== "string" || (value !== "" && !/^\d{20}$/.test(value))) {
+    throw new APIError("Decision history requires a native fixed-width revision cursor.", "invalid-input", false);
+  }
+  return value;
+}
+
 function validateFindingHistoryPage(items: readonly { id: string }[] | undefined, next: string | null | undefined, cursor: string, field: string) {
   if ((items !== undefined && items.length > 500) ||
     (cursor !== "" && (items === undefined || next === undefined)) ||
     (next != null && (!/^[a-f0-9]{32}$/.test(next) || next !== items?.at(-1)?.id))) return invalid(`${field} history page`);
   if ((cursor !== "" || next != null) && items?.some((item, index) =>
     !/^[a-f0-9]{32}$/.test(item.id) || item.id <= (index === 0 ? cursor : items[index - 1].id))) return invalid(`${field} history order`);
+}
+
+function validateDecisionHistoryPage(items: readonly FindingDecisionEvent[] | undefined,
+  next: string | null | undefined, cursor: string) {
+  if ((items !== undefined && items.length > 100) ||
+    (cursor !== "" && (items === undefined || next === undefined)) ||
+    (next != null && (!/^\d{20}$/.test(next) ||
+      next !== items?.at(-1)?.decisionRevision.toString().padStart(20, "0")))) {
+    return invalid("decision history page");
+  }
+  const prior = cursor === "" ? 0n : BigInt(cursor);
+  if ((cursor !== "" || next != null) && items?.some((item, index) =>
+    BigInt(item.decisionRevision) <= (index === 0 ? prior : BigInt(items[index - 1].decisionRevision)))) {
+    return invalid("decision history order");
+  }
+}
+
+function parseBulkFindingUpdate(value: unknown, ids: readonly string[]): FindingBulkResponse {
+  const { body, dataOrigin } = envelope(value);
+  const items = uniqueIds(array(body.items, "bulk finding results").map(workItem));
+  const total = count(body.total, "bulk finding count");
+  if (body.nextCursor !== null || total !== items.length || items.length !== ids.length ||
+    items.some((item) => !ids.includes(item.id))) return invalid("bulk finding response");
+  return { apiVersion, dataOrigin, items, total, nextCursor: null };
 }
 
 function findingBodyLimit(body: unknown, bytes: number): void {
@@ -961,12 +1020,16 @@ export const api = {
     return request(path, (value) => cursor === undefined ? parseWork(value) : validateWorkContinuation(parseWork(value), cursor),
       { signal, expectedStatus: 200 });
   },
-  finding: (id: string, signal: AbortSignal, cursors?: { notesCursor?: string; observationsCursor?: string }) => {
+  finding: (id: string, signal: AbortSignal, cursors?: {
+    notesCursor?: string; observationsCursor?: string; decisionsCursor?: string;
+  }) => {
     const workspace = requestAuthority().workspace;
     const notesCursor = findingCursor(cursors?.notesCursor), observationsCursor = findingCursor(cursors?.observationsCursor);
+    const decisionsCursor = decisionHistoryCursor(cursors?.decisionsCursor);
     const query = new URLSearchParams();
     if (notesCursor !== "") query.set("notesCursor", notesCursor);
     if (observationsCursor !== "") query.set("observationsCursor", observationsCursor);
+    if (decisionsCursor !== "") query.set("decisionsCursor", decisionsCursor);
     const path = `/api/v1/findings/${encodeURIComponent(id)}`;
     return request(query.size === 0 ? path : `${path}?${query}`, (value) => {
       const result = parseFinding(value);
@@ -975,6 +1038,7 @@ export const api = {
       }
       validateFindingHistoryPage(result.finding.notes, result.finding.notesNextCursor, notesCursor, "notes");
       validateFindingHistoryPage(result.finding.observations, result.finding.observationsNextCursor, observationsCursor, "observations");
+      validateDecisionHistoryPage(result.finding.decisionEvents, result.finding.decisionEventsNextCursor, decisionsCursor);
       return result;
     }, { signal, expectedStatus: 200 });
   },
@@ -985,8 +1049,36 @@ export const api = {
     if (input.workflowState !== undefined) body.workflowState = input.workflowState;
     if (input.disposition !== undefined) body.disposition = input.disposition;
     if (input.acceptedRiskExpiresAt !== undefined) body.acceptedRiskExpiresAt = input.acceptedRiskExpiresAt;
+    if (input.rationale !== undefined) {
+      if (input.rationale.includes("\0") || new TextEncoder().encode(input.rationale).byteLength > 8192 ||
+        (input.rationale !== "" && input.rationale.trim() === "")) {
+        throw new APIError("A decision rationale must be NUL-free and at most 8192 UTF-8 bytes.", "invalid-input", false);
+      }
+      body.rationale = input.rationale;
+    }
     findingBodyLimit(body, 16 << 10);
     return request(`/api/v1/findings/${encodeURIComponent(id)}`, (value) => parseFindingUpdate(value, id, workspace),
+      { method: "PATCH", body, signal, expectedStatus: 200 });
+  },
+  bulkUpdateFindings: (input: FindingBulkPatch, signal: AbortSignal) => {
+    const ids = [...input.findingIds];
+    if (ids.length === 0 || ids.length > 100 || new Set(ids).size !== ids.length) {
+      throw new APIError("Select between 1 and 100 distinct findings.", "invalid-input", false);
+    }
+    for (const id of ids) reportIdentifier(id, "bulk finding");
+    if (input.ownerId === undefined && input.workflowState === undefined) {
+      throw new APIError("Choose an owner or workflow change.", "invalid-input", false);
+    }
+    if (input.ownerId !== undefined && input.ownerId !== null) reportIdentifier(input.ownerId, "bulk owner");
+    if (input.rationale.trim() === "" || input.rationale.includes("\0") ||
+      new TextEncoder().encode(input.rationale).byteLength > 8192) {
+      throw new APIError("Bulk triage requires a nonblank, NUL-free rationale of at most 8192 UTF-8 bytes.", "invalid-input", false);
+    }
+    const body: FindingBulkPatch = { findingIds: ids, rationale: input.rationale };
+    if (input.ownerId !== undefined) body.ownerId = input.ownerId;
+    if (input.workflowState !== undefined) body.workflowState = input.workflowState;
+    findingBodyLimit(body, 64 << 10);
+    return request("/api/v1/findings", (value) => parseBulkFindingUpdate(value, ids),
       { method: "PATCH", body, signal, expectedStatus: 200 });
   },
   addFindingNote: (id: string, noteText: string, signal: AbortSignal) => {

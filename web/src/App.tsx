@@ -52,21 +52,24 @@ function WorkspaceApplication() {
   });
   const [workUpdates, setWorkUpdates] = useState<ConfirmedWorkUpdates>({ revision: 0, items: new Map() });
   const [workMembershipRevision, setWorkMembershipRevision] = useState(0);
-  const confirmFinding = useCallback((finding: WorkItem) => {
+  const confirmFindings = useCallback((findings: WorkItem[]) => {
     setWorkUpdates((previous) => {
       const revision = previous.revision + 1;
       const items = new Map(previous.items);
-      const {
-        id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
-        collectedAt, importedAt, changeKind, changeAt,
-      } = finding;
-      items.set(id, { revision, item: {
-        id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
-        collectedAt, importedAt, changeKind, changeAt,
-      } });
+      for (const finding of findings) {
+        const {
+          id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
+          collectedAt, importedAt, changeKind, changeAt,
+        } = finding;
+        items.set(id, { revision, item: {
+          id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
+          collectedAt, importedAt, changeKind, changeAt,
+        } });
+      }
       return { revision, items };
     });
   }, []);
+  const confirmFinding = useCallback((finding: WorkItem) => confirmFindings([finding]), [confirmFindings]);
   const filterRef = useRef<HTMLInputElement>(null);
   const [focusFilter, setFocusFilter] = useState(false);
   const [opened, setOpened] = useState<{ title: string; trigger: HTMLElement | null }>({ title: "Finding details", trigger: null });
@@ -113,6 +116,7 @@ function WorkspaceApplication() {
         {warning && <p role="alert" className="preference-warning"><Icon name="warning" />{warning}</p>}
         {route.destination === "work" && <WorkPage context={workContext} setContext={setWorkContext} filterRef={filterRef} confirmed={workUpdates}
           membershipRevision={workMembershipRevision} canWrite={workspace.role !== "viewer"}
+          onConfirmed={confirmFindings}
           openFinding={(finding, trigger) => { setOpened({ title: finding.title, trigger }); showFinding(finding.id); }} />}
         {route.destination === "assets" && <AssetsPage />}
         {route.destination === "reports" && <ReportsPage />}

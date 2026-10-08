@@ -52,27 +52,29 @@ type WorkItem struct {
 
 type Finding struct {
 	WorkItem
-	AssetID                string              `json:"assetId"`
-	WorkspaceID            string              `json:"workspaceId"`
-	ScopeLabel             string              `json:"scopeLabel"`
-	Description            string              `json:"description"`
-	Remediation            string              `json:"remediation"`
-	Evidence               FindingEvidence     `json:"evidence"`
-	OwnerID                *string             `json:"ownerId"`
-	SourceState            string              `json:"sourceState"`
-	SourceFreshnessAt      *time.Time          `json:"sourceFreshnessAt"`
-	Disposition            string              `json:"disposition"`
-	AcceptedRiskExpiresAt  *time.Time          `json:"acceptedRiskExpiresAt"`
-	RiskAcceptanceExpired  bool                `json:"riskAcceptanceExpired"`
-	VerifiedResolution     bool                `json:"verifiedResolution"`
-	DecisionRevision       int64               `json:"decisionRevision"`
-	EvidenceRevision       int64               `json:"evidenceRevision"`
-	ChangeRevision         int64               `json:"changeRevision"`
-	Notes                  []Note              `json:"notes"`
-	Observations           []Observation       `json:"observations"`
-	NotesNextCursor        *string             `json:"notesNextCursor"`
-	ObservationsNextCursor *string             `json:"observationsNextCursor"`
-	Correlation            *FindingCorrelation `json:"correlation,omitempty"`
+	AssetID                  string                 `json:"assetId"`
+	WorkspaceID              string                 `json:"workspaceId"`
+	ScopeLabel               string                 `json:"scopeLabel"`
+	Description              string                 `json:"description"`
+	Remediation              string                 `json:"remediation"`
+	Evidence                 FindingEvidence        `json:"evidence"`
+	OwnerID                  *string                `json:"ownerId"`
+	SourceState              string                 `json:"sourceState"`
+	SourceFreshnessAt        *time.Time             `json:"sourceFreshnessAt"`
+	Disposition              string                 `json:"disposition"`
+	AcceptedRiskExpiresAt    *time.Time             `json:"acceptedRiskExpiresAt"`
+	RiskAcceptanceExpired    bool                   `json:"riskAcceptanceExpired"`
+	VerifiedResolution       bool                   `json:"verifiedResolution"`
+	DecisionRevision         int64                  `json:"decisionRevision"`
+	EvidenceRevision         int64                  `json:"evidenceRevision"`
+	ChangeRevision           int64                  `json:"changeRevision"`
+	Notes                    []Note                 `json:"notes"`
+	Observations             []Observation          `json:"observations"`
+	DecisionEvents           []FindingDecisionEvent `json:"decisionEvents,omitempty"`
+	NotesNextCursor          *string                `json:"notesNextCursor"`
+	ObservationsNextCursor   *string                `json:"observationsNextCursor"`
+	DecisionEventsNextCursor *string                `json:"decisionEventsNextCursor,omitempty"`
+	Correlation              *FindingCorrelation    `json:"correlation,omitempty"`
 }
 
 type FindingEvidence struct {
@@ -91,6 +93,21 @@ type FindingDecision struct {
 	WorkflowState         string     `json:"workflowState"`
 	Disposition           string     `json:"disposition"`
 	AcceptedRiskExpiresAt *time.Time `json:"acceptedRiskExpiresAt"`
+}
+
+type FindingDecisionEvent struct {
+	ID               string          `json:"id"`
+	DecisionRevision int64           `json:"decisionRevision"`
+	ActorID          string          `json:"actorId"`
+	ActorName        string          `json:"actorName"`
+	BeforeOwnerName  *string         `json:"beforeOwnerName"`
+	AfterOwnerName   *string         `json:"afterOwnerName"`
+	Action           string          `json:"action"`
+	Rationale        string          `json:"rationale"`
+	ChangedFields    []string        `json:"changedFields"`
+	Before           FindingDecision `json:"before"`
+	After            FindingDecision `json:"after"`
+	CreatedAt        time.Time       `json:"createdAt"`
 }
 
 type FindingCorrelationMember struct {

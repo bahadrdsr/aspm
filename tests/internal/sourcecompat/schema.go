@@ -18,6 +18,8 @@ const LegacyKindCheck = `CHECK (kind = ANY (ARRAY['repository'::text, 'finding':
 const KindCheck = `CHECK (kind = ANY (ARRAY['repository'::text, 'finding'::text, 'pipeline'::text, 'artifact'::text, 'report'::text]))`
 const ConnectionTargetCheck = `CHECK (profile = 'github-cloud-app'::text AND azure_devops_target IS NULL OR profile = 'ado-services-build-artifacts'::text AND repository = ''::text AND azure_devops_target IS NOT NULL AND jsonb_typeof(azure_devops_target) = 'object'::text)`
 const CollectionTargetCheck = `CHECK (profile = 'github-cloud-app'::text AND azure_devops_target IS NULL AND azure_devops_selection IS NULL OR profile = 'ado-services-build-artifacts'::text AND repository = ''::text AND azure_devops_target IS NOT NULL AND jsonb_typeof(azure_devops_target) = 'object'::text AND azure_devops_selection IS NOT NULL AND jsonb_typeof(azure_devops_selection) = 'object'::text)`
+const LegacyWorkflowStateCheck = `CHECK (workflow_state = ANY (ARRAY['open'::text, 'in-progress'::text, 'resolved'::text]))`
+const WorkflowStateCheck = `CHECK (workflow_state = ANY (ARRAY['open'::text, 'in-progress'::text, 'pending-retest'::text, 'resolved'::text]))`
 
 func clone(value map[string][]string) map[string][]string {
 	result := make(map[string][]string, len(value))
@@ -114,11 +116,22 @@ func ProjectV12(t testing.TB, before, current map[string][]string) map[string][]
 	return result
 }
 
-func constraintSeparator(rows []string) string {
+func constraintSeparator(rows []string, definition string) string {
+	typed := false
 	for _, row := range rows {
-		if strings.Contains(row, "|c|") {
-			return "|c|"
+		parts := strings.SplitN(row, "|", 3)
+		if len(parts) == 3 && len(parts[1]) == 1 {
+			typed = true
+			break
 		}
+	}
+	if strings.HasPrefix(definition, "NOT NULL ") {
+		if typed {
+			return "|n|"
+		}
+	}
+	if typed {
+		return "|c|"
 	}
 	return "|"
 }
@@ -143,7 +156,6 @@ func expectedV13(before map[string][]string) (map[string][]string, error) {
 	result["findings/columns"] = append(result["findings/columns"],
 		"decision_revision|bigint|true|1"+suffix,
 		"evidence_revision|bigint|true|1"+suffix)
-	separator := constraintSeparator(result["findings/constraints"])
 	for _, value := range []struct{ name, definition string }{
 		{"app_findings_decision_revision_check", "CHECK (decision_revision > 0)"},
 		{"app_findings_decision_revision_not_null", "NOT NULL decision_revision"},
@@ -151,7 +163,7 @@ func expectedV13(before map[string][]string) (map[string][]string, error) {
 		{"app_findings_evidence_revision_not_null", "NOT NULL evidence_revision"},
 	} {
 		result["findings/constraints"] = append(result["findings/constraints"],
-			value.name+separator+value.definition)
+			value.name+constraintSeparator(result["findings/constraints"], value.definition)+value.definition)
 	}
 	sortConstraints(result["findings/constraints"])
 	return result, nil
@@ -188,7 +200,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV17(t, v13, current)
+	projected := ProjectV19(t, v13, current)
+	projected = ProjectV17(t, v13, projected)
 	projected = ProjectV16(t, v13, projected)
 	projected = ProjectV15(t, v13, projected)
 	projected = ProjectV14(t, v13, projected)
@@ -267,6 +280,14 @@ var v18Relations = []string{
 	"app_archive_publications_orphan_idx|i",
 	"app_archive_publications_pkey|i",
 	"app_archive_publications_workspace_id_key|i",
+}
+
+var v19Relations = []string{
+	"app_finding_decision_events|r",
+	"app_finding_decision_events_finding_idx|i",
+	"app_finding_decision_events_finding_revision_key|i",
+	"app_finding_decision_events_pkey|i",
+	"app_finding_decision_events_workspace_id_key|i",
 }
 
 var v14LegacyIndexes = []struct {
@@ -380,9 +401,8 @@ func expectedV15Table(before map[string][]string, table string) ([]string, []str
 	}
 	columns = slices.Clone(columns)
 	constraints := slices.Clone(before[table+"/constraints"])
-	separator := constraintSeparator(constraints)
 	addConstraint := func(name, definition string) {
-		constraints = append(constraints, name+separator+definition)
+		constraints = append(constraints, name+constraintSeparator(constraints, definition)+definition)
 	}
 	switch table {
 	case "imports":
@@ -500,7 +520,6 @@ func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]
 		"candidate_uri|text|true|''::text"+suffix,
 		"candidate_line|integer|true|0"+suffix)
 	wantConstraints := slices.Clone(before["findings/constraints"])
-	separator := constraintSeparator(wantConstraints)
 	for _, value := range []struct{ name, definition string }{
 		{"app_findings_candidate_line_check", "CHECK (candidate_line >= 0 AND candidate_line <= 2147483647)"},
 		{"app_findings_candidate_line_not_null", "NOT NULL candidate_line"},
@@ -508,7 +527,8 @@ func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]
 		{"app_findings_candidate_uri_check", "CHECK (octet_length(candidate_uri) <= 8192)"},
 		{"app_findings_candidate_uri_not_null", "NOT NULL candidate_uri"},
 	} {
-		wantConstraints = append(wantConstraints, value.name+separator+value.definition)
+		wantConstraints = append(wantConstraints,
+			value.name+constraintSeparator(wantConstraints, value.definition)+value.definition)
 	}
 	sortConstraints(wantConstraints)
 	if !reflect.DeepEqual(current["findings/columns"], wantColumns) ||
@@ -541,6 +561,38 @@ func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]
 	return result
 }
 
+// ProjectV19 validates and projects the exact pending-retest constraint change.
+func ProjectV19(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	result := clone(current)
+	prior, present := before["findings/constraints"]
+	if !present {
+		return result
+	}
+	foundPrior := false
+	for _, row := range prior {
+		if strings.HasPrefix(row, "app_findings_workflow_state_check|") {
+			foundPrior = true
+			break
+		}
+	}
+	if !foundPrior {
+		return result
+	}
+	rows, present := current["findings/constraints"]
+	if !present {
+		t.Fatal("V19: findings constraints are missing")
+	}
+	rows = slices.Clone(rows)
+	separator, err := replace(rows, "app_findings_workflow_state_check", WorkflowStateCheck, LegacyWorkflowStateCheck)
+	if err != nil || separator == "" {
+		t.Fatal("V19: exact workflow-state constraint replacement is missing or ambiguous")
+	}
+	sortConstraints(rows)
+	result["findings/constraints"] = rows
+	return result
+}
+
 // ProjectV17 validates and projects the exact finding lifecycle delta.
 func ProjectV17(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
@@ -566,7 +618,6 @@ func ProjectV17(t testing.TB, before, current map[string][]string) map[string][]
 	}
 	result["findings/columns"] = slices.Clone(columns[:len(columns)-len(addedColumns)])
 	constraints := slices.Clone(current["findings/constraints"])
-	separator := constraintSeparator(constraints)
 	for _, value := range []struct{ name, definition string }{
 		{"app_findings_change_kind_check", "CHECK (change_kind = ANY (ARRAY['new'::text, 'changed'::text, 'unchanged'::text, 'reopened'::text, 'inferred-resolved'::text]))"},
 		{"app_findings_change_kind_not_null", "NOT NULL change_kind"},
@@ -577,7 +628,7 @@ func ProjectV17(t testing.TB, before, current map[string][]string) map[string][]
 		{"app_findings_content_digest_check", "CHECK (content_digest = ''::text OR content_digest ~ '^sha256:[0-9a-f]{64}$'::text)"},
 		{"app_findings_content_digest_not_null", "NOT NULL content_digest"},
 	} {
-		expected := value.name + separator + value.definition
+		expected := value.name + constraintSeparator(constraints, value.definition) + value.definition
 		matches := 0
 		remaining := make([]string, 0, len(constraints))
 		for _, row := range constraints {
@@ -713,6 +764,24 @@ func ProjectRelationsV18(t testing.TB, before, current []string) []string {
 	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
 	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
 		t.Fatalf("V18: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
+// ProjectRelationsV19 validates the complete current V13-V19 relation set.
+func ProjectRelationsV19(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	want = append(want, v15Relations...)
+	want = append(want, v16Relations...)
+	want = append(want, v17Relations...)
+	want = append(want, v18Relations...)
+	want = append(want, v19Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V19: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
 			missing, unexpected)
 	}
 	return slices.Clone(before)

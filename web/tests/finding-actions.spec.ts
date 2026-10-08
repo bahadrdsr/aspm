@@ -2,7 +2,7 @@ import type { ElementHandle, Locator, Page } from "@playwright/test";
 import { password } from "./application-fixture";
 import {
   actionAlpha, actionBeta, actionObservations, actionUser, backendID, betaFinding, confirmedOwnerName,
-  currentOwner, expiredRiskAt, findingPath, identicalTextNote, literalNote, notesPath, originalNote,
+  companionFinding, currentOwner, expiredRiskAt, findingPath, identicalTextNote, literalNote, notesPath, originalNote,
   primaryFinding, validNoteText,
 } from "./finding-actions-data";
 import type { ActionFinding, ActionFindingResponse, ActionNote } from "./finding-actions-data";
@@ -16,7 +16,39 @@ test.beforeEach(async ({ actions }) => {
   expect(actions.requests).toEqual([]);
 });
 
-const workflowNames = { open: "Open", "in-progress": "In progress", resolved: "Resolved" };
+test("FA9 selected findings can enter pending retest with one atomic audited bulk action", async ({ page, actions }) => {
+  await page.goto("/#/work");
+  const table = queue(page);
+  await expect(table).toBeVisible();
+  for (const finding of [companionFinding, primaryFinding]) {
+    await row(page, finding.title).getByRole("checkbox", { name: `Select ${finding.title}`, exact: true }).check();
+  }
+  const form = page.getByRole("form", { name: "Bulk triage selected findings", exact: true });
+  await form.getByRole("combobox", { name: "Action", exact: true }).selectOption("pending-retest");
+  const rationale = "Wait for the selected synthetic findings to be scanned again.";
+  await form.getByRole("textbox", { name: "Rationale", exact: true }).fill(rationale);
+  await form.getByRole("button", { name: "Apply", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: /2 selected findings updated/i })).toBeVisible();
+  const call = actions.calls("PATCH", "/api/v1/findings").at(-1);
+  expect(call?.body).toEqual({
+    findingIds: [companionFinding.id, primaryFinding.id],
+    workflowState: "pending-retest",
+    rationale,
+  });
+  for (const finding of [companionFinding, primaryFinding]) {
+    await expect(row(page, finding.title)).toContainText(/Pending retest/i);
+  }
+  await findingTrigger(page).click();
+  const history = panel(page).getByRole("list", { name: "Decision history", exact: true });
+  await expect(history.getByRole("listitem")).toHaveCount(1);
+  await expect(history).toContainText(rationale);
+  await expect(history).toContainText(/Open to Pending retest/i);
+  await expect(history).toContainText(actionUser.name);
+});
+
+const workflowNames = {
+  open: "Open", "in-progress": "In progress", "pending-retest": "Pending retest", resolved: "Resolved",
+};
 const workflowLabel = /^(?:Human |Finding )?Workflow(?: state)?$/i;
 const ownerLabel = /^(?:Finding )?Owner$/i;
 const dispositionLabel = /^(?:Finding )?Disposition$/i;

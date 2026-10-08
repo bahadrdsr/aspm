@@ -93,7 +93,7 @@ independent worker and a manual status refresh.
   expiry, normalized archival, interrupted raw/archive delete finalization,
   missing/corrupt controls, foreign-workspace denial, audit archival and exact
   restoration.
-- The authentic pinned published V11 closure migrates through V18 while
+- The authentic pinned published V11 closure migrates through V19 while
   preserving historical API/native data and exact old business rows.
 - Installer tests cover the additive retention credential, secret, Helm values,
   Quadlet unit, service activation and explicit reapply binding.

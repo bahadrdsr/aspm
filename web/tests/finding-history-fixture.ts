@@ -210,7 +210,7 @@ export class FindingHistoryAPI {
         const current = this.findings.get(historyFinding.id)!;
         if (current.workspaceId !== workspace) { await this.respond(route, call, 404, this.error(404), reply); return; }
         if (Object.keys(call.body).join(",") !== "workflowState" ||
-          !["open", "in-progress", "resolved"].includes(String(call.body.workflowState))) {
+          !["open", "in-progress", "pending-retest", "resolved"].includes(String(call.body.workflowState))) {
           this.violations.push("This narrative permits only the intentional canonical workflow PATCH, not history or source fields.");
           await this.respond(route, call, 400, this.error(400), reply); return;
         }

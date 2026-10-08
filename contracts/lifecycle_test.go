@@ -90,7 +90,7 @@ func TestSourceFidelityAndLifecycle(t *testing.T) {
 		}
 		requireSet(t, model, "fields", false, fields...)
 	}
-	requireSet(t, root, "stateAxes.workflowState", false, "open", "in-progress", "resolved")
+	requireSet(t, root, "stateAxes.workflowState", false, "open", "in-progress", "pending-retest", "resolved")
 	requireSet(t, root, "stateAxes.disposition", false, "none", "accepted-risk", "suppressed", "false-positive")
 	requireSet(t, root, "stateAxes.analysisConclusion", false, "unassessed", "inconclusive")
 	requireSet(t, root, "stateAxes.proofOutcome", false, "not-run", "reproduced", "not-reproduced", "inconclusive", "error", "blocked", "cancelled")

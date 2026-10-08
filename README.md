@@ -53,6 +53,11 @@ assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the
 assessment workflow have separate owned HTTPS qualification.
 
+Work also supports atomic selected-finding assignment/workflow triage, an
+explicit pending-retest state, and durable paged decision history. Source state,
+human workflow, risk disposition, AI advice, and verification remain separate.
+See `docs/m08-triage-history.md`.
+
 The seven report intake profiles are registered through the public compiled-in
 adapter contract in `pkg/reportadapter`. Their exact supported-version metadata,
 field coverage and deterministic fixtures are exposed separately from the eight

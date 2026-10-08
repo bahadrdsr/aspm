@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ActionButton } from "@/components/action-button";
 import { FormError } from "@/components/form-dialog";
 import { SavedWorkViews } from "@/components/saved-work-views";
+import { BulkTriage } from "@/components/bulk-triage";
 import { DataNotice, EmptyState, ErrorState, LoadingState, SeverityBadge, WorkflowBadge } from "@/components/states";
 
 export type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
@@ -31,7 +32,7 @@ export function matchesWorkQuery(item: WorkItem, query: string): boolean {
 const pageSize = 50;
 const severityRank = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
 
-export function WorkPage({ context, setContext, filterRef, openFinding, confirmed, membershipRevision, canWrite }: {
+export function WorkPage({ context, setContext, filterRef, openFinding, confirmed, membershipRevision, canWrite, onConfirmed }: {
   context: WorkContext;
   setContext: Dispatch<SetStateAction<WorkContext>>;
   filterRef: RefObject<HTMLInputElement | null>;
@@ -39,6 +40,7 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
   confirmed: ConfirmedWorkUpdates;
   membershipRevision: number;
   canWrite: boolean;
+  onConfirmed: (items: WorkItem[]) => void;
 }) {
   const confirmQuery = useCallback((confirmedQuery: string) => setContext((previous) => previous.confirmedQuery === confirmedQuery
     ? previous : { ...previous, confirmedQuery, selected: new Set(), page: 0 }), [setContext]);
@@ -54,6 +56,7 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
   }, [membershipRevision, resource]);
   const data = resource.data;
   const [searchError, setSearchError] = useState<APIError | null>(null);
+  const [bulkMessage, setBulkMessage] = useState<string | null>(null);
   const { reducedMotion } = usePreferences();
   const selectPage = useRef<HTMLInputElement>(null);
   const { query, selected, sort, changesOnly } = context;
@@ -184,9 +187,15 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
       {data && <>
         {selected.size > 0 && <motion.div role="status" className="selection-toolbar" initial={reducedMotion ? false : { opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }}>
           <span className="selection-count">{selected.size}</span><span>selected<span className="selection-scope"> / {selectedOnPage} on this page</span></span>
-          <span className="selection-boundary">{canWrite ? "Open a finding to make changes. Bulk actions are not available." : "Read-only selection. Open a finding to review its evidence."}</span>
+          {canWrite ? <BulkTriage findingIds={[...selected]} onConfirmed={onConfirmed}
+            onApplied={(next) => {
+              setBulkMessage(next);
+              setContext((previous) => ({ ...previous, selected: new Set() }));
+            }} /> :
+            <span className="selection-boundary">Read-only selection. Open a finding to review its evidence.</span>}
           <Button variant="ghost" size="sm" onClick={() => setContext((previous) => ({ ...previous, selected: new Set() }))}>Clear selection</Button>
         </motion.div>}
+        {bulkMessage && <p className="inline-status" role="status">{bulkMessage}</p>}
         <p className="inline-status"><Icon name="info" size={15} />Filtering and Finding/Severity sorting apply only to loaded findings.</p>
         <p className="inline-status" role="status" aria-label="Finding pagination"><Icon name="info" size={15} />
           {data.items.length.toLocaleString()} loaded findings; {data.total.toLocaleString()} total reported by the last returned page.{" "}

@@ -15,7 +15,8 @@ export function SeverityBadge({ severity }: { severity: Severity }) {
 }
 
 export function WorkflowBadge({ value }: { value: WorkflowState }) {
-  return <span className={`workflow workflow-${value}`}><Icon name={value === "resolved" ? "check" : value === "in-progress" ? "clock" : "minus"} size={14} />{label(value)}</span>;
+  return <span className={`workflow workflow-${value}`}><Icon name={value === "resolved" ? "check" :
+    value === "in-progress" || value === "pending-retest" ? "clock" : "minus"} size={14} />{label(value)}</span>;
 }
 
 export function EmptyState({ icon = "work", title, description, children }: { icon?: IconName; title: string; description: string; children?: ReactNode }) {

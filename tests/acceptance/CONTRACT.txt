@@ -1,6 +1,6 @@
-M03-M07 ACCEPTANCE CONTRACT
+M03-M08 ACCEPTANCE CONTRACT
 ==========================
-17 milestone tests plus one real-service gate; all input is synthetic. These are
+Bounded milestone tests plus one real-service gate; all input is synthetic. These are
 bounded implementation slices, not completion of the full milestone roadmap.
 Missing production bindings fail explicitly. Missing services/credentials fail
 BLOCKED, never skip. No scanners, auth bypasses, proof or third-party testing runs.
@@ -157,6 +157,23 @@ GET /api/v1/integrations/catalog: exactly github,gitlab,azure-devops,aws,azure,
   capabilities and a repository-relative sanitized fixture reference. Every
   report adapter is implemented/experimental/readyToImport, never a native
   family or readyToConnect claim.
+
+M08:
+PATCH /api/v1/findings/{id} additionally accepts workflowState=pending-retest
+and optional rationale. A successful human update records one durable decision
+event containing actor, revision, action, rationale, changed fields, exact
+before/after decision state and createdAt. Scanner reconciliation preserves the
+workflow and creates no human decision event.
+PATCH /api/v1/findings accepts {findingIds:[1..100 distinct visible IDs],
+ownerId?:userId|null,workflowState?:open|in-progress|pending-retest|resolved,
+rationale:nonblank <=8192 UTF-8 bytes}. At least owner or workflow is required.
+Admin/analyst only. The selected current-workspace set updates atomically in
+deterministic lock order; foreign/missing/hidden IDs return 404 with no partial
+write. Response is {apiVersion,dataOrigin,items,total,nextCursor:null} with the
+updated canonical Work rows. Bulk disposition/risk changes are not accepted.
+Finding detail returns decisionEvents and decisionEventsNextCursor. Pages use
+decisionsCursor as a fixed-width 20-digit revision cursor, at most 100 events,
+strictly increasing by decisionRevision. Viewers can read history.
 
 Reversible merge/split and retention policy/hold/preview now have dedicated M06
 gates. Physical archive/expiry execution, enterprise performance, full installer

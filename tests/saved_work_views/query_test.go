@@ -58,7 +58,7 @@ func (h *harness) csv(who actor, selector string, expected []app.WorkItem) {
 	must(h.t, "read actual CSV", err)
 	check(h.t, len(rows) == len(expected)+1, "CSV row count differs from actual filtered finding count")
 	same(h.t, "CSV native column contract changed", rows[0], []string{"id", "title", "assetName", "severity",
-		"ownerName", "workflowState", "sourceScanAt", "collectedAt", "importedAt"})
+		"ownerName", "workflowState", "sourceScanAt", "collectedAt", "importedAt", "changeKind", "changeAt"})
 	byID := map[string]app.WorkItem{}
 	for _, item := range expected {
 		byID[item.ID] = item

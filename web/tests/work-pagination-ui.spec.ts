@@ -141,7 +141,9 @@ test("WP1 Manual native 100+100+tail preserves local filter sort selection and 5
   await table(page).getByRole("button", { name: "Severity", exact: true }).click();
   await titles(page, Array.from({ length: 50 }, (_, i) => findingAt(i + 1)));
   await expect(selected(page)).toBeChecked(); await expect(queue(page)).toContainText("Page 1 of 5");
-  await expect(selection(page)).toContainText(/Bulk actions are not available/i);
+  const bulk = selection(page).getByRole("form", { name: "Bulk triage selected findings", exact: true });
+  await expect(bulk).toBeVisible();
+  await expect(bulk.getByRole("button", { name: "Apply", exact: true })).toBeDisabled();
   await noAutomaticIO(page, api, beforeLocal);
   expect(api.calls().map((c) => c.query))
     .toEqual([...initial.calls.map(() => ({})), { cursor: cursor100, limit: "100" }, { cursor: cursor200, limit: "100" }]);

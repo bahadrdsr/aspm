@@ -21,6 +21,26 @@ export interface ActionObservation {
   evidenceDigest: string;
   evidenceAvailability: "available" | "archived" | "expired" | "missing" | "corrupt";
 }
+export interface ActionDecision {
+  ownerId: string | null;
+  workflowState: WorkItem["workflowState"];
+  disposition: "none" | "accepted-risk";
+  acceptedRiskExpiresAt: string | null;
+}
+export interface ActionDecisionEvent {
+  id: string;
+  decisionRevision: number;
+  actorId: string;
+  actorName: string;
+  beforeOwnerName: string | null;
+  afterOwnerName: string | null;
+  action: "update" | "bulk-update";
+  rationale: string;
+  changedFields: ("ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt")[];
+  before: ActionDecision;
+  after: ActionDecision;
+  createdAt: string;
+}
 export interface ActionFinding extends WorkItem {
   assetId: string;
   workspaceId: string;
@@ -35,10 +55,13 @@ export interface ActionFinding extends WorkItem {
   acceptedRiskExpiresAt: string | null;
   riskAcceptanceExpired: boolean;
   verifiedResolution: false;
+  decisionRevision: number;
   notes: ActionNote[];
   observations: ActionObservation[];
+  decisionEvents: ActionDecisionEvent[];
   notesNextCursor: string | null;
   observationsNextCursor: string | null;
+  decisionEventsNextCursor: string | null;
 }
 export interface ActionFindingResponse {
   apiVersion: typeof apiVersion;
@@ -112,10 +135,13 @@ export const primaryFinding: ActionFinding = {
   acceptedRiskExpiresAt: null,
   riskAcceptanceExpired: false,
   verifiedResolution: false,
+  decisionRevision: 1,
   notes: [originalNote, identicalTextNote],
   observations: actionObservations,
+  decisionEvents: [],
   notesNextCursor: null,
   observationsNextCursor: null,
+  decisionEventsNextCursor: null,
 };
 export const companionFinding: ActionFinding = {
   ...primaryFinding,

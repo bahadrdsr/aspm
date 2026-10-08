@@ -1,0 +1,93 @@
+# M08 bulk triage and decision history
+
+Implemented on October 8, 2026.
+
+This increment completes the first bounded M08 triage gap without expanding the
+deferred integration scope. Human workflow now includes `pending-retest`, Work
+supports explicit bounded bulk assignment/workflow changes, and every accepted
+finding decision update records durable actor and before/after history.
+
+## Workflow and bulk API
+
+`PATCH /api/v1/findings/{id}` keeps the existing owner, workflow, disposition,
+and risk-expiry fields and accepts an optional `rationale`. Workflow values are:
+
+- `open`
+- `in-progress`
+- `pending-retest`
+- `resolved`
+
+`PATCH /api/v1/findings` applies one atomic bulk action:
+
+```json
+{
+  "findingIds": ["32-character-finding-id"],
+  "ownerId": "32-character-user-id-or-null",
+  "workflowState": "pending-retest",
+  "rationale": "Why this selected set is changing"
+}
+```
+
+The request must select 1 through 100 distinct visible findings in the current
+workspace, include an owner and/or workflow change, and provide a nonblank
+NUL-free rationale of at most 8,192 UTF-8 bytes. The service locks IDs in
+deterministic order and commits all selected updates or none. A foreign,
+secondary-hidden, deleted, or unknown finding returns not found without a
+partial update. Bulk risk acceptance is intentionally not available.
+
+The response contains the updated canonical Work items. The UI applies those
+acknowledgements without waiting for a broad refresh, then clears the completed
+selection. Viewer selection remains read only.
+
+## Decision history
+
+V19 adds `app_finding_decision_events`. Each single or bulk update records:
+
+- The resulting monotonic decision revision.
+- Actor ID and current actor name.
+- `update` or `bulk-update` action.
+- Exact rationale.
+- Changed field names.
+- Before and after owner, workflow, disposition, and risk expiry.
+- The event time.
+
+Finding detail returns up to 100 events ordered by decision revision. Additional
+pages use a fixed-width revision cursor through `decisionsCursor`. Decision
+history is workspace-authorized and visible to viewers, but only administrators
+and analysts can create events through approved finding mutations.
+
+Source observations, scanner-inferred state, AI conclusions, proof outcomes,
+human workflow, and risk disposition remain separate. A new scan preserves
+`pending-retest`; it does not resolve, verify, or add a human decision event.
+
+## UI
+
+The selected-findings toolbar supports:
+
+- Assign to me.
+- Unassign.
+- Open.
+- In progress.
+- Pending retest.
+- Resolved.
+
+A rationale is required for bulk actions. Single workflow changes expose an
+optional rationale. Finding detail shows a paged Decision history section with
+actor, revision, rationale, changed fields, and readable before/after values.
+
+## Compatibility and limits
+
+V19 only widens the existing workflow-state CHECK and adds the decision-event
+table/indexes. Historical findings and decisions are not rewritten. Existing
+published V5, V6, V7, V8, V9, V10, and V11 fixtures migrate through V19 with
+their business rows preserved.
+
+Still separate:
+
+- Scoped suppression and false-positive approval records.
+- Bulk risk acceptance.
+- Automatic notification policies.
+- Generic outbound webhooks.
+- Permission-checked portable developer handoff.
+- Decision-event archive/retention policy.
+- Deferred live-account and status-linkage integration follow-ups.

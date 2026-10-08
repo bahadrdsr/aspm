@@ -1,7 +1,7 @@
 export const apiVersion = "aspm/v1alpha1" as const;
 export type DataOrigin = "synthetic" | "live";
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
-export type WorkflowState = "open" | "in-progress" | "resolved";
+export type WorkflowState = "open" | "in-progress" | "pending-retest" | "resolved";
 export type FindingDisposition = "none" | "accepted-risk";
 export type EvidenceAvailability = "available" | "archived" | "expired" | "missing" | "corrupt";
 export type FindingChangeKind = "new" | "changed" | "unchanged" | "reopened" | "inferred-resolved";
@@ -90,8 +90,10 @@ export interface FindingDetail extends WorkItem {
   correlation?: FindingCorrelation;
   notes?: FindingNote[];
   observations?: Observation[];
+  decisionEvents?: FindingDecisionEvent[];
   notesNextCursor?: string | null;
   observationsNextCursor?: string | null;
+  decisionEventsNextCursor?: string | null;
 }
 
 export interface FindingResponse {
@@ -105,6 +107,7 @@ export interface FindingPatch {
   workflowState?: WorkflowState;
   disposition?: FindingDisposition;
   acceptedRiskExpiresAt?: string | null;
+  rationale?: string;
 }
 
 export interface FindingNote { id: string; text: string }
@@ -115,6 +118,36 @@ export interface FindingDecision {
   workflowState: WorkflowState;
   disposition: FindingDisposition;
   acceptedRiskExpiresAt: string | null;
+}
+
+export interface FindingDecisionEvent {
+  id: string;
+  decisionRevision: number;
+  actorId: string;
+  actorName: string;
+  beforeOwnerName: string | null;
+  afterOwnerName: string | null;
+  action: "update" | "bulk-update";
+  rationale: string;
+  changedFields: ("ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt")[];
+  before: FindingDecision;
+  after: FindingDecision;
+  createdAt: string;
+}
+
+export interface FindingBulkPatch {
+  findingIds: string[];
+  ownerId?: string | null;
+  workflowState?: WorkflowState;
+  rationale: string;
+}
+
+export interface FindingBulkResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  items: WorkItem[];
+  total: number;
+  nextCursor: null;
 }
 
 export interface FindingCorrelationMember {

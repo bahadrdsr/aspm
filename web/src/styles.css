@@ -204,6 +204,7 @@ main:focus:not(:focus-visible) { outline: none; }
 .unassigned .avatar { background: transparent; border: 1px dashed var(--line-strong); color: var(--muted); }
 .workflow { display: inline-flex; gap: 5px; align-items: center; font-size: 10px; color: var(--muted); white-space: nowrap; }
 .workflow-in-progress { color: var(--accent-ink); }
+.workflow-pending-retest { color: var(--amber); }
 .workflow-resolved { color: var(--success); }
 .source-date { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 10px; white-space: nowrap; }
 .unknown-time { display: inline-flex; gap: 6px; align-items: center; }
@@ -212,7 +213,12 @@ main:focus:not(:focus-visible) { outline: none; }
 .pagination button { font-size: 10px; min-height: 32px; padding: 5px 9px; }
 .pagination > span { margin: 0 6px; }
 .selection-toolbar { display: flex; align-items: center; gap: 9px; background: var(--accent-soft); color: var(--accent-ink); padding: 10px 20px; font-size: 11px; border-bottom: 1px solid var(--line); }
-.selection-toolbar button { margin-left: auto; font-size: 10px; }
+.selection-toolbar button { font-size: 10px; }
+.selection-toolbar > button { margin-left: 0; }
+.bulk-triage-form { display: flex; align-items: end; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.bulk-triage-form label { display: grid; gap: 3px; font-size: 9px; color: var(--muted); }
+.bulk-triage-form select, .bulk-triage-form input { min-height: 30px; max-width: 220px; }
+.bulk-triage-form [role="alert"] { flex-basis: 100%; margin: 0; }
 .selection-count { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 5px; background: var(--indigo); color: var(--on-indigo); font-weight: 600; }
 .selection-scope { color: var(--muted); font-size: 10px; }
 .selection-boundary { font-size: 9px; margin-left: 5px; color: var(--muted); }

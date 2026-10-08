@@ -6,7 +6,7 @@ export interface WorkItem {
   assetName: string;
   severity: "critical" | "high" | "medium" | "low" | "info";
   ownerName: string | null;
-  workflowState: "open" | "in-progress" | "resolved";
+  workflowState: "open" | "in-progress" | "pending-retest" | "resolved";
   sourceScanAt: string | null;
   collectedAt: string;
   importedAt: string;
