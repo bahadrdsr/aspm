@@ -23,12 +23,15 @@ type findingDecisionPatch struct {
 	WorkflowState         optional[string]    `json:"workflowState"`
 	Disposition           optional[string]    `json:"disposition"`
 	AcceptedRiskExpiresAt optional[time.Time] `json:"acceptedRiskExpiresAt"`
+	DispositionScope      optional[string]    `json:"dispositionScope"`
+	SuppressionExpiresAt  optional[time.Time] `json:"suppressionExpiresAt"`
 	Rationale             string              `json:"rationale"`
 }
 
 type storedFindingDecision struct {
 	FindingDecision
-	Revision int64
+	FindingID, AssetID, SourceID, ScopeID, ScopeRevision, ScopeBranch string
+	Revision                                                          int64
 }
 
 func validWorkflowState(value string) bool {
@@ -44,7 +47,7 @@ func sameTimePointer(left, right *time.Time) bool {
 }
 
 func decisionChanges(before, after FindingDecision) []string {
-	result := make([]string, 0, 4)
+	result := make([]string, 0, 7)
 	if !sameString(before.OwnerID, after.OwnerID) {
 		result = append(result, "ownerId")
 	}
@@ -57,16 +60,38 @@ func decisionChanges(before, after FindingDecision) []string {
 	if !sameTimePointer(before.AcceptedRiskExpiresAt, after.AcceptedRiskExpiresAt) {
 		result = append(result, "acceptedRiskExpiresAt")
 	}
+	if before.DispositionScope != after.DispositionScope {
+		result = append(result, "dispositionScope")
+	}
+	if !sameTimePointer(before.SuppressionExpiresAt, after.SuppressionExpiresAt) {
+		result = append(result, "suppressionExpiresAt")
+	}
+	if before.DispositionRationale != after.DispositionRationale {
+		result = append(result, "dispositionRationale")
+	}
 	return result
 }
 
 func (a *Application) applyFindingDecisionPatch(ctx context.Context, tx pgx.Tx, workspace, id, actor, action string,
 	patch findingDecisionPatch) (storedFindingDecision, error) {
 	var before storedFindingDecision
-	err := tx.QueryRow(ctx, `SELECT owner_id,workflow_state,disposition,accepted_risk_expires_at,decision_revision
-		FROM `+a.table("findings")+` f WHERE workspace_id=$1 AND id=$2 AND `+a.workVisible()+` FOR UPDATE`,
+	err := tx.QueryRow(ctx, `SELECT f.owner_id,f.workflow_state,f.disposition,f.accepted_risk_expires_at,
+		CASE WHEN f.disposition='none' THEN '' ELSE COALESCE(approval.scope_kind,'finding') END,
+		CASE WHEN f.disposition='suppressed' THEN approval.expires_at END,
+		COALESCE(approval.rationale,''),f.id,f.asset_id,f.source_id,f.scope_id,f.scope_revision,f.scope_branch,
+		f.decision_revision
+		FROM `+a.table("findings")+` f
+		LEFT JOIN LATERAL (
+			SELECT scope_kind,expires_at,rationale FROM `+a.table("finding_disposition_approvals")+` a
+			WHERE a.workspace_id=f.workspace_id AND a.finding_id=f.id
+			AND a.disposition=f.disposition AND a.decision_revision<=f.decision_revision
+			ORDER BY a.decision_revision DESC LIMIT 1
+		) approval ON true
+		WHERE f.workspace_id=$1 AND f.id=$2 AND `+a.workVisible()+` FOR UPDATE OF f`,
 		workspace, id).Scan(&before.OwnerID, &before.WorkflowState, &before.Disposition,
-		&before.AcceptedRiskExpiresAt, &before.Revision)
+		&before.AcceptedRiskExpiresAt, &before.DispositionScope, &before.SuppressionExpiresAt,
+		&before.DispositionRationale, &before.FindingID, &before.AssetID, &before.SourceID,
+		&before.ScopeID, &before.ScopeRevision, &before.ScopeBranch, &before.Revision)
 	if err != nil {
 		return storedFindingDecision{}, err
 	}
@@ -86,29 +111,95 @@ func (a *Application) applyFindingDecisionPatch(ctx context.Context, tx pgx.Tx, 
 	if !validWorkflowState(after.WorkflowState) {
 		return storedFindingDecision{}, errInvalid
 	}
+	dispositionTouched := patch.Disposition.Set || patch.AcceptedRiskExpiresAt.Set ||
+		patch.DispositionScope.Set || patch.SuppressionExpiresAt.Set
+	dispositionChanged := false
 	if patch.Disposition.Set {
 		if patch.Disposition.Value == nil {
 			return storedFindingDecision{}, errInvalid
 		}
+		dispositionChanged = after.Disposition != *patch.Disposition.Value
 		after.Disposition = *patch.Disposition.Value
-		if after.Disposition == "none" && !patch.AcceptedRiskExpiresAt.Set {
-			after.AcceptedRiskExpiresAt = nil
-		}
-	}
-	if after.Disposition != "none" && after.Disposition != "accepted-risk" {
-		return storedFindingDecision{}, errInvalid
 	}
 	if patch.AcceptedRiskExpiresAt.Set {
 		after.AcceptedRiskExpiresAt = patch.AcceptedRiskExpiresAt.Value
 	}
-	if after.AcceptedRiskExpiresAt != nil &&
-		(after.AcceptedRiskExpiresAt.IsZero() || after.Disposition != "accepted-risk") {
+	if patch.DispositionScope.Set {
+		if patch.DispositionScope.Value == nil {
+			return storedFindingDecision{}, errInvalid
+		}
+		after.DispositionScope = *patch.DispositionScope.Value
+	}
+	if patch.SuppressionExpiresAt.Set {
+		after.SuppressionExpiresAt = patch.SuppressionExpiresAt.Value
+	}
+	if dispositionChanged {
+		switch after.Disposition {
+		case "none":
+			after.AcceptedRiskExpiresAt, after.SuppressionExpiresAt = nil, nil
+			after.DispositionScope, after.DispositionRationale = "", ""
+		case "accepted-risk":
+			after.SuppressionExpiresAt = nil
+			if !patch.DispositionScope.Set {
+				after.DispositionScope = "finding"
+			}
+		case "suppressed":
+			after.AcceptedRiskExpiresAt = nil
+			if !patch.DispositionScope.Set {
+				return storedFindingDecision{}, errInvalid
+			}
+		case "false-positive":
+			after.AcceptedRiskExpiresAt, after.SuppressionExpiresAt = nil, nil
+			if !patch.DispositionScope.Set {
+				after.DispositionScope = "finding"
+			}
+		}
+	}
+	if !validDisposition(after.Disposition) {
 		return storedFindingDecision{}, errInvalid
 	}
-	if patch.Rationale != "" && !validText(patch.Rationale, 8192) {
+	if dispositionTouched {
+		if !validText(patch.Rationale, 8192) {
+			return storedFindingDecision{}, errInvalid
+		}
+		if after.Disposition == "none" {
+			after.DispositionScope, after.DispositionRationale = "", ""
+			after.AcceptedRiskExpiresAt, after.SuppressionExpiresAt = nil, nil
+		} else {
+			after.DispositionRationale = patch.Rationale
+		}
+	} else if patch.Rationale != "" && !validText(patch.Rationale, 8192) {
 		return storedFindingDecision{}, errInvalid
+	}
+	switch after.Disposition {
+	case "none":
+		if after.AcceptedRiskExpiresAt != nil || after.SuppressionExpiresAt != nil ||
+			after.DispositionScope != "" || after.DispositionRationale != "" {
+			return storedFindingDecision{}, errInvalid
+		}
+	case "accepted-risk":
+		if after.DispositionScope != "finding" || after.SuppressionExpiresAt != nil ||
+			after.AcceptedRiskExpiresAt != nil && after.AcceptedRiskExpiresAt.IsZero() {
+			return storedFindingDecision{}, errInvalid
+		}
+	case "suppressed":
+		if !validDispositionScope(after.DispositionScope) || after.AcceptedRiskExpiresAt != nil ||
+			after.SuppressionExpiresAt == nil || after.SuppressionExpiresAt.IsZero() ||
+			!after.SuppressionExpiresAt.After(a.config.Now()) {
+			return storedFindingDecision{}, errInvalid
+		}
+	case "false-positive":
+		if after.DispositionScope != "finding" ||
+			after.AcceptedRiskExpiresAt != nil || after.SuppressionExpiresAt != nil {
+			return storedFindingDecision{}, errInvalid
+		}
 	}
 	after.Revision = before.Revision + 1
+	if dispositionTouched && after.Disposition != "none" {
+		if err = a.insertDispositionApproval(ctx, tx, workspace, actor, after, patch.Rationale); err != nil {
+			return storedFindingDecision{}, err
+		}
+	}
 	if _, err = tx.Exec(ctx, `UPDATE `+a.table("findings")+`
 		SET owner_id=$3,workflow_state=$4,disposition=$5,accepted_risk_expires_at=$6,decision_revision=$7
 		WHERE workspace_id=$1 AND id=$2`, workspace, id, after.OwnerID, after.WorkflowState,

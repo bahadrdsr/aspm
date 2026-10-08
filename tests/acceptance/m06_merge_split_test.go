@@ -49,11 +49,13 @@ func TestM06_ReversibleMergeAndSplitPreserveVariantsDecisionsAndEvidence(t *test
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+firstID, object{
 		"ownerId": h.admin.user.ID, "workflowState": "open",
 		"disposition": "accepted-risk", "acceptedRiskExpiresAt": firstExpiry,
+		"rationale": "Approve synthetic accepted risk before correlation.",
 	}, 200)
 	h.json(h.admin, "POST", "/api/v1/findings/"+firstID+"/notes",
 		object{"text": "Primary source decision history."}, 201)
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+secondID, object{
 		"ownerId": analyst.user.ID, "workflowState": "in-progress", "disposition": "none",
+		"rationale": "Confirm no human disposition for the secondary synthetic finding.",
 	}, 200)
 	h.json(h.admin, "POST", "/api/v1/findings/"+secondID+"/notes",
 		object{"text": "Secondary source decision history."}, 201)
@@ -125,7 +127,8 @@ func TestM06_ReversibleMergeAndSplitPreserveVariantsDecisionsAndEvidence(t *test
 	h.json(h.admin, "POST", "/api/v1/findings/"+firstID+"/notes",
 		object{"text": "Post-merge note remains on the primary issue."}, 201)
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+firstID,
-		object{"workflowState": "resolved", "disposition": "accepted-risk", "acceptedRiskExpiresAt": firstExpiry}, 200)
+		object{"workflowState": "resolved", "disposition": "accepted-risk", "acceptedRiskExpiresAt": firstExpiry,
+			"rationale": "Renew synthetic accepted risk before split."}, 200)
 
 	split := h.json(viewer, "POST", "/api/v1/findings/"+firstID+"/split-previews",
 		object{"memberFindingId": secondID}, 200).SplitPreview

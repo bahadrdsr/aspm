@@ -21,10 +21,9 @@ type correlationDB interface {
 
 type correlationFinding struct {
 	FindingCorrelationMember
-	AssetID       string
-	ScopeBranch   string
-	CandidateURI  string
-	CandidateLine int
+	AssetID, ScopeID, ScopeRevision, ScopeBranch string
+	CandidateURI                                 string
+	CandidateLine                                int
 }
 
 type findingDecisionInput struct {
@@ -32,23 +31,51 @@ type findingDecisionInput struct {
 	WorkflowState         string              `json:"workflowState"`
 	Disposition           string              `json:"disposition"`
 	AcceptedRiskExpiresAt optional[time.Time] `json:"acceptedRiskExpiresAt"`
+	DispositionScope      string              `json:"dispositionScope"`
+	SuppressionExpiresAt  optional[time.Time] `json:"suppressionExpiresAt"`
+	DispositionRationale  string              `json:"dispositionRationale"`
 }
 
 func (input findingDecisionInput) decision() (FindingDecision, bool) {
 	if !input.OwnerID.Set || !input.AcceptedRiskExpiresAt.Set ||
-		(input.WorkflowState != "open" && input.WorkflowState != "in-progress" && input.WorkflowState != "resolved") ||
-		(input.Disposition != "none" && input.Disposition != "accepted-risk") {
+		!validWorkflowState(input.WorkflowState) || !validDisposition(input.Disposition) {
 		return FindingDecision{}, false
 	}
 	decision := FindingDecision{
 		OwnerID: input.OwnerID.Value, WorkflowState: input.WorkflowState,
 		Disposition: input.Disposition, AcceptedRiskExpiresAt: input.AcceptedRiskExpiresAt.Value,
+		DispositionScope: input.DispositionScope, SuppressionExpiresAt: input.SuppressionExpiresAt.Value,
+		DispositionRationale: input.DispositionRationale,
 	}
-	if decision.AcceptedRiskExpiresAt != nil &&
-		(decision.AcceptedRiskExpiresAt.IsZero() || decision.Disposition != "accepted-risk") {
-		return FindingDecision{}, false
+	switch decision.Disposition {
+	case "none":
+		if decision.AcceptedRiskExpiresAt != nil || decision.SuppressionExpiresAt != nil ||
+			decision.DispositionScope != "" && decision.DispositionScope != "finding" {
+			return FindingDecision{}, false
+		}
+		decision.DispositionScope, decision.DispositionRationale = "", ""
+	case "accepted-risk":
+		if decision.AcceptedRiskExpiresAt != nil && decision.AcceptedRiskExpiresAt.IsZero() ||
+			decision.SuppressionExpiresAt != nil ||
+			decision.DispositionScope != "" && decision.DispositionScope != "finding" {
+			return FindingDecision{}, false
+		}
+		decision.DispositionScope = "finding"
+	case "suppressed":
+		if !validDispositionScope(decision.DispositionScope) ||
+			decision.AcceptedRiskExpiresAt != nil || decision.SuppressionExpiresAt == nil ||
+			decision.SuppressionExpiresAt.IsZero() {
+			return FindingDecision{}, false
+		}
+	case "false-positive":
+		if decision.AcceptedRiskExpiresAt != nil || decision.SuppressionExpiresAt != nil ||
+			decision.DispositionScope != "" && decision.DispositionScope != "finding" {
+			return FindingDecision{}, false
+		}
+		decision.DispositionScope = "finding"
 	}
-	if decision.Disposition == "none" && decision.AcceptedRiskExpiresAt != nil {
+	if decision.Disposition != "none" && decision.DispositionRationale != "" &&
+		!validText(decision.DispositionRationale, 8192) {
 		return FindingDecision{}, false
 	}
 	return decision, true
@@ -67,10 +94,16 @@ func sameDecision(left, right FindingDecision) bool {
 	if (left.OwnerID == nil) != (right.OwnerID == nil) ||
 		left.OwnerID != nil && *left.OwnerID != *right.OwnerID ||
 		left.WorkflowState != right.WorkflowState || left.Disposition != right.Disposition ||
-		(left.AcceptedRiskExpiresAt == nil) != (right.AcceptedRiskExpiresAt == nil) {
+		(left.AcceptedRiskExpiresAt == nil) != (right.AcceptedRiskExpiresAt == nil) ||
+		left.DispositionScope != right.DispositionScope ||
+		(left.SuppressionExpiresAt == nil) != (right.SuppressionExpiresAt == nil) ||
+		left.DispositionRationale != right.DispositionRationale {
 		return false
 	}
-	return left.AcceptedRiskExpiresAt == nil || left.AcceptedRiskExpiresAt.Equal(*right.AcceptedRiskExpiresAt)
+	if left.AcceptedRiskExpiresAt != nil && !left.AcceptedRiskExpiresAt.Equal(*right.AcceptedRiskExpiresAt) {
+		return false
+	}
+	return left.SuppressionExpiresAt == nil || left.SuppressionExpiresAt.Equal(*right.SuppressionExpiresAt)
 }
 
 func correlationConflicts(left, right FindingDecision) []string {
@@ -89,15 +122,27 @@ func correlationConflicts(left, right FindingDecision) []string {
 		FindingDecision{AcceptedRiskExpiresAt: right.AcceptedRiskExpiresAt}) {
 		result = append(result, "acceptedRiskExpiresAt")
 	}
+	if left.DispositionScope != right.DispositionScope {
+		result = append(result, "dispositionScope")
+	}
+	if !sameTimePointer(left.SuppressionExpiresAt, right.SuppressionExpiresAt) {
+		result = append(result, "suppressionExpiresAt")
+	}
+	if left.DispositionRationale != right.DispositionRationale {
+		result = append(result, "dispositionRationale")
+	}
 	return result
 }
 
 func scanCorrelationFinding(row pgx.Row) (correlationFinding, error) {
 	var record correlationFinding
-	err := row.Scan(&record.FindingID, &record.AssetID, &record.SourceID, &record.ScopeBranch,
+	err := row.Scan(&record.FindingID, &record.AssetID, &record.SourceID,
+		&record.ScopeID, &record.ScopeRevision, &record.ScopeBranch,
 		&record.CandidateURI, &record.CandidateLine, &record.Title, &record.Severity,
 		&record.Decision.OwnerID, &record.Decision.WorkflowState,
 		&record.Decision.Disposition, &record.Decision.AcceptedRiskExpiresAt,
+		&record.Decision.DispositionScope, &record.Decision.SuppressionExpiresAt,
+		&record.Decision.DispositionRationale,
 		&record.DecisionRevision, &record.EvidenceRevision, &record.ObservationCount, &record.NoteCount)
 	record.OriginalDecision = record.Decision
 	record.Active = true
@@ -109,13 +154,24 @@ func (a *Application) readCorrelationFinding(ctx context.Context, db queryRower,
 	if lock {
 		suffix = " FOR UPDATE OF f"
 	}
-	return scanCorrelationFinding(db.QueryRow(ctx, `SELECT f.id,f.asset_id,f.source_id,f.scope_branch,
+	return scanCorrelationFinding(db.QueryRow(ctx, `SELECT f.id,f.asset_id,f.source_id,
+		f.scope_id,f.scope_revision,f.scope_branch,
 		f.candidate_uri,f.candidate_line,f.title,f.severity,
 		f.owner_id,f.workflow_state,f.disposition,f.accepted_risk_expires_at,
+		CASE WHEN f.disposition='none' THEN '' ELSE COALESCE(approval.scope_kind,'finding') END,
+		CASE WHEN f.disposition='suppressed' THEN approval.expires_at END,
+		COALESCE(approval.rationale,''),
 		f.decision_revision,f.evidence_revision,
 		(SELECT count(*) FROM `+a.table("observations")+` o WHERE o.workspace_id=f.workspace_id AND o.finding_id=f.id),
 		(SELECT count(*) FROM `+a.table("notes")+` n WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id)
-		FROM `+a.table("findings")+` f WHERE f.workspace_id=$1 AND f.id=$2`+suffix,
+		FROM `+a.table("findings")+` f
+		LEFT JOIN LATERAL (
+			SELECT scope_kind,expires_at,rationale FROM `+a.table("finding_disposition_approvals")+` a
+			WHERE a.workspace_id=f.workspace_id AND a.finding_id=f.id
+			AND a.disposition=f.disposition AND a.decision_revision<=f.decision_revision
+			ORDER BY a.decision_revision DESC LIMIT 1
+		) approval ON true
+		WHERE f.workspace_id=$1 AND f.id=$2`+suffix,
 		workspace, id))
 }
 
@@ -211,14 +267,24 @@ func (a *Application) listCorrelationCandidates(w http.ResponseWriter, r *http.R
 		})
 		return nil
 	}
-	rows, err := a.pool.Query(r.Context(), `SELECT f.id,f.asset_id,f.source_id,f.scope_branch,f.candidate_uri,f.candidate_line,
+	rows, err := a.pool.Query(r.Context(), `SELECT f.id,f.asset_id,f.source_id,
+		f.scope_id,f.scope_revision,f.scope_branch,f.candidate_uri,f.candidate_line,
 		f.title,f.severity,f.owner_id,f.workflow_state,f.disposition,f.accepted_risk_expires_at,
+		CASE WHEN f.disposition='none' THEN '' ELSE COALESCE(approval.scope_kind,'finding') END,
+		CASE WHEN f.disposition='suppressed' THEN approval.expires_at END,
+		COALESCE(approval.rationale,''),
 		f.decision_revision,f.evidence_revision,
 		(SELECT count(*) FROM `+a.table("observations")+` o
 		 WHERE o.workspace_id=f.workspace_id AND o.finding_id=f.id),
 		(SELECT count(*) FROM `+a.table("notes")+` n
 		 WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id)
 		FROM `+a.table("findings")+` f
+		LEFT JOIN LATERAL (
+			SELECT scope_kind,expires_at,rationale FROM `+a.table("finding_disposition_approvals")+` a
+			WHERE a.workspace_id=f.workspace_id AND a.finding_id=f.id
+			AND a.disposition=f.disposition AND a.decision_revision<=f.decision_revision
+			ORDER BY a.decision_revision DESC LIMIT 1
+		) approval ON true
 		WHERE f.workspace_id=$1 AND f.asset_id=$2 AND f.scope_branch=$3
 		AND f.candidate_uri=$4 AND f.candidate_line=$5
 		AND f.id<>$6 AND f.id>$7 AND f.source_id<>$8
@@ -307,9 +373,19 @@ func (a *Application) lockCorrelationFindings(ctx context.Context, tx pgx.Tx, wo
 }
 
 func (a *Application) applyFindingDecision(ctx context.Context, tx pgx.Tx, workspace string,
-	record correlationFinding, decision FindingDecision) error {
+	record correlationFinding, decision FindingDecision, actor, rationale string) error {
 	if err := a.checkOwner(ctx, tx, workspace, decision.OwnerID); err != nil {
 		return err
+	}
+	next := storedFindingDecision{
+		FindingDecision: decision, FindingID: record.FindingID, AssetID: record.AssetID,
+		SourceID: record.SourceID, ScopeID: record.ScopeID, ScopeRevision: record.ScopeRevision,
+		ScopeBranch: record.ScopeBranch, Revision: record.DecisionRevision + 1,
+	}
+	if decision.Disposition != "none" {
+		if err := a.insertDispositionApproval(ctx, tx, workspace, actor, next, rationale); err != nil {
+			return err
+		}
 	}
 	result, err := tx.Exec(ctx, `UPDATE `+a.table("findings")+`
 		SET owner_id=$4,workflow_state=$5,disposition=$6,accepted_risk_expires_at=$7,
@@ -356,12 +432,21 @@ func (a *Application) loadCorrelation(ctx context.Context, db correlationDB, wor
 	}
 	rows, err := db.Query(ctx, `SELECT f.id,f.source_id,f.title,f.severity,
 		f.owner_id,f.workflow_state,f.disposition,f.accepted_risk_expires_at,
+		CASE WHEN f.disposition='none' THEN '' ELSE COALESCE(approval.scope_kind,'finding') END,
+		CASE WHEN f.disposition='suppressed' THEN approval.expires_at END,
+		COALESCE(approval.rationale,''),
 		f.decision_revision,f.evidence_revision,
 		(SELECT count(*) FROM `+a.table("observations")+` o WHERE o.workspace_id=f.workspace_id AND o.finding_id=f.id),
 		(SELECT count(*) FROM `+a.table("notes")+` n WHERE n.workspace_id=f.workspace_id AND n.finding_id=f.id),
 		m.original_decision,m.released_at IS NULL
 		FROM `+a.table("finding_correlation_members")+` m
 		JOIN `+a.table("findings")+` f ON f.workspace_id=m.workspace_id AND f.id=m.finding_id
+		LEFT JOIN LATERAL (
+			SELECT scope_kind,expires_at,rationale FROM `+a.table("finding_disposition_approvals")+` a
+			WHERE a.workspace_id=f.workspace_id AND a.finding_id=f.id
+			AND a.disposition=f.disposition AND a.decision_revision<=f.decision_revision
+			ORDER BY a.decision_revision DESC LIMIT 1
+		) approval ON true
 		WHERE m.workspace_id=$1 AND m.correlation_id=$2 ORDER BY m.ordinal`,
 		workspace, id)
 	if err != nil {
@@ -372,7 +457,9 @@ func (a *Application) loadCorrelation(ctx context.Context, db correlationDB, wor
 		var original []byte
 		if err = rows.Scan(&member.FindingID, &member.SourceID, &member.Title, &member.Severity,
 			&member.Decision.OwnerID, &member.Decision.WorkflowState, &member.Decision.Disposition,
-			&member.Decision.AcceptedRiskExpiresAt, &member.DecisionRevision, &member.EvidenceRevision,
+			&member.Decision.AcceptedRiskExpiresAt, &member.Decision.DispositionScope,
+			&member.Decision.SuppressionExpiresAt, &member.Decision.DispositionRationale,
+			&member.DecisionRevision, &member.EvidenceRevision,
 			&member.ObservationCount, &member.NoteCount, &original, &member.Active); err != nil {
 			rows.Close()
 			return correlation, err
@@ -529,7 +616,7 @@ func (a *Application) mergeFindings(w http.ResponseWriter, r *http.Request, work
 	if otherGroup != "" || primaryGroup != "" && groupPrimary != primaryID {
 		return errConflict
 	}
-	if err = a.applyFindingDecision(r.Context(), tx, workspace, primary, decision); err != nil {
+	if err = a.applyFindingDecision(r.Context(), tx, workspace, primary, decision, session.User.ID, input.Rationale); err != nil {
 		return err
 	}
 	now, correlationID := a.config.Now().UTC(), primaryGroup
@@ -804,10 +891,10 @@ func (a *Application) splitFinding(w http.ResponseWriter, r *http.Request, works
 		member.EvidenceRevision != input.MemberEvidenceRevision {
 		return errConflict
 	}
-	if err = a.applyFindingDecision(r.Context(), tx, workspace, primary, primaryDecision); err != nil {
+	if err = a.applyFindingDecision(r.Context(), tx, workspace, primary, primaryDecision, session.User.ID, input.Rationale); err != nil {
 		return err
 	}
-	if err = a.applyFindingDecision(r.Context(), tx, workspace, member, memberDecision); err != nil {
+	if err = a.applyFindingDecision(r.Context(), tx, workspace, member, memberDecision, session.User.ID, input.Rationale); err != nil {
 		return err
 	}
 	current, err := a.loadCorrelation(r.Context(), tx, workspace, correlationID)

@@ -52,29 +52,30 @@ type WorkItem struct {
 
 type Finding struct {
 	WorkItem
-	AssetID                  string                 `json:"assetId"`
-	WorkspaceID              string                 `json:"workspaceId"`
-	ScopeLabel               string                 `json:"scopeLabel"`
-	Description              string                 `json:"description"`
-	Remediation              string                 `json:"remediation"`
-	Evidence                 FindingEvidence        `json:"evidence"`
-	OwnerID                  *string                `json:"ownerId"`
-	SourceState              string                 `json:"sourceState"`
-	SourceFreshnessAt        *time.Time             `json:"sourceFreshnessAt"`
-	Disposition              string                 `json:"disposition"`
-	AcceptedRiskExpiresAt    *time.Time             `json:"acceptedRiskExpiresAt"`
-	RiskAcceptanceExpired    bool                   `json:"riskAcceptanceExpired"`
-	VerifiedResolution       bool                   `json:"verifiedResolution"`
-	DecisionRevision         int64                  `json:"decisionRevision"`
-	EvidenceRevision         int64                  `json:"evidenceRevision"`
-	ChangeRevision           int64                  `json:"changeRevision"`
-	Notes                    []Note                 `json:"notes"`
-	Observations             []Observation          `json:"observations"`
-	DecisionEvents           []FindingDecisionEvent `json:"decisionEvents,omitempty"`
-	NotesNextCursor          *string                `json:"notesNextCursor"`
-	ObservationsNextCursor   *string                `json:"observationsNextCursor"`
-	DecisionEventsNextCursor *string                `json:"decisionEventsNextCursor,omitempty"`
-	Correlation              *FindingCorrelation    `json:"correlation,omitempty"`
+	AssetID                  string                      `json:"assetId"`
+	WorkspaceID              string                      `json:"workspaceId"`
+	ScopeLabel               string                      `json:"scopeLabel"`
+	Description              string                      `json:"description"`
+	Remediation              string                      `json:"remediation"`
+	Evidence                 FindingEvidence             `json:"evidence"`
+	OwnerID                  *string                     `json:"ownerId"`
+	SourceState              string                      `json:"sourceState"`
+	SourceFreshnessAt        *time.Time                  `json:"sourceFreshnessAt"`
+	Disposition              string                      `json:"disposition"`
+	AcceptedRiskExpiresAt    *time.Time                  `json:"acceptedRiskExpiresAt"`
+	DispositionApproval      *FindingDispositionApproval `json:"dispositionApproval"`
+	RiskAcceptanceExpired    bool                        `json:"riskAcceptanceExpired"`
+	VerifiedResolution       bool                        `json:"verifiedResolution"`
+	DecisionRevision         int64                       `json:"decisionRevision"`
+	EvidenceRevision         int64                       `json:"evidenceRevision"`
+	ChangeRevision           int64                       `json:"changeRevision"`
+	Notes                    []Note                      `json:"notes"`
+	Observations             []Observation               `json:"observations"`
+	DecisionEvents           []FindingDecisionEvent      `json:"decisionEvents,omitempty"`
+	NotesNextCursor          *string                     `json:"notesNextCursor"`
+	ObservationsNextCursor   *string                     `json:"observationsNextCursor"`
+	DecisionEventsNextCursor *string                     `json:"decisionEventsNextCursor,omitempty"`
+	Correlation              *FindingCorrelation         `json:"correlation,omitempty"`
 }
 
 type FindingEvidence struct {
@@ -93,6 +94,24 @@ type FindingDecision struct {
 	WorkflowState         string     `json:"workflowState"`
 	Disposition           string     `json:"disposition"`
 	AcceptedRiskExpiresAt *time.Time `json:"acceptedRiskExpiresAt"`
+	DispositionScope      string     `json:"dispositionScope"`
+	SuppressionExpiresAt  *time.Time `json:"suppressionExpiresAt"`
+	DispositionRationale  string     `json:"dispositionRationale"`
+}
+
+type FindingDispositionApproval struct {
+	ID               string     `json:"id"`
+	FindingID        string     `json:"findingId"`
+	DecisionRevision int64      `json:"decisionRevision"`
+	ActorID          string     `json:"actorId"`
+	ActorName        string     `json:"actorName"`
+	Disposition      string     `json:"disposition"`
+	ScopeKind        string     `json:"scopeKind"`
+	ScopeValue       string     `json:"scopeValue"`
+	Rationale        string     `json:"rationale"`
+	ExpiresAt        *time.Time `json:"expiresAt"`
+	CreatedAt        time.Time  `json:"createdAt"`
+	Expired          bool       `json:"expired"`
 }
 
 type FindingDecisionEvent struct {

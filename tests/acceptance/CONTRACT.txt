@@ -181,6 +181,17 @@ It labels source remediation as untrusted data and excludes raw evidence,
 analyst notes, unmapped source fields, credentials and executable content.
 X-ASPM-Handoff-Truncated is true|false. Workspace membership is required;
 foreign findings are 404 and non-GET methods are 405.
+Disposition values are none|accepted-risk|suppressed|false-positive. Any direct
+disposition/expiry/scope change requires a nonblank rationale. Accepted risk
+and false-positive are finding-scoped. Suppression requires an explicit
+finding|asset|source|scope selector and a future suppressionExpiresAt.
+Each non-none decision creates an immutable dispositionApproval with ID,
+finding/decision revision, actor, disposition, server-derived scope value,
+rationale, optional expiry, createdAt and computed expired state. Clearing
+sets disposition none and no active approval but never deletes old approval
+rows. Scan/reconciliation creates no approval. Correlation recreates selected
+approval semantics under the acting user/rationale instead of reusing another
+finding's approval ID.
 
 Reversible merge/split and retention policy/hold/preview now have dedicated M06
 gates. Physical archive/expiry execution, enterprise performance, full installer

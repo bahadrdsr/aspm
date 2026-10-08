@@ -120,17 +120,17 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 		adoHistoricalMigrations(t, filepath.Join("..", "..")), adoHistoricalMigrations(t, filepath.Dir(build.Executable)))
 
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15", "16", "17", "18", "19")
+	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15", "16", "17", "18", "19", "20")
 	same(t, "current app failed to add exact V12/V13/V14/V15/V16/V17/V18/V19 migrations", h.ledger(), currentLedger)
-	same(t, "V19 changed the relation/index set",
-		sourcecompat.ProjectRelationsV19(t, relations, h.relations()), relations)
-	same(t, "V19 contains a missing or unapproved catalog delta",
+	same(t, "V20 changed the relation/index set",
+		sourcecompat.ProjectRelationsV20(t, relations, h.relations()), relations)
+	same(t, "V20 contains a missing or unapproved catalog delta",
 		sourcecompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V19 changed complete historical business rows outside exact additions",
+	same(t, "V20 changed complete historical business rows outside exact additions",
 		sourcecompat.ProjectRowsCurrent(t, before, h.snapshot(names)), before)
 	for _, path := range paths {
 		body, _ := h.request(h.ctx, viewer, "GET", path, nil, 200)
-		same(t, "V19 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
+		same(t, "V20 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
 	}
 	h.adoEncrypted(github, githubToken)
 	same(t, "current queued GitHub replay changed its historical body/binding", h.adoJSON(h.admin, "POST", legacyQueuePath,
@@ -183,6 +183,6 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 	}
 	same(t, "upgrade/new ADO path altered historical human/source finding state", migratedFinding, expectedFinding)
 	check(t, h.json(viewer, "GET", "/api/v1/work", nil, 200).Total == 2, "post-upgrade canonical Work lost historical/new finding")
-	t.Logf("V11->V19 genuine API/native data preservation; published SQL=%d, parent SQL=%d; S3 traced once by parent object forwarders",
+	t.Logf("V11->V20 genuine API/native data preservation; published SQL=%d, parent SQL=%d; S3 traced once by parent object forwarders",
 		h.publishedQueries.Load(), h.queries.calls.Load())
 }

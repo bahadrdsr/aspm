@@ -7,7 +7,8 @@ export interface SyntheticPostureReport {
   asOf: string;
   totals: {
     assets: number; findings: number; openFindings: number; acceptedRisk: number;
-    expiredAcceptedRisk: number; inferredResolved: number; verifiedResolved: number;
+    expiredAcceptedRisk: number; suppressed: number; expiredSuppression: number;
+    falsePositive: number; inferredResolved: number; verifiedResolved: number;
   };
   bySeverity: { critical: number; high: number; medium: number; low: number; info: number };
   coverage: {
@@ -58,7 +59,8 @@ export function withFreshness(report: SyntheticPostureReport, days: number): Syn
 const initial: SyntheticPostureReport = {
   workspaceId: reportAlpha.id,
   asOf: "2026-09-12T12:34:56.000Z",
-  totals: { assets: 127, findings: 263, openFindings: 181, acceptedRisk: 37, expiredAcceptedRisk: 11, inferredResolved: 29, verifiedResolved: 0 },
+  totals: { assets: 127, findings: 263, openFindings: 181, acceptedRisk: 37, expiredAcceptedRisk: 11,
+    suppressed: 18, expiredSuppression: 4, falsePositive: 9, inferredResolved: 29, verifiedResolved: 0 },
   bySeverity: { critical: 17, high: 43, medium: 89, low: 101, info: 13 },
   coverage: { scannedAssets: 91, unscannedAssets: 36, staleAssets: 23, unknownFreshnessAssets: 7, freshnessWindowDays: 7 },
   freshnessWindow: { from: "", to: "", days: 7 },
@@ -68,19 +70,22 @@ const initial: SyntheticPostureReport = {
 export const alphaOverview = withFreshness(initial, 7);
 export const betaOverview = withFreshness({
   ...initial, workspaceId: reportBeta.id, asOf: "2026-09-13T04:05:06.000Z",
-  totals: { assets: 908, findings: 1493, openFindings: 1021, acceptedRisk: 109, expiredAcceptedRisk: 19, inferredResolved: 137, verifiedResolved: 0 },
+  totals: { assets: 908, findings: 1493, openFindings: 1021, acceptedRisk: 109, expiredAcceptedRisk: 19,
+    suppressed: 83, expiredSuppression: 11, falsePositive: 42, inferredResolved: 137, verifiedResolved: 0 },
   bySeverity: { critical: 83, high: 149, medium: 227, low: 401, info: 633 },
   coverage: { scannedAssets: 821, unscannedAssets: 87, staleAssets: 217, unknownFreshnessAssets: 53, freshnessWindowDays: 7 },
 }, 7);
 export const refreshedOverview = withFreshness({
   ...initial, asOf: "2026-09-13T13:35:57.000Z",
-  totals: { assets: 211, findings: 419, openFindings: 277, acceptedRisk: 61, expiredAcceptedRisk: 19, inferredResolved: 47, verifiedResolved: 0 },
+  totals: { assets: 211, findings: 419, openFindings: 277, acceptedRisk: 61, expiredAcceptedRisk: 19,
+    suppressed: 31, expiredSuppression: 7, falsePositive: 15, inferredResolved: 47, verifiedResolved: 0 },
   bySeverity: { critical: 31, high: 67, medium: 97, low: 113, info: 111 },
   coverage: { scannedAssets: 173, unscannedAssets: 38, staleAssets: 41, unknownFreshnessAssets: 13, freshnessWindowDays: 7 },
 }, 7);
 export const savedReport = withFreshness({
   ...initial, asOf: "2026-08-26T05:06:07.000Z",
-  totals: { assets: 71, findings: 149, openFindings: 103, acceptedRisk: 23, expiredAcceptedRisk: 5, inferredResolved: 17, verifiedResolved: 0 },
+  totals: { assets: 71, findings: 149, openFindings: 103, acceptedRisk: 23, expiredAcceptedRisk: 5,
+    suppressed: 12, expiredSuppression: 2, falsePositive: 6, inferredResolved: 17, verifiedResolved: 0 },
   bySeverity: { critical: 11, high: 19, medium: 31, low: 41, info: 47 },
   coverage: { scannedAssets: 61, unscannedAssets: 10, staleAssets: 13, unknownFreshnessAssets: 3, freshnessWindowDays: 7 },
 }, 7);
@@ -88,7 +93,8 @@ export const savedReport = withFreshness({
 export function emptyReport(workspaceId = reportAlpha.id) {
   return withFreshness({
     ...initial, workspaceId,
-    totals: { assets: 0, findings: 0, openFindings: 0, acceptedRisk: 0, expiredAcceptedRisk: 0, inferredResolved: 0, verifiedResolved: 0 },
+    totals: { assets: 0, findings: 0, openFindings: 0, acceptedRisk: 0, expiredAcceptedRisk: 0,
+      suppressed: 0, expiredSuppression: 0, falsePositive: 0, inferredResolved: 0, verifiedResolved: 0 },
     bySeverity: { critical: 0, high: 0, medium: 0, low: 0, info: 0 },
     coverage: { scannedAssets: 0, unscannedAssets: 0, staleAssets: 0, unknownFreshnessAssets: 0, freshnessWindowDays: 7 },
   }, 7);

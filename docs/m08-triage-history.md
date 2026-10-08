@@ -92,13 +92,21 @@ with visible clipboard success or denial feedback.
 ## Compatibility and limits
 
 V19 only widens the existing workflow-state CHECK and adds the decision-event
-table/indexes. Historical findings and decisions are not rewritten. Existing
-published V5, V6, V7, V8, V9, V10, and V11 fixtures migrate through V19 with
+table/indexes. V20 widens the disposition CHECK and adds immutable disposition
+approval records for accepted risk, suppression, and false-positive decisions.
+Historical findings and decisions are not rewritten. Existing
+published V5, V6, V7, V8, V9, V10, and V11 fixtures migrate through V20 with
 their business rows preserved.
+
+Accepted risk and false-positive approvals are finding-scoped. Suppression can
+be scoped to a finding, source, scan scope, or asset and requires a future
+expiry. Every create, change, and clear requires a human rationale. New scans,
+AI output, proof non-reproduction, and scanner-inferred resolution cannot create
+or remove an approval. Correlation recreates the selected approval semantics on
+the target finding rather than reusing another finding's approval identity.
 
 Still separate:
 
-- Scoped suppression and false-positive approval records.
 - Bulk risk acceptance.
 - Automatic notification policies.
 - Generic outbound webhooks.

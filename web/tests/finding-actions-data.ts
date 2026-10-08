@@ -24,8 +24,25 @@ export interface ActionObservation {
 export interface ActionDecision {
   ownerId: string | null;
   workflowState: WorkItem["workflowState"];
-  disposition: "none" | "accepted-risk";
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
   acceptedRiskExpiresAt: string | null;
+  dispositionScope: "" | "finding" | "asset" | "source" | "scope";
+  suppressionExpiresAt: string | null;
+  dispositionRationale: string;
+}
+export interface ActionDispositionApproval {
+  id: string;
+  findingId: string;
+  decisionRevision: number;
+  actorId: string;
+  actorName: string;
+  disposition: "accepted-risk" | "suppressed" | "false-positive";
+  scopeKind: "finding" | "asset" | "source" | "scope";
+  scopeValue: string;
+  rationale: string;
+  expiresAt: string | null;
+  createdAt: string;
+  expired: boolean;
 }
 export interface ActionDecisionEvent {
   id: string;
@@ -51,8 +68,9 @@ export interface ActionFinding extends WorkItem {
   ownerId: string | null;
   sourceState: "observed" | "inferred-resolved";
   sourceFreshnessAt: string | null;
-  disposition: "none" | "accepted-risk";
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
   acceptedRiskExpiresAt: string | null;
+  dispositionApproval: ActionDispositionApproval | null;
   riskAcceptanceExpired: boolean;
   verifiedResolution: false;
   decisionRevision: number;
@@ -133,6 +151,7 @@ export const primaryFinding: ActionFinding = {
   sourceState: "observed",
   disposition: "none",
   acceptedRiskExpiresAt: null,
+  dispositionApproval: null,
   riskAcceptanceExpired: false,
   verifiedResolution: false,
   decisionRevision: 1,

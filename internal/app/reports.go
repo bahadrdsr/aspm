@@ -21,6 +21,9 @@ type PostureTotals struct {
 	OpenFindings        int64 `json:"openFindings"`
 	AcceptedRisk        int64 `json:"acceptedRisk"`
 	ExpiredAcceptedRisk int64 `json:"expiredAcceptedRisk"`
+	Suppressed          int64 `json:"suppressed"`
+	ExpiredSuppression  int64 `json:"expiredSuppression"`
+	FalsePositive       int64 `json:"falsePositive"`
 	InferredResolved    int64 `json:"inferredResolved"`
 	VerifiedResolved    int64 `json:"verifiedResolved"`
 }
@@ -153,19 +156,32 @@ func (a *database) readPosture(ctx context.Context, db queryRower, workspace str
 			count(*) FILTER (WHERE workflow_state<>'resolved') AS open_findings,
 			count(*) FILTER (WHERE disposition='accepted-risk') AS accepted_risk,
 			count(*) FILTER (WHERE disposition='accepted-risk' AND accepted_risk_expires_at<=$2) AS expired_accepted_risk,
+			count(*) FILTER (WHERE disposition='suppressed') AS suppressed,
+			count(*) FILTER (WHERE disposition='suppressed' AND approval.expires_at<=$2) AS expired_suppression,
+			count(*) FILTER (WHERE disposition='false-positive') AS false_positive,
 			count(*) FILTER (WHERE source_state='inferred-resolved') AS inferred_resolved,
 			count(*) FILTER (WHERE severity='critical') AS critical,
 			count(*) FILTER (WHERE severity='high') AS high,
 			count(*) FILTER (WHERE severity='medium') AS medium,
 			count(*) FILTER (WHERE severity='low') AS low,
 			count(*) FILTER (WHERE severity='info') AS info
-		FROM `+a.table("findings")+` WHERE workspace_id=$1
+		FROM `+a.table("findings")+` f
+		LEFT JOIN LATERAL (
+			SELECT expires_at FROM `+a.table("finding_disposition_approvals")+` a
+			WHERE a.workspace_id=f.workspace_id AND a.finding_id=f.id
+			AND a.disposition=f.disposition AND a.decision_revision<=f.decision_revision
+			ORDER BY a.decision_revision DESC LIMIT 1
+		) approval ON true
+		WHERE f.workspace_id=$1
 	)
-	SELECT a.assets,f.findings,f.open_findings,f.accepted_risk,f.expired_accepted_risk,f.inferred_resolved,
+	SELECT a.assets,f.findings,f.open_findings,f.accepted_risk,f.expired_accepted_risk,
+		f.suppressed,f.expired_suppression,f.false_positive,f.inferred_resolved,
 		f.critical,f.high,f.medium,f.low,f.info,a.scanned,a.unscanned,a.stale,a.unknown_freshness
 	FROM asset_totals a CROSS JOIN finding_totals f`, workspace, asOf, report.FreshnessWindow.From).Scan(
 		&report.Totals.Assets, &report.Totals.Findings, &report.Totals.OpenFindings,
-		&report.Totals.AcceptedRisk, &report.Totals.ExpiredAcceptedRisk, &report.Totals.InferredResolved,
+		&report.Totals.AcceptedRisk, &report.Totals.ExpiredAcceptedRisk,
+		&report.Totals.Suppressed, &report.Totals.ExpiredSuppression, &report.Totals.FalsePositive,
+		&report.Totals.InferredResolved,
 		&report.BySeverity.Critical, &report.BySeverity.High, &report.BySeverity.Medium, &report.BySeverity.Low, &report.BySeverity.Info,
 		&report.Coverage.ScannedAssets, &report.Coverage.UnscannedAssets,
 		&report.Coverage.StaleAssets, &report.Coverage.UnknownFreshnessAssets,

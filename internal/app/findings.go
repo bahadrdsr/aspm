@@ -29,6 +29,11 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 	f.Evidence.VerificationState = "not-run"
 	f.RiskAcceptanceExpired = f.Disposition == "accepted-risk" && f.AcceptedRiskExpiresAt != nil &&
 		!a.config.Now().Before(*f.AcceptedRiskExpiresAt)
+	f.DispositionApproval, err = a.readDispositionApproval(r.Context(), workspace, id,
+		f.Disposition, f.DecisionRevision)
+	if err != nil {
+		return err
+	}
 	observationsCursor, notesCursor := r.URL.Query().Get("observationsCursor"), r.URL.Query().Get("notesCursor")
 	decisionsCursor, cursorErr := decisionCursor(r.URL.Query().Get("decisionsCursor"))
 	if (observationsCursor != "" && !validID(observationsCursor)) || (notesCursor != "" && !validID(notesCursor)) {

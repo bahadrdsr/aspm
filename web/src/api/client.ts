@@ -2,7 +2,7 @@ import { apiVersion } from "./types";
 import type {
   Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingBulkPatch, FindingBulkResponse, FindingCorrelation,
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
-  FindingDecision, FindingDecisionEvent, FindingMergeInput, FindingMergePreviewResponse,
+  FindingDecision, FindingDecisionEvent, FindingDispositionApproval, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportIntakeSummary, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
@@ -95,8 +95,34 @@ function findingDecision(value: unknown): FindingDecision {
   return {
     ownerId: nullableText(item.ownerId, "decision owner"),
     workflowState: choice(item.workflowState, ["open", "in-progress", "pending-retest", "resolved"], "decision workflow"),
-    disposition: choice(item.disposition, ["none", "accepted-risk"], "decision disposition"),
+    disposition: choice(item.disposition, ["none", "accepted-risk", "suppressed", "false-positive"], "decision disposition"),
     acceptedRiskExpiresAt: nullableTimestamp(item.acceptedRiskExpiresAt, "decision expiry"),
+    dispositionScope: choice(item.dispositionScope, ["", "finding", "asset", "source", "scope"], "decision scope"),
+    suppressionExpiresAt: nullableTimestamp(item.suppressionExpiresAt, "suppression expiry"),
+    dispositionRationale: text(item.dispositionRationale, "disposition rationale", true),
+  };
+}
+
+function findingDispositionApproval(value: unknown): FindingDispositionApproval {
+  const item = object(value, "finding disposition approval");
+  const disposition = choice(item.disposition,
+    ["accepted-risk", "suppressed", "false-positive"], "approved disposition");
+  const expiresAt = nullableTimestamp(item.expiresAt, "approval expiry");
+  if (disposition === "suppressed" && expiresAt === null ||
+    disposition === "false-positive" && expiresAt !== null) return invalid("disposition approval semantics");
+  return {
+    id: reportIdentifier(item.id, "disposition approval"),
+    findingId: reportIdentifier(item.findingId, "approved finding"),
+    decisionRevision: count(item.decisionRevision, "approval decision revision"),
+    actorId: reportIdentifier(item.actorId, "approval actor"),
+    actorName: text(item.actorName, "approval actor name"),
+    disposition,
+    scopeKind: choice(item.scopeKind, ["finding", "asset", "source", "scope"], "approval scope"),
+    scopeValue: text(item.scopeValue, "approval scope value"),
+    rationale: text(item.rationale, "approval rationale"),
+    expiresAt,
+    createdAt: timestamp(item.createdAt, "approval time"),
+    expired: boolean(item.expired, "approval expiry state"),
   };
 }
 
@@ -105,7 +131,8 @@ function findingDecisionEvent(value: unknown): FindingDecisionEvent {
   const revision = count(item.decisionRevision, "decision event revision");
   if (revision < 2) return invalid("decision event revision");
   const changedFields = array(item.changedFields, "decision changed fields").map((value) =>
-    choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"], "decision changed field"));
+    choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt",
+      "dispositionScope", "suppressionExpiresAt", "dispositionRationale"], "decision changed field"));
   if (new Set(changedFields).size !== changedFields.length) return invalid("decision changed fields");
   return {
     id: reportIdentifier(item.id, "decision event"),
@@ -290,8 +317,11 @@ export function parseFinding(value: unknown): FindingResponse {
       ownerId: finding.ownerId === undefined ? undefined : nullableText(finding.ownerId, "owner identifier"),
       sourceState: finding.sourceState === undefined ? undefined : choice(finding.sourceState, ["observed", "unknown", "stale", "inferred-resolved"], "source state"),
       sourceFreshnessAt: finding.sourceFreshnessAt === undefined ? undefined : nullableTimestamp(finding.sourceFreshnessAt, "source freshness"),
-      disposition: finding.disposition === undefined ? undefined : choice(finding.disposition, ["none", "accepted-risk"], "human disposition"),
+      disposition: finding.disposition === undefined ? undefined :
+        choice(finding.disposition, ["none", "accepted-risk", "suppressed", "false-positive"], "human disposition"),
       acceptedRiskExpiresAt: finding.acceptedRiskExpiresAt === undefined ? undefined : nullableTimestamp(finding.acceptedRiskExpiresAt, "risk acceptance expiry"),
+      dispositionApproval: finding.dispositionApproval === undefined ? undefined :
+        finding.dispositionApproval === null ? null : findingDispositionApproval(finding.dispositionApproval),
       riskAcceptanceExpired: finding.riskAcceptanceExpired === undefined ? undefined : boolean(finding.riskAcceptanceExpired, "risk acceptance expiry state"),
       verifiedResolution: finding.verifiedResolution === undefined ? undefined : boolean(finding.verifiedResolution, "resolution verification"),
       decisionRevision: finding.decisionRevision === undefined ? undefined : count(finding.decisionRevision, "finding decision revision"),
@@ -320,6 +350,7 @@ function parseFindingUpdate(value: unknown, id: string, workspace: string | null
     finding.ownerId === undefined || (finding.ownerId !== null && !/^[a-f0-9]{32}$/.test(finding.ownerId)) ||
     (finding.ownerId === null) !== (finding.ownerName === null) ||
     finding.disposition === undefined || finding.acceptedRiskExpiresAt === undefined ||
+    finding.dispositionApproval === undefined ||
     finding.riskAcceptanceExpired === undefined || finding.verifiedResolution === undefined ||
     finding.sourceState === undefined || finding.sourceFreshnessAt === undefined ||
     finding.notes === undefined || finding.observations === undefined) return invalid("updated finding");
@@ -394,7 +425,8 @@ function parseMergePreview(value: unknown, workspace: string | null, primary: st
   const otherMember = findingCorrelationMember(preview.other);
   if (primaryMember.findingId !== primary || otherMember.findingId !== other) return invalid("merge preview binding");
   const conflicts = array(preview.conflicts, "merge conflicts").map((value) =>
-    choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt"], "merge conflict"));
+  choice(value, ["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt",
+    "dispositionScope", "suppressionExpiresAt", "dispositionRationale"], "merge conflict"));
   const correlation = preview.correlation === null ? null : findingCorrelation(preview.correlation, workspace);
   if (correlation !== null && (correlation.state !== "active" || correlation.primaryFindingId !== primary ||
     correlation.members.some((member) => member.findingId === other))) return invalid("merge correlation binding");
@@ -761,6 +793,9 @@ function postureReport(value: unknown, workspace: string | null, days: number): 
       openFindings: count(totals.openFindings, "open finding total"),
       acceptedRisk: count(totals.acceptedRisk, "accepted risk total"),
       expiredAcceptedRisk: count(totals.expiredAcceptedRisk, "expired accepted risk total"),
+      suppressed: count(totals.suppressed, "suppressed finding total"),
+      expiredSuppression: count(totals.expiredSuppression, "expired suppression total"),
+      falsePositive: count(totals.falsePositive, "false-positive total"),
       inferredResolved: count(totals.inferredResolved, "source-inferred resolution total"),
       verifiedResolved: count(totals.verifiedResolved, "verified resolution total"),
     },
@@ -1061,6 +1096,8 @@ export const api = {
     if (input.workflowState !== undefined) body.workflowState = input.workflowState;
     if (input.disposition !== undefined) body.disposition = input.disposition;
     if (input.acceptedRiskExpiresAt !== undefined) body.acceptedRiskExpiresAt = input.acceptedRiskExpiresAt;
+    if (input.dispositionScope !== undefined) body.dispositionScope = input.dispositionScope;
+    if (input.suppressionExpiresAt !== undefined) body.suppressionExpiresAt = input.suppressionExpiresAt;
     if (input.rationale !== undefined) {
       if (input.rationale.includes("\0") || new TextEncoder().encode(input.rationale).byteLength > 8192 ||
         (input.rationale !== "" && input.rationale.trim() === "")) {

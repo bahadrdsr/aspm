@@ -2,7 +2,8 @@ export const apiVersion = "aspm/v1alpha1" as const;
 export type DataOrigin = "synthetic" | "live";
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
 export type WorkflowState = "open" | "in-progress" | "pending-retest" | "resolved";
-export type FindingDisposition = "none" | "accepted-risk";
+export type FindingDisposition = "none" | "accepted-risk" | "suppressed" | "false-positive";
+export type FindingDispositionScope = "finding" | "asset" | "source" | "scope";
 export type EvidenceAvailability = "available" | "archived" | "expired" | "missing" | "corrupt";
 export type FindingChangeKind = "new" | "changed" | "unchanged" | "reopened" | "inferred-resolved";
 export type ObservationChangeKind = FindingChangeKind | "historical" | "non-authoritative";
@@ -82,6 +83,7 @@ export interface FindingDetail extends WorkItem {
   sourceFreshnessAt?: string | null;
   disposition?: FindingDisposition;
   acceptedRiskExpiresAt?: string | null;
+  dispositionApproval?: FindingDispositionApproval | null;
   riskAcceptanceExpired?: boolean;
   verifiedResolution?: boolean;
   decisionRevision?: number;
@@ -107,6 +109,8 @@ export interface FindingPatch {
   workflowState?: WorkflowState;
   disposition?: FindingDisposition;
   acceptedRiskExpiresAt?: string | null;
+  dispositionScope?: FindingDispositionScope;
+  suppressionExpiresAt?: string | null;
   rationale?: string;
 }
 
@@ -118,6 +122,24 @@ export interface FindingDecision {
   workflowState: WorkflowState;
   disposition: FindingDisposition;
   acceptedRiskExpiresAt: string | null;
+  dispositionScope: "" | FindingDispositionScope;
+  suppressionExpiresAt: string | null;
+  dispositionRationale: string;
+}
+
+export interface FindingDispositionApproval {
+  id: string;
+  findingId: string;
+  decisionRevision: number;
+  actorId: string;
+  actorName: string;
+  disposition: Exclude<FindingDisposition, "none">;
+  scopeKind: FindingDispositionScope;
+  scopeValue: string;
+  rationale: string;
+  expiresAt: string | null;
+  createdAt: string;
+  expired: boolean;
 }
 
 export interface FindingDecisionEvent {
@@ -129,7 +151,8 @@ export interface FindingDecisionEvent {
   afterOwnerName: string | null;
   action: "update" | "bulk-update";
   rationale: string;
-  changedFields: ("ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt")[];
+  changedFields: ("ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt" |
+    "dispositionScope" | "suppressionExpiresAt" | "dispositionRationale")[];
   before: FindingDecision;
   after: FindingDecision;
   createdAt: string;
@@ -186,7 +209,8 @@ export interface FindingCorrelation {
 export interface FindingMergePreview {
   primary: FindingCorrelationMember;
   other: FindingCorrelationMember;
-  conflicts: Array<"ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt">;
+  conflicts: Array<"ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt" |
+    "dispositionScope" | "suppressionExpiresAt" | "dispositionRationale">;
   correlation: FindingCorrelation | null;
 }
 
@@ -471,6 +495,9 @@ export interface PostureReport {
     openFindings: number;
     acceptedRisk: number;
     expiredAcceptedRisk: number;
+    suppressed: number;
+    expiredSuppression: number;
+    falsePositive: number;
     inferredResolved: number;
     verifiedResolved: number;
   };

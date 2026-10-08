@@ -15,7 +15,11 @@ const now = "2026-10-07T20:00:00Z";
 type GroupState = "separate" | "two" | "three" | "partial" | "split";
 
 function decision() {
-  return { ownerId: null, workflowState: "open" as const, disposition: "none" as const, acceptedRiskExpiresAt: null };
+  return {
+    ownerId: null, workflowState: "open" as const, disposition: "none" as const,
+    acceptedRiskExpiresAt: null, dispositionScope: "" as const,
+    suppressionExpiresAt: null, dispositionRationale: "",
+  };
 }
 
 function member(id: string, sourceId: string, title: string, active = true) {

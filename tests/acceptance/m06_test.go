@@ -39,7 +39,8 @@ func TestM06_NewScanPreservesDecisionsAndExposesRiskExpiry(t *testing.T) {
 	assignee := h.addUser(h.admin, "analyst")
 	expires := h.services.cfg.Now().Add(5 * time.Minute)
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+first.ID, object{"ownerId": assignee.user.ID, "workflowState": "in-progress",
-		"disposition": "accepted-risk", "acceptedRiskExpiresAt": expires}, 200)
+		"disposition": "accepted-risk", "acceptedRiskExpiresAt": expires,
+		"rationale": "Accept synthetic risk for the bounded lifecycle test."}, 200)
 	h.json(h.admin, "POST", "/api/v1/findings/"+first.ID+"/notes", object{"text": "Synthetic decision retained across scans."}, 201)
 	newTime := sourceTime.Add(24 * time.Hour)
 	input["scanId"], input["sourceScanAt"], input["collectedAt"] = "scan-2", newTime, newTime.Add(time.Hour)

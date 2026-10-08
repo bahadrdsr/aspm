@@ -20,6 +20,8 @@ const ConnectionTargetCheck = `CHECK (profile = 'github-cloud-app'::text AND azu
 const CollectionTargetCheck = `CHECK (profile = 'github-cloud-app'::text AND azure_devops_target IS NULL AND azure_devops_selection IS NULL OR profile = 'ado-services-build-artifacts'::text AND repository = ''::text AND azure_devops_target IS NOT NULL AND jsonb_typeof(azure_devops_target) = 'object'::text AND azure_devops_selection IS NOT NULL AND jsonb_typeof(azure_devops_selection) = 'object'::text)`
 const LegacyWorkflowStateCheck = `CHECK (workflow_state = ANY (ARRAY['open'::text, 'in-progress'::text, 'resolved'::text]))`
 const WorkflowStateCheck = `CHECK (workflow_state = ANY (ARRAY['open'::text, 'in-progress'::text, 'pending-retest'::text, 'resolved'::text]))`
+const LegacyDispositionCheck = `CHECK (disposition = ANY (ARRAY['none'::text, 'accepted-risk'::text]))`
+const DispositionCheck = `CHECK (disposition = ANY (ARRAY['none'::text, 'accepted-risk'::text, 'suppressed'::text, 'false-positive'::text]))`
 
 func clone(value map[string][]string) map[string][]string {
 	result := make(map[string][]string, len(value))
@@ -200,7 +202,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV19(t, v13, current)
+	projected := ProjectV20(t, v13, current)
+	projected = ProjectV19(t, v13, projected)
 	projected = ProjectV17(t, v13, projected)
 	projected = ProjectV16(t, v13, projected)
 	projected = ProjectV15(t, v13, projected)
@@ -288,6 +291,14 @@ var v19Relations = []string{
 	"app_finding_decision_events_finding_revision_key|i",
 	"app_finding_decision_events_pkey|i",
 	"app_finding_decision_events_workspace_id_key|i",
+}
+
+var v20Relations = []string{
+	"app_finding_disposition_approvals|r",
+	"app_finding_disposition_approvals_finding_idx|i",
+	"app_finding_disposition_approvals_finding_revision_key|i",
+	"app_finding_disposition_approvals_pkey|i",
+	"app_finding_disposition_approvals_workspace_id_key|i",
 }
 
 var v14LegacyIndexes = []struct {
@@ -561,6 +572,38 @@ func ProjectV16(t testing.TB, before, current map[string][]string) map[string][]
 	return result
 }
 
+// ProjectV20 validates and projects the exact disposition constraint change.
+func ProjectV20(t testing.TB, before, current map[string][]string) map[string][]string {
+	t.Helper()
+	result := clone(current)
+	prior, present := before["findings/constraints"]
+	if !present {
+		return result
+	}
+	foundPrior := false
+	for _, row := range prior {
+		if strings.HasPrefix(row, "app_findings_disposition_check|") {
+			foundPrior = true
+			break
+		}
+	}
+	if !foundPrior {
+		return result
+	}
+	rows, present := current["findings/constraints"]
+	if !present {
+		t.Fatal("V20: findings constraints are missing")
+	}
+	rows = slices.Clone(rows)
+	separator, err := replace(rows, "app_findings_disposition_check", DispositionCheck, LegacyDispositionCheck)
+	if err != nil || separator == "" {
+		t.Fatal("V20: exact disposition constraint replacement is missing or ambiguous")
+	}
+	sortConstraints(rows)
+	result["findings/constraints"] = rows
+	return result
+}
+
 // ProjectV19 validates and projects the exact pending-retest constraint change.
 func ProjectV19(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
@@ -782,6 +825,25 @@ func ProjectRelationsV19(t testing.TB, before, current []string) []string {
 	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
 	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
 		t.Fatalf("V19: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
+			missing, unexpected)
+	}
+	return slices.Clone(before)
+}
+
+// ProjectRelationsV20 validates the complete current V13-V20 relation set.
+func ProjectRelationsV20(t testing.TB, before, current []string) []string {
+	t.Helper()
+	want := append(slices.Clone(before), v13Relations...)
+	want = append(want, v14Relations...)
+	want = append(want, v15Relations...)
+	want = append(want, v16Relations...)
+	want = append(want, v17Relations...)
+	want = append(want, v18Relations...)
+	want = append(want, v19Relations...)
+	want = append(want, v20Relations...)
+	missing, unexpected := relationDifference(want, current), relationDifference(current, want)
+	if len(want) != len(current) || len(missing) != 0 || len(unexpected) != 0 {
+		t.Fatalf("V20: relation/index set contains a missing or unapproved delta; missing=%v unexpected=%v",
 			missing, unexpected)
 	}
 	return slices.Clone(before)

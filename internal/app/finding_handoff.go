@@ -33,13 +33,15 @@ func boundedHandoffLine(value string, limit int) (string, bool) {
 func (a *Application) findingHandoff(w http.ResponseWriter, r *http.Request, workspace, id string) error {
 	var finding Finding
 	var scope Scope
+	var decisionRevision int64
 	dest := workDest(&finding.WorkItem)
 	dest = append(dest, &finding.AssetID, &finding.WorkspaceID, &scope.ID, &scope.Revision, &scope.Branch,
-		&finding.Remediation, &finding.SourceState, &finding.SourceFreshnessAt, &finding.Disposition)
+		&finding.Remediation, &finding.SourceState, &finding.SourceFreshnessAt, &finding.Disposition,
+		&decisionRevision)
 	err := a.pool.QueryRow(r.Context(), `SELECT f.id,f.title,asset.name,f.severity,owner.name,f.workflow_state,
 		f.source_scan_at,f.collected_at,f.imported_at,f.change_kind,f.change_at,
 		f.asset_id,f.workspace_id,f.scope_id,f.scope_revision,f.scope_branch,f.remediation,
-		f.source_state,f.source_freshness_at,f.disposition
+		f.source_state,f.source_freshness_at,f.disposition,f.decision_revision
 		FROM `+a.table("findings")+` f
 		JOIN `+a.table("assets")+` asset ON asset.workspace_id=f.workspace_id AND asset.id=f.asset_id
 		LEFT JOIN `+a.table("users")+` owner ON owner.id=f.owner_id
@@ -105,6 +107,18 @@ func (a *Application) findingHandoff(w http.ResponseWriter, r *http.Request, wor
 		finding.ID, title, asset, finding.Severity, owner)
 	fmt.Fprintf(&output, "Human workflow: %s\nHuman disposition: %s\nScanner-inferred state: %s\nVerification: not-run\n",
 		finding.WorkflowState, finding.Disposition, finding.SourceState)
+	approval, err := a.readDispositionApproval(r.Context(), workspace, id, finding.Disposition, decisionRevision)
+	if err != nil {
+		return err
+	}
+	if approval != nil {
+		rationale, rationaleCut := boundedHandoffLine(approval.Rationale, 2048)
+		scopeValue, scopeCut := boundedHandoffLine(approval.ScopeValue, 1024)
+		truncated = truncated || rationaleCut || scopeCut
+		fmt.Fprintf(&output, "Disposition approval: %s | scope=%s:%s | approvedBy=%s | expires=%s | expired=%t\n",
+			rationale, approval.ScopeKind, scopeValue, approval.ActorName,
+			handoffTime(approval.ExpiresAt), approval.Expired)
+	}
 	fmt.Fprintf(&output, "Scope: %s\nSource scan: %s\nSource freshness: %s\n\n",
 		scopeLabel, handoffTime(finding.SourceScanAt), handoffTime(finding.SourceFreshnessAt))
 	fmt.Fprintln(&output, "UNTRUSTED SOURCE-PROVIDED TEXT")

@@ -70,6 +70,7 @@ const ownerLabel = /^(?:Finding )?Owner$/i;
 const dispositionLabel = /^(?:Finding )?Disposition$/i;
 const noteLabel = /^(?:New note|Note text|Analyst note|Add note)$/i;
 const expiryLabel = /^(?:Risk acceptance|Accepted risk) expir(?:y|es at)(?: \(.*\))?$/i;
+const approvalRationaleLabel = /^Approval rationale$/i;
 const saveName = /^Save(?: (?:changes|owner|workflow|disposition|risk acceptance))?$/i;
 const positiveMessage = /(?:\bassigned\b|\bunassigned\b|\bsaved\b|\badded\b|\bupdated\b|\bchanged\b|\bcleared\b|\bsuccess(?:ful)?\b)/i;
 
@@ -243,8 +244,10 @@ async function riskForm(dialog: Locator) {
   } else if (await expiry.count() === 0) await accept.click();
   await expect(expiry).toBeVisible();
   expect(await expiry.getAttribute("type"), "Use datetime-local or explicit RFC3339 text, not a silently completed date.").toMatch(/^(?:datetime-local|text)$/);
+  const rationale = dialog.getByRole("textbox", { name: approvalRationaleLabel });
+  await expect(rationale).toBeVisible();
   const save = await formSave(expiry, /^Accept risk$|^Save(?: (?:changes|disposition|risk acceptance))?$/i);
-  return { expiry, save };
+  return { expiry, rationale, save };
 }
 async function fillExpiry(field: Locator, value: string) {
   const displayed = await field.getAttribute("type") === "datetime-local" ? value.slice(0, 16) : value;
@@ -255,11 +258,14 @@ async function clearRiskAction(dialog: Locator) {
   const disposition = dialog.getByRole("combobox", { name: dispositionLabel });
   if (await disposition.count()) {
     await disposition.selectOption("none");
-    return formSave(disposition);
+    return {
+      save: await formSave(disposition),
+      rationale: dialog.getByRole("textbox", { name: approvalRationaleLabel }),
+    };
   }
   const button = dialog.getByRole("button", { name: /^(?:Clear risk acceptance|Clear acceptance|Clear accepted risk)$/i });
   await expect(button).toBeVisible();
-  return button;
+  return { save: button, rationale: dialog.getByRole("textbox", { name: approvalRationaleLabel }) };
 }
 async function addNoteAction(dialog: Locator) {
   const field = noteField(dialog);
@@ -433,30 +439,43 @@ test("FA3 Human workflow starts, resolves and reopens without overwriting risk, 
   expect(actions.calls("PATCH", findingPath)).toHaveLength(3);
 });
 
-test("FA4 Accepted risk uses deliberate nullable expiry, retains an expired decision on error and clears without cross-field writes", async ({ page, actions }) => {
+test("FA4 Accepted risk requires approval rationale, retains failed expiry intent and clears explicitly", async ({ page, actions }) => {
   const initial = { ...primaryFinding, ownerId: currentOwner.id, ownerName: currentOwner.name, workflowState: "in-progress" as const };
   actions.seedFinding(initial);
   const dialog = await openFinding(page);
-  const { expiry, save } = await riskForm(dialog);
+  const { expiry, rationale, save } = await riskForm(dialog);
   await expect(expiry, "A blank expiry is allowed and must not become a guessed date.").toHaveValue("");
+  const initialRationale = "Accept this synthetic risk after human review.";
+  await rationale.fill(initialRationale);
   expect(actions.calls("PATCH", findingPath)).toHaveLength(0);
   const accepted = actions.queuePatch(200, true);
   const handle = await buttonHandle(save);
   await save.click();
-  await requested(actions, accepted, "PATCH", findingPath, { disposition: "accepted-risk", acceptedRiskExpiresAt: null });
+  await requested(actions, accepted, "PATCH", findingPath, {
+    disposition: "accepted-risk", dispositionScope: "finding",
+    acceptedRiskExpiresAt: null, suppressionExpiresAt: null, rationale: initialRationale,
+  });
   await pending(dialog, handle);
   await expect(fact(dialog, "Disposition")).toHaveText("None");
   await release(page, accepted);
   await expect(fact(dialog, "Disposition")).toHaveText(/^Accepted risk$/i);
   await expect(fact(dialog, "Risk acceptance expiry")).toHaveText("No expiry supplied");
   await expect(fact(dialog, "Expiry state from service")).toHaveText("Not expired");
+  await expect(fact(dialog, "Approval scope")).toContainText(primaryFinding.id);
+  await expect(fact(dialog, "Approved by")).toHaveText(actionUser.name);
+  await expect(fact(dialog, "Approval rationale")).toHaveText(initialRationale);
 
   const edit = await riskForm(dialog), displayed = await fillExpiry(edit.expiry, expiredRiskAt);
+  const expiryRationale = "Record an explicit expired synthetic acceptance.";
+  await edit.rationale.fill(expiryRationale);
   expect(actions.calls("PATCH", findingPath)).toHaveLength(1);
   const rejected = actions.queuePatch(503);
   await edit.save.click();
   await expect.poll(() => rejected.call !== null).toBe(true);
-  expect(Object.keys(rejected.call!.body), "Changing expiry alone must not resend stale owner, workflow or disposition.").toEqual(["acceptedRiskExpiresAt"]);
+  expect(rejected.call!.body).toEqual({
+    disposition: "accepted-risk", dispositionScope: "finding",
+    acceptedRiskExpiresAt: expiredRiskAt, suppressionExpiresAt: null, rationale: expiryRationale,
+  });
   expect(Date.parse(String(rejected.call!.body.acceptedRiskExpiresAt))).toBe(Date.parse(expiredRiskAt));
   await rejected.delivered;
   await expect(alerts(dialog).filter({ hasText: /could not|confirm|unavailable|failed/i }).first()).toBeVisible();
@@ -476,9 +495,11 @@ test("FA4 Accepted risk uses deliberate nullable expiry, retains an expired deci
   expect(confirmed).toMatchObject({ ownerId: currentOwner.id, workflowState: "in-progress", sourceState: "observed", verifiedResolution: false });
 
   const clear = await clearRiskAction(dialog), clearRejected = actions.queuePatch(503);
-  await clear.click();
+  const clearRationale = "Clear the synthetic accepted-risk approval.";
+  await clear.rationale.fill(clearRationale);
+  await clear.save.click();
   await expect.poll(() => clearRejected.call !== null).toBe(true);
-  expect([{ disposition: "none" }, { disposition: "none", acceptedRiskExpiresAt: null }]).toContainEqual(clearRejected.call!.body);
+  expect(clearRejected.call!.body).toEqual({ disposition: "none", rationale: clearRationale });
   await clearRejected.delivered;
   await expect(alerts(dialog).filter({ hasText: /could not|confirm|unavailable|failed/i }).first()).toBeVisible();
   await expect(fact(dialog, "Disposition")).toHaveText(/^Accepted risk$/i);
@@ -488,7 +509,7 @@ test("FA4 Accepted risk uses deliberate nullable expiry, retains an expired deci
   if (await dispositionDraft.count()) await expect(dispositionDraft).toHaveValue("none");
   await expect(success(dialog)).toHaveCount(0);
   const cleared = actions.queuePatch();
-  await clear.click();
+  await clear.save.click();
   await requested(actions, cleared, "PATCH", findingPath, clearRejected.call!.body);
   await cleared.delivered;
   expect(acknowledgedFinding(cleared)).toMatchObject({
@@ -499,6 +520,47 @@ test("FA4 Accepted risk uses deliberate nullable expiry, retains an expired deci
   await expect(dialog.getByText("Expired", { exact: true })).toHaveCount(0);
   await unchangedSource(dialog, initial);
   expect(actions.calls("PATCH", findingPath)).toHaveLength(5);
+});
+
+test("FA11 suppression scope and false-positive approval stay distinct from workflow and verification", async ({ page, actions }) => {
+  const dialog = await openFinding(page);
+  const disposition = dialog.getByRole("combobox", { name: dispositionLabel });
+  const scope = dialog.getByRole("combobox", { name: "Suppression scope", exact: true });
+  const suppressionExpiry = dialog.getByRole("textbox", { name: /Suppression expiry/i });
+  const rationale = dialog.getByRole("textbox", { name: approvalRationaleLabel });
+  const save = dialog.getByRole("button", { name: "Save disposition", exact: true });
+  await disposition.selectOption("suppressed");
+  await scope.selectOption("source");
+  const expiry = "2026-10-01T12:00:00Z";
+  await suppressionExpiry.fill(expiry);
+  const suppressionRationale = "Suppress this synthetic source until the reviewed expiry.";
+  await rationale.fill(suppressionRationale);
+  await save.click();
+  await expect.poll(() => actions.calls("PATCH", findingPath).at(-1)?.status).toBe(200);
+  expect(actions.calls("PATCH", findingPath).at(-1)?.body).toEqual({
+    disposition: "suppressed", dispositionScope: "source", acceptedRiskExpiresAt: null,
+    suppressionExpiresAt: expiry, rationale: suppressionRationale,
+  });
+  await expect(fact(dialog, "Disposition")).toHaveText(/^Suppressed$/i);
+  await expect(fact(dialog, "Approval scope")).toContainText("Source");
+  await expect(fact(dialog, "Approval rationale")).toHaveText(suppressionRationale);
+  await expect(fact(dialog, "Approval expiry state")).toHaveText("Not expired");
+  await expect(fact(dialog, "Human workflow")).toHaveText("Open");
+  await expect(dialog.getByText("No independently verified resolution is recorded.", { exact: true })).toBeVisible();
+
+  await disposition.selectOption("false-positive");
+  const falsePositiveRationale = "Human review found no canonical issue in the synthetic evidence.";
+  await rationale.fill(falsePositiveRationale);
+  await save.click();
+  await expect.poll(() => actions.calls("PATCH", findingPath).at(-1)?.status).toBe(200);
+  expect(actions.calls("PATCH", findingPath).at(-1)?.body).toEqual({
+    disposition: "false-positive", dispositionScope: "finding", acceptedRiskExpiresAt: null,
+    suppressionExpiresAt: null, rationale: falsePositiveRationale,
+  });
+  await expect(fact(dialog, "Disposition")).toHaveText(/^False positive$/i);
+  await expect(fact(dialog, "Approval scope")).toContainText(primaryFinding.id);
+  await expect(fact(dialog, "Approval rationale")).toHaveText(falsePositiveRationale);
+  await expect(fact(dialog, "Approval expiry")).toHaveCount(0);
 });
 
 test("FA5 Notes preserve literal UTF-8 text, reject invalid/failed posts, prevent duplicates and reconcile server note identities", async ({ page, actions }) => {

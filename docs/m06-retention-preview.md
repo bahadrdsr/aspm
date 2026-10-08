@@ -92,7 +92,7 @@ archive tiers as populated.
   approval.
 - The complete 151-case browser suite passes with the lazy Settings and explicit
   observation-restoration workflows.
-- The authentic pinned V11 production closure migrates through V19 while
+- The authentic pinned V11 production closure migrates through V20 while
   preserving historical API/native data and exact old business rows.
 
 ## Remaining limits

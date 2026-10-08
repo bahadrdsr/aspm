@@ -525,7 +525,10 @@ func (c *coreAPI) seed() app.Finding {
 	rows := c.json(c.admin, "GET", "/api/v1/work", nil, 200)
 	check(c.f.t, len(rows.Items) == 1, "actual ingestion did not create one finding")
 	id := rows.Items[0]["id"].(string)
-	c.json(c.admin, "PATCH", "/api/v1/findings/"+id, map[string]any{"ownerId": c.admin.ID, "workflowState": "in-progress", "disposition": "accepted-risk", "acceptedRiskExpiresAt": time.Now().Add(time.Hour)}, 200)
+	c.json(c.admin, "PATCH", "/api/v1/findings/"+id, map[string]any{
+		"ownerId": c.admin.ID, "workflowState": "in-progress", "disposition": "accepted-risk",
+		"acceptedRiskExpiresAt": time.Now().Add(time.Hour), "rationale": "Accept synthetic runtime risk.",
+	}, 200)
 	c.json(c.admin, "POST", "/api/v1/findings/"+id+"/notes", map[string]string{"text": "HUMAN-RUNTIME-NOTE-NOT-APPROVED"}, 201)
 	f := c.finding(id)
 	check(c.f.t, len(f.Observations) == 1 && !f.VerifiedResolution, "actual finding/observation contract missing")

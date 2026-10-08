@@ -129,6 +129,15 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
                 <div className="full-width"><dt>Risk acceptance expiry</dt><dd>{finding.acceptedRiskExpiresAt ? <time dateTime={finding.acceptedRiskExpiresAt}>{timestampLabel(finding.acceptedRiskExpiresAt)}</time> : "No expiry supplied"}</dd></div>
                 <div className="full-width"><dt>Expiry state from service</dt><dd>{finding.riskAcceptanceExpired === undefined ? "Not supplied" : finding.riskAcceptanceExpired ? "Expired" : "Not expired"}</dd></div>
               </>}
+              {finding.dispositionApproval && <>
+                <div><dt>Approval scope</dt><dd>{label(finding.dispositionApproval.scopeKind)}: {finding.dispositionApproval.scopeValue}</dd></div>
+                <div><dt>Approved by</dt><dd>{finding.dispositionApproval.actorName}</dd></div>
+                <div className="full-width"><dt>Approval rationale</dt><dd>{finding.dispositionApproval.rationale}</dd></div>
+                {finding.dispositionApproval.expiresAt && <>
+                  <div><dt>Approval expiry</dt><dd><time dateTime={finding.dispositionApproval.expiresAt}>{timestampLabel(finding.dispositionApproval.expiresAt)}</time></dd></div>
+                  <div><dt>Approval expiry state</dt><dd>{finding.dispositionApproval.expired ? "Expired" : "Not expired"}</dd></div>
+                </>}
+              </>}
             </dl>
             {finding.sourceState === "inferred-resolved" && <p className="section-note">Source absence supports an inferred resolution only. It does not change the analyst's workflow, risk acceptance or verification.</p>}
             <p className="section-note">{finding.verifiedResolution === true ? "The service records an independently verified resolution." : finding.verifiedResolution === false ? "No independently verified resolution is recorded." : "Independent resolution verification was not supplied."}</p>

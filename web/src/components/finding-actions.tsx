@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { api, APIError } from "@/api/client";
-import type { FindingDetail, FindingNote, FindingPatch, FindingResponse } from "@/api/types";
+import type { FindingDetail, FindingDispositionScope, FindingNote, FindingPatch, FindingResponse } from "@/api/types";
 import { inputChoice } from "@/lib/application-input";
 import { useScopedAction } from "@/lib/use-scoped-action";
 import { useSession } from "@/lib/session";
@@ -18,11 +18,11 @@ function useDraft<T>(confirmed: T) {
   };
 }
 
-function riskExpiry(value: string): string | null {
+function dispositionExpiry(value: string, label: string): string | null {
   if (value === "") return null;
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) ||
     !Number.isFinite(Date.parse(value))) {
-    throw new APIError("Risk acceptance expiry must be an RFC3339 timestamp with a timezone, or blank for no expiry.", "invalid-input", false);
+    throw new APIError(`${label} must be an RFC3339 timestamp with a timezone.`, "invalid-input", false);
   }
   return value;
 }
@@ -40,9 +40,16 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
   const [workflowRationale, setWorkflowRationale] = useState("");
   const workflow = useDraft<string>(finding.workflowState);
   const disposition = useDraft<string>(finding.disposition ?? "none");
-  const expiry = useDraft(finding.acceptedRiskExpiresAt ?? "");
+  const dispositionScope = useDraft(finding.dispositionApproval?.scopeKind ?? "finding");
+  const riskExpiry = useDraft(finding.acceptedRiskExpiresAt ?? "");
+  const suppressionExpiry = useDraft(finding.disposition === "suppressed"
+    ? finding.dispositionApproval?.expiresAt ?? "" : "");
+  const [dispositionRationale, setDispositionRationale] = useState("");
   const riskChanged = disposition.value !== (finding.disposition ?? "none") ||
-    (disposition.value === "accepted-risk" && expiry.value !== (finding.acceptedRiskExpiresAt ?? ""));
+    dispositionScope.value !== (finding.dispositionApproval?.scopeKind ?? "finding") ||
+    (disposition.value === "accepted-risk" && riskExpiry.value !== (finding.acceptedRiskExpiresAt ?? "")) ||
+    (disposition.value === "suppressed" && suppressionExpiry.value !==
+      (finding.dispositionApproval?.expiresAt ?? ""));
 
   function save(kind: typeof intent, fields: () => FindingPatch) {
     if (action.pending) return;
@@ -53,9 +60,12 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
       return api.updateFinding(finding.id, fields(), signal);
     }, (response) => {
       if (kind === "workflow") { workflow.reset(); setWorkflowRationale(""); }
-      if (kind === "risk") { disposition.reset(); expiry.reset(); }
+      if (kind === "risk") {
+        disposition.reset(); dispositionScope.reset(); riskExpiry.reset(); suppressionExpiry.reset();
+        setDispositionRationale("");
+      }
       onConfirmed(response, kind === "owner" ? "Owner updated from the service." :
-        kind === "workflow" ? "Human workflow saved." : "Risk acceptance saved.");
+        kind === "workflow" ? "Human workflow saved." : "Disposition approval saved.");
     });
   }
   function saveWorkflow(event: FormEvent<HTMLFormElement>) {
@@ -73,11 +83,30 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
     event.preventDefault();
     if (!event.currentTarget.reportValidity()) return;
     save("risk", () => {
-      const selected = inputChoice(disposition.value, ["none", "accepted-risk"] as const, "disposition");
-      if (selected === "none") return { disposition: "none" };
-      const acceptedRiskExpiresAt = riskExpiry(expiry.value);
-      return finding.disposition === "accepted-risk" ? { acceptedRiskExpiresAt } :
-        { disposition: selected, acceptedRiskExpiresAt };
+      const selected = inputChoice(disposition.value,
+        ["none", "accepted-risk", "suppressed", "false-positive"] as const, "disposition");
+      if (dispositionRationale.trim() === "") {
+        throw new APIError("Disposition changes require a rationale.", "invalid-input", false);
+      }
+      if (selected === "none") return { disposition: "none", rationale: dispositionRationale };
+      if (selected === "accepted-risk") return {
+        disposition: selected, dispositionScope: "finding",
+        acceptedRiskExpiresAt: riskExpiry.value === "" ? null :
+          dispositionExpiry(riskExpiry.value, "Risk acceptance expiry"),
+        suppressionExpiresAt: null, rationale: dispositionRationale,
+      };
+      if (selected === "suppressed") return {
+        disposition: selected,
+        dispositionScope: inputChoice(dispositionScope.value,
+          ["finding", "asset", "source", "scope"] as const, "suppression scope"),
+        acceptedRiskExpiresAt: null,
+        suppressionExpiresAt: dispositionExpiry(suppressionExpiry.value, "Suppression expiry"),
+        rationale: dispositionRationale,
+      };
+      return {
+        disposition: selected, dispositionScope: "finding",
+        acceptedRiskExpiresAt: null, suppressionExpiresAt: null, rationale: dispositionRationale,
+      };
     });
   }
   return <section className="detail-section finding-actions" aria-label="Finding actions">
@@ -99,26 +128,42 @@ export function FindingActions({ finding, message, outsideFilter, onBegin, onCon
           onChange={(event) => setWorkflowRationale(event.target.value)} /></label>
       <ActionButton type="submit" variant="outline" disabled={action.pending || workflow.value === finding.workflowState}>Save workflow</ActionButton>
     </form>
-    <form aria-label="Change risk acceptance" className="finding-risk-form" onSubmit={saveRisk}>
+    <form aria-label="Change finding disposition" className="finding-risk-form" onSubmit={saveRisk}>
       <label className="finding-edit-field">Disposition<select value={disposition.value} disabled={action.pending}
         onChange={(event) => disposition.change(event.target.value)}>
         <option value="none">None</option><option value="accepted-risk">Accepted risk</option>
+        <option value="suppressed">Suppressed</option><option value="false-positive">False positive</option>
+      </select></label>
+      <label className="finding-edit-field">Suppression scope<select value={dispositionScope.value}
+        disabled={action.pending || disposition.value !== "suppressed"}
+        onChange={(event) => dispositionScope.change(event.target.value as FindingDispositionScope)}>
+        <option value="finding">Finding</option><option value="source">Source</option>
+        <option value="scope">Scan scope</option><option value="asset">Asset</option>
       </select></label>
       <label className="finding-edit-field">Risk acceptance expiry (RFC3339, optional)
-        <input type="text" value={expiry.value} autoComplete="off" placeholder="YYYY-MM-DDTHH:mm:ssZ"
+        <input type="text" value={riskExpiry.value} autoComplete="off" placeholder="YYYY-MM-DDTHH:mm:ssZ"
           disabled={action.pending || disposition.value !== "accepted-risk"}
           aria-invalid={intent === "risk" && action.error?.code === "invalid-input" ? true : undefined}
-          onChange={(event) => expiry.change(event.target.value)} /></label>
-      <p className="section-note">Blank means no expiry. The service determines whether a saved acceptance is expired; changing workflow never extends it.</p>
-      <ActionButton type="submit" variant="outline" disabled={action.pending || !riskChanged}>Save risk acceptance</ActionButton>
+          onChange={(event) => riskExpiry.change(event.target.value)} /></label>
+      <label className="finding-edit-field">Suppression expiry (RFC3339, required)
+        <input type="text" value={suppressionExpiry.value} autoComplete="off" placeholder="YYYY-MM-DDTHH:mm:ssZ"
+          required={disposition.value === "suppressed"}
+          disabled={action.pending || disposition.value !== "suppressed"}
+          onChange={(event) => suppressionExpiry.change(event.target.value)} /></label>
+      <label className="finding-edit-field">Approval rationale
+        <textarea rows={3} maxLength={8192} required={riskChanged} value={dispositionRationale}
+          disabled={action.pending} onChange={(event) => setDispositionRationale(event.target.value)} /></label>
+      <p className="section-note">Suppression requires a future expiry. False-positive and accepted-risk decisions are finding-scoped. Source, workflow, AI, and proof states remain separate.</p>
+      <ActionButton type="submit" variant="outline"
+        disabled={action.pending || !riskChanged || dispositionRationale.trim() === ""}>Save disposition</ActionButton>
     </form>
     <div className="finding-action-feedback">
-      {action.pending && <p role="status">Saving {intent === "risk" ? "risk acceptance" : intent}. Please wait.</p>}
+      {action.pending && <p role="status">Saving {intent === "risk" ? "disposition approval" : intent}. Please wait.</p>}
       <FormError error={action.error} />
       {message && <p role="status">{message}</p>}
       {outsideFilter && <p role="status">This finding no longer matches the current Work filter. Closing returns to the Work heading; your filter is preserved.</p>}
     </div>
-    <p className="section-note">Human workflow and risk acceptance do not independently verify a resolution or change source evidence.</p>
+    <p className="section-note">Human workflow and disposition do not independently verify a resolution or change source evidence.</p>
   </section>;
 }
 

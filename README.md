@@ -58,6 +58,8 @@ explicit pending-retest state, and durable paged decision history. Source state,
 human workflow, risk disposition, AI advice, and verification remain separate.
 Finding detail can copy a permission-checked plain-text developer handoff with
 bounded evidence references but without raw evidence, notes, or scanner extras.
+Accepted risk, scoped suppression, and false-positive decisions require explicit
+human rationale and retain immutable approval provenance and expiry semantics.
 See `docs/m08-triage-history.md`.
 
 The seven report intake profiles are registered through the public compiled-in

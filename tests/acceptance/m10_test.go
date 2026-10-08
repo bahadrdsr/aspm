@@ -57,6 +57,7 @@ func TestM10_PostureSeparatesHumanWorkSourceResolutionAndCoverage(t *testing.T) 
 	expiry := h.services.cfg.Now().Add(time.Minute)
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+first.ID, object{
 		"disposition": "accepted-risk", "acceptedRiskExpiresAt": expiry,
+		"rationale": "Accept synthetic risk for posture reporting.",
 	}, 200)
 	h.clock.Add(int64(2 * time.Minute))
 	newer := sourceTime.Add(24 * time.Hour)

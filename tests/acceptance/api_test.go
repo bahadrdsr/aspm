@@ -55,6 +55,7 @@ type finding struct {
 	AssetID, WorkspaceID, ScopeLabel, Description, Remediation, SourceState, Disposition string
 	OwnerID                                                                              *string
 	SourceFreshnessAt, AcceptedRiskExpiresAt                                             *time.Time
+	DispositionApproval                                                                  *findingDispositionApproval
 	RiskAcceptanceExpired, VerifiedResolution                                            bool
 	DecisionRevision, EvidenceRevision, ChangeRevision                                   int64
 	Evidence                                                                             struct{ Text, SourceLabel, VerificationState string }
@@ -69,6 +70,16 @@ type findingDecision struct {
 	WorkflowState         string
 	Disposition           string
 	AcceptedRiskExpiresAt *time.Time
+	DispositionScope      string
+	SuppressionExpiresAt  *time.Time
+	DispositionRationale  string
+}
+type findingDispositionApproval struct {
+	ID, FindingID, ActorID, ActorName, Disposition, ScopeKind, ScopeValue, Rationale string
+	DecisionRevision                                                                 int64
+	ExpiresAt                                                                        *time.Time
+	CreatedAt                                                                        time.Time
+	Expired                                                                          bool
 }
 type findingDecisionEvent struct {
 	ID, ActorID, ActorName, Action, Rationale string

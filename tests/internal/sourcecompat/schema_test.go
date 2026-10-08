@@ -90,6 +90,7 @@ func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 	before["findings/columns"] = []string{"id|text|true|"}
 	before["findings/constraints"] = []string{
 		"app_findings_pkey|PRIMARY KEY (id)",
+		"app_findings_disposition_check|" + LegacyDispositionCheck,
 		"app_findings_workflow_state_check|" + LegacyWorkflowStateCheck,
 	}
 	v12, err := expected(before)
@@ -125,6 +126,9 @@ func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 		"app_findings_content_digest_check|CHECK (content_digest = ''::text OR content_digest ~ '^sha256:[0-9a-f]{64}$'::text)",
 		"app_findings_content_digest_not_null|NOT NULL content_digest")
 	for i, row := range current["findings/constraints"] {
+		if row == "app_findings_disposition_check|"+LegacyDispositionCheck {
+			current["findings/constraints"][i] = "app_findings_disposition_check|" + DispositionCheck
+		}
 		if row == "app_findings_workflow_state_check|"+LegacyWorkflowStateCheck {
 			current["findings/constraints"][i] = "app_findings_workflow_state_check|" + WorkflowStateCheck
 		}
@@ -234,6 +238,23 @@ func TestProjectRelationsV19AcceptsOnlyExactDecisionHistoryRelations(t *testing.
 	slices.Reverse(current)
 	if got := ProjectRelationsV19(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("exact V19 relation projection did not restore the prior relation set")
+	}
+}
+
+func TestProjectRelationsV20AcceptsOnlyExactDispositionApprovalRelations(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV20(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V20 relation projection did not restore the prior relation set")
 	}
 }
 

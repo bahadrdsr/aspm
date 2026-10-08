@@ -421,7 +421,8 @@ func (h *harness) seed() app.Finding {
 		"ownerId": h.admin.ID}, 201).Asset
 	_, finding := h.ingest(h.admin, asset.ID, "scan-1", "SYNTHETIC-RAW-NOT-APPROVED: analyst must supply an independently reviewed context.")
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+finding.ID, map[string]any{
-		"ownerId": h.admin.ID, "workflowState": "in-progress", "disposition": "accepted-risk", "acceptedRiskExpiresAt": h.now().Add(time.Hour),
+		"ownerId": h.admin.ID, "workflowState": "in-progress", "disposition": "accepted-risk",
+		"acceptedRiskExpiresAt": h.now().Add(time.Hour), "rationale": "Accept synthetic assessment risk.",
 	}, 200)
 	h.json(h.admin, "POST", "/api/v1/findings/"+finding.ID+"/notes", map[string]string{"text": "SYNTHETIC-NOTE-NOT-APPROVED"}, 201)
 	return h.finding(h.admin, finding.ID)

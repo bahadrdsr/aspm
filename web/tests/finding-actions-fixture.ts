@@ -7,7 +7,8 @@ import {
   currentOwner, findingPath, notesPath, primaryFinding, serverNow, validExpiry, validNoteText, workItem, workPath,
 } from "./finding-actions-data";
 import type {
-  ActionDecision, ActionDecisionEvent, ActionFinding, ActionFindingResponse, ActionNote, ActionRole, ActionWorkResponse,
+  ActionDecision, ActionDecisionEvent, ActionDispositionApproval, ActionFinding, ActionFindingResponse,
+  ActionNote, ActionRole, ActionWorkResponse,
 } from "./finding-actions-data";
 
 type Denial = 400 | 401 | 403 | 503;
@@ -223,7 +224,8 @@ export class FindingActionsAPI {
   }
 
   private patch(finding: ActionFinding, body: Record<string, unknown>): ActionFinding | null {
-    if (Object.keys(body).some((key) => !["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt", "rationale"].includes(key))) {
+    if (Object.keys(body).some((key) => !["ownerId", "workflowState", "disposition", "acceptedRiskExpiresAt",
+      "dispositionScope", "suppressionExpiresAt", "rationale"].includes(key))) {
       this.violations.push("PATCH accepts selected owner/workflow/disposition/expiry/rationale fields only, not UI authority or revision fields.");
       return null;
     }
@@ -241,16 +243,53 @@ export class FindingActionsAPI {
       next.workflowState = body.workflowState as ActionFinding["workflowState"];
     }
     if ("disposition" in body) {
-      if (typeof body.disposition !== "string" || !["none", "accepted-risk"].includes(body.disposition)) return null;
+      if (typeof body.disposition !== "string" ||
+        !["none", "accepted-risk", "suppressed", "false-positive"].includes(body.disposition)) return null;
       next.disposition = body.disposition as ActionFinding["disposition"];
-      if (next.disposition === "none" && !("acceptedRiskExpiresAt" in body)) next.acceptedRiskExpiresAt = null;
     }
     if ("acceptedRiskExpiresAt" in body) {
       const value = body.acceptedRiskExpiresAt;
       if (value !== null && !validExpiry(value)) return null;
       next.acceptedRiskExpiresAt = value as string | null;
     }
+    if (next.disposition === "none") next.acceptedRiskExpiresAt = null;
     if (next.acceptedRiskExpiresAt !== null && next.disposition !== "accepted-risk") return null;
+    const dispositionTouched = ["disposition", "acceptedRiskExpiresAt", "dispositionScope", "suppressionExpiresAt"]
+      .some((key) => key in body);
+    if (dispositionTouched && (typeof body.rationale !== "string" || !validNoteText(body.rationale))) return null;
+    if (next.disposition === "none") {
+      next.acceptedRiskExpiresAt = null;
+      next.dispositionApproval = null;
+    } else if (dispositionTouched) {
+      const scopeKind = next.disposition === "suppressed" ? body.dispositionScope : "finding";
+      const suppressionExpiry = body.suppressionExpiresAt;
+      if (!["finding", "asset", "source", "scope"].includes(String(scopeKind))) return null;
+      if (next.disposition === "suppressed" &&
+        (!validExpiry(suppressionExpiry) || Date.parse(String(suppressionExpiry)) <= Date.parse(serverNow))) return null;
+      if (next.disposition === "false-positive" && scopeKind !== "finding" ||
+        next.disposition !== "suppressed" && suppressionExpiry != null) return null;
+      const scopeValue = scopeKind === "finding" ? next.id :
+        scopeKind === "asset" ? next.assetId :
+          scopeKind === "source" ? next.observations[0]?.sourceId ?? "" : next.scopeLabel;
+      const approval: ActionDispositionApproval = {
+        id: `d100000000000000${(this.decisionSequence + 1).toString(16).padStart(16, "0")}`,
+        findingId: next.id,
+        decisionRevision: next.decisionRevision + 1,
+        actorId: actionUser.id,
+        actorName: actionUser.name,
+        disposition: next.disposition,
+        scopeKind: scopeKind as ActionDispositionApproval["scopeKind"],
+        scopeValue,
+        rationale: String(body.rationale),
+        expiresAt: next.disposition === "accepted-risk" ? next.acceptedRiskExpiresAt :
+          next.disposition === "suppressed" ? String(suppressionExpiry) : null,
+        createdAt: serverNow,
+        expired: (next.disposition === "accepted-risk" ? next.acceptedRiskExpiresAt :
+          next.disposition === "suppressed" ? String(suppressionExpiry) : null) !== null &&
+          Date.parse(String(next.disposition === "accepted-risk" ? next.acceptedRiskExpiresAt : suppressionExpiry)) <= Date.parse(serverNow),
+      };
+      next.dispositionApproval = approval;
+    }
     next.riskAcceptanceExpired = next.disposition === "accepted-risk" && next.acceptedRiskExpiresAt !== null &&
       Date.parse(next.acceptedRiskExpiresAt) <= Date.parse(serverNow);
     return next;
@@ -260,6 +299,9 @@ export class FindingActionsAPI {
     return {
       ownerId: finding.ownerId, workflowState: finding.workflowState, disposition: finding.disposition,
       acceptedRiskExpiresAt: finding.acceptedRiskExpiresAt,
+      dispositionScope: finding.dispositionApproval?.scopeKind ?? (finding.disposition === "none" ? "" : "finding"),
+      suppressionExpiresAt: finding.disposition === "suppressed" ? finding.dispositionApproval?.expiresAt ?? null : null,
+      dispositionRationale: finding.dispositionApproval?.rationale ?? "",
     };
   }
 

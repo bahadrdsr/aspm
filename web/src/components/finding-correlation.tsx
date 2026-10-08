@@ -34,17 +34,40 @@ function DecisionEditor({ title, value, owners, disabled, onChange }: {
     </select></label>
     <label>Workflow<select value={value.workflowState} onChange={(event) =>
       onChange({ ...value, workflowState: event.target.value as FindingDecision["workflowState"] })}>
-      <option value="open">Open</option><option value="in-progress">In progress</option><option value="resolved">Resolved</option>
+      <option value="open">Open</option><option value="in-progress">In progress</option>
+      <option value="pending-retest">Pending retest</option><option value="resolved">Resolved</option>
     </select></label>
     <label>Disposition<select value={value.disposition} onChange={(event) => {
       const disposition = event.target.value as FindingDecision["disposition"];
-      onChange({ ...value, disposition, acceptedRiskExpiresAt: disposition === "none" ? null : value.acceptedRiskExpiresAt });
+      onChange({
+        ...value, disposition,
+        acceptedRiskExpiresAt: disposition === "accepted-risk" ? value.acceptedRiskExpiresAt : null,
+        dispositionScope: disposition === "none" ? "" :
+          disposition === "suppressed" ? value.dispositionScope || "finding" : "finding",
+        suppressionExpiresAt: disposition === "suppressed" ? value.suppressionExpiresAt : null,
+        dispositionRationale: disposition === "none" ? "" : value.dispositionRationale,
+      });
     }}>
       <option value="none">None</option><option value="accepted-risk">Accepted risk</option>
+      <option value="suppressed">Suppressed</option><option value="false-positive">False positive</option>
     </select></label>
     <label>Risk expiry<input value={value.acceptedRiskExpiresAt ?? ""} disabled={disabled || value.disposition !== "accepted-risk"}
       placeholder="YYYY-MM-DDTHH:mm:ssZ" onChange={(event) =>
         onChange({ ...value, acceptedRiskExpiresAt: event.target.value || null })} /></label>
+    <label>Suppression scope<select value={value.dispositionScope || "finding"}
+      disabled={disabled || value.disposition !== "suppressed"}
+      onChange={(event) => onChange({
+        ...value, dispositionScope: event.target.value as FindingDecision["dispositionScope"],
+      })}>
+      <option value="finding">Finding</option><option value="source">Source</option>
+      <option value="scope">Scan scope</option><option value="asset">Asset</option>
+    </select></label>
+    <label>Suppression expiry<input value={value.suppressionExpiresAt ?? ""}
+      disabled={disabled || value.disposition !== "suppressed"} placeholder="YYYY-MM-DDTHH:mm:ssZ"
+      onChange={(event) => onChange({ ...value, suppressionExpiresAt: event.target.value || null })} /></label>
+    <label>Disposition rationale<textarea rows={2} value={value.dispositionRationale}
+      disabled={disabled || value.disposition === "none"}
+      onChange={(event) => onChange({ ...value, dispositionRationale: event.target.value })} /></label>
   </fieldset>;
 }
 

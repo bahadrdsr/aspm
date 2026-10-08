@@ -6,6 +6,8 @@ import { Icon } from "./icon";
 const mainTotals = [["assets", "Assets"], ["findings", "Findings"], ["openFindings", "Open findings"]] as const;
 const resolutionTotals = [
   ["acceptedRisk", "Accepted risk"], ["expiredAcceptedRisk", "Expired accepted risk"],
+  ["suppressed", "Suppressed"], ["expiredSuppression", "Expired suppression"],
+  ["falsePositive", "False positive"],
   ["inferredResolved", "Inferred resolved"], ["verifiedResolved", "Verified resolved"],
 ] as const;
 const severities = [["critical", "Critical"], ["high", "High"], ["medium", "Medium"], ["low", "Low"], ["info", "Info"]] as const;

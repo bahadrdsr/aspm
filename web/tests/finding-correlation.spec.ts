@@ -26,7 +26,12 @@ function workItem(id: string, title: string, ownerName: string | null) {
 
 function decision(ownerId: string | null, workflowState: "open" | "in-progress" | "resolved",
   disposition: "none" | "accepted-risk", acceptedRiskExpiresAt: string | null) {
-  return { ownerId, workflowState, disposition, acceptedRiskExpiresAt };
+  return {
+    ownerId, workflowState, disposition, acceptedRiskExpiresAt,
+    dispositionScope: disposition === "none" ? "" as const : "finding" as const,
+    suppressionExpiresAt: null,
+    dispositionRationale: disposition === "none" ? "" : "Approve synthetic accepted risk.",
+  };
 }
 
 const primaryDecision = decision(adminId, "open", "accepted-risk", expiry);

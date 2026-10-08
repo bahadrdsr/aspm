@@ -81,6 +81,7 @@ func TestSecurityM05_RawReportCannotChooseRoutingOwnershipOrWorkflow(t *testing.
 	h.json(h.admin, "PATCH", "/api/v1/findings/"+prior.ID, object{
 		"ownerId": h.admin.user.ID, "workflowState": "in-progress",
 		"disposition": "accepted-risk", "acceptedRiskExpiresAt": expires,
+		"rationale": "Accept synthetic risk for the security behavior test.",
 	}, 200)
 	h.json(h.admin, "POST", "/api/v1/findings/"+prior.ID+"/notes", object{"text": "Human-owned decision."}, 201)
 	before := h.finding(h.admin, prior.ID)
