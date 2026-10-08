@@ -65,6 +65,10 @@ function HoldCreator({ disabled, onSaved }: { disabled: boolean; onSaved: () => 
         <option value="import">Raw report import</option>
         <option value="observation">Observation history</option>
         <option value="correlation-event">Correlation audit event</option>
+        <option value="finding-decision-event">Finding decision history</option>
+        <option value="notification-policy-revision">Notification policy revision</option>
+        <option value="finding-change-event">Finding change history</option>
+        <option value="notification-policy-event">Notification policy evaluation event</option>
       </select></label>
       <label>Resource ID<input value={id} required pattern="[a-f0-9]{32}" maxLength={32}
         autoComplete="off" spellCheck={false} onChange={(event) => setID(event.target.value)} /></label>
@@ -98,14 +102,15 @@ function HoldHistory({ holds, disabled, onReleased }: {
         <p>{hold.reason}</p>
         <p>Created by <code>{hold.createdBy}</code> at{" "}
           <time dateTime={hold.createdAt}>{timestampLabel(hold.createdAt)}</time>. Revision {hold.revision}.</p>
-        {hold.releasedAt === null ? <div className="finding-owner-actions">
+        {hold.releasedAt === null && !disabled ? <div className="finding-owner-actions">
           <input aria-label={`Release rationale for ${hold.resourceId}`} placeholder="Release rationale"
             value={rationale[hold.id] ?? ""} maxLength={8192}
             onChange={(event) => setRationale((value) => ({ ...value, [hold.id]: event.target.value }))} />
           <ActionButton variant="outline" disabled={disabled || action.pending || !(rationale[hold.id] ?? "").trim()}
             onClick={() => release(hold)}>Release hold</ActionButton>
-        </div> : <p>Released by <code>{hold.releasedBy}</code> at{" "}
-          <time dateTime={hold.releasedAt}>{timestampLabel(hold.releasedAt)}</time>: {hold.releaseRationale}</p>}
+        </div> : hold.releasedAt !== null ? <p>Released by <code>{hold.releasedBy}</code> at{" "}
+          <time dateTime={hold.releasedAt}>{timestampLabel(hold.releasedAt)}</time>: {hold.releaseRationale}</p>
+          : <p>Active hold.</p>}
       </li>)}</ul>}
   </div>;
 }
@@ -123,6 +128,10 @@ function Preview({ preview, canApprove, onRefresh, onApproved, onQueued }: {
   const [intent] = useState(() => crypto.randomUUID());
   const [executionRationale, setExecutionRationale] = useState("");
   const [executionIntent] = useState(() => crypto.randomUUID());
+  const historyPreviewOnly = preview.items.some((item) => [
+    "finding-decision-event", "notification-policy-revision",
+    "finding-change-event", "notification-policy-event",
+  ].includes(item.resourceKind));
   function approve(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void action.run((signal) => api.approveRetentionPreview(preview.id, {
@@ -171,12 +180,13 @@ function Preview({ preview, canApprove, onRefresh, onApproved, onQueued }: {
       <p role="status">Approved by <code>{preview.approvedBy}</code> at{" "}
         <time dateTime={preview.approvedAt ?? ""}>{preview.approvedAt ? timestampLabel(preview.approvedAt) : ""}</time>.
         Approval alone is non-destructive and does not start an executor.</p>
+      {historyPreviewOnly ? <p>Preview only: history archive execution is unavailable until V24.</p> :
       <form className="application-form" aria-label="Queue retention execution" onSubmit={execute}>
         <label>Execution rationale<textarea value={executionRationale} required rows={3} maxLength={8192}
           onChange={(event) => setExecutionRationale(event.target.value)} /></label>
         <FormError error={execution.error} />
         <ActionButton type="submit" disabled={!canApprove || execution.pending}>Queue approved execution</ActionButton>
-      </form>
+      </form>}
     </>}
     {preview.state === "stale" && <p role="alert">This preview is stale. Create a new preview after reviewing current policy, holds and references.</p>}
   </section>;
@@ -212,7 +222,6 @@ function RetentionControls({ onClose }: { onClose: () => void }) {
   const canAdminister = workspace.role === "admin";
   const load = useCallback(async (signal: AbortSignal) => {
     const policy = await api.retentionPolicy(signal);
-    if (!canAdminister) return { policy: policy.retentionPolicy, holds: [] as RetentionHold[] };
     const holds = await api.retentionHolds(signal);
     return { policy: policy.retentionPolicy, holds: holds.retentionHolds };
   }, [canAdminister, workspace.id]);
@@ -262,11 +271,8 @@ function RetentionControls({ onClose }: { onClose: () => void }) {
         auditDays: policy.auditDays,
       }} disabled={!canAdminister} onSaved={changed} />
       <h3>Retention holds</h3>
-      {canAdminister ? <>
-        <HoldCreator disabled={false} onSaved={changed} />
-        <HoldHistory holds={resource.data?.holds ?? []} disabled={false} onReleased={changed} />
-      </> : <p>Hold reasons and release history are restricted to workspace administrators.
-        Protected resources remain labeled in previews.</p>}
+      {canAdminister && <HoldCreator disabled={false} onSaved={changed} />}
+      <HoldHistory holds={resource.data?.holds ?? []} disabled={!canAdminister} onReleased={changed} />
       <div className="finding-owner-actions">
         <ActionButton variant="outline" disabled={previewAction.pending} onClick={createPreview}>Create retention preview</ActionButton>
       </div>

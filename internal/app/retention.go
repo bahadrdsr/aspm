@@ -142,6 +142,14 @@ func (a *Application) retentionResourceExists(ctx context.Context, db queryRower
 		table = "observations"
 	case "correlation-event":
 		table = "finding_correlation_events"
+	case "finding-decision-event":
+		table = "finding_decision_events"
+	case "notification-policy-revision":
+		table = "notification_policy_revisions"
+	case "finding-change-event":
+		table = "finding_change_events"
+	case "notification-policy-event":
+		table = "notification_policy_events"
 	default:
 		return false, nil
 	}
@@ -186,9 +194,7 @@ func (a *Application) createRetentionHold(w http.ResponseWriter, r *http.Request
 	if err := a.decode(w, r, &input, 16<<10); err != nil {
 		return err
 	}
-	if !validID(input.ResourceID) ||
-		(input.ResourceKind != "import" && input.ResourceKind != "observation" &&
-			input.ResourceKind != "correlation-event") ||
+	if !validID(input.ResourceID) || !validRetentionHoldKind(input.ResourceKind) ||
 		!validText(input.Reason, 8192) {
 		return errInvalid
 	}
@@ -635,6 +641,10 @@ func (a *Application) buildRetentionSnapshot(ctx context.Context, db retentionDB
 		now.AddDate(0, 0, -policy.AuditDays), &snapshot); err != nil {
 		return retentionSnapshot{}, err
 	}
+	if err = a.appendHistoryRetention(ctx, db, workspace,
+		now.AddDate(0, 0, -policy.AuditDays), &snapshot); err != nil {
+		return retentionSnapshot{}, err
+	}
 	if err = a.appendOrphanArchives(ctx, db, workspace,
 		now.Add(-orphanArchiveGrace), &snapshot); err != nil {
 		return retentionSnapshot{}, err
@@ -648,6 +658,12 @@ func (a *Application) buildRetentionSnapshot(ctx context.Context, db retentionDB
 		}
 		if left.ResourceKind != right.ResourceKind {
 			return strings.Compare(left.ResourceKind, right.ResourceKind)
+		}
+		if isHistoryRetentionKind(left.ResourceKind) && !left.ObservedAt.Equal(right.ObservedAt) {
+			if left.ObservedAt.Before(right.ObservedAt) {
+				return -1
+			}
+			return 1
 		}
 		return strings.Compare(left.ResourceID, right.ResourceID)
 	})

@@ -79,8 +79,17 @@ export class ApplicationAPI {
   private importReplies = new Map<string, Array<{ reply: ImportStatusReply; gate: ResponseGate }>>();
   private replayReceipts: Array<{ id: string; state: ImportState }> = [];
   private responseGates = new Set<ResponseGate>();
+  private workspaceRoles = new Map<string, "admin" | "analyst" | "viewer">([
+    [alpha.id, alpha.role as "admin" | "analyst" | "viewer"],
+    [beta.id, beta.role as "admin" | "analyst" | "viewer"],
+  ]);
 
   calls(method: string, path: string) { return this.requests.filter((call) => call.method === method && call.path === path); }
+
+  setWorkspaceRole(workspace: string, role: "admin" | "analyst" | "viewer") {
+    if (![alpha.id, beta.id].includes(workspace)) throw new Error("Unknown synthetic workspace.");
+    this.workspaceRoles.set(workspace, role);
+  }
 
   holdWork(workspace: string) {
     let release!: () => void;
@@ -192,7 +201,10 @@ export class ApplicationAPI {
         await this.error(route, 429, "rate-limited", "Synthetic request budget exceeded.");
         return;
       }
-      const session = () => ({ ...syntheticSession(), workspaces: [alpha, beta] });
+      const session = () => ({ ...syntheticSession(), workspaces: [
+        { ...alpha, role: this.workspaceRoles.get(alpha.id) ?? alpha.role },
+        { ...beta, role: this.workspaceRoles.get(beta.id) ?? beta.role },
+      ] });
       const hasCookie = headers.cookie?.split(";").some((item) => item.trim() === `aspm_session=${sessionCookie}`);
       if (method === "GET" && path === "/api/v1/session") {
         this.sessionSeen = true;

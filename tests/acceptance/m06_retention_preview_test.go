@@ -138,7 +138,10 @@ func TestM06_RetentionPreviewSeparatesPoliciesHoldsAndStaleApproval(t *testing.T
 	h.denied(viewer, "POST", "/api/v1/retention/holds", object{
 		"resourceKind": "import", "resourceId": eligible.ID, "reason": "Viewer cannot create holds.",
 	}, 403, "forbidden")
-	h.denied(viewer, "GET", "/api/v1/retention/holds", nil, 403, "forbidden")
+	viewerHolds := h.json(viewer, "GET", "/api/v1/retention/holds", nil, 200).RetentionHolds
+	if len(viewerHolds) != 1 || viewerHolds[0] != legalHold {
+		t.Fatal("viewer could not read exact workspace-scoped hold history")
+	}
 
 	beforeEvidence := map[string][]byte{}
 	for _, record := range []imported{eligible, held, decision, shared} {
@@ -170,9 +173,20 @@ func TestM06_RetentionPreviewSeparatesPoliciesHoldsAndStaleApproval(t *testing.T
 	equal(t, "audit action and policy", []any{audit.Action, audit.RetainDays}, []any{"archive-audit", 240})
 	if hot.TotalCount != 5 || hot.EligibleCount != 3 || hot.ProtectedCount != 2 ||
 		raw.TotalCount != 4 || raw.EligibleCount != 1 || raw.ProtectedCount != 3 ||
-		archive.TotalCount != 0 || audit.TotalCount != 2 || audit.EligibleCount != 2 {
+		archive.TotalCount != 0 || audit.TotalCount != 3 || audit.EligibleCount != 3 ||
+		audit.ProtectedCount != 0 {
 		t.Fatalf("unexpected retention cohort summary: hot=%+v raw=%+v archive=%+v audit=%+v",
 			hot, raw, archive, audit)
+	}
+	if len(beforeDecision.DecisionEvents) != 1 {
+		t.Fatal("V23 compatibility fixture did not retain one decision-history event")
+	}
+	decisionEvent := beforeDecision.DecisionEvents[0]
+	decisionItem := retentionItem(t, preview, "audit", decisionEvent.ID)
+	if decisionItem.ResourceKind != "finding-decision-event" ||
+		decisionItem.SizeBytes != int64(len(v23DecisionArchiveBytes(t, h, decisionEvent.ID))) ||
+		len(decisionItem.ProtectedReasons) != 0 {
+		t.Fatal("V23 changed the exact eligible decision-history audit candidate")
 	}
 	equal(t, "held raw report reason",
 		retentionItem(t, preview, "raw-report", held.ID).ProtectedReasons, []string{"legal-hold"})

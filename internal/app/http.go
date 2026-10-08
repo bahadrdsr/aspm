@@ -37,6 +37,7 @@ var (
 	errEvidenceExpired = &apiError{410, "evidence-expired", "The evidence was removed by an approved retention operation"}
 	errEvidenceMissing = &apiError{424, "evidence-missing", "The evidence object is unexpectedly missing"}
 	errEvidenceCorrupt = &apiError{422, "evidence-corrupt", "The evidence object failed integrity verification"}
+	errPreviewOnly     = &apiError{409, "preview-only", "This approved preview contains history resources whose archive execution is not yet available"}
 )
 
 func (a *Application) serveHTTP(w http.ResponseWriter, r *http.Request) {
@@ -240,11 +241,11 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
 			return err
 		}
-		if membership.Role != "admin" {
-			return errForbidden
-		}
 		if r.Method == http.MethodGet {
 			return a.listRetentionHolds(w, r, membership.ID)
+		}
+		if membership.Role != "admin" {
+			return errForbidden
 		}
 		return a.createRetentionHold(w, r, membership.ID, session.User.ID)
 	case "/api/v1/retention/previews":

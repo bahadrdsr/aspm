@@ -202,7 +202,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV22(t, v13, current)
+	projected := ProjectV23(t, v13, current)
+	projected = ProjectV22(t, v13, projected)
 	projected = ProjectV21(t, v13, projected)
 	projected = ProjectV20(t, v13, projected)
 	projected = ProjectV19(t, v13, projected)
@@ -1075,7 +1076,7 @@ func canonicalRowsWithValues(t testing.TB, rows []string, additions map[string]j
 func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
 	if len(before) != len(current) {
-		t.Fatal("V22: business table set changed")
+		t.Fatal("V23: business table set changed")
 	}
 	for table, rows := range before {
 		additions := map[string]json.RawMessage{}
@@ -1126,7 +1127,7 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 		actual, present := current[table]
 		if !present || !reflect.DeepEqual(canonicalRowsWithValues(t, rows, additions),
 			canonicalRowsWithValues(t, actual, nil)) {
-			t.Fatalf("V22: complete historical business rows changed in %s", table)
+			t.Fatalf("V23: complete historical business rows changed in %s", table)
 		}
 	}
 	return clone(before)

@@ -118,8 +118,13 @@ review/queue consent, honest accepted/uncertain outcomes, and notification-polic
 selection. It remains outside the eight native catalog families. See
 `m08-generic-webhooks.md`.
 
+V23 extends retention holds and exact audit preview to finding decision events,
+notification policy revisions, finding-change events, and policy evaluation
+events. Approval remains non-destructive, and history archive execution is
+explicitly deferred to V24. See `m08-history-retention-preview.md`.
+
 Still separate:
 
 - Bulk risk acceptance.
-- Decision-event archive/retention policy.
+- M08 history archive execution and retrieval.
 - Deferred live-account and status-linkage integration follow-ups.

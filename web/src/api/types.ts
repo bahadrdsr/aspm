@@ -274,7 +274,10 @@ export interface FindingCorrelationResponse {
 }
 
 export type RetentionClass = "hot-history" | "archived-evidence" | "raw-report" | "audit" | "orphan-archive";
-export type RetentionResourceKind = "import" | "observation" | "correlation-event" | "archive-object";
+export type RetentionResourceKind =
+  "import" | "observation" | "correlation-event" | "archive-object" |
+  "finding-decision-event" | "notification-policy-revision" |
+  "finding-change-event" | "notification-policy-event";
 export type RetentionAction =
   "archive-history" | "expire-archive" | "expire-raw-report" | "archive-audit" | "delete-orphan";
 
@@ -345,7 +348,8 @@ export interface RetentionPreviewItem {
   sizeBytes: number;
   protectedReasons: Array<
     "legal-hold" | "active-decision" | "shared-observation-references" |
-    "assessment-reference" | "active-correlation" | "archive-reference"
+    "assessment-reference" | "active-correlation" | "archive-reference" |
+    "current-policy-revision" | "pending-policy-evaluation" | "active-delivery"
   >;
   objectKey: string | null;
   objectDigest: string | null;

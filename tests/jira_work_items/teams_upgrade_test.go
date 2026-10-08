@@ -142,14 +142,14 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22")
-	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22 exactly once over real populated V10", h.ledger(), currentLedger)
-	sourcecompat.ValidateV22Catalog(t, h.v21Definitions())
-	same(t, "V22 changed the relation/index set",
-		sourcecompat.ProjectRelationsV22(t, relations, h.relations()), relations)
-	same(t, "V22 must validate the complete exact DDL delta before projection",
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23")
+	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23 exactly once over real populated V10", h.ledger(), currentLedger)
+	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
+	same(t, "V23 changed the relation/index set",
+		sourcecompat.ProjectRelationsV23(t, relations, h.relations()), relations)
+	same(t, "V23 must validate the complete exact DDL delta before projection",
 		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
-	same(t, "V22 changed old bytes outside the exact additions",
+	same(t, "V23 changed old bytes outside the exact additions",
 		h.projectTeamsV10Data(t, before, names), before)
 	same(t, "V21 did not backfill exactly one earliest Jira effect without rewriting deliveries",
 		h.rows("SELECT connection_id||'|'||finding_id||'|'||delivery_id FROM "+h.table("jira_finding_effects")+
@@ -168,7 +168,7 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	h.reopen()
 	same(t, "V22 reopen changed the integer ledger", h.ledger(), currentLedger)
 	same(t, "V22 reopen changed definitions", h.definitions(names), afterDefinitions)
-	sourcecompat.ValidateV22Catalog(t, h.v21Definitions())
+	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
 	same(t, "V22 reopen changed historical business bytes",
 		h.projectTeamsV10Data(t, before, names), before)
 

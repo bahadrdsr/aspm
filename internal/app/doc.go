@@ -220,8 +220,10 @@
 // Imported content is untrusted data; no scanner, script, or proof is executed.
 // Retention policy, holds, bounded previews, approvals, fenced execution,
 // evidence availability, archive retrieval and observation restoration are
-// implemented. Orphan evidence cleanup and recurring-scan capacity remain
-// separate. Indexed exact-location candidates, reviewed multi-member
+// implemented. M08 decision and notification history participate in exact
+// preview and approval, but their archive execution remains separate. Orphan
+// evidence cleanup and recurring-scan capacity remain separate. Indexed
+// exact-location candidates, reviewed multi-member
 // correlation, source change classification and meaningful Work are
 // implemented. Archive publication reconciliation cleans only old ledgered
 // product objects. Explicit epoch-scoped notification policies queue the common

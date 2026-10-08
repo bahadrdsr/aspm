@@ -422,3 +422,131 @@ preserved. Exact sourcecompat and authentic published V5, V6, V7, V8, V9, V10
 and V11 upgrades record versions 1..22 once, preserve prior rows and DTO bytes,
 validate PostgreSQL 18 normalized catalog text, and reopen without repeating
 migration. webhook fields are omitted for every non-webhook connection/delivery.
+
+M08 V23 HISTORY RETENTION PREVIEW:
+V23 extends the existing M06 retention hold, preview, stale-approval and Settings
+models only. It performs no archive-object read/write/list/delete, provider I/O,
+M08 event mutation/deletion, retention-worker execution, or physical storage
+savings claim. Candidate bytes are exact logical UTF-8 archive payload bytes.
+Archive execution for the four V23 kinds is deferred to V24.
+
+The exact new retention resource kinds are finding-decision-event,
+notification-policy-revision, finding-change-event and
+notification-policy-event. Each belongs to class audit, uses action
+archive-audit and uses the current workspace policy auditDays cutoff. Existing
+class summaries, class order, import/observation/correlation-event/archive-object
+DTO bytes, legacy candidate order and legacy size calculations remain exact.
+All four new kinds share the existing whole-workspace 200-item cap and 15-minute
+preview expiry. New audit items sort by resourceKind, then observedAt, then
+resourceId. Existing correlation-event items keep their V22 relative order.
+
+GET /api/v1/retention/holds and preview create/read remain available to every
+current workspace member. Only admins may create or release a hold or approve a
+preview. A hold for any new kind must identify an exact resource in the selected
+workspace. Foreign or missing IDs return 404. Malformed IDs, undeclared kinds,
+and IDs supplied under the wrong kind return 400 or 404 without creating or
+releasing a hold. Existing hold response fields and behavior for import,
+observation and correlation-event remain byte-compatible. Hold history is
+workspace-scoped and preserves active and released records.
+
+Candidate and protection semantics are exact:
+- finding-decision-event uses created_at and is otherwise eligible.
+- notification-policy-revision uses created_at. The current revision of its
+  policy has current-policy-revision. Any revision that is the latest revision
+  for that policy at or before the policy_epoch of a pending or processing
+  finding-change event has pending-policy-evaluation. Both reasons may apply.
+- finding-change-event uses change_at. pending or processing has
+  pending-policy-evaluation. evaluated is otherwise eligible.
+- notification-policy-event uses created_at. A nonnull delivery currently in
+  queued or dispatching has active-delivery. A terminal linked delivery or a
+  null delivery is otherwise eligible.
+- An active exact hold adds legal-hold for every kind.
+Protection reasons are unique and ordered exactly as legal-hold,
+current-policy-revision, pending-policy-evaluation, active-delivery after
+removing reasons that do not apply.
+
+Canonical V23 archive payloads are compact UTF-8 JSON with no BOM, insignificant
+whitespace or trailing newline. The exact field order below is part of the
+contract. Times are UTC RFC3339Nano strings. Nullable values are literal null.
+Stored JSON objects are recursively emitted with lexicographically ordered keys;
+stored arrays preserve their stored order. Payload digest means lowercase
+sha256:<64 hex> over these exact bytes.
+
+finding-decision-event:
+{"schemaVersion":1,"resourceKind":"finding-decision-event","id":...,
+"workspaceId":...,"findingId":...,"decisionRevision":...,"actorId":...,
+"action":...,"rationale":...,"changedFields":...,"beforeState":...,
+"afterState":...,"createdAt":...}
+
+notification-policy-revision:
+{"schemaVersion":1,"resourceKind":"notification-policy-revision","id":...,
+"workspaceId":...,"policyId":...,"name":...,"connectionId":...,
+"connectionProfile":...,"connectionRevision":...,"enabled":...,
+"changeKinds":...,"minimumSeverity":...,"revision":...,"epoch":...,
+"actorId":...,"actorName":...,"rationale":...,"createdAt":...}
+
+finding-change-event:
+{"schemaVersion":1,"resourceKind":"finding-change-event","id":...,
+"workspaceId":...,"findingId":...,"policyEpoch":...,"title":...,
+"severity":...,"assetName":...,"changeKind":...,"changeRevision":...,
+"changeAt":...,"state":...,"workerId":...,"fence":...,"leaseUntil":...}
+
+notification-policy-event:
+{"schemaVersion":1,"resourceKind":"notification-policy-event","id":...,
+"workspaceId":...,"policyId":...,"policyRevision":...,"findingId":...,
+"findingChangeRevision":...,"outcome":...,"deliveryId":...,"createdAt":...}
+
+Each new preview item sizeBytes is the exact byte length of its canonical
+payload. Audit summary sizeBytes still sums eligible items only and makes no
+compression, object-overhead or reclaimable-storage claim. Preview snapshot
+binding includes each canonical payload digest, exact active hold IDs/revisions,
+candidate membership and the authority used by protection decisions. Policy
+revision authority includes the current policy revision identity and every
+relevant pending/processing event ID, policy epoch, state, worker, fence and
+lease. Finding-change authority includes state, worker, fence and lease.
+Notification-policy-event authority includes linked delivery identity and
+state. A hold create/release, current policy revision change,
+pending/processing-to-evaluated transition, active-to-terminal delivery
+transition, candidate insertion/removal, or any canonical payload field change
+after preview makes exact approval return 409 conflict and durably marks the
+preview stale. Preview and approval create no provider or object-store request.
+
+Approval remains admin-only and requires the exact revision, snapshotDigest,
+nonblank rationale and idempotencyKey. Exact replay returns the same receipt;
+changed replay returns 409 conflict. Applying an approved preview containing
+any V23 resource kind returns 409 with error code preview-only before creating a
+retention run or retention run item. Legacy-only approved previews keep the V22
+execution behavior.
+
+Retention Settings labels the new hold kinds Finding decision history,
+Notification policy revision, Finding change history and Notification policy
+evaluation event. It displays their audit items, exact bytes and protection
+reasons. Viewers can read policy, holds and previews but have no policy, hold,
+release, approval or execution authority. Existing read-only policy and approval
+controls remain visibly disabled; hold creation/release controls are unavailable.
+An approved preview containing any V23 kind displays exactly "Preview only:
+history archive execution is unavailable until V24." and offers no execution
+form or queue request. Mobile layout,
+workspace/session clearing and close-button focus restoration remain required.
+The strict client accepts only the declared V23 kinds and exact reason strings
+above and rejects undeclared kinds, actions, classes, reasons and inconsistent
+object metadata.
+
+V23 MIGRATION: additive version 23 widens only
+app_retention_holds_resource_kind_check to the V14 kinds plus the four V23 kinds,
+and app_retention_preview_items_resource_kind_check to the V18 kinds plus the
+four V23 kinds. app_retention_run_items_resource_kind_check is unchanged. V23
+adds exactly these nonpartial indexes and no other relation, column, archive
+field, foreign key or worker action:
+- app_finding_decision_events_retention_idx on
+  (workspace_id,created_at,id)
+- app_notification_policy_revisions_retention_idx on
+  (workspace_id,created_at,id)
+- app_finding_change_events_retention_idx on
+  (workspace_id,change_at,id)
+- app_notification_policy_events_retention_idx on
+  (workspace_id,created_at,id)
+Historical V1-V22 SQL and complete rows remain exact. Current startup and
+published V5-V11 upgrade paths record versions 1..23 exactly once, validate the
+exact V23 projector/catalog delta, preserve old API/native rows, and reopen
+without repeating migration.

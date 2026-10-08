@@ -72,4 +72,10 @@ explicit, and queued outcomes are labeled as not delivered.
 
 Generic webhooks now use the same policy engine through the fixed signed V22
 profile. Live-provider qualification, provider status linkage, automatic finding
-resolution, bulk risk acceptance, and policy/event retention remain separate.
+resolution, and bulk risk acceptance remain separate.
+
+V23 adds exact retention holds and non-destructive audit previews for immutable
+policy revisions, finding-change events, and policy evaluation events. Current
+revisions, pending evaluations, and active deliveries are protected. Archive
+execution for these resources remains deferred to V24. See
+`m08-history-retention-preview.md`.

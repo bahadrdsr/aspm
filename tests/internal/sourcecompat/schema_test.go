@@ -221,6 +221,144 @@ func TestProjectV22AcceptsOnlyExactWebhookColumnsAndChecks(t *testing.T) {
 	}
 }
 
+func TestProjectV23AcceptsOnlyExactHistoryRetentionChecksAndIndexes(t *testing.T) {
+	before := map[string][]string{
+		"retention_holds/columns": {"id|text|true|", "resource_kind|text|true|"},
+		"retention_holds/constraints": {
+			"app_retention_holds_pkey|PRIMARY KEY (id)",
+			"app_retention_holds_resource_kind_check|" + V22RetentionHoldResourceKindCheck,
+		},
+		"retention_holds/indexes":         {"app_retention_holds_pkey|unchanged"},
+		"retention_preview_items/columns": {"preview_id|text|true|", "resource_kind|text|true|"},
+		"retention_preview_items/constraints": {
+			"app_retention_preview_items_pkey|PRIMARY KEY (preview_id)",
+			"app_retention_preview_items_resource_kind_check|" + V22RetentionPreviewResourceKindCheck,
+		},
+		"retention_preview_items/indexes": {"app_retention_preview_items_pkey|unchanged"},
+	}
+	for _, spec := range v23IndexSpecs {
+		before[spec.table+"/columns"] = []string{"id|text|true|"}
+		before[spec.table+"/constraints"] = []string{"app_" + spec.table + "_pkey|PRIMARY KEY (id)"}
+		before[spec.table+"/indexes"] = []string{"app_" + spec.table + "_pkey|unchanged"}
+	}
+	current := clone(before)
+	current["retention_holds/constraints"][1] =
+		"app_retention_holds_resource_kind_check|" + V23RetentionHoldResourceKindCheck
+	current["retention_preview_items/constraints"][1] =
+		"app_retention_preview_items_resource_kind_check|" + V23RetentionPreviewResourceKindCheck
+	for _, spec := range v23IndexSpecs {
+		key := spec.table + "/indexes"
+		current[key] = append(current[key], spec.name+"|CREATE INDEX "+spec.name+
+			" ON acceptance_schema."+spec.definition)
+		slices.Sort(current[key])
+	}
+	ValidateV23Catalog(t, before, current)
+	if got := ProjectV23(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V23 projection did not restore the V22 catalog")
+	}
+	if !reflect.DeepEqual(V23Tables(), []string{
+		"retention_holds", "retention_preview_items", "finding_decision_events",
+		"notification_policy_revisions", "finding_change_events", "notification_policy_events",
+	}) {
+		t.Fatal("V23 catalog table enumeration changed")
+	}
+	if slices.Contains(V23Tables(), "retention_run_items") {
+		t.Fatal("V23 must not widen or otherwise catalog retention run items")
+	}
+}
+
+func TestProjectV23RejectsUnapprovedHistoryRetentionDeltas(t *testing.T) {
+	before := map[string][]string{
+		"retention_holds/columns": {"id|text|true|", "resource_kind|text|true|"},
+		"retention_holds/constraints": {
+			"app_retention_holds_resource_kind_check|" + V22RetentionHoldResourceKindCheck,
+		},
+		"retention_holds/indexes":           {"app_retention_holds_pkey|unchanged"},
+		"finding_change_events/columns":     {"id|text|true|"},
+		"finding_change_events/constraints": {"app_finding_change_events_pkey|PRIMARY KEY (id)"},
+		"finding_change_events/indexes":     {"app_finding_change_events_pkey|unchanged"},
+	}
+	valid := clone(before)
+	valid["retention_holds/constraints"][0] =
+		"app_retention_holds_resource_kind_check|" + V23RetentionHoldResourceKindCheck
+	spec := v23IndexSpecs[2]
+	valid["finding_change_events/indexes"] = append(valid["finding_change_events/indexes"],
+		spec.name+"|CREATE INDEX "+spec.name+" ON acceptance_schema."+spec.definition)
+	for _, mutate := range []func(map[string][]string){
+		func(value map[string][]string) {
+			value["retention_holds/columns"] = append(value["retention_holds/columns"], "archive_key|text|false|")
+		},
+		func(value map[string][]string) {
+			value["retention_holds/constraints"][0] =
+				"app_retention_holds_resource_kind_check|" + V22RetentionHoldResourceKindCheck
+		},
+		func(value map[string][]string) {
+			value["finding_change_events/indexes"][1] = spec.name + "|CREATE INDEX " + spec.name +
+				" ON acceptance_schema.app_finding_change_events USING btree (change_at, id)"
+		},
+		func(value map[string][]string) {
+			value["finding_change_events/indexes"] = append(value["finding_change_events/indexes"],
+				"app_finding_change_events_unapproved_idx|unexpected")
+		},
+	} {
+		current := clone(valid)
+		mutate(current)
+		if _, err := projectV23(before, current); err == nil {
+			t.Fatal("V23 accepted an unapproved history-retention catalog delta")
+		}
+	}
+}
+
+func TestValidateCurrentCatalogComposesV22AndV23Exactly(t *testing.T) {
+	current := clone(exactV22Catalog)
+	for key, rows := range exactV22HistoryRetentionCatalog {
+		current[key] = slices.Clone(rows)
+	}
+	for index, row := range current["retention_holds/constraints"] {
+		if row == "app_retention_holds_resource_kind_check|"+V22RetentionHoldResourceKindCheck {
+			current["retention_holds/constraints"][index] =
+				"app_retention_holds_resource_kind_check|" + V23RetentionHoldResourceKindCheck
+		}
+	}
+	for index, row := range current["retention_preview_items/constraints"] {
+		if row == "app_retention_preview_items_resource_kind_check|"+V22RetentionPreviewResourceKindCheck {
+			current["retention_preview_items/constraints"][index] =
+				"app_retention_preview_items_resource_kind_check|" + V23RetentionPreviewResourceKindCheck
+		}
+	}
+	for _, spec := range v23IndexSpecs {
+		key := spec.table + "/indexes"
+		current[key] = append(current[key], spec.name+"|CREATE INDEX "+spec.name+
+			" ON "+spec.definition)
+		slices.Sort(current[key])
+	}
+	expected := ExpectedV23Catalog()
+	if !reflect.DeepEqual(current, expected) {
+		for key, rows := range expected {
+			if !reflect.DeepEqual(current[key], rows) {
+				t.Fatalf("synthetic V23 catalog drifted at %s: got=%q want=%q", key, current[key], rows)
+			}
+		}
+		t.Fatal("synthetic V23 current catalog fixture drifted from the exact expected catalog")
+	}
+	ValidateCurrentCatalog(t, current)
+	prior := ProjectV23Current(t, current)
+	if !reflect.DeepEqual(catalogSubset(prior, v21Tables), exactV22Catalog) {
+		t.Fatal("V23 current catalog did not project to the exact V22 notification-policy catalog")
+	}
+}
+
+func catalogSubset(source map[string][]string, tables []string) map[string][]string {
+	result := map[string][]string{}
+	for _, table := range tables {
+		for _, kind := range []string{"columns", "constraints", "indexes"} {
+			key := table + "/" + kind
+			result[key] = slices.Clone(source[key])
+		}
+	}
+	return result
+}
+
 func TestProjectV21AcceptsOnlyExactLegacyNotificationPolicyDelta(t *testing.T) {
 	before := map[string][]string{
 		"workspaces/columns":             {"id|text|true|"},
@@ -432,6 +570,25 @@ func TestProjectRelationsV22RequiresNoNewRelations(t *testing.T) {
 	slices.Reverse(current)
 	if got := ProjectRelationsV22(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("V22 relation projection did not preserve the prior relation set")
+	}
+}
+
+func TestProjectRelationsV23AcceptsOnlyFourCandidateIndexes(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	current = append(current, v21Relations...)
+	current = append(current, v23Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV23(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("V23 relation projection did not preserve the V22 relation set")
 	}
 }
 

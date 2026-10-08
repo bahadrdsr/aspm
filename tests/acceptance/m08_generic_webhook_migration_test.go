@@ -62,25 +62,28 @@ func priorV22Catalog(t *testing.T, current map[string][]string) map[string][]str
 	return prior
 }
 
-func TestM08_V22GenericWebhookMigrationIsExactAndAdditive(t *testing.T) {
+func TestM08_V22GenericWebhookMigrationRemainsExactThroughV23(t *testing.T) {
 	h := newNotificationHarness(t)
 	ledger := notificationCatalogRows(t, h,
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+` AS ledger ORDER BY ledger.version`)
 	wantLedger := []string{
 		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
 	}
 	if !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("V22 migration ledger got %v, want %v", ledger, wantLedger)
+		t.Fatalf("V23 migration ledger got %v, want %v", ledger, wantLedger)
 	}
 
-	policyCatalog := notificationDefinitions(t, h, sourcecompat.V22Tables())
+	names := append(sourcecompat.CurrentTables(), "integration_connections", "finding_deliveries")
+	currentCatalog := notificationDefinitions(t, h, names)
+	v22 := priorV23Catalog(t, currentCatalog)
+	policyCatalog := catalogForTables(v22, sourcecompat.V22Tables())
 	if differences := v21CatalogDifferences(policyCatalog, sourcecompat.ExpectedV22Catalog()); len(differences) != 0 {
 		t.Fatalf("V22 notification-policy catalog differences:\n%s", strings.Join(differences, "\n"))
 	}
 	sourcecompat.ValidateV22Catalog(t, policyCatalog)
 
-	current := notificationDefinitions(t, h, []string{
+	current := catalogForTables(v22, []string{
 		"integration_connections", "finding_deliveries",
 		"notification_policies", "notification_policy_revisions",
 	})

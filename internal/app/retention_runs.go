@@ -214,6 +214,18 @@ func (a *Application) queueRetentionExecution(w http.ResponseWriter, r *http.Req
 		preview.SnapshotDigest != input.SnapshotDigest {
 		return errConflict
 	}
+	var previewOnly bool
+	if err = tx.QueryRow(r.Context(), `SELECT EXISTS(SELECT 1 FROM `+
+		a.table("retention_preview_items")+`
+		WHERE workspace_id=$1 AND preview_id=$2 AND resource_kind IN (
+		 'finding-decision-event','notification-policy-revision',
+		 'finding-change-event','notification-policy-event'))`,
+		workspace, previewID).Scan(&previewOnly); err != nil {
+		return err
+	}
+	if previewOnly {
+		return errPreviewOnly
+	}
 	runID, now := newID(), a.config.Now().UTC()
 	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("retention_runs")+`
 		(id,workspace_id,operation,preview_id,state,requested_by,rationale,idempotency_key,binding_digest,created_at)

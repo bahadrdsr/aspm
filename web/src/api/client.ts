@@ -508,7 +508,10 @@ function retentionHold(value: unknown, workspace: string | null): RetentionHold 
   const result: RetentionHold = {
     id: reportIdentifier(item.id, "retention hold"),
     workspaceId,
-    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event"], "retention resource kind"),
+    resourceKind: choice(item.resourceKind, [
+      "import", "observation", "correlation-event", "finding-decision-event",
+      "notification-policy-revision", "finding-change-event", "notification-policy-event",
+    ], "retention resource kind"),
     resourceId: reportIdentifier(item.resourceId, "retention resource"),
     reason: text(item.reason, "retention hold reason"),
     revision: count(item.revision, "retention hold revision"),
@@ -560,7 +563,11 @@ function retentionPreviewItem(value: unknown): RetentionPreviewItem {
   const item = object(value, "retention preview item");
   const result: RetentionPreviewItem = {
     class: choice(item.class, ["hot-history", "archived-evidence", "raw-report", "audit", "orphan-archive"], "retention item class"),
-    resourceKind: choice(item.resourceKind, ["import", "observation", "correlation-event", "archive-object"], "retention item kind"),
+    resourceKind: choice(item.resourceKind, [
+      "import", "observation", "correlation-event", "archive-object",
+      "finding-decision-event", "notification-policy-revision",
+      "finding-change-event", "notification-policy-event",
+    ], "retention item kind"),
     resourceId: reportIdentifier(item.resourceId, "retention item resource"),
     action: choice(item.action,
       ["archive-history", "expire-archive", "expire-raw-report", "archive-audit", "delete-orphan"],
@@ -569,7 +576,9 @@ function retentionPreviewItem(value: unknown): RetentionPreviewItem {
     sizeBytes: count(item.sizeBytes, "retention item bytes"),
     protectedReasons: array(item.protectedReasons, "retention protection reasons").map((reason) =>
       choice(reason, ["legal-hold", "active-decision", "shared-observation-references",
-        "assessment-reference", "active-correlation", "archive-reference"], "retention protection reason")),
+        "assessment-reference", "active-correlation", "archive-reference",
+        "current-policy-revision", "pending-policy-evaluation", "active-delivery"],
+      "retention protection reason")),
     objectKey: item.objectKey === undefined ? null : nullableText(item.objectKey, "retention object key"),
     objectDigest: item.objectDigest === undefined ? null : nullableText(item.objectDigest, "retention object digest"),
     objectRevision: item.objectRevision === undefined || item.objectRevision === null

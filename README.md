@@ -34,6 +34,9 @@ new/changed/unchanged/reopened classification, explicit failed/partial/delta/
 out-of-order context, a meaningful-changes Work mode, and bounded recurring-scan
 table/index/WAL regression measurements. V18 adds a product archive publication
 ledger and previewed orphan cleanup without bucket-wide listing.
+V23 extends the non-destructive audit preview and hold model to finding
+decisions, notification policy revisions, finding changes, and policy
+evaluation events. Their archive execution remains explicitly unavailable.
 GitLab, AWS, Azure cloud and other unfinished integration expansion remain
 deferred.
 
@@ -182,10 +185,13 @@ two members. See `docs\m06-correlation.md`.
 In **Settings**, **Retention and archive preview** exposes four separate
 workspace policy durations: hot history, raw reports, archived evidence and
 audit. Administrators can change the ordered day bounds and create or release
-holds for an import, observation or correlation audit event. Any member can
-create a bounded exact preview. It reports affected IDs, counts, eligible
-logical payload bytes and protection reasons for legal holds, active decisions,
-shared observation references, assessment references and active correlations.
+holds for an import, observation, correlation audit event, finding decision,
+notification policy revision, finding change, or policy evaluation event. Any
+member can create a bounded exact preview. It reports affected IDs, counts,
+eligible logical payload bytes and protection reasons for legal holds, active
+decisions, shared observation references, assessment references, active
+correlations, current policy revisions, pending evaluations and active
+deliveries.
 
 An administrator can approve only the exact current policy/reference snapshot,
 with rationale and an idempotency key. A hold, policy, decision or reference
@@ -202,6 +208,10 @@ missing, corrupt or failed outcomes without changing Work or source state.
 Finding observation history labels availability and supports explicit verified
 archive retrieval plus administrator restoration. See
 `docs\m06-retention-execution.md`.
+
+M08 history resources currently stop at preview and approval. An approved
+preview containing one returns `409 preview-only` before any retention run is
+created. See `docs\m08-history-retention-preview.md`.
 
 **Saved views** is one closed-by-default inline panel in Work. Only explicitly
 opening it reads your personal preferences in the selected workspace. Every
@@ -599,6 +609,12 @@ policy and evaluation history without mutation controls. Jira shares one durable
 finding/connection effect key across manual and automatic creation, so a different
 intent cannot create a second ticket after any prior queued, attempted, uncertain,
 failed, or confirmed Jira intent.
+
+Retention Settings includes exact audit previews and holds for decision,
+policy-revision, finding-change, and policy-evaluation history. Current policy
+revisions, pending evaluations, and active deliveries remain protected.
+Approval is non-destructive, and V23 history archive execution is explicitly
+deferred.
 
 **Webhook connections** is a separate non-native outbound profile. Operators
 first allow exact HTTPS origins through `ASPM_WEBHOOK_ORIGINS`; workspace admins

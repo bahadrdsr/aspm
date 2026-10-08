@@ -76,7 +76,7 @@ func v21Definitions(t *testing.T, f *fixture) map[string][]string {
 		}
 		return rows
 	}
-	for _, name := range sourcecompat.V22Tables() {
+	for _, name := range sourcecompat.CurrentTables() {
 		result[name+"/columns"] = catalogRows(t, f, `SELECT a.attname||'|'||format_type(a.atttypid,a.atttypmod)||'|'||a.attnotnull::text||'|'||COALESCE(pg_get_expr(d.adbin,d.adrelid),'') FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attrelid=to_regclass($1) AND a.attnum>0 AND NOT a.attisdropped ORDER BY a.attnum`, f.table(name))
 		result[name+"/constraints"] = normalize(catalogRows(t, f, `SELECT conname||'|'||pg_get_constraintdef(oid,true) FROM pg_constraint WHERE conrelid=to_regclass($1) AND contype<>'n' ORDER BY conname`, f.table(name)))
 		result[name+"/indexes"] = normalize(catalogRows(t, f, `SELECT indexname||'|'||indexdef FROM pg_indexes WHERE schemaname=$1 AND tablename=$2 ORDER BY indexname`, f.database.Schema, "app_"+name))
@@ -151,8 +151,8 @@ func testPublishedUpgrade(t *testing.T) {
 		must(t, "record actual published-v6 upgrade observation", os.WriteFile(file, encode(t, observation), 0600))
 		t.Log("actual schema upgrade observation:", file)
 	}
-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"}), "CURRENT core startup did not apply required migrations through v22 exactly once over real published v6")
-	sourcecompat.ValidateV22Catalog(t, v21Definitions(t, f))
+	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}), "CURRENT core startup did not apply required migrations through v23 exactly once over real published v6")
+	sourcecompat.ValidateCurrentCatalog(t, v21Definitions(t, f))
 	check(t, reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
 	h.enroll()
 	key := secret(t)
@@ -165,8 +165,8 @@ func testPublishedUpgrade(t *testing.T) {
 	must(t, "close resolver for upgrade persistence probe", r.Close())
 	fresh := h.resolver()
 	assertResolved(t, fresh, h.ctx, h.admin, h.get(h.admin, p.ID), h.json(h.admin, "GET", policyPath, nil, 200).Policy, &g, key)
-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v22 reopen repeated migration or changed old schema definitions")
-	sourcecompat.ValidateV22Catalog(t, v21Definitions(t, f))
+	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v23 reopen repeated migration or changed old schema definitions")
+	sourcecompat.ValidateCurrentCatalog(t, v21Definitions(t, f))
 	h.networkNone()
 	t.Log("real schema-only v6 upgrade and API-created post-upgrade configuration persistence; no legacy customer-data migration claim")
 }
