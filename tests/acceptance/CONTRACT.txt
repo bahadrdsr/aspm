@@ -174,6 +174,13 @@ updated canonical Work rows. Bulk disposition/risk changes are not accepted.
 Finding detail returns decisionEvents and decisionEventsNextCursor. Pages use
 decisionsCursor as a fixed-width 20-digit revision cursor, at most 100 events,
 strictly increasing by decisionRevision. Viewers can read history.
+GET /api/v1/findings/{id}/handoff returns text/plain, at most 128 KiB, with
+current finding/workflow/disposition/source/verification/scope facts and at most
+100 bounded observation identity/digest/availability/location references.
+It labels source remediation as untrusted data and excludes raw evidence,
+analyst notes, unmapped source fields, credentials and executable content.
+X-ASPM-Handoff-Truncated is true|false. Workspace membership is required;
+foreign findings are 404 and non-GET methods are 405.
 
 Reversible merge/split and retention policy/hold/preview now have dedicated M06
 gates. Physical archive/expiry execution, enterprise performance, full installer

@@ -1042,6 +1042,18 @@ export const api = {
       return result;
     }, { signal, expectedStatus: 200 });
   },
+  findingHandoff: (id: string, signal: AbortSignal) => {
+    reportIdentifier(id, "finding");
+    return request(`/api/v1/findings/${encodeURIComponent(id)}/handoff`, (value) => {
+      if (typeof value !== "string" || value.length === 0 || value.includes("\0") ||
+        new TextEncoder().encode(value).byteLength > (128 << 10) ||
+        !value.startsWith("ASPM DEVELOPER HANDOFF\n")) return invalid("developer handoff");
+      return value;
+    }, {
+      signal, expectedStatus: 200, headers: { Accept: "text/plain" },
+      decodeBody: (response) => response.text(),
+    });
+  },
   updateFinding: (id: string, input: FindingPatch, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;
     const body: FindingPatch = {};

@@ -46,6 +46,22 @@ test("FA9 selected findings can enter pending retest with one atomic audited bul
   await expect(history).toContainText(actionUser.name);
 });
 
+test("FA10 developer handoff copies bounded permission-checked context without private evidence", async ({ page, context, baseURL }) => {
+  if (!baseURL) throw new Error("Clipboard acceptance requires the loopback test origin.");
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(baseURL).origin });
+  const dialog = await openFinding(page);
+  await dialog.getByRole("button", { name: "Copy developer handoff", exact: true }).click();
+  await expect(dialog.getByRole("status").filter({ hasText: /Copied .*permission-checked context/i })).toBeVisible();
+  const text = await page.evaluate(() => navigator.clipboard.readText());
+  expect(text).toContain("ASPM DEVELOPER HANDOFF");
+  expect(text).toContain(primaryFinding.id);
+  expect(text).toContain(primaryFinding.observations[0].evidenceDigest);
+  expect(text).toContain("UNTRUSTED SOURCE-PROVIDED TEXT");
+  expect(text).not.toContain(primaryFinding.evidence.text);
+  expect(text).not.toContain(primaryFinding.notes[0].text);
+  expect(text).not.toContain("retained");
+});
+
 const workflowNames = {
   open: "Open", "in-progress": "In progress", "pending-retest": "Pending retest", resolved: "Resolved",
 };

@@ -16,6 +16,7 @@ import { FindingJira } from "./finding-jira";
 import { FindingTeams } from "./finding-teams";
 import { FindingAssessments } from "./finding-assessments/finding-assessments";
 import { FindingCorrelationPanel } from "./finding-correlation";
+import { FindingHandoff } from "./finding-handoff";
 import { FindingDecisionHistory, FindingNoteHistory, FindingObservationHistory } from "./finding-history";
 import { ActionButton } from "./action-button";
 import { FormError } from "./form-dialog";
@@ -110,6 +111,7 @@ export function FindingDialog({ id, initialTitle, returnFocus, query, onConfirme
           <section className="detail-section"><h3>What the source observed</h3><p>{finding.description || "The source did not supply a description."}</p></section>
           <section className="detail-section"><div className="section-heading"><h3>Original evidence</h3><span className="subtle-pill">Literal text</span></div><p className="evidence-source"><Icon name="file" size={14} />{finding.evidence.sourceLabel}</p><pre className="evidence-text">{finding.evidence.text || "The source did not supply evidence text."}</pre></section>
           <section className="detail-section"><h3>Source remediation context</h3><p>{finding.remediation || "No remediation guidance was supplied by the source."}</p><p className="section-note">Source text is evidence to review, not an instruction to execute.</p></section>
+          <FindingHandoff findingId={finding.id} />
           <section className="detail-section"><h3>Freshness &amp; provenance</h3><dl className="timeline">
             <div><dt><span className="timeline-dot" />Source scan</dt><dd><DetailTime value={finding.sourceScanAt} /></dd></div>
             <div><dt><span className="timeline-dot" />Source freshness</dt><dd><DetailTime value={finding.sourceFreshnessAt} /></dd></div>

@@ -56,6 +56,8 @@ assessment workflow have separate owned HTTPS qualification.
 Work also supports atomic selected-finding assignment/workflow triage, an
 explicit pending-retest state, and durable paged decision history. Source state,
 human workflow, risk disposition, AI advice, and verification remain separate.
+Finding detail can copy a permission-checked plain-text developer handoff with
+bounded evidence references but without raw evidence, notes, or scanner extras.
 See `docs/m08-triage-history.md`.
 
 The seven report intake profiles are registered through the public compiled-in

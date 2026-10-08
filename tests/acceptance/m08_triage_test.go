@@ -3,11 +3,49 @@
 package acceptance
 
 import (
+	"bytes"
 	"fmt"
 	"reflect"
 	"testing"
 	"time"
 )
+
+func TestM08_DeveloperHandoffIsScopedBoundedAndEvidenceReferenced(t *testing.T) {
+	h := newHarness(t, true)
+	_, _, first := h.seed()
+	h.json(h.admin, "POST", "/api/v1/findings/"+first.ID+"/notes",
+		object{"text": "Private analyst note must not enter the portable handoff."}, 201)
+	viewer := h.addUser(h.admin, "viewer")
+	response := h.request(viewer, "GET", "/api/v1/findings/"+first.ID+"/handoff", nil, 200)
+	if contentType := response.Header().Get("Content-Type"); contentType != "text/plain; charset=utf-8" {
+		t.Fatalf("handoff content type=%q", contentType)
+	}
+	body := response.Body.Bytes()
+	for _, required := range [][]byte{
+		[]byte("ASPM DEVELOPER HANDOFF"), []byte(first.ID), []byte(first.Title),
+		[]byte(first.AssetName), []byte(first.ScopeLabel), []byte(first.WorkflowState),
+		[]byte(first.SourceState), []byte(first.Observations[0].ID),
+		[]byte(first.Observations[0].EvidenceDigest), []byte("UNTRUSTED SOURCE-PROVIDED TEXT"),
+	} {
+		if !bytes.Contains(body, required) {
+			t.Fatalf("handoff omitted required bounded context %q", required)
+		}
+	}
+	for _, forbidden := range [][]byte{
+		[]byte(first.Evidence.Text), []byte("Private analyst note"), []byte("vendorNote"),
+		[]byte(h.services.cfg.Storage.AccessKey), []byte(h.services.cfg.Storage.SecretKey),
+	} {
+		if len(forbidden) > 0 && bytes.Contains(body, forbidden) {
+			t.Fatal("handoff exposed raw evidence, analyst notes, unmapped fields, or credentials")
+		}
+	}
+	if response.Header().Get("X-ASPM-Handoff-Truncated") != "false" || len(body) > 128<<10 {
+		t.Fatal("handoff must report bounded non-truncated output for the small fixture")
+	}
+	other := h.addWorkspace()
+	h.denied(other, "GET", "/api/v1/findings/"+first.ID+"/handoff", nil, 404, "not-found")
+	h.denied(h.admin, "POST", "/api/v1/findings/"+first.ID+"/handoff", object{}, 405, "method-not-allowed")
+}
 
 func TestM08_PendingRetestDecisionHistoryIsDurableAndScanIndependent(t *testing.T) {
 	h := newHarness(t, true)

@@ -75,6 +75,20 @@ A rationale is required for bulk actions. Single workflow changes expose an
 optional rationale. Finding detail shows a paged Decision history section with
 actor, revision, rationale, changed fields, and readable before/after values.
 
+## Developer handoff
+
+`GET /api/v1/findings/{id}/handoff` returns at most 128 KiB of permission-checked
+plain text for the selected workspace. It includes current human/source state,
+scope, source-provided remediation clearly labeled as untrusted data, and up to
+100 observation IDs, source/run identities, digests, availability states, and
+locations. Correlated primary findings include active member observations.
+
+The handoff excludes raw evidence text and bytes, analyst notes, unmapped source
+fields, credentials, provider configuration, and executable instructions. A
+response header reports whether bounded source text or evidence references were
+truncated. Finding detail exposes one explicit Copy developer handoff action
+with visible clipboard success or denial feedback.
+
 ## Compatibility and limits
 
 V19 only widens the existing workflow-state CHECK and adds the decision-event
@@ -88,6 +102,5 @@ Still separate:
 - Bulk risk acceptance.
 - Automatic notification policies.
 - Generic outbound webhooks.
-- Permission-checked portable developer handoff.
 - Decision-event archive/retention policy.
 - Deferred live-account and status-linkage integration follow-ups.

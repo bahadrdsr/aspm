@@ -441,6 +441,12 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return a.importResource(w, r, membership.ID, parts[1], len(parts) == 3)
 	case "findings":
+		if len(parts) == 3 && parts[2] == "handoff" {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
+			return a.findingHandoff(w, r, membership.ID, parts[1])
+		}
 		if len(parts) == 3 && parts[2] == "correlation-candidates" {
 			if err = requireMethod(w, r, http.MethodGet); err != nil {
 				return err
