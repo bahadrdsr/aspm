@@ -17,6 +17,9 @@
 .report-counts > div { min-width: 0; }
 .report-counts dt { color: var(--muted); font-size: 11px; margin-bottom: 5px; }
 .report-counts dd { margin: 0; font-size: 23px; font-weight: 600; line-height: 1.25; letter-spacing: -.025em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.report-metric-drilldown { border: 0; padding: 0; color: inherit; background: transparent; font: inherit; font-weight: inherit; line-height: inherit; letter-spacing: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; cursor: pointer; }
+.report-metric-drilldown:hover { color: var(--accent-ink); }
+.report-metric-drilldown:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
 .report-main-totals { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 22px 0; }
 .report-main-totals > div { padding: 17px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); }
 .report-main-totals dd { font-size: 32px; }
@@ -70,6 +73,8 @@
 .report-history-meta { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 7px; color: var(--muted); font-size: 10px; }
 .report-history-footer { border-top: 1px solid var(--line); padding: 14px 20px; }
 .report-history-footer button { width: 100%; }
+.report-coverage-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; }
+.report-coverage-table { min-width: 760px; }
 @media (max-width: 1200px) {
   .report-saved-layout { grid-template-columns: minmax(0, 1fr); }
 }

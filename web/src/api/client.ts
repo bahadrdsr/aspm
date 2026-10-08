@@ -1,6 +1,7 @@
 import { apiVersion } from "./types";
 import type {
   ArchivedHistory, Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingBulkPatch, FindingBulkResponse, FindingCorrelation,
+  CoverageAssetDrilldownResponse, CoverageAssetItem, CoverageAssetState,
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
   FindingDecision, FindingDecisionEvent, FindingDispositionApproval, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
@@ -894,6 +895,7 @@ function parseReportOverview(value: unknown, workspace: string | null, days: num
 }
 
 const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
+const coverageVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety.";
 const trendTotalKeys = ["assets", "findings", "openFindings", "acceptedRisk", "expiredAcceptedRisk",
   "suppressed", "expiredSuppression", "falsePositive", "inferredResolved", "verifiedResolved"] as const;
 const trendSeverityKeys = ["critical", "high", "medium", "low", "info"] as const;
@@ -1025,6 +1027,86 @@ function parseHistoricalTrend(value: unknown, workspace: string | null, days: nu
     apiVersion, dataOrigin: "live",
     trend: { workspaceId, from, to, days, points, delta,
       verification: { state: "not-run", reason: trendVerificationReason } },
+  };
+}
+
+function coverageAssetItem(value: unknown, workspace: string | null, to: string): CoverageAssetItem {
+  const item = exactObject(value, "coverage asset item", ["asset", "coverage"]);
+  exactObject(item.asset, "coverage asset",
+    ["id", "workspaceId", "name", "kind", "environment", "criticality", "tags", "ownerId"]);
+  const coverage = exactObject(item.coverage, "coverage asset flags",
+    ["scanned", "stale", "unknownFreshness", "latestSourceScanAt"]);
+  const result: CoverageAssetItem = {
+    asset: asset(item.asset, workspace),
+    coverage: {
+      scanned: boolean(coverage.scanned, "coverage scanned state"),
+      stale: boolean(coverage.stale, "coverage stale state"),
+      unknownFreshness: boolean(coverage.unknownFreshness, "coverage unknown freshness state"),
+      latestSourceScanAt: nullableTimestamp(coverage.latestSourceScanAt, "coverage latest source scan time"),
+    },
+  };
+  if (!/^[a-f0-9]{32}$/.test(result.asset.id) ||
+    result.asset.ownerId !== null && !/^[a-f0-9]{32}$/.test(result.asset.ownerId) ||
+    !result.coverage.scanned && (result.coverage.stale || result.coverage.unknownFreshness ||
+      result.coverage.latestSourceScanAt !== null) ||
+    (result.coverage.stale || result.coverage.unknownFreshness) && !result.coverage.scanned ||
+    result.coverage.scanned && !result.coverage.unknownFreshness &&
+      result.coverage.latestSourceScanAt === null ||
+    result.coverage.latestSourceScanAt !== null &&
+      Date.parse(result.coverage.latestSourceScanAt) > Date.parse(to)) {
+    return invalid("coverage asset consistency");
+  }
+  return result;
+}
+
+function parseCoverageAssetDrilldown(value: unknown, workspace: string | null,
+  state: CoverageAssetState, days: number, limit: number, cursor: string): CoverageAssetDrilldownResponse {
+  const body = exactObject(value, "coverage drill-down response", ["apiVersion", "dataOrigin", "drilldown"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("coverage drill-down envelope");
+  const drilldown = exactObject(body.drilldown, "coverage drill-down",
+    ["workspaceId", "state", "freshnessWindow", "items", "total", "nextCursor", "verification"]);
+  const workspaceId = text(drilldown.workspaceId, "coverage drill-down workspace");
+  const parsedState = choice(drilldown.state,
+    ["scanned", "unscanned", "stale", "unknown-freshness"], "coverage drill-down state");
+  const window = exactObject(drilldown.freshnessWindow, "coverage freshness window", ["from", "to", "days"]);
+  const from = timestamp(window.from, "coverage freshness start");
+  const to = timestamp(window.to, "coverage freshness end");
+  const parsedDays = count(window.days, "coverage freshness days");
+  if (workspaceId !== workspace || parsedState !== state || parsedDays !== days ||
+    Date.parse(to) - Date.parse(from) !== days * 24 * 60 * 60 * 1000) {
+    return invalid("coverage drill-down authority or window");
+  }
+  const items = array(drilldown.items, "coverage asset list")
+    .map((value) => coverageAssetItem(value, workspace, to));
+  const total = count(drilldown.total, "coverage asset total");
+  const nextCursor = nullableText(drilldown.nextCursor, "coverage asset cursor");
+  if (items.length > limit || total < items.length ||
+    new Set(items.map((item) => item.asset.id)).size !== items.length ||
+    items.some((item, index) =>
+      item.asset.id <= (index === 0 ? cursor : items[index - 1].asset.id))) {
+    return invalid("coverage asset page");
+  }
+  const member = (item: CoverageAssetItem) => state === "scanned" ? item.coverage.scanned :
+    state === "unscanned" ? !item.coverage.scanned :
+      state === "stale" ? item.coverage.stale : item.coverage.unknownFreshness;
+  if (items.some((item) => !member(item))) return invalid("coverage asset membership");
+  if (nextCursor !== null && (!/^[a-f0-9]{32}$/.test(nextCursor) ||
+    items.length !== limit || nextCursor !== items.at(-1)?.asset.id || nextCursor <= cursor) ||
+    items.length < limit && nextCursor !== null ||
+    cursor === "" && (total > items.length) !== (nextCursor !== null)) {
+    return invalid("coverage asset pagination");
+  }
+  const verification = exactObject(drilldown.verification, "coverage drill-down verification", ["state", "reason"]);
+  if (verification.state !== "not-run" || verification.reason !== coverageVerificationReason) {
+    return invalid("coverage drill-down verification");
+  }
+  return {
+    apiVersion, dataOrigin: "live",
+    drilldown: {
+      workspaceId, state, freshnessWindow: { from, to, days },
+      items, total, nextCursor,
+      verification: { state: "not-run", reason: coverageVerificationReason },
+    },
   };
 }
 
@@ -1642,6 +1724,22 @@ export const api = {
     }
     return reportRead(`/api/v1/reports/trends?days=${days}`,
       (value) => parseHistoricalTrend(value, workspace, days), signal);
+  },
+  reportCoverageAssets: (state: CoverageAssetState, days: number, limit: number,
+    cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    if (!["scanned", "unscanned", "stale", "unknown-freshness"].includes(state) ||
+      !Number.isInteger(days) || days < 1 || days > 365 ||
+      !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Coverage pages require one Live coverage state, freshness from 1 through 365 days, and a bounded native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({
+      state, freshnessDays: String(days), limit: String(limit),
+    });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/reports/coverage-assets?${query}`,
+      (value) => parseCoverageAssetDrilldown(value, workspace, state, days, limit, cursor ?? ""), signal);
   },
   reportSnapshots: (limit: number, cursor: string | null, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

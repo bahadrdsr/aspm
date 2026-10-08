@@ -583,6 +583,36 @@ export interface HistoricalTrendResponse {
   trend: HistoricalTrend;
 }
 
+export type CoverageAssetState = "scanned" | "unscanned" | "stale" | "unknown-freshness";
+
+export interface CoverageAssetFlags {
+  scanned: boolean;
+  stale: boolean;
+  unknownFreshness: boolean;
+  latestSourceScanAt: string | null;
+}
+
+export interface CoverageAssetItem {
+  asset: Asset;
+  coverage: CoverageAssetFlags;
+}
+
+export interface CoverageAssetDrilldown {
+  workspaceId: string;
+  state: CoverageAssetState;
+  freshnessWindow: { from: string; to: string; days: number };
+  items: CoverageAssetItem[];
+  total: number;
+  nextCursor: string | null;
+  verification: { state: "not-run"; reason: string };
+}
+
+export interface CoverageAssetDrilldownResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  drilldown: CoverageAssetDrilldown;
+}
+
 export type ReportSnapshotState = "queued" | "processing" | "succeeded" | "failed";
 export interface ReportSnapshotInput { name: string; freshnessDays: number }
 export interface ReportSnapshotSummary extends ReportSnapshotInput {

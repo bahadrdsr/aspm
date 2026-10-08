@@ -77,5 +77,5 @@ repeatable-read snapshot while a later row is committed concurrently.
 Browser acceptance covers explicit reads without polling, empty and one-point
 states, timestamp gaps, authority loss and recovery, strict malformed-response
 rejection, focus preservation, reduced motion, and a 390-pixel viewport. This
-slice does not add SLA tracking, drilldown, forecasting, scheduled reports, or
-report export generation.
+slice does not add SLA tracking, historical snapshot membership, finding
+drill-down, forecasting, scheduled reports, or report export generation.

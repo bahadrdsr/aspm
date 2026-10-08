@@ -903,3 +903,124 @@ keyboard reachable without page-level overflow. Opening and refreshing preserve
 deliberately moved focus and surrounding Reports context. No report, snapshot
 or trend payload is written to localStorage, sessionStorage or another browser
 storage surface.
+
+M10 CURRENT ASSET COVERAGE DRILL-DOWN:
+This is the next bounded M10 slice. It adds current asset membership behind the
+four existing Live overview coverage metrics. It adds no table, column, index,
+migration, queue, worker, provider call, object-store object, saved report
+mutation or browser persistence. The migration ledger remains versions 1..24.
+Existing overview, snapshot, report-worker and historical trend contracts remain
+compatible.
+
+GET /api/v1/reports/coverage-assets is the only new route. Any current member of
+the selected workspace, including a viewer, may read it. Missing, expired or
+revoked authentication is 401. An unavailable or forged membership is 403.
+Workspace authority comes only from the authenticated selected membership
+header. Query values and request bodies never select or override a workspace.
+There is no POST, PATCH, DELETE or other write endpoint.
+
+The exact query keys are required state, required freshnessDays, optional limit
+and optional cursor. No other key is accepted. state is exactly scanned,
+unscanned, stale or unknown-freshness. freshnessDays is one decimal integer
+from 1 through 365. limit defaults to 100 and is one decimal integer from 1
+through 100. cursor is absent or one lower-case 32-hex asset ID. Duplicate,
+empty, upper-case, malformed, out-of-range and unknown values are 400
+invalid-input.
+
+One request captures server Now once after authentication and uses one read-only
+repeatable-read transaction. Its inclusive freshness window is
+[Now-freshnessDays, Now]. Coverage uses the same current report model:
+successful complete full imports are grouped by asset, source, scope ID, scope
+revision and scope branch. Only source_scan_at values at or before Now may
+contribute to the latest known source scan time. A grouped scope with no known
+nonfuture source time has unknown freshness.
+
+An asset is scanned when at least one qualifying grouped scope exists. It is
+unscanned when none exists. It is stale when any qualifying grouped scope has
+its latest known scan before the inclusive window start. It has unknown
+freshness when any qualifying grouped scope has no known source scan time.
+Scanned therefore overlaps stale and unknown freshness, and stale may overlap
+unknown freshness. The other states are not forced into a mutually exclusive
+classification beyond these definitions.
+
+Import processing state and source outcome both matter. Failed import
+processing, failed source status, partial or unknown completeness, delta scans,
+future-only source scans and another workspace's imports do not establish
+coverage. Collection, import and database times never substitute for
+source_scan_at. The newest known time within a grouped scope replaces an older
+time for that scope, while any separate stale scope still makes the asset
+stale.
+
+The exact success envelope is:
+{apiVersion,dataOrigin:"live",drilldown:{workspaceId,state,freshnessWindow,
+items,total,nextCursor,verification}}.
+freshnessWindow is exactly {from,to,days}, with from=Now-days and to=Now.
+verification is always exactly:
+{state:"not-run",reason:"Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety."}.
+
+Items are current selected-workspace assets ordered by lower-case asset ID
+ascending. Paging is cursor-exclusive and returns at most limit items. Each item
+is exactly:
+{asset:{id,workspaceId,name,kind,environment,criticality,tags,ownerId},
+coverage:{scanned,stale,unknownFreshness,latestSourceScanAt}}.
+The flags describe the asset independently of the requested state and every
+item must satisfy that state. latestSourceScanAt is the maximum known
+source_scan_at across all qualifying grouped scopes, or null when none is
+known. total is the exact whole-filter count from the same transaction.
+nextCursor is null unless more rows exist, in which case it is exactly the last
+returned asset ID. The endpoint never truncates the whole filter, auto-drains,
+uses offset paging, writes state, reads S3, starts workers, calls providers,
+creates snapshots or mutates reports.
+
+Real PostgreSQL acceptance seeds exact current-workspace assets and qualifying
+imports plus failed, partial, unknown-completeness, delta, queued, future-only
+and foreign-workspace controls. It proves all four memberships, stale and
+unknown overlap, inclusive freshness boundaries, grouped-scope latest time,
+any-scope staleness, exact asset DTOs, lower-case order, default and explicit
+page bounds, cursor exclusivity, whole-filter totals, viewer access, session and
+membership rejections, invalid query shapes, and absence of write methods. A
+traced concurrent asset update plus late qualifying import must not change the
+page or total already being read, while a later transaction observes both.
+Acceptance also proves one server Now capture, one read-only repeatable-read
+transaction, schema ledger 1..24, unchanged report snapshot rows and bytes,
+unchanged Live overview bytes, no durable side effects and zero raw or archive
+object-store operations.
+
+Only the four coverage metrics in Live overview gain activation. Coverage
+metrics rendered from a selected saved snapshot remain noninteractive because
+saved aggregates cannot claim current asset membership. Opening one Live
+coverage metric performs exactly one GET with that metric's state, the currently
+applied Live overview freshnessDays and limit=100. Editing the Live freshness
+draft without Refresh report does not change drill-down days.
+
+The drill-down is labelled as current live asset membership. It shows the exact
+freshness from and to timestamps, day count, whole-filter total and fixed
+verification reason. Asset rows are in an accessible table and expose asset
+identity plus scanned, stale and unknown-freshness flags and the latest known
+source scan timestamp or an explicit unknown value. Load more is manual and
+uses only the returned native cursor. Refresh explicitly restarts at the first
+page. There is no polling, automatic page drain, snapshot creation or other
+write. Activating another metric replaces the current page immediately and
+does not retain rows from the prior state.
+
+A 503 after authorized data preserves those rows and the exact cursor or
+first-page retry context. A 403 or 404 withholds prior rows and keeps them
+withheld through loading and a later 503 until a matching authorized response
+succeeds. Workspace change, session replacement, logout and protected 401 abort
+old reads, clear old-scope rows and reject late responses.
+
+Client parsing is strict. It rejects wrong workspace, requested state or exact
+window; item workspace; noncanonical asset IDs; descending or duplicate items;
+wrong totals or cursor relationships; items that do not satisfy the requested
+state; impossible flag combinations; unknown envelope, drill-down, asset or
+coverage keys; nonboolean flags; invalid, future or flag-inconsistent source
+timestamps; changed verification state or wording; wrong API version; and any
+data origin other than live. Invalid success data never replaces the last
+authorized page or grants authority.
+
+At 390px with reduced motion, all metric activations, Refresh, Load more and the
+scrollable table remain keyboard reachable without page-level horizontal
+overflow. Request completion preserves deliberately moved focus and surrounding
+Reports context. No coverage asset ID, name, source timestamp, verification
+reason or other payload is written to localStorage, sessionStorage, cookies,
+URLs or another browser storage surface.

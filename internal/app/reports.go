@@ -19,6 +19,7 @@ const (
 )
 
 const historicalTrendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification."
+const coverageDrilldownVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety."
 
 type PostureTotals struct {
 	Assets              int64 `json:"assets"`
@@ -108,6 +109,31 @@ type HistoricalTrend struct {
 	} `json:"verification"`
 }
 
+type CoverageAssetFlags struct {
+	Scanned            bool       `json:"scanned"`
+	Stale              bool       `json:"stale"`
+	UnknownFreshness   bool       `json:"unknownFreshness"`
+	LatestSourceScanAt *time.Time `json:"latestSourceScanAt"`
+}
+
+type CoverageAssetItem struct {
+	Asset    Asset              `json:"asset"`
+	Coverage CoverageAssetFlags `json:"coverage"`
+}
+
+type CoverageAssetDrilldown struct {
+	WorkspaceID     string              `json:"workspaceId"`
+	State           string              `json:"state"`
+	FreshnessWindow FreshnessWindow     `json:"freshnessWindow"`
+	Items           []CoverageAssetItem `json:"items"`
+	Total           int64               `json:"total"`
+	NextCursor      *string             `json:"nextCursor"`
+	Verification    struct {
+		State  string `json:"state"`
+		Reason string `json:"reason"`
+	} `json:"verification"`
+}
+
 func validFreshnessDays(days int) bool { return days >= 1 && days <= 365 }
 
 func overviewFreshnessDays(rawQuery string) (int, error) {
@@ -168,6 +194,65 @@ func historicalTrendDays(rawQuery string) (int, error) {
 	return days, nil
 }
 
+func strictReportInteger(value string, minimum, maximum int) (int, error) {
+	if value == "" || len(value) > len(strconv.Itoa(maximum)) {
+		return 0, errInvalid
+	}
+	for _, char := range value {
+		if char < '0' || char > '9' {
+			return 0, errInvalid
+		}
+	}
+	result, err := strconv.Atoi(value)
+	if err != nil || result < minimum || result > maximum {
+		return 0, errInvalid
+	}
+	return result, nil
+}
+
+func coverageAssetParameters(rawQuery string) (string, int, int, string, error) {
+	query, err := url.ParseQuery(rawQuery)
+	if err != nil {
+		return "", 0, 0, "", errInvalid
+	}
+	for key, values := range query {
+		if key != "state" && key != "freshnessDays" && key != "limit" && key != "cursor" ||
+			len(values) != 1 {
+			return "", 0, 0, "", errInvalid
+		}
+	}
+	stateValues, statePresent := query["state"]
+	daysValues, daysPresent := query["freshnessDays"]
+	if !statePresent || !daysPresent {
+		return "", 0, 0, "", errInvalid
+	}
+	state := stateValues[0]
+	switch state {
+	case "scanned", "unscanned", "stale", "unknown-freshness":
+	default:
+		return "", 0, 0, "", errInvalid
+	}
+	days, err := strictReportInteger(daysValues[0], 1, 365)
+	if err != nil {
+		return "", 0, 0, "", err
+	}
+	limit := 100
+	if values, present := query["limit"]; present {
+		limit, err = strictReportInteger(values[0], 1, 100)
+		if err != nil {
+			return "", 0, 0, "", err
+		}
+	}
+	cursor := ""
+	if values, present := query["cursor"]; present {
+		cursor = values[0]
+		if !validID(cursor) {
+			return "", 0, 0, "", errInvalid
+		}
+	}
+	return state, days, limit, cursor, nil
+}
+
 func (a *Application) reportOverview(w http.ResponseWriter, r *http.Request, workspace string) error {
 	days, err := overviewFreshnessDays(r.URL.RawQuery)
 	if err != nil {
@@ -188,6 +273,126 @@ func (a *Application) reportOverview(w http.ResponseWriter, r *http.Request, wor
 		return err
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"dataOrigin": "live", "report": report})
+	return nil
+}
+
+func (a *database) reportCoverageCTE() string {
+	return `WITH source_scopes AS (
+		SELECT asset_id,source_id,scope_id,scope_revision,scope_branch,
+			max(source_scan_at) AS scanned_at
+		FROM ` + a.table("imports") + `
+		WHERE workspace_id=$1 AND state='succeeded' AND source_status='succeeded'
+			AND scan_kind='full' AND completeness='complete'
+			AND (source_scan_at IS NULL OR source_scan_at<=$2)
+		GROUP BY asset_id,source_id,scope_id,scope_revision,scope_branch
+	), assessed_assets AS (
+		SELECT asset_id,COALESCE(bool_or(scanned_at<$3),false) AS stale,
+			bool_or(scanned_at IS NULL) AS unknown_freshness,
+			max(scanned_at) AS latest_source_scan_at
+		FROM source_scopes GROUP BY asset_id
+	)`
+}
+
+func coverageAssetPredicate(state string) (string, error) {
+	switch state {
+	case "scanned":
+		return "assessed.asset_id IS NOT NULL", nil
+	case "unscanned":
+		return "assessed.asset_id IS NULL", nil
+	case "stale":
+		return "COALESCE(assessed.stale,false)", nil
+	case "unknown-freshness":
+		return "COALESCE(assessed.unknown_freshness,false)", nil
+	default:
+		return "", errInvalid
+	}
+}
+
+func scanCoverageAsset(rows pgx.Rows) (CoverageAssetItem, error) {
+	var item CoverageAssetItem
+	err := rows.Scan(
+		&item.Asset.ID, &item.Asset.WorkspaceID, &item.Asset.Name, &item.Asset.Kind,
+		&item.Asset.Environment, &item.Asset.Criticality, &item.Asset.Tags, &item.Asset.OwnerID,
+		&item.Coverage.Scanned, &item.Coverage.Stale, &item.Coverage.UnknownFreshness,
+		&item.Coverage.LatestSourceScanAt,
+	)
+	if err != nil {
+		return CoverageAssetItem{}, err
+	}
+	if item.Coverage.LatestSourceScanAt != nil {
+		value := item.Coverage.LatestSourceScanAt.UTC()
+		item.Coverage.LatestSourceScanAt = &value
+	}
+	return item, nil
+}
+
+func (a *Application) reportCoverageAssets(w http.ResponseWriter, r *http.Request, workspace string) error {
+	state, days, limit, cursor, err := coverageAssetParameters(r.URL.RawQuery)
+	if err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), reportQueryTime)
+	defer cancel()
+	tx, err := a.pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.RepeatableRead, AccessMode: pgx.ReadOnly})
+	if err != nil {
+		return err
+	}
+	defer rollback(tx)
+	now := a.config.Now().UTC()
+	window := FreshnessWindow{From: now.Add(-time.Duration(days) * 24 * time.Hour), To: now, Days: days}
+	predicate, err := coverageAssetPredicate(state)
+	if err != nil {
+		return err
+	}
+	query := a.reportCoverageCTE()
+	var total int64
+	if err = tx.QueryRow(ctx, query+`
+		SELECT count(*) FROM `+a.table("assets")+` asset
+		LEFT JOIN assessed_assets assessed ON assessed.asset_id=asset.id
+		WHERE asset.workspace_id=$1 AND `+predicate, workspace, window.To, window.From).Scan(&total); err != nil {
+		return err
+	}
+	rows, err := tx.Query(ctx, query+`
+		SELECT asset.id,asset.workspace_id,asset.name,asset.kind,asset.environment,
+			asset.criticality,asset.tags,asset.owner_id,
+			assessed.asset_id IS NOT NULL,COALESCE(assessed.stale,false),
+			COALESCE(assessed.unknown_freshness,false),assessed.latest_source_scan_at
+		FROM `+a.table("assets")+` asset
+		LEFT JOIN assessed_assets assessed ON assessed.asset_id=asset.id
+		WHERE asset.workspace_id=$1 AND `+predicate+` AND asset.id>$4
+		ORDER BY asset.id LIMIT $5`, workspace, window.To, window.From, cursor, limit+1)
+	if err != nil {
+		return err
+	}
+	items := []CoverageAssetItem{}
+	for rows.Next() {
+		item, scanErr := scanCoverageAsset(rows)
+		if scanErr != nil {
+			rows.Close()
+			return scanErr
+		}
+		items = append(items, item)
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return err
+	}
+	if err = tx.Commit(ctx); err != nil {
+		return err
+	}
+	var next *string
+	if len(items) > limit {
+		items = items[:limit]
+		next = &items[len(items)-1].Asset.ID
+	}
+	drilldown := CoverageAssetDrilldown{
+		WorkspaceID: workspace, State: state, FreshnessWindow: window,
+		Items: items, Total: total, NextCursor: next,
+	}
+	drilldown.Verification.State = "not-run"
+	drilldown.Verification.Reason = coverageDrilldownVerificationReason
+	writeJSON(w, http.StatusOK, map[string]any{"dataOrigin": "live", "drilldown": drilldown})
 	return nil
 }
 
@@ -291,18 +496,7 @@ func (a *database) readPosture(ctx context.Context, db queryRower, workspace str
 	// zero and expose that limitation, never count human or source resolution.
 	report.Verification.State = "not-run"
 	report.Verification.Reason = "Independent verified-resolution results are not integrated with canonical findings."
-	err := db.QueryRow(ctx, `WITH source_scopes AS (
-		SELECT asset_id,source_id,scope_id,scope_revision,scope_branch,
-			max(source_scan_at) FILTER (WHERE source_scan_at<=$2) AS scanned_at
-		FROM `+a.table("imports")+`
-		WHERE workspace_id=$1 AND state='succeeded' AND source_status='succeeded'
-			AND scan_kind='full' AND completeness='complete'
-		GROUP BY asset_id,source_id,scope_id,scope_revision,scope_branch
-	), assessed_assets AS (
-		SELECT asset_id,bool_or(scanned_at<$3) AS stale,
-			bool_or(scanned_at IS NULL) AS unknown_freshness
-		FROM source_scopes GROUP BY asset_id
-	), asset_totals AS (
+	err := db.QueryRow(ctx, a.reportCoverageCTE()+`, asset_totals AS (
 		SELECT count(*) AS assets,
 			count(*) FILTER (WHERE assessed.asset_id IS NOT NULL) AS scanned,
 			count(*) FILTER (WHERE assessed.asset_id IS NULL) AS unscanned,

@@ -67,13 +67,49 @@ export interface SyntheticTrendResponse {
   dataOrigin: "live";
   trend: SyntheticTrend;
 }
+export type CoverageState = "scanned" | "unscanned" | "stale" | "unknown-freshness";
+export interface SyntheticCoverageAsset {
+  id: string;
+  workspaceId: string;
+  name: string;
+  kind: string;
+  environment: string;
+  criticality: "low" | "medium" | "high" | "critical";
+  tags: string[];
+  ownerId: string | null;
+}
+export interface SyntheticCoverageItem {
+  asset: SyntheticCoverageAsset;
+  coverage: {
+    scanned: boolean;
+    stale: boolean;
+    unknownFreshness: boolean;
+    latestSourceScanAt: string | null;
+  };
+}
+export interface SyntheticCoverageDrilldown {
+  workspaceId: string;
+  state: CoverageState;
+  freshnessWindow: { from: string; to: string; days: number };
+  items: SyntheticCoverageItem[];
+  total: number;
+  nextCursor: string | null;
+  verification: { state: "not-run"; reason: string };
+}
+export interface SyntheticCoverageResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  drilldown: SyntheticCoverageDrilldown;
+}
 
 export const reportAlpha = { id: "1".repeat(32), name: "Synthetic Reports Alpha workspace", role: "admin" as ReportRole };
 export const reportBeta = { id: "3".repeat(32), name: "Synthetic Reports Beta workspace", role: "analyst" as ReportRole };
 export const reportUser = { id: "a".repeat(32), name: "Synthetic reporting analyst", email: "reports@synthetic.invalid" };
 export const verificationReason = "Independent verified-resolution results are not integrated with canonical findings.";
 export const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
+export const coverageVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety.";
 export const overviewPath = "/api/v1/reports/overview";
+export const coverageAssetsPath = "/api/v1/reports/coverage-assets";
 export const snapshotsPath = "/api/v1/reports/snapshots";
 export const trendsPath = "/api/v1/reports/trends";
 
@@ -210,6 +246,95 @@ export const trendStorageCanaries = (() => {
   ];
 })();
 
+export function syntheticCoverageAssets(report: SyntheticPostureReport, days: number): SyntheticCoverageItem[] {
+  const current = withFreshness(report, days);
+  const { scannedAssets, unscannedAssets, staleAssets, unknownFreshnessAssets } = current.coverage;
+  if (![reportAlpha.id, reportBeta.id].includes(current.workspaceId) ||
+    current.totals.assets !== scannedAssets + unscannedAssets ||
+    staleAssets > scannedAssets || unknownFreshnessAssets > scannedAssets ||
+    staleAssets < Math.max(0, unknownFreshnessAssets - (staleAssets < scannedAssets ? 1 : 0))) {
+    throw new Error("Synthetic coverage membership must match one bounded Live overview.");
+  }
+  const prefix = current.workspaceId === reportAlpha.id ? "4" : "5";
+  const workspaceName = current.workspaceId === reportAlpha.id ? "Alpha" : "Beta";
+  const staleAt = new Date(Date.parse(current.freshnessWindow.from) - 3_600_000).toISOString();
+  const freshAt = new Date(Date.parse(current.freshnessWindow.to) - 3_600_000).toISOString();
+  const hasUnknownOnly = unknownFreshnessAssets > 0 && staleAssets < scannedAssets;
+  const unknownOverlap = unknownFreshnessAssets - (hasUnknownOnly ? 1 : 0);
+  const unknownOnlyIndex = hasUnknownOnly ? staleAssets : -1;
+  return Array.from({ length: current.totals.assets }, (_, index): SyntheticCoverageItem => {
+    const scanned = index < scannedAssets;
+    const stale = scanned && index < staleAssets;
+    const unknownFreshness = scanned &&
+      (index < unknownOverlap || index === unknownOnlyIndex);
+    const latestSourceScanAt = !scanned || unknownFreshness && !stale ? null : stale ? staleAt : freshAt;
+    return {
+      asset: {
+        id: `${prefix}${(index + 1).toString(16).padStart(31, "0")}`,
+        workspaceId: current.workspaceId,
+        name: `Synthetic ${workspaceName} coverage asset ${String(index + 1).padStart(4, "0")}`,
+        kind: "repository",
+        environment: index % 2 === 0 ? "production" : "test",
+        criticality: (["critical", "high", "medium", "low"] as const)[index % 4],
+        tags: ["synthetic", `coverage-${String(index + 1).padStart(4, "0")}`],
+        ownerId: index % 3 === 0 ? reportUser.id : null,
+      },
+      coverage: { scanned, stale, unknownFreshness, latestSourceScanAt },
+    };
+  });
+}
+
+export function syntheticCoverageDrilldown(report: SyntheticPostureReport, state: CoverageState, days: number,
+  limit = 100, cursor = ""): SyntheticCoverageDrilldown {
+  if (!["scanned", "unscanned", "stale", "unknown-freshness"].includes(state) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+    cursor !== "" && !/^[a-f0-9]{32}$/.test(cursor)) {
+    throw new Error("Only bounded synthetic coverage drill-down pages may be generated.");
+  }
+  const current = withFreshness(report, days);
+  const member = (item: SyntheticCoverageItem) => state === "scanned" ? item.coverage.scanned :
+    state === "unscanned" ? !item.coverage.scanned :
+      state === "stale" ? item.coverage.stale : item.coverage.unknownFreshness;
+  const all = syntheticCoverageAssets(current, days).filter(member);
+  const remaining = all.filter((item) => item.asset.id > cursor);
+  const items = remaining.slice(0, limit);
+  const nextCursor = remaining.length > limit ? items.at(-1)!.asset.id : null;
+  const expectedTotal = state === "scanned" ? current.coverage.scannedAssets :
+    state === "unscanned" ? current.coverage.unscannedAssets :
+      state === "stale" ? current.coverage.staleAssets : current.coverage.unknownFreshnessAssets;
+  if (all.length !== expectedTotal) throw new Error("Synthetic coverage total diverged from the Live overview metric.");
+  return {
+    workspaceId: current.workspaceId,
+    state,
+    freshnessWindow: structuredClone(current.freshnessWindow),
+    items: structuredClone(items),
+    total: all.length,
+    nextCursor,
+    verification: { state: "not-run", reason: coverageVerificationReason },
+  };
+}
+
+export function syntheticCoverageResponse(report: SyntheticPostureReport, state: CoverageState, days: number,
+  limit = 100, cursor = ""): SyntheticCoverageResponse {
+  return { apiVersion, dataOrigin: "live", drilldown: syntheticCoverageDrilldown(report, state, days, limit, cursor) };
+}
+
+export const coverageStorageCanaries = (() => {
+  const pages = [
+    syntheticCoverageDrilldown(alphaOverview, "stale", 7),
+    syntheticCoverageDrilldown(alphaOverview, "unknown-freshness", 30),
+    syntheticCoverageDrilldown(betaOverview, "scanned", 7),
+  ];
+  return [
+    coverageVerificationReason,
+    ...pages.flatMap((page) => [
+      page.freshnessWindow.from, page.freshnessWindow.to,
+      ...page.items.slice(0, 3).flatMap((item) =>
+        [item.asset.id, item.asset.name, item.coverage.latestSourceScanAt ?? ""]),
+    ]),
+  ].filter((value) => value !== "");
+})();
+
 export function emptyReport(workspaceId = reportAlpha.id) {
   return withFreshness({
     ...initial, workspaceId,
@@ -277,4 +402,37 @@ export function trendDays(url: URL): number {
     throw new Error("Historical trend days must be one integer from 1 through 365.");
   }
   return Number(values[0]);
+}
+
+export function coverageParameters(url: URL): {
+  state: CoverageState; freshnessDays: number; limit: number; cursor: string;
+} {
+  const allowed = ["state", "freshnessDays", "limit", "cursor"];
+  const stateValues = url.searchParams.getAll("state");
+  const freshnessValues = url.searchParams.getAll("freshnessDays");
+  const limitValues = url.searchParams.getAll("limit");
+  const cursorValues = url.searchParams.getAll("cursor");
+  if ([...url.searchParams.keys()].some((key) => !allowed.includes(key)) ||
+    stateValues.length !== 1 || freshnessValues.length !== 1 ||
+    limitValues.length > 1 || cursorValues.length > 1) {
+    throw new Error("Coverage drill-down requires state and freshnessDays and accepts only one native limit and cursor.");
+  }
+  const state = stateValues[0] as CoverageState;
+  if (!["scanned", "unscanned", "stale", "unknown-freshness"].includes(state)) {
+    throw new Error("Coverage drill-down state must be one exact Live overview coverage metric.");
+  }
+  if (!/^\d{1,3}$/.test(freshnessValues[0]) ||
+    Number(freshnessValues[0]) < 1 || Number(freshnessValues[0]) > 365) {
+    throw new Error("Coverage drill-down freshnessDays must be one integer from 1 through 365.");
+  }
+  const rawLimit = limitValues[0], limit = rawLimit === undefined ? 100 : Number(rawLimit);
+  if (rawLimit !== undefined && !/^\d{1,3}$/.test(rawLimit) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100) {
+    throw new Error("Coverage drill-down limit must be one integer from 1 through 100.");
+  }
+  const cursor = cursorValues[0] ?? "";
+  if (cursorValues.length === 1 && !/^[a-f0-9]{32}$/.test(cursor)) {
+    throw new Error("Coverage drill-down cursor must be one lower-case 32-hex asset ID.");
+  }
+  return { state, freshnessDays: Number(freshnessValues[0]), limit, cursor };
 }

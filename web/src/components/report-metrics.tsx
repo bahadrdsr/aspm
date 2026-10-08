@@ -1,4 +1,4 @@
-import type { DataOrigin, PostureReport } from "@/api/types";
+import type { CoverageAssetState, DataOrigin, PostureReport } from "@/api/types";
 import { timestampLabel } from "@/lib/format";
 import { DataNotice } from "./states";
 import { Icon } from "./icon";
@@ -12,11 +12,15 @@ const resolutionTotals = [
 ] as const;
 const severities = [["critical", "Critical"], ["high", "High"], ["medium", "Medium"], ["low", "Low"], ["info", "Info"]] as const;
 const coverage = [
-  ["scannedAssets", "Scanned assets"], ["unscannedAssets", "Unscanned assets"],
-  ["staleAssets", "Stale assets"], ["unknownFreshnessAssets", "Unknown freshness"],
+  ["scannedAssets", "Scanned assets", "scanned"], ["unscannedAssets", "Unscanned assets", "unscanned"],
+  ["staleAssets", "Stale assets", "stale"], ["unknownFreshnessAssets", "Unknown freshness", "unknown-freshness"],
 ] as const;
 
-export function ReportMetrics({ report, origin }: { report: PostureReport; origin: DataOrigin }) {
+export function ReportMetrics({ report, origin, onCoverageSelect }: {
+  report: PostureReport;
+  origin: DataOrigin;
+  onCoverageSelect?: (state: CoverageAssetState, trigger: HTMLButtonElement) => void;
+}) {
   return <div className="report-metrics">
     <div className="report-as-of"><p>As of <time dateTime={report.asOf}>{timestampLabel(report.asOf)}</time></p><DataNotice origin={origin} /></div>
     {report.totals.assets === 0 && report.totals.findings === 0 &&
@@ -41,7 +45,13 @@ export function ReportMetrics({ report, origin }: { report: PostureReport; origi
     <div className="report-metric-group">
       <h3>Scan coverage</h3>
       <dl className="report-counts report-coverage">
-        {coverage.map(([key, title]) => <div key={key}><dt>{title}</dt><dd>{report.coverage[key].toLocaleString("en-US")}</dd></div>)}
+        {coverage.map(([key, title, state]) => <div key={key}><dt>{title}</dt><dd>
+          {onCoverageSelect ? <button type="button" className="report-metric-drilldown"
+            aria-label={`View ${title}`}
+            onClick={(event) => onCoverageSelect(state, event.currentTarget)}>
+            {report.coverage[key].toLocaleString("en-US")}</button> :
+            report.coverage[key].toLocaleString("en-US")}
+        </dd></div>)}
       </dl>
       <div className="report-window"><strong>Freshness window: {report.freshnessWindow.days} days.</strong>
         <p><time dateTime={report.freshnessWindow.from}>{timestampLabel(report.freshnessWindow.from)}</time>

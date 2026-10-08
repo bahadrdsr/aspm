@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { api, APIError } from "@/api/client";
-import type { ReportSnapshotResponse, ReportSnapshotsResponse } from "@/api/types";
+import type {
+  CoverageAssetState, ReportSnapshotResponse, ReportSnapshotsResponse,
+} from "@/api/types";
 import { label, timestampLabel } from "@/lib/format";
 import { useResource } from "@/lib/use-resource";
 import { useSession } from "@/lib/session";
 import { ActionButton } from "@/components/action-button";
 import { FormError } from "@/components/form-dialog";
 import { Icon } from "@/components/icon";
+import { ReportCoverageAssets } from "@/components/report-coverage-assets";
 import { ReportMetrics } from "@/components/report-metrics";
 import { ReportSnapshotCreate } from "@/components/report-snapshot-create";
 import { ReportSnapshotDetail } from "@/components/report-snapshot-detail";
@@ -16,7 +19,11 @@ import { DataNotice, LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import "./reports.css";
 
-function LiveOverview({ days, applyDays }: { days: number; applyDays: (days: number) => void }) {
+function LiveOverview({ days, applyDays, onCoverageSelect }: {
+  days: number;
+  applyDays: (days: number) => void;
+  onCoverageSelect: (state: CoverageAssetState, days: number, trigger: HTMLButtonElement) => void;
+}) {
   const [draft, setDraft] = useState(String(days));
   const load = useCallback((signal: AbortSignal) => api.reportOverview(days, signal), [days]);
   const resource = useResource(load);
@@ -43,7 +50,9 @@ function LiveOverview({ days, applyDays }: { days: number; applyDays: (days: num
       {resource.data && <>
         {resource.status !== "ready" && <p className="report-help" role="status">
           {resource.status === "loading" ? "Refreshing report." : "Report refresh failed."} Showing the last received report and its original timestamps.</p>}
-        <ReportMetrics report={resource.data.report} origin={resource.data.dataOrigin} />
+        <ReportMetrics report={resource.data.report} origin={resource.data.dataOrigin}
+          onCoverageSelect={(state, trigger) =>
+            onCoverageSelect(state, resource.data!.report.freshnessWindow.days, trigger)} />
       </>}
     </div>
   </section>;
@@ -119,16 +128,29 @@ function SavedSnapshots({ onSelect, refreshRevision }: { onSelect: (id: string) 
 }
 
 interface Selection { id: string; initial: ReportSnapshotResponse | null; generation: number }
+interface CoverageSelection {
+  state: CoverageAssetState;
+  days: number;
+  trigger: HTMLButtonElement;
+  generation: number;
+}
 
 export function ReportsPage() {
   const { workspace } = useSession();
   const [days, setDays] = useState(7);
   const [form, setForm] = useState<{ trigger: HTMLElement } | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
+  const [coverage, setCoverage] = useState<CoverageSelection | null>(null);
   const [historyRevision, setHistoryRevision] = useState(0);
   const canWrite = workspace.role !== "viewer";
   function select(id: string, initial: ReportSnapshotResponse | null = null) {
     setSelection((previous) => ({ id, initial, generation: (previous?.generation ?? 0) + 1 }));
+  }
+  useEffect(() => setCoverage(null), [workspace.id]);
+  function closeCoverage() {
+    const trigger = coverage?.trigger;
+    setCoverage(null);
+    if (trigger) window.setTimeout(() => trigger.focus(), 0);
   }
   return <div className="reports-page">
     <header className="page-heading">
@@ -138,7 +160,13 @@ export function ReportsPage() {
         <ActionButton onClick={(event) => setForm({ trigger: event.currentTarget })}><Icon name="reports" />Create snapshot</ActionButton> :
         <span className="subtle-pill">Read only</span>}</div>
     </header>
-    <LiveOverview days={days} applyDays={setDays} />
+    <LiveOverview days={days} applyDays={setDays}
+      onCoverageSelect={(state, selectedDays, trigger) =>
+        setCoverage((previous) => ({
+          state, days: selectedDays, trigger, generation: (previous?.generation ?? 0) + 1,
+        }))} />
+    {coverage && <ReportCoverageAssets key={`${workspace.id}-${coverage.generation}`}
+      state={coverage.state} days={coverage.days} onClose={closeCoverage} />}
     <ReportTrends key={workspace.id} />
     <div className="report-saved-layout">
       {selection ? <ReportSnapshotDetail key={selection.generation} id={selection.id} initial={selection.initial} /> :
@@ -149,7 +177,7 @@ export function ReportsPage() {
         </section>}
       <SavedSnapshots onSelect={select} refreshRevision={historyRevision} />
     </div>
-    <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes each read and creation. Snapshots and historical points do not run scans, interpolate missing periods, or independently verify resolutions. Report exports are not generated here.</p>
+    <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes each read and creation. Current coverage membership, snapshots, and historical points do not run scans, interpolate missing periods, or independently verify safety. Report exports are not generated here.</p>
     {canWrite && form && <ReportSnapshotCreate freshnessDays={days} returnFocus={form.trigger} onClose={() => setForm(null)}
       onAccepted={(response) => { setForm(null); select(response.snapshot.id, response); setHistoryRevision((value) => value + 1); }} />}
   </div>;

@@ -5,12 +5,14 @@ import { bootstrapToken, password, sessionCookie, wrongPassword } from "./applic
 import { catalogResponse, findingResponse, workResponse } from "./fixtures";
 import { emptySlackNavigation } from "./slack-navigation";
 import {
-  alphaOverview, betaOverview, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
+  alphaOverview, betaOverview, coverageAssetsPath, coverageParameters, coverageStorageCanaries,
+  overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
   savedReport, savedSnapshots, snapshotParameters, snapshotSummary, snapshotsPath, syntheticTrendResponse,
-  trendDays, trendsPath, trendStorageCanaries, withFreshness,
+  syntheticCoverageResponse, trendDays, trendsPath, trendStorageCanaries, withFreshness,
 } from "./reports-data";
 import type {
-  ReportRole, SnapshotPage, SnapshotState, SyntheticPostureReport, SyntheticSnapshot, SyntheticTrend,
+  CoverageState, ReportRole, SnapshotPage, SnapshotState, SyntheticCoverageDrilldown,
+  SyntheticPostureReport, SyntheticSnapshot, SyntheticTrend,
 } from "./reports-data";
 
 type Denial = 401 | 403 | 404 | 413 | 503;
@@ -50,6 +52,7 @@ export class ReportsAPI {
   private historyHolds = new Map<string, Gate[]>();
   private snapshotReplies = new Map<string, Scheduled<SyntheticSnapshot>[]>();
   private trendReplies = new Map<string, Scheduled<unknown>[]>();
+  private coverageReplies = new Map<string, Scheduled<unknown>[]>();
   private createGates: Gate[] = [];
   private callsByRequest = new Map<Request, ReportCall>();
 
@@ -126,6 +129,25 @@ export class ReportsAPI {
   queueTrendRaw(workspace: string, value: unknown, held = false) {
     if (!this.roles.has(workspace)) throw new Error("Raw historical trend replies require a known synthetic workspace.");
     return this.queue(this.trendReplies, workspace, { status: 200, value: structuredClone(value) }, held);
+  }
+
+  private coverageKey(workspace: string, state: CoverageState) { return `${workspace}:${state}`; }
+
+  queueCoverage(workspace: string, state: CoverageState, reply: Reply<SyntheticCoverageDrilldown>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 &&
+      (reply.value.workspaceId !== workspace || reply.value.state !== state)) {
+      throw new Error("Queued coverage membership must belong to its known synthetic workspace and state.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: { apiVersion, dataOrigin: "live", drilldown: structuredClone(reply.value) } }
+      : reply;
+    return this.queue(this.coverageReplies, this.coverageKey(workspace, state), wrapped, held);
+  }
+
+  queueCoverageRaw(workspace: string, state: CoverageState, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw coverage replies require a known synthetic workspace.");
+    return this.queue(this.coverageReplies, this.coverageKey(workspace, state),
+      { status: 200, value: structuredClone(value) }, held);
   }
 
   holdCreation(): ReportResponseControl {
@@ -329,6 +351,17 @@ export class ReportsAPI {
         }
         await this.deliverEnvelope(route, call, this.trendReplies.get(workspace)?.shift(),
           syntheticTrendResponse(workspace, days));
+      } else if (path === coverageAssetsPath && method === "GET") {
+        let parameters: ReturnType<typeof coverageParameters>;
+        try { parameters = coverageParameters(url); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic coverage drill-down query.");
+          return;
+        }
+        const scheduled = this.coverageReplies.get(this.coverageKey(workspace, parameters.state))?.shift();
+        await this.deliverEnvelope(route, call, scheduled,
+          syntheticCoverageResponse(this.overviews.get(workspace)!, parameters.state,
+            parameters.freshnessDays, parameters.limit, parameters.cursor));
       } else if (path === snapshotsPath && method === "GET") {
         let parameters: ReturnType<typeof snapshotParameters>;
         try { parameters = snapshotParameters(url); } catch (error) {
@@ -408,9 +441,10 @@ export const test = base.extend<{ reports: ReportsAPI }>({
           alphaOverview.asOf, betaOverview.asOf, savedReport.asOf,
           ...savedSnapshots(reportAlpha.id, 2).flatMap((item) => [item.id, item.name]),
           ...trendStorageCanaries,
+          ...coverageStorageCanaries,
         ];
         for (const canary of reportCanaries) {
-          expect.soft(storageText, "Report, snapshot and trend data must not enter browser storage.").not.toContain(canary);
+          expect.soft(storageText, "Report, snapshot, trend and coverage data must not enter browser storage.").not.toContain(canary);
         }
         for (const secret of secretCanaries) {
           expect.soft(JSON.stringify(snapshot) + page.url() + consoleText.join("\n"),
