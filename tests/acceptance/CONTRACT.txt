@@ -705,3 +705,108 @@ primary/unique identities. Historical V1-V23 SQL and complete rows remain exact.
 Fresh current and actual populated published V5, V6, V7, V8, V9, V10 and V11
 upgrades record versions 1..24 exactly once, preserve historical rows and API
 bytes, validate the exact V24 catalog projector, and reopen without repetition.
+
+M08 V25 BOUNDED BULK ACCEPTED-RISK APPROVAL:
+V25 extends only the existing PATCH /api/v1/findings bulk route. It adds one
+accepted-risk mode beside the existing owner/workflow mode. It does not add
+bulk suppression, false-positive, disposition clearing, proof, AI, workflow
+inference or automatic expiry processing. Existing single-finding decisions,
+correlation, notification, report, retention and archive behavior remain
+separate.
+
+V25 has no migration. The current schema version remains 24. It reuses
+app_findings, app_finding_disposition_approvals and
+app_finding_decision_events exactly as published. Historical V1-V24 SQL,
+catalog projections, complete rows and published V5-V11 upgrade expectations
+remain unchanged.
+
+An accepted-risk bulk request is one exact JSON object with these five fields:
+- findingIds: 1..100 distinct lowercase 32-hex IDs.
+- decisionRevisions: an object whose keys are exactly the findingIds, with no
+  missing or extra key. Every value is a positive JSON safe integer no greater
+  than 9007199254740991 and is the decision revision the actor reviewed.
+- disposition: exactly accepted-risk.
+- acceptedRiskExpiresAt: explicitly null or one valid RFC3339 timestamp whose
+  instant is strictly after the server's current Now.
+- rationale: nonblank, NUL-free and at most 8192 UTF-8 bytes.
+ownerId and workflowState are absent. dispositionScope, suppressionExpiresAt
+and every other undeclared field are absent. Missing acceptedRiskExpiresAt is
+not an implicit null.
+
+The established owner/workflow bulk request remains byte/API compatible:
+{findingIds, optional ownerId, optional workflowState, rationale}, with at
+least one of ownerId or workflowState. It does not require or send
+decisionRevisions, disposition or acceptedRiskExpiresAt. Any request mixing
+owner/workflow fields with risk fields is invalid. Owner/workflow requests
+containing any risk-only field are also invalid.
+
+The service validates the complete shape before mutation, sorts finding IDs,
+begins one transaction, then locks each selected visible current-workspace
+finding in sorted ID order. While holding those locks it compares every current
+decision_revision with the corresponding decisionRevisions value before any
+selected finding is changed. A duplicate, malformed, foreign,
+correlation-secondary-hidden, deleted, missing, stale, over-limit, wrong-role,
+invalid-expiry, invalid-rationale, unexpected-field or mixed-mode request
+changes nothing.
+
+Malformed input is 400 invalid-input, current viewers are 403 forbidden,
+foreign/hidden/deleted/missing findings are 404 not-found, and a stale revision
+is 409 conflict. Missing, invalid, expired or revoked authentication remains
+401 unauthorized. Every rejection is atomic: no finding, approval, decision
+event, report snapshot, notification policy/change/evaluation event, delivery,
+retention/archive row or S3 object changes, and the request performs no
+provider or object-store I/O.
+
+Current workspace admins and analysts may apply accepted risk. Viewers may not.
+The authenticated server membership is authoritative even when browser role
+metadata is stale. Workspace change, session loss, logout and 401 keep their
+existing cancellation and old-scope response-discard behavior.
+
+One successful transaction independently changes every selected finding to:
+- disposition accepted-risk.
+- finding disposition scope and that finding's own ID as scope value.
+- the shared acceptedRiskExpiresAt instant or null.
+- the shared exact rationale.
+Owner, workflow, source/evidence state, correlation membership, notes,
+verification and observations are preserved. Expiry remains a displayed state;
+V25 does not automatically clear, renew or process an expired approval.
+
+Every selected finding increments decision_revision exactly once. It receives
+one new immutable app_finding_disposition_approvals row with a distinct approval
+ID, that finding ID, the resulting decision revision, actor, accepted-risk,
+scope_kind finding, scope_value equal to that finding ID, the shared rationale,
+the shared expiry/null and the server creation time. No approval ID or scope
+value is shared between findings.
+
+Every selected finding also receives one new immutable
+app_finding_decision_events row with a distinct event ID, action bulk-update,
+the same actor and rationale, exact before/after decision states, exact ordered
+changed fields, the resulting revision and the same server decision time.
+Prior accepted-risk, suppression and false-positive approvals and all prior
+decision events remain immutable. Replacing any current disposition creates
+new history and never updates or deletes old approval rows.
+
+An accepted-risk decision with a changed rationale and/or expiry is a new
+reviewed decision even when disposition was already accepted-risk. An exact
+no-change request, using current revisions and the same accepted-risk
+disposition, expiry and rationale as every selected finding, returns 409
+conflict atomically. It does not create empty decision events or duplicate
+approvals. This 409 behavior is fixed for V25.
+
+The success response keeps the existing canonical Work envelope:
+{apiVersion,dataOrigin,items,total,nextCursor:null}. Items are exactly the
+selected canonical Work items in ascending finding ID order, total equals the
+selection size and there are no duplicates or extras. The canonical Work item
+is additively required to carry current decisionRevision, disposition,
+acceptedRiskExpiresAt and riskAcceptanceExpired so the existing Work selection
+can bind reviewed revisions and render the committed accepted-risk state. All
+established Work fields and owner/workflow response behavior remain compatible.
+
+HTTP 200 means the transaction committed. Work and reports immediately reflect
+the accepted-risk decisions and count. A later source scan preserves each human
+decision and creates or removes no disposition approval or decision event.
+
+The new per-finding decision events are ordinary V23/V24 audit candidates after
+the existing age cutoff. Existing preview, approval, archive execution, exact
+retrieval, protection, fencing and immutable payload semantics apply without a
+V25 resource kind, queue, worker or archive format.

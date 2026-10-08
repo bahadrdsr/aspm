@@ -7,7 +7,7 @@ import type { SavedWorkView } from "@/api/work-views";
 import { useWorkPages } from "@/lib/use-work-pages";
 import type { ConfirmedWorkUpdates } from "@/lib/use-work-pages";
 import { usePreferences } from "@/lib/preferences";
-import { sourceDate } from "@/lib/format";
+import { label, sourceDate } from "@/lib/format";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
 import { ActionButton } from "@/components/action-button";
@@ -187,16 +187,19 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
       {data && <>
         {selected.size > 0 && <motion.div role="status" className="selection-toolbar" initial={reducedMotion ? false : { opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }}>
           <span className="selection-count">{selected.size}</span><span>selected<span className="selection-scope"> / {selectedOnPage} on this page</span></span>
-          {canWrite ? <BulkTriage findingIds={[...selected]} onConfirmed={onConfirmed}
+          {canWrite ? <BulkTriage findings={data.items.filter((item) => selected.has(item.id))} onConfirmed={onConfirmed}
             onApplied={(next) => {
               setBulkMessage(next);
               setContext((previous) => ({ ...previous, selected: new Set() }));
+              requestAnimationFrame(() => filterRef.current?.focus({ preventScroll: true }));
             }} /> :
             <span className="selection-boundary">Read-only selection. Open a finding to review its evidence.</span>}
           <Button variant="ghost" size="sm" onClick={() => setContext((previous) => ({ ...previous, selected: new Set() }))}>Clear selection</Button>
         </motion.div>}
         {bulkMessage && <p className="inline-status" role="status">{bulkMessage}</p>}
         <p className="inline-status"><Icon name="info" size={15} />Filtering and Finding/Severity sorting apply only to loaded findings.</p>
+        <p className="inline-status">Accepted risk findings:{" "}
+          {data.items.filter((item) => item.disposition === "accepted-risk").length.toLocaleString()}</p>
         <p className="inline-status" role="status" aria-label="Finding pagination"><Icon name="info" size={15} />
           {data.items.length.toLocaleString()} loaded findings; {data.total.toLocaleString()} total reported by the last returned page.{" "}
           {data.nextCursor !== null ? "More results remain on the service. " : "The last returned page has no continuation. "}
@@ -222,7 +225,8 @@ export function WorkPage({ context, setContext, filterRef, openFinding, confirme
               </tr></thead>
               <tbody>{rows.map((item) => <tr key={item.id} className={selected.has(item.id) ? "is-selected" : undefined}>
                 <td className="select-column"><input type="checkbox" aria-label={`Select ${item.title}`} checked={selected.has(item.id)} onChange={(event) => select(item.id, event.target.checked)} /></td>
-                <td className="finding-column"><button type="button" className="finding-title" onClick={(event) => openFinding(item, event.currentTarget)}>{item.title}<Icon name="chevron" size={15} /></button><div className="asset-reference"><Icon name="code" size={13} /><span>{item.assetName}</span></div></td>
+                <td className="finding-column"><button type="button" className="finding-title" onClick={(event) => openFinding(item, event.currentTarget)}>{item.title}<Icon name="chevron" size={15} /></button><div className="asset-reference"><Icon name="code" size={13} /><span>{item.assetName}</span></div>
+                  {item.disposition !== "none" && <span className="subtle-pill">{label(item.disposition)}</span>}</td>
                 <td><SeverityBadge severity={item.severity} /></td>
                 <td><span className={`owner ${item.ownerName === null ? "unassigned" : ""}`}><span className="avatar">{item.ownerName ? item.ownerName.slice(0, 1).toUpperCase() : <Icon name="user" size={13} />}</span>{item.ownerName ?? "Unassigned"}</span></td>
                 <td><WorkflowBadge value={item.workflowState} /></td>

@@ -125,8 +125,13 @@ references, and supports exact authorized retrieval without compacting the
 original rows. See `m08-history-retention-preview.md` and
 `m08-history-archive-execution.md`.
 
+V25 adds revision-bound bulk accepted risk for 1 through 100 visible findings.
+It creates one immutable finding-scoped approval and one exact decision event
+per finding in one atomic transaction, while preserving owner, workflow,
+evidence, notes, correlation, and verification. See
+`m08-bulk-accepted-risk.md`.
+
 Still separate:
 
-- Bulk risk acceptance.
 - M08 history hot-row compaction and archive expiry.
 - Deferred live-account and status-linkage integration follow-ups.

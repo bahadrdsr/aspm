@@ -243,7 +243,7 @@ function envelope(value: unknown): { body: Record<string, unknown>; dataOrigin: 
 
 function workItem(value: unknown): WorkItem {
   const item = object(value, "finding");
-  return {
+  const result: WorkItem = {
     id: text(item.id, "finding identifier"),
     title: text(item.title, "finding title"),
     assetName: text(item.assetName, "asset name"),
@@ -256,7 +256,18 @@ function workItem(value: unknown): WorkItem {
     changeKind: item.changeKind === undefined ? "unchanged" : choice(item.changeKind,
       ["new", "changed", "unchanged", "reopened", "inferred-resolved"], "finding change kind"),
     changeAt: item.changeAt === undefined ? null : nullableTimestamp(item.changeAt, "finding change time"),
+    decisionRevision: count(item.decisionRevision, "finding decision revision"),
+    disposition: choice(item.disposition,
+      ["none", "accepted-risk", "suppressed", "false-positive"], "finding disposition"),
+    acceptedRiskExpiresAt: nullableTimestamp(item.acceptedRiskExpiresAt, "risk acceptance expiry"),
+    riskAcceptanceExpired: boolean(item.riskAcceptanceExpired, "risk acceptance expiry state"),
   };
+  if (result.decisionRevision < 1 ||
+    result.disposition !== "accepted-risk" &&
+      (result.acceptedRiskExpiresAt !== null || result.riskAcceptanceExpired)) {
+    return invalid("finding decision metadata");
+  }
+  return result;
 }
 
 function uniqueIds<T extends { id: string }>(items: T[]): T[] {
@@ -317,14 +328,9 @@ export function parseFinding(value: unknown): FindingResponse {
       ownerId: finding.ownerId === undefined ? undefined : nullableText(finding.ownerId, "owner identifier"),
       sourceState: finding.sourceState === undefined ? undefined : choice(finding.sourceState, ["observed", "unknown", "stale", "inferred-resolved"], "source state"),
       sourceFreshnessAt: finding.sourceFreshnessAt === undefined ? undefined : nullableTimestamp(finding.sourceFreshnessAt, "source freshness"),
-      disposition: finding.disposition === undefined ? undefined :
-        choice(finding.disposition, ["none", "accepted-risk", "suppressed", "false-positive"], "human disposition"),
-      acceptedRiskExpiresAt: finding.acceptedRiskExpiresAt === undefined ? undefined : nullableTimestamp(finding.acceptedRiskExpiresAt, "risk acceptance expiry"),
       dispositionApproval: finding.dispositionApproval === undefined ? undefined :
         finding.dispositionApproval === null ? null : findingDispositionApproval(finding.dispositionApproval),
-      riskAcceptanceExpired: finding.riskAcceptanceExpired === undefined ? undefined : boolean(finding.riskAcceptanceExpired, "risk acceptance expiry state"),
       verifiedResolution: finding.verifiedResolution === undefined ? undefined : boolean(finding.verifiedResolution, "resolution verification"),
-      decisionRevision: finding.decisionRevision === undefined ? undefined : count(finding.decisionRevision, "finding decision revision"),
       evidenceRevision: finding.evidenceRevision === undefined ? undefined : count(finding.evidenceRevision, "finding evidence revision"),
       changeRevision: finding.changeRevision === undefined ? undefined : count(finding.changeRevision, "finding change revision"),
       correlation: finding.correlation === undefined ? undefined : findingCorrelation(finding.correlation, text(finding.workspaceId, "finding workspace")),
@@ -408,8 +414,9 @@ function parseBulkFindingUpdate(value: unknown, ids: readonly string[]): Finding
   const { body, dataOrigin } = envelope(value);
   const items = uniqueIds(array(body.items, "bulk finding results").map(workItem));
   const total = count(body.total, "bulk finding count");
-  if (body.nextCursor !== null || total !== items.length || items.length !== ids.length ||
-    items.some((item) => !ids.includes(item.id))) return invalid("bulk finding response");
+  const expected = [...ids].sort();
+  if (body.nextCursor !== null || total !== items.length || items.length !== expected.length ||
+    items.some((item, index) => item.id !== expected[index])) return invalid("bulk finding response");
   return { apiVersion, dataOrigin, items, total, nextCursor: null };
 }
 
@@ -1164,8 +1171,13 @@ export const api = {
       throw new APIError("Select between 1 and 100 distinct findings.", "invalid-input", false);
     }
     for (const id of ids) reportIdentifier(id, "bulk finding");
-    if (input.ownerId === undefined && input.workflowState === undefined) {
-      throw new APIError("Choose an owner or workflow change.", "invalid-input", false);
+    const riskMode = input.disposition !== undefined || input.decisionRevisions !== undefined ||
+      Object.hasOwn(input, "acceptedRiskExpiresAt");
+    if (riskMode ? input.ownerId !== undefined || input.workflowState !== undefined ||
+      input.disposition !== "accepted-risk" || input.decisionRevisions === undefined ||
+      !Object.hasOwn(input, "acceptedRiskExpiresAt") :
+      input.ownerId === undefined && input.workflowState === undefined) {
+      throw new APIError("Choose one bounded bulk triage or accepted-risk action.", "invalid-input", false);
     }
     if (input.ownerId !== undefined && input.ownerId !== null) reportIdentifier(input.ownerId, "bulk owner");
     if (input.rationale.trim() === "" || input.rationale.includes("\0") ||
@@ -1173,8 +1185,24 @@ export const api = {
       throw new APIError("Bulk triage requires a nonblank, NUL-free rationale of at most 8192 UTF-8 bytes.", "invalid-input", false);
     }
     const body: FindingBulkPatch = { findingIds: ids, rationale: input.rationale };
-    if (input.ownerId !== undefined) body.ownerId = input.ownerId;
-    if (input.workflowState !== undefined) body.workflowState = input.workflowState;
+    if (riskMode) {
+      const revisions = input.decisionRevisions!;
+      if (Object.keys(revisions).length !== ids.length || ids.some((id) =>
+        !Object.hasOwn(revisions, id) || !Number.isSafeInteger(revisions[id]) || revisions[id] < 1)) {
+        throw new APIError("Bulk accepted risk requires every current finding decision revision.", "invalid-input", false);
+      }
+      const expiry = input.acceptedRiskExpiresAt as string | null;
+      if (expiry !== null && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(expiry) ||
+        !Number.isFinite(Date.parse(expiry)) || Date.parse(expiry) <= Date.now())) {
+        throw new APIError("Bulk accepted-risk expiry must be null or a future RFC3339 timestamp.", "invalid-input", false);
+      }
+      body.decisionRevisions = revisions;
+      body.disposition = "accepted-risk";
+      body.acceptedRiskExpiresAt = expiry;
+    } else {
+      if (input.ownerId !== undefined) body.ownerId = input.ownerId;
+      if (input.workflowState !== undefined) body.workflowState = input.workflowState;
+    }
     findingBodyLimit(body, 64 << 10);
     return request("/api/v1/findings", (value) => parseBulkFindingUpdate(value, ids),
       { method: "PATCH", body, signal, expectedStatus: 200 });

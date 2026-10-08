@@ -37,17 +37,21 @@ type Scope struct {
 }
 
 type WorkItem struct {
-	ID            string     `json:"id"`
-	Title         string     `json:"title"`
-	AssetName     string     `json:"assetName"`
-	Severity      string     `json:"severity"`
-	OwnerName     *string    `json:"ownerName"`
-	WorkflowState string     `json:"workflowState"`
-	SourceScanAt  *time.Time `json:"sourceScanAt"`
-	CollectedAt   time.Time  `json:"collectedAt"`
-	ImportedAt    time.Time  `json:"importedAt"`
-	ChangeKind    string     `json:"changeKind"`
-	ChangeAt      *time.Time `json:"changeAt"`
+	ID                    string     `json:"id"`
+	Title                 string     `json:"title"`
+	AssetName             string     `json:"assetName"`
+	Severity              string     `json:"severity"`
+	OwnerName             *string    `json:"ownerName"`
+	WorkflowState         string     `json:"workflowState"`
+	SourceScanAt          *time.Time `json:"sourceScanAt"`
+	CollectedAt           time.Time  `json:"collectedAt"`
+	ImportedAt            time.Time  `json:"importedAt"`
+	ChangeKind            string     `json:"changeKind"`
+	ChangeAt              *time.Time `json:"changeAt"`
+	DecisionRevision      int64      `json:"decisionRevision"`
+	Disposition           string     `json:"disposition"`
+	AcceptedRiskExpiresAt *time.Time `json:"acceptedRiskExpiresAt"`
+	RiskAcceptanceExpired bool       `json:"riskAcceptanceExpired"`
 }
 
 type Finding struct {

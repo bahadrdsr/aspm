@@ -12,7 +12,8 @@ import (
 )
 
 const workColumns = `f.id,f.title,asset.name,f.severity,owner.name,f.workflow_state,
-	f.source_scan_at,f.collected_at,f.imported_at,f.change_kind,f.change_at`
+	f.source_scan_at,f.collected_at,f.imported_at,f.change_kind,f.change_at,
+	f.decision_revision,f.disposition,f.accepted_risk_expires_at`
 
 func (a *Application) workVisible() string {
 	return `NOT EXISTS(SELECT 1 FROM ` + a.table("finding_correlation_members") + ` cm
@@ -39,12 +40,15 @@ func (a *Application) workFrom() string {
 
 func workDest(v *WorkItem) []any {
 	return []any{&v.ID, &v.Title, &v.AssetName, &v.Severity, &v.OwnerName,
-		&v.WorkflowState, &v.SourceScanAt, &v.CollectedAt, &v.ImportedAt, &v.ChangeKind, &v.ChangeAt}
+		&v.WorkflowState, &v.SourceScanAt, &v.CollectedAt, &v.ImportedAt, &v.ChangeKind, &v.ChangeAt,
+		&v.DecisionRevision, &v.Disposition, &v.AcceptedRiskExpiresAt}
 }
 
-func scanWork(row pgx.Row) (WorkItem, error) {
+func scanWork(row pgx.Row, now time.Time) (WorkItem, error) {
 	var v WorkItem
 	err := row.Scan(workDest(&v)...)
+	v.RiskAcceptanceExpired = v.Disposition == "accepted-risk" && v.AcceptedRiskExpiresAt != nil &&
+		!now.Before(*v.AcceptedRiskExpiresAt)
 	return v, err
 }
 
@@ -116,7 +120,7 @@ func (a *Application) workPage(ctx context.Context, db workQuerier, workspace, q
 	defer rows.Close()
 	items := []WorkItem{}
 	for rows.Next() {
-		item, err := scanWork(rows)
+		item, err := scanWork(rows, a.config.Now())
 		if err != nil {
 			return nil, nil, err
 		}

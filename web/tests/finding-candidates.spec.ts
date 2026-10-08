@@ -77,6 +77,8 @@ function workItem(id: string, title: string) {
   return {
     id, title, assetName: originalAsset.name, severity: "medium", ownerName: null, workflowState: "open",
     sourceScanAt: now, collectedAt: now, importedAt: now,
+    decisionRevision: 1, disposition: "none",
+    acceptedRiskExpiresAt: null, riskAcceptanceExpired: false,
   };
 }
 

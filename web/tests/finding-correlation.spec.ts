@@ -16,11 +16,16 @@ const analystId = "33333333-3333-4333-8333-333333333334";
 const expiry = "2026-11-07T16:00:00Z";
 
 function workItem(id: string, title: string, ownerName: string | null) {
+  const current = id === primaryId ? primaryDecision : memberDecision;
   return {
     id, title, assetName: originalAsset.name, severity: id === primaryId ? "medium" : "high",
     ownerName, workflowState: id === primaryId ? "open" : "in-progress",
     sourceScanAt: "2026-10-07T12:00:00Z", collectedAt: "2026-10-07T12:01:00Z",
     importedAt: "2026-10-07T12:02:00Z",
+    decisionRevision: id === primaryId ? 3 : 4,
+    disposition: current.disposition,
+    acceptedRiskExpiresAt: current.acceptedRiskExpiresAt,
+    riskAcceptanceExpired: false,
   };
 }
 

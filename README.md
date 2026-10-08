@@ -620,6 +620,12 @@ revisions, pending evaluations, and active deliveries remain protected.
 Approval is non-destructive. V24 execution is explicit, manually refreshed, and
 offers exact archived JSON retrieval only after verified worker success.
 
+**Bulk accepted risk** extends the selected-findings toolbar for 1 through 100
+visible findings. The request binds every reviewed decision revision, uses one
+explicit null or future expiry and rationale, and commits atomically. Each
+finding receives its own immutable finding-scoped approval and decision event.
+This does not verify safety. See `docs\m08-bulk-accepted-risk.md`.
+
 **Webhook connections** is a separate non-native outbound profile. Operators
 first allow exact HTTPS origins through `ASPM_WEBHOOK_ORIGINS`; workspace admins
 can then configure an explicit path and write-only HMAC secret. Finding review

@@ -33,23 +33,20 @@ func boundedHandoffLine(value string, limit int) (string, bool) {
 func (a *Application) findingHandoff(w http.ResponseWriter, r *http.Request, workspace, id string) error {
 	var finding Finding
 	var scope Scope
-	var decisionRevision int64
 	dest := workDest(&finding.WorkItem)
 	dest = append(dest, &finding.AssetID, &finding.WorkspaceID, &scope.ID, &scope.Revision, &scope.Branch,
-		&finding.Remediation, &finding.SourceState, &finding.SourceFreshnessAt, &finding.Disposition,
-		&decisionRevision)
-	err := a.pool.QueryRow(r.Context(), `SELECT f.id,f.title,asset.name,f.severity,owner.name,f.workflow_state,
-		f.source_scan_at,f.collected_at,f.imported_at,f.change_kind,f.change_at,
+		&finding.Remediation, &finding.SourceState, &finding.SourceFreshnessAt)
+	err := a.pool.QueryRow(r.Context(), `SELECT `+workColumns+`,
 		f.asset_id,f.workspace_id,f.scope_id,f.scope_revision,f.scope_branch,f.remediation,
-		f.source_state,f.source_freshness_at,f.disposition,f.decision_revision
-		FROM `+a.table("findings")+` f
-		JOIN `+a.table("assets")+` asset ON asset.workspace_id=f.workspace_id AND asset.id=f.asset_id
-		LEFT JOIN `+a.table("users")+` owner ON owner.id=f.owner_id
+		f.source_state,f.source_freshness_at`+a.workFrom()+`
 		WHERE f.workspace_id=$1 AND f.id=$2 AND `+a.workVisible(),
 		workspace, id).Scan(dest...)
 	if err != nil {
 		return err
 	}
+	finding.Disposition = finding.WorkItem.Disposition
+	finding.AcceptedRiskExpiresAt = finding.WorkItem.AcceptedRiskExpiresAt
+	finding.DecisionRevision = finding.WorkItem.DecisionRevision
 	finding.ScopeLabel = scope.ID + " / " + scope.Branch + " (revision " + scope.Revision + ")"
 	correlation, err := a.activeCorrelationForPrimary(r.Context(), a.pool, workspace, id)
 	if err != nil {
@@ -107,7 +104,8 @@ func (a *Application) findingHandoff(w http.ResponseWriter, r *http.Request, wor
 		finding.ID, title, asset, finding.Severity, owner)
 	fmt.Fprintf(&output, "Human workflow: %s\nHuman disposition: %s\nScanner-inferred state: %s\nVerification: not-run\n",
 		finding.WorkflowState, finding.Disposition, finding.SourceState)
-	approval, err := a.readDispositionApproval(r.Context(), workspace, id, finding.Disposition, decisionRevision)
+	approval, err := a.readDispositionApproval(r.Context(), workspace, id,
+		finding.Disposition, finding.DecisionRevision)
 	if err != nil {
 		return err
 	}

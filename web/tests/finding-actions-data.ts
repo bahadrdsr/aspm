@@ -53,7 +53,8 @@ export interface ActionDecisionEvent {
   afterOwnerName: string | null;
   action: "update" | "bulk-update";
   rationale: string;
-  changedFields: ("ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt")[];
+  changedFields: ("ownerId" | "workflowState" | "disposition" | "acceptedRiskExpiresAt" |
+    "dispositionScope" | "suppressionExpiresAt" | "dispositionRationale")[];
   before: ActionDecision;
   after: ActionDecision;
   createdAt: string;
@@ -86,10 +87,16 @@ export interface ActionFindingResponse {
   dataOrigin: "synthetic";
   finding: ActionFinding;
 }
+export interface ActionWorkItem extends WorkItem {
+  decisionRevision: number;
+  disposition: ActionFinding["disposition"];
+  acceptedRiskExpiresAt: string | null;
+  riskAcceptanceExpired: boolean;
+}
 export interface ActionWorkResponse {
   apiVersion: typeof apiVersion;
   dataOrigin: "synthetic";
-  items: WorkItem[];
+  items: ActionWorkItem[];
   total: number;
   nextCursor: string | null;
 }
@@ -186,9 +193,13 @@ export const findingPath = `/api/v1/findings/${primaryFinding.id}`;
 export const notesPath = `${findingPath}/notes`;
 export const workPath = "/api/v1/work";
 
-export function workItem(finding: ActionFinding): WorkItem {
+export function workItem(finding: ActionFinding): ActionWorkItem {
   const { id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt } = finding;
-  return { id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt };
+  return {
+    id, title, assetName, severity, ownerName, workflowState, sourceScanAt, collectedAt, importedAt,
+    decisionRevision: finding.decisionRevision, disposition: finding.disposition,
+    acceptedRiskExpiresAt: finding.acceptedRiskExpiresAt, riskAcceptanceExpired: finding.riskAcceptanceExpired,
+  };
 }
 
 export function backendID(value: unknown): value is string {

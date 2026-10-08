@@ -59,11 +59,13 @@ function WorkspaceApplication() {
       for (const finding of findings) {
         const {
           id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
-          collectedAt, importedAt, changeKind, changeAt,
+          collectedAt, importedAt, changeKind, changeAt, decisionRevision,
+          disposition, acceptedRiskExpiresAt, riskAcceptanceExpired,
         } = finding;
         items.set(id, { revision, item: {
           id, title, assetName, severity, ownerName, workflowState, sourceScanAt,
-          collectedAt, importedAt, changeKind, changeAt,
+          collectedAt, importedAt, changeKind, changeAt, decisionRevision,
+          disposition, acceptedRiskExpiresAt, riskAcceptanceExpired,
         } });
       }
       return { revision, items };

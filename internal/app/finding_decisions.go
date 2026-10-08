@@ -16,6 +16,7 @@ import (
 const (
 	maxBulkFindings  = 100
 	decisionPageSize = 100
+	maxJSONSafeInt   = int64(9007199254740991)
 )
 
 type findingDecisionPatch struct {
@@ -26,6 +27,8 @@ type findingDecisionPatch struct {
 	DispositionScope      optional[string]    `json:"dispositionScope"`
 	SuppressionExpiresAt  optional[time.Time] `json:"suppressionExpiresAt"`
 	Rationale             string              `json:"rationale"`
+	ExpectedRevision      *int64              `json:"-"`
+	RejectNoChange        bool                `json:"-"`
 }
 
 type storedFindingDecision struct {
@@ -94,6 +97,9 @@ func (a *Application) applyFindingDecisionPatch(ctx context.Context, tx pgx.Tx, 
 		&before.ScopeID, &before.ScopeRevision, &before.ScopeBranch, &before.Revision)
 	if err != nil {
 		return storedFindingDecision{}, err
+	}
+	if patch.ExpectedRevision != nil && before.Revision != *patch.ExpectedRevision {
+		return storedFindingDecision{}, errConflict
 	}
 	after := before
 	if patch.OwnerID.Set {
@@ -194,6 +200,10 @@ func (a *Application) applyFindingDecisionPatch(ctx context.Context, tx pgx.Tx, 
 			return storedFindingDecision{}, errInvalid
 		}
 	}
+	changes := decisionChanges(before.FindingDecision, after.FindingDecision)
+	if patch.RejectNoChange && len(changes) == 0 {
+		return storedFindingDecision{}, errConflict
+	}
 	after.Revision = before.Revision + 1
 	if dispositionTouched && after.Disposition != "none" {
 		if err = a.insertDispositionApproval(ctx, tx, workspace, actor, after, patch.Rationale); err != nil {
@@ -214,7 +224,7 @@ func (a *Application) applyFindingDecisionPatch(ctx context.Context, tx pgx.Tx, 
 	if err != nil {
 		return storedFindingDecision{}, err
 	}
-	changedJSON, err := json.Marshal(decisionChanges(before.FindingDecision, after.FindingDecision))
+	changedJSON, err := json.Marshal(changes)
 	if err != nil {
 		return storedFindingDecision{}, err
 	}
@@ -231,16 +241,26 @@ func (a *Application) applyFindingDecisionPatch(ctx context.Context, tx pgx.Tx, 
 
 func (a *Application) bulkPatchFindings(w http.ResponseWriter, r *http.Request, workspace, actor string) error {
 	var input struct {
-		FindingIDs    []string         `json:"findingIds"`
-		OwnerID       optional[string] `json:"ownerId"`
-		WorkflowState optional[string] `json:"workflowState"`
-		Rationale     string           `json:"rationale"`
+		FindingIDs            []string               `json:"findingIds"`
+		OwnerID               optional[string]       `json:"ownerId"`
+		WorkflowState         optional[string]       `json:"workflowState"`
+		DecisionRevisions     map[string]json.Number `json:"decisionRevisions"`
+		Disposition           optional[string]       `json:"disposition"`
+		AcceptedRiskExpiresAt optional[time.Time]    `json:"acceptedRiskExpiresAt"`
+		Rationale             string                 `json:"rationale"`
 	}
 	if err := a.decode(w, r, &input, 64<<10); err != nil {
 		return err
 	}
+	riskMode := input.Disposition.Set || input.AcceptedRiskExpiresAt.Set || input.DecisionRevisions != nil
 	if len(input.FindingIDs) == 0 || len(input.FindingIDs) > maxBulkFindings ||
-		(!input.OwnerID.Set && !input.WorkflowState.Set) || !validText(input.Rationale, 8192) {
+		!validText(input.Rationale, 8192) ||
+		riskMode && (input.OwnerID.Set || input.WorkflowState.Set ||
+			!input.Disposition.Set || input.Disposition.Value == nil ||
+			*input.Disposition.Value != "accepted-risk" ||
+			!input.AcceptedRiskExpiresAt.Set || input.DecisionRevisions == nil) ||
+		!riskMode && (!input.OwnerID.Set && !input.WorkflowState.Set ||
+			input.Disposition.Set || input.AcceptedRiskExpiresAt.Set || input.DecisionRevisions != nil) {
 		return errInvalid
 	}
 	ids := append([]string(nil), input.FindingIDs...)
@@ -250,8 +270,29 @@ func (a *Application) bulkPatchFindings(w http.ResponseWriter, r *http.Request, 
 			return errInvalid
 		}
 	}
-	patch := findingDecisionPatch{
-		OwnerID: input.OwnerID, WorkflowState: input.WorkflowState, Rationale: input.Rationale,
+	revisions := map[string]int64{}
+	if riskMode {
+		if len(input.DecisionRevisions) != len(ids) ||
+			input.AcceptedRiskExpiresAt.Value != nil &&
+				!input.AcceptedRiskExpiresAt.Value.After(a.config.Now()) {
+			return errInvalid
+		}
+		for _, id := range ids {
+			value, present := input.DecisionRevisions[id]
+			if !present {
+				return errInvalid
+			}
+			revision, parseErr := strconv.ParseInt(string(value), 10, 64)
+			if parseErr != nil || revision < 1 || revision > maxJSONSafeInt {
+				return errInvalid
+			}
+			revisions[id] = revision
+		}
+		for id := range input.DecisionRevisions {
+			if _, present := revisions[id]; !present {
+				return errInvalid
+			}
+		}
 	}
 	tx, err := a.pool.Begin(r.Context())
 	if err != nil {
@@ -259,6 +300,18 @@ func (a *Application) bulkPatchFindings(w http.ResponseWriter, r *http.Request, 
 	}
 	defer rollback(tx)
 	for _, id := range ids {
+		patch := findingDecisionPatch{
+			OwnerID: input.OwnerID, WorkflowState: input.WorkflowState, Rationale: input.Rationale,
+		}
+		if riskMode {
+			scope := "finding"
+			expected := revisions[id]
+			patch.Disposition = input.Disposition
+			patch.AcceptedRiskExpiresAt = input.AcceptedRiskExpiresAt
+			patch.DispositionScope = optional[string]{Set: true, Value: &scope}
+			patch.ExpectedRevision = &expected
+			patch.RejectNoChange = true
+		}
 		if _, err = a.applyFindingDecisionPatch(r.Context(), tx, workspace, id, actor, "bulk-update", patch); err != nil {
 			return err
 		}
@@ -270,7 +323,7 @@ func (a *Application) bulkPatchFindings(w http.ResponseWriter, r *http.Request, 
 	}
 	items := make([]WorkItem, 0, len(ids))
 	for rows.Next() {
-		item, scanErr := scanWork(rows)
+		item, scanErr := scanWork(rows, a.config.Now())
 		if scanErr != nil {
 			rows.Close()
 			return scanErr

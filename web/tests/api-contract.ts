@@ -10,6 +10,10 @@ export interface WorkItem {
   sourceScanAt: string | null;
   collectedAt: string;
   importedAt: string;
+  decisionRevision: number;
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
+  acceptedRiskExpiresAt: string | null;
+  riskAcceptanceExpired: boolean;
 }
 
 export interface WorkResponse {

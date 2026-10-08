@@ -21,6 +21,10 @@ export const workItems: WorkItem[] = [
     sourceScanAt: "2026-09-01T08:00:00Z",
     collectedAt: "2026-09-02T10:00:00Z",
     importedAt: "2026-09-02T10:01:00Z",
+    decisionRevision: 1,
+    disposition: "none",
+    acceptedRiskExpiresAt: null,
+    riskAcceptanceExpired: false,
   },
   {
     id: "synthetic-finding-002",
@@ -32,6 +36,10 @@ export const workItems: WorkItem[] = [
     sourceScanAt: "2026-09-01T08:00:00Z",
     collectedAt: "2026-09-02T10:00:00Z",
     importedAt: "2026-09-02T10:01:00Z",
+    decisionRevision: 1,
+    disposition: "none",
+    acceptedRiskExpiresAt: null,
+    riskAcceptanceExpired: false,
   },
   {
     id: "synthetic-finding-003",
@@ -43,6 +51,10 @@ export const workItems: WorkItem[] = [
     sourceScanAt: null,
     collectedAt: "2026-09-02T10:00:00Z",
     importedAt: "2026-09-02T10:01:00Z",
+    decisionRevision: 1,
+    disposition: "none",
+    acceptedRiskExpiresAt: null,
+    riskAcceptanceExpired: false,
   },
 ];
 

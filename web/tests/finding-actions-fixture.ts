@@ -11,7 +11,7 @@ import type {
   ActionNote, ActionRole, ActionWorkResponse,
 } from "./finding-actions-data";
 
-type Denial = 400 | 401 | 403 | 503;
+type Denial = 400 | 401 | 403 | 409 | 503;
 type Payload = string | Record<string, unknown> | ActionFindingResponse | ActionWorkResponse;
 export interface FindingActionCall {
   method: string;
@@ -34,7 +34,7 @@ interface Gate extends FindingActionControl {
   arrive: () => void;
   complete: () => void;
 }
-interface Scheduled { status: number; gate: Gate }
+interface Scheduled { status: number; gate: Gate; response?: Payload }
 const secretCanaries = [password, wrongPassword, bootstrapToken, sessionCookie, actionCookie];
 const knownWorkspaces = [actionAlpha, actionBeta];
 
@@ -77,7 +77,7 @@ export class FindingActionsAPI {
   }
 
   seedQueueRows(count: number) {
-    if (!Number.isInteger(count) || count < 0 || count > 40) throw new Error("This slice does not add Work pagination.");
+    if (!Number.isInteger(count) || count < 0 || count > 120) throw new Error("This slice keeps Work pagination bounded.");
     for (let index = 0; index < count; index++) this.seedFinding({
       ...primaryFinding,
       id: `4000000000000000${(index + 1).toString(16).padStart(16, "0")}`,
@@ -102,14 +102,18 @@ export class FindingActionsAPI {
     return gate;
   }
 
-  private queue(key: string, status: number, held: boolean): FindingActionControl {
+  private queue(key: string, status: number, held: boolean, response?: Payload): FindingActionControl {
     const gate = this.control(held);
-    this.scheduled.set(key, [...(this.scheduled.get(key) ?? []), { status, gate }]);
+    this.scheduled.set(key, [...(this.scheduled.get(key) ?? []), { status, gate, response }]);
     return gate;
   }
 
   queuePatch(status: 200 | Denial = 200, held = false) {
     return this.queue(`PATCH ${findingPath}`, status, held);
+  }
+
+  queueBulk(status: 200 | Denial = 200, held = false, response?: Payload) {
+    return this.queue("PATCH /api/v1/findings", status, held, response);
   }
 
   queueNote(status: 201 | Denial = 201, held = false) {
@@ -130,11 +134,12 @@ export class FindingActionsAPI {
   private failure(status: number) {
     const code = status === 401 ? "unauthorized" : status === 403 ? "forbidden" :
       status === 404 ? "not-found" : status === 400 ? "invalid-input" :
-      status === 413 ? "too-large" : status === 429 ? "rate-limited" : "unavailable";
+      status === 409 ? "conflict" : status === 413 ? "too-large" : status === 429 ? "rate-limited" : "unavailable";
     return { apiVersion, error: {
       code,
       message: status === 401 ? "Synthetic triage session ended. Sign in again." :
         status === 403 ? "Synthetic triage access denied." :
+          status === 409 ? "Synthetic finding decisions changed or already match. Review current revisions." :
           status === 400 ? "Synthetic finding input is invalid." : "Synthetic finding action could not be confirmed.",
       requestId: "synthetic-finding-action-request", retryable: false,
     } };
@@ -312,6 +317,10 @@ export class FindingActionsAPI {
     if (before.workflowState !== after.workflowState) changedFields.push("workflowState");
     if (before.disposition !== after.disposition) changedFields.push("disposition");
     if (before.acceptedRiskExpiresAt !== after.acceptedRiskExpiresAt) changedFields.push("acceptedRiskExpiresAt");
+    const beforeDecision = this.decision(before), afterDecision = this.decision(after);
+    if (beforeDecision.dispositionScope !== afterDecision.dispositionScope) changedFields.push("dispositionScope");
+    if (beforeDecision.suppressionExpiresAt !== afterDecision.suppressionExpiresAt) changedFields.push("suppressionExpiresAt");
+    if (beforeDecision.dispositionRationale !== afterDecision.dispositionRationale) changedFields.push("dispositionRationale");
     after.decisionRevision = before.decisionRevision + 1;
     after.decisionEvents.push({
       id: `f100000000000000${(++this.decisionSequence).toString(16).padStart(16, "0")}`,
@@ -323,8 +332,8 @@ export class FindingActionsAPI {
       action,
       rationale,
       changedFields,
-      before: this.decision(before),
-      after: this.decision(after),
+      before: beforeDecision,
+      after: afterDecision,
       createdAt: serverNow,
     });
     return after;
@@ -448,16 +457,66 @@ export class FindingActionsAPI {
         return;
       }
       if (method === "PATCH" && path === "/api/v1/findings") {
-        let status = 200;
+        const scheduled = this.scheduled.get("PATCH /api/v1/findings")?.shift();
+        let status = scheduled?.status ?? 200;
         let response: Payload = this.failure(400);
         const keys = Object.keys(call.body);
         const findingIds = call.body.findingIds;
         const rationale = call.body.rationale;
         if (!["admin", "analyst"].includes(this.serverRoles.get(workspace)!)) status = 403;
-        else if (keys.some((key) => !["findingIds", "ownerId", "workflowState", "rationale"].includes(key)) ||
+        else if (status >= 400) response = this.failure(status);
+        else if (!Array.isArray(findingIds) || findingIds.length < 1 || findingIds.length > 100 ||
+          new Set(findingIds).size !== findingIds.length || findingIds.some((id) => !backendID(id)) ||
+          typeof rationale !== "string" || !validNoteText(rationale)) status = 400;
+        else if (keys.some((key) => ["decisionRevisions", "disposition", "acceptedRiskExpiresAt"].includes(key))) {
+          const decisionRevisions = call.body.decisionRevisions;
+          const revisionObject = decisionRevisions !== null && typeof decisionRevisions === "object" &&
+            !Array.isArray(decisionRevisions) ? decisionRevisions as Record<string, unknown> : null;
+          const revisionKeys = revisionObject === null ? [] : Object.keys(revisionObject);
+          const expectedKeys = [...findingIds].map(String).sort();
+          const expiry = call.body.acceptedRiskExpiresAt;
+          if (keys.length !== 5 ||
+            keys.some((key) => !["findingIds", "decisionRevisions", "disposition", "acceptedRiskExpiresAt", "rationale"].includes(key)) ||
+            call.body.disposition !== "accepted-risk" ||
+            !Object.prototype.hasOwnProperty.call(call.body, "acceptedRiskExpiresAt") ||
+            expiry !== null && (!validExpiry(expiry) || Date.parse(String(expiry)) <= Date.parse(serverNow)) ||
+            revisionObject === null || revisionKeys.length !== findingIds.length ||
+            revisionKeys.sort().some((key, index) => key !== expectedKeys[index]) ||
+            Object.values(revisionObject).some((value) => !Number.isSafeInteger(value) || Number(value) <= 0)) {
+            status = 400;
+          } else {
+            const selected = expectedKeys.map((id) => this.findings.get(id));
+            if (selected.some((item) => !item || item.workspaceId !== workspace)) status = 404;
+            else if ((selected as ActionFinding[]).some((item) =>
+              item.decisionRevision !== revisionObject[item.id])) status = 409;
+            else if ((selected as ActionFinding[]).every((item) => {
+              const sameExpiry = item.acceptedRiskExpiresAt === null && expiry === null ||
+                item.acceptedRiskExpiresAt !== null && expiry !== null &&
+                Date.parse(item.acceptedRiskExpiresAt) === Date.parse(String(expiry));
+              return item.disposition === "accepted-risk" && sameExpiry &&
+                item.dispositionApproval?.rationale === rationale;
+            })) status = 409;
+            else {
+              const updates: ActionFinding[] = [];
+              for (const current of selected as ActionFinding[]) {
+                const updated = this.patch(current, {
+                  disposition: "accepted-risk", acceptedRiskExpiresAt: expiry, rationale,
+                });
+                if (!updated) { status = 400; break; }
+                updates.push(this.recordDecision(current, updated, "bulk-update", rationale));
+              }
+              if (status === 200) {
+                for (const updated of updates) this.findings.set(updated.id, updated);
+                response = {
+                  apiVersion, dataOrigin: "synthetic", items: updates.map(workItem),
+                  total: updates.length, nextCursor: null,
+                };
+              }
+            }
+          }
+        } else if (keys.some((key) => !["findingIds", "ownerId", "workflowState", "rationale"].includes(key)) ||
           !Array.isArray(findingIds) || findingIds.length < 1 || findingIds.length > 100 ||
           new Set(findingIds).size !== findingIds.length || findingIds.some((id) => !backendID(id)) ||
-          typeof rationale !== "string" || !validNoteText(rationale) ||
           !("ownerId" in call.body) && !("workflowState" in call.body)) status = 400;
         else {
           const selected = findingIds.map((id) => this.findings.get(String(id)));
@@ -482,7 +541,8 @@ export class FindingActionsAPI {
           }
         }
         if (status >= 400) response = this.failure(status);
-        await this.deliver(route, call, status, response);
+        else if (scheduled?.response !== undefined) response = scheduled.response;
+        await this.deliver(route, call, status, response, scheduled?.gate);
         return;
       }
       try {

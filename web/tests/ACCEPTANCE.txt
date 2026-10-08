@@ -296,3 +296,55 @@ keys, webhook URLs and idempotency keys are absent from browser storage. Secrets
 are absent from readable DOM text, attributes, URLs, console output and the
 attached HTTP ledger. The Playwright fixture blocks all external HTTP, undeclared
 test-send/provider routes, caller credential headers and automatic resend.
+
+M08 V25 bounded bulk accepted-risk browser increment (October 8, 2026)
+---------------------------------------------------------------------
+The existing selected-findings toolbar adds one action named Accept risk. It
+does not add bulk suppression, false-positive, disposition clearing, proof, AI,
+workflow inference or automatic expiry behavior. Existing assign, unassign and
+workflow actions keep their exact request bodies and never send risk fields.
+
+The accepted-risk form has one optional expiry control and one required
+rationale control. Blank expiry means an explicit acceptedRiskExpiresAt:null.
+A supplied expiry is sent as one RFC3339 timestamp strictly after the fixture
+server time. The form explains, before submission, that the service creates one
+finding-scoped immutable approval per finding and that accepting risk does not
+verify safety.
+
+The request contains exactly findingIds, decisionRevisions, disposition,
+acceptedRiskExpiresAt and rationale. findingIds are the selected lowercase
+32-hex IDs. decisionRevisions has exactly one current positive revision for
+each selected ID and no other key. disposition is accepted-risk. The request
+does not contain ownerId, workflowState, dispositionScope, approval IDs, actor,
+workspace, verification, proof or source fields.
+
+The current revision and accepted-risk display state come from canonical Work
+items. The client does not invent revisions, approval IDs or successful state.
+It sends no mutation for an empty selection, a blank/NUL/over-8192-byte
+rationale, an invalid/nonfuture expiry or any invalid selected item. More than
+100 selected findings keeps Apply disabled and explains the limit.
+
+A successful canonical response must contain exactly one item per requested ID
+in ascending ID order, total equal to that count and nextCursor:null. Only then
+does Work update the selected rows, accepted-risk labels and loaded accepted-risk
+count. It clears the completed selection and risk draft while preserving the
+current filter, sort, page, scroll and a safe focus position in Work.
+
+A 400, 403, 409, 503, malformed 200 response or transport failure retains the
+selection, expiry and rationale draft and keeps the last confirmed rows/count.
+Stale 403 and 409 responses are not retried automatically. A protected 401
+clears all workspace state and returns to Sign in.
+
+Viewer Work keeps read-only selection but has no accepted-risk mutation control.
+Displayed role metadata never overrides a current server 403. Workspace change,
+session loss and logout abort a held bulk request, clear its draft and selection
+from the old scope, and discard a late acknowledgement. The V25 control remains
+usable at 390px in both reduced and ordinary motion without horizontal overflow
+or motion-dependent completion.
+
+Strict parsing rejects missing, extra, duplicate or out-of-order response IDs,
+wrong totals, a nonnull cursor, malformed decision/disposition metadata and
+undeclared fields required for the committed Work update. A rejected response
+never fabricates an approval, accepted-risk label, count or success message.
+No rationale, expiry, revision map, finding state or approval-like value is
+stored in browser storage or written to console output.

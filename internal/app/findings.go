@@ -11,16 +11,18 @@ func (a *Application) findingResponse(w http.ResponseWriter, r *http.Request, wo
 	dest := workDest(&f.WorkItem)
 	dest = append(dest, &f.AssetID, &f.WorkspaceID, &scope.ID, &scope.Revision, &scope.Branch,
 		&f.Description, &f.Remediation, &f.Evidence.Text, &f.Evidence.SourceLabel, &f.OwnerID,
-		&f.SourceState, &f.SourceFreshnessAt, &f.Disposition, &f.AcceptedRiskExpiresAt,
-		&f.DecisionRevision, &f.EvidenceRevision, &f.ChangeRevision)
+		&f.SourceState, &f.SourceFreshnessAt, &f.EvidenceRevision, &f.ChangeRevision)
 	err := a.pool.QueryRow(r.Context(), `SELECT `+workColumns+`,
 		f.asset_id,f.workspace_id,f.scope_id,f.scope_revision,f.scope_branch,f.description,f.remediation,
-		f.evidence_text,f.source_label,f.owner_id,f.source_state,f.source_freshness_at,f.disposition,
-		f.accepted_risk_expires_at,f.decision_revision,f.evidence_revision,f.change_revision`+
+		f.evidence_text,f.source_label,f.owner_id,f.source_state,f.source_freshness_at,
+		f.evidence_revision,f.change_revision`+
 		a.workFrom()+` WHERE f.workspace_id=$1 AND f.id=$2 AND `+a.workVisible(), workspace, id).Scan(dest...)
 	if err != nil {
 		return err
 	}
+	f.Disposition = f.WorkItem.Disposition
+	f.AcceptedRiskExpiresAt = f.WorkItem.AcceptedRiskExpiresAt
+	f.DecisionRevision = f.WorkItem.DecisionRevision
 	f.Correlation, err = a.activeCorrelationForPrimary(r.Context(), a.pool, workspace, id)
 	if err != nil {
 		return err

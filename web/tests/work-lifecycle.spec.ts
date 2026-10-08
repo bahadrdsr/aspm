@@ -14,6 +14,8 @@ function item(id: string, title: string, changeKind: "new" | "changed" | "unchan
     workflowState: "open", sourceScanAt: "2026-10-07T18:00:00Z",
     collectedAt: "2026-10-07T18:01:00Z", importedAt: "2026-10-07T18:02:00Z",
     changeKind, changeAt: "2026-10-07T18:02:00Z",
+    decisionRevision: 1, disposition: "none",
+    acceptedRiskExpiresAt: null, riskAcceptanceExpired: false,
   };
 }
 

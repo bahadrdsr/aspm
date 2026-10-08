@@ -33,6 +33,10 @@ export interface WorkItem {
   importedAt: string;
   changeKind: FindingChangeKind;
   changeAt: string | null;
+  decisionRevision: number;
+  disposition: FindingDisposition;
+  acceptedRiskExpiresAt: string | null;
+  riskAcceptanceExpired: boolean;
 }
 
 export interface WorkResponse {
@@ -81,12 +85,8 @@ export interface FindingDetail extends WorkItem {
   ownerId?: string | null;
   sourceState?: "observed" | "unknown" | "stale" | "inferred-resolved";
   sourceFreshnessAt?: string | null;
-  disposition?: FindingDisposition;
-  acceptedRiskExpiresAt?: string | null;
   dispositionApproval?: FindingDispositionApproval | null;
-  riskAcceptanceExpired?: boolean;
   verifiedResolution?: boolean;
-  decisionRevision?: number;
   evidenceRevision?: number;
   changeRevision?: number;
   correlation?: FindingCorrelation;
@@ -162,6 +162,9 @@ export interface FindingBulkPatch {
   findingIds: string[];
   ownerId?: string | null;
   workflowState?: WorkflowState;
+  decisionRevisions?: Record<string, number>;
+  disposition?: "accepted-risk";
+  acceptedRiskExpiresAt?: string | null;
   rationale: string;
 }
 

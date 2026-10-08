@@ -39,7 +39,7 @@ export const detailedFinding = {
   ...findingResponse.finding, assetId: originalAsset.id, workspaceId: alpha.id, ownerId: null,
   workflowState: "in-progress" as const, severity: "medium" as const, sourceScanAt, sourceFreshnessAt,
   collectedAt: "2026-09-05T10:00:00Z", importedAt: "2026-09-05T10:01:00Z",
-  sourceState: "inferred-resolved", disposition: "accepted-risk", acceptedRiskExpiresAt: null,
+  sourceState: "inferred-resolved" as const, disposition: "accepted-risk" as const, acceptedRiskExpiresAt: null,
   riskAcceptanceExpired: false, verifiedResolution: false, observations,
   notes: [{ id: "synthetic-note-1", text: "Synthetic analyst note retained." }],
 };

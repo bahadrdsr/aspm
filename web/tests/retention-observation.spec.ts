@@ -28,6 +28,8 @@ function workItem() {
     severity: "medium", ownerName: null, workflowState: "open",
     sourceScanAt: "2026-10-01T10:00:00Z", collectedAt: "2026-10-01T10:01:00Z",
     importedAt: "2026-10-01T10:02:00Z",
+    decisionRevision: 1, disposition: "none",
+    acceptedRiskExpiresAt: null, riskAcceptanceExpired: false,
   };
 }
 

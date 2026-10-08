@@ -222,8 +222,9 @@
 // evidence availability, archive retrieval and observation restoration are
 // implemented. M08 decision and notification history participate in exact
 // preview, fenced archive execution, durable availability and verified
-// retrieval without hot-row compaction. Orphan evidence cleanup and
-// recurring-scan capacity remain separate. Indexed
+// retrieval without hot-row compaction. Bounded bulk accepted risk creates one
+// immutable finding-scoped approval and decision event per reviewed finding.
+// Orphan evidence cleanup and recurring-scan capacity remain separate. Indexed
 // exact-location candidates, reviewed multi-member
 // correlation, source change classification and meaningful Work are
 // implemented. Archive publication reconciliation cleans only old ledgered
