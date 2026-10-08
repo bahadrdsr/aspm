@@ -1,0 +1,13 @@
+[
+  {
+    "Description": "Synthetic redacted credential fixture",
+    "StartLine": 4,
+    "Match": "[REDACTED SYNTHETIC]",
+    "Secret": "[REDACTED SYNTHETIC]",
+    "File": "config/example.txt",
+    "Commit": "0123456789abcdef0123456789abcdef01234567",
+    "Date": "2026-09-01T09:00:00Z",
+    "RuleID": "synthetic-rule",
+    "Fingerprint": "0123456789abcdef0123456789abcdef01234567:config/example.txt:synthetic-rule:4"
+  }
+]

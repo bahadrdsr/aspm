@@ -1,6 +1,10 @@
 package app
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/bahadrdsr/aspm/internal/parsers"
+)
 
 type IntegrationSummary struct {
 	ID               string   `json:"id"`
@@ -36,6 +40,8 @@ func (a *Application) catalog(w http.ResponseWriter) error {
 		}
 		items = append(items, entry)
 	}
-	writeJSON(w, 200, map[string]any{"dataOrigin": "live", "items": items})
+	writeJSON(w, 200, map[string]any{
+		"dataOrigin": "live", "items": items, "reportIntake": parsers.Adapters(),
+	})
 	return nil
 }

@@ -499,10 +499,27 @@ export interface IntegrationSummary {
   };
 }
 
+export type ReportIntakeId = "sarif" | "trivy" | "zap" | "gitleaks" | "generic-json" | "generic-csv" | "manual";
+export interface ReportIntakeSummary {
+  id: ReportIntakeId;
+  name: string;
+  kind: "report-importer" | "manual-intake";
+  implementationStatus: "implemented";
+  supportMaturity: "experimental" | "supported";
+  countsAsNativeLaunchFamily: false;
+  readyToImport: true;
+  supportedVersions: string[];
+  fieldCoverage: string[];
+  lifecycleCapabilities: string[];
+  mappingMode: "none" | "declarative-fields";
+  deterministicTestEvidenceRef: string;
+}
+
 export interface CatalogResponse {
   apiVersion: typeof apiVersion;
   dataOrigin: DataOrigin;
   items: IntegrationSummary[];
+  reportIntake: ReportIntakeSummary[];
 }
 
 export interface SlackConnection {

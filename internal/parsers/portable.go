@@ -39,7 +39,7 @@ func parseCSV(data []byte, mapping Mapping) ([]Finding, error) {
 		}
 		seen[header] = true
 	}
-	for _, field := range mapping.fields() {
+	for _, field := range mapping.Fields() {
 		if field != "" && !seen[field] {
 			return nil, ErrInvalid
 		}
@@ -73,7 +73,7 @@ func mappedFinding(item map[string]any, mapping Mapping) (Finding, error) {
 	if item == nil {
 		return Finding{}, ErrInvalid
 	}
-	for _, field := range mapping.fields() {
+	for _, field := range mapping.Fields() {
 		if field != "" {
 			if _, exists := item[field]; !exists {
 				return Finding{}, ErrInvalid
@@ -89,7 +89,7 @@ func mappedFinding(item map[string]any, mapping Mapping) (Finding, error) {
 		SourceSeverity: str(item[mapping.SourceSeverity]), Description: str(item[mapping.Description]),
 		Impact: str(item[mapping.Impact]), Remediation: str(item[mapping.Remediation]),
 		Location: Location{URI: str(item[mapping.SourceLocation]), Line: line},
-		Unmapped: remaining(item, mapping.fields()...),
+		Unmapped: remaining(item, mapping.Fields()...),
 	}
 	f.Severity, f.EvidenceText = severity(f.SourceSeverity), first(f.Description, f.Title)
 	f.Identity = identity("mapped", f.SourceFindingID)

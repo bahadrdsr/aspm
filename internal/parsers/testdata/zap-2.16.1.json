@@ -1,0 +1,20 @@
+{
+  "@version": "2.16.1",
+  "site": [{
+    "@name": "https://fixture.example.invalid",
+    "alerts": [{
+      "alertRef": "10038",
+      "alert": "Synthetic header policy",
+      "riskcode": "2",
+      "confidence": "2",
+      "desc": "Synthetic response header finding.",
+      "solution": "Review synthetic header policy.",
+      "otherinfo": "Retain the synthetic source field.",
+      "instances": [{
+        "uri": "https://fixture.example.invalid/health",
+        "method": "GET",
+        "evidence": "Synthetic header evidence."
+      }]
+    }]
+  }]
+}

@@ -153,6 +153,11 @@ test("the eight native families remain explicitly unverified with synthetic cata
     await expect(card.getByText(/not verified|unverified|not run/i)).toBeVisible();
     await expect(card.getByText(/^live verified$|^verified$|^ready to connect$/i)).toHaveCount(0);
   }
+  const intake = page.getByRole("list", { name: "Report intake formats" });
+  await expect(intake.getByRole("listitem")).toHaveCount(7);
+  for (const adapter of catalogResponse.reportIntake) {
+    await expect(intake.getByRole("heading", { name: adapter.name, exact: true })).toBeVisible();
+  }
 });
 
 test("the gallery labels synthetic states instead of presenting them as operational evidence", async ({ page }, testInfo) => {

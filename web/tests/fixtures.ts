@@ -93,6 +93,30 @@ export const catalogResponse: CatalogResponse = {
       reason: "Synthetic M01 catalog fixture, not an authorized live-endpoint verification.",
     },
   })),
+  reportIntake: [
+    ["generic-csv", "Mapped CSV", "report-importer", "declarative-fields", "UTF-8 comma-delimited mapping v1", "internal/parsers/testdata/generic-csv-v1.csv"],
+    ["generic-json", "Mapped JSON", "report-importer", "declarative-fields", "declarative mapping v1", "internal/parsers/testdata/generic-json-v1.json"],
+    ["gitleaks", "Gitleaks JSON", "report-importer", "none", "v8 JSON array with Fingerprint", "internal/parsers/testdata/gitleaks-v8.json"],
+    ["manual", "Manual structured finding", "manual-intake", "none", "manual finding v1", "internal/parsers/testdata/manual-v1.json"],
+    ["sarif", "SARIF 2.1.0", "report-importer", "none", "SARIF 2.1.0", "internal/parsers/testdata/sarif-2.1.0.json"],
+    ["trivy", "Trivy JSON", "report-importer", "none", "SchemaVersion 2", "internal/parsers/testdata/trivy-schema-2.json"],
+    ["zap", "OWASP ZAP JSON", "report-importer", "none", "traditional JSON @version 2.16.1", "internal/parsers/testdata/zap-2.16.1.json"],
+  ].map(([id, name, kind, mappingMode, version, deterministicTestEvidenceRef]) => ({
+    id: id as CatalogResponse["reportIntake"][number]["id"],
+    name,
+    kind: kind as CatalogResponse["reportIntake"][number]["kind"],
+    implementationStatus: "implemented",
+    supportMaturity: "experimental",
+    countsAsNativeLaunchFamily: false,
+    readyToImport: true,
+    supportedVersions: [version],
+    fieldCoverage: id === "gitleaks"
+      ? ["sourceFindingId", "title", "normalizedSeverity", "sourceLocation", "impact", "unmapped"]
+      : ["sourceFindingId", "title", "sourceSeverity", "normalizedSeverity", "sourceLocation", "impact", "remediation", "unmapped"],
+    lifecycleCapabilities: ["stable-source-identity", "per-run-observation", "source-time-envelope", "completeness-envelope", "change-classification"],
+    mappingMode: mappingMode as CatalogResponse["reportIntake"][number]["mappingMode"],
+    deterministicTestEvidenceRef,
+  })),
 };
 
 export function apiError(status: 403 | 404 | 503): ErrorResponse {

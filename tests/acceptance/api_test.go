@@ -149,6 +149,12 @@ type apiFailure struct {
 	Code, Message, RequestID string
 	Retryable                bool
 }
+type reportIntakeSummary struct {
+	ID, Name, Kind, ImplementationStatus, SupportMaturity, MappingMode string
+	DeterministicTestEvidenceRef                                       string
+	CountsAsNativeLaunchFamily, ReadyToImport                          bool
+	SupportedVersions, FieldCoverage, LifecycleCapabilities            []string
+}
 type imported struct {
 	ID, RunID, State, Format, SourceID, ScanID, ReportDigest string
 	EvidenceAvailability                                     string
@@ -191,6 +197,7 @@ type reply struct {
 	RetentionPreview       retentionPreview
 	RetentionRun           retentionRun
 	Import                 imported
+	ReportIntake           []reportIntakeSummary
 	Items                  []json.RawMessage
 	Total                  int
 	NextCursor             *string

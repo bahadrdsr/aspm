@@ -1,0 +1,16 @@
+{
+  "profile": "example/v1",
+  "findings": [
+    {
+      "id": "EXAMPLE-1",
+      "title": "Synthetic example finding",
+      "description": "Synthetic example evidence.",
+      "severity": "HIGH",
+      "uri": "src/example.go",
+      "line": 9,
+      "impact": "Synthetic example impact.",
+      "remediation": "Review the synthetic example.",
+      "vendorField": "retained"
+    }
+  ]
+}

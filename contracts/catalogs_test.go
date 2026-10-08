@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/bahadrdsr/aspm/internal/parsers"
 )
 
 var launchCapabilities = map[string][]string{
@@ -239,18 +242,29 @@ func TestLaunchIntegrationCatalog(t *testing.T) {
 		})
 	}
 	importers := indexed(t, root, "reportIntake")
-	for _, id := range []string{"sarif", "trivy", "zap", "gitleaks", "generic-json", "generic-csv", "manual"} {
-		importer, exists := importers[id]
-		if !exists {
-			t.Errorf("missing separately labeled report/manual intake %q", id)
-			continue
-		}
-		kind := "report-importer"
-		if id == "manual" {
-			kind = "manual-intake"
-		}
-		equal(t, importer, "kind", kind)
+	descriptors := parsers.Adapters()
+	ids := make([]string, len(descriptors))
+	for i, descriptor := range descriptors {
+		ids[i] = descriptor.ID
+	}
+	exactIDs(t, importers, ids...)
+	for _, descriptor := range descriptors {
+		importer := importers[descriptor.ID]
+		equal(t, importer, "name", descriptor.Name)
+		equal(t, importer, "kind", descriptor.Kind)
 		equal(t, importer, "countsAsNativeLaunchFamily", false)
+		equal(t, importer, "implementationStatus", descriptor.ImplementationStatus)
+		equal(t, importer, "supportMaturity", descriptor.SupportMaturity)
+		equal(t, importer, "readyToImport", true)
+		equal(t, importer, "readyToConnect", false)
+		equal(t, importer, "mappingMode", descriptor.MappingMode)
+		equal(t, importer, "deterministicTestEvidenceRef", descriptor.TestFixture)
+		assertEvidenceFile(t, descriptor.TestFixture)
+		if !reflect.DeepEqual(stringsAt(t, importer, "supportedVersions"), descriptor.SupportedVersions) ||
+			!reflect.DeepEqual(stringsAt(t, importer, "fieldCoverage"), descriptor.FieldCoverage) ||
+			!reflect.DeepEqual(stringsAt(t, importer, "lifecycleCapabilities"), descriptor.LifecycleCapabilities) {
+			t.Errorf("%s contract catalog diverges from the compiled adapter registry", descriptor.ID)
+		}
 	}
 }
 

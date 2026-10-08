@@ -146,5 +146,27 @@ func TestM07_CatalogHasExactlyEightHonestReadOnlyNativeFamilies(t *testing.T) {
 		}
 		delete(expected, entry.ID)
 	}
+	expectedFormats := map[string]string{
+		"sarif": "none", "trivy": "none", "zap": "none", "gitleaks": "none",
+		"generic-json": "declarative-fields", "generic-csv": "declarative-fields", "manual": "none",
+	}
+	equal(t, "compiled report adapter count", len(r.ReportIntake), len(expectedFormats))
+	for _, adapter := range r.ReportIntake {
+		mappingMode, present := expectedFormats[adapter.ID]
+		if !present {
+			t.Fatal("catalog exposed an undeclared report adapter")
+		}
+		equal(t, "report adapter mapping policy", adapter.MappingMode, mappingMode)
+		equal(t, "report adapter implementation", adapter.ImplementationStatus, "implemented")
+		equal(t, "report adapter maturity", adapter.SupportMaturity, "experimental")
+		equal(t, "report adapters do not count as native families", adapter.CountsAsNativeLaunchFamily, false)
+		equal(t, "compiled adapter is ready for bounded import", adapter.ReadyToImport, true)
+		if adapter.Name == "" || len(adapter.SupportedVersions) == 0 ||
+			len(adapter.FieldCoverage) == 0 || len(adapter.LifecycleCapabilities) == 0 ||
+			adapter.DeterministicTestEvidenceRef == "" {
+			t.Fatal("report adapter catalog omitted its version, coverage, lifecycle or fixture contract")
+		}
+		delete(expectedFormats, adapter.ID)
+	}
 	h.denied(h.admin, "POST", "/api/v1/integrations/catalog", object{}, 405, "method-not-allowed")
 }

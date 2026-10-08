@@ -53,6 +53,11 @@ assessment preview, explicit queue consent and read-only advisory history.
 Other integration setup remains unfinished. Reports, finding triage and the
 assessment workflow have separate owned HTTPS qualification.
 
+The seven report intake profiles are registered through the public compiled-in
+adapter contract in `pkg/reportadapter`. Their exact supported-version metadata,
+field coverage and deterministic fixtures are exposed separately from the eight
+native integration families. See `docs/m07-report-adapters.md`.
+
 Core API, ingestion, retention and reporting run as separate processes.
 Core, ingestion and retention use distinct scoped storage identities; reporting
 is database-only. The separate

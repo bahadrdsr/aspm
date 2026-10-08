@@ -31,6 +31,9 @@ previous table. The dialog occupies the full small-screen viewport.
 The integration catalog is driven by API items, not eight hard-coded success
 cards. Support maturity, connection and verification are shown separately.
 Synthetic, planned or unverified records never become ready-to-connect.
+Compiled-in report intake descriptors are listed separately with exact admitted
+profiles, mapping policy and field coverage; they never inflate the native
+family count or imply live connector verification.
 No credential-entry or connector mutation is implemented.
 
 Assets and Reports explain their unavailable backend capabilities rather than

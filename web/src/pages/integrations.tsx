@@ -32,7 +32,11 @@ export function IntegrationsPage() {
   const [jiraOpen, setJiraOpen] = useState(false);
   const [teamsOpen, setTeamsOpen] = useState(false);
   const aiEntry = useRef<HTMLButtonElement>(null);
-  const items = resource.data?.items.filter((item) => `${item.name} ${item.capabilities.join(" ")}`.toLowerCase().includes(query.toLowerCase())) ?? [];
+  const normalizedQuery = query.toLowerCase();
+  const items = resource.data?.items.filter((item) =>
+    `${item.name} ${item.capabilities.join(" ")}`.toLowerCase().includes(normalizedQuery)) ?? [];
+  const reportIntake = resource.data?.reportIntake.filter((item) =>
+    `${item.name} ${item.supportedVersions.join(" ")} ${item.fieldCoverage.join(" ")}`.toLowerCase().includes(normalizedQuery)) ?? [];
   return <>
     <header className="page-heading"><div><p className="eyebrow">Bring context together</p><h1>Integrations</h1><p className="page-description">Know what each source can do before you connect it.</p></div><div className="heading-actions">{resource.data && <DataNotice origin={resource.data.dataOrigin} />}<ActionButton variant="outline" onClick={resource.reload} disabled={resource.status === "loading"}><Icon name="refresh" />Refresh</ActionButton></div></header>
     <div className="catalog-intro"><div><Icon name="integrations" size={24} /><p><strong>Capabilities first. Credentials later.</strong><span>Support maturity, connection health, and live verification are separate.</span></p></div><span className="subtle-pill">Read-only catalog</span></div>
@@ -46,7 +50,7 @@ export function IntegrationsPage() {
     <div className="catalog-toolbar"><h2>Native integrations{resource.data && <span className="count-badge">{resource.data.items.length}</span>}</h2><div className="filter-field"><Icon name="search" size={17} /><input type="search" aria-label="Filter integrations" placeholder="Find a source or capability" value={query} onChange={(event) => setQuery(event.target.value)} /></div></div>
     {resource.error && <ErrorState error={resource.error} retry={resource.reload} stale={resource.data !== null} />}
     {resource.status === "loading" && !resource.data && <div className="surface"><LoadingState label="Loading integration catalog" /></div>}
-    {resource.data && items.length === 0 && <div className="surface"><EmptyState icon="integrations" title="No integrations in this view" description="The API returned no matching catalog entries. Try another filter or refresh the catalog." /></div>}
+    {resource.data && items.length === 0 && reportIntake.length === 0 && <div className="surface"><EmptyState icon="integrations" title="No integrations in this view" description="The API returned no matching catalog entries. Try another filter or refresh the catalog." /></div>}
     {resource.data && <ul className="integration-grid" aria-label="Native integrations">{items.map((item) => {
       const presentation = familyPresentation[item.id];
       const verified = item.id !== "jira" && dataOrigin === "live" && item.liveVerification.state === "passed" && item.supportMaturity === "supported";
@@ -66,6 +70,15 @@ export function IntegrationsPage() {
                 "Setup is not available in this view"}</span>}</div>
       </li>;
     })}</ul>}
-    <p className="view-footnote"><Icon name="info" size={15} />Report import formats do not count as native integrations. Connection configuration never sends a notification or verifies a catalog family.</p>
+    {resource.data && <><div className="catalog-toolbar"><h2>Report intake formats<span className="count-badge">{resource.data.reportIntake.length}</span></h2></div>
+      <ul className="integration-grid" aria-label="Report intake formats">{reportIntake.map((item) => <li className="integration-card" key={item.id}>
+        <div className="integration-card-top"><span className="family-mark" aria-hidden="true">RI</span><span className="subtle-pill">{label(item.supportMaturity)}</span></div>
+        <h3>{item.name}</h3><p className="integration-purpose">{item.supportedVersions.join(", ")}</p>
+        <div className="capability-tags">{item.fieldCoverage.map((field) => <span key={field}>{label(field)}</span>)}</div>
+        <div className="connection-line"><span>Mapping</span><strong>{item.mappingMode === "none" ? "Native fields" : "Declarative fields"}</strong></div>
+        <div className="verification-line"><Icon name="check" size={15} /><span>Compiled-in adapter</span></div>
+        <p className="verification-reason">Bounded by the shared import path and deterministic synthetic fixture.</p>
+      </li>)}</ul></>}
+    <p className="view-footnote"><Icon name="info" size={15} />Report intake formats are compiled-in parsers, not native integrations or live connector verification. Connection configuration never sends a notification or verifies a catalog family.</p>
   </>;
 }

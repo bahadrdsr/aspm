@@ -49,10 +49,26 @@ export interface IntegrationSummary {
   capabilities: string[];
 }
 
+export interface ReportIntakeSummary {
+  id: "sarif" | "trivy" | "zap" | "gitleaks" | "generic-json" | "generic-csv" | "manual";
+  name: string;
+  kind: "report-importer" | "manual-intake";
+  implementationStatus: "implemented";
+  supportMaturity: "experimental" | "supported";
+  countsAsNativeLaunchFamily: false;
+  readyToImport: true;
+  supportedVersions: string[];
+  fieldCoverage: string[];
+  lifecycleCapabilities: string[];
+  mappingMode: "none" | "declarative-fields";
+  deterministicTestEvidenceRef: string;
+}
+
 export interface CatalogResponse {
   apiVersion: typeof apiVersion;
   dataOrigin: "synthetic" | "live";
   items: IntegrationSummary[];
+  reportIntake: ReportIntakeSummary[];
 }
 
 export interface ErrorResponse {

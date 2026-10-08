@@ -4,7 +4,7 @@ import type {
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
   FindingDecision, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
-  ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportOverviewResponse,
+  ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportIntakeSummary, ReportOverviewResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
   RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
@@ -795,7 +795,28 @@ export function parseCatalog(value: unknown): CatalogResponse {
       },
     };
   });
-  return { apiVersion, dataOrigin, items: uniqueIds(items) };
+  const reportIntake = array(body.reportIntake, "report intake catalog").map((value): ReportIntakeSummary => {
+    const item = object(value, "report intake adapter");
+    const result: ReportIntakeSummary = {
+      id: choice(item.id, ["sarif", "trivy", "zap", "gitleaks", "generic-json", "generic-csv", "manual"], "report intake format"),
+      name: text(item.name, "report intake name"),
+      kind: choice(item.kind, ["report-importer", "manual-intake"], "report intake kind"),
+      implementationStatus: choice(item.implementationStatus, ["implemented"], "report intake implementation"),
+      supportMaturity: choice(item.supportMaturity, ["experimental", "supported"], "report intake maturity"),
+      countsAsNativeLaunchFamily: boolean(item.countsAsNativeLaunchFamily, "native family classification") as false,
+      readyToImport: boolean(item.readyToImport, "report intake readiness") as true,
+      supportedVersions: array(item.supportedVersions, "supported report versions").map((value) => text(value, "supported report version")),
+      fieldCoverage: array(item.fieldCoverage, "report field coverage").map((value) => text(value, "report field")),
+      lifecycleCapabilities: array(item.lifecycleCapabilities, "report lifecycle capabilities").map((value) => text(value, "report lifecycle capability")),
+      mappingMode: choice(item.mappingMode, ["none", "declarative-fields"], "report mapping mode"),
+      deterministicTestEvidenceRef: text(item.deterministicTestEvidenceRef, "report adapter fixture"),
+    };
+    if (result.countsAsNativeLaunchFamily || !result.readyToImport ||
+      result.supportedVersions.length === 0 || result.fieldCoverage.length === 0 ||
+      result.lifecycleCapabilities.length === 0) return invalid("report intake adapter");
+    return result;
+  });
+  return { apiVersion, dataOrigin, items: uniqueIds(items), reportIntake: uniqueIds(reportIntake) };
 }
 
 export function parseSession(value: unknown): Session {

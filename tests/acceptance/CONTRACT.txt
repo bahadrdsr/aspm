@@ -147,9 +147,16 @@ admitted shapes, NOT broad vendor-version certification:
   No native severity =>sourceSeverity="", normalized high. Commit Date is NOT
   sourceScanAt. Secret/Match contain only an explicitly redacted synthetic marker.
 GET /api/v1/integrations/catalog: exactly github,gitlab,azure-devops,aws,azure,
-  jira,teams,slack, using M01 names/DTO. All planned/unconfigured, readyToConnect=false,
-  verification not-run with reason until M08-M09. POST =>405; import formats do
-  not inflate native family count or prove native support.
+  jira,teams,slack, using M01 names/DTO. The selected Azure DevOps path is
+  experimental and ready to configure; the other cards remain planned here.
+  Every family is unconfigured and live verification remains not-run with a
+  reason. POST =>405; import formats do
+  not inflate native family count or prove native support. The same response has
+  reportIntake with exactly the seven compiled-in format descriptors, including
+  exact supported profiles, mapping mode, semantic field coverage, lifecycle
+  capabilities and a repository-relative sanitized fixture reference. Every
+  report adapter is implemented/experimental/readyToImport, never a native
+  family or readyToConnect claim.
 
 Reversible merge/split and retention policy/hold/preview now have dedicated M06
 gates. Physical archive/expiry execution, enterprise performance, full installer

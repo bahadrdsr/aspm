@@ -7,129 +7,35 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
-	"unicode/utf8"
+
+	"github.com/bahadrdsr/aspm/pkg/reportadapter"
 )
 
 var (
-	ErrUnsupported = errors.New("unsupported report format")
-	ErrInvalid     = errors.New("report does not match the admitted format")
+	ErrUnsupported = reportadapter.ErrUnsupported
+	ErrInvalid     = reportadapter.ErrInvalid
 )
 
-const maxFindings = 5000
+const maxFindings = reportadapter.MaxFindings
 
-type Location struct {
-	URI  string `json:"uri"`
-	Line int    `json:"line"`
-}
-
-type Finding struct {
-	Identity, SourceFindingID, Title, Description string
-	SourceSeverity, Severity, Impact, Remediation string
-	EvidenceText, SourceLabel                     string
-	Location                                      Location
-	Unmapped                                      map[string]any
-}
-
-type Mapping struct {
-	SourceFindingID string `json:"sourceFindingId,omitempty"`
-	Title           string `json:"title,omitempty"`
-	SourceSeverity  string `json:"sourceSeverity,omitempty"`
-	SourceLocation  string `json:"sourceLocation,omitempty"`
-	SourceLine      string `json:"sourceLine,omitempty"`
-	Impact          string `json:"impact,omitempty"`
-	Remediation     string `json:"remediation,omitempty"`
-	Description     string `json:"description,omitempty"`
-}
+type Location = reportadapter.Location
+type Finding = reportadapter.Finding
+type Mapping = reportadapter.Mapping
 
 func Supported(format string) bool {
-	switch format {
-	case "sarif", "trivy", "zap", "gitleaks", "generic-json", "generic-csv", "manual":
-		return true
-	}
-	return false
+	return defaultRegistry.Supports(format)
 }
 
 func ValidateMapping(format string, m Mapping) error {
-	if !Supported(format) {
-		return ErrUnsupported
-	}
-	if format != "generic-json" && format != "generic-csv" {
-		if m != (Mapping{}) {
-			return ErrInvalid
-		}
-		return nil
-	}
-	if strings.TrimSpace(m.SourceFindingID) == "" || strings.TrimSpace(m.Title) == "" {
-		return ErrInvalid
-	}
-	seen := make(map[string]bool)
-	for _, key := range m.fields() {
-		if len(key) > 256 || strings.ContainsRune(key, 0) {
-			return ErrInvalid
-		}
-		if key != "" {
-			if seen[key] {
-				return ErrInvalid
-			}
-			seen[key] = true
-		}
-	}
-	return nil
-}
-
-func (m Mapping) fields() []string {
-	return []string{m.SourceFindingID, m.Title, m.SourceSeverity, m.SourceLocation, m.SourceLine, m.Impact, m.Remediation, m.Description}
+	return defaultRegistry.ValidateMapping(format, m)
 }
 
 func Parse(format string, data []byte, mapping Mapping) ([]Finding, error) {
-	if err := ValidateMapping(format, mapping); err != nil {
-		return nil, err
-	}
-	if len(data) == 0 || len(data) > 32<<20 || !utf8.Valid(data) {
-		return nil, ErrInvalid
-	}
-	if format == "generic-csv" {
-		return parseCSV(data, mapping)
-	}
-	root, err := decodeJSON(data)
-	if err != nil {
-		return nil, err
-	}
-	var findings []Finding
-	switch format {
-	case "sarif":
-		findings, err = parseSARIF(root)
-	case "trivy":
-		findings, err = parseTrivy(root)
-	case "zap":
-		findings, err = parseZAP(root)
-	case "gitleaks":
-		findings, err = parseGitleaks(root)
-	case "generic-json":
-		findings, err = parseGeneric(root, mapping)
-	case "manual":
-		findings, err = parseManual(root)
-	}
-	if err != nil {
-		return nil, ErrInvalid
-	}
-	if len(findings) > maxFindings {
-		return nil, ErrInvalid
-	}
-	for _, f := range findings {
-		if !validFinding(f) {
-			return nil, ErrInvalid
-		}
-	}
-	if findings == nil {
-		findings = []Finding{}
-	}
-	return findings, nil
+	return defaultRegistry.Parse(format, data, mapping)
 }
 
 func decodeJSON(data []byte) (any, error) {
@@ -265,9 +171,5 @@ func severity(raw string) string {
 }
 
 func validFinding(f Finding) bool {
-	return f.Identity != "" && strings.TrimSpace(f.SourceFindingID) != "" &&
-		len(f.SourceFindingID) <= 4096 && strings.TrimSpace(f.Title) != "" &&
-		len(f.Title) <= 4096 && len(f.Location.URI) <= 8192 && f.Location.Line >= 0 &&
-		len(f.Description) <= 1<<20 && len(f.Remediation) <= 1<<20 &&
-		len(f.Impact) <= 1<<20 && len(f.EvidenceText) <= 1<<20
+	return reportadapter.ValidateFinding(f)
 }
