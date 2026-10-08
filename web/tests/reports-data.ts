@@ -101,6 +101,64 @@ export interface SyntheticCoverageResponse {
   dataOrigin: "live";
   drilldown: SyntheticCoverageDrilldown;
 }
+export interface SyntheticSLAPolicy {
+  workspaceId: string;
+  criticalDays: number;
+  highDays: number;
+  mediumDays: number;
+  lowDays: number;
+  infoDays: number;
+  revision: number;
+  approvedBy: string | null;
+  approvedByName: string | null;
+  rationale: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface SyntheticSLASummary {
+  workspaceId: string;
+  asOf: string;
+  policy: SyntheticSLAPolicy;
+  totals: { tracked: number; withinTarget: number; breached: number };
+  bySeverity: Record<"critical" | "high" | "medium" | "low" | "info",
+    { tracked: number; breached: number }>;
+  verification: { state: "not-run"; reason: string };
+}
+export type SLAStatus = "breached" | "within-target";
+export interface SyntheticSLAFinding {
+  findingId: string;
+  title: string;
+  assetId: string;
+  assetName: string;
+  severity: "critical" | "high" | "medium" | "low" | "info";
+  ownerId: string | null;
+  ownerName: string | null;
+  workflowState: "open" | "in-progress" | "pending-retest";
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
+  sourceState: "observed" | "inferred-resolved" | "stale" | "unknown";
+  firstObservedAt: string;
+  dueAt: string;
+  targetDays: number;
+  status: SLAStatus;
+  overdueSeconds: number;
+}
+export interface SyntheticSLAFindingPage {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  items: SyntheticSLAFinding[];
+  total: number;
+  nextCursor: string | null;
+}
+export interface SyntheticSLAResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  sla: SyntheticSLASummary;
+}
+export interface SyntheticSLAPolicyResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  policy: SyntheticSLAPolicy;
+}
 
 export const reportAlpha = { id: "1".repeat(32), name: "Synthetic Reports Alpha workspace", role: "admin" as ReportRole };
 export const reportBeta = { id: "3".repeat(32), name: "Synthetic Reports Beta workspace", role: "analyst" as ReportRole };
@@ -108,10 +166,27 @@ export const reportUser = { id: "a".repeat(32), name: "Synthetic reporting analy
 export const verificationReason = "Independent verified-resolution results are not integrated with canonical findings.";
 export const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
 export const coverageVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety.";
+export const slaVerificationReason = "Remediation SLA status is a time-to-workflow target; it does not verify safety, resolution, or risk acceptance.";
 export const overviewPath = "/api/v1/reports/overview";
 export const coverageAssetsPath = "/api/v1/reports/coverage-assets";
 export const snapshotsPath = "/api/v1/reports/snapshots";
 export const trendsPath = "/api/v1/reports/trends";
+export const slaPolicyPath = "/api/v1/reports/sla-policy";
+export const slaPath = "/api/v1/reports/sla";
+export const slaFindingsPath = "/api/v1/reports/sla-findings";
+
+export const alphaSLAPolicy: SyntheticSLAPolicy = {
+  workspaceId: reportAlpha.id,
+  criticalDays: 7, highDays: 30, mediumDays: 90, lowDays: 180, infoDays: 365,
+  revision: 4, approvedBy: reportUser.id, approvedByName: reportUser.name,
+  rationale: "Approved synthetic remediation targets after explicit review.",
+  createdAt: "2026-08-01T08:00:00.000Z", updatedAt: "2026-10-01T09:10:11.000Z",
+};
+export const betaSLAPolicy: SyntheticSLAPolicy = {
+  ...structuredClone(alphaSLAPolicy), workspaceId: reportBeta.id, revision: 2,
+  rationale: "Approved Beta synthetic remediation targets.",
+  createdAt: "2026-08-02T08:00:00.000Z", updatedAt: "2026-09-29T10:11:12.000Z",
+};
 
 export function withFreshness(report: SyntheticPostureReport, days: number): SyntheticPostureReport {
   if (!Number.isInteger(days) || days < 1 || days > 365) throw new Error("Invalid synthetic freshness window.");
@@ -335,6 +410,112 @@ export const coverageStorageCanaries = (() => {
   ].filter((value) => value !== "");
 })();
 
+function slaTarget(policy: SyntheticSLAPolicy, severity: SyntheticSLAFinding["severity"]) {
+  return policy[`${severity}Days` as keyof Pick<SyntheticSLAPolicy,
+    "criticalDays" | "highDays" | "mediumDays" | "lowDays" | "infoDays">];
+}
+
+export function syntheticSLAFindingSet(workspaceId: string,
+  policy = workspaceId === reportAlpha.id ? alphaSLAPolicy : betaSLAPolicy): SyntheticSLAFinding[] {
+  if (![reportAlpha.id, reportBeta.id].includes(workspaceId) || policy.workspaceId !== workspaceId) {
+    throw new Error("Synthetic SLA findings require one known workspace policy.");
+  }
+  const asOf = Date.parse("2026-10-08T17:01:51.000Z");
+  const severities = ["critical", "high", "medium", "low", "info"] as const;
+  const workflows = ["open", "in-progress", "pending-retest"] as const;
+  const dispositions = ["none", "accepted-risk", "suppressed", "false-positive"] as const;
+  const sourceStates = ["observed", "inferred-resolved", "stale", "unknown"] as const;
+  const prefix = workspaceId === reportAlpha.id ? "6" : "7";
+  const assetPrefix = workspaceId === reportAlpha.id ? "2" : "3";
+  const breached = 103, withinTarget = 5;
+  return Array.from({ length: breached + withinTarget }, (_, index): SyntheticSLAFinding => {
+    const severity = severities[index % severities.length];
+    const targetDays = slaTarget(policy, severity);
+    const status: SLAStatus = index < breached ? "breached" : "within-target";
+    const offset = status === "breached" ? (index + 1) * 1_001 :
+      index === breached ? 0 : -(index - breached) * 3_600;
+    const dueAtMs = asOf - offset * 1_000;
+    const firstObservedAtMs = dueAtMs - targetDays * 86_400_000;
+    const owned = index % 3 !== 1;
+    return {
+      findingId: `${prefix}${(index + 1).toString(16).padStart(31, "0")}`,
+      title: `Synthetic ${workspaceId === reportAlpha.id ? "Alpha" : "Beta"} SLA finding ${String(index + 1).padStart(4, "0")}`,
+      assetId: `${assetPrefix}${(index + 1).toString(16).padStart(31, "0")}`,
+      assetName: `Synthetic ${workspaceId === reportAlpha.id ? "Alpha" : "Beta"} SLA asset ${String(index + 1).padStart(4, "0")}`,
+      severity,
+      ownerId: owned ? reportUser.id : null,
+      ownerName: owned ? reportUser.name : null,
+      workflowState: workflows[index % workflows.length],
+      disposition: dispositions[index % dispositions.length],
+      sourceState: sourceStates[index % sourceStates.length],
+      firstObservedAt: new Date(firstObservedAtMs).toISOString(),
+      dueAt: new Date(dueAtMs).toISOString(),
+      targetDays,
+      status,
+      overdueSeconds: status === "breached" ? Math.floor((asOf - dueAtMs) / 1_000) : 0,
+    };
+  });
+}
+
+export function syntheticSLASummary(workspaceId: string,
+  policy = workspaceId === reportAlpha.id ? alphaSLAPolicy : betaSLAPolicy): SyntheticSLASummary {
+  const findings = syntheticSLAFindingSet(workspaceId, policy);
+  const bySeverity: SyntheticSLASummary["bySeverity"] = {
+    critical: { tracked: 0, breached: 0 },
+    high: { tracked: 0, breached: 0 },
+    medium: { tracked: 0, breached: 0 },
+    low: { tracked: 0, breached: 0 },
+    info: { tracked: 0, breached: 0 },
+  };
+  for (const finding of findings) {
+    bySeverity[finding.severity].tracked += 1;
+    if (finding.status === "breached") bySeverity[finding.severity].breached += 1;
+  }
+  const breached = findings.filter((finding) => finding.status === "breached").length;
+  return {
+    workspaceId, asOf: "2026-10-08T17:01:51.000Z", policy: structuredClone(policy),
+    totals: { tracked: findings.length, withinTarget: findings.length - breached, breached },
+    bySeverity,
+    verification: { state: "not-run", reason: slaVerificationReason },
+  };
+}
+
+export function syntheticSLAResponse(workspaceId: string,
+  policy = workspaceId === reportAlpha.id ? alphaSLAPolicy : betaSLAPolicy): SyntheticSLAResponse {
+  return { apiVersion, dataOrigin: "live", sla: syntheticSLASummary(workspaceId, policy) };
+}
+
+export function syntheticSLAPolicyResponse(policy: SyntheticSLAPolicy): SyntheticSLAPolicyResponse {
+  return { apiVersion, dataOrigin: "live", policy: structuredClone(policy) };
+}
+
+export function syntheticSLAFindingPage(workspaceId: string, status: SLAStatus, limit = 100, cursor = "",
+  policy = workspaceId === reportAlpha.id ? alphaSLAPolicy : betaSLAPolicy): SyntheticSLAFindingPage {
+  if (!["breached", "within-target"].includes(status) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+    cursor !== "" && !/^[a-f0-9]{32}$/.test(cursor)) {
+    throw new Error("Only bounded native SLA finding pages may be generated.");
+  }
+  const all = syntheticSLAFindingSet(workspaceId, policy).filter((finding) => finding.status === status);
+  const remaining = all.filter((finding) => finding.findingId > cursor);
+  const items = remaining.slice(0, limit);
+  return {
+    apiVersion, dataOrigin: "live", items: structuredClone(items), total: all.length,
+    nextCursor: remaining.length > limit ? items.at(-1)!.findingId : null,
+  };
+}
+
+export const slaStorageCanaries = (() => {
+  const summary = syntheticSLASummary(reportAlpha.id);
+  const findings = syntheticSLAFindingSet(reportAlpha.id);
+  return [
+    summary.asOf, summary.policy.rationale, slaVerificationReason,
+    ...findings.slice(0, 4).flatMap((finding) =>
+      [finding.findingId, finding.title, finding.assetId, finding.assetName,
+        finding.firstObservedAt, finding.dueAt]),
+  ];
+})();
+
 export function emptyReport(workspaceId = reportAlpha.id) {
   return withFreshness({
     ...initial, workspaceId,
@@ -435,4 +616,35 @@ export function coverageParameters(url: URL): {
     throw new Error("Coverage drill-down cursor must be one lower-case 32-hex asset ID.");
   }
   return { state, freshnessDays: Number(freshnessValues[0]), limit, cursor };
+}
+
+export function noSLAQuery(url: URL, label: string) {
+  if ([...url.searchParams.keys()].length !== 0) {
+    throw new Error(`${label} accepts no query parameters.`);
+  }
+}
+
+export function slaFindingParameters(url: URL): { status: SLAStatus; limit: number; cursor: string } {
+  const allowed = ["status", "limit", "cursor"];
+  const statusValues = url.searchParams.getAll("status");
+  const limitValues = url.searchParams.getAll("limit");
+  const cursorValues = url.searchParams.getAll("cursor");
+  if ([...url.searchParams.keys()].some((key) => !allowed.includes(key)) ||
+    statusValues.length !== 1 || limitValues.length > 1 || cursorValues.length > 1) {
+    throw new Error("SLA finding pages require one status and at most one native limit and cursor.");
+  }
+  const status = statusValues[0] as SLAStatus;
+  if (!["breached", "within-target"].includes(status)) {
+    throw new Error("SLA finding status must be breached or within-target.");
+  }
+  const rawLimit = limitValues[0], limit = rawLimit === undefined ? 100 : Number(rawLimit);
+  if (rawLimit !== undefined && !/^\d{1,3}$/.test(rawLimit) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100) {
+    throw new Error("SLA finding limit must be one integer from 1 through 100.");
+  }
+  const cursor = cursorValues[0] ?? "";
+  if (cursorValues.length === 1 && !/^[a-f0-9]{32}$/.test(cursor)) {
+    throw new Error("SLA finding cursor must be one lower-case 32-hex finding ID.");
+  }
+  return { status, limit, cursor };
 }

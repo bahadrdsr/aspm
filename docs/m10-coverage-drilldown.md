@@ -5,7 +5,8 @@ Implemented on October 8, 2026.
 This bounded M10 slice exposes the current asset membership behind the four
 Live overview coverage counts. It adds no schema migration, queue, worker,
 object-store object, provider call, or browser persistence. The migration
-ledger remains versions 1 through 24.
+ledger for this slice remained versions 1 through 24; V25 is added separately
+by current remediation SLA reporting.
 
 ## Read contract
 

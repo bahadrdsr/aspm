@@ -5,17 +5,20 @@ import { bootstrapToken, password, sessionCookie, wrongPassword } from "./applic
 import { catalogResponse, findingResponse, workResponse } from "./fixtures";
 import { emptySlackNavigation } from "./slack-navigation";
 import {
-  alphaOverview, betaOverview, coverageAssetsPath, coverageParameters, coverageStorageCanaries,
-  overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
+  alphaOverview, alphaSLAPolicy, betaOverview, betaSLAPolicy, coverageAssetsPath, coverageParameters,
+  coverageStorageCanaries, noSLAQuery, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
   savedReport, savedSnapshots, snapshotParameters, snapshotSummary, snapshotsPath, syntheticTrendResponse,
-  syntheticCoverageResponse, trendDays, trendsPath, trendStorageCanaries, withFreshness,
+  slaFindingsPath, slaFindingParameters, slaPath, slaPolicyPath, slaStorageCanaries,
+  syntheticCoverageResponse, syntheticSLAFindingPage, syntheticSLAPolicyResponse, syntheticSLAResponse,
+  trendDays, trendsPath, trendStorageCanaries, withFreshness,
 } from "./reports-data";
 import type {
-  CoverageState, ReportRole, SnapshotPage, SnapshotState, SyntheticCoverageDrilldown,
-  SyntheticPostureReport, SyntheticSnapshot, SyntheticTrend,
+  CoverageState, ReportRole, SLAStatus, SnapshotPage, SnapshotState, SyntheticCoverageDrilldown,
+  SyntheticPostureReport, SyntheticSLAResponse, SyntheticSLAFindingPage, SyntheticSLAPolicy,
+  SyntheticSnapshot, SyntheticTrend,
 } from "./reports-data";
 
-type Denial = 401 | 403 | 404 | 413 | 503;
+type Denial = 400 | 401 | 403 | 404 | 409 | 413 | 503;
 type Reply<T> = { status: 200; value: T } | { status: Denial };
 export interface ReportCall {
   method: string; path: string; workspace: string | undefined; query: Record<string, string>;
@@ -32,7 +35,7 @@ interface Gate extends ReportResponseControl {
   arrive: () => void;
   complete: () => void;
 }
-interface Scheduled<T> { reply: Reply<T>; gate: Gate }
+interface Scheduled<T> { reply: Reply<T>; gate: Gate; commitPolicy?: SyntheticSLAPolicy }
 const secretCanaries = [password, wrongPassword, bootstrapToken, sessionCookie];
 
 export class ReportsAPI {
@@ -44,6 +47,10 @@ export class ReportsAPI {
   readonly pages: Array<{ call: ReportCall; response: SnapshotPage }> = [];
   readonly snapshots = new Map<string, SyntheticSnapshot>();
   readonly overviews = new Map([[reportAlpha.id, alphaOverview], [reportBeta.id, betaOverview]]);
+  readonly slaPolicies = new Map<string, SyntheticSLAPolicy>([
+    [reportAlpha.id, structuredClone(alphaSLAPolicy)],
+    [reportBeta.id, structuredClone(betaSLAPolicy)],
+  ]);
   private sessionCompleted = false;
   private createdCount = 0;
   private gates = new Set<Gate>();
@@ -53,6 +60,10 @@ export class ReportsAPI {
   private snapshotReplies = new Map<string, Scheduled<SyntheticSnapshot>[]>();
   private trendReplies = new Map<string, Scheduled<unknown>[]>();
   private coverageReplies = new Map<string, Scheduled<unknown>[]>();
+  private slaSummaryReplies = new Map<string, Scheduled<unknown>[]>();
+  private slaFindingReplies = new Map<string, Scheduled<unknown>[]>();
+  private slaPolicyReplies = new Map<string, Scheduled<unknown>[]>();
+  private slaPolicyUpdateReplies = new Map<string, Scheduled<unknown>[]>();
   private createGates: Gate[] = [];
   private callsByRequest = new Map<Request, ReportCall>();
 
@@ -150,6 +161,75 @@ export class ReportsAPI {
       { status: 200, value: structuredClone(value) }, held);
   }
 
+  queueSLA(workspace: string, reply: Reply<SyntheticSLAResponse["sla"]>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 && reply.value.workspaceId !== workspace) {
+      throw new Error("Queued SLA summary must belong to its known synthetic workspace.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: { apiVersion, dataOrigin: "live", sla: structuredClone(reply.value) } }
+      : reply;
+    return this.queue(this.slaSummaryReplies, workspace, wrapped, held);
+  }
+
+  queueSLARaw(workspace: string, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw SLA summaries require a known synthetic workspace.");
+    return this.queue(this.slaSummaryReplies, workspace,
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
+  private slaFindingKey(workspace: string, status: SLAStatus) { return `${workspace}:${status}`; }
+
+  queueSLAFinding(workspace: string, status: SLAStatus, reply: Reply<SyntheticSLAFindingPage>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 &&
+      reply.value.items.some((item) => item.status !== status)) {
+      throw new Error("Queued SLA finding page must contain only its requested status.");
+    }
+    return this.queue(this.slaFindingReplies, this.slaFindingKey(workspace, status),
+      reply as Reply<unknown>, held);
+  }
+
+  queueSLAFindingRaw(workspace: string, status: SLAStatus, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw SLA finding pages require a known synthetic workspace.");
+    return this.queue(this.slaFindingReplies, this.slaFindingKey(workspace, status),
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
+  queueSLAPolicy(workspace: string, reply: Reply<SyntheticSLAPolicy>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 && reply.value.workspaceId !== workspace) {
+      throw new Error("Queued SLA policy must belong to its known synthetic workspace.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: syntheticSLAPolicyResponse(reply.value) }
+      : reply;
+    return this.queue(this.slaPolicyReplies, workspace, wrapped, held);
+  }
+
+  queueSLAPolicyRaw(workspace: string, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw SLA policies require a known synthetic workspace.");
+    return this.queue(this.slaPolicyReplies, workspace,
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
+  queueSLAPolicyUpdate(workspace: string, reply: Reply<SyntheticSLAPolicy>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 && reply.value.workspaceId !== workspace) {
+      throw new Error("Queued SLA policy acknowledgement must belong to its known synthetic workspace.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: syntheticSLAPolicyResponse(reply.value) }
+      : reply;
+    const control = this.queue(this.slaPolicyUpdateReplies, workspace, wrapped, held);
+    if (reply.status === 200) {
+      this.slaPolicyUpdateReplies.get(workspace)!.at(-1)!.commitPolicy = structuredClone(reply.value);
+    }
+    return control;
+  }
+
+  queueSLAPolicyUpdateRaw(workspace: string, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw SLA policy acknowledgements require a known synthetic workspace.");
+    return this.queue(this.slaPolicyUpdateReplies, workspace,
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
   holdCreation(): ReportResponseControl {
     const gate = this.gate(true);
     this.createGates.push(gate);
@@ -181,11 +261,12 @@ export class ReportsAPI {
 
   private async error(route: Route, status: number, message?: string) {
     const code = status === 401 ? "unauthorized" : status === 403 ? "forbidden" : status === 404 ? "not-found" :
-      status === 400 ? "invalid-input" : status === 413 ? "too-large" : status === 429 ? "rate-limited" : "unavailable";
+      status === 400 ? "invalid-input" : status === 409 ? "conflict" :
+        status === 413 ? "too-large" : status === 429 ? "rate-limited" : "unavailable";
     await route.fulfill({ status, json: { apiVersion, error: {
       code, message: message ?? (status === 401 ? "Synthetic reporting session ended." : status === 403 ? "Synthetic report access denied." :
-        status === 404 ? "Synthetic snapshot not found." : status === 413 ? "Synthetic historical trend window is too large." :
-          "Synthetic report service unavailable."),
+        status === 404 ? "Synthetic snapshot not found." : status === 409 ? "Synthetic SLA policy revision conflict." :
+          status === 413 ? "Synthetic historical trend window is too large." : "Synthetic report service unavailable."),
       requestId: "synthetic-reports-request", retryable: false,
     } } });
   }
@@ -247,14 +328,16 @@ export class ReportsAPI {
       if (secretCanaries.some((secret) => url.href.includes(secret) || url.href.includes(encodeURIComponent(secret)))) {
         this.violations.push("A synthetic credential was put in a request URL.");
       }
-      const writes = [snapshotsPath, "/api/v1/login", "/api/v1/logout"];
-      if (method !== "GET" && !(method === "POST" && writes.includes(path))) {
+      const postWrites = [snapshotsPath, "/api/v1/login", "/api/v1/logout"];
+      const allowedWrite = method === "POST" && postWrites.includes(path) ||
+        method === "PATCH" && path === slaPolicyPath;
+      if (method !== "GET" && !allowedWrite) {
         this.violations.push(`Undeclared Reports write: ${method} ${path}.`);
         await route.abort();
         return;
       }
       let body: Record<string, unknown> = {};
-      if (method === "POST") {
+      if (method === "POST" || method === "PATCH") {
         if (headers.origin !== origin) this.violations.push("Application write omitted its matching Origin.");
         if (url.search !== "") this.violations.push("Reports writes must not move request fields into the URL.");
         if (path !== "/api/v1/logout") {
@@ -362,6 +445,86 @@ export class ReportsAPI {
         await this.deliverEnvelope(route, call, scheduled,
           syntheticCoverageResponse(this.overviews.get(workspace)!, parameters.state,
             parameters.freshnessDays, parameters.limit, parameters.cursor));
+      } else if (path === slaPolicyPath && method === "GET") {
+        try { noSLAQuery(url, "SLA policy"); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic SLA policy query.");
+          return;
+        }
+        await this.deliverEnvelope(route, call, this.slaPolicyReplies.get(workspace)?.shift(),
+          syntheticSLAPolicyResponse(this.slaPolicies.get(workspace)!));
+      } else if (path === slaPolicyPath && method === "PATCH") {
+        try { noSLAQuery(url, "SLA policy update"); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic SLA policy query.");
+          return;
+        }
+        if (this.serverRoles.get(workspace) !== "admin") { await this.error(route, 403); return; }
+        const keys = ["criticalDays", "highDays", "infoDays", "lowDays", "mediumDays", "rationale", "revision"];
+        if (Object.keys(body).sort().join(",") !== keys.sort().join(",")) {
+          await this.error(route, 400, "Synthetic SLA policy requires the exact complete shape.");
+          return;
+        }
+        const current = this.slaPolicies.get(workspace)!;
+        const targets = ["criticalDays", "highDays", "mediumDays", "lowDays", "infoDays"] as const;
+        const values = targets.map((key) => body[key]);
+        if (typeof body.revision !== "number" || !Number.isSafeInteger(body.revision) || body.revision < 1 ||
+          values.some((value) => typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 3650) ||
+          values.some((value, index) => index > 0 && Number(values[index - 1]) > Number(value)) ||
+          typeof body.rationale !== "string" || body.rationale.trim() === "" ||
+          body.rationale.includes("\0") || Buffer.byteLength(body.rationale, "utf8") > 8192) {
+          await this.error(route, 400, "Invalid synthetic SLA policy input.");
+          return;
+        }
+        if (body.revision !== current.revision) { await this.error(route, 409); return; }
+        if (targets.every((key) => body[key] === current[key]) && body.rationale === current.rationale) {
+          await this.error(route, 409);
+          return;
+        }
+        const candidate: SyntheticSLAPolicy = {
+          ...structuredClone(current),
+          criticalDays: Number(body.criticalDays), highDays: Number(body.highDays),
+          mediumDays: Number(body.mediumDays), lowDays: Number(body.lowDays), infoDays: Number(body.infoDays),
+          revision: current.revision + 1, approvedBy: reportUser.id, approvedByName: reportUser.name,
+          rationale: body.rationale, updatedAt: "2026-10-08T17:02:51.000Z",
+        };
+        const scheduled = this.slaPolicyUpdateReplies.get(workspace)?.shift();
+        const reply = structuredClone(scheduled?.reply ??
+          { status: 200 as const, value: syntheticSLAPolicyResponse(candidate) });
+        const gate = scheduled?.gate;
+        try {
+          if (gate) { gate.call = call; gate.arrive(); await gate.wait; }
+          if (reply.status !== 200) {
+            if (reply.status === 401) this.authenticated = false;
+            await this.error(route, reply.status);
+          } else {
+            const committed = scheduled?.commitPolicy ?? (!scheduled ? candidate : null);
+            if (committed) this.slaPolicies.set(workspace, structuredClone(committed));
+            await route.fulfill({ json: reply.value });
+          }
+        } finally {
+          gate?.complete();
+          if (gate) this.gates.delete(gate);
+        }
+      } else if (path === slaPath && method === "GET") {
+        try { noSLAQuery(url, "SLA summary"); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic SLA summary query.");
+          return;
+        }
+        await this.deliverEnvelope(route, call, this.slaSummaryReplies.get(workspace)?.shift(),
+          syntheticSLAResponse(workspace, this.slaPolicies.get(workspace)!));
+      } else if (path === slaFindingsPath && method === "GET") {
+        let parameters: ReturnType<typeof slaFindingParameters>;
+        try { parameters = slaFindingParameters(url); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic SLA finding query.");
+          return;
+        }
+        const scheduled = this.slaFindingReplies.get(this.slaFindingKey(workspace, parameters.status))?.shift();
+        await this.deliverEnvelope(route, call, scheduled,
+          syntheticSLAFindingPage(workspace, parameters.status, parameters.limit, parameters.cursor,
+            this.slaPolicies.get(workspace)!));
       } else if (path === snapshotsPath && method === "GET") {
         let parameters: ReturnType<typeof snapshotParameters>;
         try { parameters = snapshotParameters(url); } catch (error) {
@@ -442,9 +605,10 @@ export const test = base.extend<{ reports: ReportsAPI }>({
           ...savedSnapshots(reportAlpha.id, 2).flatMap((item) => [item.id, item.name]),
           ...trendStorageCanaries,
           ...coverageStorageCanaries,
+          ...slaStorageCanaries,
         ];
         for (const canary of reportCanaries) {
-          expect.soft(storageText, "Report, snapshot, trend and coverage data must not enter browser storage.").not.toContain(canary);
+          expect.soft(storageText, "Report, snapshot, trend, coverage and SLA data must not enter browser storage.").not.toContain(canary);
         }
         for (const secret of secretCanaries) {
           expect.soft(JSON.stringify(snapshot) + page.url() + consoleText.join("\n"),

@@ -220,6 +220,24 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		return a.reportCoverageAssets(w, r, membership.ID)
+	case "/api/v1/reports/sla-policy":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
+			return err
+		}
+		if r.Method == http.MethodPatch {
+			return a.updateReportSLAPolicy(w, r, membership.ID, session)
+		}
+		return a.getReportSLAPolicy(w, r, membership.ID)
+	case "/api/v1/reports/sla":
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		return a.reportSLA(w, r, membership.ID)
+	case "/api/v1/reports/sla-findings":
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		return a.reportSLAFindingPage(w, r, membership.ID)
 	case "/api/v1/reports/trends":
 		if err = requireMethod(w, r, http.MethodGet); err != nil {
 			return err

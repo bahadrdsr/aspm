@@ -494,11 +494,11 @@ func TestM10_CoverageDrilldownProjectsExactCurrentMembershipWithoutSideEffects(t
 	currentOverview := overview(t, h, h.admin)
 	stateBefore := historicalState(t, h)
 	coverageRowsBefore := coverageTableCount(t, h)
-	wantVersions := make([]int, 24)
+	wantVersions := make([]int, 25)
 	for index := range wantVersions {
 		wantVersions[index] = index + 1
 	}
-	equal(t, "coverage drill-down schema stays at V24", stateBefore.Versions, wantVersions)
+	equal(t, "coverage drill-down schema stays at V25", stateBefore.Versions, wantVersions)
 	equal(t, "live overview scanned membership", currentOverview.Coverage.ScannedAssets, 9)
 	equal(t, "live overview unscanned membership", currentOverview.Coverage.UnscannedAssets, 1)
 	equal(t, "live overview stale membership", currentOverview.Coverage.StaleAssets, 3)

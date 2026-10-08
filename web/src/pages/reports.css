@@ -75,6 +75,28 @@
 .report-history-footer button { width: 100%; }
 .report-coverage-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; }
 .report-coverage-table { min-width: 760px; }
+.report-sla-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+.report-sla-targets { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.report-sla-targets dd { font-size: 18px; }
+.report-sla-statuses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.report-sla-statuses button { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--surface-soft); cursor: pointer; text-align: left; }
+.report-sla-statuses button:hover { border-color: var(--line-strong); }
+.report-sla-statuses strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+.report-sla-severity { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 14px 0; }
+.report-sla-severity p { padding: 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.report-sla-severity strong { display: block; color: var(--ink); }
+.report-sla-findings { margin-top: 20px; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.report-sla-findings > header, .report-sla-editor > header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.report-sla-findings > .form-error, .report-sla-findings > .loading-state, .report-sla-findings > .report-help { margin: 14px 16px; }
+.report-sla-table { min-width: 1780px; }
+.report-sla-table code { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; }
+.report-sla-editor { display: grid; gap: 14px; margin-top: 20px; padding: 0 16px 16px; border: 1px solid var(--line); border-radius: 9px; }
+.report-sla-editor > header { margin: 0 -16px; }
+.report-sla-editor label { display: grid; gap: 5px; color: var(--muted); font-size: 11px; }
+.report-sla-editor input, .report-sla-editor textarea { width: 100%; min-height: 39px; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 7px; color: var(--ink); background: var(--surface); }
+.report-sla-editor textarea { resize: vertical; }
+.report-sla-target-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.report-sla-editor footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 1200px) {
   .report-saved-layout { grid-template-columns: minmax(0, 1fr); }
 }
@@ -89,6 +111,7 @@
   .report-main-totals dd, .report-selected .report-main-totals dd { font-size: 26px; }
   .report-counts { gap: 13px; }
   .report-resolution-totals, .report-coverage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .report-sla-targets, .report-sla-severity, .report-sla-target-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .report-severities { gap: 9px; }
   .report-severities dd { font-size: 20px; }
   .report-severities dt { font-size: 10px; }

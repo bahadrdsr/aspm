@@ -14,6 +14,7 @@ import { ReportCoverageAssets } from "@/components/report-coverage-assets";
 import { ReportMetrics } from "@/components/report-metrics";
 import { ReportSnapshotCreate } from "@/components/report-snapshot-create";
 import { ReportSnapshotDetail } from "@/components/report-snapshot-detail";
+import { ReportSLA } from "@/components/report-sla";
 import { ReportTrends } from "@/components/report-trends";
 import { DataNotice, LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
@@ -167,6 +168,7 @@ export function ReportsPage() {
         }))} />
     {coverage && <ReportCoverageAssets key={`${workspace.id}-${coverage.generation}`}
       state={coverage.state} days={coverage.days} onClose={closeCoverage} />}
+    <ReportSLA key={`sla-${workspace.id}`} />
     <ReportTrends key={workspace.id} />
     <div className="report-saved-layout">
       {selection ? <ReportSnapshotDetail key={selection.generation} id={selection.id} initial={selection.initial} /> :

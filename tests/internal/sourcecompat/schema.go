@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 )
 
 const LegacyProfileCheck = `CHECK (profile = 'github-cloud-app'::text)`
@@ -202,7 +203,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV24(t, v13, current)
+	projected := ProjectV25(t, v13, current)
+	projected = ProjectV24(t, v13, projected)
 	projected = ProjectV23(t, v13, projected)
 	projected = ProjectV22(t, v13, projected)
 	projected = ProjectV21(t, v13, projected)
@@ -1073,12 +1075,121 @@ func canonicalRowsWithValues(t testing.TB, rows []string, additions map[string]j
 	return result
 }
 
+func v25RowObject(t testing.TB, row, label string) map[string]json.RawMessage {
+	t.Helper()
+	var value map[string]json.RawMessage
+	if json.Unmarshal([]byte(row), &value) != nil || value == nil {
+		t.Fatalf("V25: invalid complete observed %s row", label)
+	}
+	return value
+}
+
+func v25Text(t testing.TB, value map[string]json.RawMessage, field, label string) string {
+	t.Helper()
+	raw, present := value[field]
+	if !present {
+		t.Fatalf("V25: %s row omitted %s", label, field)
+	}
+	var result string
+	if json.Unmarshal(raw, &result) != nil || result == "" {
+		t.Fatalf("V25: %s row has invalid %s", label, field)
+	}
+	return result
+}
+
+func v25ObservedAnchors(t testing.TB, before map[string][]string) map[string]json.RawMessage {
+	t.Helper()
+	type importedAt struct {
+		value time.Time
+		raw   json.RawMessage
+	}
+	imports := map[string]importedAt{}
+	for _, row := range before["imports"] {
+		value := v25RowObject(t, row, "import")
+		runID := v25Text(t, value, "run_id", "import")
+		raw, present := value["imported_at"]
+		if !present {
+			t.Fatal("V25: import row omitted imported_at")
+		}
+		var encoded string
+		if json.Unmarshal(raw, &encoded) != nil {
+			t.Fatal("V25: import row has invalid imported_at")
+		}
+		at, err := time.Parse(time.RFC3339Nano, encoded)
+		if err != nil {
+			t.Fatal("V25: import row has unparsable imported_at")
+		}
+		imports[runID] = importedAt{value: at, raw: slices.Clone(raw)}
+	}
+	anchors := map[string]importedAt{}
+	for _, row := range before["observations"] {
+		value := v25RowObject(t, row, "observation")
+		findingID := v25Text(t, value, "finding_id", "observation")
+		runID := v25Text(t, value, "run_id", "observation")
+		candidate, present := imports[runID]
+		if !present {
+			t.Fatal("V25: observation row has no reachable import")
+		}
+		current, found := anchors[findingID]
+		if !found || candidate.value.Before(current.value) {
+			anchors[findingID] = candidate
+		}
+	}
+	result := map[string]json.RawMessage{}
+	for _, row := range before["findings"] {
+		value := v25RowObject(t, row, "finding")
+		id := v25Text(t, value, "id", "finding")
+		if observed, present := anchors[id]; present {
+			result[id] = slices.Clone(observed.raw)
+			continue
+		}
+		raw, present := value["imported_at"]
+		if !present {
+			t.Fatal("V25: finding row omitted imported_at fallback")
+		}
+		result[id] = slices.Clone(raw)
+	}
+	return result
+}
+
+func canonicalV25FindingRows(t testing.TB, rows []string, additions map[string]json.RawMessage,
+	anchors map[string]json.RawMessage) []string {
+	t.Helper()
+	result := make([]string, 0, len(rows))
+	for _, row := range rows {
+		value := v25RowObject(t, row, "finding")
+		id := v25Text(t, value, "id", "finding")
+		for name, raw := range additions {
+			if _, present := value[name]; present {
+				t.Fatal("V25: historical finding already contained an added column")
+			}
+			value[name] = raw
+		}
+		if _, present := value["first_observed_at"]; present {
+			t.Fatal("V25: historical finding already contained first_observed_at")
+		}
+		anchor, present := anchors[id]
+		if !present {
+			t.Fatal("V25: missing derived first_observed_at")
+		}
+		value["first_observed_at"] = anchor
+		data, err := json.Marshal(value)
+		if err != nil {
+			t.Fatal("V25: cannot compare complete observed finding rows")
+		}
+		result = append(result, string(data))
+	}
+	slices.Sort(result)
+	return result
+}
+
 // ProjectRowsCurrent compares all historical fields plus exact additive defaults.
 func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[string][]string {
 	t.Helper()
 	if len(before) != len(current) {
-		t.Fatal("V23: business table set changed")
+		t.Fatal("V25: business table set changed")
 	}
+	anchors := v25ObservedAnchors(t, before)
 	for table, rows := range before {
 		additions := map[string]json.RawMessage{}
 		if table == "source_connections" || table == "source_collections" {
@@ -1126,9 +1237,19 @@ func ProjectRowsCurrent(t testing.TB, before, current map[string][]string) map[s
 			}
 		}
 		actual, present := current[table]
-		if !present || !reflect.DeepEqual(canonicalRowsWithValues(t, rows, additions),
-			canonicalRowsWithValues(t, actual, nil)) {
-			t.Fatalf("V23: complete historical business rows changed in %s", table)
+		if !present {
+			t.Fatalf("V25: complete historical business rows changed in %s", table)
+		}
+		var expected, observed []string
+		if table == "findings" {
+			expected = canonicalV25FindingRows(t, rows, additions, anchors)
+			observed = canonicalRowsWithValues(t, actual, nil)
+		} else {
+			expected = canonicalRowsWithValues(t, rows, additions)
+			observed = canonicalRowsWithValues(t, actual, nil)
+		}
+		if !reflect.DeepEqual(expected, observed) {
+			t.Fatalf("V25: complete historical business rows changed in %s", table)
 		}
 	}
 	return clone(before)

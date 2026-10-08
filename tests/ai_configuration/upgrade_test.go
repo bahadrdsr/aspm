@@ -151,7 +151,7 @@ func testPublishedUpgrade(t *testing.T) {
 		must(t, "record actual published-v6 upgrade observation", os.WriteFile(file, encode(t, observation), 0600))
 		t.Log("actual schema upgrade observation:", file)
 	}
-	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}), "CURRENT core startup did not apply required migrations through v24 exactly once over real published v6")
+	check(t, reflect.DeepEqual(afterVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"}), "CURRENT core startup did not apply required migrations through v25 exactly once over real published v6")
 	sourcecompat.ValidateCurrentCatalog(t, v21Definitions(t, f))
 	check(t, reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "AI upgrade changed a legacy table definition")
 	h.enroll()
@@ -165,7 +165,7 @@ func testPublishedUpgrade(t *testing.T) {
 	must(t, "close resolver for upgrade persistence probe", r.Close())
 	fresh := h.resolver()
 	assertResolved(t, fresh, h.ctx, h.admin, h.get(h.admin, p.ID), h.json(h.admin, "GET", policyPath, nil, 200).Policy, &g, key)
-	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v24 reopen repeated migration or changed old schema definitions")
+	check(t, reflect.DeepEqual(versions(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"}) && reflect.DeepEqual(before, deliverycompat.ProjectCurrent(t, before, definitions(t, f, baseline.LegacyTables))), "v25 reopen repeated migration or changed old schema definitions")
 	sourcecompat.ValidateCurrentCatalog(t, v21Definitions(t, f))
 	h.networkNone()
 	t.Log("real schema-only v6 upgrade and API-created post-upgrade configuration persistence; no legacy customer-data migration claim")

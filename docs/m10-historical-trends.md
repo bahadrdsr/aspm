@@ -5,7 +5,8 @@ Implemented on October 8, 2026.
 This bounded M10 slice exposes historical posture trends from existing
 immutable report snapshots. It adds no schema migration, queue, worker,
 object-store object, provider call, or browser persistence. The migration
-ledger remains versions 1 through 24.
+ledger for this slice remained versions 1 through 24; V25 is added separately
+by current remediation SLA reporting.
 
 ## Read contract
 

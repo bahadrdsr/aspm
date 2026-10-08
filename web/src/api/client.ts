@@ -7,6 +7,8 @@ import type {
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
   HistoricalTrendDelta, HistoricalTrendPoint, HistoricalTrendResponse,
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportIntakeSummary, ReportOverviewResponse,
+  RemediationSLAFinding, RemediationSLAFindingPage, RemediationSLAResponse, RemediationSLAStatus,
+  ReportSLAPolicy, ReportSLAPolicyInput, ReportSLAPolicyResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
   RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
@@ -896,6 +898,7 @@ function parseReportOverview(value: unknown, workspace: string | null, days: num
 
 const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
 const coverageVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety.";
+const remediationSLAVerificationReason = "Remediation SLA status is a time-to-workflow target; it does not verify safety, resolution, or risk acceptance.";
 const trendTotalKeys = ["assets", "findings", "openFindings", "acceptedRisk", "expiredAcceptedRisk",
   "suppressed", "expiredSuppression", "falsePositive", "inferredResolved", "verifiedResolved"] as const;
 const trendSeverityKeys = ["critical", "high", "medium", "low", "info"] as const;
@@ -1110,6 +1113,163 @@ function parseCoverageAssetDrilldown(value: unknown, workspace: string | null,
   };
 }
 
+const slaPolicyKeys = ["workspaceId", "criticalDays", "highDays", "mediumDays", "lowDays",
+  "infoDays", "revision", "approvedBy", "approvedByName", "rationale", "createdAt", "updatedAt"] as const;
+const slaSeverities = ["critical", "high", "medium", "low", "info"] as const;
+
+function parseReportSLAPolicy(value: unknown, workspace: string | null): ReportSLAPolicy {
+  const item = exactObject(value, "remediation SLA policy", slaPolicyKeys);
+  const result: ReportSLAPolicy = {
+    workspaceId: text(item.workspaceId, "SLA policy workspace"),
+    criticalDays: count(item.criticalDays, "critical SLA target"),
+    highDays: count(item.highDays, "high SLA target"),
+    mediumDays: count(item.mediumDays, "medium SLA target"),
+    lowDays: count(item.lowDays, "low SLA target"),
+    infoDays: count(item.infoDays, "info SLA target"),
+    revision: count(item.revision, "SLA policy revision"),
+    approvedBy: nullableText(item.approvedBy, "SLA policy approver"),
+    approvedByName: nullableText(item.approvedByName, "SLA policy approver name"),
+    rationale: text(item.rationale, "SLA policy rationale"),
+    createdAt: timestamp(item.createdAt, "SLA policy creation time"),
+    updatedAt: timestamp(item.updatedAt, "SLA policy update time"),
+  };
+  const targets = [result.criticalDays, result.highDays, result.mediumDays, result.lowDays, result.infoDays];
+  if (result.workspaceId !== workspace || result.revision < 1 ||
+    targets.some((target) => target < 1 || target > 3650) ||
+    targets.some((target, index) => index > 0 && targets[index - 1] > target) ||
+    (result.approvedBy === null) !== (result.approvedByName === null) ||
+    result.approvedBy !== null && !/^[a-f0-9]{32}$/.test(result.approvedBy) ||
+    result.rationale.trim() === "" || result.rationale.includes("\0") ||
+    new TextEncoder().encode(result.rationale).byteLength > 8192 ||
+    Date.parse(result.updatedAt) < Date.parse(result.createdAt)) {
+    return invalid("remediation SLA policy");
+  }
+  return result;
+}
+
+function parseReportSLAPolicyEnvelope(value: unknown, workspace: string | null): ReportSLAPolicyResponse {
+  const body = exactObject(value, "SLA policy response", ["apiVersion", "dataOrigin", "policy"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("SLA policy envelope");
+  return { apiVersion, dataOrigin: "live", policy: parseReportSLAPolicy(body.policy, workspace) };
+}
+
+function parseRemediationSLASummary(value: unknown, workspace: string | null): RemediationSLAResponse {
+  const body = exactObject(value, "remediation SLA response", ["apiVersion", "dataOrigin", "sla"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("remediation SLA envelope");
+  const item = exactObject(body.sla, "remediation SLA summary",
+    ["workspaceId", "asOf", "policy", "totals", "bySeverity", "verification"]);
+  const workspaceId = text(item.workspaceId, "remediation SLA workspace");
+  const asOf = timestamp(item.asOf, "remediation SLA as-of time");
+  const policy = parseReportSLAPolicy(item.policy, workspace);
+  const rawTotals = exactObject(item.totals, "remediation SLA totals",
+    ["tracked", "withinTarget", "breached"]);
+  const totals = {
+    tracked: count(rawTotals.tracked, "tracked SLA findings"),
+    withinTarget: count(rawTotals.withinTarget, "within-target SLA findings"),
+    breached: count(rawTotals.breached, "breached SLA findings"),
+  };
+  const rawSeverity = exactObject(item.bySeverity, "remediation SLA severity counts", slaSeverities);
+  const bySeverity = Object.fromEntries(slaSeverities.map((severity) => {
+    const counts = exactObject(rawSeverity[severity], `${severity} SLA counts`, ["tracked", "breached"]);
+    const tracked = count(counts.tracked, `${severity} tracked SLA findings`);
+    const breached = count(counts.breached, `${severity} breached SLA findings`);
+    if (breached > tracked) return invalid(`${severity} SLA counts`);
+    return [severity, { tracked, breached }];
+  })) as RemediationSLAResponse["sla"]["bySeverity"];
+  if (workspaceId !== workspace || totals.tracked !== totals.withinTarget + totals.breached ||
+    slaSeverities.reduce((sum, severity) => sum + bySeverity[severity].tracked, 0) !== totals.tracked ||
+    slaSeverities.reduce((sum, severity) => sum + bySeverity[severity].breached, 0) !== totals.breached) {
+    return invalid("remediation SLA arithmetic");
+  }
+  const verification = exactObject(item.verification, "remediation SLA verification", ["state", "reason"]);
+  if (verification.state !== "not-run" || verification.reason !== remediationSLAVerificationReason) {
+    return invalid("remediation SLA verification");
+  }
+  return {
+    apiVersion, dataOrigin: "live",
+    sla: {
+      workspaceId, asOf, policy, totals, bySeverity,
+      verification: { state: "not-run", reason: remediationSLAVerificationReason },
+    },
+  };
+}
+
+function slaPolicyTarget(policy: ReportSLAPolicy, severity: RemediationSLAFinding["severity"]) {
+  switch (severity) {
+    case "critical": return policy.criticalDays;
+    case "high": return policy.highDays;
+    case "medium": return policy.mediumDays;
+    case "low": return policy.lowDays;
+    case "info": return policy.infoDays;
+  }
+}
+
+function parseRemediationSLAFinding(value: unknown, summary: RemediationSLAResponse["sla"],
+  expectedStatus: RemediationSLAStatus): RemediationSLAFinding {
+  const item = exactObject(value, "remediation SLA finding", [
+    "findingId", "title", "assetId", "assetName", "severity", "ownerId", "ownerName",
+    "workflowState", "disposition", "sourceState", "firstObservedAt", "dueAt",
+    "targetDays", "status", "overdueSeconds",
+  ]);
+  const result: RemediationSLAFinding = {
+    findingId: reportIdentifier(item.findingId, "SLA finding"),
+    title: text(item.title, "SLA finding title"),
+    assetId: reportIdentifier(item.assetId, "SLA finding asset"),
+    assetName: text(item.assetName, "SLA finding asset name"),
+    severity: choice(item.severity, slaSeverities, "SLA finding severity"),
+    ownerId: nullableText(item.ownerId, "SLA finding owner"),
+    ownerName: nullableText(item.ownerName, "SLA finding owner name"),
+    workflowState: choice(item.workflowState,
+      ["open", "in-progress", "pending-retest"], "SLA finding workflow"),
+    disposition: choice(item.disposition,
+      ["none", "accepted-risk", "suppressed", "false-positive"], "SLA finding disposition"),
+    sourceState: choice(item.sourceState,
+      ["observed", "inferred-resolved", "stale", "unknown"], "SLA finding source state"),
+    firstObservedAt: timestamp(item.firstObservedAt, "SLA finding first observed time"),
+    dueAt: timestamp(item.dueAt, "SLA finding due time"),
+    targetDays: count(item.targetDays, "SLA finding target days"),
+    status: choice(item.status, ["breached", "within-target"], "SLA finding status"),
+    overdueSeconds: count(item.overdueSeconds, "SLA finding overdue seconds"),
+  };
+  const due = Date.parse(result.firstObservedAt) + result.targetDays * 86_400_000;
+  const expectedTarget = slaPolicyTarget(summary.policy, result.severity);
+  const expected = due < Date.parse(summary.asOf) ? "breached" : "within-target";
+  const overdue = Math.floor(Math.max(0, Date.parse(summary.asOf) - due) / 1_000);
+  if ((result.ownerId === null) !== (result.ownerName === null) ||
+    result.ownerId !== null && !/^[a-f0-9]{32}$/.test(result.ownerId) ||
+    result.targetDays !== expectedTarget || Date.parse(result.dueAt) !== due ||
+    result.status !== expectedStatus || result.status !== expected ||
+    result.overdueSeconds !== overdue) {
+    return invalid("remediation SLA finding arithmetic");
+  }
+  return result;
+}
+
+function parseRemediationSLAFindingPage(value: unknown, summary: RemediationSLAResponse["sla"],
+  status: RemediationSLAStatus, limit: number, cursor: string): RemediationSLAFindingPage {
+  const body = exactObject(value, "remediation SLA finding page",
+    ["apiVersion", "dataOrigin", "items", "total", "nextCursor"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("SLA finding page envelope");
+  const items = array(body.items, "SLA finding list")
+    .map((item) => parseRemediationSLAFinding(item, summary, status));
+  const total = count(body.total, "SLA finding total");
+  const nextCursor = nullableText(body.nextCursor, "SLA finding cursor");
+  const expectedTotal = status === "breached" ? summary.totals.breached : summary.totals.withinTarget;
+  if (total !== expectedTotal || items.length > limit || total < items.length ||
+    new Set(items.map((item) => item.findingId)).size !== items.length ||
+    items.some((item, index) =>
+      item.findingId <= (index === 0 ? cursor : items[index - 1].findingId))) {
+    return invalid("SLA finding page order");
+  }
+  if (nextCursor !== null && (!/^[a-f0-9]{32}$/.test(nextCursor) ||
+    items.length !== limit || nextCursor !== items.at(-1)?.findingId || nextCursor <= cursor) ||
+    items.length < limit && nextCursor !== null ||
+    cursor === "" && (total > items.length) !== (nextCursor !== null)) {
+    return invalid("SLA finding pagination");
+  }
+  return { apiVersion, dataOrigin: "live", items, total, nextCursor };
+}
+
 function reportSnapshotSummary(value: unknown, workspace: string | null): ReportSnapshotSummary {
   const item = object(value, "snapshot summary");
   const workspaceId = text(item.workspaceId, "snapshot workspace");
@@ -1319,12 +1479,13 @@ export async function request<T>(path: string, parse: (value: unknown, status: n
   return parse(payload, response.status);
 }
 
-async function reportRead<T>(path: string, parse: (value: unknown) => T, signal: AbortSignal): Promise<T> {
+async function reportRead<T>(path: string, parse: (value: unknown) => T, signal: AbortSignal,
+  headers?: Record<string, string>): Promise<T> {
   const scopedSignal = AbortSignal.any([signal, requestAuthority().signal]);
   // Allow an abandoned mounting effect to cancel before starting network I/O.
   await Promise.resolve();
   scopedSignal.throwIfAborted();
-  return request(path, parse, { signal: scopedSignal, expectedStatus: 200 });
+  return request(path, parse, { signal: scopedSignal, expectedStatus: 200, headers });
 }
 
 export const api = {
@@ -1740,6 +1901,51 @@ export const api = {
     if (cursor !== null) query.set("cursor", cursor);
     return reportRead(`/api/v1/reports/coverage-assets?${query}`,
       (value) => parseCoverageAssetDrilldown(value, workspace, state, days, limit, cursor ?? ""), signal);
+  },
+  reportSLA: (signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    return reportRead("/api/v1/reports/sla",
+      (value) => parseRemediationSLASummary(value, workspace), signal);
+  },
+  reportSLAFindings: (status: RemediationSLAStatus, limit: number, cursor: string | null,
+    summary: RemediationSLAResponse["sla"], signal: AbortSignal) => {
+    if (!["breached", "within-target"].includes(status) ||
+      !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("SLA finding pages require breached or within-target status and one bounded native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ status, limit: String(limit) });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/reports/sla-findings?${query}`,
+      (value) => parseRemediationSLAFindingPage(value, summary, status, limit, cursor ?? ""), signal, {
+        "X-ASPM-SLA-As-Of": summary.asOf,
+        "X-ASPM-SLA-Policy-Revision": String(summary.policy.revision),
+      });
+  },
+  updateReportSLAPolicy: (current: ReportSLAPolicy, input: ReportSLAPolicyInput,
+    signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    const targets = [input.criticalDays, input.highDays, input.mediumDays, input.lowDays, input.infoDays];
+    if (input.revision !== current.revision || !Number.isSafeInteger(input.revision) || input.revision < 1 ||
+      targets.some((target) => !Number.isSafeInteger(target) || target < 1 || target > 3650) ||
+      targets.some((target, index) => index > 0 && targets[index - 1] > target) ||
+      input.rationale.trim() === "" || input.rationale.includes("\0") ||
+      new TextEncoder().encode(input.rationale).byteLength > 8192) {
+      throw new APIError("SLA targets require the current revision, five ordered day values, and a bounded rationale.", "invalid-input", false);
+    }
+    return request("/api/v1/reports/sla-policy", (value) => {
+      const response = parseReportSLAPolicyEnvelope(value, workspace);
+      const policy = response.policy;
+      if (policy.revision !== current.revision + 1 ||
+        policy.createdAt !== current.createdAt || Date.parse(policy.updatedAt) < Date.parse(current.updatedAt) ||
+        policy.approvedBy === null ||
+        policy.criticalDays !== input.criticalDays || policy.highDays !== input.highDays ||
+        policy.mediumDays !== input.mediumDays || policy.lowDays !== input.lowDays ||
+        policy.infoDays !== input.infoDays || policy.rationale !== input.rationale) {
+        return invalid("SLA policy acknowledgement");
+      }
+      return response;
+    }, { method: "PATCH", body: input, signal, expectedStatus: 200 });
   },
   reportSnapshots: (limit: number, cursor: string | null, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

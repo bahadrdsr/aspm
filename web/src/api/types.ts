@@ -613,6 +613,80 @@ export interface CoverageAssetDrilldownResponse {
   drilldown: CoverageAssetDrilldown;
 }
 
+export interface ReportSLAPolicy {
+  workspaceId: string;
+  criticalDays: number;
+  highDays: number;
+  mediumDays: number;
+  lowDays: number;
+  infoDays: number;
+  revision: number;
+  approvedBy: string | null;
+  approvedByName: string | null;
+  rationale: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RemediationSLASummary {
+  workspaceId: string;
+  asOf: string;
+  policy: ReportSLAPolicy;
+  totals: { tracked: number; withinTarget: number; breached: number };
+  bySeverity: Record<Severity, { tracked: number; breached: number }>;
+  verification: { state: "not-run"; reason: string };
+}
+
+export interface RemediationSLAResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  sla: RemediationSLASummary;
+}
+
+export type RemediationSLAStatus = "breached" | "within-target";
+
+export interface RemediationSLAFinding {
+  findingId: string;
+  title: string;
+  assetId: string;
+  assetName: string;
+  severity: Severity;
+  ownerId: string | null;
+  ownerName: string | null;
+  workflowState: "open" | "in-progress" | "pending-retest";
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
+  sourceState: "observed" | "inferred-resolved" | "stale" | "unknown";
+  firstObservedAt: string;
+  dueAt: string;
+  targetDays: number;
+  status: RemediationSLAStatus;
+  overdueSeconds: number;
+}
+
+export interface RemediationSLAFindingPage {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  items: RemediationSLAFinding[];
+  total: number;
+  nextCursor: string | null;
+}
+
+export interface ReportSLAPolicyInput {
+  revision: number;
+  criticalDays: number;
+  highDays: number;
+  mediumDays: number;
+  lowDays: number;
+  infoDays: number;
+  rationale: string;
+}
+
+export interface ReportSLAPolicyResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  policy: ReportSLAPolicy;
+}
+
 export type ReportSnapshotState = "queued" | "processing" | "succeeded" | "failed";
 export interface ReportSnapshotInput { name: string; freshnessDays: number }
 export interface ReportSnapshotSummary extends ReportSnapshotInput {

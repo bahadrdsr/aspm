@@ -280,9 +280,10 @@ func (a *ImportWorker) findingUpsert() string {
 	updates = append(updates, `evidence_revision=f.evidence_revision+1`)
 	return `INSERT INTO ` + a.table("findings") + ` AS f
 		(id,workspace_id,asset_id,source_id,scope_id,scope_revision,scope_branch,identity_key,title,description,
-		remediation,severity,evidence_text,source_label,source_scan_at,collected_at,imported_at,source_freshness_at,source_state,owner_id,
+		remediation,severity,evidence_text,source_label,source_scan_at,collected_at,imported_at,first_observed_at,
+		source_freshness_at,source_state,owner_id,
 		candidate_uri,candidate_line,content_digest,change_kind,change_at,change_run_id)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$17,$18,$19,$20,$21,$22,$23,
 			CASE WHEN $25 THEN 'new' ELSE 'unchanged' END,
 			CASE WHEN $25 THEN $17::timestamptz ELSE NULL::timestamptz END,
 			CASE WHEN $25 THEN $24 ELSE '' END)

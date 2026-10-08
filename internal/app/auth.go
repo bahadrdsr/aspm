@@ -166,6 +166,9 @@ func (a *Application) bootstrap(w http.ResponseWriter, r *http.Request) error {
 		workspace.ID, user.ID); err != nil {
 		return err
 	}
+	if err = a.insertInitialWorkspaceSLAPolicy(r.Context(), tx, workspace.ID, user, now); err != nil {
+		return err
+	}
 	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("bootstrap")+`(singleton,user_id,workspace_id,enrolled_at) VALUES(true,$1,$2,$3)`,
 		user.ID, workspace.ID, now); err != nil {
 		return err
@@ -377,13 +380,14 @@ func (a *Application) createWorkspace(w http.ResponseWriter, r *http.Request, us
 		return errInvalid
 	}
 	workspace := Workspace{ID: newID(), Name: input.Name, Role: "admin"}
+	now := a.config.Now().UTC()
 	tx, err := a.pool.Begin(r.Context())
 	if err != nil {
 		return err
 	}
 	defer rollback(tx)
 	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("workspaces")+`(id,name,created_at) VALUES($1,$2,$3)`,
-		workspace.ID, workspace.Name, a.config.Now().UTC()); err != nil {
+		workspace.ID, workspace.Name, now); err != nil {
 		return err
 	}
 	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("retention_policies")+`(workspace_id) VALUES($1)`,
@@ -392,6 +396,9 @@ func (a *Application) createWorkspace(w http.ResponseWriter, r *http.Request, us
 	}
 	if _, err = tx.Exec(r.Context(), `INSERT INTO `+a.table("memberships")+`(workspace_id,user_id,role) VALUES($1,$2,'admin')`,
 		workspace.ID, user.ID); err != nil {
+		return err
+	}
+	if err = a.insertInitialWorkspaceSLAPolicy(r.Context(), tx, workspace.ID, user, now); err != nil {
 		return err
 	}
 	if err = tx.Commit(r.Context()); err != nil {

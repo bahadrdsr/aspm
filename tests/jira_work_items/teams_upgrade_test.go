@@ -142,14 +142,14 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 		teamsHistoricalMigrations(t, filepath.Join("..", "..")),
 		teamsHistoricalMigrations(t, filepath.Dir(build.Executable)))
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24")
-	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23/V24 exactly once over real populated V10", h.ledger(), currentLedger)
+	currentLedger := append(append([]string{}, oldLedger...), "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25")
+	same(t, "current Open did not add V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23/V24/V25 exactly once over real populated V10", h.ledger(), currentLedger)
 	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
-	same(t, "V24 changed the relation/index set",
-		sourcecompat.ProjectRelationsV24(t, relations, h.relations()), relations)
-	same(t, "V24 must validate the complete exact DDL delta before projection",
+	same(t, "V25 changed the relation/index set",
+		sourcecompat.ProjectRelationsV25(t, relations, h.relations()), relations)
+	same(t, "V25 must validate the complete exact DDL delta before projection",
 		deliverycompat.ProjectCurrentV10(t, definitions, h.definitions(names)), definitions)
-	same(t, "V24 changed old bytes outside the exact additions",
+	same(t, "V25 changed old bytes outside the exact additions",
 		h.projectTeamsV10Data(t, before, names), before)
 	same(t, "V21 did not backfill exactly one earliest Jira effect without rewriting deliveries",
 		h.rows("SELECT connection_id||'|'||finding_id||'|'||delivery_id FROM "+h.table("jira_finding_effects")+
@@ -166,10 +166,10 @@ func TestTeamsT4ActualPublishedV10PreservationAndV11Reopen(t *testing.T) {
 	same(t, "V11 changed the published queued advisory", h.json(viewer, "GET", "/api/v1/ai/assessments/"+assessmentID, nil, 200).Assessment, assessment)
 	afterDefinitions := h.definitions(names)
 	h.reopen()
-	same(t, "V24 reopen changed the integer ledger", h.ledger(), currentLedger)
-	same(t, "V24 reopen changed definitions", h.definitions(names), afterDefinitions)
+	same(t, "V25 reopen changed the integer ledger", h.ledger(), currentLedger)
+	same(t, "V25 reopen changed definitions", h.definitions(names), afterDefinitions)
 	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
-	same(t, "V24 reopen changed historical business bytes",
+	same(t, "V25 reopen changed historical business bytes",
 		h.projectTeamsV10Data(t, before, names), before)
 
 	value := n.workflowURL()

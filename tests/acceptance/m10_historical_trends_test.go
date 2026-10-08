@@ -475,11 +475,11 @@ func TestM10_HistoricalTrendsProjectImmutableSnapshotsAndDeltas(t *testing.T) {
 	historyBefore := append([]byte(nil), h.request(h.admin, "GET", "/api/v1/reports/snapshots?limit=100", nil, 200).Body.Bytes()...)
 	detailBefore := append([]byte(nil), h.request(h.admin, "GET", "/api/v1/reports/snapshots/"+seeds[0].ID, nil, 200).Body.Bytes()...)
 	stateBefore := historicalState(t, h)
-	wantVersions := make([]int, 24)
+	wantVersions := make([]int, 25)
 	for index := range wantVersions {
 		wantVersions[index] = index + 1
 	}
-	equal(t, "historical trend schema stays at V24", stateBefore.Versions, wantVersions)
+	equal(t, "historical trend schema stays at V25", stateBefore.Versions, wantVersions)
 	storage.arm()
 
 	viewerResponse := h.request(viewer, "GET", "/api/v1/reports/trends?days=10", nil, 200)

@@ -122,7 +122,7 @@ var exactV23ExecutionCatalog = map[string][]string{
 
 func V24Tables() []string { return slices.Clone(v24Tables) }
 
-func CurrentTables() []string {
+func V24CurrentTables() []string {
 	result := V23CurrentTables()
 	for _, table := range []string{"retention_run_items", "archive_publications"} {
 		if !slices.Contains(result, table) {
@@ -287,7 +287,7 @@ func ExpectedV24Catalog() map[string][]string { return clone(exactV24Catalog) }
 
 func ProjectV24Current(t testing.TB, current map[string][]string) map[string][]string {
 	t.Helper()
-	wantKeys := len(CurrentTables()) * 3
+	wantKeys := len(V24CurrentTables()) * 3
 	if len(current) != wantKeys {
 		t.Fatalf("V24: current catalog key count=%d, want %d", len(current), wantKeys)
 	}
@@ -301,7 +301,7 @@ func ProjectV24Current(t testing.TB, current map[string][]string) map[string][]s
 	return prior
 }
 
-func ValidateCurrentCatalog(t testing.TB, current map[string][]string) {
+func ValidateV24CurrentCatalog(t testing.TB, current map[string][]string) {
 	t.Helper()
 	prior := ProjectV24Current(t, current)
 	v23 := map[string][]string{}

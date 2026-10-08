@@ -115,7 +115,11 @@ func TestProjectCurrentAcceptsExactV12AndV13Composition(t *testing.T) {
 		"change_kind|text|true|'unchanged'::text",
 		"change_at|timestamp with time zone|false|",
 		"change_run_id|text|true|''::text",
-		"change_revision|bigint|true|1")
+		"change_revision|bigint|true|1",
+		"first_observed_at|timestamp with time zone|true|")
+	current["findings/indexes"] = []string{
+		v25FindingIndexName + "|CREATE INDEX " + v25FindingIndexName + " ON " + v25FindingIndexDefinition,
+	}
 	current["findings/constraints"] = append(current["findings/constraints"],
 		"app_findings_change_kind_check|CHECK (change_kind = ANY (ARRAY['new'::text, 'changed'::text, 'unchanged'::text, 'reopened'::text, 'inferred-resolved'::text]))",
 		"app_findings_change_kind_not_null|NOT NULL change_kind",
@@ -448,9 +452,9 @@ func TestProjectV24RejectsUnapprovedHistoryArchiveDeltas(t *testing.T) {
 	}
 }
 
-func TestValidateCurrentCatalogComposesV23AndV24Exactly(t *testing.T) {
+func TestValidateV24CurrentCatalogComposesV23AndV24Exactly(t *testing.T) {
 	current := ExpectedV24Catalog()
-	ValidateCurrentCatalog(t, current)
+	ValidateV24CurrentCatalog(t, current)
 	prior := ProjectV24Current(t, current)
 	if !reflect.DeepEqual(prior, exactV23CurrentCatalogForV24) {
 		t.Fatal("V24 current catalog did not project to the exact expanded V23 catalog")
@@ -460,6 +464,122 @@ func TestValidateCurrentCatalogComposesV23AndV24Exactly(t *testing.T) {
 		v23[key] = slices.Clone(prior[key])
 	}
 	ValidateV23CurrentCatalog(t, v23)
+}
+
+func TestProjectV25AcceptsOnlyExactSLAStorageAndFindingAgeDelta(t *testing.T) {
+	before := ExpectedV24Catalog()
+	before["findings/columns"] = []string{"id|text|true|", "imported_at|timestamp with time zone|true|"}
+	before["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
+	before["findings/indexes"] = []string{
+		"app_findings_pkey|CREATE UNIQUE INDEX app_findings_pkey ON app_findings USING btree (id)",
+	}
+	current, err := expectedV25Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ValidateV25Catalog(t, before, current)
+	if got := ProjectV25(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V25 projection did not restore the V24 catalog")
+	}
+	if current["findings/columns"][len(current["findings/columns"])-1] !=
+		"first_observed_at|timestamp with time zone|true|" {
+		t.Fatal("V25 first_observed_at was missing, reordered or given a default")
+	}
+	if !slices.Contains(current["findings/indexes"],
+		v25FindingIndexName+"|CREATE INDEX "+v25FindingIndexName+" ON "+v25FindingIndexDefinition) {
+		t.Fatal("V25 exact current unresolved-finding candidate index is missing")
+	}
+	if !reflect.DeepEqual(V25Tables(), []string{
+		"findings", "report_sla_policies", "report_sla_policy_revisions",
+	}) {
+		t.Fatal("V25 touched-table enumeration changed")
+	}
+	for key, rows := range exactV25NewTableCatalog {
+		if !reflect.DeepEqual(current[key], rows) {
+			t.Fatalf("V25 exact SLA catalog drifted at %s", key)
+		}
+	}
+}
+
+func TestProjectV25RejectsMissingOrUnapprovedSLADeltas(t *testing.T) {
+	before := ExpectedV24Catalog()
+	before["findings/columns"] = []string{"id|text|true|", "imported_at|timestamp with time zone|true|"}
+	before["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
+	before["findings/indexes"] = []string{
+		"app_findings_pkey|CREATE UNIQUE INDEX app_findings_pkey ON app_findings USING btree (id)",
+	}
+	valid, err := expectedV25Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, mutate := range []func(map[string][]string){
+		func(value map[string][]string) {
+			value["findings/columns"][len(value["findings/columns"])-1] =
+				"first_observed_at|timestamp with time zone|true|clock_timestamp()"
+		},
+		func(value map[string][]string) {
+			value["findings/indexes"] = append(value["findings/indexes"],
+				"app_findings_unapproved_sla_idx|unexpected")
+		},
+		func(value map[string][]string) {
+			value["report_sla_policies/columns"][1] = "critical_days|integer|true|14"
+		},
+		func(value map[string][]string) {
+			value["report_sla_policy_revisions/constraints"] =
+				value["report_sla_policy_revisions/constraints"][:len(value["report_sla_policy_revisions/constraints"])-1]
+		},
+		func(value map[string][]string) {
+			value["report_sla_policy_revisions/indexes"] = append(
+				value["report_sla_policy_revisions/indexes"], "app_report_sla_policy_revisions_unapproved|unexpected")
+		},
+	} {
+		current := clone(valid)
+		mutate(current)
+		projected, err := projectV25(before, current)
+		if err == nil && reflect.DeepEqual(projected, before) {
+			t.Fatal("V25 accepted a missing or unapproved SLA catalog delta")
+		}
+	}
+}
+
+func TestValidateCurrentCatalogComposesV24AndV25Exactly(t *testing.T) {
+	before := ExpectedV24Catalog()
+	before["findings/columns"] = []string{"id|text|true|", "imported_at|timestamp with time zone|true|"}
+	before["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
+	before["findings/indexes"] = []string{
+		"app_findings_pkey|CREATE UNIQUE INDEX app_findings_pkey ON app_findings USING btree (id)",
+	}
+	current, err := expectedV25Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ValidateCurrentCatalog(t, current)
+	prior := ProjectV25Current(t, current)
+	if !reflect.DeepEqual(prior, before) {
+		t.Fatal("V25 current catalog did not project to the exact supplied V24 shape")
+	}
+}
+
+func TestV25ObservedAnchorsUseMinimumReachableImportAndFallback(t *testing.T) {
+	before := map[string][]string{
+		"imports": {
+			`{"run_id":"run-later","imported_at":"2026-10-02T12:00:00Z"}`,
+			`{"run_id":"run-first","imported_at":"2026-09-01T08:30:00Z"}`,
+		},
+		"observations": {
+			`{"finding_id":"finding-observed","run_id":"run-later"}`,
+			`{"finding_id":"finding-observed","run_id":"run-first"}`,
+		},
+		"findings": {
+			`{"id":"finding-observed","imported_at":"2026-10-03T00:00:00Z"}`,
+			`{"id":"finding-fallback","imported_at":"2026-08-15T10:11:12Z"}`,
+		},
+	}
+	anchors := v25ObservedAnchors(t, before)
+	if string(anchors["finding-observed"]) != `"2026-09-01T08:30:00Z"` ||
+		string(anchors["finding-fallback"]) != `"2026-08-15T10:11:12Z"` {
+		t.Fatalf("V25 first-observed projection chose the wrong reachable minimum or fallback: %v", anchors)
+	}
 }
 
 func catalogSubset(source map[string][]string, tables []string) map[string][]string {
@@ -725,6 +845,26 @@ func TestProjectRelationsV24AddsNoRelationOrIndex(t *testing.T) {
 	}
 }
 
+func TestProjectRelationsV25AcceptsOnlySLAStorageAndCandidateIndex(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	current = append(current, v21Relations...)
+	current = append(current, v23Relations...)
+	current = append(current, v25Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV25(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("V25 relation projection did not preserve the exact V24 relation set")
+	}
+}
+
 func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	before := map[string][]string{
 		"imports/indexes":             {"app_imports_pkey|unchanged"},
@@ -743,14 +883,14 @@ func TestProjectV14AcceptsOnlyExactLegacyRetentionIndexes(t *testing.T) {
 	}
 }
 
-func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
+func TestProjectRowsCurrentAddsExactDefaultsAndV25FirstObserved(t *testing.T) {
 	before := map[string][]string{
 		"source_connections":      {`{"id":"source","profile":"github-cloud-app"}`},
 		"source_collections":      {`{"id":"collection","profile":"github-cloud-app"}`},
 		"workspaces":              {`{"id":"workspace"}`},
 		"integration_connections": {`{"id":"connection","profile":"slack-workspace-bot"}`},
 		"finding_deliveries":      {`{"id":"delivery"}`},
-		"findings":                {`{"id":"finding","workflow_state":"open"}`},
+		"findings":                {`{"id":"finding","imported_at":"2026-09-01T09:00:00Z","workflow_state":"open"}`},
 	}
 	current := map[string][]string{
 		"source_connections":      {`{"azure_devops_target":null,"id":"source","profile":"github-cloud-app"}`},
@@ -758,7 +898,7 @@ func TestProjectRowsCurrentAddsOnlyExactV12AndV13Defaults(t *testing.T) {
 		"workspaces":              {`{"id":"workspace","notification_policy_epoch":0}`},
 		"integration_connections": {`{"id":"connection","profile":"slack-workspace-bot","webhook_target":null}`},
 		"finding_deliveries":      {`{"finding_change_revision":null,"id":"delivery","policy_id":null,"policy_revision":null,"trigger_kind":"manual","webhook_target":null}`},
-		"findings":                {`{"candidate_line":0,"candidate_uri":"","change_at":null,"change_kind":"unchanged","change_revision":1,"change_run_id":"","content_digest":"","decision_revision":1,"evidence_revision":1,"id":"finding","workflow_state":"open"}`},
+		"findings":                {`{"candidate_line":0,"candidate_uri":"","change_at":null,"change_kind":"unchanged","change_revision":1,"change_run_id":"","content_digest":"","decision_revision":1,"evidence_revision":1,"first_observed_at":"2026-09-01T09:00:00Z","id":"finding","imported_at":"2026-09-01T09:00:00Z","workflow_state":"open"}`},
 	}
 	if got := ProjectRowsCurrent(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("complete current rows were not projected without loss")

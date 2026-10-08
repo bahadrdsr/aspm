@@ -47,9 +47,9 @@ roles, assets, queued report intake, findings and scan history, CSV exports,
 and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
-live posture reports with current coverage drill-down, saved snapshots and
-bounded snapshot-backed historical trends, Slack/Jira/Teams configuration and
-delivery history, selected GitHub source collection, and selected Azure DevOps
+live posture reports with current coverage drill-down, remediation SLA,
+saved snapshots and bounded snapshot-backed historical trends, Slack/Jira/Teams
+configuration and delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
 multi-source finding correlation with bounded candidates, retention
 policy/hold/preview/execution
@@ -790,6 +790,19 @@ establish current coverage. Saved snapshot counts remain plain values because
 the snapshot does not retain a historical asset member list. Membership is
 current intake state, not verification of asset safety. See
 `docs\m10-coverage-drilldown.md`.
+
+**Remediation SLA** is closed by default and reports current unresolved human
+workflow against explicit per-severity elapsed-day targets. V25 records a
+stable first-observed import time for each finding and versioned workspace SLA
+policy revisions. Active correlation primaries use the earliest active member
+time without rewriting member history. Exact due time remains within target;
+breach begins only after it passes. Pending retest, accepted risk, suppression,
+false positive, source-inferred resolution, AI output, and verification do not
+pause or satisfy the clock. Any member can read summary and manually paged
+breached/within-target findings; only current administrators can revise all
+five ordered targets with the exact policy revision and rationale. This is a
+time-to-workflow target, not verified safety or contractual compliance. See
+`docs\m10-remediation-sla.md`.
 
 Admins and analysts can **Create snapshot** with a name and freshness window.
 A 202 response means queued, not completed. **Refresh snapshot** reads actual

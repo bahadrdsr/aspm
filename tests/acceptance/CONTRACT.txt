@@ -867,7 +867,7 @@ failed, future, old and foreign controls. It proves exact inclusive window
 membership, chronological tie ordering, exact first-to-last arithmetic, the
 100/101 boundary, viewer access, forged-scope rejection, invalid queries,
 repeatable-read transaction and snapshot stability, unchanged snapshot bytes,
-unchanged schema ledger 1..24 and no report-worker, scan, provider, object-store
+exact schema ledger 1..25 and no report-worker, scan, provider, object-store
 or database write side effect.
 
 The Reports UI adds a closed-by-default or otherwise bounded Historical trends
@@ -908,7 +908,7 @@ M10 CURRENT ASSET COVERAGE DRILL-DOWN:
 This is the next bounded M10 slice. It adds current asset membership behind the
 four existing Live overview coverage metrics. It adds no table, column, index,
 migration, queue, worker, provider call, object-store object, saved report
-mutation or browser persistence. The migration ledger remains versions 1..24.
+mutation or browser persistence. The migration ledger is exactly versions 1..25.
 Existing overview, snapshot, report-worker and historical trend contracts remain
 compatible.
 
@@ -982,7 +982,7 @@ membership rejections, invalid query shapes, and absence of write methods. A
 traced concurrent asset update plus late qualifying import must not change the
 page or total already being read, while a later transaction observes both.
 Acceptance also proves one server Now capture, one read-only repeatable-read
-transaction, schema ledger 1..24, unchanged report snapshot rows and bytes,
+transaction, schema ledger 1..25, unchanged report snapshot rows and bytes,
 unchanged Live overview bytes, no durable side effects and zero raw or archive
 object-store operations.
 
@@ -1024,3 +1024,173 @@ overflow. Request completion preserves deliberately moved focus and surrounding
 Reports context. No coverage asset ID, name, source timestamp, verification
 reason or other payload is written to localStorage, sessionStorage, cookies,
 URLs or another browser storage surface.
+
+M10 PERSISTENT REMEDIATION SLA POLICY, CURRENT SUMMARY AND FINDING DRILL-DOWN:
+This is the next bounded M10 slice. It adds schema version 25 only, one
+persistent current policy and immutable policy revisions per workspace, a
+current SLA summary, bounded current finding membership, and Reports controls.
+It does not add SLA fields to Work, finding detail, saved report snapshots or
+historical trend points. Existing overview, coverage, trends, snapshot,
+retention, disposition, correlation, notification and browser behavior remains
+compatible.
+
+V25 appends first_observed_at timestamptz NOT NULL to app_findings. No existing
+column is repurposed. The migration backfills each finding from the minimum
+app_imports.imported_at reachable through that finding's existing
+app_observations.run_id. Only a finding with no reachable observation/import
+may use its current findings.imported_at. The migration preserves every other
+finding field and every observation, decision, approval, correlation, report
+snapshot, archive reference and object reference. It adds exactly one bounded
+candidate index for selected-workspace findings whose human workflow is not
+resolved.
+
+The first accepted import for a newly created finding supplies
+first_observed_at from that import's importedAt. Reimports, changed or reopened
+observations, changed source times, ordinary rescans, source-state inference,
+workflow edits and disposition edits never move the stored value. Findings
+released by a split retain their own original stored values. While a
+correlation is active, its visible primary's effective firstObservedAt is the
+minimum stored value of all active correlation members. A released member stops
+contributing. This effective value is calculated at read time and never
+destructively rewrites a member.
+
+V25 creates app_report_sla_policies with exactly one current row per workspace
+and app_report_sla_policy_revisions with immutable complete revisions. Starter
+targets are critical=7, high=30, medium=90, low=180, info=365 days. They are
+defaults, not a standard or compliance claim. Each target is an integer from 1
+through 3650 and the order is critical<=high<=medium<=low<=info. Revision starts
+at 1 and increases exactly once for each real policy change.
+
+Every workspace that predates V25 receives one current system-default row and
+one matching revision. approvedBy and approvedByName are null and rationale is
+exactly `Initial default remediation targets.`. A workspace created after V25
+receives the same targets, in the workspace-creation transaction, attributed
+to the creating actor with rationale exactly
+`Initial workspace remediation targets.`. Reopen adds or changes nothing.
+
+GET /api/v1/reports/sla-policy is available to every current selected-workspace
+member and accepts no query. PATCH on the same path is admin-only. Its JSON
+object has exactly revision, criticalDays, highDays, mediumDays, lowDays,
+infoDays and rationale. Missing, extra, malformed, out-of-range, unordered,
+rationale-only or otherwise partial shapes are 400 invalid-input. Rationale is
+nonblank, NUL-free and at most 8192 UTF-8 bytes. A stale revision or an exact
+no-op is 409 conflict. Analysts and viewers receive 403.
+
+A real policy update atomically replaces the current complete snapshot and
+appends exactly one immutable complete revision. It does not call a provider,
+start a worker, access S3, create or mutate a report snapshot, mutate a finding,
+create a decision or approval, or enqueue a notification. Its exact response is
+{apiVersion,dataOrigin:"live",policy:{workspaceId,criticalDays,highDays,
+mediumDays,lowDays,infoDays,revision,approvedBy,approvedByName,rationale,
+createdAt,updatedAt}}. GET uses the same exact envelope and policy shape.
+
+GET /api/v1/reports/sla accepts no query and is available to every current
+member. It captures server Now once after authentication and uses one read-only
+repeatable-read transaction. It tracks only selected-workspace visible
+canonical findings whose human workflow_state is not resolved. open,
+in-progress and pending-retest are tracked. Hidden active-correlation secondary
+rows are not separate items.
+
+Accepted risk, suppression, false positive, expired dispositions, inferred
+resolved, stale or unknown source state, AI results and verification state do
+not exempt, pause, resolve or verify SLA. Current severity chooses the target
+from the current policy. dueAt is effectiveFirstObservedAt plus
+targetDays*24h. A finding is breached only when dueAt is strictly before Now.
+Exact dueAt equal to Now remains within-target. There is no business-hours,
+calendar, timezone, ownership or disposition pause, forecast, historical
+reconstruction or compliance statement.
+
+The exact summary success envelope is:
+{apiVersion,dataOrigin:"live",sla:{workspaceId,asOf,policy,totals,bySeverity,
+verification}}.
+totals is exactly {tracked,withinTarget,breached}. bySeverity has exactly
+critical, high, medium, low and info; each value is exactly
+{tracked,breached}. policy is the exact current policy snapshot. verification
+is exactly:
+{state:"not-run",reason:"Remediation SLA status is a time-to-workflow target; it does not verify safety, resolution, or risk acceptance."}.
+
+GET /api/v1/reports/sla-findings requires exactly one status value,
+breached or within-target. Optional limit defaults to 100 and is one decimal
+integer from 1 through 100. Optional cursor is one lower-case 32-hex exclusive
+finding ID. Unknown, duplicate, empty, upper-case, malformed and out-of-range
+values are 400. Any current member may read. Workspace authority comes only
+from the authenticated selected membership. Query values and request bodies
+never choose a workspace.
+
+One drill-down request captures Now once after authentication and uses one
+read-only repeatable-read transaction for its whole-filter total and page.
+Visible canonical items are ordered by finding ID ascending. Each item is
+exactly {findingId,title,assetId,assetName,severity,ownerId,ownerName,
+workflowState,disposition,sourceState,firstObservedAt,dueAt,targetDays,status,
+overdueSeconds}. firstObservedAt is the effective correlation age. targetDays
+comes from current severity and policy. overdueSeconds is floor whole seconds
+of max(0,Now-dueAt), and is zero for within-target. Every item satisfies the
+requested status. Current severity or policy may change dueAt and status
+without changing firstObservedAt.
+
+Drill-down total is the exact whole-filter total. nextCursor is null unless
+more rows exist, in which case it is exactly the last returned finding ID.
+Paging is cursor-exclusive, manual and bounded. There is no offset, automatic
+drain or write. In one controlled fixture summary breached and withinTarget
+counts equal the corresponding drill-down totals. Admin and viewer response
+bytes are equal. Missing, expired or revoked authentication is 401. Forged or
+unavailable membership is 403.
+
+Real PostgreSQL acceptance covers V25 catalog and ledger, minimum reachable
+import backfill and fallback, field/history/reference preservation, starter
+policy rows, actor attribution, reopen idempotence, immutable revisions,
+validation, stale/no-op atomicity, current finding age stability across
+reimports, changed/reopened observations, source-time changes, rescans and
+human edits, active correlation age, release and split behavior, all human
+workflow states, all disposition and source-state controls, all severities,
+severity changes, exact due boundary, paging and authority. Traced summary and
+drill-down reads remain stable while concurrent policy and finding changes
+commit, and later requests observe those commits. Reads and policy updates
+have no undeclared S3, provider, worker, snapshot, finding, decision or
+notification side effects.
+
+Source compatibility adds an exact V25 projection. Exact current V25 projects
+to exact V24 while allowing only findings.first_observed_at, its one SLA
+candidate index, and the two SLA tables with their exact indexes and
+constraints. Existing V24 projections remain exact. Published V5 through V11
+upgrade fixtures require ledger versions 1..25, preserve complete historical
+rows, derive first_observed_at by the V25 rule, and reopen without repetition.
+
+Reports adds a closed-by-default Remediation SLA section. Opening it performs
+exactly one GET /api/v1/reports/sla and never polls. It shows exact asOf, policy
+revision and all five targets, totals, severity counts, the fixed verification
+reason, and clear text that accepted risk, suppression and source inference do
+not stop the clock.
+
+Breached and Within target counts are accessible activations. Opening or
+replacing a state performs one GET
+/api/v1/reports/sla-findings?status=<state>&limit=100. It shows exact fields,
+timestamps, status and overdue duration. Load more uses only the exact returned
+cursor. Refresh explicitly restarts from the first page. Switching state clears
+prior rows immediately. There is no polling, automatic page drain or write.
+
+A 503 preserves the last authorized summary or list and its exact retry
+context. A 403 or 404 withholds relevant prior data through loading and later
+503 until an authorized success. Workspace change, session replacement, logout
+and protected 401 abort old reads, clear old-scope data and reject late
+responses. Client parsing rejects wrong keys, workspace authority, policy
+shape, target order/bounds, totals or severity arithmetic, timestamps, item
+order or duplicates, cursor or total relationships, effective age, status,
+overdue arithmetic, verification wording, API version and any data origin other
+than live.
+
+Admins alone can open Edit SLA targets. The form shows the current revision,
+five ordered integer targets and rationale and writes nothing until explicit
+Save. There is no optimistic update. An exact canonical PATCH acknowledgement
+updates the displayed policy and explicitly refreshes the summary and any open
+first-page list. A 409 retains the draft and asks the user to reload. A 403
+retains the draft without showing success. A 401, workspace change, session
+replacement or logout clears the protected draft. Analysts and viewers have no
+edit control. No policy, draft, summary or finding payload enters browser
+storage.
+
+At 390px with reduced motion, section controls, count activations, tables and
+forms remain keyboard reachable without page-level horizontal overflow.
+Completion does not steal deliberately moved focus. This slice makes only a
+current time-to-workflow report and does not claim safety, resolution, accepted
+risk, forecast, compliance or historical SLA reconstruction.
