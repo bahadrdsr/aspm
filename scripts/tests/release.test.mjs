@@ -16,6 +16,7 @@ test("technical preview release configuration is exact and digest pinned", () =>
     readFileSync(join(root, "release", "technical-preview.json"), "utf8"),
   ));
   assert.equal(config.version, "0.1.0-rc.1");
+  assert.equal(config.imageRepository, "localhost/aspm");
   for (const value of [
     config.postgresImage, config.storageImage, ...Object.values(config.baseImages),
   ]) assert.match(value, /@sha256:[a-f0-9]{64}$/);
