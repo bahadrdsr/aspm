@@ -119,7 +119,7 @@ func validateSelection(role RoleSelection) error {
 }
 
 func (i *installer) resolve(ctx context.Context, input Intent) (install.Plan, configuration, error) {
-	if input.Operation != "apply" && input.Operation != "uninstall" ||
+	if input.Operation != "apply" && input.Operation != "rollback" && input.Operation != "uninstall" ||
 		(input.DeleteData && input.Operation != "uninstall") || input.DevelopmentPolicy != "" {
 		return install.Plan{}, configuration{}, ErrUnsupported
 	}

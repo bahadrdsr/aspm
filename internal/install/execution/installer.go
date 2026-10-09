@@ -31,6 +31,7 @@ type installer struct {
 
 type prepared struct {
 	plan   Plan
+	record stateRecord
 	config configuration
 	bundle verifiedBundle
 	input  Intent
@@ -104,6 +105,16 @@ func (i *installer) prepare(ctx context.Context, input Intent) (prepared, error)
 	if err != nil {
 		return prepared{}, err
 	}
+	record, err := i.loadState(ctx)
+	if err != nil {
+		return prepared{}, err
+	}
+	if record.Version == 1 {
+		return prepared{}, fmt.Errorf("%w: legacy caller-bound ownership requires a separately reviewed migration; checkpoint and credentials were preserved", ErrUnsupported)
+	}
+	if input.Operation == "rollback" && record.State.RollbackMode == "data-restore-required" {
+		return prepared{}, ErrRestoreRequired
+	}
 	bundle, err := i.verifyBundle(ctx, input.BundleDir, config)
 	if err != nil {
 		return prepared{}, err
@@ -121,7 +132,71 @@ func (i *installer) prepare(ctx context.Context, input Intent) (prepared, error)
 	}
 	plan := Plan{ConfigID: resolved.ID, BundleDigest: bundle.digest, Images: maps.Clone(bundle.manifest.Images),
 		TargetFingerprint: fingerprint, Trust: "signed", Operation: input.Operation,
-		DeleteData: input.DeleteData, RuntimeRoles: input.RuntimeRoles}
+		DeleteData: input.DeleteData, RuntimeRoles: input.RuntimeRoles,
+		TargetRelease: config.Release.Version, RollbackPolicy: "not-applicable"}
+	switch input.Operation {
+	case "uninstall":
+		if record.Release == "" {
+			return prepared{}, ErrUnsupported
+		}
+		plan.CurrentRelease, plan.CurrentBundleDigest = record.Release, record.BundleDigest
+		plan.ChangeKind = "uninstall"
+	case "rollback":
+		if record.State.RollbackMode == "data-restore-required" {
+			return prepared{}, ErrRestoreRequired
+		}
+		if record.State.RollbackMode != "activation-eligible" ||
+			record.PreviousRelease == "" ||
+			record.PreviousRelease != config.Release.Version ||
+			record.PreviousBundleDigest != bundle.digest ||
+			record.PreviousConfigID != resolved.ID {
+			return prepared{}, ErrUnsupported
+		}
+		plan.CurrentRelease, plan.CurrentBundleDigest = record.Release, record.BundleDigest
+		plan.ChangeKind = "rollback"
+		plan.RollbackPolicy = "activation-before-runtime-or-data-restore"
+	case "apply":
+		switch {
+		case record.TargetFingerprint == "":
+			plan.ChangeKind = "initial-install"
+		case record.Release == "":
+			if record.State.Phase != "applied" || record.ConfigID != resolved.ID ||
+				record.RuntimeRoles != input.RuntimeRoles {
+				return prepared{}, ErrUnsupported
+			}
+			plan.CurrentRelease, plan.CurrentBundleDigest = config.Release.Version, bundle.digest
+			plan.ChangeKind = "checkpoint-migration"
+		case record.State.Phase != "applied" &&
+			record.State.ChangeKind == "initial-install" &&
+			record.Release == config.Release.Version && record.BundleDigest == bundle.digest:
+			plan.ChangeKind = "initial-install"
+		case record.State.Phase != "applied" &&
+			record.State.ChangeKind == "upgrade" &&
+			record.PreviousRelease != "" &&
+			record.Release == config.Release.Version && record.BundleDigest == bundle.digest:
+			plan.CurrentRelease, plan.CurrentBundleDigest = record.PreviousRelease, record.PreviousBundleDigest
+			plan.ChangeKind = "upgrade"
+			plan.RollbackPolicy = "activation-before-runtime-or-data-restore"
+		case record.Release == config.Release.Version && record.BundleDigest == bundle.digest:
+			plan.CurrentRelease, plan.CurrentBundleDigest = record.Release, record.BundleDigest
+			plan.ChangeKind = "reapply"
+		case record.State.Phase != "applied":
+			return prepared{}, fmt.Errorf("%w: incomplete release checkpoint does not match the selected signed bundle", ErrApproval)
+		default:
+			plan.CurrentRelease, plan.CurrentBundleDigest = record.Release, record.BundleDigest
+			plan.ChangeKind = "upgrade"
+			plan.RollbackPolicy = "activation-before-runtime-or-data-restore"
+		}
+	default:
+		return prepared{}, ErrUnsupported
+	}
+	if plan.ChangeKind == "reapply" && record.State.PlanID != "" &&
+		record.TargetFingerprint == plan.TargetFingerprint &&
+		record.CallerIdentity == p.caller.digest {
+		plan.ID = record.State.PlanID
+		p.plan, p.record = plan, record
+		return p, nil
+	}
 	bound := struct {
 		Plan           Plan
 		RoleKeys       string
@@ -130,6 +205,19 @@ func (i *installer) prepare(ctx context.Context, input Intent) (prepared, error)
 	}{
 		Plan: plan, RoleKeys: privateRoleDigest(i.options.RoleKeys), TrustKey: digest(i.options.TrustedKey),
 		CallerIdentity: p.caller.digest,
+	}
+	if input.Operation == "apply" && record.State.PlanID != "" &&
+		(record.State.Phase == "planned" || record.State.Phase == "failed") &&
+		record.State.ChangeKind == plan.ChangeKind &&
+		record.Release == plan.TargetRelease &&
+		record.BundleDigest == plan.BundleDigest &&
+		record.ConfigID == plan.ConfigID &&
+		record.TargetFingerprint == plan.TargetFingerprint &&
+		record.CallerIdentity == p.caller.digest &&
+		record.RuntimeRoles == input.RuntimeRoles {
+		plan.ID = record.State.PlanID
+		p.plan, p.record = plan, record
+		return p, nil
 	}
 	encoded, err := json.Marshal(bound)
 	if err != nil {
@@ -140,7 +228,7 @@ func (i *installer) prepare(ctx context.Context, input Intent) (prepared, error)
 	if err != nil || i.containsPrivate(string(public), p.caller.privateValues) {
 		return prepared{}, ErrCredential
 	}
-	p.plan = plan
+	p.plan, p.record = plan, record
 	return p, nil
 }
 

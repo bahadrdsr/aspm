@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	ErrApproval    = errors.New("deployment approval mismatch")
-	ErrBundle      = errors.New("untrusted or inconsistent bundle")
-	ErrCredential  = errors.New("required caller credential missing or unusable")
-	ErrCommand     = errors.New("external command failed")
-	ErrUnsupported = errors.New("unsupported execution profile")
+	ErrApproval        = errors.New("deployment approval mismatch")
+	ErrBundle          = errors.New("untrusted or inconsistent bundle")
+	ErrCredential      = errors.New("required caller credential missing or unusable")
+	ErrCommand         = errors.New("external command failed")
+	ErrRestoreRequired = errors.New("data restore required before rollback")
+	ErrUnsupported     = errors.New("unsupported execution profile")
 )
 
 type Command struct {
@@ -94,6 +95,8 @@ type Approval struct {
 
 type Plan struct {
 	ID, ConfigID, BundleDigest, TargetFingerprint, Trust string
+	CurrentRelease, CurrentBundleDigest                  string
+	TargetRelease, ChangeKind, RollbackPolicy            string
 	Images                                               map[string]string
 	Operation                                            string
 	DeleteData                                           bool
@@ -101,8 +104,10 @@ type Plan struct {
 }
 
 type State struct {
-	Phase, PlanID, Trust, FailedStep, FailureCode string
-	Completed, SecretFiles                        []string
+	Phase, PlanID, Trust, FailedStep, FailureCode  string
+	Release, BundleDigest, PreviousRelease         string
+	PreviousBundleDigest, ChangeKind, RollbackMode string
+	Completed, SecretFiles                         []string
 }
 
 type Installer interface {

@@ -32,10 +32,10 @@ func main() {
 
 func run(args []string, input io.Reader, output io.Writer) error {
 	if len(args) == 0 {
-		return errors.New("choose init, plan, deploy-plan, apply, status, uninstall, backup, restore, doctor, or version")
+		return errors.New("choose init, plan, deploy-plan, apply, rollback, status, uninstall, backup, restore, doctor, or version")
 	}
 	switch args[0] {
-	case "deploy-plan", "apply", "status", "uninstall":
+	case "deploy-plan", "apply", "rollback", "status", "uninstall":
 		return deployment(args, output)
 	case "backup", "restore":
 		return recoveryCommand(args, output)

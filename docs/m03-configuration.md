@@ -25,8 +25,9 @@ healthy HTTP endpoint as current security posture.
 Independent M03 configuration tests passed before CLI smoke verification.
 The three-stage scripted terminal flow, round-trip planner and live diagnostic
 calls were exercised. These configuration-only checks do not certify operational
-deployment. Backup, restore, provisioning, arbitrary upgrades and unsupported
-execution profiles fail explicitly rather than pretending to install.
+deployment. Arbitrary upgrades and unsupported execution profiles fail
+explicitly rather than pretending to install. The later bounded signed upgrade,
+rollback, backup, and restore procedures are documented separately under M13.
 
 The local HTTPS validation certificate and account created by the explicit
 `scripts/local-smoke.py --enroll` test are test artifacts outside the repository,
@@ -146,9 +147,10 @@ root is the initial profile; cross-process installer locking is not certified.
   isolation settings still need native validation and confirmed core readiness
   preparation before dependent workers are considered usable.
 - HTTPS access/trust establishment, database least-privilege roles, native owner
-  and ACL enforcement, readiness checks, cross-process locking, backup/restore,
-  image execution, upgrades, HA and release/CI certification remain separate
-  gates. In particular, Windows owner-only ACLs are not certified here.
+  and ACL enforcement, readiness checks, cross-process locking, HA and final
+  release/CI certification remain separate gates. M13 now documents and tests a
+  bounded signed same-target upgrade/rollback and quiesced backup/restore
+  workflow. In particular, Windows owner-only ACLs are not certified here.
 
 ## V2 execution corrections and compatibility
 
@@ -213,8 +215,9 @@ Native container-runtime resolution was confirmed on both lab nodes.
 
 This qualifies that managed Kubernetes path, not arbitrary clusters, native
 Linux activation, production TLS/network policy, database role isolation,
-backup/restore, historical checkpoint migration, filesystem race guarantees or
-enterprise capacity/HA. The private qualification bundle is not a published
+filesystem race guarantees or enterprise capacity/HA. M13 separately qualifies
+historical installer checkpoint migration, signed same-target upgrade/rollback,
+and quiesced backup/restore. The private qualification bundle is not a published
 release and its signing authority is not a production trust root.
 
 The operational `applied` phase means the selected native tool steps completed.

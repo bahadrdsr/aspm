@@ -36,7 +36,7 @@ func deployment(args []string, output io.Writer) error {
 	trustFingerprint := flags.String("trust-fingerprint", "", "Optional sha256:SPKI fingerprint for the independent public key")
 	kubeconfigPath := flags.String("kubeconfig", "", "Explicit root-relative JSON kubeconfig, with no exec/auth-provider plugins")
 	approval := flags.String("approve-plan", "", "Exact inspected deployment plan ID")
-	operation := flags.String("operation", "apply", "deploy-plan only: apply or uninstall")
+	operation := flags.String("operation", "apply", "deploy-plan only: apply, rollback, or uninstall")
 	dryRun := flags.Bool("dry-run", false, "Inspect and validate only; never resolve or generate application secrets")
 	deleteData := flags.Bool("delete-data", false, "Uninstall only: separately approve deletion of named owned cluster data")
 	if err := flags.Parse(args[1:]); err != nil {
@@ -132,6 +132,8 @@ func deployment(args []string, output io.Writer) error {
 		intent.Operation = *operation
 	} else if *operation != "apply" {
 		return errors.New("--operation is only supported by deploy-plan")
+	} else if args[0] == "rollback" {
+		intent.Operation = "rollback"
 	} else if args[0] == "uninstall" {
 		intent.Operation = "uninstall"
 	}

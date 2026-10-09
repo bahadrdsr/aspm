@@ -41,6 +41,8 @@ func (a installerAdapter) Plan(ctx context.Context, input Intent) (Plan, error) 
 	result, err := a.real.Plan(ctx, executionIntent(input))
 	return Plan{
 		ID: result.ID, ConfigID: result.ConfigID, BundleDigest: result.BundleDigest,
+		CurrentRelease: result.CurrentRelease, CurrentBundleDigest: result.CurrentBundleDigest,
+		TargetRelease: result.TargetRelease, ChangeKind: result.ChangeKind, RollbackPolicy: result.RollbackPolicy,
 		TargetFingerprint: result.TargetFingerprint, Trust: result.Trust,
 		Images: result.Images, Operation: result.Operation, DeleteData: result.DeleteData,
 		RuntimeRoles: RuntimeRoles{
@@ -100,6 +102,9 @@ func installerSelection(input execution.RoleSelection) RoleSelection {
 func installerState(input execution.State) State {
 	return State{
 		Phase: input.Phase, PlanID: input.PlanID, Trust: input.Trust,
+		Release: input.Release, BundleDigest: input.BundleDigest,
+		PreviousRelease: input.PreviousRelease, PreviousBundleDigest: input.PreviousBundleDigest,
+		ChangeKind: input.ChangeKind, RollbackMode: input.RollbackMode,
 		FailedStep: input.FailedStep, FailureCode: input.FailureCode,
 		Completed: input.Completed, SecretFiles: input.SecretFiles,
 	}
@@ -114,6 +119,7 @@ func installerError(err error) error {
 		{execution.ErrBundle, ErrBundle},
 		{execution.ErrCredential, ErrCredential},
 		{execution.ErrCommand, ErrCommand},
+		{execution.ErrRestoreRequired, ErrRestoreRequired},
 		{execution.ErrUnsupported, ErrUnsupported},
 	} {
 		if errors.Is(err, pair[0]) {

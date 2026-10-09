@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	ErrApproval    = errors.New("deployment approval mismatch")
-	ErrBundle      = errors.New("untrusted or inconsistent bundle")
-	ErrCredential  = errors.New("required caller credential missing or unusable")
-	ErrCommand     = errors.New("external command failed")
-	ErrUnsupported = errors.New("unsupported execution profile")
+	ErrApproval        = errors.New("deployment approval mismatch")
+	ErrBundle          = errors.New("untrusted or inconsistent bundle")
+	ErrCredential      = errors.New("required caller credential missing or unusable")
+	ErrCommand         = errors.New("external command failed")
+	ErrRestoreRequired = errors.New("data restore required before rollback")
+	ErrUnsupported     = errors.New("unsupported execution profile")
 )
 
 type Command struct {
@@ -105,25 +106,36 @@ type Approval struct {
 }
 
 type Plan struct {
-	ID                string            `json:"id"`
-	ConfigID          string            `json:"configId"`
-	BundleDigest      string            `json:"bundleDigest"`
-	TargetFingerprint string            `json:"targetFingerprint"`
-	Trust             string            `json:"trust"`
-	Images            map[string]string `json:"images"`
-	Operation         string            `json:"operation"`
-	DeleteData        bool              `json:"deleteData"`
-	RuntimeRoles      RuntimeRoles      `json:"runtimeRoles"`
+	ID                  string            `json:"id"`
+	ConfigID            string            `json:"configId"`
+	BundleDigest        string            `json:"bundleDigest"`
+	CurrentRelease      string            `json:"currentRelease,omitempty"`
+	CurrentBundleDigest string            `json:"currentBundleDigest,omitempty"`
+	TargetRelease       string            `json:"targetRelease"`
+	ChangeKind          string            `json:"changeKind"`
+	RollbackPolicy      string            `json:"rollbackPolicy"`
+	TargetFingerprint   string            `json:"targetFingerprint"`
+	Trust               string            `json:"trust"`
+	Images              map[string]string `json:"images"`
+	Operation           string            `json:"operation"`
+	DeleteData          bool              `json:"deleteData"`
+	RuntimeRoles        RuntimeRoles      `json:"runtimeRoles"`
 }
 
 type State struct {
-	Phase       string   `json:"phase"`
-	PlanID      string   `json:"planId"`
-	Trust       string   `json:"trust"`
-	FailedStep  string   `json:"failedStep,omitempty"`
-	FailureCode string   `json:"failureCode,omitempty"`
-	Completed   []string `json:"completed"`
-	SecretFiles []string `json:"secretFiles"`
+	Phase                string   `json:"phase"`
+	PlanID               string   `json:"planId"`
+	Trust                string   `json:"trust"`
+	Release              string   `json:"release,omitempty"`
+	BundleDigest         string   `json:"bundleDigest,omitempty"`
+	PreviousRelease      string   `json:"previousRelease,omitempty"`
+	PreviousBundleDigest string   `json:"previousBundleDigest,omitempty"`
+	ChangeKind           string   `json:"changeKind,omitempty"`
+	RollbackMode         string   `json:"rollbackMode,omitempty"`
+	FailedStep           string   `json:"failedStep,omitempty"`
+	FailureCode          string   `json:"failureCode,omitempty"`
+	Completed            []string `json:"completed"`
+	SecretFiles          []string `json:"secretFiles"`
 }
 
 type Installer interface {

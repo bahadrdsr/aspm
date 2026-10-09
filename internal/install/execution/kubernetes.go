@@ -86,7 +86,7 @@ func (i *installer) kubernetesApply(ctx context.Context, p prepared, material *c
 			}
 			return i.applySecret(ctx, p, policySecretName, map[string]string{"s3.json": string(policy)}, *material)
 		}},
-		{name: "helm-upgrade", run: func() error {
+		{name: "helm-upgrade", activationBoundary: true, run: func() error {
 			values, err := helmValues(p)
 			if err != nil {
 				return err

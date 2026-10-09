@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,6 +15,23 @@ import (
 	"sync/atomic"
 	"testing"
 )
+
+func TestM13RollbackCommandIsExplicitlyRegistered(t *testing.T) {
+	var output bytes.Buffer
+	err := run([]string{"rollback", "-h"}, strings.NewReader(""), &output)
+	if !errors.Is(err, flag.ErrHelp) {
+		t.Fatalf("rollback help performed work or was unavailable: %v", err)
+	}
+	help := output.String()
+	for _, required := range []string{
+		"Usage of rollback", "-config", "-bundle", "-bundle-trust",
+		"-runtime-roles", "-role-keys", "-approve-plan",
+	} {
+		if !strings.Contains(help, required) {
+			t.Errorf("rollback help omitted %q", required)
+		}
+	}
+}
 
 const reviewOtherWriter = "configuration owned by another writer; preserve these exact bytes\n"
 

@@ -150,6 +150,12 @@ owner-protected configuration, PostgreSQL 18.6 client tools, a quiesced
 single-instance deployment, an absent restore schema, and empty selected object
 prefixes. See `docs\m13-backup-restore.md`.
 
+Signed same-target upgrades persist release and bundle lineage in the installer
+checkpoint. A failure before application activation can reactivate the exact
+previous signed bundle through `aspmctl rollback`; after activation is attempted,
+the installer requires verified backup restore instead of an unsafe in-place
+downgrade. See `docs\m13-upgrade-rollback.md`.
+
 ### Application UI workflows
 
 In **Work**, **Load more findings** explicitly requests the service's native

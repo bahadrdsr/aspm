@@ -30,10 +30,11 @@ type verifiedBundle struct {
 }
 
 var (
-	pinnedImage  = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:/-]*:[A-Za-z0-9_][A-Za-z0-9_.-]*@sha256:[a-f0-9]{64}$`)
-	fileDigest   = regexp.MustCompile(`^sha256:[a-f0-9]{64}$`)
-	machineID    = regexp.MustCompile(`^[a-f0-9]{32}$`)
-	namespaceUID = regexp.MustCompile(`^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$`)
+	pinnedImage    = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:/-]*:[A-Za-z0-9_][A-Za-z0-9_.-]*@sha256:[a-f0-9]{64}$`)
+	fileDigest     = regexp.MustCompile(`^sha256:[a-f0-9]{64}$`)
+	releaseVersion = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*)?$`)
+	machineID      = regexp.MustCompile(`^[a-f0-9]{32}$`)
+	namespaceUID   = regexp.MustCompile(`^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$`)
 )
 
 func (i *installer) verifyBundle(ctx context.Context, directory string, config configuration) (verifiedBundle, error) {
@@ -51,7 +52,8 @@ func (i *installer) verifyBundle(ctx context.Context, directory string, config c
 	}
 	var manifest bundleManifest
 	if decode(raw, &manifest) != nil || manifest.APIVersion != "aspm/v1alpha1" || manifest.Kind != "InstallerBundle" ||
-		manifest.Release != config.Release.Version || len(manifest.Files) < 3 || len(manifest.Files) > 512 || len(manifest.Images) != 3 {
+		!releaseVersion.MatchString(manifest.Release) || manifest.Release != config.Release.Version ||
+		len(manifest.Files) < 3 || len(manifest.Files) > 512 || len(manifest.Images) != 3 {
 		return verifiedBundle{}, ErrBundle
 	}
 	for _, name := range []string{"application", "postgres", "storage"} {

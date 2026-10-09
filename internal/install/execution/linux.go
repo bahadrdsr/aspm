@@ -131,7 +131,7 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-storage.service"}}, material.values())
 			return err
 		}},
-		{name: "start-application-roles", run: func() error {
+		{name: "start-application-roles", activationBoundary: true, run: func() error {
 			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start",
 				"aspm-core.service", "aspm-ingestion@1.service", "aspm-retention.service", "aspm-reports.service"}}, material.values())
 			return err
