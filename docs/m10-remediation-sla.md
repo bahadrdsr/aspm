@@ -107,5 +107,5 @@ conflicts and denials, strict malformed-response rejection, focus preservation,
 reduced motion, and a 390-pixel viewport.
 
 Scheduled reports, business calendars, contractual SLA management, historical
-SLA reconstruction, general finding metric drill-down, and report exports
-remain separate work.
+SLA reconstruction, and report exports remain separate work. Current Live
+finding metric drill-down is documented separately.

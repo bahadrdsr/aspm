@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { api, APIError } from "@/api/client";
 import type {
-  CoverageAssetState, ReportSnapshotResponse, ReportSnapshotsResponse,
+  CoverageAssetState, FindingMetric, PostureReport,
+  ReportSnapshotResponse, ReportSnapshotsResponse,
 } from "@/api/types";
 import { label, timestampLabel } from "@/lib/format";
 import { useResource } from "@/lib/use-resource";
@@ -11,6 +12,7 @@ import { ActionButton } from "@/components/action-button";
 import { FormError } from "@/components/form-dialog";
 import { Icon } from "@/components/icon";
 import { ReportCoverageAssets } from "@/components/report-coverage-assets";
+import { ReportFindingMetrics } from "@/components/report-finding-metrics";
 import { ReportMetrics } from "@/components/report-metrics";
 import { ReportSnapshotCreate } from "@/components/report-snapshot-create";
 import { ReportSnapshotDetail } from "@/components/report-snapshot-detail";
@@ -20,10 +22,11 @@ import { DataNotice, LoadingState } from "@/components/states";
 import { Button } from "@/components/ui/button";
 import "./reports.css";
 
-function LiveOverview({ days, applyDays, onCoverageSelect }: {
+function LiveOverview({ days, applyDays, onCoverageSelect, onFindingMetricSelect }: {
   days: number;
   applyDays: (days: number) => void;
   onCoverageSelect: (state: CoverageAssetState, days: number, trigger: HTMLButtonElement) => void;
+  onFindingMetricSelect: (metric: FindingMetric, report: PostureReport, trigger: HTMLButtonElement) => void;
 }) {
   const [draft, setDraft] = useState(String(days));
   const load = useCallback((signal: AbortSignal) => api.reportOverview(days, signal), [days]);
@@ -53,7 +56,9 @@ function LiveOverview({ days, applyDays, onCoverageSelect }: {
           {resource.status === "loading" ? "Refreshing report." : "Report refresh failed."} Showing the last received report and its original timestamps.</p>}
         <ReportMetrics report={resource.data.report} origin={resource.data.dataOrigin}
           onCoverageSelect={(state, trigger) =>
-            onCoverageSelect(state, resource.data!.report.freshnessWindow.days, trigger)} />
+            onCoverageSelect(state, resource.data!.report.freshnessWindow.days, trigger)}
+          onFindingMetricSelect={(metric, trigger) =>
+            onFindingMetricSelect(metric, resource.data!.report, trigger)} />
       </>}
     </div>
   </section>;
@@ -135,6 +140,12 @@ interface CoverageSelection {
   trigger: HTMLButtonElement;
   generation: number;
 }
+interface FindingMetricSelection {
+  metric: FindingMetric;
+  report: PostureReport;
+  trigger: HTMLButtonElement;
+  generation: number;
+}
 
 export function ReportsPage() {
   const { workspace } = useSession();
@@ -142,15 +153,21 @@ export function ReportsPage() {
   const [form, setForm] = useState<{ trigger: HTMLElement } | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [coverage, setCoverage] = useState<CoverageSelection | null>(null);
+  const [findingMetric, setFindingMetric] = useState<FindingMetricSelection | null>(null);
   const [historyRevision, setHistoryRevision] = useState(0);
   const canWrite = workspace.role !== "viewer";
   function select(id: string, initial: ReportSnapshotResponse | null = null) {
     setSelection((previous) => ({ id, initial, generation: (previous?.generation ?? 0) + 1 }));
   }
-  useEffect(() => setCoverage(null), [workspace.id]);
+  useEffect(() => { setCoverage(null); setFindingMetric(null); }, [workspace.id]);
   function closeCoverage() {
     const trigger = coverage?.trigger;
     setCoverage(null);
+    if (trigger) window.setTimeout(() => trigger.focus(), 0);
+  }
+  function closeFindingMetric() {
+    const trigger = findingMetric?.trigger;
+    setFindingMetric(null);
     if (trigger) window.setTimeout(() => trigger.focus(), 0);
   }
   return <div className="reports-page">
@@ -165,9 +182,15 @@ export function ReportsPage() {
       onCoverageSelect={(state, selectedDays, trigger) =>
         setCoverage((previous) => ({
           state, days: selectedDays, trigger, generation: (previous?.generation ?? 0) + 1,
+        }))}
+      onFindingMetricSelect={(metric, report, trigger) =>
+        setFindingMetric((previous) => ({
+          metric, report, trigger, generation: (previous?.generation ?? 0) + 1,
         }))} />
     {coverage && <ReportCoverageAssets key={`${workspace.id}-${coverage.generation}`}
       state={coverage.state} days={coverage.days} onClose={closeCoverage} />}
+    {findingMetric && <ReportFindingMetrics key={`${workspace.id}-${findingMetric.generation}`}
+      metric={findingMetric.metric} report={findingMetric.report} onClose={closeFindingMetric} />}
     <ReportSLA key={`sla-${workspace.id}`} />
     <ReportTrends key={workspace.id} />
     <div className="report-saved-layout">

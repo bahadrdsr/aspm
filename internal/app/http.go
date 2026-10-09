@@ -220,6 +220,11 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		return a.reportCoverageAssets(w, r, membership.ID)
+	case "/api/v1/reports/finding-metrics":
+		if err = requireMethod(w, r, http.MethodGet); err != nil {
+			return err
+		}
+		return a.reportFindingMetrics(w, r, membership.ID)
 	case "/api/v1/reports/sla-policy":
 		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
 			return err

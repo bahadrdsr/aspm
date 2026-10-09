@@ -15,7 +15,7 @@ const workColumns = `f.id,f.title,asset.name,f.severity,owner.name,f.workflow_st
 	f.source_scan_at,f.collected_at,f.imported_at,f.change_kind,f.change_at,
 	f.decision_revision,f.disposition,f.accepted_risk_expires_at`
 
-func (a *Application) workVisible() string {
+func (a *database) workVisible() string {
 	return `NOT EXISTS(SELECT 1 FROM ` + a.table("finding_correlation_members") + ` cm
 		JOIN ` + a.table("finding_correlations") + ` c
 		ON c.workspace_id=cm.workspace_id AND c.id=cm.correlation_id AND c.state='active'

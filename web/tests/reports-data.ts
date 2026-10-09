@@ -101,6 +101,39 @@ export interface SyntheticCoverageResponse {
   dataOrigin: "live";
   drilldown: SyntheticCoverageDrilldown;
 }
+export type FindingMetric =
+  "findings" | "open-findings" | "accepted-risk" | "expired-accepted-risk" |
+  "suppressed" | "expired-suppression" | "false-positive" | "inferred-resolved" |
+  "critical" | "high" | "medium" | "low" | "info";
+export interface SyntheticFindingMetricItem {
+  findingId: string;
+  title: string;
+  assetId: string;
+  assetName: string;
+  severity: "critical" | "high" | "medium" | "low" | "info";
+  ownerId: string | null;
+  ownerName: string | null;
+  workflowState: "open" | "in-progress" | "pending-retest" | "resolved";
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
+  acceptedRiskExpiresAt: string | null;
+  riskAcceptanceExpired: boolean;
+  sourceState: "observed" | "inferred-resolved" | "stale" | "unknown";
+  sourceFreshnessAt: string | null;
+}
+export interface SyntheticFindingMetricDrilldown {
+  workspaceId: string;
+  metric: FindingMetric;
+  asOf: string;
+  items: SyntheticFindingMetricItem[];
+  total: number;
+  nextCursor: string | null;
+  verification: { state: "not-run"; reason: string };
+}
+export interface SyntheticFindingMetricResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  drilldown: SyntheticFindingMetricDrilldown;
+}
 export interface SyntheticSLAPolicy {
   workspaceId: string;
   criticalDays: number;
@@ -166,9 +199,11 @@ export const reportUser = { id: "a".repeat(32), name: "Synthetic reporting analy
 export const verificationReason = "Independent verified-resolution results are not integrated with canonical findings.";
 export const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
 export const coverageVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety.";
+export const findingMetricVerificationReason = "Finding metric drill-down reflects current canonical finding state; it does not verify safety or historical membership.";
 export const slaVerificationReason = "Remediation SLA status is a time-to-workflow target; it does not verify safety, resolution, or risk acceptance.";
 export const overviewPath = "/api/v1/reports/overview";
 export const coverageAssetsPath = "/api/v1/reports/coverage-assets";
+export const findingMetricsPath = "/api/v1/reports/finding-metrics";
 export const snapshotsPath = "/api/v1/reports/snapshots";
 export const trendsPath = "/api/v1/reports/trends";
 export const slaPolicyPath = "/api/v1/reports/sla-policy";
@@ -410,6 +445,165 @@ export const coverageStorageCanaries = (() => {
   ].filter((value) => value !== "");
 })();
 
+interface SyntheticFindingMetricRecord {
+  item: SyntheticFindingMetricItem;
+  suppressionExpired: boolean;
+}
+
+export function findingMetricTotal(report: SyntheticPostureReport, metric: FindingMetric): number {
+  switch (metric) {
+    case "findings": return report.totals.findings;
+    case "open-findings": return report.totals.openFindings;
+    case "accepted-risk": return report.totals.acceptedRisk;
+    case "expired-accepted-risk": return report.totals.expiredAcceptedRisk;
+    case "suppressed": return report.totals.suppressed;
+    case "expired-suppression": return report.totals.expiredSuppression;
+    case "false-positive": return report.totals.falsePositive;
+    case "inferred-resolved": return report.totals.inferredResolved;
+    case "critical": return report.bySeverity.critical;
+    case "high": return report.bySeverity.high;
+    case "medium": return report.bySeverity.medium;
+    case "low": return report.bySeverity.low;
+    case "info": return report.bySeverity.info;
+  }
+}
+
+function findingMetricRecords(report: SyntheticPostureReport): SyntheticFindingMetricRecord[] {
+  if (![reportAlpha.id, reportBeta.id].includes(report.workspaceId) ||
+    Object.values(report.bySeverity).reduce((sum, count) => sum + count, 0) !== report.totals.findings ||
+    report.totals.openFindings > report.totals.findings ||
+    report.totals.acceptedRisk + report.totals.suppressed + report.totals.falsePositive > report.totals.findings ||
+    report.totals.expiredAcceptedRisk > report.totals.acceptedRisk ||
+    report.totals.expiredSuppression > report.totals.suppressed ||
+    report.totals.inferredResolved > report.totals.findings) {
+    throw new Error("Synthetic finding membership must match one bounded Live overview.");
+  }
+  const asOf = Date.parse(report.asOf);
+  const severities = ["critical", "high", "medium", "low", "info"] as const;
+  const severityEnds = severities.map((_, index) =>
+    severities.slice(0, index + 1).reduce((sum, key) => sum + report.bySeverity[key], 0));
+  const workflows = ["open", "in-progress", "pending-retest"] as const;
+  const sourceControls = ["observed", "stale", "unknown"] as const;
+  const findingPrefix = report.workspaceId === reportAlpha.id ? "f" : "e";
+  const assetPrefix = report.workspaceId === reportAlpha.id ? "2" : "3";
+  const workspaceName = report.workspaceId === reportAlpha.id ? "Alpha" : "Beta";
+  const suppressedStart = report.totals.acceptedRisk;
+  const falsePositiveStart = suppressedStart + report.totals.suppressed;
+  return Array.from({ length: report.totals.findings }, (_, index): SyntheticFindingMetricRecord => {
+    const severity = severities[severityEnds.findIndex((end) => index < end)];
+    const workflowState = index < report.totals.openFindings ? workflows[index % workflows.length] : "resolved";
+    const disposition = index < report.totals.acceptedRisk ? "accepted-risk" :
+      index < falsePositiveStart ? "suppressed" :
+        index < falsePositiveStart + report.totals.falsePositive ? "false-positive" : "none";
+    const acceptedExpired = disposition === "accepted-risk" && index < report.totals.expiredAcceptedRisk;
+    const acceptedRiskExpiresAt = disposition !== "accepted-risk" ? null :
+      new Date(acceptedExpired
+        ? asOf - Math.max(0, index) * 1_000
+        : asOf + (index + 1) * 3_600_000).toISOString();
+    const sourceState = index < report.totals.inferredResolved ? "inferred-resolved" :
+      sourceControls[(index - report.totals.inferredResolved) % sourceControls.length];
+    const owned = index % 3 !== 1;
+    const suppressionIndex = index - suppressedStart;
+    return {
+      item: {
+        findingId: `${findingPrefix}${(index + 1).toString(16).padStart(31, "0")}`,
+        title: `Synthetic ${workspaceName} current finding ${String(index + 1).padStart(4, "0")}`,
+        assetId: `${assetPrefix}${(index + 1).toString(16).padStart(31, "0")}`,
+        assetName: `Synthetic ${workspaceName} current finding asset ${String(index + 1).padStart(4, "0")}`,
+        severity,
+        ownerId: owned ? reportUser.id : null,
+        ownerName: owned ? reportUser.name : null,
+        workflowState,
+        disposition,
+        acceptedRiskExpiresAt,
+        riskAcceptanceExpired: acceptedExpired,
+        sourceState,
+        sourceFreshnessAt: sourceState === "unknown" ? null :
+          new Date(asOf - (index + 1) * 60_000).toISOString(),
+      },
+      suppressionExpired: disposition === "suppressed" &&
+        suppressionIndex < report.totals.expiredSuppression,
+    };
+  });
+}
+
+function findingMetricMember(record: SyntheticFindingMetricRecord, metric: FindingMetric): boolean {
+  const item = record.item;
+  switch (metric) {
+    case "findings": return true;
+    case "open-findings": return item.workflowState !== "resolved";
+    case "accepted-risk": return item.disposition === "accepted-risk";
+    case "expired-accepted-risk": return item.disposition === "accepted-risk" && item.riskAcceptanceExpired;
+    case "suppressed": return item.disposition === "suppressed";
+    case "expired-suppression": return item.disposition === "suppressed" && record.suppressionExpired;
+    case "false-positive": return item.disposition === "false-positive";
+    case "inferred-resolved": return item.sourceState === "inferred-resolved";
+    case "critical":
+    case "high":
+    case "medium":
+    case "low":
+    case "info":
+      return item.severity === metric;
+  }
+}
+
+export function syntheticFindingMetricDrilldown(report: SyntheticPostureReport, metric: FindingMetric,
+  limit = 100, cursor = "", asOf = report.asOf): SyntheticFindingMetricDrilldown {
+  if (![
+    "findings", "open-findings", "accepted-risk", "expired-accepted-risk",
+    "suppressed", "expired-suppression", "false-positive", "inferred-resolved",
+    "critical", "high", "medium", "low", "info",
+  ].includes(metric) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+    cursor !== "" && !/^[a-f0-9]{32}$/.test(cursor) ||
+    asOf !== report.asOf || !Number.isFinite(Date.parse(asOf))) {
+    throw new Error("Only bounded current finding metric pages may be generated.");
+  }
+  const all = findingMetricRecords(report).filter((record) => findingMetricMember(record, metric));
+  const expectedTotal = findingMetricTotal(report, metric);
+  if (all.length !== expectedTotal) {
+    throw new Error("Synthetic finding membership diverged from the displayed Live overview metric.");
+  }
+  const remaining = all.filter((record) => record.item.findingId > cursor);
+  const records = remaining.slice(0, limit);
+  return {
+    workspaceId: report.workspaceId,
+    metric,
+    asOf,
+    items: records.map((record) => structuredClone(record.item)),
+    total: all.length,
+    nextCursor: remaining.length > limit ? records.at(-1)!.item.findingId : null,
+    verification: { state: "not-run", reason: findingMetricVerificationReason },
+  };
+}
+
+export function syntheticFindingMetricResponse(report: SyntheticPostureReport, metric: FindingMetric,
+  limit = 100, cursor = "", asOf = report.asOf): SyntheticFindingMetricResponse {
+  return {
+    apiVersion,
+    dataOrigin: "live",
+    drilldown: syntheticFindingMetricDrilldown(report, metric, limit, cursor, asOf),
+  };
+}
+
+export const findingMetricStorageCanaries = (() => {
+  const pages = [
+    syntheticFindingMetricDrilldown(alphaOverview, "findings"),
+    syntheticFindingMetricDrilldown(alphaOverview, "expired-accepted-risk"),
+    syntheticFindingMetricDrilldown(betaOverview, "critical"),
+  ];
+  return [
+    findingMetricVerificationReason,
+    ...pages.flatMap((page) => [
+      page.asOf,
+      ...page.items.slice(0, 4).flatMap((item) => [
+        item.findingId, item.title, item.assetId, item.assetName,
+        item.acceptedRiskExpiresAt ?? "", item.sourceFreshnessAt ?? "",
+      ]),
+    ]),
+  ].filter((value) => value !== "");
+})();
+
 function slaTarget(policy: SyntheticSLAPolicy, severity: SyntheticSLAFinding["severity"]) {
   return policy[`${severity}Days` as keyof Pick<SyntheticSLAPolicy,
     "criticalDays" | "highDays" | "mediumDays" | "lowDays" | "infoDays">];
@@ -616,6 +810,37 @@ export function coverageParameters(url: URL): {
     throw new Error("Coverage drill-down cursor must be one lower-case 32-hex asset ID.");
   }
   return { state, freshnessDays: Number(freshnessValues[0]), limit, cursor };
+}
+
+export function findingMetricParameters(url: URL): {
+  metric: FindingMetric; limit: number; cursor: string;
+} {
+  const allowed = ["metric", "limit", "cursor"];
+  const metricValues = url.searchParams.getAll("metric");
+  const limitValues = url.searchParams.getAll("limit");
+  const cursorValues = url.searchParams.getAll("cursor");
+  if ([...url.searchParams.keys()].some((key) => !allowed.includes(key)) ||
+    metricValues.length !== 1 || limitValues.length > 1 || cursorValues.length > 1) {
+    throw new Error("Finding metric pages require one metric and at most one native limit and cursor.");
+  }
+  const metric = metricValues[0] as FindingMetric;
+  if (![
+    "findings", "open-findings", "accepted-risk", "expired-accepted-risk",
+    "suppressed", "expired-suppression", "false-positive", "inferred-resolved",
+    "critical", "high", "medium", "low", "info",
+  ].includes(metric)) {
+    throw new Error("Finding metric must be one exact Live overview finding metric.");
+  }
+  const rawLimit = limitValues[0], limit = rawLimit === undefined ? 100 : Number(rawLimit);
+  if (rawLimit !== undefined && !/^\d{1,3}$/.test(rawLimit) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100) {
+    throw new Error("Finding metric limit must be one integer from 1 through 100.");
+  }
+  const cursor = cursorValues[0] ?? "";
+  if (cursorValues.length === 1 && !/^[a-f0-9]{32}$/.test(cursor)) {
+    throw new Error("Finding metric cursor must be one lower-case 32-hex finding ID.");
+  }
+  return { metric, limit, cursor };
 }
 
 export function noSLAQuery(url: URL, label: string) {

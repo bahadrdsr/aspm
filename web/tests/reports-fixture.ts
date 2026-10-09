@@ -6,23 +6,24 @@ import { catalogResponse, findingResponse, workResponse } from "./fixtures";
 import { emptySlackNavigation } from "./slack-navigation";
 import {
   alphaOverview, alphaSLAPolicy, betaOverview, betaSLAPolicy, coverageAssetsPath, coverageParameters,
-  coverageStorageCanaries, noSLAQuery, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser,
-  savedReport, savedSnapshots, snapshotParameters, snapshotSummary, snapshotsPath, syntheticTrendResponse,
-  slaFindingsPath, slaFindingParameters, slaPath, slaPolicyPath, slaStorageCanaries,
-  syntheticCoverageResponse, syntheticSLAFindingPage, syntheticSLAPolicyResponse, syntheticSLAResponse,
-  trendDays, trendsPath, trendStorageCanaries, withFreshness,
+  coverageStorageCanaries, findingMetricParameters, findingMetricsPath, findingMetricStorageCanaries,
+  noSLAQuery, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser, savedReport, savedSnapshots,
+  snapshotParameters, snapshotSummary, snapshotsPath, syntheticFindingMetricResponse, syntheticTrendResponse,
+  slaFindingsPath, slaFindingParameters, slaPath, slaPolicyPath, slaStorageCanaries, syntheticCoverageResponse,
+  syntheticSLAFindingPage, syntheticSLAPolicyResponse, syntheticSLAResponse, trendDays, trendsPath,
+  trendStorageCanaries, withFreshness,
 } from "./reports-data";
 import type {
-  CoverageState, ReportRole, SLAStatus, SnapshotPage, SnapshotState, SyntheticCoverageDrilldown,
-  SyntheticPostureReport, SyntheticSLAResponse, SyntheticSLAFindingPage, SyntheticSLAPolicy,
-  SyntheticSnapshot, SyntheticTrend,
+  CoverageState, FindingMetric, ReportRole, SLAStatus, SnapshotPage, SnapshotState,
+  SyntheticCoverageDrilldown, SyntheticFindingMetricDrilldown, SyntheticPostureReport,
+  SyntheticSLAResponse, SyntheticSLAFindingPage, SyntheticSLAPolicy, SyntheticSnapshot, SyntheticTrend,
 } from "./reports-data";
 
 type Denial = 400 | 401 | 403 | 404 | 409 | 413 | 503;
 type Reply<T> = { status: 200; value: T } | { status: Denial };
 export interface ReportCall {
   method: string; path: string; workspace: string | undefined; query: Record<string, string>;
-  body: Record<string, unknown>; failure: string | null;
+  body: Record<string, unknown>; reportAsOf: string | undefined; failure: string | null;
 }
 export interface ReportResponseControl {
   requested: Promise<void>;
@@ -60,6 +61,7 @@ export class ReportsAPI {
   private snapshotReplies = new Map<string, Scheduled<SyntheticSnapshot>[]>();
   private trendReplies = new Map<string, Scheduled<unknown>[]>();
   private coverageReplies = new Map<string, Scheduled<unknown>[]>();
+  private findingMetricReplies = new Map<string, Scheduled<unknown>[]>();
   private slaSummaryReplies = new Map<string, Scheduled<unknown>[]>();
   private slaFindingReplies = new Map<string, Scheduled<unknown>[]>();
   private slaPolicyReplies = new Map<string, Scheduled<unknown>[]>();
@@ -158,6 +160,26 @@ export class ReportsAPI {
   queueCoverageRaw(workspace: string, state: CoverageState, value: unknown, held = false) {
     if (!this.roles.has(workspace)) throw new Error("Raw coverage replies require a known synthetic workspace.");
     return this.queue(this.coverageReplies, this.coverageKey(workspace, state),
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
+  private findingMetricKey(workspace: string, metric: FindingMetric) { return `${workspace}:${metric}`; }
+
+  queueFindingMetric(workspace: string, metric: FindingMetric,
+    reply: Reply<SyntheticFindingMetricDrilldown>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 &&
+      (reply.value.workspaceId !== workspace || reply.value.metric !== metric)) {
+      throw new Error("Queued finding membership must belong to its known synthetic workspace and metric.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: { apiVersion, dataOrigin: "live", drilldown: structuredClone(reply.value) } }
+      : reply;
+    return this.queue(this.findingMetricReplies, this.findingMetricKey(workspace, metric), wrapped, held);
+  }
+
+  queueFindingMetricRaw(workspace: string, metric: FindingMetric, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw finding metric replies require a known synthetic workspace.");
+    return this.queue(this.findingMetricReplies, this.findingMetricKey(workspace, metric),
       { status: 200, value: structuredClone(value) }, held);
   }
 
@@ -361,7 +383,8 @@ export class ReportsAPI {
         }
       }
       const call: ReportCall = {
-        method, path, workspace: headers["x-aspm-workspace-id"], query: Object.fromEntries(url.searchParams), body, failure: null,
+        method, path, workspace: headers["x-aspm-workspace-id"], query: Object.fromEntries(url.searchParams),
+        body, reportAsOf: headers["x-aspm-report-as-of"], failure: null,
       };
       this.requests.push(call);
       this.callsByRequest.set(request, call);
@@ -445,6 +468,25 @@ export class ReportsAPI {
         await this.deliverEnvelope(route, call, scheduled,
           syntheticCoverageResponse(this.overviews.get(workspace)!, parameters.state,
             parameters.freshnessDays, parameters.limit, parameters.cursor));
+      } else if (path === findingMetricsPath && method === "GET") {
+        let parameters: ReturnType<typeof findingMetricParameters>;
+        try { parameters = findingMetricParameters(url); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic finding metric query.");
+          return;
+        }
+        const overview = this.overviews.get(workspace)!;
+        const reportAsOf = headers["x-aspm-report-as-of"];
+        if (reportAsOf !== undefined && reportAsOf !== overview.asOf) {
+          this.violations.push("Finding metric read did not bind to the displayed Live overview as-of.");
+          await this.error(route, 400, "Invalid synthetic finding metric as-of.");
+          return;
+        }
+        const scheduled = this.findingMetricReplies.get(
+          this.findingMetricKey(workspace, parameters.metric))?.shift();
+        await this.deliverEnvelope(route, call, scheduled,
+          syntheticFindingMetricResponse(overview, parameters.metric,
+            parameters.limit, parameters.cursor, reportAsOf ?? overview.asOf));
       } else if (path === slaPolicyPath && method === "GET") {
         try { noSLAQuery(url, "SLA policy"); } catch (error) {
           this.violations.push(String(error));
@@ -605,10 +647,11 @@ export const test = base.extend<{ reports: ReportsAPI }>({
           ...savedSnapshots(reportAlpha.id, 2).flatMap((item) => [item.id, item.name]),
           ...trendStorageCanaries,
           ...coverageStorageCanaries,
+          ...findingMetricStorageCanaries,
           ...slaStorageCanaries,
         ];
         for (const canary of reportCanaries) {
-          expect.soft(storageText, "Report, snapshot, trend, coverage and SLA data must not enter browser storage.").not.toContain(canary);
+          expect.soft(storageText, "Report, snapshot, trend, coverage, finding and SLA data must not enter browser storage.").not.toContain(canary);
         }
         for (const secret of secretCanaries) {
           expect.soft(JSON.stringify(snapshot) + page.url() + consoleText.join("\n"),

@@ -97,6 +97,8 @@
 .report-sla-editor textarea { resize: vertical; }
 .report-sla-target-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
 .report-sla-editor footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.report-finding-metric-table { min-width: 1500px; }
+.report-finding-metric-table code { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; }
 @media (max-width: 1200px) {
   .report-saved-layout { grid-template-columns: minmax(0, 1fr); }
 }

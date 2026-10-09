@@ -47,8 +47,8 @@ roles, assets, queued report intake, findings and scan history, CSV exports,
 and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
-live posture reports with current coverage drill-down, remediation SLA,
-saved snapshots and bounded snapshot-backed historical trends, Slack/Jira/Teams
+live posture reports with current coverage and finding drill-down, remediation
+SLA, saved snapshots and bounded snapshot-backed historical trends, Slack/Jira/Teams
 configuration and delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
 multi-source finding correlation with bounded candidates, retention
@@ -790,6 +790,16 @@ establish current coverage. Saved snapshot counts remain plain values because
 the snapshot does not retain a historical asset member list. Membership is
 current intake state, not verification of asset safety. See
 `docs\m10-coverage-drilldown.md`.
+
+Live **Findings**, **Open findings**, disposition, source-inferred resolution,
+and severity counts also open **Current live finding membership**. The service
+and Live overview share the same visible-canonical rule, so hidden active
+correlation secondaries do not inflate current totals. Expiry metrics use the
+displayed overview as-of time and the latest matching immutable suppression
+approval. Results use explicit Refresh and native 100-row cursor pages. Assets
+and Verified resolved remain noninteractive, and saved snapshots retain their
+stored aggregate bytes without claiming a historical member list. See
+`docs\m10-finding-metric-drilldown.md`.
 
 **Remediation SLA** is closed by default and reports current unresolved human
 workflow against explicit per-severity elapsed-day targets. V25 records a

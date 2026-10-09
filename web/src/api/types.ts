@@ -613,6 +613,43 @@ export interface CoverageAssetDrilldownResponse {
   drilldown: CoverageAssetDrilldown;
 }
 
+export type FindingMetric =
+  "findings" | "open-findings" | "accepted-risk" | "expired-accepted-risk" |
+  "suppressed" | "expired-suppression" | "false-positive" | "inferred-resolved" |
+  "critical" | "high" | "medium" | "low" | "info";
+
+export interface FindingMetricItem {
+  findingId: string;
+  title: string;
+  assetId: string;
+  assetName: string;
+  severity: Severity;
+  ownerId: string | null;
+  ownerName: string | null;
+  workflowState: "open" | "in-progress" | "pending-retest" | "resolved";
+  disposition: "none" | "accepted-risk" | "suppressed" | "false-positive";
+  acceptedRiskExpiresAt: string | null;
+  riskAcceptanceExpired: boolean;
+  sourceState: "observed" | "inferred-resolved" | "stale" | "unknown";
+  sourceFreshnessAt: string | null;
+}
+
+export interface FindingMetricDrilldown {
+  workspaceId: string;
+  metric: FindingMetric;
+  asOf: string;
+  items: FindingMetricItem[];
+  total: number;
+  nextCursor: string | null;
+  verification: { state: "not-run"; reason: string };
+}
+
+export interface FindingMetricResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  drilldown: FindingMetricDrilldown;
+}
+
 export interface ReportSLAPolicy {
   workspaceId: string;
   criticalDays: number;

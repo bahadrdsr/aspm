@@ -518,14 +518,8 @@ func (a *database) readPosture(ctx context.Context, db queryRower, workspace str
 			count(*) FILTER (WHERE severity='medium') AS medium,
 			count(*) FILTER (WHERE severity='low') AS low,
 			count(*) FILTER (WHERE severity='info') AS info
-		FROM `+a.table("findings")+` f
-		LEFT JOIN LATERAL (
-			SELECT expires_at FROM `+a.table("finding_disposition_approvals")+` a
-			WHERE a.workspace_id=f.workspace_id AND a.finding_id=f.id
-			AND a.disposition=f.disposition AND a.decision_revision<=f.decision_revision
-			ORDER BY a.decision_revision DESC LIMIT 1
-		) approval ON true
-		WHERE f.workspace_id=$1
+		`+a.findingMetricFrom()+`
+		WHERE f.workspace_id=$1 AND `+a.workVisible()+`
 	)
 	SELECT a.assets,f.findings,f.open_findings,f.accepted_risk,f.expired_accepted_risk,
 		f.suppressed,f.expired_suppression,f.false_positive,f.inferred_resolved,

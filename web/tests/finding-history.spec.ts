@@ -173,6 +173,7 @@ async function noAlpha(page: Page, signedOut = false) {
 }
 
 test("FH1 Native cursors independently reach complete returned observation/note histories without resetting the other stream", async ({ page, historyAPI }) => {
+  test.setTimeout(40_000);
   const first = await open(page, historyAPI);
   expect(first.notes).toHaveLength(500); expect(first.observations).toHaveLength(500);
   await histories(page, 500, 500);

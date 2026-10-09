@@ -1194,3 +1194,144 @@ forms remain keyboard reachable without page-level horizontal overflow.
 Completion does not steal deliberately moved focus. This slice makes only a
 current time-to-workflow report and does not claim safety, resolution, accepted
 risk, forecast, compliance or historical SLA reconstruction.
+M10 CURRENT FINDING METRIC DRILL-DOWN:
+This is the next bounded M10 slice. It corrects current finding aggregates and
+adds current visible-canonical membership behind existing Live overview finding
+metrics. It adds no table, column, index, migration, queue, worker, provider
+call, object-store object, saved-report rewrite, decision, approval or browser
+persistence. The schema and migration ledger remain exactly versions 1..25.
+Existing Work, coverage, SLA, trends, snapshot, correlation, disposition and
+report workflows remain compatible.
+
+Live overview finding totals and severity counts use the exact existing Work
+visibility rule. A finding is hidden only while it is a non-primary,
+unreleased member of an active correlation. The active primary counts once.
+Released members and members of a split correlation count independently.
+Assets and coverage are unchanged. New report snapshots processed after this
+correction save the corrected aggregate values. Existing saved report JSON is
+immutable and is never recomputed, rewritten or relabeled.
+
+GET /api/v1/reports/finding-metrics is the only new route. Any current member
+of the selected workspace, including a viewer, may read it. Missing, expired
+or revoked authentication is 401. Unavailable or forged selected membership is
+403. Workspace authority comes only from the authenticated selected
+membership, never from query values, request bodies or the as-of header.
+Methods other than GET are 405.
+
+The query has exactly one required metric value, optional limit and optional
+cursor. limit defaults to 100 and is one decimal integer from 1 through 100.
+cursor is one lower-case 32-hex exclusive finding ID. Empty, duplicate,
+upper-case, malformed, out-of-range and unknown values and every other query
+key are 400. There is no workspace, asOf, offset, page, sort, filter or saved
+view query.
+
+metric is exactly one of:
+findings, open-findings, accepted-risk, expired-accepted-risk, suppressed,
+expired-suppression, false-positive, inferred-resolved, critical, high,
+medium, low or info. verified-resolved has no drill-down because independent
+verification is not integrated with canonical findings.
+
+One request captures application Now once after authentication and uses one
+read-only repeatable-read transaction for both its exact whole-filter total and
+page. The optional internal X-ASPM-Report-As-Of request header may bind a
+browser read to the asOf already displayed by Live overview. If present it is
+one valid server-issued time that is not after the request's captured current
+Now; otherwise the request is 400. The bound time becomes response asOf and is
+used for accepted-risk and suppression expiry. This header grants no workspace
+or historical authority and adds no public query.
+
+Membership always starts with current selected-workspace visible canonical
+findings. findings includes every such finding. open-findings includes every
+workflow_state other than resolved. accepted-risk, suppressed and
+false-positive use the exact current disposition. expired-accepted-risk also
+requires nonnull accepted_risk_expires_at less than or equal to response asOf.
+expired-suppression also requires that the latest immutable approval matching
+the current suppressed disposition and not newer than the finding's decision
+revision has expires_at less than or equal to response asOf. inferred-resolved
+uses exact source_state. critical, high, medium, low and info use exact current
+severity regardless of workflow, disposition or source state. These are
+overlapping memberships and must not be summed into another finding total.
+
+The exact success envelope is:
+{apiVersion,dataOrigin:"live",drilldown:{workspaceId,metric,asOf,items,total,
+nextCursor,verification}}.
+verification is exactly:
+{state:"not-run",reason:"Finding metric drill-down reflects current canonical finding state; it does not verify safety or historical membership."}.
+
+Each item is exactly:
+{findingId,title,assetId,assetName,severity,ownerId,ownerName,workflowState,
+disposition,acceptedRiskExpiresAt,riskAcceptanceExpired,sourceState,
+sourceFreshnessAt}.
+Owner ID and name are both null or both nonnull. IDs are canonical lower-case
+32-hex values. Severity, workflow, disposition and source-state values use the
+existing exact enums. Times are RFC3339 or null. riskAcceptanceExpired is true
+exactly when the current disposition is accepted-risk, its expiry is nonnull
+and that expiry is less than or equal to response asOf. Every returned item
+satisfies the requested metric at response asOf.
+
+Items are ordered by finding ID ascending. Paging is cursor-exclusive and uses
+one native limit+1 page query. At most limit items are returned. total is the
+exact whole-filter total, independent of the cursor. nextCursor is null unless
+more matching rows exist, in which case it is exactly the last returned finding
+ID. There is no automatic drain. Reads create no durable state and perform no
+S3, worker, provider, snapshot, decision or approval operation.
+
+Real PostgreSQL acceptance seeds every metric, exact expiry equality, older and
+latest suppression approvals, overlapping memberships, resolved severity
+membership that is not open, all dispositions and source states, an active
+correlation primary and hidden secondary, and a real split release. Viewer and
+admin response bytes are equal. Foreign selected-workspace controls remain
+isolated even when a request body names another workspace. Query, method,
+authentication and membership rejections are exact. A 101-row fixture proves
+the default first 100 rows, exclusive continuation, one-row pages and a cursor
+past the end.
+
+Traced reads remain one read-only repeatable-read transaction while concurrent
+finding and latest-approval changes commit between total and page work. The
+in-flight response retains its original snapshot and a later request observes
+the committed changes. Acceptance also proves one application Now capture
+after authentication, corrected overview totals equal all drill-down totals,
+new snapshot totals are corrected, existing saved report JSON and response
+bytes remain unchanged, the schema ledger remains 1..25, and storage and
+durable side-effect counters remain zero for drill-down reads.
+
+Only the thirteen finding metrics in Live overview gain activation. Assets,
+verified resolved, every coverage metric's existing behavior and all metrics
+rendered from a selected saved snapshot remain unchanged. Saved ReportMetrics
+values are noninteractive because an aggregate saved without historical
+membership cannot claim a current item list.
+
+Opening a Live finding metric issues exactly one
+GET /api/v1/reports/finding-metrics?metric=<metric>&limit=100 with
+X-ASPM-Report-As-Of equal to the displayed Live report asOf. It never polls.
+The region accessible name is `Current live finding membership`. It shows the
+metric, exact current asOf, the fixed verification reason, loaded and total
+counts, an explicit Refresh, an explicit Load more when applicable, and an
+accessible table containing every exact item field. Load more uses only the
+returned cursor. Refresh restarts from the first page. Activating a different
+metric clears prior rows immediately before loading its first page.
+
+A 503 preserves the last authorized rows and exact retry cursor. A 403 or 404
+withholds prior rows through loading and later 503 responses until an
+authorized success. Workspace change, session replacement, logout and
+protected 401 abort pending reads, clear protected rows and reject late
+responses. No finding ID, title, asset, owner, disposition expiry, source time,
+verification reason or other response value enters localStorage,
+sessionStorage, cookies, URLs or another browser storage surface.
+
+The browser parser rejects unknown or missing envelope, drill-down and item
+keys; wrong workspace, metric or asOf; malformed IDs, times, enums, booleans or
+owner null pairs; descending or duplicate rows; invalid totals, cursors or
+first-page relationships; items outside the requested metric; inconsistent
+accepted-risk expiry arithmetic; changed verification state or wording; wrong
+API version; and any data origin other than live. It also compares total with
+the exact displayed Live overview value for the requested metric. If current
+state changed and a replacement total no longer matches that displayed report,
+the replacement is invalid, authorized rows remain unchanged, and the UI asks
+for an explicit Live overview refresh instead of silently combining contexts.
+
+At 390px with reduced motion, every metric activation, Refresh, Load more and
+the scrollable table remain keyboard reachable without page-level horizontal
+overflow. Request completion preserves deliberately moved focus and the
+surrounding Reports context. This slice exposes bounded current membership. It
+does not reconstruct historical membership or verify safety.

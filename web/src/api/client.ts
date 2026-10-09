@@ -2,6 +2,7 @@ import { apiVersion } from "./types";
 import type {
   ArchivedHistory, Asset, AssetFields, AssetResponse, AssetsResponse, CatalogResponse, DataOrigin, FindingBulkPatch, FindingBulkResponse, FindingCorrelation,
   CoverageAssetDrilldownResponse, CoverageAssetItem, CoverageAssetState,
+  FindingMetric, FindingMetricItem, FindingMetricResponse,
   FindingCorrelationCandidatesResponse, FindingCorrelationMember, FindingCorrelationResponse,
   FindingDecision, FindingDecisionEvent, FindingDispositionApproval, FindingMergeInput, FindingMergePreviewResponse,
   FindingNoteResponse, FindingPatch, FindingResponse, FindingSplitInput, FindingSplitPreviewResponse,
@@ -898,6 +899,7 @@ function parseReportOverview(value: unknown, workspace: string | null, days: num
 
 const trendVerificationReason = "Historical snapshot trends are not an SLA, forecast, or independent verification.";
 const coverageVerificationReason = "Coverage drill-down reflects successful complete full-scan intake; it is not verification of asset safety.";
+const findingMetricVerificationReason = "Finding metric drill-down reflects current canonical finding state; it does not verify safety or historical membership.";
 const remediationSLAVerificationReason = "Remediation SLA status is a time-to-workflow target; it does not verify safety, resolution, or risk acceptance.";
 const trendTotalKeys = ["assets", "findings", "openFindings", "acceptedRisk", "expiredAcceptedRisk",
   "suppressed", "expiredSuppression", "falsePositive", "inferredResolved", "verifiedResolved"] as const;
@@ -1109,6 +1111,119 @@ function parseCoverageAssetDrilldown(value: unknown, workspace: string | null,
       workspaceId, state, freshnessWindow: { from, to, days },
       items, total, nextCursor,
       verification: { state: "not-run", reason: coverageVerificationReason },
+    },
+  };
+}
+
+function findingMetricTotal(report: PostureReport, metric: FindingMetric) {
+  switch (metric) {
+    case "findings": return report.totals.findings;
+    case "open-findings": return report.totals.openFindings;
+    case "accepted-risk": return report.totals.acceptedRisk;
+    case "expired-accepted-risk": return report.totals.expiredAcceptedRisk;
+    case "suppressed": return report.totals.suppressed;
+    case "expired-suppression": return report.totals.expiredSuppression;
+    case "false-positive": return report.totals.falsePositive;
+    case "inferred-resolved": return report.totals.inferredResolved;
+    case "critical":
+    case "high":
+    case "medium":
+    case "low":
+    case "info":
+      return report.bySeverity[metric];
+  }
+}
+
+function findingMetricItem(value: unknown, metric: FindingMetric, asOf: string): FindingMetricItem {
+  const item = exactObject(value, "finding metric item", [
+    "findingId", "title", "assetId", "assetName", "severity", "ownerId", "ownerName",
+    "workflowState", "disposition", "acceptedRiskExpiresAt", "riskAcceptanceExpired",
+    "sourceState", "sourceFreshnessAt",
+  ]);
+  const result: FindingMetricItem = {
+    findingId: reportIdentifier(item.findingId, "finding metric finding"),
+    title: text(item.title, "finding metric title"),
+    assetId: reportIdentifier(item.assetId, "finding metric asset"),
+    assetName: text(item.assetName, "finding metric asset name"),
+    severity: choice(item.severity, ["critical", "high", "medium", "low", "info"], "finding metric severity"),
+    ownerId: nullableText(item.ownerId, "finding metric owner"),
+    ownerName: nullableText(item.ownerName, "finding metric owner name"),
+    workflowState: choice(item.workflowState,
+      ["open", "in-progress", "pending-retest", "resolved"], "finding metric workflow"),
+    disposition: choice(item.disposition,
+      ["none", "accepted-risk", "suppressed", "false-positive"], "finding metric disposition"),
+    acceptedRiskExpiresAt: nullableTimestamp(item.acceptedRiskExpiresAt, "accepted-risk expiry"),
+    riskAcceptanceExpired: boolean(item.riskAcceptanceExpired, "accepted-risk expired state"),
+    sourceState: choice(item.sourceState,
+      ["observed", "inferred-resolved", "stale", "unknown"], "finding metric source state"),
+    sourceFreshnessAt: nullableTimestamp(item.sourceFreshnessAt, "finding metric source freshness"),
+  };
+  const expired = result.disposition === "accepted-risk" && result.acceptedRiskExpiresAt !== null &&
+    Date.parse(result.acceptedRiskExpiresAt) <= Date.parse(asOf);
+  const member = metric === "findings" ? true :
+    metric === "open-findings" ? result.workflowState !== "resolved" :
+      metric === "accepted-risk" ? result.disposition === "accepted-risk" :
+        metric === "expired-accepted-risk" ? expired :
+          metric === "suppressed" || metric === "expired-suppression" ? result.disposition === "suppressed" :
+            metric === "false-positive" ? result.disposition === "false-positive" :
+              metric === "inferred-resolved" ? result.sourceState === "inferred-resolved" :
+                result.severity === metric;
+  if ((result.ownerId === null) !== (result.ownerName === null) ||
+    result.ownerId !== null && !/^[a-f0-9]{32}$/.test(result.ownerId) ||
+    result.disposition !== "accepted-risk" &&
+      (result.acceptedRiskExpiresAt !== null || result.riskAcceptanceExpired) ||
+    result.riskAcceptanceExpired !== expired || !member) {
+    return invalid("finding metric membership");
+  }
+  return result;
+}
+
+function parseFindingMetric(value: unknown, workspace: string | null, metric: FindingMetric,
+  limit: number, cursor: string, report: PostureReport): FindingMetricResponse {
+  const body = exactObject(value, "finding metric response", ["apiVersion", "dataOrigin", "drilldown"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("finding metric envelope");
+  const drilldown = exactObject(body.drilldown, "finding metric drill-down",
+    ["workspaceId", "metric", "asOf", "items", "total", "nextCursor", "verification"]);
+  const workspaceId = text(drilldown.workspaceId, "finding metric workspace");
+  const parsedMetric = choice(drilldown.metric, [
+    "findings", "open-findings", "accepted-risk", "expired-accepted-risk",
+    "suppressed", "expired-suppression", "false-positive", "inferred-resolved",
+    "critical", "high", "medium", "low", "info",
+  ], "finding metric");
+  const asOf = timestamp(drilldown.asOf, "finding metric as-of");
+  if (workspaceId !== workspace || parsedMetric !== metric || asOf !== report.asOf) {
+    return invalid("finding metric authority");
+  }
+  const items = array(drilldown.items, "finding metric items")
+    .map((item) => findingMetricItem(item, metric, asOf));
+  const total = count(drilldown.total, "finding metric total");
+  const expectedTotal = findingMetricTotal(report, metric);
+  if (total !== expectedTotal) {
+    throw new APIError("Finding membership changed. Refresh Live overview before loading replacement data.",
+      "invalid-response", false);
+  }
+  const nextCursor = nullableText(drilldown.nextCursor, "finding metric cursor");
+  if (items.length > limit || total < items.length ||
+    new Set(items.map((item) => item.findingId)).size !== items.length ||
+    items.some((item, index) =>
+      item.findingId <= (index === 0 ? cursor : items[index - 1].findingId))) {
+    return invalid("finding metric page order");
+  }
+  if (nextCursor !== null && (!/^[a-f0-9]{32}$/.test(nextCursor) ||
+    items.length !== limit || nextCursor !== items.at(-1)?.findingId || nextCursor <= cursor) ||
+    items.length < limit && nextCursor !== null ||
+    cursor === "" && (total > items.length) !== (nextCursor !== null)) {
+    return invalid("finding metric pagination");
+  }
+  const verification = exactObject(drilldown.verification, "finding metric verification", ["state", "reason"]);
+  if (verification.state !== "not-run" || verification.reason !== findingMetricVerificationReason) {
+    return invalid("finding metric verification");
+  }
+  return {
+    apiVersion, dataOrigin: "live",
+    drilldown: {
+      workspaceId, metric, asOf, items, total, nextCursor,
+      verification: { state: "not-run", reason: findingMetricVerificationReason },
     },
   };
 }
@@ -1901,6 +2016,25 @@ export const api = {
     if (cursor !== null) query.set("cursor", cursor);
     return reportRead(`/api/v1/reports/coverage-assets?${query}`,
       (value) => parseCoverageAssetDrilldown(value, workspace, state, days, limit, cursor ?? ""), signal);
+  },
+  reportFindingMetrics: (metric: FindingMetric, limit: number, cursor: string | null,
+    report: PostureReport, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    if (![
+      "findings", "open-findings", "accepted-risk", "expired-accepted-risk",
+      "suppressed", "expired-suppression", "false-positive", "inferred-resolved",
+      "critical", "high", "medium", "low", "info",
+    ].includes(metric) || !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Finding metric pages require one declared metric and a bounded native cursor.",
+        "invalid-input", false);
+    }
+    const query = new URLSearchParams({ metric, limit: String(limit) });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/reports/finding-metrics?${query}`,
+      (value) => parseFindingMetric(value, workspace, metric, limit, cursor ?? "", report), signal, {
+        "X-ASPM-Report-As-Of": report.asOf,
+      });
   },
   reportSLA: (signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;
