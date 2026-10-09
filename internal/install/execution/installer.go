@@ -316,9 +316,12 @@ func (i *installer) command(ctx context.Context, p prepared, command Command, se
 		if p.config.Target.Kind != "linux" || i.options.LocalHost.OS != "linux" || i.options.LocalHost.EUID != 0 {
 			return CommandResult{}, ErrUnsupported
 		}
-		if command.Tool == "podman" &&
-			!slices.Equal(command.Args, []string{"secret", "create", "--replace", policySecretName, "-"}) {
-			return CommandResult{}, ErrUnsupported
+		if command.Tool == "podman" {
+			create := slices.Equal(command.Args, []string{"secret", "create", policySecretName, "-"})
+			remove := slices.Equal(command.Args, []string{"secret", "rm", "--ignore", policySecretName})
+			if !create && !remove {
+				return CommandResult{}, ErrUnsupported
+			}
 		}
 	default:
 		return CommandResult{}, ErrUnsupported

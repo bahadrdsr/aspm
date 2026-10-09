@@ -78,8 +78,13 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 			if err != nil {
 				return ErrCredential
 			}
+			if _, err = i.command(ctx, p, Command{
+				Tool: "podman", Args: []string{"secret", "rm", "--ignore", policySecretName},
+			}, material.values()); err != nil {
+				return err
+			}
 			_, err = i.command(ctx, p, Command{
-				Tool: "podman", Args: []string{"secret", "create", "--replace", policySecretName, "-"},
+				Tool: "podman", Args: []string{"secret", "create", policySecretName, "-"},
 				Stdin: policy,
 			}, material.values())
 			return err
