@@ -21,7 +21,7 @@ import (
 	"github.com/bahadrdsr/aspm/internal/install"
 )
 
-const version = "0.1.0-dev.1"
+var version = "0.1.0-dev.1"
 
 func main() {
 	if err := run(os.Args[1:], os.Stdin, os.Stdout); err != nil {

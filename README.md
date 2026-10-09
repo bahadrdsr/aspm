@@ -156,6 +156,11 @@ previous signed bundle through `aspmctl rollback`; after activation is attempted
 the installer requires verified backup restore instead of an unsafe in-place
 downgrade. See `docs\m13-upgrade-rollback.md`.
 
+The technical preview release builder creates a Linux/amd64 payload, OCI image
+archive, signed installer bundle, CycloneDX SBOM, provenance, checksums and a
+signed release manifest from one clean reviewed revision. It never pushes or
+publishes automatically. See `docs\m13-release-packaging.md`.
+
 ### Application UI workflows
 
 In **Work**, **Load more findings** explicitly requests the service's native

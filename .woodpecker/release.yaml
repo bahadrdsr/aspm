@@ -7,17 +7,24 @@
       "image": "aspm-build-worker:node22.20.0-go1.27.1",
       "environment": {
         "ASPM_RELEASE_APPROVED_REVISION": { "from_secret": "aspm_reviewed_revision" },
-        "ASPM_SIGNING_KEY_FILE": "/run/aspm-release/signing-key.pem"
+        "ASPM_SIGNING_KEY_FILE": "/run/aspm-release/signing-key.pem",
+        "ASPM_RELEASE_TRUSTED_KEY_FILE": "/run/aspm-release/trusted-public-key.pem"
       },
       "commands": [
         "test -n \"$ASPM_ORACLE_CHECKER\"",
+        "test -f \"$ASPM_RELEASE_TRUSTED_KEY_FILE\"",
+        "docker buildx version",
         "cd web",
         "npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org",
         "npm run test:install-browser -- --with-deps",
         "cd ..",
         "node \"$ASPM_ORACLE_CHECKER\" check-env -- node scripts/check.mjs",
         "node scripts/build.mjs",
-        "node scripts/sign.mjs sign .artifacts/development/artifact-manifest.json"
+        "node scripts/sign.mjs sign .artifacts/development/artifact-manifest.json",
+        "node --test scripts/tests/release.test.mjs",
+        "node scripts/release.mjs prepare",
+        "node scripts/release.mjs finalize",
+        "node scripts/release.mjs verify --trusted-key \"$ASPM_RELEASE_TRUSTED_KEY_FILE\""
       ]
     }
   ]
