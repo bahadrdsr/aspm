@@ -1,6 +1,6 @@
 # M13 technical preview release packaging
 
-Implemented on October 10, 2026.
+Implemented on October 9, 2026.
 
 The release workflow produces one versioned Linux/amd64 technical preview from
 a clean, explicitly approved Git revision. It does not publish to a registry or
@@ -12,7 +12,7 @@ forge automatically.
 
 - all independently runnable ASPM binaries with `CGO_ENABLED=0`;
 - `aspmctl` with the selected release version injected at link time;
-- the production web application and dependency notices;
+- the production web application and dependency notices on the reviewed host;
 - an OCI image-layout archive through Docker Buildx;
 - a signed-installer-bundle staging tree using the exact OCI digest;
 - a merged Go/npm CycloneDX component inventory.
@@ -41,8 +41,9 @@ Trust must be established independently.
 Release tar members are sorted with fixed ownership, modes and timestamps, and
 gzip metadata is platform-neutral. Go builds use `-trimpath`,
 `-buildvcs=false`, locked modules, Linux/amd64 and disabled CGO. The OCI build
-uses digest-pinned base images, the source commit timestamp, Buildx provenance,
-SBOM generation and timestamp rewriting.
+uses the already verified `web/dist`, digest-pinned Go/runtime base images, the
+source commit timestamp, Buildx provenance, SBOM generation and timestamp
+rewriting. It does not redownload npm dependencies in a second environment.
 
 This establishes deterministic packaging inputs and exact output digests for
 the reviewed build. It does not claim that unrelated Docker/BuildKit versions

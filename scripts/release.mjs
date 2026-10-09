@@ -243,7 +243,7 @@ function prepare() {
   const metadataPath = join(work, "oci-metadata.json");
   run(docker, [
     "buildx", "build", "--platform", "linux/amd64",
-    "--file", join(root, "Containerfile"),
+    "--file", join(root, "release", "Containerfile"),
     "--tag", `${config.imageRepository}:${config.version}`,
     "--build-arg", `ASPM_VERSION=${config.version}`,
     "--build-arg", `ASPM_REVISION=${revision}`,

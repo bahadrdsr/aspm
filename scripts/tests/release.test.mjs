@@ -19,7 +19,7 @@ test("technical preview release configuration is exact and digest pinned", () =>
   for (const value of [
     config.postgresImage, config.storageImage, ...Object.values(config.baseImages),
   ]) assert.match(value, /@sha256:[a-f0-9]{64}$/);
-  const containerfile = readFileSync(join(root, "Containerfile"), "utf8");
+  const containerfile = readFileSync(join(root, "release", "Containerfile"), "utf8");
   for (const value of Object.values(config.baseImages)) assert.ok(containerfile.includes(value));
   assert.ok(containerfile.includes("ARG ASPM_VERSION=0.1.0-dev.1"));
   assert.ok(containerfile.includes("GOFLAGS=\"-ldflags=-X=main.version=${ASPM_VERSION}\""));

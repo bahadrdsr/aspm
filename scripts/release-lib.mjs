@@ -22,7 +22,7 @@ export function validateReleaseConfiguration(config) {
   assert.match(config.imageRepository, /^[A-Za-z0-9][A-Za-z0-9._/-]*$/);
   assert.match(config.postgresImage, imagePattern);
   assert.match(config.storageImage, imagePattern);
-  assert.deepEqual(Object.keys(config.baseImages).sort(), ["go", "node", "runtime"]);
+  assert.deepEqual(Object.keys(config.baseImages).sort(), ["go", "runtime"]);
   for (const value of Object.values(config.baseImages)) assert.match(value, baseImagePattern);
   return config;
 }
