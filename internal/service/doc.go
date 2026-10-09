@@ -23,6 +23,11 @@
 // Core/ingestion divide the total database budget between the integrity queue
 // and application/import pool; reports uses its single pool's full budget.
 //
+// Verification is another database-only role. It opens only the V27
+// deterministic verification worker, generates a new lower-case 32-hex worker
+// identity per process, and serves health/readiness without storage, provider,
+// target, browser, shell, subprocess, script or tool authority.
+//
 // An existing assets directory without index.html supports API-only core
 // startup with an explicit warning and 404 UI responses, never fabricated UI.
 // Other startup failures and resource/shutdown failures propagate to callers.

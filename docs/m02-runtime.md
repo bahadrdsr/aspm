@@ -14,6 +14,10 @@ later authenticated application services; it is not milestone or release closure
   independent database fencing and selected raw/archive storage authority.
 - `cmd/report-worker` processes persisted report snapshot jobs using PostgreSQL
   only. It has no storage credential requirement or application/auth API.
+- `cmd/verification-worker` processes approved deterministic synthetic
+  verification jobs using PostgreSQL only. Helm keeps
+  `verification.enabled: false`; the role is a manual opt-in and runs
+  `/app/bin/verification-worker`.
 - `internal/jobs` owns its PostgreSQL table, scoped enqueue receipts, bounded
   claims, server-clock expiry, fencing, retry state and completion receipts.
 - `internal/evidence` uses authenticated S3-compatible storage. Writes stage in
@@ -42,6 +46,9 @@ mutation, and an AI identity approved reads only. Policy generation rejects
 missing/reused role credentials and overlapping or unsafe prefixes.
 
 Reporting needs no `ASPM_S3_*`, `AWS_*` or `ASPM_BOOTSTRAP_TOKEN` values.
+Verification also needs no storage configuration. Its readiness reports
+`storage:not-required`, and the manual Quadlet reads only
+`/etc/aspm/verification.env`.
 Only core consumes bootstrap/public-origin configuration and serves the
 authenticated application. `ASPM_SCHEMA`, `ASPM_DB_MAX_CONNECTIONS`,
 `ASPM_LISTEN` and core's `ASPM_ASSETS` select deployment context. Each replica's

@@ -31,6 +31,26 @@ type VerificationWorker struct {
 }
 
 func OpenVerificationWorker(ctx context.Context, config VerificationWorkerConfig) (*VerificationWorker, error) {
+	config, err := normalizeVerificationWorkerConfig(config)
+	if err != nil {
+		return nil, err
+	}
+	db, err := openDatabase(ctx, config.Database)
+	if err != nil {
+		return nil, err
+	}
+	return &VerificationWorker{
+		database: db, workerID: config.WorkerID, lease: config.LeaseDuration,
+		authorizationInterval: config.AuthorizationInterval, maxFixtureBytes: config.MaxFixtureBytes,
+	}, nil
+}
+
+func ValidateVerificationWorkerConfig(config VerificationWorkerConfig) error {
+	_, err := normalizeVerificationWorkerConfig(config)
+	return err
+}
+
+func normalizeVerificationWorkerConfig(config VerificationWorkerConfig) (VerificationWorkerConfig, error) {
 	if config.LeaseDuration == 0 {
 		config.LeaseDuration = 90 * time.Second
 	}
@@ -43,16 +63,12 @@ func OpenVerificationWorker(ctx context.Context, config VerificationWorkerConfig
 	if !validID(config.WorkerID) || config.LeaseDuration < time.Second || config.LeaseDuration > 10*time.Minute ||
 		config.AuthorizationInterval < 10*time.Millisecond || config.AuthorizationInterval > time.Second ||
 		config.MaxFixtureBytes < 1 || config.MaxFixtureBytes > verificationFixtureLimit {
-		return nil, errors.New("invalid verification worker configuration")
+		return VerificationWorkerConfig{}, errors.New("invalid verification worker configuration")
 	}
-	db, err := openDatabase(ctx, config.Database)
-	if err != nil {
-		return nil, err
+	if err := ValidateDatabaseConfig(config.Database); err != nil {
+		return VerificationWorkerConfig{}, err
 	}
-	return &VerificationWorker{
-		database: db, workerID: config.WorkerID, lease: config.LeaseDuration,
-		authorizationInterval: config.AuthorizationInterval, maxFixtureBytes: config.MaxFixtureBytes,
-	}, nil
+	return config, nil
 }
 
 func (w *VerificationWorker) Ping(ctx context.Context) error { return w.database.ping(ctx) }
@@ -237,7 +253,12 @@ func (w *VerificationWorker) verificationPolicyOutcome(ctx context.Context,
 
 func (w *VerificationWorker) publishVerificationSuccess(ctx context.Context,
 	job verificationJobRecord, outcome string) error {
-	result, err := w.pool.Exec(ctx, `UPDATE `+w.table("verification_jobs")+` j
+	tx, err := w.pool.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer rollback(tx)
+	result, err := tx.Exec(ctx, `UPDATE `+w.table("verification_jobs")+` j
 		SET state='succeeded',outcome=$4,completed_at=$5,worker_id=NULL,lease_until=NULL
 		WHERE j.id=$1 AND j.worker_id=$2 AND j.fence=$3 AND j.state='processing'
 		AND j.lease_until>clock_timestamp()
@@ -255,7 +276,10 @@ func (w *VerificationWorker) publishVerificationSuccess(ctx context.Context,
 	if result.RowsAffected() != 1 {
 		return nil
 	}
-	return nil
+	if err = ctx.Err(); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
 }
 
 func (w *VerificationWorker) settleVerificationFailure(ctx context.Context, job verificationJobRecord,

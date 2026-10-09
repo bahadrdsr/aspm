@@ -99,6 +99,9 @@ exploit execution or autonomous offensive tools. V27 adds immutable bounded
 fixtures, explicit administrator approval/revocation, durable leased jobs,
 manual finding-detail history, and safe `reproduced`/`not-reproduced` outcomes.
 See `docs\m12-deterministic-verification.md`.
+Standalone runtime and manual deployment wiring are documented in
+`docs\m13-verification-worker.md`. Synthetic fixture reproduction is not proof
+of a real vulnerability and does not close or classify the finding.
 
 Linux/Podman Quadlet and Kubernetes/Helm are the production targets. The installer
 now supports the configuration wizard, diagnostics, signed target-bound planning,
@@ -134,7 +137,8 @@ asset/import and snapshot-creation writes, not React components. Their synthetic
 production imports; these checks do not prove live backend permissions.
 
 For the actual application, use `cmd\core-api`, `cmd\ingestion`,
-`cmd\retention-worker` and `cmd\report-worker` with an existing database,
+`cmd\retention-worker`, `cmd\report-worker` and the database-only
+`cmd\verification-worker` with an existing database,
 existing evidence bucket and protected role-specific configuration described in
 `docs\m02-runtime.md`.
 Do not share an operator S3 credential across those processes.

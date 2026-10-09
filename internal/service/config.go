@@ -63,16 +63,21 @@ type Config struct {
 	AssessmentMaxResponseBytes      int64
 	AssessmentClient                *http.Client `json:"-"`
 	AssessmentCAFile                string       `json:"-"`
+
+	VerificationLeaseDuration         time.Duration
+	VerificationAuthorizationInterval time.Duration
+	VerificationMaxFixtureBytes       int64
 }
 
 func Environment(role string) (Config, error) {
 	if role != "core" && role != "ingestion" && role != "reports" && role != "retention" &&
-		role != "delivery" && role != "collection" && role != "assessment" {
+		role != "delivery" && role != "collection" && role != "assessment" && role != "verification" {
 		return Config{}, errors.New("unsupported service role")
 	}
+	var err error
 	prepare := false
-	if value := os.Getenv("ASPM_S3_PREPARE_READINESS"); role != "delivery" && role != "collection" && role != "assessment" && value != "" {
-		var err error
+	if value := os.Getenv("ASPM_S3_PREPARE_READINESS"); role != "delivery" && role != "collection" &&
+		role != "assessment" && role != "verification" && value != "" {
 		prepare, err = strconv.ParseBool(value)
 		if err != nil {
 			return Config{}, errors.New("ASPM_S3_PREPARE_READINESS must be an explicit boolean")
@@ -81,16 +86,14 @@ func Environment(role string) (Config, error) {
 	if prepare && role != "core" {
 		return Config{}, errors.New("readiness preparation is only supported by core")
 	}
-	hostname, err := os.Hostname()
-	if err != nil {
-		return Config{}, fmt.Errorf("resolve worker identity: %w", err)
-	}
 	connections := int64(5)
 	minimum := int64(2)
-	if role == "reports" || role == "retention" || role == "delivery" || role == "collection" || role == "assessment" {
+	if role == "reports" || role == "retention" || role == "delivery" || role == "collection" ||
+		role == "assessment" || role == "verification" {
 		minimum = 1
 	}
-	if role == "retention" || role == "delivery" || role == "collection" || role == "assessment" {
+	if role == "retention" || role == "delivery" || role == "collection" ||
+		role == "assessment" || role == "verification" {
 		connections = 1
 	}
 	if value := os.Getenv("ASPM_DB_MAX_CONNECTIONS"); value != "" {
@@ -99,10 +102,18 @@ func Environment(role string) (Config, error) {
 			return Config{}, errors.New("invalid ASPM_DB_MAX_CONNECTIONS for the selected role")
 		}
 	}
+	workerID := jobs.NewID()
+	if role != "verification" {
+		hostname, err := os.Hostname()
+		if err != nil {
+			return Config{}, fmt.Errorf("resolve worker identity: %w", err)
+		}
+		workerID = role + "-" + hostname + "-" + workerID
+	}
 	config := Config{
 		Listen:           env("ASPM_LISTEN", "127.0.0.1:18080"),
 		PrepareReadiness: prepare,
-		WorkerID:         role + "-" + hostname + "-" + jobs.NewID(), Workspace: os.Getenv("ASPM_WORKSPACE"),
+		WorkerID:         workerID, Workspace: os.Getenv("ASPM_WORKSPACE"),
 		TLSCertFile: os.Getenv("ASPM_TLS_CERT_FILE"), TLSKeyFile: os.Getenv("ASPM_TLS_KEY_FILE"),
 		Jobs: jobs.Config{
 			DatabaseURL: os.Getenv("ASPM_DATABASE_URL"), Schema: env("ASPM_SCHEMA", "aspm"),
@@ -110,7 +121,8 @@ func Environment(role string) (Config, error) {
 			MaxLease: time.Minute, MaxAttempts: 3, RetryDelay: time.Second, MaxRetryDelay: 30 * time.Second,
 		},
 	}
-	if role != "reports" && role != "delivery" && role != "collection" && role != "assessment" {
+	if role != "reports" && role != "delivery" && role != "collection" &&
+		role != "assessment" && role != "verification" {
 		config.Evidence = evidence.Config{
 			Endpoint: os.Getenv("ASPM_S3_ENDPOINT"), Bucket: env("ASPM_S3_BUCKET", "aspm-evidence"),
 			AccessKey: os.Getenv("ASPM_S3_ACCESS_KEY"), SecretKey: os.Getenv("ASPM_S3_SECRET_KEY"),
@@ -166,6 +178,11 @@ func Environment(role string) (Config, error) {
 			return Config{}, err
 		}
 	}
+	if role == "verification" {
+		if err := verificationEnvironment(&config); err != nil {
+			return Config{}, err
+		}
+	}
 	if err := validateConfig(role, config); err != nil {
 		if role == "delivery" && config.DeliveryClient != nil {
 			config.DeliveryClient.CloseIdleConnections()
@@ -195,7 +212,7 @@ func databaseConfig(config jobs.Config) app.DatabaseConfig {
 // storage probes, listeners, or worker goroutines can perform I/O.
 func validateConfig(role string, config Config) error {
 	if role != "core" && role != "ingestion" && role != "reports" && role != "retention" &&
-		role != "delivery" && role != "collection" && role != "assessment" {
+		role != "delivery" && role != "collection" && role != "assessment" && role != "verification" {
 		return errors.New("unsupported service role")
 	}
 	if role == "delivery" {
@@ -213,6 +230,11 @@ func validateConfig(role string, config Config) error {
 			return err
 		}
 	}
+	if role == "verification" {
+		if err := validateVerificationConfig(config); err != nil {
+			return err
+		}
+	}
 	if role == "core" && config.AssessmentScope != "" {
 		if err := app.ValidateAssessmentScope(config.AssessmentScope); err != nil {
 			return err
@@ -223,10 +245,12 @@ func validateConfig(role string, config Config) error {
 			return err
 		}
 	}
-	if role != "delivery" && role != "collection" && role != "assessment" && config.PrepareReadiness && (role != "core" || config.ReadinessKey == "") {
+	if role != "delivery" && role != "collection" && role != "assessment" &&
+		role != "verification" && config.PrepareReadiness && (role != "core" || config.ReadinessKey == "") {
 		return errors.New("readiness preparation requires core and an explicit scoped readiness key")
 	}
-	if role != "reports" && role != "delivery" && role != "collection" && role != "assessment" {
+	if role != "reports" && role != "delivery" && role != "collection" &&
+		role != "assessment" && role != "verification" {
 		if err := app.ValidateStorageConfig(storageConfig(config.Evidence)); err != nil {
 			return err
 		}

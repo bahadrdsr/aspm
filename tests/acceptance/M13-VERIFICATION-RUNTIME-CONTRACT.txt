@@ -1,0 +1,100 @@
+M13 VERIFICATION WORKER RUNTIME ACCEPTANCE
+==========================================
+
+Scope
+-----
+This packet covers only standalone deterministic verification-worker runtime
+and opt-in deployment wiring. It does not certify backup or restore, high
+availability, performance, release signing, or release readiness.
+
+Production surfaces required
+----------------------------
+- cmd/verification-worker must use service.Environment("verification") and
+  service.Run(ctx, "verification", config).
+- service.Config must expose VerificationLeaseDuration,
+  VerificationAuthorizationInterval, and VerificationMaxFixtureBytes.
+- Environment and Run must support exactly one database-only "verification"
+  role that opens app.OpenVerificationWorker and loops over bounded ProcessNext.
+- Containerfile and scripts/package-image.mjs must build and package the actual
+  verification-worker binary without changing the default core image command.
+- Helm must add one verification.enabled opt-in Deployment.
+- deploy/quadlet/aspm-verification.container must remain a protected manual
+  opt-in. The existing installer must not copy, activate, or provision it.
+- README.md, docs/m02-runtime.md, and docs/m13-verification-worker.md must
+  document enablement, readiness meaning, authority limits, and M13 exclusions.
+
+Accepted environment
+--------------------
+Required:
+- ASPM_DATABASE_URL
+
+Defaults and bounded overrides:
+- ASPM_SCHEMA=aspm
+- ASPM_DB_MAX_CONNECTIONS=1, accepted range 1..100
+- ASPM_LISTEN=127.0.0.1:18080
+- ASPM_VERIFICATION_LEASE_DURATION=90s, accepted range 1s..10m
+- ASPM_VERIFICATION_AUTHORIZATION_INTERVAL=100ms, accepted range 10ms..1s
+- ASPM_VERIFICATION_MAX_FIXTURE_BYTES=65536, accepted range 1..65536
+
+Optional existing HTTPS listener inputs:
+- ASPM_TLS_CERT_FILE
+- ASPM_TLS_KEY_FILE
+
+ASPM_WORKER_ID is not accepted. Each Environment call must generate a unique
+lower-case 32-hex durable worker ID. ASPM application_name remains the separate
+human-readable value "aspm-verification".
+
+Storage, collection, assessment, delivery, provider, target, bootstrap, assets,
+integration-key, workspace, and readiness-object settings are unnecessary
+authority. Nonempty supplied values must fail validation before database,
+HTTP/storage, listener, or worker startup.
+
+Runtime and readiness
+---------------------
+The role has no application/auth routes and serves only GET /healthz and
+GET /readyz. Health claims only that the process is alive. Readiness claims
+database=reachable, schema=compatible, storage=not-required, and directs the
+operator to inspect job state separately. It never claims a verification was
+processed, a finding is safe, a provider is available, or a target is reachable.
+
+Empty queue processing is quiescent. Context cancellation must stop the service
+within the existing bound. A schema newer than V27 must fail before the HTTP
+listener starts.
+
+Restart and recovery
+--------------------
+The real compiled command receives one API-created V27 job using the existing
+canonical synthetic fixture and current explicit approval. A test-owned
+PostgreSQL trigger holds the first fenced publication transaction. Terminating
+that exact process must roll back publication while retaining the processing
+lease. After lease expiry, a fresh command must reclaim with a distinct
+lower-case 32-hex worker ID and commit exactly one reproduced result.
+
+The committed row must have attempts=2, fence=2, no worker_id or lease, and no
+close-finding or false-positive claim. A third empty-queue restart must not
+change the terminal job, finding, or single publication witness. No S3,
+provider, target, browser, shell, subprocess, script, or tool execution is part
+of the verification operation.
+
+Deployment
+----------
+Helm defaults:
+- verification.enabled=false
+- replicas=1
+- leaseDuration="90s"
+- authorizationInterval="100ms"
+- maxFixtureBytes=65536
+- requests 100m CPU / 128Mi memory
+- limits 1 CPU / 512Mi memory
+
+The enabled pod receives only database, schema, connection, listen, and the
+three verification runtime settings. It has one container, no init container,
+no extra Service or Secret, no service-account token, a read-only root,
+RuntimeDefault seccomp, no privilege escalation, all capabilities dropped, and
+one memory-backed 64Mi /tmp. Startup/readiness use /readyz and liveness uses
+/healthz.
+
+The manual Quadlet uses only /etc/aspm/verification.env, the private ASPM
+network, /app/bin/verification-worker, a read-only root, no-new-privileges,
+dropped capabilities, and one /tmp bounded to 64MiB. It has no storage
+dependency, inline environment, extra credential source, or [Install] section.

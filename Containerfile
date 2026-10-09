@@ -18,6 +18,7 @@ RUN CGO_ENABLED=0 go build -trimpath -o /out/core-api ./cmd/core-api && \
     CGO_ENABLED=0 go build -trimpath -o /out/delivery-worker ./cmd/delivery-worker && \
     CGO_ENABLED=0 go build -trimpath -o /out/collection-worker ./cmd/collection-worker && \
     CGO_ENABLED=0 go build -trimpath -o /out/assessment-worker ./cmd/assessment-worker && \
+    CGO_ENABLED=0 go build -trimpath -o /out/verification-worker ./cmd/verification-worker && \
     CGO_ENABLED=0 go build -trimpath -o /out/aspmctl ./cmd/aspmctl
 
 FROM alpine:3.23

@@ -123,6 +123,16 @@
 - name: ASPM_ASSESSMENT_MAX_RESPONSE_BYTES
   value: {{ $settings.maxResponseBytes | quote }}
 {{- end }}
+{{- if eq $role "verification" }}
+- name: ASPM_LISTEN
+  value: "0.0.0.0:8080"
+- name: ASPM_VERIFICATION_LEASE_DURATION
+  value: {{ $settings.leaseDuration | quote }}
+- name: ASPM_VERIFICATION_AUTHORIZATION_INTERVAL
+  value: {{ $settings.authorizationInterval | quote }}
+- name: ASPM_VERIFICATION_MAX_FIXTURE_BYTES
+  value: {{ $settings.maxFixtureBytes | quote }}
+{{- end }}
 {{- if or (eq $role "core") (eq $role "delivery") }}
 - name: ASPM_PUBLIC_ORIGIN
   value: {{ if $root.Values.ingress.enabled }}{{ printf "https://%s" $root.Values.ingress.host | quote }}{{ else }}{{ $root.Values.publicOrigin | default "" | quote }}{{ end }}

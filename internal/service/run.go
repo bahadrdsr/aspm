@@ -50,6 +50,18 @@ func openRole(ctx context.Context, role string, config Config) (runtime *roleRun
 			runtime = nil
 		}
 	}()
+	if role == "verification" {
+		worker, openErr := app.OpenVerificationWorker(ctx, verificationWorkerConfig(config))
+		if openErr != nil {
+			return runtime, openErr
+		}
+		runtime.closers = append(runtime.closers, worker.Close)
+		runtime.checks = append(runtime.checks, worker.Ping)
+		runtime.workers = append(runtime.workers, func(ctx context.Context) error {
+			return runQueuedWork(ctx, "verification", worker.ProcessNext)
+		})
+		return runtime, nil
+	}
 	if role == "assessment" {
 		worker, openErr := app.OpenAssessmentWorker(ctx, assessmentWorkerConfig(config))
 		if openErr != nil {
@@ -245,7 +257,8 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 			}
 		}
 	}
-	if role != "reports" && role != "delivery" && role != "collection" && role != "assessment" && config.ReadinessKey != "" {
+	if role != "reports" && role != "delivery" && role != "collection" &&
+		role != "assessment" && role != "verification" && config.ReadinessKey != "" {
 		if config.PrepareReadiness {
 			if err := evidence.PrepareReadiness(startup, config.Evidence, config.ReadinessKey); err != nil {
 				return err
@@ -281,7 +294,8 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 		if role == "collection" {
 			storage = "configured-not-probed"
 		}
-		if role != "reports" && role != "delivery" && role != "collection" && role != "assessment" {
+		if role != "reports" && role != "delivery" && role != "collection" &&
+			role != "assessment" && role != "verification" {
 			storage = "not-probed"
 			if config.ReadinessKey != "" {
 				if err := app.ProbeStorage(check, storageConfig(config.Evidence), config.ReadinessKey); err != nil {
@@ -294,6 +308,9 @@ func Run(ctx context.Context, role string, config Config) (err error) {
 		ready := map[string]string{
 			"service": role, "status": "ready", "database": "reachable", "storage": storage,
 			"pipeline": "inspect-job-state-separately",
+		}
+		if role == "verification" {
+			ready["schema"] = "compatible"
 		}
 		if role == "assessment" {
 			ready["admission"] = "configured"

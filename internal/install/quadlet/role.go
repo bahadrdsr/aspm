@@ -30,14 +30,14 @@ type Config struct {
 
 func ValidateConfig(config Config) error {
 	switch config.Role {
-	case "core", "ingestion", "retention", "reports":
+	case "core", "ingestion", "retention", "reports", "verification":
 	default:
 		return ErrConfiguration
 	}
 	if config.EnvironmentFile != "/etc/aspm/"+config.Role+".env" {
 		return ErrConfiguration
 	}
-	if config.Role == "reports" {
+	if config.Role == "reports" || config.Role == "verification" {
 		if config.RawPrefix != "" || config.ReadinessKey != "" || config.NormalizedPrefix != "" || config.ArchivePrefix != "" {
 			return ErrConfiguration
 		}
@@ -109,7 +109,7 @@ func RenderRole(ctx context.Context, source []byte, config Config) ([]byte, erro
 		newline = "\r\n"
 	}
 	selected := []string{"EnvironmentFile=" + config.EnvironmentFile}
-	if config.Role != "reports" {
+	if config.Role != "reports" && config.Role != "verification" {
 		selected = append(selected,
 			"Environment=ASPM_S3_PREFIX="+config.RawPrefix,
 			"Environment=ASPM_S3_READINESS_KEY="+config.ReadinessKey,
@@ -186,7 +186,8 @@ func RenderRole(ctx context.Context, source []byte, config Config) ([]byte, erro
 			if err != nil {
 				return nil, err
 			}
-			if config.Role == "reports" && !reportEnvironment(name) {
+			if (config.Role == "reports" && !reportEnvironment(name)) ||
+				(config.Role == "verification" && !verificationEnvironment(name)) {
 				return nil, ErrUnit
 			}
 			if strings.HasPrefix(name, "AWS_") || name == "ASPM_S3_ACCESS_KEY" ||
@@ -241,6 +242,17 @@ func assignmentName(value string) (string, error) {
 func reportEnvironment(name string) bool {
 	switch name {
 	case "ASPM_DATABASE_URL", "ASPM_SCHEMA", "ASPM_DB_MAX_CONNECTIONS", "ASPM_LISTEN", "ASPM_WORKER_ID":
+		return true
+	default:
+		return false
+	}
+}
+
+func verificationEnvironment(name string) bool {
+	switch name {
+	case "ASPM_DATABASE_URL", "ASPM_SCHEMA", "ASPM_DB_MAX_CONNECTIONS", "ASPM_LISTEN",
+		"ASPM_VERIFICATION_LEASE_DURATION", "ASPM_VERIFICATION_AUTHORIZATION_INTERVAL",
+		"ASPM_VERIFICATION_MAX_FIXTURE_BYTES":
 		return true
 	default:
 		return false
