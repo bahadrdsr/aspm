@@ -34,7 +34,7 @@ function octal(value, length) {
 }
 
 function tarHeader(entry) {
-  assert.match(entry.path, /^(?!\/)(?!.*(?:^|\/)\.\.?\/)[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*$/);
+  assert.match(entry.path, /^(?!\/)(?!.*(?:^|\/)\.\.?\/)[A-Za-z0-9_@.-]+(?:\/[A-Za-z0-9_@.-]+)*$/);
   const name = Buffer.from(entry.path);
   assert.ok(name.length <= 100, `Tar path is too long: ${entry.path}`);
   const header = Buffer.alloc(512);
@@ -95,7 +95,7 @@ export function readTar(data) {
     const name = tarString(header, 0, 100);
     const prefix = tarString(header, 345, 155);
     const path = prefix ? `${prefix}/${name}` : name;
-    assert.match(path, /^(?!\/)(?!.*(?:^|\/)\.\.?\/)[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*$/);
+    assert.match(path, /^(?!\/)(?!.*(?:^|\/)\.\.?\/)[A-Za-z0-9_@.-]+(?:\/[A-Za-z0-9_@.-]+)*$/);
     const type = String.fromCharCode(header[156] || "0".charCodeAt(0));
     const size = tarOctal(header, 124, 12);
     offset += 512;
