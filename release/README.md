@@ -29,9 +29,10 @@ The output under `.artifacts\release\0.1.0-rc.1` contains:
 - exact SHA-256 sums;
 - a signed canonical release manifest.
 
-The release-specific Containerfile packages the already verified `web/dist`
-output. This avoids a second dependency download inside BuildKit while keeping
-the lockfile build and OCI packaging as separately checked stages.
+The release-specific Containerfile packages the already verified Linux binaries
+and `web/dist` output. This avoids dependency downloads and recompilation inside
+BuildKit while keeping the locked builds and OCI packaging as separately
+checked stages.
 
 No script pushes an image, creates a forge release, or changes a registry.
 Before deployment, load or publish the OCI archive under the exact

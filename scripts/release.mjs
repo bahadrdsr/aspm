@@ -240,6 +240,11 @@ function prepare() {
     copyFileSync(join(root, "docs", name), join(payloadRoot, "docs", name));
   }
 
+  const imageContext = join(work, "image-context");
+  copyTree(bin, join(imageContext, "bin"));
+  copyTree(join(root, "web", "dist"), join(imageContext, "web"));
+  copyFileSync(join(root, "LICENSE"), join(imageContext, "LICENSE"));
+  copyFileSync(join(root, "NOTICE"), join(imageContext, "NOTICE"));
   const epoch = run("git", ["show", "-s", "--format=%ct", revision]);
   assert.match(epoch, /^[0-9]+$/);
   const oci = join(work, `aspm-${config.version}-linux-amd64.oci.tar`);
@@ -250,9 +255,9 @@ function prepare() {
     "--tag", `${config.imageRepository}:${config.version}`,
     "--build-arg", `ASPM_VERSION=${config.version}`,
     "--build-arg", `ASPM_REVISION=${revision}`,
-    "--provenance=mode=max", "--sbom=true",
+    "--provenance=mode=max",
     "--output", `type=oci,dest=${oci},rewrite-timestamp=true`,
-    "--metadata-file", metadataPath, root,
+    "--metadata-file", metadataPath, imageContext,
   ], { env: { SOURCE_DATE_EPOCH: epoch }, timeout: 60 * 60_000 });
   const metadata = JSON.parse(readFileSync(metadataPath));
   const imageDigest = metadata["containerimage.digest"];
@@ -287,6 +292,7 @@ function prepare() {
       buildx: run(docker, ["buildx", "version"]),
     },
     payload: records(walk(join(work, "payload"))),
+    imageContext: records(walk(imageContext)),
     installer: records(walk(installerRoot)),
     sbomSHA256: digest(readFileSync(join(work, "sbom.cdx.json"))),
     ociSHA256: digest(readFileSync(oci)),
@@ -315,6 +321,7 @@ function finalize() {
   assert.equal(receipt.version, config.version);
   assert.equal(receipt.configurationSHA256, digest(configBytes));
   assertRecords(join(work, "payload"), receipt.payload);
+  assertRecords(join(work, "image-context"), receipt.imageContext);
   assertRecords(join(work, "installer"), receipt.installer);
   assert.equal(digest(readFileSync(join(work, "sbom.cdx.json"))), receipt.sbomSHA256);
   const ociSource = join(work, `aspm-${config.version}-linux-amd64.oci.tar`);

@@ -22,7 +22,10 @@ test("technical preview release configuration is exact and digest pinned", () =>
   const containerfile = readFileSync(join(root, "release", "Containerfile"), "utf8");
   for (const value of Object.values(config.baseImages)) assert.ok(containerfile.includes(value));
   assert.ok(containerfile.includes("ARG ASPM_VERSION=0.1.0-dev.1"));
-  assert.ok(containerfile.includes("GOFLAGS=\"-ldflags=-X=main.version=${ASPM_VERSION}\""));
+  assert.ok(containerfile.includes("COPY bin/ /app/bin/"));
+  assert.ok(containerfile.includes("COPY web/ /app/web/"));
+  assert.ok(!containerfile.includes("npm ci"));
+  assert.ok(!containerfile.includes("go mod download"));
 });
 
 test("release archives are byte deterministic and path bounded", () => {

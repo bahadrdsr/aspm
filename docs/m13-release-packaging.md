@@ -41,9 +41,10 @@ Trust must be established independently.
 Release tar members are sorted with fixed ownership, modes and timestamps, and
 gzip metadata is platform-neutral. Go builds use `-trimpath`,
 `-buildvcs=false`, locked modules, Linux/amd64 and disabled CGO. The OCI build
-uses the already verified `web/dist`, digest-pinned Go/runtime base images, the
-source commit timestamp, Buildx provenance, SBOM generation and timestamp
-rewriting. It does not redownload npm dependencies in a second environment.
+uses the already verified Linux binaries and `web/dist`, one digest-pinned
+runtime base image, the source commit timestamp, Buildx provenance and timestamp
+rewriting. It does not redownload dependencies or recompile source in a second
+environment. The release SBOM is generated from the locked Go/npm graphs.
 
 This establishes deterministic packaging inputs and exact output digests for
 the reviewed build. It does not claim that unrelated Docker/BuildKit versions
