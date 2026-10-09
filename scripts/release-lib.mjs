@@ -94,9 +94,10 @@ export function readTar(data) {
     assert.equal(actual, expected, "Tar header checksum mismatch.");
     const name = tarString(header, 0, 100);
     const prefix = tarString(header, 345, 155);
-    const path = prefix ? `${prefix}/${name}` : name;
-    assert.match(path, /^(?!\/)(?!.*(?:^|\/)\.\.?\/)[A-Za-z0-9_@.-]+(?:\/[A-Za-z0-9_@.-]+)*$/);
     const type = String.fromCharCode(header[156] || "0".charCodeAt(0));
+    const rawPath = prefix ? `${prefix}/${name}` : name;
+    const path = type === "5" ? rawPath.replace(/\/+$/, "") : rawPath;
+    assert.match(path, /^(?!\/)(?!.*(?:^|\/)\.\.?\/)[A-Za-z0-9_@.-]+(?:\/[A-Za-z0-9_@.-]+)*$/);
     const size = tarOctal(header, 124, 12);
     offset += 512;
     assert.ok(offset + size <= data.length, "Tar member exceeds archive.");
