@@ -32,11 +32,13 @@ func main() {
 
 func run(args []string, input io.Reader, output io.Writer) error {
 	if len(args) == 0 {
-		return errors.New("choose init, plan, deploy-plan, apply, status, uninstall, doctor, or version")
+		return errors.New("choose init, plan, deploy-plan, apply, status, uninstall, backup, restore, doctor, or version")
 	}
 	switch args[0] {
 	case "deploy-plan", "apply", "status", "uninstall":
 		return deployment(args, output)
+	case "backup", "restore":
+		return recoveryCommand(args, output)
 	case "version":
 		fmt.Fprintln(output, "aspmctl", version)
 		return nil

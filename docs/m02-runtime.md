@@ -59,6 +59,11 @@ initializes only the selected database schema/table and requires any configured
 readiness object to exist. A failed dependency does not fabricate readiness or
 fall back to memory/filesystem state.
 
+Technical-preview recovery is a separate quiesced operator workflow documented
+in `m13-backup-restore.md`. It backs up the exact V27 application schema and
+explicit raw, normalized, and archive prefixes. It is not an online distributed
+snapshot or point-in-time recovery claim.
+
 Core can explicitly opt into preparing its selected nonsecret readiness object
 with `ASPM_S3_PREPARE_READINESS=true`. This is off by default and is rejected for
 ingestion/retention/reporting. Core uses only its existing raw-scope credential and a

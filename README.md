@@ -143,6 +143,13 @@ existing evidence bucket and protected role-specific configuration described in
 `docs\m02-runtime.md`.
 Do not share an operator S3 credential across those processes.
 
+The technical-preview single-instance recovery workflow is available through
+`aspmctl backup plan|create|verify|status|cleanup` and
+`aspmctl restore plan|apply|verify|status|cleanup`. It requires an explicit
+owner-protected configuration, PostgreSQL 18.6 client tools, a quiesced
+single-instance deployment, an absent restore schema, and empty selected object
+prefixes. See `docs\m13-backup-restore.md`.
+
 ### Application UI workflows
 
 In **Work**, **Load more findings** explicitly requests the service's native

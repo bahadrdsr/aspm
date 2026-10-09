@@ -41,6 +41,7 @@ type ApplicationConfig struct {
 	ArchiveStorage           StorageConfig
 	BootstrapToken           string `json:"-"`
 	IntegrationEncryptionKey []byte `json:"-"`
+	AssessmentScope          string
 	WebhookOrigins           []string
 	PublicOrigin             string
 	Now                      func() time.Time `json:"-"`

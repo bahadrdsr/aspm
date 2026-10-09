@@ -1,0 +1,327 @@
+M13 SINGLE-INSTANCE BACKUP, RESTORE AND RECOVERY VERIFICATION
+==============================================================
+
+Scope
+-----
+This packet covers one technical-preview operator workflow for the supported
+self-hosted single-instance deployment. It covers the ASPM V27 application
+schema and the explicitly selected application-owned S3-compatible prefixes.
+It does not certify HA, online multi-replica consistency, point-in-time
+recovery, cross-version downgrade, cross-target migration, cloud snapshots,
+object version history, RTO/RPO, enterprise-scale throughput or unattended
+disaster recovery.
+
+No production implementation, product documentation or deployment behavior is
+provided by this packet. The later implementation must use the existing
+aspmctl binary, pgx/AWS SDK libraries and supported Helm/Quadlet artifacts.
+
+CLI contract
+------------
+Read-only plans are the dry-run surface. They perform all tool, credential,
+source/destination, manifest and emptiness checks but create no backup staging
+directory, restore journal, schema or object.
+
+  aspmctl backup plan
+    --config recovery.json --backup <new-directory>
+
+  aspmctl backup create
+    --config recovery.json --backup <new-directory>
+    --approve-plan <exact-plan-id>
+
+  aspmctl backup verify
+    --config recovery.json --backup <completed-directory>
+
+  aspmctl backup status
+    --backup <directory>
+
+  aspmctl backup cleanup
+    --backup <partial-directory> --confirm-backup <backup-id>
+
+  aspmctl restore plan
+    --config recovery.json --backup <completed-directory>
+    --state <new-restore-state.json>
+
+  aspmctl restore apply
+    --config recovery.json --backup <completed-directory>
+    --state <new-restore-state.json>
+    --approve-plan <exact-plan-id>
+    --confirm-instance <exact-instance-id>
+
+  aspmctl restore verify
+    --config recovery.json --backup <completed-directory>
+    --state <restore-state.json>
+
+  aspmctl restore status
+    --state <restore-state.json>
+
+  aspmctl restore cleanup
+    --config recovery.json --backup <completed-directory>
+    --state <restore-state.json> --dry-run
+
+  aspmctl restore cleanup
+    --config recovery.json --backup <completed-directory>
+    --state <restore-state.json>
+    --approve-plan <distinct-cleanup-plan-id>
+    --confirm-instance <exact-instance-id>
+
+There is no --force, --overwrite, --drop, --all, --discover, ambient database,
+ambient bucket, ambient credential or prefix fallback. Secrets are accepted
+only through an explicit owner-protected configuration file. They never appear
+in argv, plan JSON, status JSON, the portable manifest or ordinary diagnostics.
+
+Plan stdout is one strict JSON object with exactly:
+
+  apiVersion, kind, id, operation, instanceId, readOnly
+
+kind is BackupPlan or RestorePlan, operation is backup or restore, readOnly is
+true, and id binds all inspected inputs. Successful operation/verification
+stdout is one strict JSON object with exactly:
+
+  apiVersion, kind, phase, backupId, restoreId (restore only), manifestSha256
+
+BackupReceipt uses phase=completed. BackupVerification, RestoreReceipt and
+RestoreVerification use phase=verified. Status may expose the same nonsecret
+receipt plus bounded failure/checkpoint fields, but never upgrades a partial
+phase to verified.
+
+Private recovery configuration
+------------------------------
+The strict JSON file has:
+
+  apiVersion: "aspm.dev/recovery/v1alpha1"
+  kind: "RecoveryConfiguration"
+  instanceId: operator-created UUID retained for this logical ASPM instance
+  targetKind: "linux" or "kubernetes"
+  database:
+    url: explicit PostgreSQL URL with nonempty user/password/database
+    name: exact selected database name
+    schema: exact selected ASPM schema
+  storage:
+    endpoint, region, bucket, accessKey, secretKey
+    rawPrefix, normalizedPrefix, archivePrefix
+  tools:
+    pgDump, pgRestore and psql absolute executable paths
+    requiredVersion: "18.6"
+  limits:
+    maxDatabaseBytes, maxObjects, maxObjectBytes, maxTotalObjectBytes
+
+Unknown fields, partial credentials, empty values, invalid URLs, path traversal,
+root prefixes, overlapping prefixes, duplicate tool paths, nonregular tools,
+missing bounds and unsupported target kinds fail before source or destination
+mutation. Database URL name must equal database.name. The three prefixes are
+explicit, valid, disjoint and terminal-slash scoped. The workflow never lists
+another database, schema, bucket or prefix.
+
+Source and destination retain the same logical database name, schema name,
+bucket name and three prefix strings. Network endpoints, physical host/cluster
+and credentials may change. Name or prefix remapping would rewrite durable
+references and is outside this contract. targetKind and instanceId must match
+the manifest. Restoring a Linux backup into Kubernetes, or the reverse, is not
+claimed here.
+
+Required tools
+--------------
+Before creating any backup/restore state, aspmctl must run only the explicit
+pg_dump, pg_restore and psql paths with --version and require exact PostgreSQL
+18.6 client versions. The selected PostgreSQL server must also report 18.6.
+Missing, mismatched or changed tools fail before partial backup/restore.
+
+S3-compatible operations use the existing compiled AWS SDK Go client with an
+explicit endpoint, region and static credentials from recovery.json. No AWS
+profile, metadata service, home-directory config or environment credential
+chain is admitted. SHA-256 uses the Go standard library. The manifest records:
+
+  aspmctl 0.1.0-dev.1
+  PostgreSQL server 18.6
+  pg_dump/pg_restore/psql 18.6
+  github.com/aws/aws-sdk-go-v2/service/s3 v1.113.1
+  sha256
+
+Selected PostgreSQL scope
+-------------------------
+The selected schema must contain exactly the known V27 app_* catalog plus
+app_schema_versions. The ledger must be exactly 1 through 27. Unexpected tables,
+views, materialized views, sequences, functions or other objects in that schema
+fail rather than enter the backup. No other schema is inspected or dumped.
+
+pg_dump uses custom format, the exact selected schema, no owner and no ACLs.
+It uses one exported repeatable-read PostgreSQL snapshot shared with the
+database inventory. The inventory contains every expected table, row count and
+a SHA-256 over canonical binary COPY bytes ordered by the declared primary key.
+It is checksummed by the manifest and recomputed after restore.
+
+Schema definitions are retained for all tables. Data is deliberately omitted
+only from:
+
+  app_sessions
+  app_oidc_flows
+  app_auth_throttle
+
+Restored users must reauthenticate. OIDC identities remain durable; incomplete
+OIDC login flows do not. Password hashes and application-encrypted connector,
+source and AI credential ciphertext remain exact application data. The portable
+backup never contains the integration-encryption key, database/S3 credentials,
+bootstrap token, TLS keys, OIDC client secret or provider runtime keys in plain
+text. The operator must reprovision runtime secrets out of band. Preserved
+ciphertext is usable only with the same separately protected integration key;
+otherwise integrations and hosted AI must be reprovisioned.
+
+Selected object scope
+---------------------
+The backup lists only the configured raw, normalized and archive prefixes in
+the exact configured bucket. Every current object is downloaded to a
+content-addressed objects/sha256/<lowercase-hex> blob while computing SHA-256.
+objects.jsonl is UTF-8, LF terminated, sorted by bytewise object key and has one
+canonical JSON object per line:
+
+  purpose, bucket, key, sizeBytes, sha256, blobPath, contentType, metadata
+
+blobPath is always local and content-addressed. Object keys must remain within
+their selected prefix and cannot contain backslash, "." or ".." segments.
+Only empty content type and the existing application content types are allowed.
+Only optional application sha256 user metadata that matches the bytes is
+portable. ACLs, tags, legal holds, multipart state, delete markers and prior
+object versions are not included. Enabled bucket versioning is unsupported.
+
+The implementation enforces explicit object-count, individual-size and total
+byte limits before publishing a completed backup. Every referenced available
+raw/archive object in the PostgreSQL snapshot must exist in the selected object
+index with the exact database size and digest. Rows already marked missing or
+corrupt remain authoritative and are not repaired by backup.
+
+Consistency and quiescence
+--------------------------
+This release uses an honest quiesced single-instance procedure:
+
+1. Stop all ASPM application and worker processes. Keep only PostgreSQL and the
+   S3-compatible service available.
+2. Require zero connections for the known ASPM runtime application names.
+3. Require zero active processing/dispatching/collecting rows, unreleased AI
+   I/O reservations and archive publications in "publishing".
+4. Export one PostgreSQL snapshot and produce the dump/inventory from it.
+5. Copy every selected object and hash its bytes.
+6. Repeat the complete selected-prefix listing and GET/hash pass. Keys, sizes
+   and SHA-256 values must be identical.
+7. Recheck runtime connections and transitional rows.
+8. Verify all artifacts, then atomically publish the completed directory.
+
+The manifest records the PostgreSQL snapshot interval, object copy interval,
+second object verification completion, connection count and transitional-row
+count. It states distributedAtomic=false. Quiescence plus a stable double object
+read is the represented consistency boundary; no distributed transaction or
+online snapshot claim is made.
+
+Portable backup layout and manifest
+-----------------------------------
+Completed directories contain only:
+
+  manifest.json
+  manifest.sha256
+  database.dump
+  database-inventory.json
+  objects.jsonl
+  objects/sha256/<lowercase-hex>
+
+manifest.json is a typed canonical UTF-8 JSON object with no insignificant
+whitespace and one final LF. Timestamps are UTC RFC3339Nano. Arrays have defined
+ordering and all SHA-256 values are lowercase "sha256:<64 hex>". manifest.sha256
+binds exact manifest bytes. The restore plan ID additionally binds the exact
+manifest bytes, every artifact checksum, destination configuration, tool
+versions and observed empty destination.
+
+The manifest contains:
+
+  apiVersion, kind, formatVersion, backupId, createdAt, completedAt
+  exact source instance/release/target and selected logical scope
+  exact migration ledger and excluded ephemeral table data
+  credential boundary and required operator reprovisioning
+  consistency mode/timestamps/counts and distributedAtomic=false
+  tool versions
+  database dump/inventory relative paths, checksums, sizes and table count
+  object index relative path/checksum/size and object/blob counts/byte totals
+  explicit limitations
+
+It contains no database URL, hostname/user/password, access key, secret key,
+session cookie, raw environment, absolute host path or tool path.
+
+Safe restore ordering
+---------------------
+Restore accepts only a completed backup with an exact canonical manifest and
+matching manifest.sha256. Unsupported format, schema other than exact V27,
+newer schema, changed manifest, approval drift, missing/trailing/duplicate
+files, checksum mismatch, byte-count mismatch, nonlocal artifact path, object
+path traversal or object-index inconsistency fail before destination writes.
+
+The destination database must authenticate to the exact configured database
+and the selected schema must not exist. The destination bucket must already
+exist and all three exact selected prefixes must have zero current objects.
+Prefixes cannot overlap or be shared with another selected runtime scope.
+Permission probes are transactionally rolled back or use read-only/head/list
+operations. No application process may be connected.
+
+After all preflight succeeds:
+
+1. Create a durable restore journal with phase=applying. It is never portable
+   manifest content and contains no credentials.
+2. Put exact manifest-indexed objects first with create-only semantics. Verify
+   each object by a fresh GET, byte count and SHA-256. Record each created key.
+3. Run pg_restore into the absent exact schema with no owner/ACL restoration.
+   Never use --clean, --create database, DROP SCHEMA or truncate.
+4. Validate constraints, exact catalog, ledger 1..27, per-table counts/digests,
+   excluded ephemeral tables empty and every PostgreSQL object reference.
+5. Re-list and GET/hash every destination object.
+6. Publish a checksummed restore receipt with phase=verified.
+
+Until step 6, status is planned, applying, interrupted or failed, never success.
+Core/workers must remain stopped. A partial schema or object set is not ready.
+
+Explicit confirmation and cleanup
+---------------------------------
+restore apply requires both the exact approved plan ID and exact instance ID.
+Changing config, tools, backup bytes, manifest, destination or emptiness after
+plan invalidates approval.
+
+This technical preview does not resume interrupted writes. backup cleanup may
+remove only a locally marked partial backup directory with matching backup ID.
+restore cleanup has its own read-only dry-run and distinct approval. It may
+delete only exact keys recorded as created by that journal, after verifying
+their digest still matches, and may drop only the exact schema created by that
+journal while ASPM processes remain stopped. It never deletes a bucket/prefix,
+uses wildcard deletion, drops a preexisting schema or changes a modified key.
+Any mismatch requires manual inspection.
+
+Post-restore verification
+-------------------------
+Acceptance restores one real V27 PostgreSQL/SeaweedFS fixture and requires:
+
+- exact durable rows for assets, imports/evidence, findings/decisions,
+  correlations, retention/archive references, integrations/outbox, AI
+  configuration/advisories, report snapshots/exports, verification
+  evidence/approvals/jobs, users/workspaces/roles and ledger;
+- exact raw/normalized/archive current object keys, bytes, sizes, digests,
+  content types and supported metadata;
+- active sessions, OIDC flows and auth-throttle data absent;
+- old source session rejected and normal password/OIDC reauthentication needed;
+- core, import/report, retention and verification roles reopen;
+- opening roles does not append/repeat migration versions or mutate restored
+  terminal receipts;
+- PostgreSQL references and selected object inventory agree;
+- readiness never claims HA, distributed atomicity, pipeline completion,
+  provider availability, finding safety or successful recovery before the
+  verified restore receipt;
+- one new ordinary post-restore asset/import/finding workflow succeeds.
+
+Deployment targets
+------------------
+The same FOSS CLI/data semantics cover both artifacts:
+
+- Helm: scale every ASPM Deployment to zero, leave the single PostgreSQL and
+  storage StatefulSets available, perform backup; restore into a new storage-
+  only release with application replicas zero, then scale up only after verify.
+- Quadlet: stop the exact application/worker services while retaining
+  aspm-postgres.service and aspm-storage.service; restore into new volumes with
+  the same logical names/scopes, then start roles only after verify.
+
+No chart hook, sidecar, CronJob, CSI/cloud snapshot, proprietary service,
+bucket-wide administrator discovery or automatic uninstall integration is part
+of the supported procedure.
