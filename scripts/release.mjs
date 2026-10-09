@@ -217,7 +217,10 @@ function prepare() {
   const docker = process.env.ASPM_RELEASE_DOCKER || "docker";
   regular(npmCLI);
   const npm = (args, options = {}) => run(process.execPath, [npmCLI, ...args], options);
-  npm(["run", "build", "--silent"], { cwd: join(root, "web") });
+  const web = join(root, "web");
+  run(process.execPath, [join(web, "scripts", "audit-dependencies.mjs")], { cwd: web });
+  run(process.execPath, [join(web, "node_modules", "typescript", "bin", "tsc"), "--noEmit"], { cwd: web });
+  run(process.execPath, [join(web, "node_modules", "vite", "bin", "vite.js"), "build"], { cwd: web });
 
   const payloadRoot = join(work, "payload", `aspm-${config.version}`);
   const bin = join(payloadRoot, "bin");
