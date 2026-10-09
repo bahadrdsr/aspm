@@ -212,9 +212,12 @@ function prepare() {
   }
   mkdirSync(work, { recursive: true });
   const go = process.env.ASPM_RELEASE_GO || "go";
-  const npm = process.env.ASPM_RELEASE_NPM || (process.platform === "win32" ? "npm.cmd" : "npm");
+  const npmCLI = process.env.ASPM_RELEASE_NPM_CLI ||
+    join(dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
   const docker = process.env.ASPM_RELEASE_DOCKER || "docker";
-  run(npm, ["run", "build", "--silent"], { cwd: join(root, "web") });
+  regular(npmCLI);
+  const npm = (args, options = {}) => run(process.execPath, [npmCLI, ...args], options);
+  npm(["run", "build", "--silent"], { cwd: join(root, "web") });
 
   const payloadRoot = join(work, "payload", `aspm-${config.version}`);
   const bin = join(payloadRoot, "bin");
@@ -276,7 +279,7 @@ function prepare() {
     configurationSHA256: digest(configBytes),
     applicationImage, imageDigest,
     tools: {
-      go: run(go, ["version"]), node: process.version, npm: run(npm, ["--version"]),
+      go: run(go, ["version"]), node: process.version, npm: npm(["--version"]),
       docker: run(docker, ["version", "--format", "{{.Client.Version}}/{{.Server.Version}}"]),
       buildx: run(docker, ["buildx", "version"]),
     },
