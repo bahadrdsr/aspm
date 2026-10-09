@@ -299,12 +299,12 @@ func TestM08_V25BulkAcceptedRiskCreatesIndependentImmutableHistory(t *testing.T)
 			expectedAccepted++
 		}
 	}
-	wantVersions := make([]string, 26)
+	wantVersions := make([]string, 27)
 	for index := range wantVersions {
 		wantVersions[index] = fmt.Sprint(index + 1)
 	}
 	if versions := v25Versions(t, h); !reflect.DeepEqual(versions, wantVersions) {
-		t.Fatalf("bulk accepted-risk migration ledger got %v, want exact V26 %v", versions, wantVersions)
+		t.Fatalf("bulk accepted-risk migration ledger got %v, want exact V27 %v", versions, wantVersions)
 	}
 
 	requestOrder := []string{selected[3], selected[1], selected[2], selected[0]}
@@ -501,7 +501,7 @@ func TestM08_V25BulkAcceptedRiskCreatesIndependentImmutableHistory(t *testing.T)
 			t.Fatalf("V25 decision event did not use ordinary V23/V24 retention semantics: %#v", item)
 		}
 	}
-	equal(t, "bulk accepted-risk final migration ledger remains V26", v25Versions(t, h), wantVersions)
+	equal(t, "bulk accepted-risk final migration ledger remains V27", v25Versions(t, h), wantVersions)
 }
 
 func TestM08_V25BulkAcceptedRiskRejectsInvalidInvisibleAndStaleSetsAtomically(t *testing.T) {

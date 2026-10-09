@@ -14,7 +14,7 @@ test.beforeEach(async ({ actions }) => {
 });
 
 const bulkPath = "/api/v1/findings";
-const futureExpiry = "2026-10-09T12:00:00Z";
+const futureExpiry = "2026-10-10T12:00:00Z";
 const riskRationale = "Accept the selected synthetic findings after a bounded current-revision review.";
 
 function queue(page: Page) {

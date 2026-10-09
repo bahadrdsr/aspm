@@ -221,6 +221,17 @@
 // are additive and use the existing application pool. Scheduled reports,
 // full-scale performance, and HA readiness remain separate gates.
 //
+// V27 adds deterministic synthetic verification under finding-scoped
+// /verification/evidence, /verification/approvals, and /verification/jobs
+// routes. Fixture bytes are canonical, immutable, PostgreSQL-backed, and
+// limited to 64 KiB. Administrator approvals bind method, environment, scope,
+// digest, expiry, and the current finding evidence revision; revocation cancels
+// active jobs and advances their fence. OpenVerificationWorker is database-only
+// and invokes internal/verification for aspm.synthetic-fixture/v1 documents.
+// Reproduced/not-reproduced describe only the approved fixture condition and
+// never mutate finding workflow, disposition, source state, false-positive
+// state, AI state, verified resolution, or closure.
+//
 // Source inference never verifies resolution or changes human decisions.
 // Accepted-risk expiry is computed using Now without rewriting the decision.
 // Imported content is untrusted data; no scanner, script, or proof is executed.

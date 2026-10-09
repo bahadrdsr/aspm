@@ -789,6 +789,107 @@ export interface ReportExportContent {
   filename: string;
 }
 
+export type VerificationMethod = "deterministic-evidence";
+export interface DeterministicVerificationEvidence {
+  id: string;
+  workspaceId: string;
+  findingId: string;
+  submittedBy: string;
+  method: VerificationMethod;
+  schema: "aspm.synthetic-fixture/v1";
+  environmentId: string;
+  scopeRevision: string;
+  findingEvidenceRevision: number;
+  digest: string;
+  sizeBytes: number;
+  createdAt: string;
+}
+export interface DeterministicVerificationApproval {
+  id: string;
+  workspaceId: string;
+  findingId: string;
+  evidenceId: string;
+  approvedBy: string;
+  method: VerificationMethod;
+  environmentId: string;
+  scopeRevision: string;
+  findingEvidenceRevision: number;
+  evidenceDigest: string;
+  rationale: string;
+  createdAt: string;
+  expiresAt: string;
+  revokedAt: string | null;
+  revokedBy: string | null;
+  revocationRationale: string | null;
+  current: boolean;
+}
+export type DeterministicVerificationState =
+  "queued" | "processing" | "succeeded" | "blocked" | "failed" | "cancelled";
+export interface DeterministicVerificationResult {
+  method: VerificationMethod;
+  environmentId: string;
+  scopeRevision: string;
+  evidenceId: string;
+  evidenceDigest: string;
+  outcome: "reproduced" | "not-reproduced";
+  closeFinding: false;
+  falsePositive: false;
+}
+export interface DeterministicVerification {
+  id: string;
+  workspaceId: string;
+  findingId: string;
+  approvalId: string;
+  evidenceId: string;
+  requestedBy: string;
+  method: VerificationMethod;
+  environmentId: string;
+  scopeRevision: string;
+  findingEvidenceRevision: number;
+  evidenceDigest: string;
+  state: DeterministicVerificationState;
+  createdAt: string;
+  completedAt: string | null;
+  failure: { code: string; message: string; retryable: false } | null;
+  result: DeterministicVerificationResult | null;
+}
+export interface VerificationEvidenceResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  evidence: DeterministicVerificationEvidence;
+}
+export interface VerificationApprovalResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  approval: DeterministicVerificationApproval;
+}
+export interface DeterministicVerificationResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  verification: DeterministicVerification;
+}
+export interface VerificationEvidencePage {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  items: DeterministicVerificationEvidence[];
+  total: number;
+  nextCursor: string | null;
+}
+export interface VerificationApprovalPage {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  items: DeterministicVerificationApproval[];
+  total: number;
+  nextCursor: string | null;
+}
+export interface DeterministicVerificationPage {
+  apiVersion: typeof apiVersion;
+  dataOrigin: DataOrigin;
+  items: DeterministicVerification[];
+  total: number;
+  nextCursor: string | null;
+}
+
 export type IntegrationId = "github" | "gitlab" | "azure-devops" | "aws" | "azure" | "jira" | "teams" | "slack";
 export interface IntegrationSummary {
   id: IntegrationId;

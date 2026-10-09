@@ -96,12 +96,32 @@ type DeliveryWorker struct {
 	Close       func() error
 }
 
+type VerificationWorkerConfig struct {
+	DatabaseURL             string `json:"-"`
+	Schema, ApplicationName string
+	MaxConnections          int32
+	WorkerID                string
+	LeaseDuration           time.Duration
+	AuthorizationInterval   time.Duration
+	MaxFixtureBytes         int64
+	Now                     func() time.Time `json:"-"`
+	LogOutput               io.Writer        `json:"-"`
+	QueryTracer             pgx.QueryTracer  `json:"-"`
+}
+
+type VerificationWorker struct {
+	ProcessNext func(context.Context) (bool, error)
+	Ping        func(context.Context) error
+	Close       func() error
+}
+
 // The coder owns forwarding-only bindings, never test-side business logic or SQL.
 var Production struct {
-	Plan                func(context.Context, json.RawMessage) (InstallationPlan, error)
-	OpenApplication     func(context.Context, ApplicationConfig) (Application, error)
-	OpenRetentionWorker func(context.Context, RetentionWorkerConfig) (RetentionWorker, error)
-	OpenDeliveryWorker  func(context.Context, DeliveryWorkerConfig) (DeliveryWorker, error)
+	Plan                   func(context.Context, json.RawMessage) (InstallationPlan, error)
+	OpenApplication        func(context.Context, ApplicationConfig) (Application, error)
+	OpenRetentionWorker    func(context.Context, RetentionWorkerConfig) (RetentionWorker, error)
+	OpenDeliveryWorker     func(context.Context, DeliveryWorkerConfig) (DeliveryWorker, error)
+	OpenVerificationWorker func(context.Context, VerificationWorkerConfig) (VerificationWorker, error)
 }
 
 type object = map[string]any
@@ -158,5 +178,12 @@ func requireDeliveryWorker(t *testing.T) {
 	t.Helper()
 	if Production.OpenDeliveryWorker == nil {
 		t.Fatal("production binding missing: OpenDeliveryWorker; coder must forward to the independent delivery worker")
+	}
+}
+
+func requireVerificationWorker(t *testing.T) {
+	t.Helper()
+	if Production.OpenVerificationWorker == nil {
+		t.Fatal("M12 production binding missing: OpenVerificationWorker; coder must forward to the database-only deterministic verification worker")
 	}
 }

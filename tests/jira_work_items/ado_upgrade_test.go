@@ -120,14 +120,14 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 		adoHistoricalMigrations(t, filepath.Join("..", "..")), adoHistoricalMigrations(t, filepath.Dir(build.Executable)))
 
 	h.open()
-	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26")
-	same(t, "current app failed to add exact V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23/V24/V25/V26 migrations", h.ledger(), currentLedger)
+	currentLedger := append(append([]string{}, oldLedger...), "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27")
+	same(t, "current app failed to add exact V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23/V24/V25/V26/V27 migrations", h.ledger(), currentLedger)
 	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
-	same(t, "V26 changed the relation/index set",
-		sourcecompat.ProjectRelationsV26(t, relations, h.relations()), relations)
+	same(t, "V27 changed the relation/index set",
+		sourcecompat.ProjectRelationsV27(t, relations, h.relations()), relations)
 	same(t, "V26 contains a missing or unapproved catalog delta",
 		sourcecompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V26 changed complete historical business rows outside exact additions",
+	same(t, "V27 changed complete historical business rows outside exact additions",
 		sourcecompat.ProjectRowsCurrent(t, before, h.snapshot(names)), before)
 	same(t, "V21 did not backfill the authentic queued Jira effect",
 		h.rows("SELECT connection_id||'|'||finding_id||'|'||delivery_id FROM "+h.table("jira_finding_effects")+
@@ -135,7 +135,7 @@ func TestADOA5ActualPublishedV11ToAdditiveV12(t *testing.T) {
 		[]string{jira.ID + "|" + finding.ID + "|" + jiraJob.ID})
 	for _, path := range paths {
 		body, _ := h.request(h.ctx, viewer, "GET", path, nil, 200)
-		same(t, "V26 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
+		same(t, "V27 changed published unselected API keys/values", decoded[object](t, body), apiBefore[path])
 	}
 	h.adoEncrypted(github, githubToken)
 	same(t, "current queued GitHub replay changed its historical body/binding", h.adoJSON(h.admin, "POST", legacyQueuePath,

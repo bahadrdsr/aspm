@@ -30,10 +30,11 @@ type Approval struct {
 }
 
 type Config struct {
-	Evidence       EvidenceReader
-	LookupApproval func(context.Context, string) (Approval, error)
-	Now            func() time.Time
-	MaxBytes       int64
+	Evidence              EvidenceReader
+	LookupApproval        func(context.Context, string) (Approval, error)
+	Now                   func() time.Time
+	MaxBytes              int64
+	AuthorizationInterval time.Duration
 }
 
 type Request struct {
@@ -55,6 +56,12 @@ func Open(_ context.Context, config Config) (*Verifier, error) {
 	}
 	if config.MaxBytes < 1 || config.MaxBytes > 16<<20 {
 		return nil, ErrLimit
+	}
+	if config.AuthorizationInterval == 0 {
+		config.AuthorizationInterval = 100 * time.Millisecond
+	}
+	if config.AuthorizationInterval < 10*time.Millisecond || config.AuthorizationInterval > time.Second {
+		return nil, ErrPolicy
 	}
 	return &Verifier{config: config}, nil
 }
@@ -199,7 +206,7 @@ func (v *Verifier) guard(parent context.Context, approval Approval, request Requ
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
-		ticker := time.NewTicker(100 * time.Millisecond)
+		ticker := time.NewTicker(v.config.AuthorizationInterval)
 		defer ticker.Stop()
 		for {
 			select {

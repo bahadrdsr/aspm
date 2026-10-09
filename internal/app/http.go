@@ -548,6 +548,80 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 		}
 		return a.importResource(w, r, membership.ID, parts[1], len(parts) == 3)
 	case "findings":
+		if len(parts) >= 4 && parts[2] == "verification" {
+			switch parts[3] {
+			case "evidence":
+				if len(parts) == 5 && validID(parts[4]) {
+					if err = requireMethod(w, r, http.MethodGet); err != nil {
+						return err
+					}
+					return errNotFound
+				}
+				if len(parts) != 4 {
+					return errNotFound
+				}
+				if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+					return err
+				}
+				if r.Method == http.MethodGet {
+					return a.listVerificationEvidence(w, r, membership.ID, parts[1])
+				}
+				if !canWrite(membership) {
+					return errForbidden
+				}
+				return a.createVerificationEvidence(w, r, membership.ID, parts[1], session.User.ID)
+			case "approvals":
+				if len(parts) == 4 {
+					if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+						return err
+					}
+					if r.Method == http.MethodGet {
+						return a.listVerificationApprovals(w, r, membership.ID, parts[1])
+					}
+					if membership.Role != "admin" {
+						return errForbidden
+					}
+					return a.createVerificationApproval(w, r, membership.ID, parts[1], session.User.ID)
+				}
+				if len(parts) == 6 && validID(parts[4]) && parts[5] == "revoke" {
+					if err = requireMethod(w, r, http.MethodPost); err != nil {
+						return err
+					}
+					if membership.Role != "admin" {
+						return errForbidden
+					}
+					return a.revokeVerificationApproval(w, r, membership.ID, parts[1], parts[4], session.User.ID)
+				}
+				if len(parts) == 5 && validID(parts[4]) {
+					if err = requireMethod(w, r, http.MethodGet); err != nil {
+						return err
+					}
+				}
+				return errNotFound
+			case "jobs":
+				if len(parts) == 4 {
+					if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+						return err
+					}
+					if r.Method == http.MethodGet {
+						return a.listVerificationJobs(w, r, membership.ID, parts[1])
+					}
+					if !canWrite(membership) {
+						return errForbidden
+					}
+					return a.enqueueVerification(w, r, membership.ID, parts[1], session.User.ID)
+				}
+				if len(parts) == 5 && validID(parts[4]) {
+					if err = requireMethod(w, r, http.MethodGet); err != nil {
+						return err
+					}
+					return a.getVerificationJob(w, r, membership.ID, parts[1], parts[4])
+				}
+				return errNotFound
+			default:
+				return errNotFound
+			}
+		}
 		if len(parts) == 3 && parts[2] == "handoff" {
 			if err = requireMethod(w, r, http.MethodGet); err != nil {
 				return err

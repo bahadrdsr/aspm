@@ -19,3 +19,8 @@ There is no target URL, shell, browser, scanner, tool-call executor, subprocess
 or arbitrary script interface. Do not wire model output directly into approval.
 Tests use a controlled evidence-reader boundary; real S3 integrity/reopen
 semantics are separately exercised by the M02 integration suite.
+
+Application schema V27 uses this verifier through a database-only worker.
+Immutable synthetic fixture bytes, explicit administrator approvals and
+durable jobs remain in PostgreSQL. The finding UI labels results as synthetic
+and never maps them to workflow, disposition, false-positive or closure state.

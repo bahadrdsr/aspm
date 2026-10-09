@@ -410,3 +410,97 @@ At 390px with reduced motion, opening the section, creating an export, native
 Load more, manual Refresh export and Download remain keyboard reachable without
 page-level horizontal overflow. Request completion preserves deliberately moved
 focus. Existing Reports and Work context remains intact.
+
+M12 V27 deterministic verification browser increment (October 9, 2026)
+----------------------------------------------------------------------
+Finding detail adds one closed-by-default disclosure named Show deterministic
+verification and one region named Deterministic verification. While closed it
+performs no verification evidence, approval, history or detail request. Opening
+it explicitly loads the first evidence, approval and job pages with limit=100.
+It never polls, schedules work or automatically drains a returned cursor.
+Refresh verification history, Refresh verification and Load more verification
+history are the only follow-up reads.
+
+The region always states exactly that synthetic fixture reproduction is not
+proof of a real vulnerability and does not close or classify the finding.
+reproduced and not-reproduced are displayed only as results of the approved
+aspm.synthetic-fixture/v1 condition. They never change or visually override
+the canonical finding workflow, disposition, source state, Not verified state,
+verified resolution, false-positive state or closure state.
+
+Admins and analysts have one form named Submit synthetic fixture. Its accessible
+controls are Environment, Scope revision and Fixture condition, with one Submit
+fixture action. It sends exactly method, environmentId, scopeRevision and
+fixture. method is deterministic-evidence. fixture has exactly schema,
+environmentId and boolean condition. schema is aspm.synthetic-fixture/v1 and
+the two environment values match. The client sends no URL, target, command,
+file, script, tool, browser, provider, model, workspace, finding revision,
+actor, approval or result field. Environment and scope revision are nonblank,
+NUL-free and at most 256 UTF-8 bytes. Encoded input remains within 64 KiB.
+
+Only admins have one form named Approve synthetic fixture and the controls
+Verification evidence, Approval expires at and Approval rationale. Submit sends
+exactly evidenceId,rationale,expiresAt. The UI does not infer, generate or
+optimistically display approval. Only the strict 201 receipt adds it. Admins
+also have Revocation rationale and Revoke approval. Revocation sends exactly
+rationale to the selected approval action. Analysts and viewers have no approve
+or revoke control. Revoked, expired and changed-binding approvals are shown as
+not current and are unavailable for new queue intent.
+
+Admins and analysts have one form named Queue deterministic verification with
+Current approval and Queue verification. It sends exactly approvalId and one
+fresh nonblank, NUL-free in-memory idempotencyKey of at most 256 UTF-8 bytes.
+A 202 receipt is queued only. It never paints reproduced, complete, verified,
+safe, false positive or closed. Viewers have no fixture, approval, revocation
+or queue form but can read the same bounded metadata, history and detail.
+
+Verification history is an accessible table named Verification history.
+Evidence and approval metadata contain no fixture content. History and detail
+contain no fixture content. A selected job is in a region named Selected
+verification. Strict states are queued, processing, succeeded, blocked, failed
+and cancelled. queued and processing expose no result or failure. blocked,
+failed and cancelled expose one nonretryable diagnostic and no result.
+succeeded exposes only method, environmentId, scopeRevision, evidenceId,
+evidenceDigest, reproduced|not-reproduced, closeFinding=false and
+falsePositive=false.
+
+Native collection paging uses only the returned lower-case cursor and limit=100.
+A transient continuation failure preserves authorized rows and cursor. It never
+auto-retries or drains another page. Detail 403 or 404 withholds prior protected
+metadata and latches through loading and transient failures until an authorized
+success. A malformed 200 never replaces authorized rows/detail or creates a
+success state. Displayed role metadata never overrides a current server denial.
+
+A lost, aborted or otherwise ambiguous queue acknowledgement retains one exact
+approval/key request in memory. It does not generate another key, issue a blind
+automatic replay, enable unrelated queue intent or paint success. An explicit
+history refresh may reconcile the committed receipt. If an explicit pending
+replay is offered, it sends the exact original body. Only authorized
+reconciliation clears the unresolved intent.
+
+Workspace change, session replacement, logout and protected 401 abort held
+evidence, approval, history, detail and queue requests; close finding detail;
+clear old-scope rows, drafts, approval choices and unresolved idempotency state;
+and discard late acknowledgements. A late old-workspace success cannot restore
+metadata or controls. Current session role is the only client-side authority.
+
+Strict parsing rejects wrong API version or data origin; unknown or missing
+envelope/item/result/failure keys; malformed lower-case IDs, digest, timestamps,
+states or booleans; wrong workspace/finding/evidence/approval binding; wrong
+method/schema/environment/scope/currentness; inconsistent state terminal data;
+result closeFinding or falsePositive true; duplicate, descending or foreign
+pages; invalid totals/cursors; and any fixture content in metadata/history.
+
+No fixture bytes, approval rationale, revocation rationale, approval ID,
+evidence ID/digest, job ID/result, idempotency key or unresolved intent is
+written to localStorage, sessionStorage, IndexedDB, cookies, URL or console.
+The HttpOnly session and nonsecret theme preference remain the only permitted
+browser-held values. The isolated fixture blocks external HTTP, provider/model
+routes, target URLs, scanner/proof routes, shell/tool routes and automatic
+resends.
+
+At 390px with reduced motion, disclosure, forms, history, Refresh, Load more,
+detail and denial states remain keyboard reachable without page-level
+horizontal overflow or movement-dependent completion. Escape closes finding
+detail and immediately restores focus to the exact finding trigger. Existing
+finding source text, notes, observations and decision behavior remains intact.

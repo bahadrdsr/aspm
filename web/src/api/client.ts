@@ -12,6 +12,9 @@ import type {
   ReportSLAPolicy, ReportSLAPolicyInput, ReportSLAPolicyResponse,
   ReportExport, ReportExportContent, ReportExportInput, ReportExportResponse, ReportExportsResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
+  DeterministicVerification, DeterministicVerificationApproval, DeterministicVerificationEvidence,
+  DeterministicVerificationPage, DeterministicVerificationResponse,
+  VerificationApprovalPage, VerificationApprovalResponse, VerificationEvidencePage, VerificationEvidenceResponse,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
   RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
   HistoryRetentionResourceKind, RetentionRun, RetentionRunItem, RetentionRunResponse,
@@ -1506,6 +1509,199 @@ function parseReportExports(value: unknown, workspace: string | null, limit: num
   return { apiVersion, dataOrigin: "live", items, total, nextCursor };
 }
 
+function verificationBindingText(value: unknown, field: string, limit = 256): string {
+  const result = text(value, field);
+  if (result.includes("\0") || new TextEncoder().encode(result).byteLength > limit) return invalid(field);
+  return result;
+}
+
+function verificationEvidenceItem(value: unknown, workspace: string | null,
+  findingId: string): DeterministicVerificationEvidence {
+  const item = exactObject(value, "verification evidence", [
+    "id", "workspaceId", "findingId", "submittedBy", "method", "schema", "environmentId",
+    "scopeRevision", "findingEvidenceRevision", "digest", "sizeBytes", "createdAt",
+  ]);
+  const itemWorkspace = reportIdentifier(item.workspaceId, "verification evidence workspace");
+  const itemFinding = reportIdentifier(item.findingId, "verification evidence finding");
+  const digest = text(item.digest, "verification evidence digest");
+  const sizeBytes = count(item.sizeBytes, "verification evidence size");
+  if (itemWorkspace !== workspace || itemFinding !== findingId ||
+    !/^sha256:[a-f0-9]{64}$/.test(digest) || sizeBytes < 1 || sizeBytes > 64 << 10) {
+    return invalid("verification evidence binding");
+  }
+  return {
+    id: reportIdentifier(item.id, "verification evidence identifier"),
+    workspaceId: itemWorkspace, findingId: itemFinding,
+    submittedBy: reportIdentifier(item.submittedBy, "verification evidence submitter"),
+    method: choice(item.method, ["deterministic-evidence"], "verification method"),
+    schema: choice(item.schema, ["aspm.synthetic-fixture/v1"], "verification fixture schema"),
+    environmentId: verificationBindingText(item.environmentId, "verification environment"),
+    scopeRevision: verificationBindingText(item.scopeRevision, "verification scope revision"),
+    findingEvidenceRevision: count(item.findingEvidenceRevision, "finding evidence revision"),
+    digest, sizeBytes, createdAt: timestamp(item.createdAt, "verification evidence creation time"),
+  };
+}
+
+function verificationApprovalItem(value: unknown, workspace: string | null,
+  findingId: string): DeterministicVerificationApproval {
+  const item = exactObject(value, "verification approval", [
+    "id", "workspaceId", "findingId", "evidenceId", "approvedBy", "method", "environmentId",
+    "scopeRevision", "findingEvidenceRevision", "evidenceDigest", "rationale", "createdAt",
+    "expiresAt", "revokedAt", "revokedBy", "revocationRationale", "current",
+  ]);
+  const itemWorkspace = reportIdentifier(item.workspaceId, "verification approval workspace");
+  const itemFinding = reportIdentifier(item.findingId, "verification approval finding");
+  const revokedAt = nullableTimestamp(item.revokedAt, "verification revocation time");
+  const revokedBy = item.revokedBy === null ? null : reportIdentifier(item.revokedBy, "verification revoker");
+  const revocationRationale = nullableText(item.revocationRationale, "verification revocation rationale");
+  const current = boolean(item.current, "verification approval current state");
+  const evidenceDigest = text(item.evidenceDigest, "verification approval digest");
+  if (itemWorkspace !== workspace || itemFinding !== findingId ||
+    !/^sha256:[a-f0-9]{64}$/.test(evidenceDigest) ||
+    (revokedAt === null) !== (revokedBy === null) || (revokedAt === null) !== (revocationRationale === null) ||
+    current && revokedAt !== null) {
+    return invalid("verification approval binding");
+  }
+  const rationale = verificationBindingText(item.rationale, "verification approval rationale", 8192);
+  const revokedReason = revocationRationale === null ? null :
+    verificationBindingText(revocationRationale, "verification revocation rationale", 8192);
+  return {
+    id: reportIdentifier(item.id, "verification approval identifier"),
+    workspaceId: itemWorkspace, findingId: itemFinding,
+    evidenceId: reportIdentifier(item.evidenceId, "verification approval evidence"),
+    approvedBy: reportIdentifier(item.approvedBy, "verification approver"),
+    method: choice(item.method, ["deterministic-evidence"], "verification approval method"),
+    environmentId: verificationBindingText(item.environmentId, "verification approval environment"),
+    scopeRevision: verificationBindingText(item.scopeRevision, "verification approval scope revision"),
+    findingEvidenceRevision: count(item.findingEvidenceRevision, "approval evidence revision"),
+    evidenceDigest, rationale,
+    createdAt: timestamp(item.createdAt, "verification approval creation time"),
+    expiresAt: timestamp(item.expiresAt, "verification approval expiry"),
+    revokedAt, revokedBy, revocationRationale: revokedReason, current,
+  };
+}
+
+function deterministicVerificationItem(value: unknown, workspace: string | null,
+  findingId: string): DeterministicVerification {
+  const item = exactObject(value, "deterministic verification", [
+    "id", "workspaceId", "findingId", "approvalId", "evidenceId", "requestedBy", "method",
+    "environmentId", "scopeRevision", "findingEvidenceRevision", "evidenceDigest", "state",
+    "createdAt", "completedAt", "failure", "result",
+  ]);
+  const itemWorkspace = reportIdentifier(item.workspaceId, "verification workspace");
+  const itemFinding = reportIdentifier(item.findingId, "verification finding");
+  const state = choice(item.state,
+    ["queued", "processing", "succeeded", "blocked", "failed", "cancelled"], "verification state");
+  const completedAt = nullableTimestamp(item.completedAt, "verification completion time");
+  let failure: DeterministicVerification["failure"] = null;
+  if (item.failure !== null) {
+    const detail = exactObject(item.failure, "verification failure", ["code", "message", "retryable"]);
+    const code = verificationBindingText(detail.code, "verification failure code", 128);
+    const message = verificationBindingText(detail.message, "verification failure message", 1024);
+    if (boolean(detail.retryable, "verification retry policy")) return invalid("verification retry policy");
+    failure = { code, message, retryable: false };
+  }
+  let result: DeterministicVerification["result"] = null;
+  if (item.result !== null) {
+    const detail = exactObject(item.result, "verification result", [
+      "method", "environmentId", "scopeRevision", "evidenceId", "evidenceDigest", "outcome",
+      "closeFinding", "falsePositive",
+    ]);
+    const closeFinding = boolean(detail.closeFinding, "verification close-finding state");
+    const falsePositive = boolean(detail.falsePositive, "verification false-positive state");
+    const evidenceDigest = text(detail.evidenceDigest, "verification result digest");
+    if (closeFinding || falsePositive || !/^sha256:[a-f0-9]{64}$/.test(evidenceDigest)) {
+      return invalid("verification safety result");
+    }
+    result = {
+      method: choice(detail.method, ["deterministic-evidence"], "verification result method"),
+      environmentId: verificationBindingText(detail.environmentId, "verification result environment"),
+      scopeRevision: verificationBindingText(detail.scopeRevision, "verification result scope revision"),
+      evidenceId: reportIdentifier(detail.evidenceId, "verification result evidence"),
+      evidenceDigest,
+      outcome: choice(detail.outcome, ["reproduced", "not-reproduced"], "verification outcome"),
+      closeFinding: false, falsePositive: false,
+    };
+  }
+  const terminal = completedAt !== null;
+  const invalidState = state === "queued" || state === "processing"
+    ? terminal || failure !== null || result !== null
+    : state === "succeeded"
+      ? !terminal || failure !== null || result === null
+      : !terminal || failure === null || result !== null;
+  const evidenceDigest = text(item.evidenceDigest, "verification evidence digest");
+  if (itemWorkspace !== workspace || itemFinding !== findingId ||
+    !/^sha256:[a-f0-9]{64}$/.test(evidenceDigest) || invalidState) {
+    return invalid("verification state metadata");
+  }
+  const environmentId = verificationBindingText(item.environmentId, "verification environment");
+  const scopeRevision = verificationBindingText(item.scopeRevision, "verification scope revision");
+  const evidenceId = reportIdentifier(item.evidenceId, "verification evidence");
+  if (result && (result.environmentId !== environmentId || result.scopeRevision !== scopeRevision ||
+    result.evidenceId !== evidenceId || result.evidenceDigest !== evidenceDigest)) {
+    return invalid("verification result binding");
+  }
+  return {
+    id: reportIdentifier(item.id, "verification identifier"),
+    workspaceId: itemWorkspace, findingId: itemFinding,
+    approvalId: reportIdentifier(item.approvalId, "verification approval"),
+    evidenceId, requestedBy: reportIdentifier(item.requestedBy, "verification requester"),
+    method: choice(item.method, ["deterministic-evidence"], "verification method"),
+    environmentId, scopeRevision,
+    findingEvidenceRevision: count(item.findingEvidenceRevision, "verification evidence revision"),
+    evidenceDigest, state, createdAt: timestamp(item.createdAt, "verification creation time"),
+    completedAt, failure, result,
+  };
+}
+
+function verificationPage<T>(value: unknown, field: string, workspace: string | null, findingId: string,
+  limit: number, cursor: string, parse: (item: unknown, workspace: string | null, findingId: string) => T & { id: string }) {
+  const body = exactObject(value, field, ["apiVersion", "dataOrigin", "items", "total", "nextCursor"]);
+  if (body.apiVersion !== apiVersion) return invalid(`${field} API version`);
+  const dataOrigin = choice(body.dataOrigin, ["synthetic", "live"], `${field} data origin`);
+  const items = array(body.items, field).map((item) => parse(item, workspace, findingId));
+  const total = count(body.total, `${field} total`);
+  const nextCursor = body.nextCursor === null ? null : reportIdentifier(body.nextCursor, `${field} cursor`);
+  if (new Set(items.map((item) => item.id)).size !== items.length || total < items.length ||
+    items.length > limit || items.some((item, index) => item.id <= (index === 0 ? cursor : items[index - 1].id)) ||
+    nextCursor !== null && (items.length !== limit || nextCursor !== items.at(-1)?.id || nextCursor <= cursor) ||
+    items.length < limit && nextCursor !== null ||
+    cursor === "" && (total > items.length) !== (nextCursor !== null)) {
+    return invalid(`${field} order`);
+  }
+  return { apiVersion, dataOrigin, items, total, nextCursor };
+}
+
+function parseVerificationEvidenceResponse(value: unknown, workspace: string | null,
+  findingId: string): VerificationEvidenceResponse {
+  const body = exactObject(value, "verification evidence response", ["apiVersion", "dataOrigin", "evidence"]);
+  if (body.apiVersion !== apiVersion) return invalid("verification evidence API version");
+  return {
+    apiVersion, dataOrigin: choice(body.dataOrigin, ["synthetic", "live"], "verification evidence origin"),
+    evidence: verificationEvidenceItem(body.evidence, workspace, findingId),
+  };
+}
+
+function parseVerificationApprovalResponse(value: unknown, workspace: string | null,
+  findingId: string): VerificationApprovalResponse {
+  const body = exactObject(value, "verification approval response", ["apiVersion", "dataOrigin", "approval"]);
+  if (body.apiVersion !== apiVersion) return invalid("verification approval API version");
+  return {
+    apiVersion, dataOrigin: choice(body.dataOrigin, ["synthetic", "live"], "verification approval origin"),
+    approval: verificationApprovalItem(body.approval, workspace, findingId),
+  };
+}
+
+function parseDeterministicVerificationResponse(value: unknown, workspace: string | null,
+  findingId: string): DeterministicVerificationResponse {
+  const body = exactObject(value, "verification response", ["apiVersion", "dataOrigin", "verification"]);
+  if (body.apiVersion !== apiVersion) return invalid("verification API version");
+  return {
+    apiVersion, dataOrigin: choice(body.dataOrigin, ["synthetic", "live"], "verification origin"),
+    verification: deterministicVerificationItem(body.verification, workspace, findingId),
+  };
+}
+
 export function parseCatalog(value: unknown): CatalogResponse {
   const { body, dataOrigin } = envelope(value);
   const items = array(body.items, "integration catalog").map((value): IntegrationSummary => {
@@ -2227,6 +2423,112 @@ export const api = {
           return { bytes, contentType, filename: expectedFilename } satisfies ReportExportContent;
         },
       });
+  },
+  verificationEvidence: (findingId: string, limit: number, cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Verification evidence pages require a limit from 1 through 100 and a native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ limit: String(limit) });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/evidence?${query}`,
+      (value) => verificationPage(value, "verification evidence page", workspace, findingId,
+        limit, cursor ?? "", verificationEvidenceItem) as VerificationEvidencePage, signal);
+  },
+  verificationApprovals: (findingId: string, limit: number, cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Verification approval pages require a limit from 1 through 100 and a native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ limit: String(limit) });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/approvals?${query}`,
+      (value) => verificationPage(value, "verification approval page", workspace, findingId,
+        limit, cursor ?? "", verificationApprovalItem) as VerificationApprovalPage, signal);
+  },
+  deterministicVerifications: (findingId: string, limit: number, cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Verification history pages require a limit from 1 through 100 and a native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ limit: String(limit) });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/jobs?${query}`,
+      (value) => verificationPage(value, "verification history page", workspace, findingId,
+        limit, cursor ?? "", deterministicVerificationItem) as DeterministicVerificationPage, signal);
+  },
+  deterministicVerification: (findingId: string, id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    reportIdentifier(id, "verification");
+    return reportRead(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/jobs/${encodeURIComponent(id)}`,
+      (value) => {
+        const response = parseDeterministicVerificationResponse(value, workspace, findingId);
+        if (response.verification.id !== id) return invalid("selected verification identifier");
+        return response;
+      }, signal);
+  },
+  submitVerificationEvidence: (findingId: string, input: {
+    environmentId: string; scopeRevision: string; condition: boolean;
+  }, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    const environmentId = verificationBindingText(input.environmentId, "verification environment");
+    const scopeRevision = verificationBindingText(input.scopeRevision, "verification scope revision");
+    const body = {
+      method: "deterministic-evidence" as const, environmentId, scopeRevision,
+      fixture: { schema: "aspm.synthetic-fixture/v1" as const, environmentId, condition: input.condition },
+    };
+    return request(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/evidence`,
+      (value) => parseVerificationEvidenceResponse(value, workspace, findingId),
+      { method: "POST", body, signal, expectedStatus: 201 });
+  },
+  approveVerificationEvidence: (findingId: string, input: {
+    evidenceId: string; rationale: string; expiresAt: string;
+  }, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    reportIdentifier(input.evidenceId, "verification evidence");
+    verificationBindingText(input.rationale, "verification approval rationale", 8192);
+    timestamp(input.expiresAt, "verification approval expiry");
+    const body = { evidenceId: input.evidenceId, rationale: input.rationale, expiresAt: input.expiresAt };
+    return request(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/approvals`,
+      (value) => parseVerificationApprovalResponse(value, workspace, findingId),
+      { method: "POST", body, signal, expectedStatus: 201 });
+  },
+  revokeVerificationApproval: (findingId: string, approvalId: string, rationale: string,
+    signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    reportIdentifier(approvalId, "verification approval");
+    verificationBindingText(rationale, "verification revocation rationale", 8192);
+    return request(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/approvals/${encodeURIComponent(approvalId)}/revoke`,
+      (value) => parseVerificationApprovalResponse(value, workspace, findingId),
+      { method: "POST", body: { rationale }, signal, expectedStatus: 200 });
+  },
+  queueDeterministicVerification: (findingId: string, input: {
+    approvalId: string; idempotencyKey: string;
+  }, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(findingId, "verification finding");
+    reportIdentifier(input.approvalId, "verification approval");
+    verificationBindingText(input.idempotencyKey, "verification intent key", 256);
+    const body = { approvalId: input.approvalId, idempotencyKey: input.idempotencyKey };
+    return request(`/api/v1/findings/${encodeURIComponent(findingId)}/verification/jobs`,
+      (value, status) => {
+        const response = parseDeterministicVerificationResponse(value, workspace, findingId);
+        if (response.verification.approvalId !== input.approvalId ||
+          status === 202 && response.verification.state !== "queued") {
+          return invalid("verification acknowledgement", status);
+        }
+        return response;
+      }, { method: "POST", body, signal, expectedStatus: [200, 202] });
   },
   reportSnapshots: (limit: number, cursor: string | null, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

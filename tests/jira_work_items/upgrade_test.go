@@ -275,14 +275,14 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	output := filepath.Join("..", "..", ".artifacts", "jira-work-items", "published-v9-upgrade-"+nonce(t)+".json")
 	must(t, "record bounded nonsecret actual migration observation", os.WriteFile(output, encoded(t, observation), 0600))
 	t.Log("actual migration observation:", output)
-	same(t, "current app did not add V10/V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23/V24/V25/V26 over exact populated published V9",
-		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"})
+	same(t, "current app did not add V10/V11/V12/V13/V14/V15/V16/V17/V18/V19/V20/V21/V22/V23/V24/V25/V26/V27 over exact populated published V9",
+		currentLedger, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"})
 	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
-	same(t, "V26 changed the historical relation set",
-		sourcecompat.ProjectRelationsV26(t, relations, h.relations()), relations)
+	same(t, "V27 changed the historical relation set",
+		sourcecompat.ProjectRelationsV27(t, relations, h.relations()), relations)
 	same(t, "V10/V11 must assert the exact approved DDL delta before any projection",
 		deliverycompat.ProjectCurrent(t, definitions, h.definitions(names)), definitions)
-	same(t, "V26 changed actual historical business rows", sourcecompat.ProjectRowsCurrent(t, before, h.legacyData(names)), before)
+	same(t, "V27 changed actual historical business rows", sourcecompat.ProjectRowsCurrent(t, before, h.legacyData(names)), before)
 	body, _ := h.request(h.ctx, viewer, "GET", connectionsPath+"/"+slackConnection.ID, nil, 200)
 	same(t, "Jira-disabled migration changed exact old Slack metadata keys/values", decoded[object](t, body)["connection"], slackShape)
 	body, _ = h.request(h.ctx, viewer, "GET", deliveryPath(slackJob.ID), nil, 200)
@@ -298,7 +298,7 @@ func TestJiraJ5ActualPublishedV9DataToAdditiveV10(t *testing.T) {
 	same(t, "reopen altered migrated definitions", h.definitions(names), afterDefinitions)
 	sourcecompat.ValidateCurrentCatalog(t, h.v21Definitions())
 	same(t, "reopen changed the historical relation set",
-		sourcecompat.ProjectRelationsV26(t, relations, h.relations()), relations)
+		sourcecompat.ProjectRelationsV27(t, relations, h.relations()), relations)
 	same(t, "reopen changed old-column business data", sourcecompat.ProjectRowsCurrent(t, before, h.legacyData(names)), before)
 	h.assertTypedRow(ownedRow{"integration_connections", h.admin.Workspace, slackConnection.ID}, n.target())
 	h.assertTypedRow(ownedRow{"finding_deliveries", h.admin.Workspace, slackJob.ID}, n.target())

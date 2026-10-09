@@ -485,12 +485,17 @@ func TestM10_RemediationSLAV25MigrationBackfillsAgeDefaultsAndExactCatalog(t *te
 	}
 	preservedBefore := slaDatabaseRows(t, h, preservedTables...)
 
-	ok(t, "close V26 application before exact V24 downgrade", h.app.Close())
+	ok(t, "close V27 application before exact V24 downgrade", h.app.Close())
 	h.app = Application{}
 	tx, err := h.services.db.Begin(h.services.ctx)
-	ok(t, "begin exact V26 downgrade fixture", err)
+	ok(t, "begin exact V27 downgrade fixture", err)
 	defer tx.Rollback(h.services.ctx)
 	_, err = tx.Exec(h.services.ctx, `DROP TABLE `+
+		slaTable(h, "verification_jobs")+`, `+
+		slaTable(h, "verification_approvals")+`, `+
+		slaTable(h, "verification_evidence")+`;
+		DELETE FROM `+slaTable(h, "schema_versions")+` WHERE version=27;
+		DROP TABLE `+
 		slaTable(h, "report_exports")+`;
 		DELETE FROM `+slaTable(h, "schema_versions")+` WHERE version=26;
 		DROP TABLE `+
@@ -505,16 +510,17 @@ func TestM10_RemediationSLAV25MigrationBackfillsAgeDefaultsAndExactCatalog(t *te
 	storage.arm()
 
 	h.open()
-	wantLedger := make([]string, 26)
+	wantLedger := make([]string, 27)
 	for index := range wantLedger {
 		wantLedger[index] = fmt.Sprint(index + 1)
 	}
 	if !reflect.DeepEqual(slaLedger(t, h), wantLedger) {
-		t.Fatalf("V26 current migration ledger got %v, want %v", slaLedger(t, h), wantLedger)
+		t.Fatalf("V27 current migration ledger got %v, want %v", slaLedger(t, h), wantLedger)
 	}
 	currentCatalog := notificationDefinitions(t, h, sourcecompat.CurrentTables())
 	sourcecompat.ValidateCurrentCatalog(t, currentCatalog)
-	projected := sourcecompat.ProjectV25Current(t, sourcecompat.ProjectV26Current(t, currentCatalog))
+	projected := sourcecompat.ProjectV25Current(t,
+		sourcecompat.ProjectV26Current(t, sourcecompat.ProjectV27Current(t, currentCatalog)))
 	if !reflect.DeepEqual(projected, v24Catalog) {
 		differences := v21CatalogDifferences(projected, v24Catalog)
 		t.Fatalf("V25 current catalog did not project to the exact observed V24 catalog:\n%s",
@@ -563,7 +569,7 @@ func TestM10_RemediationSLAV25MigrationBackfillsAgeDefaultsAndExactCatalog(t *te
 		!reflect.DeepEqual(notificationDefinitions(t, h, sourcecompat.CurrentTables()), beforeReopenCatalog) ||
 		!reflect.DeepEqual(slaRevisionRows(t, h, h.admin.workspace), beforeReopenExisting) ||
 		!reflect.DeepEqual(slaRevisionRows(t, h, newWorkspace.workspace), beforeReopenCreated) {
-		t.Fatal("V26 reopen repeated migration or changed current/immutable SLA policy rows")
+		t.Fatal("V27 reopen repeated migration or changed current/immutable SLA policy rows")
 	}
 }
 

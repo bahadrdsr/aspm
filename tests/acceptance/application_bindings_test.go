@@ -84,4 +84,20 @@ func init() {
 		}
 		return DeliveryWorker{ProcessNext: worker.ProcessNext, Ping: worker.Ping, Close: worker.Close}, nil
 	}
+	Production.OpenVerificationWorker = func(ctx context.Context,
+		config VerificationWorkerConfig) (VerificationWorker, error) {
+		worker, err := app.OpenVerificationWorker(ctx, app.VerificationWorkerConfig{
+			Database: app.DatabaseConfig{
+				DatabaseURL: config.DatabaseURL, Schema: config.Schema, ApplicationName: config.ApplicationName,
+				MaxConnections: config.MaxConnections, Now: config.Now, LogOutput: config.LogOutput,
+				QueryTracer: config.QueryTracer,
+			},
+			WorkerID: config.WorkerID, LeaseDuration: config.LeaseDuration,
+			AuthorizationInterval: config.AuthorizationInterval, MaxFixtureBytes: config.MaxFixtureBytes,
+		})
+		if err != nil {
+			return VerificationWorker{}, err
+		}
+		return VerificationWorker{ProcessNext: worker.ProcessNext, Ping: worker.Ping, Close: worker.Close}, nil
+	}
 }

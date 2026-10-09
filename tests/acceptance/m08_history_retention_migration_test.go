@@ -79,22 +79,24 @@ func catalogForTables(source map[string][]string, tables []string) map[string][]
 	return result
 }
 
-func TestM08_V24HistoryArchiveMigrationRemainsExactThroughV26(t *testing.T) {
+func TestM08_V24HistoryArchiveMigrationRemainsExactThroughV27(t *testing.T) {
 	h := newNotificationHarness(t)
 	ledger := notificationCatalogRows(t, h,
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+` AS ledger ORDER BY ledger.version`)
 	wantLedger := []string{
 		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
 	}
 	if !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("V26 migration ledger got %v, want %v", ledger, wantLedger)
+		t.Fatalf("V27 migration ledger got %v, want %v", ledger, wantLedger)
 	}
 	names := sourcecompat.CurrentTables()
 	current := notificationDefinitions(t, h, names)
 	sourcecompat.ValidateCurrentCatalog(t, current)
-	v25Expanded := sourcecompat.ProjectV26Current(t, current)
-	sourcecompat.ValidateV26Catalog(t, v25Expanded, current)
+	v26Expanded := sourcecompat.ProjectV27Current(t, current)
+	sourcecompat.ValidateV27Catalog(t, v26Expanded, current)
+	v25Expanded := sourcecompat.ProjectV26Current(t, v26Expanded)
+	sourcecompat.ValidateV26Catalog(t, v25Expanded, v26Expanded)
 	v24Expanded := sourcecompat.ProjectV25Current(t, v25Expanded)
 	sourcecompat.ValidateV25Catalog(t, v24Expanded, v25Expanded)
 	v24Current := catalogForTables(v24Expanded, sourcecompat.V24CurrentTables())
@@ -142,11 +144,11 @@ func TestM08_V24HistoryArchiveMigrationRemainsExactThroughV26(t *testing.T) {
 	reopenedLedger := notificationCatalogRows(t, h,
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+` AS ledger ORDER BY ledger.version`)
 	if !reflect.DeepEqual(reopenedLedger, wantLedger) {
-		t.Fatal("V26 reopen repeated or skipped a migration")
+		t.Fatal("V27 reopen repeated or skipped a migration")
 	}
 	reopened := notificationDefinitions(t, h, names)
 	if !reflect.DeepEqual(reopened, current) {
-		t.Fatal("V26 reopen changed the exact current catalog")
+		t.Fatal("V27 reopen changed the exact current catalog")
 	}
 }
 
@@ -170,10 +172,10 @@ func TestM08_V24MigrationPreservesCompleteV23HistoryRows(t *testing.T) {
 	h, _ := newV23HistoryHarness(t)
 	fixture := seedV23HistoryRetention(t, h, &providerTripwire{})
 	var version int
-	ok(t, "read current V26 migration version", h.services.db.QueryRow(h.services.ctx,
+	ok(t, "read current V27 migration version", h.services.db.QueryRow(h.services.ctx,
 		`SELECT max(version) FROM `+notificationTable(h, "schema_versions")).Scan(&version))
-	if version != 26 {
-		t.Fatalf("V26 current fixture version=%d, want 26 before exact downgrade", version)
+	if version != 27 {
+		t.Fatalf("V27 current fixture version=%d, want 27 before exact downgrade", version)
 	}
 	beforeRows := v24OriginalHistoryRows(t, h)
 	beforePayloads := map[string]string{}
@@ -187,6 +189,11 @@ func TestM08_V24MigrationPreservesCompleteV23HistoryRows(t *testing.T) {
 	ok(t, "begin exact V24 downgrade fixture", err)
 	defer tx.Rollback(h.services.ctx)
 	_, err = tx.Exec(h.services.ctx, `DROP TABLE `+
+		notificationTable(h, "verification_jobs")+`, `+
+		notificationTable(h, "verification_approvals")+`, `+
+		notificationTable(h, "verification_evidence")+`;
+		DELETE FROM `+notificationTable(h, "schema_versions")+` WHERE version=27;
+		DROP TABLE `+
 		notificationTable(h, "report_exports")+`;
 		DELETE FROM `+notificationTable(h, "schema_versions")+` WHERE version=26;
 		DROP TABLE `+
@@ -237,10 +244,10 @@ func TestM08_V24MigrationPreservesCompleteV23HistoryRows(t *testing.T) {
 		AS ledger ORDER BY ledger.version`)
 	wantLedger := []string{
 		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
+		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
 	}
 	if !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("V26 migration ledger got %v, want %v", ledger, wantLedger)
+		t.Fatalf("V27 migration ledger got %v, want %v", ledger, wantLedger)
 	}
 	afterRows := v24OriginalHistoryRows(t, h)
 	for table, before := range beforeRows {
@@ -266,6 +273,6 @@ func TestM08_V24MigrationPreservesCompleteV23HistoryRows(t *testing.T) {
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+`
 		AS ledger ORDER BY ledger.version`), wantLedger) ||
 		!reflect.DeepEqual(v24OriginalHistoryRows(t, h), beforeRows) {
-		t.Fatal("V26 reopen repeated migration or changed complete V23 history rows")
+		t.Fatal("V27 reopen repeated migration or changed complete V23 history rows")
 	}
 }

@@ -397,12 +397,12 @@ func TestM10_ReportExportsV26MigrationIsExactAdditiveAndEmpty(t *testing.T) {
 	snapshotBefore := append([]byte(nil), h.request(h.admin, http.MethodGet,
 		"/api/v1/reports/snapshots/"+snapshot.ID, nil, http.StatusOK).Body.Bytes()...)
 
-	wantLedger := make([]int, 26)
+	wantLedger := make([]int, 27)
 	for index := range wantLedger {
 		wantLedger[index] = index + 1
 	}
 	if ledger := historicalSchemaVersions(t, h); !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("report export migration ledger got %v, want exact V26 %v", ledger, wantLedger)
+		t.Fatalf("report export migration ledger got %v, want exact V27 %v", ledger, wantLedger)
 	}
 	current := notificationDefinitions(t, h, sourcecompat.CurrentTables())
 	sourcecompat.ValidateCurrentCatalog(t, current)
@@ -413,22 +413,28 @@ func TestM10_ReportExportsV26MigrationIsExactAdditiveAndEmpty(t *testing.T) {
 		t.Fatal("V26 migration invented default report export jobs or artifacts")
 	}
 
-	ok(t, "close V26 application before exact V25 downgrade", h.app.Close())
+	ok(t, "close current application before exact V25 downgrade", h.app.Close())
 	h.app = Application{}
-	_, err := h.services.db.Exec(h.services.ctx, `DROP TABLE `+reportExportTable(h)+`;
+	_, err := h.services.db.Exec(h.services.ctx, `DROP TABLE `+
+		verificationTable(h, "verification_jobs")+`, `+
+		verificationTable(h, "verification_approvals")+`, `+
+		verificationTable(h, "verification_evidence")+`;
+		DELETE FROM `+pgx.Identifier{h.services.cfg.Schema, "app_schema_versions"}.Sanitize()+` WHERE version=27;
+		DROP TABLE `+reportExportTable(h)+`;
 		DELETE FROM `+pgx.Identifier{h.services.cfg.Schema, "app_schema_versions"}.Sanitize()+` WHERE version=26`)
-	ok(t, "remove only V26 report export storage", err)
+	ok(t, "remove only V27 verification and V26 report export storage", err)
 	v25Catalog := notificationDefinitions(t, h, sourcecompat.V25CurrentTables())
 	sourcecompat.ValidateV25CurrentCatalog(t, v25Catalog)
 	storage.arm()
 
 	h.open()
 	if storage.calls.Load() != 0 {
-		t.Fatal("V26 migration performed raw or archive object-store I/O")
+		t.Fatal("V26/V27 migrations performed raw or archive object-store I/O")
 	}
 	after := notificationDefinitions(t, h, sourcecompat.CurrentTables())
 	sourcecompat.ValidateCurrentCatalog(t, after)
-	if projected := sourcecompat.ProjectV26Current(t, after); !reflect.DeepEqual(projected, v25Catalog) {
+	v26 := sourcecompat.ProjectV27Current(t, after)
+	if projected := sourcecompat.ProjectV26Current(t, v26); !reflect.DeepEqual(projected, v25Catalog) {
 		t.Fatal("V26 current catalog did not project to the exact observed V25 catalog")
 	}
 	if !bytes.Equal(snapshotBefore, h.request(h.admin, http.MethodGet,
@@ -443,7 +449,7 @@ func TestM10_ReportExportsV26MigrationIsExactAdditiveAndEmpty(t *testing.T) {
 	if !reflect.DeepEqual(historicalSchemaVersions(t, h), wantLedger) ||
 		!reflect.DeepEqual(notificationDefinitions(t, h, sourcecompat.CurrentTables()), beforeReopen) ||
 		len(reportExportRows(t, h)) != 0 {
-		t.Fatal("V26 reopen repeated migration or changed the exact empty export catalog")
+		t.Fatal("V27 reopen repeated migration or changed the exact empty export catalog")
 	}
 }
 

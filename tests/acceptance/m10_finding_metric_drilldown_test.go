@@ -625,11 +625,11 @@ func TestM10_FindingMetricOverviewAndNewSnapshotsUseVisibleCanonicalTotals(t *te
 	ok(t, "read existing saved report JSON", h.services.db.QueryRow(h.services.ctx,
 		`SELECT report::text FROM `+historicalSnapshotTable(h)+` WHERE workspace_id=$1 AND id=$2`,
 		h.admin.workspace, findingMetricID(950)).Scan(&oldJSON))
-	wantVersions := make([]int, 26)
+	wantVersions := make([]int, 27)
 	for index := range wantVersions {
 		wantVersions[index] = index + 1
 	}
-	equal(t, "finding metric schema remains exactly V26", historicalSchemaVersions(t, h), wantVersions)
+	equal(t, "finding metric schema remains exactly V27", historicalSchemaVersions(t, h), wantVersions)
 	storage.arm()
 
 	current := overview(t, h, h.admin)

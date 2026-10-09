@@ -205,8 +205,8 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
 			}
 			opened = true
 			afterOpenVersions, afterOpenTables = versionLedger(t, f), actualTables(t, f)
-			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"}),
-				"current constructor returned success but did not apply and record v6 through v26 exactly once over actual published v5")
+			require(t, reflect.DeepEqual(afterOpenVersions, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"}),
+				"current constructor returned success but did not apply and record v6 through v27 exactly once over actual published v5")
 			sourcecompat.ValidateCurrentCatalog(t, currentDefinitionSnapshot(t, f, sourcecompat.CurrentTables()))
 			for _, name := range []string{"source_connections", "source_collections", "source_repository_assets", "source_collection_records"} {
 				found := false
@@ -250,7 +250,7 @@ func TestSourceCollectionPublishedV5UpgradeA2(t *testing.T) {
 			must(t, "close worker before v6 idempotent reopen", worker.Close())
 			fresh := h.openWorker(h.workerConfig(native, "idempotent-v6"))
 			process(t, h.ctx, fresh, false)
-			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"}) &&
+			require(t, reflect.DeepEqual(versionLedger(t, f), []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"}) &&
 				reflect.DeepEqual(oldDefinitions, deliverycompat.ProjectCurrent(t, oldDefinitions, legacyDefinitionSnapshot(t, f, baseline.LegacyTables))),
 				"reopening v26 repeated migration or changed legacy definitions")
 			sourcecompat.ValidateCurrentCatalog(t, currentDefinitionSnapshot(t, f, sourcecompat.CurrentTables()))

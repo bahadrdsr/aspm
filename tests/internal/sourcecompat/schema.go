@@ -203,7 +203,8 @@ func ProjectCurrent(t testing.TB, before, current map[string][]string) map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := ProjectV26(t, v13, current)
+	projected := ProjectV27(t, v13, current)
+	projected = ProjectV26(t, v13, projected)
 	projected = ProjectV25(t, v13, projected)
 	projected = ProjectV24(t, v13, projected)
 	projected = ProjectV23(t, v13, projected)

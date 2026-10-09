@@ -1,4 +1,4 @@
-M03-M10 ACCEPTANCE CONTRACT
+M03-M12 ACCEPTANCE CONTRACT
 ==========================
 Bounded milestone tests plus one real-service gate; all input is synthetic. These are
 bounded implementation slices, not completion of the full milestone roadmap.
@@ -9,6 +9,7 @@ RUN from C:\bahadr\serious\aspm with Go 1.27.1 and existing dependencies:
   go test -mod=readonly -count=1 -run '^TestM03_' .\tests\acceptance
   go test -tags=integration -mod=readonly -count=1 -timeout=300s .\tests\acceptance
   go test -tags=integration -mod=readonly -count=1 -run '^TestM06_' .\tests\acceptance
+  go test -tags=integration -mod=readonly -count=1 -run '^TestM12_' .\tests\acceptance
 Protected Windows runner:
   .\tests\acceptance\Test-Acceptance.ps1 -PlanOnly
   .\tests\acceptance\Test-Acceptance.ps1 -RuntimeConfig '<authorized-runtime-json>' -ModuleCache '.cache\modules'
@@ -1363,11 +1364,11 @@ artifact or lease. Queued and processing rows expose no artifact, completion
 or failure. Only processing rows have a worker, positive fence and lease.
 Attempts are 0..3. V26 creates no default jobs or artifacts.
 
-The exact current V26 catalog projects to exact V25 while permitting only the
-new table, constraints and indexes. Existing projections remain exact.
-Published V5 through V11 upgrade fixtures require ledger versions 1..26,
-preserve complete historical rows and definitions, and reopen without
-repeating V26.
+The exact V26 catalog projects to exact V25 while permitting only the new
+table, constraints and indexes. Current V27 composition projects first to V26,
+then through every prior exact projection. Published V5 through V11 upgrade
+fixtures require ledger versions 1..27, preserve complete historical rows and
+definitions, and reopen without repeating a migration.
 
 POST /api/v1/reports/exports accepts exactly
 {snapshotId,format,idempotencyKey}. Admins and analysts may submit. Viewers
@@ -1446,3 +1447,147 @@ digests, CRLF and formula-safe names, snapshot immutability, cancellation,
 lease reclaim, stale fencing, three-attempt failure, corruption detection and
 ProcessReports draining both queues. It also proves zero raw/archive S3 calls
 and no provider, finding, decision, retention or archive side effects.
+
+M12 V27 BOUNDED DETERMINISTIC EVIDENCE VERIFICATION:
+This is one coherent product vertical over the tested internal/verification
+boundary. It is not exploitation, offensive scanning, a target probe, browser
+automation, arbitrary file/tool/shell execution, subprocess execution, provider
+or model execution, autonomous proof, or permission to test a real system.
+Only deterministic-evidence and the exact aspm.synthetic-fixture/v1 document
+are admitted. reproduced and not-reproduced describe only the approved
+synthetic fixture condition. Neither outcome verifies a real vulnerability,
+changes finding workflow/disposition/source/AI state, marks false positive,
+sets verified resolution, closes a finding, or makes a safety claim.
+
+V27 is additive only. It creates app_verification_evidence,
+app_verification_approvals and app_verification_jobs plus their exact bounded
+indexes. It creates no default rows and changes no prior row. IDs, finding IDs,
+workspace IDs, evidence/approval/job references, member IDs and worker IDs are
+lower-case 32-hex. V27 projects exactly to V26. Current schema composition and
+published V5 through V11 upgrade fixtures require the exact 1..27 ledger and
+preserve prior definitions and bytes across reopen.
+
+app_verification_evidence stores id, workspace_id, finding_id, submitted_by,
+method, fixture_schema, environment_id, scope_revision,
+finding_evidence_revision, content, content_digest, content_size and created_at.
+method is exactly deterministic-evidence and fixture_schema is exactly
+aspm.synthetic-fixture/v1. Environment and scope revision are nonblank,
+NUL-free UTF-8 values of at most 256 bytes. finding_evidence_revision is
+positive. content is 1..65536 bytes, content_size equals its byte length and
+content_digest is lower-case sha256. The immutable composite binding is unique.
+Foreign keys bind the workspace, current finding and submitting membership.
+History is indexed by workspace+finding+id.
+
+The exact fixture has only schema, environmentId and condition. condition is a
+required JSON boolean. The accepted canonical UTF-8 bytes are exactly the
+server encoding of those three fields in that order, with no whitespace or
+trailing data. environmentId must equal the explicit request environment.
+scopeRevision is intentionally an external evidence/approval/job binding
+because the already-tested aspm.synthetic-fixture/v1 format has no scope field.
+Adding scopeRevision to the fixture would contradict the internal verifier's
+exact unknown-field rejection. No target, command, URL, file, browser, provider,
+model or tool field is accepted.
+
+app_verification_approvals stores id, the complete evidence binding,
+approved_by, bounded rationale, created_at, expires_at and nullable
+revoked_at/revoked_by/revocation_rationale. Rationale and revocation rationale
+are nonblank, NUL-free and at most 8192 UTF-8 bytes. Expiry is strictly after
+creation and no more than 24 hours later. Revocation fields are all null or all
+present, and revocation time cannot precede creation. The evidence binding is
+enforced by one composite foreign key. Approver and revoker are selected
+workspace memberships. An approval row is immutable except that one explicit
+revocation action may fill the revocation fields. It is never deleted.
+
+Approval current state is computed from the row and current trusted data. It is
+current only while unrevoked, unexpired, still bound to the exact evidence
+digest/environment/scope/method, and still equal to the finding's current
+evidence revision. API responses expose current explicitly. A stale, expired or
+revoked approval cannot queue new work. Revocation atomically cancels every
+queued or processing job bound to that approval, increments/fences processing
+work, preserves history and never alters a succeeded result.
+
+app_verification_jobs stores id, workspace_id, finding_id, approval_id,
+evidence_id, requested_by, the complete immutable verification binding,
+idempotency_key, state, outcome, close_finding, false_positive, bounded failure,
+created/completed times, worker_id, fence, attempts, lease_until and
+available_at. Idempotency is unique by workspace and at most 256 nonblank,
+NUL-free UTF-8 bytes. State is queued, processing, succeeded, blocked, failed
+or cancelled. Attempts are 0..3. Only processing has a lower-case worker ID,
+positive fence, positive attempt and lease. Terminal states have completed_at.
+Only succeeded has outcome reproduced or not-reproduced. Only blocked, failed
+or cancelled has a nonretryable failure. close_finding and false_positive are
+always false. Claim and reclaim indexes cover only queued and processing rows;
+history is indexed by workspace+finding+id.
+
+POST /api/v1/findings/{findingId}/verification/evidence is available only to
+admins and analysts and accepts exactly:
+{method,environmentId,scopeRevision,fixture}. The request uses the current
+selected workspace and current finding. Unknown/missing fields, wrong method or
+schema, missing boolean condition, environment disagreement, invalid UTF-8,
+NUL, blank/oversized text, undeclared fixture fields and encoded bodies over
+65536 bytes are rejected. Success is 201 with metadata only. It stores the
+canonical fixture bytes, digest, size, actor and current finding evidence
+revision. It performs no inline verification and no storage/provider/tool I/O.
+
+POST /api/v1/findings/{findingId}/verification/approvals is admin-only and
+accepts exactly {evidenceId,rationale,expiresAt}. Evidence must be visible,
+belong to the exact current finding/workspace and still match the finding
+evidence revision. Success is 201. POST
+.../verification/approvals/{approvalId}/revoke is admin-only and accepts
+exactly {rationale}. First revocation returns 200 with the historical approval
+now current=false. A repeated or changed revocation conflicts. PATCH, DELETE
+and implicit/AI-generated approval are not supported.
+
+GET .../verification/evidence and GET .../verification/approvals are available
+to every current member and return metadata only. GET
+.../verification/jobs returns native job history. All three collections accept
+only limit=1..100 and an optional exclusive lower-case 32-hex cursor, order by
+ID ascending and return exact total/nextCursor. They never return fixture bytes.
+
+POST /api/v1/findings/{findingId}/verification/jobs is admin/analyst only and
+accepts exactly {approvalId,idempotencyKey}. First acceptance returns 202 and
+commits only a queued durable job. Exact same-workspace replay returns 200 with
+the original receipt and original requester, even when another authorized
+member performs the replay. Reusing a key with a different approval is 409.
+Viewer queue is 403. Foreign finding/approval/job is 404. There is no inline
+worker call, polling, scheduled run or automatic retry.
+
+GET .../verification/jobs/{jobId} is available to every current member.
+Collection and detail receipts expose exactly id, workspaceId, findingId,
+approvalId, evidenceId, requestedBy, method, environmentId, scopeRevision,
+findingEvidenceRevision, evidenceDigest, state, createdAt, completedAt, failure
+and result. Raw fixture content is never JSON. queued and processing expose no
+terminal fields. blocked, failed and cancelled expose one bounded nonretryable
+diagnostic and no result. succeeded exposes exactly method, environmentId,
+scopeRevision, evidenceId, evidenceDigest, outcome, closeFinding=false and
+falsePositive=false.
+
+OpenVerificationWorker is an independent database-only worker constructor. Its
+configuration contains only PostgreSQL identity/pool settings, a lower-case
+worker ID, bounded lease and authority intervals, MaxFixtureBytes=65536, Now,
+logging and optional query tracing. It has no S3/storage, HTTP client, target,
+provider, model, browser, scanner, shell, subprocess or tool capability. It
+loads immutable bytea evidence through a bounded database EvidenceReader and
+delegates format/integrity/outcome evaluation to internal/verification with a
+current trusted approval lookup.
+
+ProcessNext claims one queued job or reclaims one expired processing lease.
+Claims, lease refresh, attempts and terminal publication use database leases
+and monotonic fences. Approval expiry/revocation, changed finding evidence
+revision or any changed immutable binding is checked before bytes are read,
+during verification and again before terminal commit. Revocation actively
+cancels and fences in-flight work. Expiry or stale binding becomes blocked.
+Caller cancellation cannot publish success. A stale worker/fence cannot update
+the row. Success, outcome, completion and lease release commit atomically.
+Success is never retried. Unsupported fixture format and digest/size integrity
+errors are terminal on the first attempt with fixture-format or
+evidence-integrity. An expired third lease becomes failed with attempt-limit.
+
+Real M12 acceptance covers exact V27 catalog/relations/projection, zero default
+rows, 1..27 ledger/reopen, canonical fixture bytes/digest/size, role and
+workspace authority, approval expiry/currentness/revocation, queue replay and
+changed-binding conflict, viewer metadata/history/detail, native paging, no raw
+fixture disclosure, safe reproduced/not-reproduced results, no finding state
+mutation, active revocation cancellation, expiry/stale-binding block, lease
+reclaim, stale-fence denial, terminal format/integrity failures, attempt limit,
+and zero object-store/provider/network/tool I/O.

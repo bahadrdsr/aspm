@@ -154,10 +154,10 @@ func TestSavedWorkViewsActualPopulatedPublishedV8Upgrade(t *testing.T) {
 	output := filepath.Join("..", "..", ".artifacts", "saved-work-views-v1", "published-v8-upgrade-"+nonce(t)+".json")
 	must(t, "record nonsecret actual migration observation", os.WriteFile(output, encode(t, observation), 0600))
 	same(t, "current production open did not apply through additive V26 over actual populated published V8",
-		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"})
+		after, []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"})
 	sourcecompat.ValidateCurrentCatalog(t, f.v21Definitions())
 	same(t, "V11 changed a published legacy definition", deliverycompat.ProjectCurrent(t, definitions, f.definitions(names)), definitions)
-	same(t, "V26 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
+	same(t, "V27 changed actual published API-created business rows", sourcecompat.ProjectRowsCurrent(t, before, f.snapshot(names)), before)
 	checkLegacy := func() {
 		t.Helper()
 		utc := func(value *time.Time) *time.Time {

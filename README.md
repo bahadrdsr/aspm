@@ -94,9 +94,11 @@ have durable application workflows. Other native-family orchestration and live
 vendor/model qualification remain incomplete. Assessment source/host images and explicit owned-cluster
 startup have separate qualification; Helm is opt-in and native Quadlet
 activation remains operator work.
-Verification supports
-approved deterministic synthetic evidence only, not exploit execution or
-autonomous offensive tools.
+Verification supports approved deterministic synthetic evidence only, not
+exploit execution or autonomous offensive tools. V27 adds immutable bounded
+fixtures, explicit administrator approval/revocation, durable leased jobs,
+manual finding-detail history, and safe `reproduced`/`not-reproduced` outcomes.
+See `docs\m12-deterministic-verification.md`.
 
 Linux/Podman Quadlet and Kubernetes/Helm are the production targets. The installer
 now supports the configuration wizard, diagnostics, signed target-bound planning,
