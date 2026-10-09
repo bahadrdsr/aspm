@@ -6,7 +6,7 @@ RUN npm ci --ignore-scripts --registry="$NPM_REGISTRY" --replace-registry-host=a
 COPY web/ ./
 RUN npm run build
 
-FROM golang:1.27.1-alpine@sha256:85fe1e81d6758c208f3e1eed4338a1997e19d4be002d4dd32d3100c9a8c010a0 AS backend
+FROM golang:1.27.1-alpine@sha256:8a5910f31396cd4d89662f56c68b3ae31d374308270a1c3bd96672ee5ed43414 AS backend
 ARG ASPM_VERSION=0.1.0-dev.1
 WORKDIR /build
 COPY go.mod go.sum ./
@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 go build -trimpath -o /out/core-api ./cmd/core-api && \
     CGO_ENABLED=0 go build -trimpath -o /out/verification-worker ./cmd/verification-worker && \
     CGO_ENABLED=0 GOFLAGS="-ldflags=-X=main.version=${ASPM_VERSION}" go build -trimpath -o /out/aspmctl ./cmd/aspmctl
 
-FROM alpine:3.23@sha256:8a5910f31396cd4d89662f56c68b3ae31d374308270a1c3bd96672ee5ed43414
+FROM alpine:3.23@sha256:85fe1e81d6758c208f3e1eed4338a1997e19d4be002d4dd32d3100c9a8c010a0
 ARG ASPM_VERSION=0.1.0-dev.1
 ARG ASPM_REVISION=unknown
 LABEL org.opencontainers.image.title="ASPM" \
