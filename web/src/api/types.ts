@@ -749,6 +749,46 @@ export interface ReportSnapshotsResponse {
   nextCursor: string | null;
 }
 
+export type ReportExportFormat = "json" | "csv";
+export type ReportExportState = "queued" | "processing" | "succeeded" | "failed";
+export interface ReportExportInput {
+  snapshotId: string;
+  format: ReportExportFormat;
+  idempotencyKey: string;
+}
+export interface ReportExport {
+  id: string;
+  workspaceId: string;
+  snapshotId: string;
+  snapshotName: string;
+  requestedBy: string;
+  format: ReportExportFormat;
+  state: ReportExportState;
+  createdAt: string;
+  completedAt: string | null;
+  failure: { code: string; message: string; retryable: false } | null;
+  digest: string | null;
+  sizeBytes: number | null;
+  filename: string | null;
+}
+export interface ReportExportResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  export: ReportExport;
+}
+export interface ReportExportsResponse {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  items: ReportExport[];
+  total: number;
+  nextCursor: string | null;
+}
+export interface ReportExportContent {
+  bytes: ArrayBuffer;
+  contentType: "application/json; charset=utf-8" | "text/csv; charset=utf-8";
+  filename: string;
+}
+
 export type IntegrationId = "github" | "gitlab" | "azure-devops" | "aws" | "azure" | "jira" | "teams" | "slack";
 export interface IntegrationSummary {
   id: IntegrationId;

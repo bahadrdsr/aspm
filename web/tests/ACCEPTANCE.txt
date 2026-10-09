@@ -348,3 +348,65 @@ undeclared fields required for the committed Work update. A rejected response
 never fabricates an approval, accepted-risk label, count or success message.
 No rationale, expiry, revision map, finding state or approval-like value is
 stored in browser storage or written to console output.
+
+M10 V26 bounded report export browser increment (October 9, 2026)
+----------------------------------------------------------------
+Reports adds one closed-by-default region named Report exports. Opening it
+performs one explicit first-page GET with limit=100. It does not load exports,
+page snapshot history or poll while closed. Any current member can open the
+region, read history, select an export and explicitly refresh history or
+detail. Load more exports uses only the returned native cursor and never
+automatically drains later pages.
+
+Admins and analysts see one Create report export form. The snapshot selector
+contains only succeeded snapshots already returned by Saved snapshots. It does
+not fetch or auto-drain additional snapshot pages. The format selector contains
+JSON and CSV. One explicit submit sends exactly snapshotId, format and a fresh
+nonblank NUL-free idempotencyKey of at most 256 UTF-8 bytes. The key is generated
+in memory and is not displayed as authority, persisted in browser storage or
+reused for a genuinely new confirmed intent. Viewers have no create form or
+enabled create action but retain all read and download behavior.
+
+A 202 receipt is shown as queued, never generated or complete. Detail has one
+explicit Refresh export control. Queued, processing, failed and succeeded are
+rendered only from strict server receipts. Queued and processing have no
+download. Failed shows the exact bounded diagnostic and no download. Succeeded
+shows digest, size and safe filename and has one Download action. There is no
+status polling or automatic retry.
+
+Download fetches the same-origin content endpoint in memory, validates exact
+Content-Type, attachment filename, X-ASPM-Content-Digest,
+X-ASPM-Content-Length, byte length and SHA-256, then creates one Blob/object URL
+download and revokes that URL. JSON LF and CSV CRLF bytes remain exact. No
+artifact body, digest, filename, snapshot ID, export ID or object URL is written
+to localStorage, sessionStorage, IndexedDB, cookies, the page URL or console.
+
+A lost, aborted or otherwise ambiguous POST acknowledgement retains one
+unresolved snapshot/format/key intent. It does not paint optimistic success,
+generate another key, issue an automatic replay or enable unrelated new export
+creation. An explicit Refresh exports may reconcile a matching history receipt;
+an explicitly offered pending replay must send the exact original body. Only
+after authorized reconciliation may a genuinely new submit use a fresh key.
+
+A transient history failure retains the last authorized rows and exact native
+cursor. A transient detail failure retains only currently authorized metadata.
+A detail 403 or 404 withholds prior metadata and latches that boundary through
+later loading and transient failures until an authorized success. Workspace
+change, session replacement, logout and protected 401 abort old-scope history,
+detail, creation and content requests, clear rows and unresolved intent, and
+discard late responses. Displayed role metadata never overrides a current
+server denial.
+
+Strict parsing rejects wrong API version or data origin; unknown or missing
+envelope/export keys; wrong workspace, snapshot, requester or export identity;
+invalid format, state, time, failure, digest, size or filename; inconsistent
+state metadata; duplicate, descending or cross-workspace pages; invalid totals
+or cursors; content headers that disagree with the selected receipt; unsafe
+Content-Disposition; missing or malformed digest/length; and body bytes whose
+length or SHA-256 differs. A malformed replacement never becomes a row,
+terminal state or download.
+
+At 390px with reduced motion, opening the section, creating an export, native
+Load more, manual Refresh export and Download remain keyboard reachable without
+page-level horizontal overflow. Request completion preserves deliberately moved
+focus. Existing Reports and Work context remains intact.

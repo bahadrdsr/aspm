@@ -62,23 +62,24 @@ func priorV22Catalog(t *testing.T, current map[string][]string) map[string][]str
 	return prior
 }
 
-func TestM08_V22GenericWebhookMigrationRemainsExactThroughV25(t *testing.T) {
+func TestM08_V22GenericWebhookMigrationRemainsExactThroughV26(t *testing.T) {
 	h := newNotificationHarness(t)
 	ledger := notificationCatalogRows(t, h,
 		`SELECT ledger.version::text FROM `+notificationTable(h, "schema_versions")+` AS ledger ORDER BY ledger.version`)
 	wantLedger := []string{
 		"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25",
+		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26",
 	}
 	if !reflect.DeepEqual(ledger, wantLedger) {
-		t.Fatalf("V25 migration ledger got %v, want %v", ledger, wantLedger)
+		t.Fatalf("V26 migration ledger got %v, want %v", ledger, wantLedger)
 	}
 
 	names := append(sourcecompat.CurrentTables(), "integration_connections", "finding_deliveries")
 	currentCatalog := notificationDefinitions(t, h, names)
 	core := catalogForTables(currentCatalog, sourcecompat.CurrentTables())
 	sourcecompat.ValidateCurrentCatalog(t, core)
-	v24Core := sourcecompat.ProjectV25Current(t, core)
+	v25Core := sourcecompat.ProjectV26Current(t, core)
+	v24Core := sourcecompat.ProjectV25Current(t, v25Core)
 	v23Core := sourcecompat.ProjectV24Current(t,
 		catalogForTables(v24Core, sourcecompat.V24CurrentTables()))
 	v23 := make(map[string][]string, len(currentCatalog))

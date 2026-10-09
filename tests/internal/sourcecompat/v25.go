@@ -87,7 +87,7 @@ var exactV25NewTableCatalog = map[string][]string{
 
 func V25Tables() []string { return slices.Clone(v25Tables) }
 
-func CurrentTables() []string {
+func V25CurrentTables() []string {
 	result := V24CurrentTables()
 	for _, table := range v25Tables {
 		if !slices.Contains(result, table) {
@@ -246,7 +246,7 @@ func ValidateV25Catalog(t testing.TB, before, current map[string][]string) {
 
 func ProjectV25Current(t testing.TB, current map[string][]string) map[string][]string {
 	t.Helper()
-	wantKeys := len(CurrentTables()) * 3
+	wantKeys := len(V25CurrentTables()) * 3
 	if len(current) != wantKeys {
 		t.Fatalf("V25: current catalog key count=%d, want %d", len(current), wantKeys)
 	}
@@ -273,7 +273,7 @@ func ProjectV25Current(t testing.TB, current map[string][]string) map[string][]s
 	return projected
 }
 
-func ValidateCurrentCatalog(t testing.TB, current map[string][]string) {
+func ValidateV25CurrentCatalog(t testing.TB, current map[string][]string) {
 	t.Helper()
 	ProjectV25Current(t, current)
 }

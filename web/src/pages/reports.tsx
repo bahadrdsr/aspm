@@ -3,7 +3,7 @@ import type { FormEvent } from "react";
 import { api, APIError } from "@/api/client";
 import type {
   CoverageAssetState, FindingMetric, PostureReport,
-  ReportSnapshotResponse, ReportSnapshotsResponse,
+  ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
 } from "@/api/types";
 import { label, timestampLabel } from "@/lib/format";
 import { useResource } from "@/lib/use-resource";
@@ -13,6 +13,7 @@ import { FormError } from "@/components/form-dialog";
 import { Icon } from "@/components/icon";
 import { ReportCoverageAssets } from "@/components/report-coverage-assets";
 import { ReportFindingMetrics } from "@/components/report-finding-metrics";
+import { ReportExports } from "@/components/report-exports";
 import { ReportMetrics } from "@/components/report-metrics";
 import { ReportSnapshotCreate } from "@/components/report-snapshot-create";
 import { ReportSnapshotDetail } from "@/components/report-snapshot-detail";
@@ -66,7 +67,11 @@ function LiveOverview({ days, applyDays, onCoverageSelect, onFindingMetricSelect
 
 interface HistoryState { data: ReportSnapshotsResponse | null; pending: boolean; error: APIError | null }
 
-function SavedSnapshots({ onSelect, refreshRevision }: { onSelect: (id: string) => void; refreshRevision: number }) {
+function SavedSnapshots({ onSelect, onItemsChange, refreshRevision }: {
+  onSelect: (id: string) => void;
+  onItemsChange: (items: ReportSnapshotSummary[]) => void;
+  refreshRevision: number;
+}) {
   const [read, setRead] = useState<{ cursor: string | null; revision: number }>({ cursor: null, revision: 0 });
   const [history, setHistory] = useState<HistoryState>({ data: null, pending: true, error: null });
   useEffect(() => {
@@ -96,6 +101,7 @@ function SavedSnapshots({ onSelect, refreshRevision }: { onSelect: (id: string) 
   useEffect(() => {
     if (refreshRevision > 0) setRead((previous) => ({ cursor: null, revision: previous.revision + 1 }));
   }, [refreshRevision]);
+  useEffect(() => onItemsChange(history.data?.items ?? []), [history.data?.items, onItemsChange]);
   function readPage(cursor: string | null) {
     if (history.pending) return;
     setHistory((previous) => ({ ...previous, pending: true, error: null }));
@@ -155,11 +161,17 @@ export function ReportsPage() {
   const [coverage, setCoverage] = useState<CoverageSelection | null>(null);
   const [findingMetric, setFindingMetric] = useState<FindingMetricSelection | null>(null);
   const [historyRevision, setHistoryRevision] = useState(0);
+  const [snapshotOptions, setSnapshotOptions] = useState<ReportSnapshotSummary[]>([]);
   const canWrite = workspace.role !== "viewer";
   function select(id: string, initial: ReportSnapshotResponse | null = null) {
     setSelection((previous) => ({ id, initial, generation: (previous?.generation ?? 0) + 1 }));
   }
-  useEffect(() => { setCoverage(null); setFindingMetric(null); }, [workspace.id]);
+  useEffect(() => {
+    setCoverage(null);
+    setFindingMetric(null);
+    setSnapshotOptions([]);
+  }, [workspace.id]);
+  const updateSnapshotOptions = useCallback((items: ReportSnapshotSummary[]) => setSnapshotOptions(items), []);
   function closeCoverage() {
     const trigger = coverage?.trigger;
     setCoverage(null);
@@ -193,6 +205,7 @@ export function ReportsPage() {
       metric={findingMetric.metric} report={findingMetric.report} onClose={closeFindingMetric} />}
     <ReportSLA key={`sla-${workspace.id}`} />
     <ReportTrends key={workspace.id} />
+    <ReportExports snapshots={snapshotOptions} />
     <div className="report-saved-layout">
       {selection ? <ReportSnapshotDetail key={selection.generation} id={selection.id} initial={selection.initial} /> :
         <section className="surface report-panel report-selected" aria-label="Selected snapshot">
@@ -200,9 +213,9 @@ export function ReportsPage() {
           <div className="report-panel-content report-selection-empty"><Icon name="file" size={24} /><h3>A saved point in time</h3>
             <p className="report-help">Open a snapshot from history to see its actual worker state and saved report. Refreshing the live overview never changes a saved result.</p></div>
         </section>}
-      <SavedSnapshots onSelect={select} refreshRevision={historyRevision} />
+      <SavedSnapshots onSelect={select} onItemsChange={updateSnapshotOptions} refreshRevision={historyRevision} />
     </div>
-    <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes each read and creation. Current coverage membership, snapshots, and historical points do not run scans, interpolate missing periods, or independently verify safety. Report exports are not generated here.</p>
+    <p className="view-footnote"><Icon name="shield" size={15} />The service authorizes each read and creation. Current coverage membership, snapshots, historical points, and report exports do not run scans, interpolate missing periods, or independently verify safety.</p>
     {canWrite && form && <ReportSnapshotCreate freshnessDays={days} returnFocus={form.trigger} onClose={() => setForm(null)}
       onAccepted={(response) => { setForm(null); select(response.snapshot.id, response); setHistoryRevision((value) => value + 1); }} />}
   </div>;

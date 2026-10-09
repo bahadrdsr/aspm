@@ -259,6 +259,17 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return errForbidden
 		}
 		return a.createReportSnapshot(w, r, membership.ID, session.User.ID)
+	case "/api/v1/reports/exports":
+		if err = requireMethod(w, r, http.MethodGet, http.MethodPost); err != nil {
+			return err
+		}
+		if r.Method == http.MethodGet {
+			return a.listReportExports(w, r, membership.ID)
+		}
+		if !canWrite(membership) {
+			return errForbidden
+		}
+		return a.createReportExport(w, r, membership.ID, session.User.ID)
 	case "/api/v1/retention/policy":
 		if err = requireMethod(w, r, http.MethodGet, http.MethodPatch); err != nil {
 			return err
@@ -460,6 +471,21 @@ func (a *Application) route(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		return a.getReportSnapshot(w, r, membership.ID, parts[2])
+	}
+	if len(parts) >= 3 && parts[0] == "reports" && parts[1] == "exports" && validID(parts[2]) {
+		if len(parts) == 3 {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
+			return a.getReportExport(w, r, membership.ID, parts[2])
+		}
+		if len(parts) == 4 && parts[3] == "content" {
+			if err = requireMethod(w, r, http.MethodGet); err != nil {
+				return err
+			}
+			return a.getReportExportContent(w, r, membership.ID, parts[2])
+		}
+		return errNotFound
 	}
 	if len(parts) < 2 || !validID(parts[1]) {
 		return errNotFound

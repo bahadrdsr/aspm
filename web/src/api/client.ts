@@ -10,6 +10,7 @@ import type {
   ImportInput, ImportReceipt, IntegrationSummary, JSONValue, Observation, PostureReport, ReportIntakeSummary, ReportOverviewResponse,
   RemediationSLAFinding, RemediationSLAFindingPage, RemediationSLAResponse, RemediationSLAStatus,
   ReportSLAPolicy, ReportSLAPolicyInput, ReportSLAPolicyResponse,
+  ReportExport, ReportExportContent, ReportExportInput, ReportExportResponse, ReportExportsResponse,
   ReportSnapshotInput, ReportSnapshotResponse, ReportSnapshotsResponse, ReportSnapshotSummary,
   RetentionClassSummary, RetentionHold, RetentionHoldResponse, RetentionHoldsResponse, RetentionPolicyInput,
   RetentionPolicyResponse, RetentionPreview, RetentionPreviewItem, RetentionPreviewResponse,
@@ -1432,6 +1433,79 @@ function parseReportSnapshots(value: unknown, workspace: string | null, limit: n
   return { apiVersion, dataOrigin, items, total, nextCursor };
 }
 
+function reportExportItem(value: unknown, workspace: string | null): ReportExport {
+  const item = exactObject(value, "report export", [
+    "id", "workspaceId", "snapshotId", "snapshotName", "requestedBy", "format", "state",
+    "createdAt", "completedAt", "failure", "digest", "sizeBytes", "filename",
+  ]);
+  const workspaceId = reportIdentifier(item.workspaceId, "report export workspace");
+  if (workspaceId !== workspace) return invalid("report export workspace");
+  const snapshotId = reportIdentifier(item.snapshotId, "report export snapshot");
+  const snapshotName = text(item.snapshotName, "report export snapshot name");
+  if (snapshotName.includes("\0") || new TextEncoder().encode(snapshotName).byteLength > 256) {
+    return invalid("report export snapshot name");
+  }
+  const format = choice(item.format, ["json", "csv"], "report export format");
+  const state = choice(item.state, ["queued", "processing", "succeeded", "failed"], "report export state");
+  const createdAt = timestamp(item.createdAt, "report export creation time");
+  const completedAt = nullableTimestamp(item.completedAt, "report export completion time");
+  let failure: ReportExport["failure"] = null;
+  if (item.failure !== null) {
+    const detail = exactObject(item.failure, "report export failure", ["code", "message", "retryable"]);
+    const code = text(detail.code, "report export failure code");
+    const message = text(detail.message, "report export failure message");
+    const retryable = boolean(detail.retryable, "report export retry policy");
+    if (retryable || code.includes("\0") || message.includes("\0") ||
+      new TextEncoder().encode(code).byteLength > 128 ||
+      new TextEncoder().encode(message).byteLength > 1024) {
+      return invalid("report export failure");
+    }
+    failure = { code, message, retryable: false };
+  }
+  const digest = nullableText(item.digest, "report export digest");
+  const sizeBytes = item.sizeBytes === null ? null : count(item.sizeBytes, "report export size");
+  const filename = nullableText(item.filename, "report export filename");
+  const expectedFilename = `aspm-report-${snapshotId}.${format}`;
+  const terminal = completedAt !== null;
+  const invalidState = state === "queued" || state === "processing"
+    ? terminal || failure !== null || digest !== null || sizeBytes !== null || filename !== null
+    : state === "failed"
+      ? !terminal || failure === null || digest !== null || sizeBytes !== null || filename !== null
+      : !terminal || failure !== null || digest === null || !/^sha256:[a-f0-9]{64}$/.test(digest) ||
+        sizeBytes === null || sizeBytes > 256 << 10 || filename !== expectedFilename;
+  if (terminal && Date.parse(completedAt) < Date.parse(createdAt) || invalidState) {
+    return invalid("report export state metadata");
+  }
+  return {
+    id: reportIdentifier(item.id, "report export identifier"), workspaceId, snapshotId, snapshotName,
+    requestedBy: reportIdentifier(item.requestedBy, "report export requester"),
+    format, state, createdAt, completedAt, failure, digest, sizeBytes, filename,
+  };
+}
+
+function parseReportExport(value: unknown, workspace: string | null): ReportExportResponse {
+  const body = exactObject(value, "report export response", ["apiVersion", "dataOrigin", "export"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("report export response envelope");
+  return { apiVersion, dataOrigin: "live", export: reportExportItem(body.export, workspace) };
+}
+
+function parseReportExports(value: unknown, workspace: string | null, limit: number, cursor: string): ReportExportsResponse {
+  const body = exactObject(value, "report export page", ["apiVersion", "dataOrigin", "items", "total", "nextCursor"]);
+  if (body.apiVersion !== apiVersion || body.dataOrigin !== "live") return invalid("report export page envelope");
+  const items = array(body.items, "report export history").map((item) => reportExportItem(item, workspace));
+  const total = count(body.total, "report export total");
+  const nextCursor = body.nextCursor === null ? null : reportIdentifier(body.nextCursor, "report export cursor");
+  if (new Set(items.map((item) => item.id)).size !== items.length ||
+    total < items.length || items.length > limit ||
+    items.some((item, index) => item.id <= (index === 0 ? cursor : items[index - 1].id)) ||
+    nextCursor !== null && (items.length !== limit || nextCursor !== items.at(-1)?.id || nextCursor <= cursor) ||
+    items.length < limit && nextCursor !== null ||
+    cursor === "" && (total > items.length) !== (nextCursor !== null)) {
+    return invalid("report export page order");
+  }
+  return { apiVersion, dataOrigin: "live", items, total, nextCursor };
+}
+
 export function parseCatalog(value: unknown): CatalogResponse {
   const { body, dataOrigin } = envelope(value);
   const items = array(body.items, "integration catalog").map((value): IntegrationSummary => {
@@ -2080,6 +2154,79 @@ export const api = {
       }
       return response;
     }, { method: "PATCH", body: input, signal, expectedStatus: 200 });
+  },
+  reportExports: (limit: number, cursor: string | null, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 ||
+      cursor !== null && !/^[a-f0-9]{32}$/.test(cursor)) {
+      throw new APIError("Report export pages require a limit from 1 through 100 and a native cursor.", "invalid-input", false);
+    }
+    const query = new URLSearchParams({ limit: String(limit) });
+    if (cursor !== null) query.set("cursor", cursor);
+    return reportRead(`/api/v1/reports/exports?${query}`,
+      (value) => parseReportExports(value, workspace, limit, cursor ?? ""), signal);
+  },
+  reportExport: (id: string, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(id, "report export");
+    return reportRead(`/api/v1/reports/exports/${encodeURIComponent(id)}`, (value) => {
+      const response = parseReportExport(value, workspace);
+      if (response.export.id !== id) return invalid("selected report export identifier");
+      return response;
+    }, signal);
+  },
+  createReportExport: (input: ReportExportInput, signal: AbortSignal) => {
+    const workspace = requestAuthority().workspace;
+    reportIdentifier(input.snapshotId, "report export snapshot");
+    if (!["json", "csv"].includes(input.format) || input.idempotencyKey.trim() === "" ||
+      input.idempotencyKey.includes("\0") ||
+      new TextEncoder().encode(input.idempotencyKey).byteLength > 256) {
+      throw new APIError("Report exports require a succeeded snapshot, JSON or CSV, and a bounded intent key.", "invalid-input", false);
+    }
+    const body: ReportExportInput = {
+      snapshotId: input.snapshotId, format: input.format, idempotencyKey: input.idempotencyKey,
+    };
+    return request("/api/v1/reports/exports", (value, status) => {
+      const response = parseReportExport(value, workspace);
+      if (response.export.snapshotId !== body.snapshotId || response.export.format !== body.format ||
+        status === 202 && (response.export.state === "succeeded" || response.export.state === "failed") ||
+        status === 200 && response.export.state !== "succeeded" && response.export.state !== "failed") {
+        return invalid("report export acknowledgement", status);
+      }
+      return response;
+    }, { method: "POST", body, signal, expectedStatus: [200, 202] });
+  },
+  reportExportContent: (item: ReportExport, signal: AbortSignal): Promise<ReportExportContent> => {
+    reportIdentifier(item.id, "report export");
+    if (item.state !== "succeeded" || item.digest === null || item.sizeBytes === null || item.filename === null) {
+      throw new APIError("This report export does not have a completed artifact.", "conflict", false);
+    }
+    const expectedDigest = item.digest;
+    const expectedSize = item.sizeBytes;
+    const expectedFilename = item.filename;
+    const contentType = item.format === "json" ?
+      "application/json; charset=utf-8" as const : "text/csv; charset=utf-8" as const;
+    return request(`/api/v1/reports/exports/${encodeURIComponent(item.id)}/content`,
+      (value) => value as ReportExportContent, {
+        signal, expectedStatus: 200, headers: { Accept: contentType },
+        decodeBody: async (response) => {
+          const disposition = response.headers.get("Content-Disposition");
+          const digest = response.headers.get("X-ASPM-Content-Digest");
+          const length = response.headers.get("X-ASPM-Content-Length");
+          if (response.headers.get("Content-Type") !== contentType ||
+            disposition !== `attachment; filename="${expectedFilename}"` ||
+            digest !== expectedDigest || length !== String(expectedSize)) {
+            await discardUnexpectedResponse(response);
+            return invalid("report export content headers", response.status);
+          }
+          const bytes = await response.arrayBuffer();
+          if (bytes.byteLength !== expectedSize) return invalid("report export content length", response.status);
+          const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+          const actual = `sha256:${Array.from(hash, (value) => value.toString(16).padStart(2, "0")).join("")}`;
+          if (actual !== expectedDigest) return invalid("report export content integrity", response.status);
+          return { bytes, contentType, filename: expectedFilename } satisfies ReportExportContent;
+        },
+      });
   },
   reportSnapshots: (limit: number, cursor: string | null, signal: AbortSignal) => {
     const workspace = requestAuthority().workspace;

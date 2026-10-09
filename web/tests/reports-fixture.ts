@@ -6,20 +6,22 @@ import { catalogResponse, findingResponse, workResponse } from "./fixtures";
 import { emptySlackNavigation } from "./slack-navigation";
 import {
   alphaOverview, alphaSLAPolicy, betaOverview, betaSLAPolicy, coverageAssetsPath, coverageParameters,
-  coverageStorageCanaries, findingMetricParameters, findingMetricsPath, findingMetricStorageCanaries,
-  noSLAQuery, overviewDays, overviewPath, reportAlpha, reportBeta, reportUser, savedReport, savedSnapshots,
+  coverageStorageCanaries, exportParameters, exportsPath, exportStorageCanaries, findingMetricParameters,
+  findingMetricsPath, findingMetricStorageCanaries, noSLAQuery, overviewDays, overviewPath, reportAlpha,
+  reportBeta, reportExportArtifact, reportUser, savedReport, savedReportExports, savedSnapshots,
   snapshotParameters, snapshotSummary, snapshotsPath, syntheticFindingMetricResponse, syntheticTrendResponse,
   slaFindingsPath, slaFindingParameters, slaPath, slaPolicyPath, slaStorageCanaries, syntheticCoverageResponse,
   syntheticSLAFindingPage, syntheticSLAPolicyResponse, syntheticSLAResponse, trendDays, trendsPath,
   trendStorageCanaries, withFreshness,
 } from "./reports-data";
 import type {
-  CoverageState, FindingMetric, ReportRole, SLAStatus, SnapshotPage, SnapshotState,
-  SyntheticCoverageDrilldown, SyntheticFindingMetricDrilldown, SyntheticPostureReport,
-  SyntheticSLAResponse, SyntheticSLAFindingPage, SyntheticSLAPolicy, SyntheticSnapshot, SyntheticTrend,
+  CoverageState, FindingMetric, ReportExportFormat, ReportExportPage, ReportExportState, ReportRole,
+  SLAStatus, SnapshotPage, SnapshotState, SyntheticCoverageDrilldown, SyntheticFindingMetricDrilldown,
+  SyntheticPostureReport, SyntheticReportExport, SyntheticReportExportArtifact, SyntheticSLAResponse,
+  SyntheticSLAFindingPage, SyntheticSLAPolicy, SyntheticSnapshot, SyntheticTrend,
 } from "./reports-data";
 
-type Denial = 400 | 401 | 403 | 404 | 409 | 413 | 503;
+type Denial = 400 | 401 | 403 | 404 | 409 | 413 | 422 | 503;
 type Reply<T> = { status: 200; value: T } | { status: Denial };
 export interface ReportCall {
   method: string; path: string; workspace: string | undefined; query: Record<string, string>;
@@ -37,6 +39,22 @@ interface Gate extends ReportResponseControl {
   complete: () => void;
 }
 interface Scheduled<T> { reply: Reply<T>; gate: Gate; commitPolicy?: SyntheticSLAPolicy }
+interface ExportCreateScheduled {
+  workspace: string;
+  status: 200 | 202 | Denial | "abort";
+  value?: unknown;
+  gate: Gate;
+  commit: boolean;
+}
+export interface ReportExportContentReply {
+  status?: 200 | 409 | 422;
+  body?: Buffer;
+  headers?: Record<string, string>;
+}
+interface ExportContentScheduled {
+  reply: ReportExportContentReply;
+  gate: Gate;
+}
 const secretCanaries = [password, wrongPassword, bootstrapToken, sessionCookie];
 
 export class ReportsAPI {
@@ -46,7 +64,10 @@ export class ReportsAPI {
   readonly requests: ReportCall[] = [];
   readonly violations: string[] = [];
   readonly pages: Array<{ call: ReportCall; response: SnapshotPage }> = [];
+  readonly exportPages: Array<{ call: ReportCall; response: ReportExportPage }> = [];
   readonly snapshots = new Map<string, SyntheticSnapshot>();
+  readonly exports = new Map<string, SyntheticReportExport>();
+  readonly exportIdempotencyKeys = new Set<string>();
   readonly overviews = new Map([[reportAlpha.id, alphaOverview], [reportBeta.id, betaOverview]]);
   readonly slaPolicies = new Map<string, SyntheticSLAPolicy>([
     [reportAlpha.id, structuredClone(alphaSLAPolicy)],
@@ -54,11 +75,19 @@ export class ReportsAPI {
   ]);
   private sessionCompleted = false;
   private createdCount = 0;
+  private exportCreatedCount = 0;
   private gates = new Set<Gate>();
   private overviewReplies = new Map<string, Scheduled<SyntheticPostureReport>[]>();
   private historyReplies = new Map<string, Scheduled<SnapshotPage>[]>();
   private historyHolds = new Map<string, Gate[]>();
   private snapshotReplies = new Map<string, Scheduled<SyntheticSnapshot>[]>();
+  private exportHistoryReplies = new Map<string, Scheduled<unknown>[]>();
+  private exportReplies = new Map<string, Scheduled<unknown>[]>();
+  private exportContentReplies = new Map<string, ExportContentScheduled[]>();
+  private exportCreateReplies: ExportCreateScheduled[] = [];
+  private exportBindings = new Map<string, {
+    workspace: string; key: string; snapshotId: string; format: ReportExportFormat; exportId: string;
+  }>();
   private trendReplies = new Map<string, Scheduled<unknown>[]>();
   private coverageReplies = new Map<string, Scheduled<unknown>[]>();
   private findingMetricReplies = new Map<string, Scheduled<unknown>[]>();
@@ -72,6 +101,8 @@ export class ReportsAPI {
   constructor() {
     this.seedHistory(reportAlpha.id, 2);
     this.seedHistory(reportBeta.id, 2);
+    this.seedExportHistory(reportAlpha.id, 4);
+    this.seedExportHistory(reportBeta.id, 4);
   }
 
   calls(method: string, path: string) { return this.requests.filter((call) => call.method === method && call.path === path); }
@@ -79,6 +110,11 @@ export class ReportsAPI {
   seedHistory(workspace: string, count: number) {
     for (const [id, snapshot] of this.snapshots) if (snapshot.workspaceId === workspace) this.snapshots.delete(id);
     for (const snapshot of savedSnapshots(workspace, count)) this.snapshots.set(snapshot.id, snapshot);
+  }
+
+  seedExportHistory(workspace: string, count: number) {
+    for (const [id, item] of this.exports) if (item.workspaceId === workspace) this.exports.delete(id);
+    for (const item of savedReportExports(workspace, count)) this.exports.set(item.id, item);
   }
 
   private gate(held: boolean): Gate {
@@ -127,6 +163,72 @@ export class ReportsAPI {
       throw new Error("Queued detail requires a known snapshot and cannot rewrite an immutable completed result.");
     }
     return this.queue(this.snapshotReplies, id, reply, held);
+  }
+
+  queueExportHistory(workspace: string, reply: Reply<ReportExportPage>, held = false) {
+    if (!this.roles.has(workspace) || reply.status === 200 &&
+      reply.value.items.some((item) => item.workspaceId !== workspace)) {
+      throw new Error("Queued report export history must belong to its known synthetic workspace.");
+    }
+    return this.queue(this.exportHistoryReplies, workspace,
+      reply as Reply<unknown>, held);
+  }
+
+  queueExportHistoryRaw(workspace: string, value: unknown, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Raw report export history requires a known synthetic workspace.");
+    return this.queue(this.exportHistoryReplies, workspace,
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
+  queueExport(id: string, reply: Reply<SyntheticReportExport>, held = false) {
+    const item = this.exports.get(id);
+    if (!item || reply.status === 200 &&
+      (reply.value.id !== id || reply.value.workspaceId !== item.workspaceId)) {
+      throw new Error("Queued report export detail requires a known same-workspace export.");
+    }
+    const wrapped: Reply<unknown> = reply.status === 200
+      ? { status: 200, value: { apiVersion, dataOrigin: "live", export: structuredClone(reply.value) } }
+      : reply;
+    return this.queue(this.exportReplies, id, wrapped, held);
+  }
+
+  queueExportRaw(id: string, value: unknown, held = false) {
+    if (!this.exports.has(id)) throw new Error("Raw report export detail requires a known export.");
+    return this.queue(this.exportReplies, id,
+      { status: 200, value: structuredClone(value) }, held);
+  }
+
+  queueExportContent(id: string, reply: ReportExportContentReply, held = false) {
+    if (!this.exports.has(id)) throw new Error("Queued report export content requires a known export.");
+    const gate = this.gate(held);
+    this.exportContentReplies.set(id, [
+      ...(this.exportContentReplies.get(id) ?? []),
+      { reply: { ...reply, body: reply.body ? Buffer.from(reply.body) : undefined,
+        headers: reply.headers ? { ...reply.headers } : undefined }, gate },
+    ]);
+    return gate;
+  }
+
+  queueExportCreateRaw(workspace: string, status: 200 | 202 | Denial,
+    value: unknown, held = false, commit = status === 200 || status === 202) {
+    if (!this.roles.has(workspace)) throw new Error("Queued report export creation requires a known workspace.");
+    const gate = this.gate(held);
+    this.exportCreateReplies.push({ workspace, status, value: structuredClone(value), gate, commit });
+    return gate;
+  }
+
+  loseNextExportAcknowledgement(workspace: string, held = false) {
+    if (!this.roles.has(workspace)) throw new Error("Lost report export acknowledgement requires a known workspace.");
+    const gate = this.gate(held);
+    this.exportCreateReplies.push({ workspace, status: "abort", gate, commit: true });
+    return gate;
+  }
+
+  holdExportCreation(workspace: string) {
+    if (!this.roles.has(workspace)) throw new Error("Held report export creation requires a known workspace.");
+    const gate = this.gate(true);
+    this.exportCreateReplies.push({ workspace, status: 202, gate, commit: true });
+    return gate;
   }
 
   queueTrend(workspace: string, reply: Reply<SyntheticTrend>, held = false) {
@@ -272,6 +374,39 @@ export class ReportsAPI {
     });
   }
 
+  setExportState(id: string, state: ReportExportState) {
+    const old = this.exports.get(id);
+    if (!old || old.state === "succeeded" || old.state === "failed") {
+      throw new Error("Only nonterminal acknowledged synthetic exports may advance.");
+    }
+    const snapshot = this.snapshots.get(old.snapshotId);
+    if (!snapshot || snapshot.workspaceId !== old.workspaceId) {
+      throw new Error("Synthetic report export lost its immutable snapshot binding.");
+    }
+    const artifact = state === "succeeded" ? reportExportArtifact(snapshot, old.format) : null;
+    this.exports.set(id, {
+      ...old,
+      state,
+      completedAt: state === "succeeded" || state === "failed" ? "2026-10-09T02:00:01.000Z" : null,
+      failure: state === "failed" ? {
+        code: "report-export-generation-failed",
+        message: "Synthetic report export generation could not be committed.",
+        retryable: false,
+      } : null,
+      digest: artifact?.digest ?? null,
+      sizeBytes: artifact?.sizeBytes ?? null,
+      filename: artifact?.filename ?? null,
+    });
+  }
+
+  exportArtifact(id: string): SyntheticReportExportArtifact {
+    const item = this.exports.get(id);
+    if (!item || item.state !== "succeeded") throw new Error("Only a succeeded synthetic export has content.");
+    const snapshot = this.snapshots.get(item.snapshotId);
+    if (!snapshot) throw new Error("Synthetic report export snapshot is unavailable.");
+    return reportExportArtifact(snapshot, item.format);
+  }
+
   historyPage(workspace: string, limit = 100, cursor = ""): SnapshotPage {
     const all = [...this.snapshots.values()].filter((item) => item.workspaceId === workspace).sort((a, b) => a.id.localeCompare(b.id));
     const remaining = all.filter((item) => item.id > cursor);
@@ -279,16 +414,30 @@ export class ReportsAPI {
     return { apiVersion, dataOrigin: "synthetic", items, total: all.length, nextCursor: remaining.length > limit ? items.at(-1)!.id : null };
   }
 
+  exportPage(workspace: string, limit = 100, cursor = ""): ReportExportPage {
+    const all = [...this.exports.values()].filter((item) => item.workspaceId === workspace)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const remaining = all.filter((item) => item.id > cursor);
+    const items = remaining.slice(0, limit);
+    return {
+      apiVersion, dataOrigin: "live", items: structuredClone(items), total: all.length,
+      nextCursor: remaining.length > limit ? items.at(-1)!.id : null,
+    };
+  }
+
   releaseResponses() { for (const gate of this.gates) gate.release(); }
 
   private async error(route: Route, status: number, message?: string) {
     const code = status === 401 ? "unauthorized" : status === 403 ? "forbidden" : status === 404 ? "not-found" :
       status === 400 ? "invalid-input" : status === 409 ? "conflict" :
-        status === 413 ? "too-large" : status === 429 ? "rate-limited" : "unavailable";
+        status === 413 ? "too-large" : status === 422 ? "evidence-corrupt" :
+          status === 429 ? "rate-limited" : "unavailable";
     await route.fulfill({ status, json: { apiVersion, error: {
       code, message: message ?? (status === 401 ? "Synthetic reporting session ended." : status === 403 ? "Synthetic report access denied." :
         status === 404 ? "Synthetic snapshot not found." : status === 409 ? "Synthetic SLA policy revision conflict." :
-          status === 413 ? "Synthetic historical trend window is too large." : "Synthetic report service unavailable."),
+          status === 413 ? "Synthetic historical trend window is too large." :
+            status === 422 ? "Synthetic report export content failed integrity verification." :
+              "Synthetic report service unavailable."),
       requestId: "synthetic-reports-request", retryable: false,
     } } });
   }
@@ -350,7 +499,7 @@ export class ReportsAPI {
       if (secretCanaries.some((secret) => url.href.includes(secret) || url.href.includes(encodeURIComponent(secret)))) {
         this.violations.push("A synthetic credential was put in a request URL.");
       }
-      const postWrites = [snapshotsPath, "/api/v1/login", "/api/v1/logout"];
+      const postWrites = [snapshotsPath, exportsPath, "/api/v1/login", "/api/v1/logout"];
       const allowedWrite = method === "POST" && postWrites.includes(path) ||
         method === "PATCH" && path === slaPolicyPath;
       if (method !== "GET" && !allowedWrite) {
@@ -567,6 +716,92 @@ export class ReportsAPI {
         await this.deliverEnvelope(route, call, scheduled,
           syntheticSLAFindingPage(workspace, parameters.status, parameters.limit, parameters.cursor,
             this.slaPolicies.get(workspace)!));
+      } else if (path === exportsPath && method === "GET") {
+        let parameters: ReturnType<typeof exportParameters>;
+        try { parameters = exportParameters(url); } catch (error) {
+          this.violations.push(String(error));
+          await this.error(route, 400, "Invalid synthetic report export history query.");
+          return;
+        }
+        const value = this.exportPage(workspace, parameters.limit, parameters.cursor);
+        const scheduled = this.exportHistoryReplies.get(workspace)?.shift();
+        if (!scheduled) this.exportPages.push({ call, response: structuredClone(value) });
+        await this.deliverEnvelope(route, call, scheduled, value);
+      } else if (path === exportsPath && method === "POST") {
+        if (!["admin", "analyst"].includes(this.serverRoles.get(workspace)!)) {
+          await this.error(route, 403);
+          return;
+        }
+        const keys = Object.keys(body).sort();
+        if (keys.join(",") !== ["format", "idempotencyKey", "snapshotId"].join(",") ||
+          typeof body.snapshotId !== "string" || !/^[a-f0-9]{32}$/.test(body.snapshotId) ||
+          body.format !== "json" && body.format !== "csv" ||
+          typeof body.idempotencyKey !== "string" || body.idempotencyKey.trim() === "" ||
+          body.idempotencyKey.includes("\0") || Buffer.byteLength(body.idempotencyKey, "utf8") > 256) {
+          this.violations.push("Report export creation must use the exact bounded snapshotId/format/idempotencyKey body.");
+          await this.error(route, 400, "Invalid synthetic report export input.");
+          return;
+        }
+        const snapshot = this.snapshots.get(body.snapshotId);
+        if (!snapshot || snapshot.workspaceId !== workspace) {
+          await this.error(route, 404, "Synthetic report export snapshot not found.");
+          return;
+        }
+        if (snapshot.state !== "succeeded" || snapshot.report === null || snapshot.completedAt === null) {
+          await this.error(route, 409, "Synthetic report export snapshot is not succeeded.");
+          return;
+        }
+        const format = body.format as ReportExportFormat;
+        const key = body.idempotencyKey;
+        const bindingKey = `${workspace}\0${key}`;
+        const prior = this.exportBindings.get(bindingKey);
+        if (prior) {
+          if (prior.snapshotId !== snapshot.id || prior.format !== format) {
+            await this.error(route, 409, "Synthetic report export idempotency binding changed.");
+            return;
+          }
+          const item = this.exports.get(prior.exportId);
+          if (!item) throw new Error("Synthetic report export idempotency binding lost its job.");
+          await route.fulfill({
+            status: ["succeeded", "failed"].includes(item.state) ? 200 : 202,
+            json: { apiVersion, dataOrigin: "live", export: structuredClone(item) },
+          });
+          return;
+        }
+        const id = `7${(++this.exportCreatedCount).toString(16).padStart(31, "0")}`;
+        const item: SyntheticReportExport = {
+          id, workspaceId: workspace, snapshotId: snapshot.id, snapshotName: snapshot.name,
+          requestedBy: reportUser.id, format, state: "queued",
+          createdAt: "2026-10-09T02:00:00.000Z", completedAt: null, failure: null,
+          digest: null, sizeBytes: null, filename: null,
+        };
+        const scheduledIndex = this.exportCreateReplies.findIndex((entry) => entry.workspace === workspace);
+        const scheduled = scheduledIndex >= 0 ? this.exportCreateReplies.splice(scheduledIndex, 1)[0] : undefined;
+        const commit = scheduled?.commit ?? true;
+        if (commit) {
+          this.exports.set(id, structuredClone(item));
+          this.exportIdempotencyKeys.add(key);
+          this.exportBindings.set(bindingKey, {
+            workspace, key, snapshotId: snapshot.id, format, exportId: id,
+          });
+        }
+        const gate = scheduled?.gate;
+        try {
+          if (gate) { gate.call = call; gate.arrive(); await gate.wait; }
+          if (scheduled?.status === "abort") {
+            await route.abort("failed");
+          } else if (typeof scheduled?.status === "number" && scheduled.status >= 400) {
+            await this.error(route, scheduled.status);
+          } else {
+            await route.fulfill({
+              status: scheduled?.status ?? 202,
+              json: scheduled?.value ?? { apiVersion, dataOrigin: "live", export: structuredClone(item) },
+            });
+          }
+        } finally {
+          gate?.complete();
+          if (gate) this.gates.delete(gate);
+        }
       } else if (path === snapshotsPath && method === "GET") {
         let parameters: ReturnType<typeof snapshotParameters>;
         try { parameters = snapshotParameters(url); } catch (error) {
@@ -608,6 +843,57 @@ export class ReportsAPI {
         const id = path.slice(snapshotsPath.length + 1), snapshot = this.snapshots.get(id);
         if (!snapshot || snapshot.workspaceId !== workspace) { await this.error(route, 404); return; }
         await this.deliver(route, call, this.snapshotReplies.get(id)?.shift(), snapshot, "snapshot");
+      } else if (method === "GET" && path.startsWith(`${exportsPath}/`) && path.endsWith("/content") &&
+        /^[a-f0-9]{32}$/.test(path.slice(exportsPath.length + 1, -"/content".length))) {
+        if (url.search !== "") this.violations.push("Report export content reads do not support query parameters.");
+        const id = path.slice(exportsPath.length + 1, -"/content".length);
+        const item = this.exports.get(id);
+        if (!item || item.workspaceId !== workspace) {
+          await this.error(route, 404, "Synthetic report export not found.");
+          return;
+        }
+        if (item.state !== "succeeded") {
+          await this.error(route, 409, "Synthetic report export content is not ready.");
+          return;
+        }
+        const artifact = this.exportArtifact(id);
+        const scheduled = this.exportContentReplies.get(id)?.shift();
+        const gate = scheduled?.gate;
+        try {
+          if (gate) { gate.call = call; gate.arrive(); await gate.wait; }
+          const status = scheduled?.reply.status ?? 200;
+          if (status !== 200) {
+            await this.error(route, status, status === 422 ?
+              "Synthetic report export content failed integrity verification." :
+              "Synthetic report export content is not ready.");
+          } else {
+            const body = scheduled?.reply.body ?? artifact.body;
+            const headers = {
+              "Content-Type": artifact.contentType,
+              "Content-Disposition": `attachment; filename="${artifact.filename}"`,
+              "Content-Length": String(artifact.sizeBytes),
+              "Cache-Control": "no-store",
+              "X-Content-Type-Options": "nosniff",
+              "X-ASPM-Content-Digest": artifact.digest,
+              "X-ASPM-Content-Length": String(artifact.sizeBytes),
+              ...(scheduled?.reply.headers ?? {}),
+            };
+            await route.fulfill({ status: 200, body, headers });
+          }
+        } finally {
+          gate?.complete();
+          if (gate) this.gates.delete(gate);
+        }
+      } else if (method === "GET" && path.startsWith(`${exportsPath}/`) &&
+        /^[a-f0-9]{32}$/.test(path.slice(exportsPath.length + 1))) {
+        if (url.search !== "") this.violations.push("Selected report export reads do not support query parameters.");
+        const id = path.slice(exportsPath.length + 1), item = this.exports.get(id);
+        if (!item || item.workspaceId !== workspace) {
+          await this.error(route, 404, "Synthetic report export not found.");
+          return;
+        }
+        await this.deliverEnvelope(route, call, this.exportReplies.get(id)?.shift(),
+          { apiVersion, dataOrigin: "live", export: structuredClone(item) });
       } else if (method === "GET" && path === "/api/v1/work" && url.search === "") {
         await route.fulfill({ json: workResponse() });
       } else if (method === "GET" && path === "/api/v1/assets" && url.search === "") {
@@ -649,9 +935,11 @@ export const test = base.extend<{ reports: ReportsAPI }>({
           ...coverageStorageCanaries,
           ...findingMetricStorageCanaries,
           ...slaStorageCanaries,
+          ...exportStorageCanaries,
+          ...reports.exportIdempotencyKeys,
         ];
         for (const canary of reportCanaries) {
-          expect.soft(storageText, "Report, snapshot, trend, coverage, finding and SLA data must not enter browser storage.").not.toContain(canary);
+          expect.soft(storageText, "Report, snapshot, trend, coverage, finding, SLA and export data must not enter browser storage.").not.toContain(canary);
         }
         for (const secret of secretCanaries) {
           expect.soft(JSON.stringify(snapshot) + page.url() + consoleText.join("\n"),

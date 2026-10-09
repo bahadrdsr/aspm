@@ -48,7 +48,8 @@ and independently processed report snapshots. The React interface supports
 login, workspace selection, asset creation/editing, local report upload with
 server-driven import status, finding evidence, observations and analyst notes,
 live posture reports with current coverage and finding drill-down, remediation
-SLA, saved snapshots and bounded snapshot-backed historical trends, Slack/Jira/Teams
+SLA, saved snapshots, bounded snapshot-backed historical trends and exact
+asynchronous JSON/CSV snapshot exports, Slack/Jira/Teams
 configuration and delivery history, selected GitHub source collection, and selected Azure DevOps
 build-artifact collection with explicit report intake, explicit reversible
 multi-source finding correlation with bounded candidates, retention
@@ -836,8 +837,19 @@ point from the last point; they are not rates, forecasts, SLA results, or
 independent verification.
 Viewers can read trends but still cannot create snapshots. Workspace/session
 changes and authorization denials clear scoped points; transient failures keep
-the last authorized result. There is no automatic polling, report storage in the browser, or Reports export
-UI. See `docs\m10-historical-trends.md`.
+the last authorized result. There is no automatic polling or report storage in
+the browser. See `docs\m10-historical-trends.md`.
+
+**Report exports** is closed by default. Admins and analysts can explicitly
+queue JSON or CSV artifacts only for succeeded snapshots already loaded in the
+current history; viewers can read history, refresh state and download completed
+artifacts. V26 stores bounded exact bytes, digest and size in PostgreSQL, and
+the database-only report worker publishes them under the existing lease,
+attempt and fence controls. History uses explicit Refresh and native Load more.
+There is no polling or automatic retry. The browser verifies content headers,
+size and SHA-256 before creating one temporary download URL. An ambiguous
+creation acknowledgement remains unresolved until explicit history
+reconciliation. See `docs\m10-report-exports.md`.
 
 Synthetic browser workflows do not qualify the real reporting worker, durable
 storage or live authorization; those require separate backend and HTTPS checks.

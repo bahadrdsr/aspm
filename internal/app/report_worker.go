@@ -22,32 +22,62 @@ const (
 // One job is processed at a time per caller; database leases fence other callers.
 func (a *ReportWorker) ProcessReports(ctx context.Context) error {
 	worker := newID()
+	preferExport := true
 	for {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
-		job, err := a.claimReport(ctx, worker)
-		if errors.Is(err, pgx.ErrNoRows) {
-			var pending bool
-			err = a.pool.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM `+a.table("report_snapshots")+`
-				WHERE state IN ('queued','processing'))`).Scan(&pending)
-			if err != nil || !pending {
-				return err
-			}
-			timer := time.NewTimer(100 * time.Millisecond)
-			select {
-			case <-ctx.Done():
-				timer.Stop()
-				return ctx.Err()
-			case <-timer.C:
+		if preferExport {
+			job, err := a.claimReportExport(ctx, worker)
+			if err == nil {
+				preferExport = false
+				if err = a.processReportExport(ctx, job); err != nil && !errors.Is(err, errReportLeaseLost) {
+					return err
+				}
 				continue
 			}
+			if !errors.Is(err, pgx.ErrNoRows) {
+				return errors.New("claim report export work failed")
+			}
 		}
-		if err != nil {
+		job, err := a.claimReport(ctx, worker)
+		if err == nil {
+			preferExport = true
+			if err = a.processReport(ctx, job); err != nil && !errors.Is(err, errReportLeaseLost) {
+				return err
+			}
+			continue
+		}
+		if !errors.Is(err, pgx.ErrNoRows) {
 			return errors.New("claim report work failed")
 		}
-		if err = a.processReport(ctx, job); err != nil && !errors.Is(err, errReportLeaseLost) {
+		if !preferExport {
+			export, exportErr := a.claimReportExport(ctx, worker)
+			if exportErr == nil {
+				preferExport = false
+				if exportErr = a.processReportExport(ctx, export); exportErr != nil &&
+					!errors.Is(exportErr, errReportLeaseLost) {
+					return exportErr
+				}
+				continue
+			}
+			if !errors.Is(exportErr, pgx.ErrNoRows) {
+				return errors.New("claim report export work failed")
+			}
+		}
+		var pending bool
+		err = a.pool.QueryRow(ctx, `SELECT
+			EXISTS(SELECT 1 FROM `+a.table("report_snapshots")+` WHERE state IN ('queued','processing'))
+			OR EXISTS(SELECT 1 FROM `+a.table("report_exports")+` WHERE state IN ('queued','processing'))`).Scan(&pending)
+		if err != nil || !pending {
 			return err
+		}
+		timer := time.NewTimer(100 * time.Millisecond)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return ctx.Err()
+		case <-timer.C:
 		}
 	}
 }

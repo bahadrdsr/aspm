@@ -97,5 +97,5 @@ continuation/retry, metric replacement, explicit Live refresh after drift,
 strict malformed-response rejection, authority loss and recovery, focus
 preservation, reduced motion, and a 390-pixel viewport.
 
-Historical member lists, scheduled reports, and bounded report exports remain
-separate work.
+Historical member lists and scheduled reports remain separate work. Bounded
+report exports are documented in `m10-report-exports.md`.

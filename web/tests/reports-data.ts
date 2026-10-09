@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { apiVersion } from "./api-contract";
 
 export type ReportRole = "admin" | "analyst" | "viewer";
@@ -38,6 +39,37 @@ export interface SnapshotPage {
   items: SyntheticSnapshotSummary[];
   total: number;
   nextCursor: string | null;
+}
+export type ReportExportFormat = "json" | "csv";
+export type ReportExportState = "queued" | "processing" | "succeeded" | "failed";
+export interface SyntheticReportExport {
+  id: string;
+  workspaceId: string;
+  snapshotId: string;
+  snapshotName: string;
+  requestedBy: string;
+  format: ReportExportFormat;
+  state: ReportExportState;
+  createdAt: string;
+  completedAt: string | null;
+  failure: { code: string; message: string; retryable: false } | null;
+  digest: string | null;
+  sizeBytes: number | null;
+  filename: string | null;
+}
+export interface ReportExportPage {
+  apiVersion: typeof apiVersion;
+  dataOrigin: "live";
+  items: SyntheticReportExport[];
+  total: number;
+  nextCursor: string | null;
+}
+export interface SyntheticReportExportArtifact {
+  body: Buffer;
+  contentType: "application/json; charset=utf-8" | "text/csv; charset=utf-8";
+  digest: string;
+  sizeBytes: number;
+  filename: string;
 }
 export interface SyntheticTrendPoint {
   snapshotId: string;
@@ -205,6 +237,7 @@ export const overviewPath = "/api/v1/reports/overview";
 export const coverageAssetsPath = "/api/v1/reports/coverage-assets";
 export const findingMetricsPath = "/api/v1/reports/finding-metrics";
 export const snapshotsPath = "/api/v1/reports/snapshots";
+export const exportsPath = "/api/v1/reports/exports";
 export const trendsPath = "/api/v1/reports/trends";
 export const slaPolicyPath = "/api/v1/reports/sla-policy";
 export const slaPath = "/api/v1/reports/sla";
@@ -740,6 +773,128 @@ export function snapshotSummary(snapshot: SyntheticSnapshot): SyntheticSnapshotS
   const { report: _report, ...summary } = snapshot;
   return structuredClone(summary);
 }
+
+export function reportExportFilename(snapshotId: string, format: ReportExportFormat) {
+  if (!/^[a-f0-9]{32}$/.test(snapshotId)) throw new Error("Report export filename requires an exact snapshot ID.");
+  return `aspm-report-${snapshotId}.${format}`;
+}
+
+function formulaSafeCSV(value: string) {
+  const trimmed = value.replace(/^[ \r\n\t]+/, "");
+  return value.startsWith("\t") || value.startsWith("\r") ||
+    trimmed !== "" && "=+-@".includes(trimmed[0]) ? `'${value}` : value;
+}
+
+function csvField(value: string) {
+  return /[",\r\n]/.test(value) ? `"${value.replaceAll("\"", "\"\"")}"` : value;
+}
+
+export function reportExportArtifact(snapshot: SyntheticSnapshot, format: ReportExportFormat): SyntheticReportExportArtifact {
+  if (snapshot.state !== "succeeded" || snapshot.completedAt === null || snapshot.report === null) {
+    throw new Error("Only succeeded immutable snapshots have synthetic export artifacts.");
+  }
+  let body: Buffer;
+  if (format === "json") {
+    body = Buffer.from(`${JSON.stringify({
+      apiVersion,
+      export: {
+        snapshotId: snapshot.id, name: snapshot.name,
+        completedAt: snapshot.completedAt, report: snapshot.report,
+      },
+    })}\n`, "utf8");
+  } else {
+    const report = snapshot.report;
+    const rows: Array<[string, string, string]> = [
+      ["section", "metric", "value"],
+      ["snapshot", "id", snapshot.id],
+      ["snapshot", "name", formulaSafeCSV(snapshot.name)],
+      ["snapshot", "completedAt", snapshot.completedAt],
+      ["report", "workspaceId", report.workspaceId],
+      ["report", "asOf", report.asOf],
+      ["totals", "assets", String(report.totals.assets)],
+      ["totals", "findings", String(report.totals.findings)],
+      ["totals", "openFindings", String(report.totals.openFindings)],
+      ["totals", "acceptedRisk", String(report.totals.acceptedRisk)],
+      ["totals", "expiredAcceptedRisk", String(report.totals.expiredAcceptedRisk)],
+      ["totals", "suppressed", String(report.totals.suppressed)],
+      ["totals", "expiredSuppression", String(report.totals.expiredSuppression)],
+      ["totals", "falsePositive", String(report.totals.falsePositive)],
+      ["totals", "inferredResolved", String(report.totals.inferredResolved)],
+      ["totals", "verifiedResolved", String(report.totals.verifiedResolved)],
+      ["severity", "critical", String(report.bySeverity.critical)],
+      ["severity", "high", String(report.bySeverity.high)],
+      ["severity", "medium", String(report.bySeverity.medium)],
+      ["severity", "low", String(report.bySeverity.low)],
+      ["severity", "info", String(report.bySeverity.info)],
+      ["coverage", "scannedAssets", String(report.coverage.scannedAssets)],
+      ["coverage", "unscannedAssets", String(report.coverage.unscannedAssets)],
+      ["coverage", "staleAssets", String(report.coverage.staleAssets)],
+      ["coverage", "unknownFreshnessAssets", String(report.coverage.unknownFreshnessAssets)],
+      ["coverage", "freshnessWindowDays", String(report.coverage.freshnessWindowDays)],
+      ["freshnessWindow", "from", report.freshnessWindow.from],
+      ["freshnessWindow", "to", report.freshnessWindow.to],
+      ["freshnessWindow", "days", String(report.freshnessWindow.days)],
+      ["verification", "state", report.verification.state],
+      ["verification", "reason", report.verification.reason],
+    ];
+    body = Buffer.from(`${rows.map((row) => row.map(csvField).join(",")).join("\r\n")}\r\n`, "utf8");
+  }
+  return {
+    body,
+    contentType: format === "json" ? "application/json; charset=utf-8" : "text/csv; charset=utf-8",
+    digest: `sha256:${createHash("sha256").update(body).digest("hex")}`,
+    sizeBytes: body.length,
+    filename: reportExportFilename(snapshot.id, format),
+  };
+}
+
+export function savedReportExports(workspaceId: string, count = 4): SyntheticReportExport[] {
+  if (![reportAlpha.id, reportBeta.id].includes(workspaceId) ||
+    !Number.isInteger(count) || count < 0 || count > 501) {
+    throw new Error("Only bounded synthetic report export history may be seeded.");
+  }
+  const snapshots = savedSnapshots(workspaceId, Math.max(1, Math.min(count, 501)));
+  const alpha = workspaceId === reportAlpha.id;
+  return Array.from({ length: count }, (_, index) => {
+    const snapshot = snapshots[index % snapshots.length];
+    const format: ReportExportFormat = index % 2 === 0 ? "json" : "csv";
+    const artifact = reportExportArtifact(snapshot, format);
+    return {
+      id: `${alpha ? "8" : "9"}${(index + 1).toString(16).padStart(31, "0")}`,
+      workspaceId, snapshotId: snapshot.id, snapshotName: snapshot.name, requestedBy: reportUser.id,
+      format, state: "succeeded", createdAt: "2026-10-09T01:00:00.000Z",
+      completedAt: "2026-10-09T01:00:01.000Z", failure: null,
+      digest: artifact.digest, sizeBytes: artifact.sizeBytes, filename: artifact.filename,
+    };
+  });
+}
+
+export function exportParameters(url: URL): { limit: number; cursor: string } {
+  if ([...url.searchParams.keys()].some((key) => !["limit", "cursor"].includes(key)) ||
+    url.searchParams.getAll("limit").length > 1 || url.searchParams.getAll("cursor").length > 1) {
+    throw new Error("Report export history uses only one native limit and cursor.");
+  }
+  const rawLimit = url.searchParams.get("limit"), cursor = url.searchParams.get("cursor") ?? "";
+  const limit = rawLimit === null ? 100 : Number(rawLimit);
+  if (rawLimit !== null && !/^\d+$/.test(rawLimit) ||
+    !Number.isInteger(limit) || limit < 1 || limit > 100 ||
+    url.searchParams.has("cursor") && !/^[a-f0-9]{32}$/.test(cursor)) {
+    throw new Error("Report export history requires limit 1..100 and a lower-case 32-hex cursor.");
+  }
+  return { limit, cursor };
+}
+
+export const exportStorageCanaries = (() => {
+  const items = savedReportExports(reportAlpha.id, 2);
+  const snapshots = savedSnapshots(reportAlpha.id, 2);
+  return [
+    ...items.flatMap((item) => [
+      item.id, item.snapshotId, item.snapshotName, item.digest ?? "", item.filename ?? "",
+    ]),
+    reportExportArtifact(snapshots[0], "json").body.toString("utf8"),
+    reportExportArtifact(snapshots[1], "csv").body.toString("utf8"),
+  ];
+})();
 
 export function overviewDays(url: URL): number {
   const values = url.searchParams.getAll("freshnessDays");

@@ -542,7 +542,7 @@ func TestProjectV25RejectsMissingOrUnapprovedSLADeltas(t *testing.T) {
 	}
 }
 
-func TestValidateCurrentCatalogComposesV24AndV25Exactly(t *testing.T) {
+func TestValidateV25CurrentCatalogComposesV24AndV25Exactly(t *testing.T) {
 	before := ExpectedV24Catalog()
 	before["findings/columns"] = []string{"id|text|true|", "imported_at|timestamp with time zone|true|"}
 	before["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
@@ -553,10 +553,102 @@ func TestValidateCurrentCatalogComposesV24AndV25Exactly(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ValidateCurrentCatalog(t, current)
+	ValidateV25CurrentCatalog(t, current)
 	prior := ProjectV25Current(t, current)
 	if !reflect.DeepEqual(prior, before) {
 		t.Fatal("V25 current catalog did not project to the exact supplied V24 shape")
+	}
+}
+
+func TestProjectV26AcceptsOnlyExactBoundedReportExportStorage(t *testing.T) {
+	before := map[string][]string{
+		"report_snapshots/columns":     {"id|text|true|"},
+		"report_snapshots/constraints": {"app_report_snapshots_pkey|PRIMARY KEY (id)"},
+		"report_snapshots/indexes": {
+			"app_report_snapshots_pkey|CREATE UNIQUE INDEX app_report_snapshots_pkey ON app_report_snapshots USING btree (id)",
+		},
+	}
+	current, err := expectedV26Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ValidateV26Catalog(t, before, current)
+	if got := ProjectV26(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("exact V26 projection did not restore the V25 catalog")
+	}
+	if !reflect.DeepEqual(V26Tables(), []string{"report_exports"}) {
+		t.Fatal("V26 touched-table enumeration changed")
+	}
+	for key, rows := range exactV26NewTableCatalog {
+		if !reflect.DeepEqual(current[key], rows) {
+			t.Fatalf("V26 exact report export catalog drifted at %s", key)
+		}
+	}
+}
+
+func TestProjectV26RejectsMissingOrUnapprovedExportDeltas(t *testing.T) {
+	before := map[string][]string{
+		"report_snapshots/columns":     {"id|text|true|"},
+		"report_snapshots/constraints": {"app_report_snapshots_pkey|PRIMARY KEY (id)"},
+		"report_snapshots/indexes": {
+			"app_report_snapshots_pkey|CREATE UNIQUE INDEX app_report_snapshots_pkey ON app_report_snapshots USING btree (id)",
+		},
+	}
+	valid, err := expectedV26Catalog(before)
+	if err != nil {
+		t.Fatal(err)
+	}
+	missing := clone(valid)
+	for _, kind := range []string{"columns", "constraints", "indexes"} {
+		delete(missing, "report_exports/"+kind)
+	}
+	if err := validateV26Catalog(before, missing); err == nil {
+		t.Fatal("V26 accepted a missing report export catalog")
+	}
+	for _, mutate := range []func(map[string][]string){
+		func(value map[string][]string) {
+			value["report_exports/columns"][10] = "content_digest|text|false|'sha256:'::text"
+		},
+		func(value map[string][]string) {
+			value["report_exports/constraints"] =
+				value["report_exports/constraints"][:len(value["report_exports/constraints"])-1]
+		},
+		func(value map[string][]string) {
+			value["report_exports/indexes"][0] =
+				"app_report_exports_claim_idx|CREATE INDEX app_report_exports_claim_idx ON app_report_exports USING btree (id)"
+		},
+		func(value map[string][]string) {
+			value["report_exports/indexes"] = append(value["report_exports/indexes"],
+				"app_report_exports_unapproved|unexpected")
+		},
+	} {
+		current := clone(valid)
+		mutate(current)
+		projected, err := projectV26(before, current)
+		if err == nil && reflect.DeepEqual(projected, before) {
+			t.Fatal("V26 accepted a missing or unapproved report export catalog delta")
+		}
+	}
+}
+
+func TestValidateCurrentCatalogComposesV25AndV26Exactly(t *testing.T) {
+	v24 := ExpectedV24Catalog()
+	v24["findings/columns"] = []string{"id|text|true|", "imported_at|timestamp with time zone|true|"}
+	v24["findings/constraints"] = []string{"app_findings_pkey|PRIMARY KEY (id)"}
+	v24["findings/indexes"] = []string{
+		"app_findings_pkey|CREATE UNIQUE INDEX app_findings_pkey ON app_findings USING btree (id)",
+	}
+	v25, err := expectedV25Catalog(v24)
+	if err != nil {
+		t.Fatal(err)
+	}
+	current, err := expectedV26Catalog(v25)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ValidateCurrentCatalog(t, current)
+	if prior := ProjectV26Current(t, current); !reflect.DeepEqual(prior, v25) {
+		t.Fatal("V26 current catalog did not project to the exact supplied V25 shape")
 	}
 }
 
@@ -862,6 +954,27 @@ func TestProjectRelationsV25AcceptsOnlySLAStorageAndCandidateIndex(t *testing.T)
 	slices.Reverse(current)
 	if got := ProjectRelationsV25(t, before, current); !reflect.DeepEqual(got, before) {
 		t.Fatal("V25 relation projection did not preserve the exact V24 relation set")
+	}
+}
+
+func TestProjectRelationsV26AcceptsOnlyReportExportStorage(t *testing.T) {
+	before := []string{"app_findings|r", "app_findings_pkey|i"}
+	current := append(slices.Clone(before), v13Relations...)
+	current = append(current, v14Relations...)
+	current = append(current, v15Relations...)
+	current = append(current, v16Relations...)
+	current = append(current, v17Relations...)
+	current = append(current, v18Relations...)
+	current = append(current, v19Relations...)
+	current = append(current, v20Relations...)
+	current = append(current, v21Relations...)
+	current = append(current, v23Relations...)
+	current = append(current, v25Relations...)
+	current = append(current, v26Relations...)
+	slices.Sort(current)
+	slices.Reverse(current)
+	if got := ProjectRelationsV26(t, before, current); !reflect.DeepEqual(got, before) {
+		t.Fatal("V26 relation projection did not preserve the exact V25 relation set")
 	}
 }
 

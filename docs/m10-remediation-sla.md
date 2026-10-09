@@ -106,6 +106,6 @@ Browser acceptance covers lazy reads, native pages, explicit policy editing,
 conflicts and denials, strict malformed-response rejection, focus preservation,
 reduced motion, and a 390-pixel viewport.
 
-Scheduled reports, business calendars, contractual SLA management, historical
-SLA reconstruction, and report exports remain separate work. Current Live
-finding metric drill-down is documented separately.
+Scheduled reports, business calendars, contractual SLA management, and
+historical SLA reconstruction remain separate work. Current Live finding
+metric drill-down and bounded report exports are documented separately.

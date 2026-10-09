@@ -207,13 +207,19 @@
 //
 // POST /api/v1/reports/snapshots queues {name,freshnessDays}; GET on that
 // collection lists bounded metadata pages, and GET /{id} reads saved results.
-// ProcessReports drains only this queue, using database-clock leases/fences and
-// three bounded attempts. It captures asOf from Now during generation, not
-// submission, and persists aggregate data with its completion in a repeatable-
-// read transaction. Completed snapshots are never recomputed. Open and
-// ProcessImports do not start the reporting worker: hosts must invoke it.
-// The reporting migration is additive and uses the existing application pool.
-// SLA campaigns, full-scale performance, and HA readiness remain separate gates.
+// POST /api/v1/reports/exports queues exact JSON or CSV generation only for a
+// succeeded immutable snapshot. GET on that collection and /{id} returns
+// bounded metadata; GET /{id}/content verifies the stored size and SHA-256
+// before returning at most 256 KiB.
+//
+// ProcessReports drains both queues, using database-clock leases/fences and
+// three bounded attempts without object-store or provider credentials. Snapshot
+// generation captures asOf from Now, and export generation copies only saved
+// typed snapshot values. Each terminal result commits atomically under its live
+// fence. Completed snapshots are never recomputed. Open and ProcessImports do
+// not start the reporting worker: hosts must invoke it. The reporting migrations
+// are additive and use the existing application pool. Scheduled reports,
+// full-scale performance, and HA readiness remain separate gates.
 //
 // Source inference never verifies resolution or changes human decisions.
 // Accepted-risk expiry is computed using Now without rewriting the decision.
