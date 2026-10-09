@@ -119,6 +119,10 @@ private credential-set file are not public logs or commit material.
 Podman env files retain the literal bytes after the first `=`. Quotes, backslashes
 and interior `=` are values, not shell syntax; no wrapping or escaping is added.
 CR/LF/NUL line injection is rejected before materialization.
+Linux keeps the source `s3.json` owner-only and publishes its exact bytes through
+the local Podman secret store. The storage Quadlet mounts that secret as UID/GID
+1000 with mode 0400 because the pinned SeaweedFS entrypoint drops privileges to
+its `seaweed` user. The policy is never relaxed to a world-readable host file.
 
 Checkpoints are owner-only and atomically renamed. Failed native commands retain
 completed steps and record `failed`/`command-failed`; resume rechecks trust and

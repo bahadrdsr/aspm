@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -311,8 +312,12 @@ func (i *installer) command(ctx context.Context, p prepared, command Command, se
 		if caller.digest != p.caller.digest {
 			return CommandResult{}, ErrApproval
 		}
-	case "systemctl":
+	case "systemctl", "podman":
 		if p.config.Target.Kind != "linux" || i.options.LocalHost.OS != "linux" || i.options.LocalHost.EUID != 0 {
+			return CommandResult{}, ErrUnsupported
+		}
+		if command.Tool == "podman" &&
+			!slices.Equal(command.Args, []string{"secret", "create", "--replace", policySecretName, "-"}) {
 			return CommandResult{}, ErrUnsupported
 		}
 	default:

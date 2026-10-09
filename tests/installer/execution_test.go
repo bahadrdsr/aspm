@@ -536,6 +536,20 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 	}
 	policy, err := f.files.root.ReadFile(filepath.Join("etc", "aspm", "s3.json"))
 	ok(t, "read separate private operator policy", err)
+	publishedPolicy := false
+	for _, call := range f.calls {
+		if call.Tool != "podman" {
+			continue
+		}
+		if !slices.Equal(call.Args, []string{"secret", "create", "--replace", "aspm-storage-policy", "-"}) ||
+			!bytes.Equal(call.Stdin, policy) {
+			t.Fatal("Linux storage policy did not use the exact stdin-bound Podman secret")
+		}
+		publishedPolicy = true
+	}
+	if !publishedPolicy {
+		t.Fatal("Linux activation did not publish the storage policy as a Podman secret")
+	}
 	f.secrets["operator-policy"] = map[string]string{"s3.json": string(policy)}
 	f.secret = map[string]string{"postgres-password": postgres["POSTGRES_PASSWORD"], "bootstrap-token": core["ASPM_BOOTSTRAP_TOKEN"]}
 	for _, value := range f.operatorKeys() {

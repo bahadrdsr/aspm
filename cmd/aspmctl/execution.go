@@ -224,7 +224,7 @@ func (b *nativeOutput) Write(data []byte) (int, error) {
 
 func nativeCommand(ctx context.Context, command execution.Command) (execution.CommandResult, error) {
 	switch command.Tool {
-	case "kubectl", "helm", "systemctl":
+	case "kubectl", "helm", "systemctl", "podman":
 	default:
 		return execution.CommandResult{}, execution.ErrUnsupported
 	}
@@ -238,7 +238,9 @@ func nativeCommand(ctx context.Context, command execution.Command) (execution.Co
 		name, _, _ := strings.Cut(variable, "=")
 		upper := strings.ToUpper(name)
 		if upper == "KUBECONFIG" || strings.HasPrefix(upper, "ASPM_") || strings.HasPrefix(upper, "AWS_") ||
-			strings.HasPrefix(upper, "HELM_") {
+			strings.HasPrefix(upper, "HELM_") || strings.HasPrefix(upper, "PODMAN_") ||
+			strings.HasPrefix(upper, "CONTAINERS_") || strings.HasPrefix(upper, "REGISTRY_") ||
+			strings.HasPrefix(upper, "DOCKER_") {
 			continue
 		}
 		cmd.Env = append(cmd.Env, variable)

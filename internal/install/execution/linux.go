@@ -73,6 +73,17 @@ func pinImage(source []byte, image string) ([]byte, error) {
 
 func (i *installer) linuxApply(ctx context.Context, p prepared, material *credentialMaterial, record *stateRecord) []executionStep {
 	return []executionStep{
+		{name: "storage-policy-secret", run: func() error {
+			policy, err := i.read(ctx, "etc/aspm/s3.json", maxInputBytes)
+			if err != nil {
+				return ErrCredential
+			}
+			_, err = i.command(ctx, p, Command{
+				Tool: "podman", Args: []string{"secret", "create", "--replace", policySecretName, "-"},
+				Stdin: policy,
+			}, material.values())
+			return err
+		}},
 		{name: "quadlet-files", run: func() error {
 			if record.OwnedUnits == nil {
 				record.OwnedUnits = make(map[string]string)

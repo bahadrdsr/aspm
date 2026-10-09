@@ -316,7 +316,7 @@ func (f *fixture) run(ctx context.Context, c Command) (CommandResult, error) {
 	if err := ctx.Err(); err != nil {
 		return CommandResult{}, err
 	}
-	if !slices.Contains([]string{"kubectl", "helm", "systemctl"}, c.Tool) {
+	if !slices.Contains([]string{"kubectl", "helm", "systemctl", "podman"}, c.Tool) {
 		f.t.Fatalf("unexpected external tool %q; no command was executed", c.Tool)
 	}
 	if c.Tool == "kubectl" || c.Tool == "helm" {
