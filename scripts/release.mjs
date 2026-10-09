@@ -190,13 +190,14 @@ function buildSBOM(go, applicationImage) {
 }
 
 function patchDeploymentFiles(destination) {
-  copyTree(join(root, "deploy"), destination);
-  const chart = join(destination, "helm", "aspm", "Chart.yaml");
+  const deploy = join(destination, "deploy");
+  copyTree(join(root, "deploy"), deploy);
+  const chart = join(deploy, "helm", "aspm", "Chart.yaml");
   let chartText = readFileSync(chart, "utf8");
   chartText = chartText.replace(/^version: .+$/m, `version: ${config.version}`)
     .replace(/^appVersion: .+$/m, `appVersion: ${config.version}`);
   writeFileSync(chart, chartText);
-  const values = join(destination, "helm", "aspm", "values.yaml");
+  const values = join(deploy, "helm", "aspm", "values.yaml");
   let valuesText = readFileSync(values, "utf8");
   valuesText = valuesText.replace(/^  tag: .+$/m, `  tag: ${config.version}`);
   writeFileSync(values, valuesText);
@@ -461,6 +462,14 @@ function verifyRelease(trustedKeyPath) {
   assert.equal(installerManifest.images.application, manifest.applicationImage);
   assert.equal(installerManifest.images.postgres, config.postgresImage);
   assert.equal(installerManifest.images.storage, config.storageImage);
+  for (const name of [
+    "deploy/helm/aspm/Chart.yaml", "deploy/helm/aspm/values.yaml",
+    "deploy/quadlet/aspm-core.container", "deploy/quadlet/aspm-ingestion@.container",
+    "deploy/quadlet/aspm-retention.container", "deploy/quadlet/aspm-reports.container",
+    "deploy/quadlet/aspm-postgres.container", "deploy/quadlet/aspm-storage.container",
+    "deploy/quadlet/aspm.network", "deploy/quadlet/aspm-postgres.volume",
+    "deploy/quadlet/aspm-storage.volume",
+  ]) assert.ok(installerManifest.files[name], `Installer bundle omitted ${name}.`);
   for (const [name, expected] of Object.entries(installerManifest.files)) {
     assert.equal(digest(installer.get(prefix + name)), expected, `Installer artifact changed: ${name}`);
   }

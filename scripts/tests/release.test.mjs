@@ -27,6 +27,9 @@ test("technical preview release configuration is exact and digest pinned", () =>
   assert.ok(containerfile.includes("COPY web/ /app/web/"));
   assert.ok(!containerfile.includes("npm ci"));
   assert.ok(!containerfile.includes("go mod download"));
+  const releaseScript = readFileSync(join(root, "scripts", "release.mjs"), "utf8");
+  assert.ok(releaseScript.includes("\"deploy/quadlet/aspm-core.container\""));
+  assert.ok(releaseScript.includes("\"deploy/helm/aspm/Chart.yaml\""));
 });
 
 test("release archives are byte deterministic and path bounded", () => {
