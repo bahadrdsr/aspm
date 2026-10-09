@@ -433,7 +433,7 @@ function verifyRelease(trustedKeyPath) {
     .map((name) => `${digestHex(readFileSync(join(output, name)))}  ${name}\n`).join("");
   assert.equal(sums, expectedSums);
   assert.deepEqual(readFileSync(join(output, "release-public-key.pem")),
-    createPublicKey(key).export({ type: "spki", format: "pem" }));
+    key.export({ type: "spki", format: "pem" }));
 
   const binaryName = `aspm-${config.version}-linux-amd64.tar.gz`;
   const binary = readTarGzip(readFileSync(join(output, binaryName)));
