@@ -188,7 +188,7 @@ first '='. Quotes and backslashes are data, not shell quoting/escapes; interior
 '=' remains part of the value. CRLF line endings and leading line indentation
 are recognized, but values are never unquoted, unescaped or trimmed by the oracle.
 No operator or other application's key may appear in an application's role file.
-Reload the system manager and activate aspm-core, aspm-ingestion@1, aspm-reports,
+Reload the system manager and activate aspm-core, aspm-ingestion, aspm-reports,
 aspm-postgres and aspm-storage. Every systemctl call uses --no-ask-password, never --user
 or implicit elevation. Remote SSH and rootless =>ErrUnsupported before mutation.
 The existing schema requires signatureRequired=true. Unsigned bundles ALWAYS fail,

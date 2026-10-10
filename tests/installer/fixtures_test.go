@@ -328,6 +328,11 @@ func (f *fixture) run(ctx context.Context, c Command) (CommandResult, error) {
 	if c.Tool == "podman" && slices.Contains(c.Args, "%{http_code}") {
 		return CommandResult{Stdout: []byte("403")}, nil
 	}
+	if c.Tool == "podman" && slices.ContainsFunc(c.Args, func(value string) bool {
+		return strings.HasSuffix(value, "/readyz")
+	}) {
+		return CommandResult{Stdout: []byte(`{"status":"ready"}`)}, nil
+	}
 	if c.Tool == "kubectl" {
 		equal(f.t, "explicit kubectl context", flag(c.Args, "--context"), "owned-test-context")
 		if slices.Contains(c.Args, "get") && slices.Contains(c.Args, "kube-system") {

@@ -464,7 +464,7 @@ function verifyRelease(trustedKeyPath) {
   assert.equal(installerManifest.images.storage, config.storageImage);
   for (const name of [
     "deploy/helm/aspm/Chart.yaml", "deploy/helm/aspm/values.yaml",
-    "deploy/quadlet/aspm-core.container", "deploy/quadlet/aspm-ingestion@.container",
+    "deploy/quadlet/aspm-core.container", "deploy/quadlet/aspm-ingestion.container",
     "deploy/quadlet/aspm-retention.container", "deploy/quadlet/aspm-reports.container",
     "deploy/quadlet/aspm-postgres.container", "deploy/quadlet/aspm-storage.container",
     "deploy/quadlet/aspm.network", "deploy/quadlet/aspm-postgres.volume",

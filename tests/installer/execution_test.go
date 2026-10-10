@@ -451,7 +451,7 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 	state := f.execute(p)
 	equal(t, "declared privileged Linux apply", state.Phase, "applied")
 	f.secretFiles(state)
-	for name, image := range map[string]string{"aspm-core.container": "application", "aspm-ingestion@.container": "application", "aspm-reports.container": "application",
+	for name, image := range map[string]string{"aspm-core.container": "application", "aspm-ingestion.container": "application", "aspm-reports.container": "application",
 		"aspm-postgres.container": "postgres", "aspm-storage.container": "storage"} {
 		data, err := f.files.root.ReadFile(filepath.Join("etc", "containers", "systemd", name))
 		ok(t, "read production-rendered Quadlet", err)
@@ -460,7 +460,7 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 		}
 		source, err := f.files.root.ReadFile(filepath.Join("bundle", "deploy", "quadlet", name))
 		ok(t, "read original signed Quadlet", err)
-		role := map[string]string{"aspm-core.container": "core", "aspm-ingestion@.container": "ingestion", "aspm-reports.container": "reports"}[name]
+		role := map[string]string{"aspm-core.container": "core", "aspm-ingestion.container": "ingestion", "aspm-reports.container": "reports"}[name]
 		for _, line := range strings.Split(string(source), "\n") {
 			line = strings.TrimSpace(line)
 			if role != "" {
@@ -598,7 +598,7 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 		}
 		reloaded = reloaded || (call.Tool == "systemctl" && slices.Contains(call.Args, "daemon-reload"))
 	}
-	for _, name := range []string{"aspm-core.service", "aspm-ingestion@1.service", "aspm-retention.service",
+	for _, name := range []string{"aspm-core.service", "aspm-ingestion.service", "aspm-retention.service",
 		"aspm-reports.service", "aspm-postgres.service", "aspm-storage.service"} {
 		if !started[name] {
 			t.Fatal("local apply did not activate every declared service")

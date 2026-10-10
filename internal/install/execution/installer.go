@@ -325,7 +325,16 @@ func (i *installer) command(ctx context.Context, p prepared, command Command, se
 				"exec", "aspm-storage", "/usr/bin/curl", "--silent", "--show-error",
 				"--output", "/dev/null", "--write-out", "%{http_code}", "http://127.0.0.1:8333/",
 			})
-			if !create && !remove && !postgresReady && !storageReady {
+			roleReady := false
+			for container, port := range map[string]int{
+				"aspm-core": 8080, "aspm-ingestion-1": 8081,
+				"aspm-retention": 8083, "aspm-reports": 8082,
+			} {
+				if slices.Equal(command.Args, roleReadinessCommand(container, port)) {
+					roleReady = true
+				}
+			}
+			if !create && !remove && !postgresReady && !storageReady && !roleReady {
 				return CommandResult{}, ErrUnsupported
 			}
 		}

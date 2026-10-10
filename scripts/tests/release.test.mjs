@@ -29,6 +29,7 @@ test("technical preview release configuration is exact and digest pinned", () =>
   assert.ok(!containerfile.includes("go mod download"));
   const releaseScript = readFileSync(join(root, "scripts", "release.mjs"), "utf8");
   assert.ok(releaseScript.includes("\"deploy/quadlet/aspm-core.container\""));
+  assert.ok(releaseScript.includes("\"deploy/quadlet/aspm-ingestion.container\""));
   assert.ok(releaseScript.includes("\"deploy/helm/aspm/Chart.yaml\""));
 });
 

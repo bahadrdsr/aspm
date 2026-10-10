@@ -172,7 +172,7 @@ func TestInstallerV2_LinuxUninstallDeactivatesOwnedDefinitionsButKeepsData(t *te
 	if !reloaded {
 		t.Error("Linux uninstall stopped services without reloading deactivated owned definitions")
 	}
-	for _, name := range []string{"aspm-core.container", "aspm-ingestion@.container", "aspm-reports.container",
+	for _, name := range []string{"aspm-core.container", "aspm-ingestion.container", "aspm-reports.container",
 		"aspm-postgres.container", "aspm-storage.container"} {
 		data, err := f.files.root.ReadFile(filepath.Join("etc", "containers", "systemd", name))
 		if errors.Is(err, fs.ErrNotExist) {

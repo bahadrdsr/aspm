@@ -13,7 +13,7 @@ import (
 
 var activationUnits = []struct{ file, service string }{
 	{"aspm-core.container", "aspm-core.service"},
-	{"aspm-ingestion@.container", "aspm-ingestion@1.service"},
+	{"aspm-ingestion.container", "aspm-ingestion.service"},
 	{"aspm-retention.container", "aspm-retention.service"},
 	{"aspm-reports.container", "aspm-reports.service"},
 	{"aspm-storage.container", "aspm-storage.service"},
@@ -96,7 +96,7 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 			}
 			for _, unit := range []struct{ name, image, role string }{
 				{"aspm-postgres.container", "postgres", ""}, {"aspm-storage.container", "storage", ""},
-				{"aspm-core.container", "application", "core"}, {"aspm-ingestion@.container", "application", "ingestion"},
+				{"aspm-core.container", "application", "core"}, {"aspm-ingestion.container", "application", "ingestion"},
 				{"aspm-retention.container", "application", "retention"},
 				{"aspm-reports.container", "application", "reports"},
 			} {
@@ -162,12 +162,58 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 					return status == "200" || status == "403"
 				})
 		}},
-		{name: "start-application-roles", activationBoundary: true, run: func() error {
-			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start",
-				"aspm-core.service", "aspm-ingestion@1.service", "aspm-retention.service", "aspm-reports.service"}}, material.values())
+		{name: "start-core", activationBoundary: true, run: func() error {
+			_, err := i.command(ctx, p, Command{
+				Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-core.service"},
+			}, material.values())
 			return err
 		}},
+		{name: "wait-core-ready", run: func() error {
+			return i.waitForPodman(ctx, p, material.values(),
+				roleReadinessCommand("aspm-core", 8080), roleReady)
+		}},
+		{name: "start-ingestion", run: func() error {
+			_, err := i.command(ctx, p, Command{
+				Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-ingestion.service"},
+			}, material.values())
+			return err
+		}},
+		{name: "wait-ingestion-ready", run: func() error {
+			return i.waitForPodman(ctx, p, material.values(),
+				roleReadinessCommand("aspm-ingestion-1", 8081), roleReady)
+		}},
+		{name: "start-retention", run: func() error {
+			_, err := i.command(ctx, p, Command{
+				Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-retention.service"},
+			}, material.values())
+			return err
+		}},
+		{name: "wait-retention-ready", run: func() error {
+			return i.waitForPodman(ctx, p, material.values(),
+				roleReadinessCommand("aspm-retention", 8083), roleReady)
+		}},
+		{name: "start-reports", run: func() error {
+			_, err := i.command(ctx, p, Command{
+				Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-reports.service"},
+			}, material.values())
+			return err
+		}},
+		{name: "wait-reports-ready", run: func() error {
+			return i.waitForPodman(ctx, p, material.values(),
+				roleReadinessCommand("aspm-reports", 8082), roleReady)
+		}},
 	}
+}
+
+func roleReadinessCommand(container string, port int) []string {
+	return []string{
+		"exec", container, "/bin/busybox", "wget", "-qO-",
+		"http://127.0.0.1:" + integer(port) + "/readyz",
+	}
+}
+
+func roleReady(output string) bool {
+	return strings.Contains(output, `"status":"ready"`)
 }
 
 func (i *installer) waitForPodman(ctx context.Context, p prepared, secrets []string,
