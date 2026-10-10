@@ -11,6 +11,66 @@ runtime, installer and application UI increments beyond those foundations.
 The bounded `0.1.0-rc.1` technical preview profile is release-qualified. This is
 not a production or GA support claim.
 
+## Enterprise feature highlights
+
+ASPM gives security teams a self-hosted control plane for application security
+data, evidence, workflow and reporting without forcing findings into a vendor
+SaaS. The technical preview includes:
+
+- **Unified asset and ownership inventory** - Manage workspace-scoped assets,
+  ownership and access roles alongside the findings and security activity that
+  belong to them.
+- **Extensible scanner and finding intake** - Ingest SARIF 2.1.0, Trivy, OWASP
+  ZAP, Gitleaks, generic JSON, generic CSV and human-authored manual findings
+  through one queued pipeline. A public adapter contract provides a consistent
+  path for adding more formats.
+- **Provenance-first finding records** - Preserve imports, source observations,
+  evidence references, scan history, recurring-scan changes, variants and audit
+  history instead of flattening security data into a single ticket.
+- **Reviewed, reversible deduplication** - Discover exact-location correlation
+  candidates, merge same-asset findings from multiple sources and release
+  members later without losing their observations or provenance.
+- **Complete finding workflow** - Assign owners, triage workflow state, request
+  retests and record accepted-risk, scoped-suppression or false-positive
+  decisions with rationale, expiry and durable revision history.
+- **AI-assisted analysis with human control** - Configure opt-in provider
+  profiles, policies and grants, require explicit queue consent and retain
+  read-only advisory assessment history without silently changing finding
+  truth.
+- **Bounded deterministic verification** - Run administrator-approved synthetic
+  evidence fixtures in a dedicated leased worker. Verification outcomes remain
+  separate from source state, workflow and risk decisions, and never
+  automatically close a finding.
+- **Security workflow integrations** - Use durable Slack, Jira and Teams
+  delivery workflows, generic webhooks, selected GitHub repository collection
+  and selected Azure DevOps repository/build-artifact collection with explicit
+  report intake.
+- **Decision-ready reporting** - Track live posture, current coverage,
+  remediation SLA, finding metrics, immutable snapshots and bounded historical
+  trends, with digest-verified asynchronous JSON and CSV exports.
+- **Governance, retention and auditability** - Define separate retention
+  lifetimes, place explicit holds, preview impact, approve exact plans, execute
+  through a fenced worker and retrieve verified archived records while
+  preserving protected history.
+- **Operationally serious self-hosting** - Deploy role-separated Go services on
+  PostgreSQL and S3-compatible storage using Helm or systemd/Podman Quadlet.
+  The installer provides a configuration wizard, diagnostics, signed
+  target-bound plans, readiness checks, resume and data-preserving uninstall.
+- **Recovery and controlled upgrades** - Create and verify quiesced backups,
+  restore database and object state, apply signed same-target upgrades and
+  reactivate the exact previous signed bundle after a pre-activation failure.
+- **Release supply-chain evidence** - Publish signed release manifests and
+  installer bundles with SHA-256 checksums, CycloneDX SBOM, in-toto/SLSA
+  provenance and machine-readable quality evidence.
+- **Measured release quality** - The release profile includes full browser
+  regression, automated accessibility checks and a published bounded
+  5,000-finding capacity run with zero acknowledged finding loss.
+
+The platform is built with Go, React, PostgreSQL and S3-compatible open-source
+infrastructure. Stateful HA, zero-downtime upgrades, formal WCAG conformance and
+enterprise E1 capacity remain future qualification work rather than implied
+claims.
+
 ### Current roadmap priority
 
 The selected Azure DevOps Services repository/build-artifact collection and
