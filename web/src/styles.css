@@ -85,7 +85,7 @@ button:disabled { cursor: not-allowed; }
 a { color: inherit; text-decoration: none; }
 svg { flex-shrink: 0; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--indigo); cursor: pointer; margin: 0; }
+input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--indigo); cursor: pointer; margin: 0; }
 input[type="search"]::-webkit-search-cancel-button { display: none; }
 input::placeholder { color: var(--muted); opacity: 1; }
 h1, h2, h3, p { margin: 0; }
@@ -113,7 +113,7 @@ code, pre, kbd { font-family: ui-monospace, "Cascadia Code", Consolas, monospace
 .workspace-context > div > span { display: block; font-size: 9px; color: var(--muted); margin-top: 3px; white-space: nowrap; }
 .workspace-context > svg { color: var(--subtle); }
 .workspace-monogram { display: grid; place-items: center; height: 29px; width: 29px; border-radius: 7px; background: var(--accent-soft); color: var(--accent-ink); font-size: 18px; font-weight: 700; }
-.nav-section-label { color: var(--subtle); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; padding-left: 12px; margin-bottom: 9px; }
+.nav-section-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; padding-left: 12px; margin-bottom: 9px; }
 .primary-nav { display: flex; flex-direction: column; gap: 5px; }
 .primary-nav a { display: flex; align-items: center; gap: 12px; min-height: 45px; padding: 11px 13px; border-radius: 8px; color: var(--muted); font-weight: 520; transition: color var(--micro), background var(--micro); }
 .primary-nav a:hover { background: var(--surface-soft); color: var(--ink); }

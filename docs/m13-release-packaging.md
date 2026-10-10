@@ -1,6 +1,6 @@
 # M13 technical preview release packaging
 
-Implemented on October 9, 2026.
+Implemented on October 10, 2026.
 
 The release workflow produces one versioned Linux/amd64 technical preview from
 a clean, explicitly approved Git revision. It does not publish to a registry or
@@ -16,6 +16,7 @@ forge automatically.
 - an OCI image-layout archive through Docker Buildx;
 - a signed-installer-bundle staging tree using the exact OCI digest;
 - a merged Go/npm CycloneDX component inventory.
+- the machine-checked native/accessibility/capacity evidence.
 
 `node scripts\release.mjs finalize` requires the exact reviewed Git revision and
 an external owner-protected Ed25519 private key. It creates deterministic

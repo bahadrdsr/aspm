@@ -1,6 +1,6 @@
 # M13 upgrade and rollback
 
-Implemented on October 9, 2026.
+Implemented on October 10, 2026.
 
 This is the supported technical preview procedure for replacing one signed ASPM
 installer bundle on the same selected Linux host or Kubernetes namespace. It is

@@ -62,7 +62,7 @@
       "id": "M00-CAPACITY",
       "sources": ["Plan 6", "M00"],
       "acceptance": "Freeze development/E1/bursty-E1/history-churn/failure-quota dataset shapes, seeds, format-specific byte distributions, reference resources, and quantitative hypotheses. No declaration is an achieved benchmark.",
-      "tests": ["TestCapacityProfilesAndBudgets"]
+      "tests": ["TestCapacityProfilesAndBudgets", "TestM13TechnicalPreviewQualityEvidence"]
     },
     {
       "id": "M00-FAILURE-CHURN-RETENTION",

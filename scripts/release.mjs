@@ -237,7 +237,10 @@ function prepare() {
   const goRoot = run(go, ["env", "GOROOT"]);
   copyFileSync(join(goRoot, "LICENSE"), join(payloadRoot, "Go-LICENSE.txt"));
   mkdirSync(join(payloadRoot, "docs"), { recursive: true });
-  for (const name of ["m13-backup-restore.md", "m13-upgrade-rollback.md", "m13-verification-worker.md"]) {
+  for (const name of [
+    "m13-backup-restore.md", "m13-upgrade-rollback.md", "m13-verification-worker.md",
+    "m13-release-packaging.md", "m13-linux-activation.md", "m13-release-quality.md",
+  ]) {
     copyFileSync(join(root, "docs", name), join(payloadRoot, "docs", name));
   }
 
@@ -281,6 +284,8 @@ function prepare() {
 
   const sbom = buildSBOM(go, applicationImage);
   writeFileSync(join(work, "sbom.cdx.json"), canonicalJSON(sbom), { flag: "wx" });
+  copyFileSync(join(root, "docs", "evidence", "m13-technical-preview-quality.json"),
+    join(work, "quality-evidence.json"));
   const receipt = {
     schemaVersion: 1, kind: "ReleaseBuildReceipt",
     version: config.version, platform: config.platform,
@@ -296,6 +301,7 @@ function prepare() {
     imageContext: records(walk(imageContext)),
     installer: records(walk(installerRoot)),
     sbomSHA256: digest(readFileSync(join(work, "sbom.cdx.json"))),
+    qualityEvidenceSHA256: digest(readFileSync(join(work, "quality-evidence.json"))),
     ociSHA256: digest(readFileSync(oci)),
   };
   writeFileSync(join(work, "build-receipt.json"), canonicalJSON(receipt), { flag: "wx" });
@@ -325,6 +331,7 @@ function finalize() {
   assertRecords(join(work, "image-context"), receipt.imageContext);
   assertRecords(join(work, "installer"), receipt.installer);
   assert.equal(digest(readFileSync(join(work, "sbom.cdx.json"))), receipt.sbomSHA256);
+  assert.equal(digest(readFileSync(join(work, "quality-evidence.json"))), receipt.qualityEvidenceSHA256);
   const ociSource = join(work, `aspm-${config.version}-linux-amd64.oci.tar`);
   assert.equal(digest(readFileSync(ociSource)), receipt.ociSHA256);
 
@@ -337,6 +344,7 @@ function finalize() {
   const ociName = `aspm-${config.version}-linux-amd64.oci.tar`;
   const sbomName = `aspm-${config.version}-sbom.cdx.json`;
   const provenanceName = `aspm-${config.version}-provenance.json`;
+  const qualityName = `aspm-${config.version}-quality-evidence.json`;
   writeFileSync(join(output, binaryName), deterministicTarGzip(walk(join(work, "payload"))), { flag: "wx" });
   writeFileSync(join(output, installerName), deterministicTarGzip(
     walk(join(work, "installer")).map((entry) => ({
@@ -345,10 +353,11 @@ function finalize() {
   ), { flag: "wx" });
   copyFileSync(ociSource, join(output, ociName));
   copyFileSync(join(work, "sbom.cdx.json"), join(output, sbomName));
+  copyFileSync(join(work, "quality-evidence.json"), join(output, qualityName));
   const publicBytes = createPublicKey(key).export({ type: "spki", format: "pem" });
   writeFileSync(join(output, "release-public-key.pem"), publicBytes, { flag: "wx" });
 
-  const subjects = [binaryName, installerName, ociName, sbomName, "release-public-key.pem"].map(releaseEntry);
+  const subjects = [binaryName, installerName, ociName, sbomName, qualityName, "release-public-key.pem"].map(releaseEntry);
   const provenance = {
     _type: "https://in-toto.io/Statement/v1",
     subject: subjects.map((entry) => ({
@@ -389,12 +398,12 @@ function finalize() {
     apiVersion: "aspm.dev/release/v1alpha1", kind: "ReleaseArtifactManifest",
     version: config.version, platform: config.platform,
     sourceRevision: revision, applicationImage: receipt.applicationImage,
+    qualityEvidence: qualityName,
     schemaVersion: 27, productionReady: false, technicalPreview: true,
     files,
     limitations: [
       "single-instance-technical-preview", "no-stateful-ha", "no-zero-downtime-upgrade",
-      "no-database-down-migration", "external-trust-key-required",
-      "accessibility-performance-and-capacity-qualified-separately",
+      "no-database-down-migration",       "external-trust-key-required", "bounded-technical-preview-quality-profile",
     ],
   };
   const manifestBytes = canonicalJSON(manifest);
@@ -426,6 +435,7 @@ function verifyRelease(trustedKeyPath) {
   assert.equal(manifest.platform, config.platform);
   assert.equal(manifest.productionReady, false);
   assert.equal(manifest.technicalPreview, true);
+  assert.equal(manifest.qualityEvidence, `aspm-${config.version}-quality-evidence.json`);
   assert.match(manifest.applicationImage, new RegExp(`^${config.imageRepository.replaceAll(".", "\\.")}:${config.version.replaceAll(".", "\\.")}@sha256:[a-f0-9]{64}$`));
   const names = [];
   for (const entry of manifest.files) {
@@ -481,6 +491,12 @@ function verifyRelease(trustedKeyPath) {
   assert.equal(sbom.bomFormat, "CycloneDX");
   assert.equal(sbom.specVersion, "1.6");
   assert.ok(sbom.components.length > 20);
+  const quality = JSON.parse(readFileSync(join(output, manifest.qualityEvidence)));
+  assert.equal(quality.kind, "TechnicalPreviewQualityEvidence");
+  assert.equal(quality.release, config.version);
+  assert.equal(quality.nativeLinux.status, "passed");
+  assert.equal(quality.accessibility.status, "passed");
+  assert.equal(quality.capacity.status, "passed");
   const provenance = JSON.parse(readFileSync(join(output, `aspm-${config.version}-provenance.json`)));
   assert.equal(provenance._type, "https://in-toto.io/Statement/v1");
   assert.equal(provenance.predicateType, "https://slsa.dev/provenance/v1");

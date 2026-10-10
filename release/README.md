@@ -26,6 +26,7 @@ The output under `.artifacts\release\0.1.0-rc.1` contains:
 - a signed installer-bundle archive;
 - a CycloneDX 1.6 SBOM;
 - an in-toto/SLSA provenance statement;
+- the machine-checked technical-preview quality evidence;
 - exact SHA-256 sums;
 - a signed canonical release manifest.
 

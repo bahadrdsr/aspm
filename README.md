@@ -161,6 +161,11 @@ archive, signed installer bundle, CycloneDX SBOM, provenance, checksums and a
 signed release manifest from one clean reviewed revision. It never pushes or
 publishes automatically. See `docs\m13-release-packaging.md`.
 
+Native Ubuntu/systemd/Podman activation, retained-data restart, signed
+pre-activation rollback, automated accessibility checks and the bounded
+5,000-finding capacity profile are qualified separately. See
+`docs\m13-linux-activation.md` and `docs\m13-release-quality.md`.
+
 ### Application UI workflows
 
 In **Work**, **Load more findings** explicitly requests the service's native
