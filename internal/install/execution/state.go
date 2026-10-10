@@ -224,7 +224,7 @@ func (i *installer) Execute(ctx context.Context, input Intent, approval Approval
 		}
 		return err
 	}}}
-	if input.Operation == "apply" {
+	if input.Operation == "apply" || input.Operation == "rollback" {
 		if p.config.Target.Kind == "kubernetes" {
 			steps = append(steps, i.kubernetesApply(ctx, p, &material)...)
 		} else {

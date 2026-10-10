@@ -69,11 +69,20 @@ func TestInstallerV4_UpgradeFailureBeforeActivationAllowsSignedRollback(t *testi
 		rollback.TargetRelease != previousRelease {
 		t.Fatal("rollback plan did not bind the failed and previous signed releases")
 	}
+	firstRollbackCall := len(f.calls)
 	restored := f.execute(rollback)
 	if restored.Phase != "applied" || restored.Release != previousRelease ||
 		restored.BundleDigest != rollback.BundleDigest ||
 		restored.PreviousRelease != "" || restored.RollbackMode != "not-needed" {
 		t.Fatal("approved activation rollback did not settle on the previous signed release")
+	}
+	activated, uninstalled := false, false
+	for _, call := range f.calls[firstRollbackCall:] {
+		activated = activated || (call.Tool == "helm" && slices.Contains(call.Args, "upgrade"))
+		uninstalled = uninstalled || (call.Tool == "helm" && slices.Contains(call.Args, "uninstall"))
+	}
+	if !activated || uninstalled {
+		t.Fatal("rollback used uninstall steps instead of activating the previous signed bundle")
 	}
 }
 
