@@ -3,20 +3,21 @@
 Self-hosted application security posture management, working name **aspm**.
 Module: `github.com/bahadrdsr/aspm`. Original project and SDK code: Apache-2.0.
 
-## Current state: engineering preview
+## Current state: 0.1.0 technical preview release candidate
 
 M00 was independently accepted at commit
 `9692bcf526bc6a2cd31818c379cf124f17910cf0`. The repository now includes reviewed
 runtime, installer and application UI increments beyond those foundations.
-The full milestone roadmap is not complete, and this is not a supported release.
+The bounded `0.1.0-rc.1` technical preview profile is release-qualified. This is
+not a production or GA support claim.
 
 ### Current roadmap priority
 
 The selected Azure DevOps Services repository/build-artifact collection and
 explicit SARIF intake path is implemented with application UI, worker and Helm
 wiring. Owned synthetic protocol/PG/S3 fixtures passed on October 7, 2026; an
-authorized live Azure DevOps account and Linux/Podman activation were not
-tested.
+authorized live Azure DevOps account remains unverified. The signed
+Linux/Podman technical-preview profile is qualified separately under M13.
 
 The M06 correlation increment now supports bounded exact-location candidate
 pages plus reviewed multi-member merge and one-member release in the same
@@ -83,17 +84,18 @@ Core API, ingestion, retention and reporting run as separate processes.
 Core, ingestion and retention use distinct scoped storage identities; reporting
 is database-only. The separate
 assessment worker uses database state and approved provider requests, without
-raw-storage credentials. Real local flows have been exercised, but further backend authorization/concurrency,
-deployment, recovery and capacity gates remain open. PostgreSQL role separation
-and production network isolation are not yet qualified.
+raw-storage credentials. Real local flows, deployment, recovery and the bounded technical-preview
+capacity profile have been exercised. PostgreSQL role separation, production
+network isolation, stateful HA and enterprise E1 capacity are not yet qualified.
 
 Eight native integration families and four configurable AI provider adapters
 exist as libraries. Slack, Jira and Teams delivery, selected GitHub collection,
 selected Azure DevOps report collection and explicitly reviewed AI assessments
 have durable application workflows. Other native-family orchestration and live
 vendor/model qualification remain incomplete. Assessment source/host images and explicit owned-cluster
-startup have separate qualification; Helm is opt-in and native Quadlet
-activation remains operator work.
+startup have separate qualification; Helm remains opt-in. The signed
+single-host Quadlet profile is qualified on Ubuntu 24.04/systemd/Podman 4.9.3,
+not across an arbitrary distribution matrix.
 Verification supports approved deterministic synthetic evidence only, not
 exploit execution or autonomous offensive tools. V27 adds immutable bounded
 fixtures, explicit administrator approval/revocation, durable leased jobs,
@@ -106,10 +108,13 @@ of a real vulnerability and does not close or classify the finding.
 Linux/Podman Quadlet and Kubernetes/Helm are the production targets. The installer
 now supports the configuration wizard, diagnostics, signed target-bound planning,
 managed apply, resume/reapply, status and data-preserving uninstall for bounded
-profiles. A real owned Kubernetes lifecycle has been exercised; native Linux
-activation, backup/restore, general upgrades and release qualification remain
-unfinished. See `docs\m02-runtime.md` and `docs\m03-configuration.md` for the
-implemented behavior and deployment boundaries.
+profiles. Real owned Kubernetes and native Linux lifecycles, quiesced
+backup/restore, signed upgrade/rollback, release packaging, automated
+accessibility checks and the bounded 5,000-finding profile are qualified.
+Stateful HA, zero-downtime upgrades, database down-migrations, formal WCAG
+conformance and enterprise capacity remain outside this release candidate. See
+`docs\m02-runtime.md`, `docs\m03-configuration.md` and the M13 operator guides
+for the implemented behavior and deployment boundaries.
 
 ## Run the static UI preview
 
