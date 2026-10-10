@@ -173,7 +173,7 @@ func (i *installer) Execute(ctx context.Context, input Intent, approval Approval
 		p.plan.ChangeKind == "reapply" &&
 		record.Release == p.plan.TargetRelease &&
 		record.BundleDigest == p.plan.BundleDigest
-	if record.State.PlanID != p.plan.ID {
+	if reapply || record.State.PlanID != p.plan.ID {
 		record.State.Completed = []string{}
 	}
 	if p.config.Target.Kind == "linux" && len(record.OwnedUnits) != 0 {

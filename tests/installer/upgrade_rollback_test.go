@@ -153,6 +153,24 @@ func TestInstallerV4_MigratesV2CheckpointWithoutNativeMutation(t *testing.T) {
 	}
 }
 
+func TestInstallerV4_FailedReapplyResumesItsFailedStep(t *testing.T) {
+	f := newFixture(t, "kubernetes")
+	plan := f.plan()
+	f.execute(plan)
+	f.failUpgrade = true
+	failed, err := f.app.Execute(f.ctx, f.input, Approval{PlanID: plan.ID})
+	if !errors.Is(err, ErrCommand) || failed.Phase != "failed" ||
+		failed.FailedStep != "helm-upgrade" || slices.Contains(failed.Completed, failed.FailedStep) {
+		t.Fatal("failed reapply did not replace the prior completed-step set")
+	}
+	f.reopen()
+	f.failUpgrade = false
+	resumed := f.execute(plan)
+	if resumed.Phase != "applied" || !slices.Contains(resumed.Completed, "helm-upgrade") {
+		t.Fatal("reapply resume skipped its previously failed activation step")
+	}
+}
+
 func TestInstallerV4_OperatorDocumentationDefinesRollbackBoundary(t *testing.T) {
 	data, err := os.ReadFile(filepath.Join("..", "..", "docs", "m13-upgrade-rollback.md"))
 	ok(t, "read upgrade and rollback operator documentation", err)
