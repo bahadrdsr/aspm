@@ -319,7 +319,13 @@ func (i *installer) command(ctx context.Context, p prepared, command Command, se
 		if command.Tool == "podman" {
 			create := slices.Equal(command.Args, []string{"secret", "create", policySecretName, "-"})
 			remove := slices.Equal(command.Args, []string{"secret", "rm", "--ignore", policySecretName})
-			if !create && !remove {
+			postgresReady := slices.Equal(command.Args,
+				[]string{"exec", "aspm-postgres", "pg_isready", "-U", "aspm", "-d", "aspm"})
+			storageReady := slices.Equal(command.Args, []string{
+				"exec", "aspm-storage", "/usr/bin/curl", "--silent", "--show-error",
+				"--output", "/dev/null", "--write-out", "%{http_code}", "http://127.0.0.1:8333/",
+			})
+			if !create && !remove && !postgresReady && !storageReady {
 				return CommandResult{}, ErrUnsupported
 			}
 		}

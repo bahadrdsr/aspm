@@ -322,6 +322,12 @@ func (f *fixture) run(ctx context.Context, c Command) (CommandResult, error) {
 	if c.Tool == "kubectl" || c.Tool == "helm" {
 		equal(f.t, "no ambient kubeconfig fallback", flag(c.Args, "--kubeconfig"), filepath.Join(f.options.Root, f.options.Kubeconfig))
 	}
+	if c.Tool == "podman" && slices.Contains(c.Args, "pg_isready") {
+		return CommandResult{Stdout: []byte("/var/run/postgresql:5432 - accepting connections\n")}, nil
+	}
+	if c.Tool == "podman" && slices.Contains(c.Args, "%{http_code}") {
+		return CommandResult{Stdout: []byte("403")}, nil
+	}
 	if c.Tool == "kubectl" {
 		equal(f.t, "explicit kubectl context", flag(c.Args, "--context"), "owned-test-context")
 		if slices.Contains(c.Args, "get") && slices.Contains(c.Args, "kube-system") {

@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/bahadrdsr/aspm/internal/install/quadlet"
 )
@@ -143,15 +144,53 @@ func (i *installer) linuxApply(ctx context.Context, p prepared, material *creden
 			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-postgres.service"}}, material.values())
 			return err
 		}},
+		{name: "wait-postgres-ready", run: func() error {
+			return i.waitForPodman(ctx, p, material.values(),
+				[]string{"exec", "aspm-postgres", "pg_isready", "-U", "aspm", "-d", "aspm"},
+				func(output string) bool { return strings.Contains(output, "accepting connections") })
+		}},
 		{name: "start-storage", run: func() error {
 			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start", "aspm-storage.service"}}, material.values())
 			return err
+		}},
+		{name: "wait-storage-ready", run: func() error {
+			return i.waitForPodman(ctx, p, material.values(),
+				[]string{"exec", "aspm-storage", "/usr/bin/curl", "--silent", "--show-error",
+					"--output", "/dev/null", "--write-out", "%{http_code}", "http://127.0.0.1:8333/"},
+				func(output string) bool {
+					status := strings.TrimSpace(output)
+					return status == "200" || status == "403"
+				})
 		}},
 		{name: "start-application-roles", activationBoundary: true, run: func() error {
 			_, err := i.command(ctx, p, Command{Tool: "systemctl", Args: []string{"--no-ask-password", "start",
 				"aspm-core.service", "aspm-ingestion@1.service", "aspm-retention.service", "aspm-reports.service"}}, material.values())
 			return err
 		}},
+	}
+}
+
+func (i *installer) waitForPodman(ctx context.Context, p prepared, secrets []string,
+	args []string, ready func(string) bool) error {
+	deadline := time.NewTimer(180 * time.Second)
+	defer deadline.Stop()
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+	for {
+		result, err := i.command(ctx, p, Command{Tool: "podman", Args: args}, secrets)
+		if err == nil && ready(string(result.Stdout)) {
+			return nil
+		}
+		if err != nil && !errors.Is(err, ErrCommand) {
+			return err
+		}
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-deadline.C:
+			return errors.Join(ErrCommand, errors.New("native dependency readiness exceeded 180 seconds"))
+		case <-ticker.C:
+		}
 	}
 }
 

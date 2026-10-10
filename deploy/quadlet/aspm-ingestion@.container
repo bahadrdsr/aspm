@@ -19,4 +19,5 @@ Restart=on-failure
 TimeoutStartSec=180
 
 [Install]
+DefaultInstance=1
 WantedBy=multi-user.target

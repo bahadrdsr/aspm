@@ -542,6 +542,9 @@ func TestM03Execution_LocalPrivilegedLinuxUsesExistingQuadletsWithoutElevation(t
 		if call.Tool != "podman" {
 			continue
 		}
+		if len(call.Args) > 0 && call.Args[0] == "exec" {
+			continue
+		}
 		if slices.Equal(call.Args, []string{"secret", "rm", "--ignore", "aspm-storage-policy"}) {
 			if len(call.Stdin) != 0 {
 				t.Fatal("Podman secret removal unexpectedly received private input")
